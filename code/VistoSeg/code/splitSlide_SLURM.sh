@@ -20,7 +20,7 @@ echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 module load matlab/R2023a
 
 ## Load toolbox for VistoSeg
-toolbox='/dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC/code/VistoSeg/code'
+toolbox='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg'
 samplelist="splitSlide.txt"
 
 ## Read inputs from splitSlide_list.txt file
