@@ -2,7 +2,7 @@
 #SBATCH --mem=80G
 #SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/$SLURM_ARRAY_TASK_ID_splitSlide.txt 
 #SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/$SLURM_ARRAY_TASK_ID_splitSlide.txt
-#SBATCH --array=1
+#SBATCH --array=2-3
 #SBATCH --mail-user=heenadivecha@gmail.com
  
 echo "**** Job starts ****"
