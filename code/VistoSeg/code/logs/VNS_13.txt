@@ -1,0 +1,66 @@
+**** Job starts ****
+Wed Jan  3 10:22:17 AM EST 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 1388524
+Job name: VNS_SLURM.sh
+Hostname: 
+Task id: 13
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2023 The MathWorks, Inc.
+             R2023a Update 3 (9.14.0.2286388) 64-bit (glnxa64)
+                                May 25, 2023
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 32.966697 seconds.
+Performing smoothing and contrast adjustment
+Elapsed time is 141.192810 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 136.230231 seconds.
+Applying Kmeans
+Elapsed time is 5037.530322 seconds.
+saving outputs
+Starting parallel pool (parpool) using the 'Processes' profile ...
+[Warning: The system time zone setting, 'US/Eastern', does not specify a single
+time zone unambiguously. It will be treated as 'America/New_York'. See the <a
+href="matlab:doc('datetime.TimeZone')">datetime.TimeZone property</a> for
+details about specifying time zones.] 
+[> In verifyTimeZone (line 38)
+In datetime (line 569)
+In parallel.internal.cluster.DefaultProperties.getNewJobPropStruct (line 17)
+In parallel.internal.types.JobProp>iGetDefaults (line 63)
+In parallel.internal.types.JobProp (line 57)
+In parallel.internal.cluster/FileStorage/getSortedJobIDsFromDisk
+In parallel.internal.cluster/FileStorage/getJobSIds (line 590)
+In parallel.internal.cluster/CJSSupport/getJobsForCluster (line 283)
+In parallel.internal.cluster.CJSSupport>@(x,y)obj.getJobsForCluster(x,y{1})
+(line 72)
+In parallel.internal.cluster/CJSSupport/getJobs (line 72)
+In parallel.cluster/CJSCluster/getJobs (line 555)
+In parallel/Cluster/hGetJobs (line 937)
+In parallel.internal.cluster.hetfun (line 54)
+In parallel.Cluster/findJob (line 64)
+In parallel.internal.pool/AbstractInteractiveClient/findJobsOnCluster (line 31)
+In parallel.internal.pool/AbstractInteractiveClient/pRemoveOldJobs (line 206)
+In parallel.internal.pool/AbstractInteractiveClient/start (line 104)
+In parallel.internal.pool.AbstractClusterPool>iStartClient (line 874)
+In parallel.internal.pool.AbstractClusterPool.hBuildPool (line 636)
+In parallel.internal.pool.doParpool (line 22)
+In parpool (line 118)
+In parallel.internal.parpool.getOrCreateCurrentPool (line 13)
+In parallel.internal.pool.PoolArrayManager.getOrAutoCreateWithCleanup (line 44)
+In pctTryCreatePoolIfNecessary (line 28)
+In parallel_function (line 423)
+In VNS (line 30)
+] 
+Connected to parallel pool with 2 workers.
+Elapsed time is 617.169585 seconds.
+>> Parallel pool using the 'Processes' profile is shutting down.
+**** Job ends ****
+Wed Jan  3 12:02:33 PM EST 2024
