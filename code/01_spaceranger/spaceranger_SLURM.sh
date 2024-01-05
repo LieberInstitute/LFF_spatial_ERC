@@ -58,7 +58,7 @@ spaceranger count \
 echo "Moving results to new location"
 date
 mkdir -p /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/
-mv ${FILE} /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/
+mv ${SAMPLE} /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/
 
 echo "**** Job ends ****"
 date
