@@ -1,0 +1,87 @@
+**** Job starts ****
+Wed Mar 20 06:35:23 AM EDT 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 3252416
+Job name: countNuclei_SLURM.sh
+Hostname: 
+Task id: 14
+using nuclei mat file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13Y24-340_ERC_Slide4_11_02_2023_B1_nuclei.mat
+using json file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/V13Y24-340_B1/outs/spatial/scalefactors_json.json
+ and using tissueposition file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/V13Y24-340_B1/outs/spatial/tissue_positions.csv
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2023 The MathWorks, Inc.
+             R2023a Update 3 (9.14.0.2286388) 64-bit (glnxa64)
+                                May 25, 2023
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+4992 Visium spots detected
+Building spot grid
+126118 mask_dark_blue ROIS detected
+counting dots per Visium spot
+100 spots finished in time 1464.0339s
+200 spots finished in time 2899.8265s
+300 spots finished in time 4336.843s
+400 spots finished in time 5772.9701s
+500 spots finished in time 7203.586s
+600 spots finished in time 8631.7259s
+700 spots finished in time 10070.9031s
+800 spots finished in time 11513.5821s
+900 spots finished in time 12955.9417s
+1000 spots finished in time 14396.5037s
+1100 spots finished in time 15643.7587s
+1200 spots finished in time 16876.0328s
+1300 spots finished in time 18105.6845s
+1400 spots finished in time 19330.415s
+1500 spots finished in time 20553.4421s
+1600 spots finished in time 21769.6552s
+1700 spots finished in time 22875.4965s
+1800 spots finished in time 23916.8821s
+1900 spots finished in time 24930.6445s
+2000 spots finished in time 25992.519s
+2100 spots finished in time 26962.3508s
+2200 spots finished in time 27938.2052s
+2300 spots finished in time 28910.4079s
+2400 spots finished in time 29938.3461s
+2500 spots finished in time 30985.9437s
+2600 spots finished in time 31979.4326s
+2700 spots finished in time 33021.3088s
+2800 spots finished in time 34124.6475s
+2900 spots finished in time 35229.0663s
+3000 spots finished in time 36325.3438s
+3100 spots finished in time 37441.7678s
+3200 spots finished in time 38535.1039s
+3300 spots finished in time 39610.1033s
+3400 spots finished in time 40576.2142s
+3500 spots finished in time 41518.2759s
+3600 spots finished in time 42455.8921s
+3700 spots finished in time 43375.9275s
+3800 spots finished in time 44291.4265s
+3900 spots finished in time 45206.3188s
+4000 spots finished in time 46122.2276s
+4100 spots finished in time 47037.7688s
+4200 spots finished in time 47953.5437s
+4300 spots finished in time 48860.3489s
+4400 spots finished in time 49767.3946s
+4500 spots finished in time 50672.1688s
+4600 spots finished in time 51571.221s
+4700 spots finished in time 52470.4854s
+4800 spots finished in time 53368.0775s
+4900 spots finished in time 54265.4428s
+1Channel done55091.7438s
+writing table
+
+ans = 
+
+  struct with fields:
+
+    mask_dark_blue: [4992x1 double]
+
+>> **** Job ends ****
+Wed Mar 20 09:55:57 PM EDT 2024
