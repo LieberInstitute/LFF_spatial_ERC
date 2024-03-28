@@ -1,0 +1,109 @@
+**** Job starts ****
+Thu Mar 28 10:11:34 AM EDT 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 3526701
+Job name: spaceranger_SLURM.sh
+Hostname: 
+Task id: 17
+Loading LIBD SLURM module for spaceranger/2.1.0
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   2) JHPCE_tools/3.0   3) spaceranger/2.1.0
+
+ 
+
+Processing sample V13B23-363_A1 from slide V13B23-363 and capture area A1 with image /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-363_ERC_Slide5_01_10_2024_A1.tif and aligned with /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-363-A1.json with FASTQs: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/FASTQ/V13B23-363_A1
+Thu Mar 28 10:11:36 AM EDT 2024
+-rw-rw----+ 1 hdivecha lieber_marmaypag 2.0G Jan 11 11:17 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-363_ERC_Slide5_01_10_2024_A1.tif
+-rwxrw-r--+ 1 hdivecha lieber_marmaypag 564K Mar 26 17:38 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-363-A1.json
+
+
+Martian Runtime - v4.0.10
+2024-03-28 10:11:42 [jobmngr] WARNING: configured to use 113GB of local memory, but only 103.5GB is currently available.
+Serving UI at http://compute-092.cm.cluster:39589?auth=9n4jCmAF2HJVe2lidvFgaSCULW76NBnr6cUaQLALHEw
+
+Running preflight checks (please wait)...
+Checking sample info...
+Checking FASTQ folder...
+Checking reference...
+Checking reference_path (/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A) on compute-092.cm.cluster...
+Checking optional arguments...
+mro: v4.0.10
+mrp: v4.0.10
+Anaconda: Python 3.10.10
+numpy: 1.23.5
+scipy: 1.10.1
+pysam: 0.21.0
+h5py: 3.6.0
+pandas: 1.5.3
+STAR: 2.7.2a
+samtools: samtools 1.16.1
+2024-03-28 10:13:44 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.DISABLE_FEATURE_STAGES
+2024-03-28 10:13:51 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.DISABLE_FEATURE_STAGES.fork0.chnk0.main
+2024-03-28 10:13:55 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.DETECT_CHEMISTRY
+2024-03-28 10:13:59 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.DETECT_CHEMISTRY.fork0.chnk0.main
+2024-03-28 10:13:59 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2024-03-28 10:14:04 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX.fork0.chnk0.main
+2024-03-28 10:14:17 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.DISABLE_FEATURE_STAGES
+2024-03-28 10:14:27 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.DETECT_CHEMISTRY
+2024-03-28 10:14:32 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS
+2024-03-28 10:14:41 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS.fork0.chnk0.main
+2024-03-28 10:14:53 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2024-03-28 10:15:03 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS
+2024-03-28 10:15:12 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES
+2024-03-28 10:15:19 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES.fork0.chnk0.main
+2024-03-28 10:15:34 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETERMINE_PIPELINE_MODE
+2024-03-28 10:15:46 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETERMINE_PIPELINE_MODE.fork0.chnk0.main
+2024-03-28 10:15:50 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES
+2024-03-28 10:16:11 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._TARGETED_ANALYZER.DISABLE_GDNA_STAGES
+2024-03-28 10:16:11 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETERMINE_PIPELINE_MODE
+2024-03-28 10:16:22 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2024-03-28 10:16:23 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.split
+2024-03-28 10:16:23 [runtime] (ready)           ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2024-03-28 10:16:26 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0.split
+2024-03-28 10:16:54 [runtime] (split_complete)  ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2024-03-28 10:16:57 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk0.main
+2024-03-28 10:16:57 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk1.main
+2024-03-28 10:16:57 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk2.main
+2024-03-28 10:16:58 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk3.main
+2024-03-28 10:17:20 [runtime] (split_complete)  ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2024-03-28 10:17:23 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0.join
+2024-03-28 10:23:30 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (0/4 completed)
+2024-03-28 10:29:42 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (0/4 completed)
+2024-03-28 10:35:26 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (1/4 completed)
+2024-03-28 10:41:34 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (1/4 completed)
+2024-03-28 10:47:38 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (1/4 completed)
+2024-03-28 10:53:05 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (2/4 completed)
+2024-03-28 10:59:16 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (2/4 completed)
+2024-03-28 11:04:53 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (2/4 completed)
+2024-03-28 11:11:22 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (3/4 completed)
+2024-03-28 11:17:32 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (3/4 completed)
+2024-03-28 11:22:01 [runtime] (chunks_complete) ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2024-03-28 11:22:06 [runtime] (run:local)       ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.join
+2024-03-28 11:22:18 [runtime] (update)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0 join_running
+2024-03-28 11:22:34 [runtime] (failed)          ID.V13B23-363_A1.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+
+[error] Pipestance failed. Error log at:
+V13B23-363_A1/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/MAKE_SHARD/fork0/join-u7a0a057ba6/_errors
+
+Log message:
+ERROR: We detected a mixture of different R1 lengths ([26-28]), which breaks assumptions in how UMIs are tabulated and corrected. To process these data, you will need to truncate to the shortest observed R1 length by providing 26 to the --r1-length argument if are running count/vdj, or via the r1-length parameter in each of the following tables of your multi config CSV if you are running multi: [gene-expression]
+
+Waiting 6 seconds for UI to do final refresh.
+Pipestance failed. Use --noexit option to keep UI running after failure.
+
+2024-03-28 11:22:44 Shutting down.
+Saving pipestance info to "V13B23-363_A1/V13B23-363_A1.mri.tgz"
+For assistance, upload this file to 10x Genomics by running:
+
+spaceranger upload <your_email> "V13B23-363_A1/V13B23-363_A1.mri.tgz"
+
+/var/spool/slurm/d/job3526701/slurm_script: line 56: --jobmode=local: command not found
+Moving results to new location
+Thu Mar 28 11:23:40 AM EDT 2024
+mv: cannot move 'V13B23-363_A1' to '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/V13B23-363_A1': Directory not empty
+**** Job ends ****
+Thu Mar 28 11:23:44 AM EDT 2024

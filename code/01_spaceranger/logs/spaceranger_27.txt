@@ -1,0 +1,46 @@
+**** Job starts ****
+Wed Mar 27 04:41:43 PM EDT 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 3500683
+Job name: spaceranger_SLURM.sh
+Hostname: 
+Task id: 27
+Loading LIBD SLURM module for spaceranger/2.1.0
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   2) JHPCE_tools/3.0   3) spaceranger/2.1.0
+
+ 
+
+Processing sample V13B23-365_C1 from slide V13B23-365 and capture area C1 with image /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-365_ERC_Slide7_01_23_2024_C1.tif and aligned with /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-365-C1.json with FASTQs: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/FASTQ/V13B23-365_C1
+Wed Mar 27 04:41:47 PM EDT 2024
+-rw-rw----+ 1 hdivecha lieber_marmaypag 2.1G Feb  5 18:12 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-365_ERC_Slide7_01_23_2024_C1.tif
+-rwxrw-r--+ 1 hdivecha lieber_marmaypag 566K Mar 27 13:11 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-365-C1.json
+/var/spool/slurm/d/job3500683/slurm_script: line 42: --unknown-slide=visium-1: command not found
+
+
+Martian Runtime - v4.0.10
+Serving UI at http://compute-127.cm.cluster:38093?auth=_U04RtLAA5TETWJxM6S3LbQN9RQVVAGBuVSiFObCXFk
+
+Running preflight checks (please wait)...
+Checking sample info...
+Checking FASTQ folder...
+Checking reference...
+Checking reference_path (/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A) on compute-127.cm.cluster...
+Checking optional arguments...
+
+[error] You provided --slide=V13B23-365 --area=C1, but the loupe alignment file was generated without a serial number
+
+2024-03-27 16:43:18 Shutting down.
+Saving pipestance info to "V13B23-365_C1/V13B23-365_C1.mri.tgz"
+For assistance, upload this file to 10x Genomics by running:
+
+spaceranger upload <your_email> "V13B23-365_C1/V13B23-365_C1.mri.tgz"
+
+Moving results to new location
+Wed Mar 27 04:44:06 PM EDT 2024
+**** Job ends ****
+Wed Mar 27 04:44:07 PM EDT 2024
