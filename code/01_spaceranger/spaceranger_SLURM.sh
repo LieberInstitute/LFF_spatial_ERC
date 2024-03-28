@@ -2,7 +2,7 @@
 #SBATCH --mem=80G
 #SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
 #SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
-#SBATCH --array=1-16%8
+#SBATCH --array=17
 #SBATCH --mail-user=heenadivecha@gmail.com
  
 echo "**** Job starts ****"
@@ -38,6 +38,8 @@ date
 ls -lh ${IMAGEPATH}
 ls -lh ${LOUPEPATH}
 
+
+
 ## Hank from 10x Genomics recommended setting this environment
 export NUMBA_NUM_THREADS=1
 
@@ -49,10 +51,11 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
-    --loupe-alignment=${LOUPEPATH} \
+    #--loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
-    --localmem=64
+    --localmem=64 \
+    --unknown-slide=visium-1
 
 ## Move output
 echo "Moving results to new location"
