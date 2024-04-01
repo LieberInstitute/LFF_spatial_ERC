@@ -1,8 +1,8 @@
 **** Job starts ****
-Wed Mar 27 04:38:38 PM EDT 2024
+Mon Apr  1 12:18:40 PM EDT 2024
 **** JHPCE info ****
 User: hdivecha
-Job id: 3500618
+Job id: 3723246
 Job name: spaceranger_SLURM.sh
 Hostname: 
 Task id: 25
@@ -16,14 +16,13 @@ Currently Loaded Modules:
  
 
 Processing sample V13B23-365_A1 from slide V13B23-365 and capture area A1 with image /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-365_ERC_Slide7_01_23_2024_A1.tif and aligned with /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-365-A1.json with FASTQs: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/FASTQ/V13B23-365_A1
-Wed Mar 27 04:38:42 PM EDT 2024
+Mon Apr  1 12:18:40 PM EDT 2024
 -rw-rw----+ 1 hdivecha lieber_marmaypag 2.2G Feb  5 17:44 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-365_ERC_Slide7_01_23_2024_A1.tif
 -rwxrw-r--+ 1 hdivecha lieber_marmaypag 562K Mar 27 09:51 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-365-A1.json
-/var/spool/slurm/d/job3500618/slurm_script: line 42: --unknown-slide=visium-1: command not found
 
 
 Martian Runtime - v4.0.10
-Serving UI at http://compute-127.cm.cluster:46849?auth=xlveqkqORUZ2idWz__vomAex9V_y4zv7y4f-qvX8EVQ
+Serving UI at http://compute-127.cm.cluster:37843?auth=tINE9E43BA_0lRkS43mmoH2mBt4bEahm5EmmYygPHBE
 
 Running preflight checks (please wait)...
 Checking sample info...
@@ -34,13 +33,14 @@ Checking optional arguments...
 
 [error] You provided --slide=V13B23-365 --area=A1, but the loupe alignment file was generated without a serial number
 
-2024-03-27 16:40:48 Shutting down.
+2024-04-01 12:18:47 Shutting down.
 Saving pipestance info to "V13B23-365_A1/V13B23-365_A1.mri.tgz"
 For assistance, upload this file to 10x Genomics by running:
 
 spaceranger upload <your_email> "V13B23-365_A1/V13B23-365_A1.mri.tgz"
 
+/var/spool/slurm/d/job3723246/slurm_script: line 60: --r1-length=26: command not found
 Moving results to new location
-Wed Mar 27 04:41:30 PM EDT 2024
+Mon Apr  1 12:18:48 PM EDT 2024
 **** Job ends ****
-Wed Mar 27 04:41:33 PM EDT 2024
+Mon Apr  1 12:18:48 PM EDT 2024

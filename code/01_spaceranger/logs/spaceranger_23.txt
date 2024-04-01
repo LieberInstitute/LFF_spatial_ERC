@@ -1,8 +1,8 @@
 **** Job starts ****
-Wed Mar 27 04:34:40 PM EDT 2024
+Mon Apr  1 12:16:39 PM EDT 2024
 **** JHPCE info ****
 User: hdivecha
-Job id: 3500556
+Job id: 3723187
 Job name: spaceranger_SLURM.sh
 Hostname: 
 Task id: 23
@@ -16,31 +16,31 @@ Currently Loaded Modules:
  
 
 Processing sample V13B23-364_C1 from slide V13B23-364 and capture area C1 with image /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-364_ERC_Slide6_01_11_2024_C1.tif and aligned with /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-364-C1.json with FASTQs: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/FASTQ/V13B23-364_C1
-Wed Mar 27 04:34:46 PM EDT 2024
+Mon Apr  1 12:16:40 PM EDT 2024
 -rw-rw----+ 1 hdivecha lieber_marmaypag 2.1G Jan 11 12:00 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-364_ERC_Slide6_01_11_2024_C1.tif
 -rwxrw-r--+ 1 hdivecha lieber_marmaypag 551K Mar 27 09:35 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-364-C1.json
-/var/spool/slurm/d/job3500556/slurm_script: line 42: --unknown-slide=visium-1: command not found
 
 
 Martian Runtime - v4.0.10
-Serving UI at http://compute-152.cm.cluster:33033?auth=VAwtEbndLFyx5aWmz2ycsSRdPmgAqH1Ei0coMYQbUh4
+Serving UI at http://compute-127.cm.cluster:38437?auth=vwieZJJgWm5TglD--_NimM86Bq6bzwjb8rl18TBDIBU
 
 Running preflight checks (please wait)...
 Checking sample info...
 Checking FASTQ folder...
 Checking reference...
-Checking reference_path (/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A) on compute-152.cm.cluster...
+Checking reference_path (/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A) on compute-127.cm.cluster...
 Checking optional arguments...
 
 [error] You provided --slide=V13B23-364 --area=C1, but the loupe alignment file was generated without a serial number
 
-2024-03-27 16:36:29 Shutting down.
+2024-04-01 12:16:46 Shutting down.
 Saving pipestance info to "V13B23-364_C1/V13B23-364_C1.mri.tgz"
 For assistance, upload this file to 10x Genomics by running:
 
 spaceranger upload <your_email> "V13B23-364_C1/V13B23-364_C1.mri.tgz"
 
+/var/spool/slurm/d/job3723187/slurm_script: line 60: --r1-length=26: command not found
 Moving results to new location
-Wed Mar 27 04:37:20 PM EDT 2024
+Mon Apr  1 12:16:47 PM EDT 2024
 **** Job ends ****
-Wed Mar 27 04:37:22 PM EDT 2024
+Mon Apr  1 12:16:47 PM EDT 2024
