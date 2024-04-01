@@ -52,11 +52,11 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
-    --loupe-alignment=${LOUPEPATH} \
+    #--loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
     --localmem=72 \
-    #--unknown-slide=visium-1 \
+    --unknown-slide=visium-1 \
     --r1-length=26
 
 ## Move output
