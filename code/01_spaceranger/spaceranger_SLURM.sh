@@ -46,7 +46,7 @@ export NUMBA_NUM_THREADS=1
 
 ## Added '--unknown-slide=visium-1' as the loupe files where created without slide information
 ## Added '--r1-length=26' to fix variation in R1 length 
-## Removed '--loupe-alignment=${LOUPEPATH}' to as we are not giving slide information
+## commented '--loupe-alignment=${LOUPEPATH}' to as we are not giving slide information
 
 ## Run SpaceRanger
 spaceranger count \
@@ -56,6 +56,7 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
+    \ #--loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
     --localmem=72 \
