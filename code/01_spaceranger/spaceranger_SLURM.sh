@@ -44,6 +44,9 @@ ls -lh ${LOUPEPATH}
 ## Hank from 10x Genomics recommended setting this environment
 export NUMBA_NUM_THREADS=1
 
+## Added '--unknown-slide=visium-1' as the loupe files where created without slide information
+## Added '--r1-length=26' to fix variation in R1 length 
+
 ## Run SpaceRanger
 spaceranger count \
     --id=${SAMPLE} \
