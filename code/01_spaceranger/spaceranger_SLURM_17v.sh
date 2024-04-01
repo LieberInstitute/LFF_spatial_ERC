@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --mem=80G
+#SBATCH -n 8
 #SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
 #SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
 #SBATCH --array=17
@@ -37,8 +38,6 @@ date
 ## For keeping track of dates of the input files
 ls -lh ${IMAGEPATH}
 ls -lh ${LOUPEPATH}
-
-
 
 ## Hank from 10x Genomics recommended setting this environment
 export NUMBA_NUM_THREADS=1
