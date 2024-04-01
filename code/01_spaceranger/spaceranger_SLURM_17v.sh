@@ -50,7 +50,7 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
-    #--loupe-alignment=${LOUPEPATH} \
+    \ #--loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
     --localmem=64 \
