@@ -56,7 +56,7 @@ spaceranger count \
     --localcores=8 \
     --localmem=64 \
     --unknown-slide=visium-1 \
-    --r1-length = 26
+    --r1-length=26
 
 ## Move output
 echo "Moving results to new location"
