@@ -3,7 +3,7 @@
 #SBATCH -n 8
 #SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
 #SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
-#SBATCH --array=18-31
+#SBATCH --array=17-31
 #SBATCH --mail-user=heenadivecha@gmail.com
  
 echo "**** Job starts ****"
@@ -52,7 +52,7 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
-    #--loupe-alignment=${LOUPEPATH} \
+    \ #--loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
     --localmem=72 \
