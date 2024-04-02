@@ -56,10 +56,9 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
-    \ #--loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
-    --localmem=72 \
+    --localmem=64 \
     --unknown-slide=visium-1 \
     --r1-length=26
 
