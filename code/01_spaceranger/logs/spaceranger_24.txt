@@ -1,0 +1,32 @@
+**** Job starts ****
+Mon Apr  1 04:55:04 PM EDT 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 3748415
+Job name: spaceranger_SLURM.sh
+Hostname: 
+Task id: 24
+Loading LIBD SLURM module for spaceranger/2.1.0
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   2) JHPCE_tools/3.0   3) spaceranger/2.1.0
+
+ 
+
+Processing sample V13B23-364_D1 from slide V13B23-364 and capture area D1 with image /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-364_ERC_Slide6_01_11_2024_D1.tif and aligned with /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-364-D1.json with FASTQs: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/FASTQ/V13B23-364_D1
+Mon Apr  1 04:55:06 PM EDT 2024
+-rwxrwx---+ 1 hdivecha lieber_marmaypag 2.1G Jan 11 12:08 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-364_ERC_Slide6_01_11_2024_D1.tif
+-rwxrwx---+ 1 hdivecha lieber_marmaypag 552K Mar 27 09:43 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13B23-364-D1.json
+error: The argument '--slide <TEXT>' cannot be used with '--unknown-slide <visium-1|visium-2|visium-2-large>'
+
+USAGE:
+    spaceranger count --id <ID> --transcriptome <PATH> --fastqs <PATH> --slide <TEXT> --area <TEXT> --jobmode <MODE> --localcores <NUM> --localmem <NUM> --r1-length <NUM> <--image <IMG>|--darkimage <IMG>|--colorizedimage <IMG>|--cytaimage <IMG>>
+
+For more information try --help
+Moving results to new location
+Mon Apr  1 04:55:06 PM EDT 2024
+mv: cannot stat 'V13B23-364_D1': No such file or directory
+**** Job ends ****
+Mon Apr  1 04:55:06 PM EDT 2024
