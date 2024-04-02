@@ -23,8 +23,8 @@ module load spaceranger/2.1.0
 ## List current modules for reproducibility
 module list
 
-## Read inputs from spaceranger_parameters.txt file
-FILE=$(awk "NR==${SLURM_ARRAY_TASK_ID}" spaceranger_parameters.txt)
+## Read inputs from spaceranger_parameter_1v-16v.txt file
+FILE=$(awk "NR==${SLURM_ARRAY_TASK_ID}" spaceranger_parameter_1v-16v.txt)
 SAMPLE=$(echo ${FILE} | cut -d "," -f 1)
 SLIDE=$(echo ${FILE} | cut -d "," -f 2)
 CAPTUREAREA=$(echo ${FILE} | cut -d "," -f 3)
