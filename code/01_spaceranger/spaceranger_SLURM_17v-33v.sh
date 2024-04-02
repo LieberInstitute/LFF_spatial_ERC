@@ -44,9 +44,9 @@ ls -lh ${LOUPEPATH}
 ## Hank from 10x Genomics recommended setting this environment
 export NUMBA_NUM_THREADS=1
 
-## Added '--unknown-slide=visium-1' as the loupe files where created without slide information
-## Added '--r1-length=26' to fix variation in R1 length 
-## commented '--loupe-alignment=${LOUPEPATH}' to as we are not giving slide information
+## Removed '--unknown-slide=visium-1' argument as the loupe files were created without slide information but Leo helped resave the file with slide information. Leo created 01_update_json_files.R for the same. 
+## Added '--r1-length=26' to fix length variations in R1 FASTQ file. 
+## Added '--loupe-alignment=${LOUPEPATH}' to as we now have the slide information
 
 ## Run SpaceRanger
 spaceranger count \
@@ -56,10 +56,10 @@ spaceranger count \
     --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
+    --loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=8 \
     --localmem=64 \
-    --unknown-slide=visium-1 \
     --r1-length=26
 
 ## Move output
