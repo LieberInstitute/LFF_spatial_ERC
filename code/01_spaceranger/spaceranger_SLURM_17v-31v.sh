@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --mem=80G
 #SBATCH -n 8
-#SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
-#SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_%a.txt
+#SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_17v-31v_%a_.txt
+#SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/01_spaceranger/logs/spaceranger_17v-31v_%a.txt
 #SBATCH --array=1
 #SBATCH --mail-user=heenadivecha@gmail.com
  
@@ -23,8 +23,8 @@ module load spaceranger/2.1.0
 ## List current modules for reproducibility
 module list
 
-## Read inputs from spaceranger_parameters.txt file
-FILE=$(awk "NR==${SLURM_ARRAY_TASK_ID}" spaceranger_parameters.txt)
+## Read inputs from spaceranger_parameters_17v-31v.txt file
+FILE=$(awk "NR==${SLURM_ARRAY_TASK_ID}" spaceranger_parameters_17v-31v.txt)
 SAMPLE=$(echo ${FILE} | cut -d "," -f 1)
 SLIDE=$(echo ${FILE} | cut -d "," -f 2)
 CAPTUREAREA=$(echo ${FILE} | cut -d "," -f 3)
