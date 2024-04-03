@@ -1,0 +1,30 @@
+**** Job starts ****
+Tue Apr  2 06:15:20 PM EDT 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 3786533
+Job name: spaceranger_SLURM_1v-16v.sh
+Hostname: 
+Task id: 6
+Loading LIBD SLURM module for spaceranger/2.1.0
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) spaceranger/2.1.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10
+
+ 
+
+Processing sample V13Y24-344_B1 from slide V13Y24-344 and capture area B1 with image /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/Images/V13Y24-344_ERC_Slide2_10_26_2023_B1.tif and aligned with /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13Y24-344-B1.json with FASTQs: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/FASTQ/V13Y24-344_B1
+Tue Apr  2 06:15:21 PM EDT 2024
+ls: cannot access '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/Images/V13Y24-344_ERC_Slide2_10_26_2023_B1.tif': No such file or directory
+-rwxrwx---+ 1 hdivecha lieber_marmaypag 633K Apr  2 08:45 /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/loupe-alignment/V13Y24-344-B1.json
+error: Invalid value "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/Images/V13Y24-344_ERC_Slide2_10_26_2023_B1.tif" for '--image <IMG>': No such file or directory
+
+For more information try --help
+Moving results to new location
+Tue Apr  2 06:15:21 PM EDT 2024
+mv: cannot stat 'V13Y24-344_B1': No such file or directory
+**** Job ends ****
+Tue Apr  2 06:15:21 PM EDT 2024
