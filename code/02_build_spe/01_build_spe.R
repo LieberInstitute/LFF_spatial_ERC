@@ -1,5 +1,5 @@
 
-# cd /dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC
+# cd /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/
 suppressPackageStartupMessages(library("here"))
 # remotes::install_github("drighelli/SpatialExperiment")
 # remotes::install_github("LieberInstitute/spatialLIBD")
@@ -16,42 +16,37 @@ dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 ## Define some info for the samples
 sample_info <- data.frame(
   sample_id = c(
-    "V13M06-331-A1",
-    "V13M06-331-B1",
-    "V13M06-331-C1",
-    "V13M06-331-D1",
-    "V13M06-333-A1",
-    "V13M06-333-B1",
-    "V13M06-333-C1",
-    "V13M06-333-D1",
-    "V13M06-332-A1",
-    "V13M06-332-B1",
-    "V13M06-332-C1",
-    "V13M06-332-D1",
-    "V13M06-404-A1",
-    "V13M06-404-B1",
-    "V13M06-404-C1",
-    "V13M06-404-D1",
-    "V13M06-403-A1",
-    "V13M06-403-B1",
-    "V13M06-403-C1",
-    "V13M06-403-D1",
-    "V13M06-402-A1",
-    "V13M06-402-B1",
-    "V13M06-402-C1",
-    "V13M06-402-D1",
-    "V13M06-401-A1",
-    "V13M06-401-B1",
-    "V13M06-401-C1",
-    "V13M06-401-D1",
-    "V13M06-386-A1",
-    "V13M06-386-B1",
-    "V13M06-386-C1",
-    "V13M06-386-D1",
-    "V13F27-339-A1",
-    "V13F27-339-B1",
-    "V13F27-339-C1",
-    "V13F27-339-D1"
+    "V13Y24-343_A1",
+    "V13Y24-343_B1",
+    "V13Y24-343_C1",
+    "V13Y24-343_D1",
+    "V13Y24-344_A1",
+    "V13Y24-344_B1",
+    "V13Y24-344_C1",
+    "V13Y24-344_D1",
+    "V13Y24-342_A1",
+    "V13Y24-342_B1",
+    "V13Y24-342_C1",
+    "V13Y24-342_D1",
+    "V13Y24-340_A1",
+    "V13Y24-340_B1",
+    "V13Y24-340_C1",
+    "V13Y24-340_D1",
+    "V13B23-363_A1",
+    "V13B23-363_B1",
+    "V13B23-363_C1",
+    "V13B23-363_D1",
+    "V13B23-364_A1",
+    "V13B23-364_B1",
+    "V13B23-364_C1",
+    "V13B23-364_D1",
+    "V13B23-365_A1",
+    "V13B23-365_B1",
+    "V13B23-365_C1",
+    "V13B23-365_D1",
+    "V13B23-366_B1",
+    "V13B23-366_C1",
+    "V13B23-366_D1"
   )
 )
 sample_info$subject <- sample_info$sample_id
@@ -67,13 +62,13 @@ stopifnot(all(file.exists(sample_info$sample_path)))
 ## https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/raw-data/sample_info/Visium_HPC_Round1_20220113_Master_ADR.xlsx
 ## https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/raw-data/sample_info/Visium_HPC_Round2_20220223_Master_ADR.xlsx
 donor_info <- data.frame(
-  subject = c("V13M06-331-A1","V13M06-331-B1","V13M06-331-C1","V13M06-331-D1", "V13M06-333-A1","V13M06-333-B1","V13M06-333-C1","V13M06-333-D1","V13M06-332-A1", "V13M06-332-B1","V13M06-332-C1","V13M06-332-D1","V13M06-404-A1","V13M06-404-B1", "V13M06-404-C1","V13M06-404-D1","V13M06-403-A1","V13M06-403-B1","V13M06-403-C1", "V13M06-403-D1","V13M06-402-A1","V13M06-402-B1","V13M06-402-C1","V13M06-402-D1", "V13M06-401-A1","V13M06-401-B1","V13M06-401-C1","V13M06-401-D1","V13M06-386-A1", "V13M06-386-B1","V13M06-386-C1","V13M06-386-D1", "V13F27-339-A1", "V13F27-339-B1", "V13F27-339-C1", "V13F27-339-D1"),
-  age = c(42.19, 48.69, 60.56, 48.75, 29.95, 53.92, 60.83, 42.39, 68.38, 62.7, 67.75, 61.92, 61.34, 60.84, 46.53, 41.44, 54.88, 36.67, 59.86, 44.14, 31.31, 38.48, 59.98, 52.92, 50.2, 51.73, 51.45, 48.59, 50.08, 63.98, 58.19, 51.11, 44.14, 48.69, 50.08, 36.67),
-  sex = c("M","F","M","F", "F", "M", "M", "F", "M", "M", "M", "M", "M", "M", "F", "M", "F", "F", "M", "F", "F", "M", "M", "M", "M", "M", "F","M", "M", "M", "M", "M", "F", "F", "M", "F"),
-  race = c("AA", "AA", "EA/CAUC", "AA", "AA", "AA", "AA", "AA", "AA", "AA", "EA/CAU", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAUC", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAUC", "EA/CAUC"),
-  diagnosis = c("Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control"),
-  rin = c(9, 5.2, 7.8, 9.2, 9.3, 1, 8.7, 7.1, 9, 7.2, 6.8, 8.4, 8.5, 7.4, 8.5, 7.3, 8, 7.5, 7.4, 5.3,6.6, 8.6, 9.3, 8.7, 8.3, 7.1, 8.6, 7, 8.2, 9.4, 8.7, 8.6, 5.3, 5.2, 8.2, 7.5), #fix rin for 1 sample that is currently marked as 1
-  apoe = c("E4/E4", "E2/E2", "E3/E4", "E2/E3", "E2/E2", "E4/E4","E2/E3","E3/E4", "E2/ E3", "E3/ E4", "E2/ E2", "E4/E4", "E3/ E4", "E2/ E3", "E4/ E4", "E2/ E2", "E4/ E4", "E2/ E3", "E3/ E4", "E4/E4", "E2/ E3","E4/E4","E3/ E4","E3/ E4", "E3/ E4","E2/ E3","E4/ E4", "E3/ E4", "E4/ E4", "E3/ E4", "E4/E4", "E2/ E3", "E4/E4", "E2/E2", "E4/E4", "E2/E3")
+  subject = c("V13Y24-343-A1","V13Y24-343-B1","V13Y24-343-C1","V13Y24-343-D1", "V13Y24-344-A1","V13Y24-344-B1","V13Y24-344-C1","V13Y24-344-D1","V13Y24-342-A1", "V13Y24-342-B1","V13Y24-342-C1","V13Y24-342-D1","V13Y24-340-A1","V13Y24-340-B1", "V13Y24-340-C1","V13Y24-340-D1", "V13B23-363_A1", "V13B23-363_B1", "V13B23-363_C1", "V13B23-363_D1", "V13B23-364_A1", "V13B23-364_B1", "V13B23-364_C1", "V13B23-364_D1", "V13B23-365_A1", "V13B23-365_B1", "V13B23-365_C1", "V13B23-365_D1", "V13B23-366_B1", "V13B23-366_C1", "V13B23-366_D1"),
+  age = c(51.63, 51.45, 29.95, 59.86, 41.44, 60.83, 62.70, 46.53, 42.39, 48.75, 50.08, 61.34, 63.98, 54.88, 67.75, 31.31, 42.19, 55.88, 45.3, 51.11, 59.98, 43.67, 68.38, 58.19, 51.73, 50.2, 54.43, 48.69, 57.1, 60.84, 50.73),
+  sex = c("M","F","F","M", "M", "M", "M", "F", "F", "F", "M", "M", "M", "F", "M", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F","M", "M", "F",),
+  race = c("EA/CAUC", "AA", "AA", "EA/CAUC", "EA/CAUC", "AA", "AA", "AA", "AA", "AA", "EA/CAU", "AA", "EA/CAUC", "AA", "EA/CAUC", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAU", "AA", "EA/CAU", "AA", "EA/CAU", "EA/CAU", "AA"),
+  diagnosis = c("Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control"),
+  rin = c(8.5, 8.6, 9.3, 7.4, 7.3, 8.7, 7.2, 8.5, 7.1, 9.2, 8.2, 8.5, 9.4, 8, 6.8, 6.6, 9, 8.5, 1, 8.6, 9.3, 5.2, 9, 8.7, 7.1, 8.3, 8.5, 5.2, 7.7, 7.4, 7), # fix rin for the donor with placeholder 1
+  apoe = c("E2/E3", "E4/E4", "E2/E2", "E3/E4", "E2/E2", "E2/E3","E3/E4","E4/E4", "E3/E4", "E2/E3", "E4/E4", "E3/E4", "E3/ E4", "E4/E4", "E2/E2", "E2/E3", "E4/E4", "E3/E4", "E2/E2", "E2/E3", "E3/E4", "E2/E2", "E2/E3", "E4/E4", "E2/E3", "E3/E4", "E4/E4", "E2/E2", "E3/E4", "E2/E3", "E3/E4")
 )
 
 ## Combine sample info with the donor info
