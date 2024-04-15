@@ -69,7 +69,11 @@ metadata_sn_plan <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEIBhN7
     rename(BrNum  = `Donors`, 
            snRNA_complete  = `snRNA-seq round 1`) |>
     mutate(redisscet = grepl("re-dis", BrNum),
-           BrNum = gsub("\\(re-dis\\)", "", BrNum))
+           BrNum = gsub("\\(re-dis\\)", "", BrNum),
+           snRNA_complete = snRNA_complete == "Complete") |>
+    replace_na(list(snRNA_complete = FALSE))
+
+metadata_sn_plan |> count(snRNA_complete)
 
 write_csv(metadata_sn_plan, file = here(data_dir, "metadata_sn_plan.csv"))
 
