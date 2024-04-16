@@ -70,10 +70,12 @@ metadata_sn_plan <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEIBhN7
            snRNA_complete  = `snRNA-seq round 1`) |>
     mutate(redisscet = grepl("re-dis", BrNum),
            BrNum = gsub("\\(re-dis\\)", "", BrNum),
-           snRNA_complete = snRNA_complete == "Complete") |>
+           snRNA_complete = snRNA_complete == "Complete",
+           APOE = gsub(",E", ", E", APOE)) |>
     replace_na(list(snRNA_complete = FALSE))
 
 metadata_sn_plan |> count(snRNA_complete)
+metadata_sn_plan |> count(APOE)
 
 write_csv(metadata_sn_plan, file = here(data_dir, "metadata_sn_plan.csv"))
 
