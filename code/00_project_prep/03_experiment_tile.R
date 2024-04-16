@@ -37,7 +37,7 @@ experiment_tile <- metadata_plan |>
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
     
-ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile.png"), height = 4, width = 9)
+ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile.png"), height = 4, width = 7)
 
 # slurmjobs::job_single('03_experiment_tile', create_shell = TRUE, memory = '5G', command = "Rscript 03_experiment_tile.R")
 
