@@ -67,7 +67,7 @@ donor_info <- data.frame(
   sex = c("M","F","F","M", "M", "M", "M", "F", "F", "F", "M", "M", "M", "F", "M", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F","M", "M", "F",),
   race = c("EA/CAUC", "AA", "AA", "EA/CAUC", "EA/CAUC", "AA", "AA", "AA", "AA", "AA", "EA/CAU", "AA", "EA/CAUC", "AA", "EA/CAUC", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAU", "AA", "EA/CAU", "AA", "EA/CAU", "EA/CAU", "AA"),
   diagnosis = c("Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control"),
-  rin = c(8.5, 8.6, 9.3, 7.4, 7.3, 8.7, 7.2, 8.5, 7.1, 9.2, 8.2, 8.5, 9.4, 8, 6.8, 6.6, 9, 8.5, 1, 8.6, 9.3, 5.2, 9, 8.7, 7.1, 8.3, 8.5, 5.2, 7.7, 7.4, 7), # fix rin for the donor with placeholder 1
+  rin = c(8.5, 8.6, 9.3, 7.4, 7.3, 8.7, 7.2, 8.5, 7.1, 9.2, 8.2, 8.5, 9.4, 8, 6.8, 6.6, 9, 8.5, 8.4, 8.6, 9.3, 5.2, 9, 8.7, 7.1, 8.3, 8.5, 5.2, 7.7, 7.4, 7), # fix rin information for V13B23-363_C1 sample
   apoe = c("E2/E3", "E4/E4", "E2/E2", "E3/E4", "E2/E2", "E2/E3","E3/E4","E4/E4", "E3/E4", "E2/E3", "E4/E4", "E3/E4", "E3/ E4", "E4/E4", "E2/E2", "E2/E3", "E4/E4", "E3/E4", "E2/E2", "E2/E3", "E3/E4", "E2/E2", "E2/E3", "E4/E4", "E2/E3", "E3/E4", "E4/E4", "E2/E2", "E3/E4", "E2/E3", "E3/E4")
 )
 
