@@ -55,7 +55,10 @@ metadata_visium_plan <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEI
            BrNum = gsub("\\(re-dis\\)", "", BrNum),
            remade_libaries = grepl("remade libraries", Date),
            Date = ifelse(remade_libaries, NA, Date),
-           Rin = as.double(Rin))  |> 
+           Rin = as.double(Rin),
+           Age = as.double(Age),
+           SBox = as.integer(SBox)
+           )  |> 
     fill(Date, `Visium Slide #`) |>
     add_column(slide_index = rep(1:8, each = 4))
 
