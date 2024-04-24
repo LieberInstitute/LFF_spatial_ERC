@@ -1,17 +1,40 @@
 
 # cd /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/
-suppressPackageStartupMessages(library("here"))
+
 # remotes::install_github("drighelli/SpatialExperiment")
 # remotes::install_github("LieberInstitute/spatialLIBD")
-suppressPackageStartupMessages(library("SpatialExperiment"))
-suppressPackageStartupMessages(library("spatialLIBD"))
-suppressPackageStartupMessages(library("rtracklayer"))
-suppressPackageStartupMessages(library("lobstr"))
-suppressPackageStartupMessages(library("sessioninfo"))
+
+library("here")
+library("SpatialExperiment")
+library("spatialLIBD")
+library("rtracklayer")
+library("lobstr")
+library("sessioninfo")
+library("dplyr")
 
 ## Create output directories
 dir_rdata <- here::here("processed-data", "02_build_spe")
-dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
+if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
+
+#### Read in Sample Info ####
+
+metadata_visium_plan <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_plan.csv")) |>
+    filter(is.na(lc_note)) |>
+    mutate(sample_id = paste0(`Visium.Slide..`, "_" ,`Visium_subslide`),
+           APOE = gsub(", ", "/", APOE,),
+           sample_path = here("processed-data", "01_spaceranger", sample_id,
+               "outs")) |>
+    select(sample_id, BrNum, APOE, Ancestry, Sex, Age, Diagnosis, Rin, sample_path) 
+
+all(file.exists(metadata_visium_plan$sample_path))
+
+metadata_visium_plan$sample_path[!file.exists(metadata_visium_plan$sample_path)]
+list.files(here("processed-data", "01_spaceranger"))[!list.files(here("processed-data", "01_spaceranger")) %in% metadata_visium_plan$sample_id]
+
+## I think the google sheet has 2 typos
+# gsheet     data
+# V1B23-366  V13B23-366
+# V13Y24-341 V13Y24-340
 
 ## Define some info for the samples
 sample_info <- data.frame(
@@ -70,6 +93,7 @@ donor_info <- data.frame(
   rin = c(8.5, 8.6, 9.3, 7.4, 7.3, 8.7, 7.2, 8.5, 7.1, 9.2, 8.2, 8.5, 9.4, 8, 6.8, 6.6, 9, 8.5, 8.4, 8.6, 9.3, 5.2, 9, 8.7, 7.1, 8.3, 8.5, 5.2, 7.7, 7.4, 7), # fix rin information for V13B23-363_C1 sample
   apoe = c("E2/E3", "E4/E4", "E2/E2", "E3/E4", "E2/E2", "E2/E3","E3/E4","E4/E4", "E3/E4", "E2/E3", "E4/E4", "E3/E4", "E3/E4", "E4/E4", "E2/E2", "E2/E3", "E4/E4", "E3/E4", "E2/E2", "E2/E3", "E3/E4", "E2/E2", "E2/E3", "E4/E4", "E2/E3", "E3/E4", "E4/E4", "E2/E2", "E3/E4", "E2/E3", "E3/E4")
 )
+
 
 ## Combine sample info with the donor info
 sample_info <- merge(sample_info, donor_info)
