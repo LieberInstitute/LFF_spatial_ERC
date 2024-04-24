@@ -54,9 +54,15 @@ metadata_visium_plan <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEI
     mutate(redisscet = grepl("re-dis", BrNum),
            BrNum = gsub("\\(re-dis\\)", "", BrNum),
            remade_libaries = grepl("remade libraries", Date),
-           Date = ifelse(remade_libaries, NA, Date))  |> 
+           Date = ifelse(remade_libaries, NA, Date),
+           Rin = as.double(Rin))  |> 
     fill(Date, `Visium Slide #`) |>
     add_column(slide_index = rep(1:8, each = 4))
+
+colnames(metadata_visium_plan)
+# [1] "Date"            "Visium Slide #"  "Visium_subslide" "BrNum"           "Genotype"        "Age"             "Sex"            
+# [8] "Ancestry"        "Diagnosis"       "Rin"             "APOE"            "SBox"            "lc_note"         "redisscet"      
+# [15] "remade_libaries" "slide_index" 
 
 write_csv(metadata_visium_plan, file = here(data_dir, "metadata_visium_plan.csv"))
 
