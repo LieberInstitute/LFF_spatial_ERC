@@ -102,7 +102,7 @@ mkdir V13Y24-340_D1
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/24-01-02_SPag110823/20---16v-ERC-HRD-ERC_S16_L00* V13Y24-340_D1/
 ```
 
-# FASTQ Trimmed samples
+# FASTQ Trimmed sequnecing samples
 
 ## Visium Slide5
 
@@ -190,7 +190,7 @@ mkdir V13B23-366_D1
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/24-03-25/FC01JHU501/31v_ERC_HRD_S28_L00* V13B23-366_D1/
 ```
 
-## FASTQ Un-trimmed samples
+## FASTQ Un-trimmed sequencing samples
 
 ## Visium Slide5
 
@@ -210,6 +210,7 @@ ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-04-26-SKCC_rer
 ## V13B23-363_D1 (20v_ERC_HRD)
 mkdir V13B23-363_D1_new
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-04-26-SKCC_rerun/20v_ERC_HRD_S16_L00* V13B23-363_D1_new/
+
 ```
 
 # FASTQ
