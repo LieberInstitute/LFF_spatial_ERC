@@ -1,0 +1,33 @@
+**** Job starts ****
+Wed May  1 02:32:38 AM EDT 2024
+**** JHPCE info ****
+User: hdivecha
+Job id: 5154858
+Job name: countNuclei_SLURM_untrimmed.sh
+Hostname: 
+Task id: 11
+using nuclei mat file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/Images/VistoSeg/V13B23-365_ERC_Slide7_01_23_2024_C1_nuclei.mat
+using json file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/V13B23-365_C1_untrimmed/outs/spatial/scalefactors_json.json
+ and using tissueposition file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/V13B23-365_C1_untrimmed/spatial/tissue_positions.csv
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2023 The MathWorks, Inc.
+             R2023a Update 3 (9.14.0.2286388) 64-bit (glnxa64)
+                                May 25, 2023
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+{Error using readtable
+Unable to find or open
+'/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/V13B23-365_C1_untrimmed/spatial/tissue_positions.csv'.
+Check the path and filename or file permissions.
+
+Error in countNuclei (line 16)
+tbl = readtable(posname) ;
+} 
+>> **** Job ends ****
+Wed May  1 02:39:39 AM EDT 2024
