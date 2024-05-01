@@ -28,8 +28,9 @@ sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online
     select(sample_id, BrNum, APOE, Ancestry, Sex, Age, Diagnosis, Rin, sample_path) |>
     mutate(sample_path = ifelse(file.exists(sample_path),
                                 sample_path, 
-                                gsub("_untrimmed", "", sample_path)
-    ))
+                                gsub("_untrimmed", "", sample_path)),
+           base_path = gsub("^.*?/(V.*?)/outs","\\1", sample_path)
+           )
 
 ## all files exist
 stopifnot(all(file.exists(sample_info$sample_path)))
@@ -70,7 +71,7 @@ write_csv(sample_info, here(dir_rdata, "sample_info.csv"))
 # identical(donor_info$apoe, sample_info$APOE)
 
 ## Build basic SPE
-message(Sys.time(), "- Starting read10xVisiumWrapper"
+message(Sys.time(), "- Starting read10xVisiumWrapper")
 spe <- read10xVisiumWrapper(
   samples = sample_info$sample_path,
   sample_id = sample_info$sample_id,
@@ -79,7 +80,7 @@ spe <- read10xVisiumWrapper(
   images = c("lowres", "hires", "detected", "aligned"),
   load = TRUE
 )
-message(Sys.time(), "- Done read10xVisiumWrapper"
+message(Sys.time(), "- Done read10xVisiumWrapper")
 
 # [1] "2024-04-16 13:54:16 EDT"
 # 2024-04-16 13:54:22.104989 SpatialExperiment::read10xVisium: reading basic data from SpaceRanger
@@ -106,7 +107,14 @@ spe <- add_design(spe)
 
 ## Read in cell counts and segmentation results
 
-message("Existing spot count files: ", sum(file.exists(here(sample_info$sample_path, "spatial","tissue_spot_counts.csv"))))
+sample_info |> 
+    mutate(spot_count = file.exists(here(sample_path, "spatial","tissue_spot_counts.csv"))) |>
+    select(sample_id, base_path, spot_count)
+
+message("Existing spot count files: ", 
+        sum(file.exists(here(sample_info$sample_path, "spatial","tissue_spot_counts.csv"))),
+        "/",
+        nrow(sample_info))
 
 segmentations_list <-
     lapply(sample_info$sample_path, function(path) {
