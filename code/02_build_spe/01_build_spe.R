@@ -129,6 +129,7 @@ segmentations_list <-
             return(NULL)
         }
         x <- read.csv(file)
+        sampleid <- gsub("_untrimmed","", gsub("^.*?/(V.*?)/outs","\\1", path))
         x$key <- paste0(x$barcode, "_", sampleid)
         return(x)
     })
