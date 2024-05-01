@@ -105,6 +105,9 @@ add_design <- function(spe) {
 }
 spe <- add_design(spe)
 
+## use key as colnames to prevent duplicate barcodes
+colnames(spe) <- spe$key
+
 ## Read in cell counts and segmentation results
 
 sample_info |> 
