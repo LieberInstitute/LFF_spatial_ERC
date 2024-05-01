@@ -18,97 +18,66 @@ if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive
 
 #### Read in Sample Info ####
 
-metadata_visium_plan <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_plan.csv")) |>
+sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_plan.csv")) |>
     filter(is.na(lc_note)) |>
     mutate(sample_id = paste0(`Visium.Slide..`, "_" ,`Visium_subslide`),
            APOE = gsub(", ", "/", APOE,),
-           sample_path = here("processed-data", "01_spaceranger", sample_id,
-               "outs")) |>
-    select(sample_id, BrNum, APOE, Ancestry, Sex, Age, Diagnosis, Rin, sample_path) 
+           sample_path = here("processed-data", "01_spaceranger", paste0(sample_id,"_untrimmed"), ## if untrimmed file exist, select it
+                              "outs"),
+           Ancestry = gsub("CAUC", "EA", Ancestry)) |>
+    select(sample_id, BrNum, APOE, Ancestry, Sex, Age, Diagnosis, Rin, sample_path) |>
+    mutate(sample_path = ifelse(file.exists(sample_path),
+                                sample_path, 
+                                gsub("_untrimmed", "", sample_path)
+    ))
 
-all(file.exists(metadata_visium_plan$sample_path))
+## all files exist
+stopifnot(all(file.exists(sample_info$sample_path)))
+message("Processing data for ", sum(file.exists(sample_info$sample_path)), samples)
 
-metadata_visium_plan$sample_path[!file.exists(metadata_visium_plan$sample_path)]
-list.files(here("processed-data", "01_spaceranger"))[!list.files(here("processed-data", "01_spaceranger")) %in% metadata_visium_plan$sample_id]
+sample_info$sample_path[!file.exists(sample_info$sample_path)]
 
-## I think the google sheet has 2 typos
-# gsheet     data
-# V1B23-366  V13B23-366
-# V13Y24-341 V13Y24-340
+## updated to untrimmed
+list.files(here("processed-data", "01_spaceranger"))[!paste0(list.files(here("processed-data", "01_spaceranger"), full.names = TRUE),"/outs") %in% sample_info$sample_path]
+# [1] "V13B23-363_A1" "V13B23-363_B1" "V13B23-363_C1" "V13B23-363_D1" "V13B23-364_A1" "V13B23-364_B1" "V13B23-364_C1"
+# [8] "V13B23-364_D1" "V13B23-365_A1" "V13B23-365_B1" "V13B23-365_C1" "V13B23-365_D1" "V13B23-366_B1" "V13B23-366_C1"
+# [15] "V13B23-366_D1"
 
 ## Define some info for the samples
-sample_info <- data.frame(
-  sample_id = c(
-    "V13Y24-343_A1",
-    "V13Y24-343_B1",
-    "V13Y24-343_C1",
-    "V13Y24-343_D1",
-    "V13Y24-344_A1",
-    "V13Y24-344_B1",
-    "V13Y24-344_C1",
-    "V13Y24-344_D1",
-    "V13Y24-342_A1",
-    "V13Y24-342_B1",
-    "V13Y24-342_C1",
-    "V13Y24-342_D1",
-    "V13Y24-340_A1",
-    "V13Y24-340_B1",
-    "V13Y24-340_C1",
-    "V13Y24-340_D1",
-    "V13B23-363_A1",
-    "V13B23-363_B1",
-    "V13B23-363_C1",
-    "V13B23-363_D1",
-    "V13B23-364_A1",
-    "V13B23-364_B1",
-    "V13B23-364_C1",
-    "V13B23-364_D1",
-    "V13B23-365_A1",
-    "V13B23-365_B1",
-    "V13B23-365_C1",
-    "V13B23-365_D1",
-    "V13B23-366_B1",
-    "V13B23-366_C1",
-    "V13B23-366_D1"
-  )
-)
-sample_info$subject <- sample_info$sample_id
-sample_info$sample_path <-
-  file.path(
-    here::here("processed-data", "01_spaceranger"),
-    sample_info$sample_id,
-    "outs"
-  )
-stopifnot(all(file.exists(sample_info$sample_path)))
 
-## Define the donor info using information from
+
+## Define the donor info using information from - moving away from providing data by hand, did double check
 ## https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/raw-data/sample_info/Visium_HPC_Round1_20220113_Master_ADR.xlsx
 ## https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/raw-data/sample_info/Visium_HPC_Round2_20220223_Master_ADR.xlsx
-donor_info <- data.frame(
-  subject = c("V13Y24-343_A1","V13Y24-343_B1","V13Y24-343_C1","V13Y24-343_D1","V13Y24-344_A1","V13Y24-344_B1","V13Y24-344_C1","V13Y24-344_D1","V13Y24-342_A1","V13Y24-342_B1","V13Y24-342_C1","V13Y24-342_D1","V13Y24-340_A1","V13Y24-340_B1","V13Y24-340_C1","V13Y24-340_D1","V13B23-363_A1","V13B23-363_B1","V13B23-363_C1","V13B23-363_D1","V13B23-364_A1","V13B23-364_B1","V13B23-364_C1","V13B23-364_D1","V13B23-365_A1","V13B23-365_B1","V13B23-365_C1","V13B23-365_D1","V13B23-366_B1","V13B23-366_C1","V13B23-366_D1"),
-  age = c(51.63, 51.45, 29.95, 59.86, 41.44, 60.83, 62.70, 46.53, 42.39, 48.75, 50.08, 61.34, 63.98, 54.88, 67.75, 31.31, 42.19, 55.88, 45.3, 51.11, 59.98, 43.67, 68.38, 58.19, 51.73, 50.2, 54.43, 48.69, 57.1, 60.84, 50.73),
-  sex = c("M","F","F","M", "M", "M", "M", "F", "F", "F", "M", "M", "M", "F", "M", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F","M", "M", "F"),
-  race = c("EA/CAUC", "AA", "AA", "EA/CAUC", "EA/CAUC", "AA", "AA", "AA", "AA", "AA", "EA/CAU", "AA", "EA/CAUC", "AA", "EA/CAUC", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAU", "AA", "EA/CAU", "AA", "EA/CAU", "EA/CAU", "AA"),
-  diagnosis = c("Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control"),
-  rin = c(8.5, 8.6, 9.3, 7.4, 7.3, 8.7, 7.2, 8.5, 7.1, 9.2, 8.2, 8.5, 9.4, 8, 6.8, 6.6, 9, 8.5, 8.4, 8.6, 9.3, 5.2, 9, 8.7, 7.1, 8.3, 8.5, 5.2, 7.7, 7.4, 7), # fix rin information for V13B23-363_C1 sample
-  apoe = c("E2/E3", "E4/E4", "E2/E2", "E3/E4", "E2/E2", "E2/E3","E3/E4","E4/E4", "E3/E4", "E2/E3", "E4/E4", "E3/E4", "E3/E4", "E4/E4", "E2/E2", "E2/E3", "E4/E4", "E3/E4", "E2/E2", "E2/E3", "E3/E4", "E2/E2", "E2/E3", "E4/E4", "E2/E3", "E3/E4", "E4/E4", "E2/E2", "E3/E4", "E2/E3", "E3/E4")
-)
-
-
-## Combine sample info with the donor info
-sample_info <- merge(sample_info, donor_info)
+# donor_info <- data.frame(
+# sample_id = c("V13Y24-343_A1","V13Y24-343_B1","V13Y24-343_C1","V13Y24-343_D1","V13Y24-344_A1","V13Y24-344_B1","V13Y24-344_C1","V13Y24-344_D1","V13Y24-342_A1","V13Y24-342_B1","V13Y24-342_C1","V13Y24-342_D1","V13Y24-340_A1","V13Y24-340_B1","V13Y24-340_C1","V13Y24-340_D1","V13B23-363_A1","V13B23-363_B1","V13B23-363_C1","V13B23-363_D1","V13B23-364_A1","V13B23-364_B1","V13B23-364_C1","V13B23-364_D1","V13B23-365_A1","V13B23-365_B1","V13B23-365_C1","V13B23-365_D1","V13B23-366_B1","V13B23-366_C1","V13B23-366_D1"),
+#   age = c(51.63, 51.45, 29.95, 59.86, 41.44, 60.83, 62.70, 46.53, 42.39, 48.75, 50.08, 61.34, 63.98, 54.88, 67.75, 31.31, 42.19, 55.88, 45.3, 51.11, 59.98, 43.67, 68.38, 58.19, 51.73, 50.2, 54.43, 48.69, 57.1, 60.84, 50.73),
+#   sex = c("M","F","F","M", "M", "M", "M", "F", "F", "F", "M", "M", "M", "F", "M", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F","M", "M", "F"),
+#   race = c("EA/CAUC", "AA", "AA", "EA/CAUC", "EA/CAUC", "AA", "AA", "AA", "AA", "AA", "EA/CAU", "AA", "EA/CAUC", "AA", "EA/CAUC", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "EA/CAUC", "AA", "AA", "EA/CAU", "AA", "EA/CAU", "AA", "EA/CAU", "EA/CAU", "AA"),
+#   diagnosis = c("Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control", "Control"),
+#   rin = c(8.5, 8.6, 9.3, 7.4, 7.3, 8.7, 7.2, 8.5, 7.1, 9.2, 8.2, 8.5, 9.4, 8, 6.8, 6.6, 9, 8.5, 8.4, 8.6, 9.3, 5.2, 9, 8.7, 7.1, 8.3, 8.5, 5.2, 7.7, 7.4, 7), # fix rin information for V13B23-363_C1 sample
+#   apoe = c("E2/E3", "E4/E4", "E2/E2", "E3/E4", "E2/E2", "E2/E3","E3/E4","E4/E4", "E3/E4", "E2/E3", "E4/E4", "E3/E4", "E3/E4", "E4/E4", "E2/E2", "E2/E3", "E4/E4", "E3/E4", "E2/E2", "E2/E3", "E3/E4", "E2/E2", "E2/E3", "E4/E4", "E2/E3", "E3/E4", "E4/E4", "E2/E2", "E3/E4", "E2/E3", "E3/E4")
+# )
+# 
+# identical(donor_info$sample_id, sample_info$sample_id)
+# identical(donor_info$age, sample_info$Age)
+# identical(donor_info$sex, sample_info$Sex)
+# identical(donor_info$race, sample_info$Ancestry) # "EA/CAUC" diff
+# identical(donor_info$diagnosis, sample_info$Diagnosis)
+# identical(donor_info$rin, sample_info$Rin)
+# identical(donor_info$apoe, sample_info$APOE)
 
 ## Build basic SPE
-Sys.time()
+message(Sys.time(), "- Starting read10xVisiumWrapper"
 spe <- read10xVisiumWrapper(
-  sample_info$sample_path,
-  sample_info$sample_id,
+  samples = sample_info$sample_path,
+  sample_id = sample_info$sample_id,
   type = "sparse",
   data = "raw",
   images = c("lowres", "hires", "detected", "aligned"),
   load = TRUE
 )
-Sys.time()
+message(Sys.time(), "- Done read10xVisiumWrapper"
 
 # [1] "2024-04-16 13:54:16 EDT"
 # 2024-04-16 13:54:22.104989 SpatialExperiment::read10xVisium: reading basic data from SpaceRanger
@@ -134,14 +103,13 @@ add_design <- function(spe) {
 spe <- add_design(spe)
 
 ## Read in cell counts and segmentation results
+
+message("Existing spot count files: ", sum(file.exists(here(sample_info$sample_path, "spatial","tissue_spot_counts.csv"))))
+
 segmentations_list <-
-    lapply(sample_info$sample_id, function(sampleid) {
+    lapply(sample_info$sample_path, function(path) {
         file <-
-            here(
-                "processed-data",
-                "01_spaceranger",
-                sampleid,
-                "outs",
+            here(path,
                 "spatial",
                 "tissue_spot_counts.csv"
             )
@@ -186,6 +154,7 @@ spe_raw <- spe
 saveRDS(spe_raw, file.path(dir_rdata, "spe_raw.rds"))
 
 ## Size in Gb
+message("Size of spe_raw:")
 lobstr::obj_size(spe_raw)
 # 5.56 GB
 
@@ -203,11 +172,13 @@ if (any(colSums(counts(spe)) == 0)) {
 
 # removing spots without counts for spe
 # [1] 29926 122086
-
+message("Size of spe after filtering:")
 lobstr::obj_size(spe)
 # 5.46 GB
 
 saveRDS(spe, file.path(dir_rdata, "spe.rds"))
+
+# slurmjobs::job_single('01_build_spe', create_shell = TRUE, memory = '25G', command = "Rscript 01_build_spe.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
