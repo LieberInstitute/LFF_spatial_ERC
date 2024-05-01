@@ -17,7 +17,6 @@ dir_rdata <- here::here("processed-data", "02_build_spe")
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
 #### Read in Sample Info ####
-
 sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_plan.csv")) |>
     filter(is.na(lc_note)) |>
     mutate(sample_id = paste0(`Visium.Slide..`, "_" ,`Visium_subslide`),
@@ -34,7 +33,7 @@ sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online
 
 ## all files exist
 stopifnot(all(file.exists(sample_info$sample_path)))
-message("Processing data for ", sum(file.exists(sample_info$sample_path)), samples)
+message("Processing data for ", sum(file.exists(sample_info$sample_path)), "samples")
 
 sample_info$sample_path[!file.exists(sample_info$sample_path)]
 
@@ -45,7 +44,7 @@ list.files(here("processed-data", "01_spaceranger"))[!paste0(list.files(here("pr
 # [15] "V13B23-366_D1"
 
 ## write csv for easy access
-write_csv(sample_info, here(dir_rdata, "sample_info.csv"))
+write.csv(sample_info, here(dir_rdata, "sample_info.csv"), row.names = FALSE)
 
 ## Define some info for the samples
 
