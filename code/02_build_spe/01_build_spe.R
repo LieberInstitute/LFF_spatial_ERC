@@ -43,8 +43,10 @@ list.files(here("processed-data", "01_spaceranger"))[!paste0(list.files(here("pr
 # [8] "V13B23-364_D1" "V13B23-365_A1" "V13B23-365_B1" "V13B23-365_C1" "V13B23-365_D1" "V13B23-366_B1" "V13B23-366_C1"
 # [15] "V13B23-366_D1"
 
-## Define some info for the samples
+## write csv for easy access
+write_csv(sample_info, here(dir_rdata, "sample_info.csv"))
 
+## Define some info for the samples
 
 ## Define the donor info using information from - moving away from providing data by hand, did double check
 ## https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/raw-data/sample_info/Visium_HPC_Round1_20220113_Master_ADR.xlsx
