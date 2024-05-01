@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --mem=60G
-#SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/countNuclei_%a.txt
-#SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/countNuclei_%a.txt
-#SBATCH --array=17-31%8
+#SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/countNuclei_untrimmed_%a.txt
+#SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/countNuclei_untrimmed_%a.txt
+#SBATCH --array=1-15
 #SBATCH --mail-user=heenadivecha@gmail.com
  
 echo "**** Job starts ****"
@@ -21,10 +21,10 @@ module load matlab/R2023a
 
 ## Load toolbox for VistoSeg
 toolbox='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg'
-#samplelist="countNuclei_list.txt"
+#samplelist="countNuclei_list_untrimmed.txt"
 
 ## Read inputs from countNuclei_list.txt file
-FILE=$(awk "NR==${SLURM_ARRAY_TASK_ID}" countNuclei_list.txt)
+FILE=$(awk "NR==${SLURM_ARRAY_TASK_ID}" countNuclei_list_untrimmed.txt)
 mask=$(echo ${FILE} | cut -d "," -f 1)
 echo "using nuclei mat file ${mask}"
 jsonname=$(echo ${FILE} | cut -d "," -f 2)
