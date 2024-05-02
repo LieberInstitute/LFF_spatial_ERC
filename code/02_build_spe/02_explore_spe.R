@@ -21,13 +21,13 @@ colnames(colData(spe))
 # [9] "10x_kmeans_4_clusters"  "10x_kmeans_5_clusters"  "10x_kmeans_6_clusters"  "10x_kmeans_7_clusters" 
 # [13] "10x_kmeans_8_clusters"  "10x_kmeans_9_clusters"  "key"                    "sum_umi"               
 # [17] "sum_gene"               "expr_chrM"              "expr_chrM_ratio"        "ManualAnnotation"      
-# [21] "subject"                "age"                    "sex"                    "race"                  
-# [25] "diagnosis"              "rin"                    "apoe"                   "Nmask_dark_blue"       
-# [29] "Pmask_dark_blue"        "CNmask_dark_blue"       "overlaps_tissue"    
+# [21] "BrNum"                  "APOE"                   "Ancestry"               "Sex"                   
+# [25] "Age"                    "Diagnosis"              "Rin"                    "base_path"             
+# [29] "Nmask_dark_blue"        "Pmask_dark_blue"        "CNmask_dark_blue"       "overlaps_tissue" 
 
 ## 
 table(spe$sample_id)
-## all have 4992, this is not filererd for spots not in tissue
+## all have 4992, this is not filterer for spots not in tissue
 table(spe$in_tissue, spe$overlaps_tissue)
 table(spe$sample_id, spe$overlaps_tissue)
 
