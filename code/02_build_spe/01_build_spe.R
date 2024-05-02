@@ -17,6 +17,7 @@ dir_rdata <- here::here("processed-data", "02_build_spe")
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
 #### Read in Sample Info ####
+## check datatype, use factors when possible
 sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_plan.csv")) |>
     filter(is.na(lc_note)) |>
     mutate(sample_id = paste0(`Visium.Slide..`, "_" ,`Visium_subslide`),
@@ -33,12 +34,12 @@ sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online
 
 ## all files exist
 stopifnot(all(file.exists(sample_info$sample_path)))
-message("Processing data for ", sum(file.exists(sample_info$sample_path)), "samples")
+message("Processing data for ", sum(file.exists(sample_info$sample_path)), " samples...")
 
 sample_info$sample_path[!file.exists(sample_info$sample_path)]
 
 ## updated to untrimmed
-list.files(here("processed-data", "01_spaceranger"))[!paste0(list.files(here("processed-data", "01_spaceranger"), full.names = TRUE),"/outs") %in% sample_info$sample_path]
+# list.files(here("processed-data", "01_spaceranger"))[!paste0(list.files(here("processed-data", "01_spaceranger"), full.names = TRUE),"/outs") %in% sample_info$sample_path]
 # [1] "V13B23-363_A1" "V13B23-363_B1" "V13B23-363_C1" "V13B23-363_D1" "V13B23-364_A1" "V13B23-364_B1" "V13B23-364_C1"
 # [8] "V13B23-364_D1" "V13B23-365_A1" "V13B23-365_B1" "V13B23-365_C1" "V13B23-365_D1" "V13B23-366_B1" "V13B23-366_C1"
 # [15] "V13B23-366_D1"
@@ -73,7 +74,7 @@ write.csv(sample_info, here(dir_rdata, "sample_info.csv"), row.names = FALSE)
 message(Sys.time(), "- Starting read10xVisiumWrapper")
 spe <- read10xVisiumWrapper(
   samples = sample_info$sample_path,
-  sample_id = sample_info$sample_id,
+  sample_id = sample_info$BrNum,
   type = "sparse",
   data = "raw",
   images = c("lowres", "hires", "detected", "aligned"),
