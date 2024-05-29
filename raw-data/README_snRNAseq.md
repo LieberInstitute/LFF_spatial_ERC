@@ -55,22 +55,22 @@ ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen
 ## Chromium Round3
 
 ```bash
-## 7c_ERC_SVB (Br2582)
+## 7c_ERC_SVB (Br1691)
 mkdir 7c_ERC_SVB
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/7c_ERC_SVB/227G7WLT4/7c_ERC_SVB_S10_L00* 7c_ERC_SVB/
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/7c_ERC_SVB/227G77LT4/7c_ERC_SVB_S10_L00* 7c_ERC_SVB/
 
-## 8c_ERC_SVB (Br5276)
+## 8c_ERC_SVB (Br3974 (re-dis))
 mkdir 8c_ERC_SVB
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/8c_ERC_SVB/227G7WLT4/8c_ERC_SVB_S14_L00* 8c_ERC_SVB/
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/8c_ERC_SVB/227G77LT4/8c_ERC_SVB_S14_L00* 8c_ERC_SVB/
 
-## 9c_ERC_SVB (Br5415)
+## 9c_ERC_SVB (Br5426)
 mkdir 9c_ERC_SVB
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/9c_ERC_SVB/227G7WLT4/9c_ERC_SVB_S11_L00* 9c_ERC_SVB/
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/9c_ERC_SVB/227G77LT4/9c_ERC_SVB_S11_L00* 9c_ERC_SVB/
 
-## 10c_ERC_SVB (Br5415)
+## 10c_ERC_SVB (Br6476 (re-dis))
 mkdir 10c_ERC_SVB
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/10c_ERC_SVB/227G7WLT4/10c_ERC_SVB_S2_L00* 10c_ERC_SVB/
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/10c_ERC_SVB/227G77LT4/10c_ERC_SVB_S2_L00* 10c_ERC_SVB/
@@ -86,7 +86,7 @@ mkdir 11c_ERC_SVB
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/11c_ERC_SVB/227G7WLT4/11c_ERC_SVB_S8_L00* 11c_ERC_SVB/
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/11c_ERC_SVB/227G77LT4/11c_ERC_SVB_S8_L00* 11c_ERC_SVB/
 
-## 12c_ERC_SVB (Br2305)
+## 12c_ERC_SVB (Br2305 (re-dis))
 mkdir 12c_ERC_SVB
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/12c_ERC_SVB/227G7WLT4/12c_ERC_SVB_S4_L00* 12c_ERC_SVB/
 ln -s /dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2024-05-01-Psomagen-ANQ00004490/AN00019170/AN00019170_10X_RawData_Outs/12c_ERC_SVB/227G77LT4/12c_ERC_SVB_S4_L00* 12c_ERC_SVB/
