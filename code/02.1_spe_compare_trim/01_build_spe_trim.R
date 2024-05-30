@@ -1,12 +1,11 @@
 
-
+library("here")
 library("SpatialExperiment")
 library("spatialLIBD")
 library("rtracklayer")
 library("lobstr")
 library("tidyverse")
 library("sessioninfo")
-library("dplyr")
 
 ## Create output directories
 dir_rdata <- here::here("processed-data", "02.1_spe_compare_trim")
@@ -81,12 +80,13 @@ colnames(spe) <- spe$key
 spe_trim <- spe
 
 ## Size in Gb
-message("Size of spe_raw:")
+message("Size of spe_trim:")
 lobstr::obj_size(spe_trim)
 # 5.56 GB
 
 ## save
-saveRDS(spe_trim, file.path(dir_rdata, "spe_trim.rds"))
+message(Sys.time(), "- Saving")
+saveRDS(spe_trim, here(dir_rdata, "spe_trim.rds"))
 
 # slurmjobs::job_single('01_build_spe_trim', create_shell = TRUE, memory = '25G', command = "Rscript 01_build_spe_trim.R")
 
