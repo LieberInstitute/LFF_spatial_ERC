@@ -2,7 +2,7 @@
 #SBATCH --mem=60G
 #SBATCH -o /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/countNuclei_untrimmed_%a.txt
 #SBATCH -e /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/VistoSeg/code/logs/countNuclei_untrimmed_%a.txt
-#SBATCH --array=1-15
+#SBATCH --array=11
 #SBATCH --mail-user=heenadivecha@gmail.com
  
 echo "**** Job starts ****"
