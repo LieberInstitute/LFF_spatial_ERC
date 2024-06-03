@@ -9,10 +9,10 @@ library("sessioninfo")
 
 ## check dirs 
 data_dir <- here("processed-data", "04_snRNA-seq", "01_get_droplet_scores")
-if(dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 plot_dir <- here("plots", "04_snRNA-seq", "01_get_droplet_scores")
-if(dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## get sample i
 args <- commandArgs(trailingOnly = TRUE)
