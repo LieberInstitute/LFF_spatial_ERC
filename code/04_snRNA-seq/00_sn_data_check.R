@@ -51,10 +51,9 @@ summary(sample_info)
 # [9] "6c_ERC_SVB"  "7c_ERC_SVB"  "8c_ERC_SVB"  "9c_ERC_SVB" 
 
 sample_info |>
-    select(sample_id = `Sample #`, BrNum = Brain, Round, Seq_Round = `Seq Round`) |>
-    mutate(done = Sample_id %in% cell_ranger_out_paths
-           # ,
-           # path = here("processed-data", "03_cellranger", Sample_id)
+    select(sample_id = `Sample #`, BrNum = Brain, exp_round = `Experimental Round`, seq_round = `Sequencing Round`) |>
+    mutate(path = here("processed-data", "03_cellranger", sample_id, "outs", "raw_feature_bc_matrix"),
+           file_exists = file.exists(path)
            )
 # sample_id   BrNum  Round Seq_Round done 
 # <chr>       <chr>  <dbl>     <dbl> <lgl>
@@ -72,4 +71,10 @@ sample_info |>
 # 12 12c_ERC_SVB Br2305     4         1 TRUE 
 # 13 13c_ERC_SVB Br5460     4         1 TRUE 
 # 14 14c_ERC_SVB Br5517     4         1 TRUE 
+
+slurmjobs::job_loop(
+    loops = list(sample_id = cell_ranger_out_paths),
+    name = "01_get_droplet_scores",
+    create_shell = TRUE
+)
 
