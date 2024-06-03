@@ -16,7 +16,7 @@ if(dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## get sample i
 args <- commandArgs(trailingOnly = TRUE)
-sample <- args[[1]]
+sample <- args[[2]]
 sample_path <- here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
 stopifnot(file.exists(sample_path))
 
