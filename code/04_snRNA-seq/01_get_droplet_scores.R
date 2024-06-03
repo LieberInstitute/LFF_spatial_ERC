@@ -20,7 +20,7 @@ sample <- args[[2]]
 sample_path <- here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
 stopifnot(file.exists(sample_path))
 
-message(Sys.time(), " Reading data from ", sample_path)
+message(Sys.time(), " - Reading data from ", sample_path)
 
 #### Load & Subset raw data ####
 sce <- read10xCounts(sample_path, col.names=TRUE) 
@@ -28,7 +28,7 @@ sce <- read10xCounts(sample_path, col.names=TRUE)
 message("ncol:", ncol(sce))
 
 #### Run barcodeRanks to find knee ####
-message(Sys.time(), "Running barcode ranks.")
+message(Sys.time(), " - Running barcode ranks.")
 
 bcRanks <- barcodeRanks(sce, fit.bounds = c(10, 1e3))
 
@@ -40,7 +40,7 @@ message(
 
 #### Run emptyDrops w/ knee + 100 ####
 set.seed(100)
-message(Sys.time(), "Starting emptyDrops")
+message(Sys.time(), " - Starting emptyDrops")
 e.out <- DropletUtils::emptyDrops(
   sce,
   niters = 30000,
@@ -48,7 +48,7 @@ e.out <- DropletUtils::emptyDrops(
   # ,
   # BPPARAM = BiocParallel::MulticoreParam(4)
 )
-message(Sys.time(), "Done - saving data")
+message(Sys.time(), " - Done: saving data")
 
 save(e.out, file = here(data_dir, paste0("droplet_scores_", sample, ".Rdata")))
 
@@ -70,7 +70,7 @@ droplet_elbow_plot <- as.data.frame(bcRanks) %>%
   geom_hline(yintercept = metadata(bcRanks)$knee, linetype = "dotted", color = "gray") +
   annotate("text", x = 10, y = metadata(bcRanks)$knee, label = "Second Knee", vjust = -1, color = "gray") +
   geom_hline(yintercept = knee_lower, linetype = "dashed") +
-  annotate("text", x = 10, y = knee_lower, label = "Knee est 'lower'", vjust = -0.5) +
+  annotate("text", x = 100, y = knee_lower, label = "Knee est 'lower'", vjust = -0.5) +
   scale_x_continuous(trans = "log10") +
   scale_y_continuous(trans = "log10") +
   labs(
