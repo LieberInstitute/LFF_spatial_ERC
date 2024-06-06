@@ -35,6 +35,7 @@ spatial_data_libd |>
 ## access on JHPCE
 jhpce_datasets <- c(
     LFF_spatial_ERC = here("processed-data", "02_build_spe", "spe.rds"),
+    LFF_spatial_ERC_trim = here("processed-data", "02.1_spe_compare_trim", "spe_trim.rds"),
     spatial_NAc = "/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/05_harmony_BayesSpace/01-build_spe/spe_raw.rds",
     # spatial_HYP = "/dcs04/lieber/marmaypag/spatialHYP_LIBD4195/spatial_HYP/processed-data/02_build_spe/spe.Rdata",
     LFF_spatial_LC = "/dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC/processed-data/02_build_spe/spe.rds",
@@ -45,6 +46,7 @@ map(jhpce_datasets, file.exists)
 
 spatial_data_jhpce <- map2_dfr(jhpce_datasets, names(jhpce_datasets), 
                               function(path, name){
+                                  message(Sys.time(), " - loading ", name)
                                   spe <- readRDS(path)
                                   cn <- colnames(colData(spe))
                                   # print(cn)
