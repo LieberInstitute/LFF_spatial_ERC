@@ -170,6 +170,33 @@ table(spe_raw$in_tissue, spe_raw$scran_discard)
 
 table(spe_raw$sample_id, spe_raw$scran_low_lib_size_edge)
 
+spe_qc_notes <- as.data.frame(colData(spe_raw)) |>
+    filter(in_tissue) |>
+    group_by(sample_id) |>
+    summarize(n = n(),
+              min_sum_umi = min(sum_umi),
+              median_sum_umi = median(sum_umi),
+              max_sum_umi = max(sum_umi),
+              min_sum_gene = min(sum_gene),
+              median_sum_gene = median(sum_gene),
+              max_sum_gene = max(sum_gene),
+              min_expr_chrM_ratio = min(expr_chrM_ratio),
+              median_expr_chrM_ratio = median(expr_chrM_ratio),
+              max_expr_chrM_ratio = max(expr_chrM_ratio),
+              n_low_lib_edge = sum(scran_low_lib_size_edge == "TRUE", na.rm = TRUE),
+              n_scran_discard = sum(scran_discard == "TRUE", na.rm = TRUE))
+
+write.csv(spe_qc_notes, file = here(dir_rdata, "spe_qc_notes.csv"), row.names = FALSE)
+
+## record cutoffs
+# as.data.frame(colData(spe_raw)) |>
+#     filter(in_tissue, as.logical(scran_low_lib_size)) |>
+#     group_by(sample_id) |>
+#     summarize(max_sum_umi = max(sum_umi), 
+#               n = n()) |>
+#     arrange(max_sum_umi) |>
+#     print(n = 31)
+
 ## Size in Gb
 message("Size of spe_raw:")
 lobstr::obj_size(spe_raw)
