@@ -1,80 +1,79 @@
 
 library("spatialLIBD")
 library("tidyverse")
-library("gridExtra")
 library("here")
 library("sessioninfo")
 
 plot_dir <- here("plots", "02_build_spe", "02_explore_spe")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-## load spe
-spe <- readRDS(here("processed-data", "02_build_spe", "spe_raw.rds"))
 
-#### Explore colData ####
-colData(spe)
+#### LIBD spatial data ####
 
-## no BrNum
-colnames(colData(spe))
-# [1] "sample_id"              "in_tissue"              "array_row"              "array_col"             
-# [5] "10x_graphclust"         "10x_kmeans_10_clusters" "10x_kmeans_2_clusters"  "10x_kmeans_3_clusters" 
-# [9] "10x_kmeans_4_clusters"  "10x_kmeans_5_clusters"  "10x_kmeans_6_clusters"  "10x_kmeans_7_clusters" 
-# [13] "10x_kmeans_8_clusters"  "10x_kmeans_9_clusters"  "key"                    "sum_umi"               
-# [17] "sum_gene"               "expr_chrM"              "expr_chrM_ratio"        "ManualAnnotation"      
-# [21] "BrNum"                  "APOE"                   "Ancestry"               "Sex"                   
-# [25] "Age"                    "Diagnosis"              "Rin"                    "base_path"             
-# [29] "Nmask_dark_blue"        "Pmask_dark_blue"        "CNmask_dark_blue"       "overlaps_tissue" 
+## access with spatialLIBD
 
-## 
-table(spe$sample_id)
-## all have 4992, this is not filterer for spots not in tissue
-table(spe$in_tissue, spe$overlaps_tissue)
-table(spe$sample_id, spe$overlaps_tissue)
+spatialLIBD_datasets <- c(visium_pilot = "spe", 
+                          spatialDLPFC = "spatialDLPFC_Visium",
+                          visium_AD = "Visium_SPG_AD_Visium_wholegenome_spe")
 
-length(unique(spe$subject))
+spatial_data_libd <- map2_dfr(spatialLIBD_datasets, names(spatialLIBD_datasets), 
+                         function(lookup, name){
+                            spe <- spatialLIBD::fetch_data(lookup)
+                            cn <- colnames(colData(spe))
+                            print(cn)
+                            qc_cols <- c("sample_id", "in_tissue", "sum_umi", "sum_gene", "expr_chrM_ratio")
+                            qc <- as.data.frame(colData(spe)[,qc_cols[qc_cols %in% cn]])
+                            qc$dataset <- name
+                            return(qc)
+                           }
+                         )
 
-table(duplicated(colnames(spe)))
-# FALSE   TRUE 
-# 4992 149760 
+map(spatial_data_libd, head)
+spatial_data_libd |>
+    count(dataset)
 
-## compare with metadata
+## access on JHPCE
+jhpce_datasets <- c(
+    LFF_spatial_ERC = here("processed-data", "02_build_spe", "spe.rds"),
+    spatial_NAc = "/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/05_harmony_BayesSpace/01-build_spe/spe_raw.rds",
+    # spatial_HYP = "/dcs04/lieber/marmaypag/spatialHYP_LIBD4195/spatial_HYP/processed-data/02_build_spe/spe.Rdata",
+    LFF_spatial_LC = "/dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC/processed-data/02_build_spe/spe.rds",
+    Habenula_Visium = "/dcs04/lieber/lcolladotor/Habenula_R01_LIBD4270/Habenula_Visium/processed-data/02_build_spe/spe.rds"
+    )
 
-#### plot UMIs ####
-spe <- spe[,spe$in_tissue]
+map(jhpce_datasets, file.exists)
 
-samples <- unique(spe$subject)
+spatial_data_jhpce <- map2_dfr(jhpce_datasets, names(jhpce_datasets), 
+                              function(path, name){
+                                  spe <- readRDS(path)
+                                  cn <- colnames(colData(spe))
+                                  # print(cn)
+                                  qc_cols <- c("sample_id", "in_tissue", "sum_umi", "sum_gene", "expr_chrM_ratio")
+                                  qc <- as.data.frame(colData(spe)[,qc_cols[qc_cols %in% cn]])
+                                  qc$dataset <- name
+                                  return(qc)
+                              }
+)
 
-umi_test <- spatialLIBD::vis_gene(spe, sampleid = "V13B23-363_A1", geneid = "sum_umi")
-ggsave(umi_test, filename = here(plot_dir, "umi_test.png"))
+spatial_data_qc <- bind_rows(spatial_data_jhpce, spatial_data_libd)
+spatial_data_qc |> count(in_tissue, dataset)
 
-umi_plots <- map(samples, ~vis_gene(spe, sampleid = .x, geneid = "sum_umi"))
-## TODO multi plot pages
-# umi_plot_pages <- marrangeGrob(umi_plots, nrow=3, ncol=2)
-# # unable to start device X11cairo
-# 
-# ## arrangeGrob returns a [1] "gtable" "gTree"  "grob"   "gDesc" not compatable with ggsave
-# class(umi_plot_pages)
-# typeof(umi_plot_pages)
-# 
-# ggsave(
-#     plot = umi_plot_pages$grob,
-#     filename = here(plot_dir, "Sample_umi.pdf"), 
-#     width = 8.5, height = 11.5
-# )
+sample_qc <- spatial_data_qc |>
+    group_by(dataset, sample_id) |>
+    filter(in_tissue) |>
+    summarize(sum_umi = median(sum_umi),
+              sum_gene = median(sum_gene),
+              expr_chrM_ratio = median(expr_chrM_ratio),
+              )|>
+    pivot_longer(!c(dataset, sample_id), names_to = "metric", values_to = "median")
 
+median_metic_boxplots <- sample_qc |>
+    ggplot(aes(x = dataset, y = median)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point() +
+    facet_wrap(~metric, scales = "free_y") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-pdf(here(plot_dir, "Sample_umi.pdf"))
-umi_plots
-dev.off()
+ggsave(median_metic_boxplots, filename = here(plot_dir, "median_metric_boxplots.png"), width = 10)
 
-# vis_grid_gene(spe, 
-#               geneid = "sum_umi",
-#               pdf_file = "Sample_umi_grid.pdf",
-#               return_plots = FALSE)
-
-k9_plots <- map(samples, ~vis_clus(spe, sampleid = .x, clustervar = "10x_kmeans_9_clusters"))
-
-pdf(here(plot_dir, "Sample_kmeans_k9.pdf"))
-k9_plots
-dev.off()
 
