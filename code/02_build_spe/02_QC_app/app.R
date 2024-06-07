@@ -1,5 +1,6 @@
 library("spatialLIBD")
 library("markdown")
+library("tidyverse")
 library("here")
 
 ## spatialLIBD uses golem.
@@ -11,6 +12,22 @@ options(repos = BiocManager::repositories())
 
 spe <- readRDS(here("processed-data", "02_build_spe","spe_raw.rds"))
 
+## Read in Annotations ##
+
+qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "03_qc_app"), full.names = TRUE), read.csv) |>
+    filter(!is.na(ManualAnnotation)) |>
+    count(sample_id, spot_name, ManualAnnotation) |> 
+    filter(!(spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
+
+qc_anno |> count(ManualAnnotation)
+
+qc_anno |> count(sample_id, spot_name) |> filter(n>1)
+# qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
+
+spe$ManualAnnotation <- NA
+spe[,qc_anno$spot_name]$ManualAnnotation <- qc_anno$ManualAnnotation
+spe$ManualAnnotation <- factor(spe$ManualAnnotation)
+table(spe$ManualAnnotation)
 
 ## Quickly explore the data
 vars <- colnames(colData(spe))
