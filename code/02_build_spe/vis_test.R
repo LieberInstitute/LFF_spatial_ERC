@@ -32,6 +32,16 @@ vis_grid_clus(
     point_size = 1
     # colors = c("in" = "grey90", "out" = "orange")
 )
+
+vis_grid_clus(
+    spe = spe,
+    clustervar = "qc_anno",
+    pdf = here::here(plot_dir, "spe_erc_grid-qc_anno.pdf"),
+    sort_clust = FALSE,
+    point_size = 1
+    # colors = c("in" = "grey90", "out" = "orange")
+)
+
 # With sort_clust = TRUE
 # Error in `[[<-`(`*tmp*`, clustervar, value = c(`FALSE` = 2L, `TRUE` = 1L,  : 
 #                                                    122746 elements in value to replace 154752 elements
@@ -39,7 +49,7 @@ vis_grid_clus(
 pdf(here::here(plot_dir, "spe_erc_Br6085-in_tissue.pdf"))
 vis_clus(
     spe = spe,
-    sample_id = "Br6085",
+    sampleid = "Br6085",
     clustervar = "in_tissue",
     # clustervar = "ManualAnnotation",
     # sort_clust = FALSE,
