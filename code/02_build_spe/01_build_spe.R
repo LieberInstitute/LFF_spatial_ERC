@@ -16,6 +16,9 @@ library("dplyr")
 dir_rdata <- here::here("processed-data", "02_build_spe")
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
+plot_dir <- here("plots", "02_build_spe", "vis_test")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
 #### Read in Sample Info ####
 message(Sys.time(), "- Read in Sample Info")
 ## check datatype, use factors when possible
@@ -202,7 +205,28 @@ message("Size of spe_raw:")
 lobstr::obj_size(spe_raw)
 # 5.59 GB
 
+message(Sys.time(), " - Saving Data")
 saveRDS(spe_raw, file.path(dir_rdata, "spe_raw.rds"))
+
+message(Sys.time(), " - Prelim plots")
+vis_grid_clus(
+    spe = spe_raw,
+    clustervar = "in_tissue",
+    pdf = here::here(plot_dir, "spe_grid_in_tissue.pdf"),
+    sort_clust = FALSE,
+    point_size = 1
+    # colors = c("in" = "grey90", "out" = "orange")
+)
+
+vis_grid_clus(
+    spe = spe_raw,
+    clustervar = "scran_low_lib_size_edge",
+    pdf = here::here(plot_dir, "spe_grid_scran_low_lib_size_edge.pdf"),
+    sort_clust = FALSE,
+    point_size = 1
+    # colors = c("in" = "grey90", "out" = "orange")
+)
+
 
 ## Reproducibility information
 print("Reproducibility information:")
