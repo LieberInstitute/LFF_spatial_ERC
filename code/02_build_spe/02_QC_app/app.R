@@ -24,10 +24,17 @@ qc_anno |> count(ManualAnnotation)
 qc_anno |> count(sample_id, spot_name) |> filter(n>1)
 # qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
 
-spe$ManualAnnotation <- NA
-spe[,qc_anno$spot_name]$ManualAnnotation <- qc_anno$ManualAnnotation
-spe$ManualAnnotation <- factor(spe$ManualAnnotation)
-table(spe$ManualAnnotation)
+rownames(qc_anno) <- qc_anno$spot_name
+qc_anno_col <- qc_anno[colnames(spe),]$ManualAnnotation
+table(qc_anno_col)
+table(is.na(qc_anno_col))
+length(qc_anno_col)
+
+spe$qc_anno <- factor(qc_anno_col)
+# spe[,qc_anno$spot_name]$ManualAnnotation <- qc_anno$ManualAnnotation
+# spe$ManualAnnotation <- factor(spe$ManualAnnotation)
+table(spe$qc_anno)
+table(spe$sample_id, spe$qc_anno)
 
 ## Quickly explore the data
 vars <- colnames(colData(spe))
@@ -43,7 +50,8 @@ spatialLIBD::run_app(
         vars[grep("^10x_", vars)],
         vars[grep("^scran_", vars)],
         "edge_spot",
-        "scran_low_lib_size_edge"
+        "scran_low_lib_size_edge",
+        "qc_anno"
         # vars[grep("^SNN_k10", vars)],
         # vars[grep("^BayesSpace_harmony_", vars)]
     ),
