@@ -16,7 +16,7 @@ library("dplyr")
 dir_rdata <- here::here("processed-data", "02_build_spe")
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
-plot_dir <- here("plots", "02_build_spe", "vis_test")
+plot_dir <- here("plots", "02_build_spe", "01_build_spe")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Read in Sample Info ####
