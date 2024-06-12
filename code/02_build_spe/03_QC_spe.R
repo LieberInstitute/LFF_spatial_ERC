@@ -236,3 +236,77 @@ vis_grid_clus(
     colors = c(`TRUE` = "orange", `FALSE` = "lightskyblue3")
 )
 
+#### Read in Annotations ####
+
+pd <- as.data.frame(colData(spe)) |>
+    select(sample_id, spot_name = key, in_tissue, scran_low_lib_size_edge, scran_discard)
+
+qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "03_qc_app"), full.names = TRUE), 
+                   ~read.csv(.x) |> mutate(file = gsub("spatialLIBD_ManualAnnotation_|.csv", "",basename(.x)))) |>
+    filter(!is.na(ManualAnnotation),
+           ManualAnnotation != "qc_drop", ## qc_drop was an old annotation
+           spot_name != "TAACATACAATGTGGG-1_Br5367" ## mis-classified - fine
+    ) |> 
+    mutate(qc_anno = case_when(
+        grepl("fold", ManualAnnotation) ~ "fold",
+        grepl("out_edge", ManualAnnotation) ~ "out_edge",
+        grepl("tissue", ManualAnnotation) ~ "out_tissue",
+        TRUE ~ ManualAnnotation)
+    )
+
+qc_anno |> dplyr::count(ManualAnnotation, qc_anno)
+# qc_anno |> 
+#     filter(ManualAnnotation == "qc_drop") |>
+#     group_by(sample_id, file) |>
+#     summarize(n = n(),
+#               anno = paste(unique(ManualAnnotation), collapse = ",")
+#               # ,
+#               # files = paste(unique(file), collapse = ",")
+#               )
+
+qc_anno_clean <- qc_anno |>
+    select(sample_id, sample_id, spot_name, qc_anno)  |>
+    unique() |>
+    left_join(pd) |>
+    filter(in_tissue) |>
+    as.data.frame()
+
+qc_anno_clean |>
+    count(qc_anno)
+#      qc_anno    n
+# 1     circle   45
+# 2       fold 1255
+# 3   out_edge  268
+# 4 out_tissue   71
+# 5       tail  105
+# 6  torn_edge  820
+
+qc_anno_clean |>
+    count(sample_id, qc_anno, scran_discard)
+
+qc_anno_clean |>
+    count(qc_anno, scran_discard)
+
+## spots with more than 1 annotation
+qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1) |> arrange(spot_name)
+
+write.csv(qc_anno_clean, file = here("processed-data", "02_build_spe", "spe_qc_anno_clean.csv"), row.names = FALSE)
+
+qc_summary <- qc_anno_clean |> 
+    count(sample_id, qc_anno) |>
+    arrange(qc_anno) |>
+    mutate(summary = paste0(qc_anno, ":" ,n)) |>
+    group_by(sample_id) |>
+    summarize(n = sum(n),
+              anno = paste(summary, collapse = ","))
+
+write.csv(qc_summary, file = here("processed-data", "02_build_spe", "spe_qc_summary.csv"), row.names = FALSE)
+
+# qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
+
+rownames(qc_anno_clean) <- qc_anno_clean$spot_name
+spe$qc_anno <- qc_anno_clean[colnames(spe),]$qc_anno
+spe$qc_anno[spe$in_tissue & is.na(spe$qc_anno)] <- "None"
+spe$qc_anno <- factor(spe$qc_anno)
+
+table(spe$qc_anno)
