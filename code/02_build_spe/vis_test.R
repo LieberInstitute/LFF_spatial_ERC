@@ -21,8 +21,14 @@ table(spe$sample_id, spe$in_tissue)
 # Br5212   315 4677
 # ...
 
+any(is.na(spe$in_tissue))
 
 colData(spe)
+
+type(spe$in_tissue)
+# [1] "logical"
+
+spe$in_tissue_factor <- as.factor(spe$in_tissue)
 
 vis_grid_clus(
     spe = spe,
@@ -33,6 +39,53 @@ vis_grid_clus(
     # colors = c("in" = "grey90", "out" = "orange")
 )
 
+# With sort_clust = TRUE
+# Error in `[[<-`(`*tmp*`, clustervar, value = c(`FALSE` = 2L, `TRUE` = 1L,  : 
+#                                                    122746 elements in value to replace 154752 elements
+
+## 50x warning
+# 1: No shared levels found between `names(values)` of the manual scale and the data's fill values.
+
+## doesn't work with factor either
+spe$in_tissue_factor <- factor(spe$in_tissue)
+
+vis_grid_clus(
+    spe = spe,
+    clustervar = "in_tissue_factor",
+    pdf = here::here(plot_dir, "spe_erc_grid-in_tissue_factor.pdf"),
+    sort_clust = FALSE,
+    point_size = 1
+    # colors = c("in" = "grey90", "out" = "orange")
+)
+# Warning messages:
+# 1: No shared levels found between `names(values)` of the manual scale and the data's fill values.
+# 2: No shared levels found between `names(values)` of the manual scale and the data's fill values.
+
+## works for vis_clus
+pdf(here::here(plot_dir, "spe_erc_Br6085-in_tissue.pdf"))
+vis_clus(
+    spe = spe,
+    sampleid = "Br6085",
+    clustervar = "in_tissue",
+    point_size = 1
+    # colors = c("in" = "grey90", "out" = "orange")
+)
+dev.off()
+
+## QC annotations
+qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "03_qc_app"), full.names = TRUE), read.csv) |>
+    filter(!is.na(ManualAnnotation)) |>
+    count(sample_id, spot_name, ManualAnnotation) |> 
+    filter(!(spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
+
+qc_anno |> count(ManualAnnotation)
+
+qc_anno |> count(sample_id, spot_name) |> filter(n>1)
+# qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
+
+rownames(qc_anno) <- qc_anno$spot_name
+spe$qc_anno <- factor(qc_anno[colnames(spe),]$ManualAnnotation)
+
 vis_grid_clus(
     spe = spe,
     clustervar = "qc_anno",
@@ -42,21 +95,73 @@ vis_grid_clus(
     # colors = c("in" = "grey90", "out" = "orange")
 )
 
-# With sort_clust = TRUE
-# Error in `[[<-`(`*tmp*`, clustervar, value = c(`FALSE` = 2L, `TRUE` = 1L,  : 
-#                                                    122746 elements in value to replace 154752 elements
 
-pdf(here::here(plot_dir, "spe_erc_Br6085-in_tissue.pdf"))
+pdf(here::here(plot_dir, "spe_erc_Br6085-qc_anno.pdf"))
 vis_clus(
     spe = spe,
     sampleid = "Br6085",
-    clustervar = "in_tissue",
+    clustervar = "qc_anno",
     # clustervar = "ManualAnnotation",
     # sort_clust = FALSE,
     point_size = 1
     # colors = c("in" = "grey90", "out" = "orange")
 )
 dev.off()
+
+#### Same issue with other data? #### Reported as an issue to spatialLIBD
+# spe <- fetch_data("spatialDLPFC_Visium_example_subset")
+# 
+# ## works on integer data
+# type(spe$BayesSpace_harmony_02)
+# # [1] "integer"
+# 
+# vis_grid_clus(
+#     spe = spe,
+#     clustervar = "BayesSpace_harmony_02",
+#     pdf = here::here(plot_dir, "spe_DLPFC_grid-BayesSpace_harmony_02.pdf"),
+#     sort_clust = FALSE,
+#     point_size = 2
+# )
+# 
+# 
+# colData(spe)
+# table(spe$BayesSpace_harmony_02)
+# 
+# spe$BayesSpace_harmony_02_lgl <- spe$BayesSpace_harmony_02 ==1
+# table(spe$BayesSpace_harmony_02)
+# 
+# ## vis_clus works fine
+# png(here::here(plot_dir, "spe_DLPFC_BayesSpace_harmony_02_lgl.png"))
+# vis_clus(
+#     sampleid = "Br6432_ant",
+#     spe = spe,
+#     clustervar = "BayesSpace_harmony_02_lgl",
+#     point_size = 2
+# )
+# dev.off()
+# 
+# vis_grid_clus(
+#     spe = spe,
+#     clustervar = "BayesSpace_harmony_02_lgl",
+#     pdf = here::here(plot_dir, "spe_DLPFC_grid-BayesSpace_harmony_02_lgl.pdf"),
+#     sort_clust = FALSE,
+#     point_size = 2
+# )
+# # Warning messages:
+# # 1: No shared levels found between `names(values)` of the manual scale and the data's fill values. 
+# # 2: No shared levels found between `names(values)` of the manual scale and the data's fill values.
+# 
+# ## sort_clust = TRUE throws error
+# vis_grid_clus(
+#     spe = spe,
+#     clustervar = "BayesSpace_harmony_02_lgl",
+#     pdf = here::here(plot_dir, "spe_DLPFC_grid-BayesSpace_harmony_02_lgl.pdf"),
+#     sort_clust = TRUE,
+#     point_size = 2
+# )
+# 
+# # Error in `[[<-`(`*tmp*`, clustervar, value = c(`TRUE` = 1L, `NA` = NA,  : 
+# #                                                    1239 elements in value to replace 12107 elements
 
 ## Reproducibility information
 print("Reproducibility information:")
