@@ -46,6 +46,9 @@ summary(spe$sum_umi[spe$in_tissue])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 1    1770    3327    3938    5334   39355 
 
+table(spe$sum_umi[spe$in_tissue] < 10)
+table(spe$sample_id[spe$in_tissue], spe$sum_umi[spe$in_tissue] < 10)
+
 summary(spe$sum_umi[!spe$in_tissue])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 3.0   179.0   277.0   352.4   417.0  5625.0 
@@ -188,6 +191,12 @@ dev.off()
 
 pd <- as.data.frame(colData(spe))
 
+pd |> 
+    filter(in_tissue, as.logical(scran_low_lib_size)) |> 
+    group_by(sample_id) |> 
+    dplyr::summarize(umi_cutoff = max(sum_umi)) |>
+    arrange(umi_cutoff)
+
 ## ggplots for qc
 
 # qc_density_sum_umi <- pd |>
@@ -240,8 +249,7 @@ ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+
 
 
 #### Read in Annotations ####
-
-qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "03_qc_app"), full.names = TRUE), 
+qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "02_QC_app"), full.names = TRUE), 
                    ~read.csv(.x) |> mutate(file = gsub("spatialLIBD_ManualAnnotation_|.csv", "",basename(.x)))) |>
     filter(!is.na(ManualAnnotation),
            ManualAnnotation != "qc_drop", ## qc_drop was an old annotation
@@ -291,7 +299,7 @@ qc_anno_clean |>
 ## spots with more than 1 annotation
 qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1) |> arrange(spot_name)
 
-write.csv(qc_anno_clean, file = here("processed-data", "02_build_spe", "spe_qc_anno_clean.csv"), row.names = FALSE)
+write.csv(qc_anno_clean, file = here(data_dir, "spe_qc_anno_clean.csv"), row.names = FALSE)
 
 qc_summary <- qc_anno_clean |> 
     count(sample_id, qc_anno) |>
@@ -301,7 +309,7 @@ qc_summary <- qc_anno_clean |>
     summarize(n = sum(n),
               anno = paste(summary, collapse = ","))
 
-write.csv(qc_summary, file = here("processed-data", "02_build_spe", "spe_qc_summary.csv"), row.names = FALSE)
+write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
 
 # qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
 
@@ -311,3 +319,22 @@ spe$qc_anno[spe$in_tissue & is.na(spe$qc_anno)] <- "None"
 spe$qc_anno <- factor(spe$qc_anno)
 
 table(spe$qc_anno)
+
+qc_colors <- RColorBrewer::brewer.pal(name = "Set1", n=6)
+
+pdf(here(plot_dir, "spe_erc_QC_annotations.pdf"))
+map(sample_order, 
+    ~vis_clus(
+        spe = spe,
+        sampleid = .x,
+        clustervar = "qc_anno",
+        colors = c(out_edge = "#E41A1C",
+                   fold = "#377EB8",
+                   out_tissue ="#4DAF4A",
+                   tail = "#984EA3",
+                   torn_edge ="#FF7F00",
+                   circle = "#FFFF33",
+                   None = "grey50")
+    ))
+dev.off()
+
