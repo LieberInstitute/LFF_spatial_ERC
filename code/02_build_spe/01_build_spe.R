@@ -208,24 +208,24 @@ lobstr::obj_size(spe_raw)
 message(Sys.time(), " - Saving Data")
 saveRDS(spe_raw, file.path(dir_rdata, "spe_raw.rds"))
 
-message(Sys.time(), " - Prelim plots")
-vis_grid_clus(
-    spe = spe_raw,
-    clustervar = "in_tissue",
-    pdf = here::here(plot_dir, "spe_grid_in_tissue.pdf"),
-    sort_clust = FALSE,
-    point_size = 1
-    # colors = c("in" = "grey90", "out" = "orange")
-)
-
-vis_grid_clus(
-    spe = spe_raw,
-    clustervar = "scran_low_lib_size_edge",
-    pdf = here::here(plot_dir, "spe_grid_scran_low_lib_size_edge.pdf"),
-    sort_clust = FALSE,
-    point_size = 1
-    # colors = c("in" = "grey90", "out" = "orange")
-)
+# message(Sys.time(), " - Prelim plots")
+# vis_grid_clus(
+#     spe = spe_raw,
+#     clustervar = "in_tissue",
+#     pdf = here::here(plot_dir, "spe_grid_in_tissue.pdf"),
+#     sort_clust = FALSE,
+#     point_size = 1
+#     # colors = c("in" = "grey90", "out" = "orange")
+# )
+# 
+# vis_grid_clus(
+#     spe = spe_raw,
+#     clustervar = "scran_low_lib_size_edge",
+#     pdf = here::here(plot_dir, "spe_grid_scran_low_lib_size_edge.pdf"),
+#     sort_clust = FALSE,
+#     point_size = 1
+#     # colors = c("in" = "grey90", "out" = "orange")
+# )
 
 
 ## Reproducibility information
