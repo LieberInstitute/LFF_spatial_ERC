@@ -312,29 +312,58 @@ qc_summary <- qc_anno_clean |>
 write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
 
 # qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
+# 
+# rownames(qc_anno_clean) <- qc_anno_clean$spot_name
+# spe$qc_anno <- qc_anno_clean[colnames(spe),]$qc_anno
+# spe$qc_anno[spe$in_tissue & is.na(spe$qc_anno)] <- "None"
+# spe$qc_anno <- factor(spe$qc_anno)
 
-rownames(qc_anno_clean) <- qc_anno_clean$spot_name
-spe$qc_anno <- qc_anno_clean[colnames(spe),]$qc_anno
-spe$qc_anno[spe$in_tissue & is.na(spe$qc_anno)] <- "None"
-spe$qc_anno <- factor(spe$qc_anno)
+pd <- pd |>
+    left_join(qc_anno_clean |> select(qc_anno, key = spot_name)) |>
+    mutate(qc_anno = factor(ifelse(is.na(qc_anno) & in_tissue, "None", qc_anno)),
+           scran_qc_anno = factor(ifelse(as.logical(scran_discard), paste0("scran-", qc_anno), as.character(qc_anno)))
+    )
 
+pd|> count(in_tissue, qc_anno, scran_qc_anno)
+
+spe$qc_anno <- pd$qc_anno
+spe$scran_qc_anno <- pd$scran_qc_anno
+
+levels(pd$scran_qc_anno)
+
+## add to spe
 table(spe$qc_anno)
+table(spe$scran_anno)
 
 qc_colors <- RColorBrewer::brewer.pal(name = "Set1", n=6)
+
+qc_colors <- c(out_edge = "#E41A1C",
+  fold = "#377EB8",
+  out_tissue ="#4DAF4A",
+  tail = "#984EA3",
+  torn_edge ="#FF7F00",
+  circle = "#FFFF33",
+  None = "grey50")
+
+qc_colors_dark <- c(out_edge = "#A51215",
+               fold = "#26567E",
+               out_tissue ="#327330",
+               tail = "#67356E",
+               torn_edge ="#B85C00",
+               circle = "#CCCC00",
+               None = "grey25")
+
+names(qc_colors_dark) <- paste0("scran-", names(qc_colors_dark))
+
 
 pdf(here(plot_dir, "spe_erc_QC_annotations.pdf"))
 map(sample_order, 
     ~vis_clus(
         spe = spe,
         sampleid = .x,
-        clustervar = "qc_anno",
-        colors = c(out_edge = "#E41A1C",
-                   fold = "#377EB8",
-                   out_tissue ="#4DAF4A",
-                   tail = "#984EA3",
-                   torn_edge ="#FF7F00",
-                   circle = "#FFFF33",
-                   None = "grey50")
+        point_size = 1,
+        clustervar = "scran_qc_anno",
+        colors = c(qc_colors, qc_colors_dark)
     ))
 dev.off()
 
