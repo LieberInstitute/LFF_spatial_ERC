@@ -250,7 +250,8 @@ ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+
 
 #### Read in Annotations ####
 qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "02_QC_app"), full.names = TRUE), 
-                   ~read.csv(.x) |> mutate(file = gsub("spatialLIBD_ManualAnnotation_|.csv", "",basename(.x)))) |>
+                   ~read.csv(.x) |> 
+                       mutate(file = gsub("spatialLIBD_ManualAnnotation_|.csv", "",basename(.x)))) |>
     filter(!is.na(ManualAnnotation),
            ManualAnnotation != "qc_drop", ## qc_drop was an old annotation
            spot_name != "TAACATACAATGTGGG-1_Br5367" ## mis-classified - fine
@@ -259,9 +260,11 @@ qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "02_QC_app"
         grepl("fold", ManualAnnotation) ~ "fold",
         grepl("out_edge", ManualAnnotation) ~ "out_edge",
         grepl("tissue", ManualAnnotation) ~ "out_tissue",
+        grepl("torn_edge|circle", ManualAnnotation) ~ "vessel",
         TRUE ~ ManualAnnotation)
     )
 
+qc_anno |> dplyr::count(file)
 qc_anno |> dplyr::count(ManualAnnotation, qc_anno)
 # qc_anno |> 
 #     filter(ManualAnnotation == "qc_drop") |>
@@ -273,8 +276,10 @@ qc_anno |> dplyr::count(ManualAnnotation, qc_anno)
 #               )
 
 qc_anno_clean <- qc_anno |>
-    select(sample_id, sample_id, spot_name, qc_anno)  |>
-    unique() |>
+    group_by(sample_id, spot_name) |>
+    arrange(desc(file)) |>
+    slice(1) |> ## select most recent anotations if there are more than one for a spot
+    select(sample_id, sample_id, spot_name, qc_anno, file)  |>
     left_join(pd |>
                   select(sample_id, spot_name = key, in_tissue, scran_low_lib_size_edge, scran_discard)) |>
     filter(in_tissue) |>
@@ -283,12 +288,12 @@ qc_anno_clean <- qc_anno |>
 qc_anno_clean |>
     count(qc_anno)
 #      qc_anno    n
-# 1     circle   45
-# 2       fold 1255
-# 3   out_edge  268
-# 4 out_tissue   71
-# 5       tail  105
-# 6  torn_edge  820
+# 1       None    2
+# 2       fold 1419
+# 3   out_edge  257
+# 4 out_tissue   69
+# 5       tail   74
+# 6     vessel  944
 
 qc_anno_clean |>
     count(sample_id, qc_anno, scran_discard)
@@ -297,7 +302,12 @@ qc_anno_clean |>
     count(qc_anno, scran_discard)
 
 ## spots with more than 1 annotation
-qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1) |> arrange(spot_name)
+qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1)
+
+## test
+# qc_anno_clean  |> filter(spot_name == "AACTAGCGTATCGCAC-1_Br5517")
+# qc_anno_clean  |> filter(sample_id == "Br5276") |> arrange(file)
+
 
 write.csv(qc_anno_clean, file = here(data_dir, "spe_qc_anno_clean.csv"), row.names = FALSE)
 
@@ -318,42 +328,44 @@ write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = F
 # spe$qc_anno[spe$in_tissue & is.na(spe$qc_anno)] <- "None"
 # spe$qc_anno <- factor(spe$qc_anno)
 
+# pd$qc_anno <- NULL ## reset
 pd <- pd |>
     left_join(qc_anno_clean |> select(qc_anno, key = spot_name)) |>
     mutate(qc_anno = factor(ifelse(is.na(qc_anno) & in_tissue, "None", qc_anno)),
            scran_qc_anno = factor(ifelse(as.logical(scran_discard), paste0("scran-", qc_anno), as.character(qc_anno)))
     )
 
+# qc_anno_clean|> count(qc_anno)
+pd|> count(in_tissue, qc_anno)
 pd|> count(in_tissue, qc_anno, scran_qc_anno)
 
+
+# pd |> filter(qc_anno == "out_tissue")
+
+## add to spe
 spe$qc_anno <- pd$qc_anno
 spe$scran_qc_anno <- pd$scran_qc_anno
 
-levels(pd$scran_qc_anno)
-
-## add to spe
 table(spe$qc_anno)
-table(spe$scran_anno)
+# fold       None   out_edge out_tissue       tail     vessel 
+# 1255     120153        258         71         65        944 
+table(spe$scran_qc_anno)
 
-qc_colors <- RColorBrewer::brewer.pal(name = "Set1", n=6)
+# qc_colors <- RColorBrewer::brewer.pal(name = "Set1", n=6)
 
-qc_colors <- c(out_edge = "#E41A1C",
-  fold = "#377EB8",
-  out_tissue ="#4DAF4A",
-  tail = "#984EA3",
-  torn_edge ="#FF7F00",
-  circle = "#FFFF33",
-  None = "grey50")
+qc_colors <- c(`scran-out_edge` = "#6DD3CE",
+               out_edge = "#097FE0",
+               `scran-fold` = "#91FA11",
+               fold = "#4BA402",
+               `scran-out_tissue` ="#FB9D88",
+               out_tissue ="#F24018",
+               `scran-tail` = "#EDDD00",
+               tail = "#FE7215",
+               `scran-vessel` ="#FA73E6",
+               vessel ="#BB1EF4",
+               `scran-none` = "black",
+               None = "grey50")
 
-qc_colors_dark <- c(out_edge = "#A51215",
-               fold = "#26567E",
-               out_tissue ="#327330",
-               tail = "#67356E",
-               torn_edge ="#B85C00",
-               circle = "#CCCC00",
-               None = "grey25")
-
-names(qc_colors_dark) <- paste0("scran-", names(qc_colors_dark))
 
 
 pdf(here(plot_dir, "spe_erc_QC_annotations.pdf"))
@@ -361,9 +373,9 @@ map(sample_order,
     ~vis_clus(
         spe = spe,
         sampleid = .x,
-        point_size = 1,
+        point_size = 1.2,
         clustervar = "scran_qc_anno",
-        colors = c(qc_colors, qc_colors_dark)
+        colors = c(qc_colors, qc_colors2)
     ))
 dev.off()
 
