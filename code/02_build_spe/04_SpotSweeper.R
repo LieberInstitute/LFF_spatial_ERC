@@ -3,7 +3,6 @@ library("SpotSweeper")
 library("spatialLIBD")
 library("here")
 library("sessioninfo")
-library("escheR")
 
 plot_dir <- here("plots", "02_build_spe", "04_SpotSweeper")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -60,11 +59,65 @@ spe <- localOutliers(spe,
                      log = FALSE
 )
 
-# combine all outliers into "local_outliers" column
-spe$local_outliers <- as.logical(spe$sum_outliers) |
-    as.logical(spe$detected_outliers) |
-    as.logical(spe$subsets_Mito_percent_outliers)
+table(spe$sum_umi_outliers)
+table(spe$sum_umi_outliers, spe$scran_low_lib_size)
+#         TRUE  FALSE
+# FALSE   5994 116432
+# TRUE     223     97
 
+table(spe$sum_gene_outliers)
+table(spe$sum_gene_outliers, spe$scran_low_lib_size)
+
+table(spe$expr_chrM_ratio_outliers)
+# FALSE   TRUE 
+# 122703     43
+table(spe$expr_chrM_ratio_outliers, spe$scran_high_subsets_Mito_percent)
+#        TRUE  FALSE
+# FALSE    458 122245
+# TRUE      11     32
+
+# combine all outliers into "local_outliers" column
+spe$local_outliers <- as.logical(spe$sum_umi_outliers) |
+    as.logical(spe$sum_gene_outliers) |
+    as.logical(spe$expr_chrM_ratio_outliers)
+
+library(ggpubr)
+
+# library size
+p1 <- plotQC(spe,
+             metric = "sum_umi_log",
+             outliers = "sum_umi_outliers", point_size = 1.1
+) +
+    ggtitle("Sum UMI")
+
+# unique genes
+p2 <- plotQC(spe,
+             metric = "sum_gene_log",
+             outliers = "detected_outliers", point_size = 1.1
+) +
+    ggtitle("Sum Genes")
+
+# mitochondrial percent
+p3 <- plotQC(spe,
+             metric = "expr_chrM_ratio",
+             outliers = "expr_chrM_ratio_outliers", point_size = 1.1
+) +
+    ggtitle("ChrM Ratio")
+
+# all local outliers
+p4 <- plotQC(spe,
+             metric = "sum_log",
+             outliers = "local_outliers", point_size = 1.1, stroke = 0.75
+) +
+    ggtitle("All Local Outliers")
+
+# plot
+plot_list <- list(p1, p2, p3, p4)
+ggarrange(
+    plotlist = plot_list,
+    ncol = 2, nrow = 2,
+    common.legend = FALSE
+)
 
 # find artifacts using SpotSweeper
 spe <- findArtifacts(spe,
@@ -73,4 +126,6 @@ spe <- findArtifacts(spe,
                      n_rings = 5,
                      name = "artifact"
 )
+
+
 
