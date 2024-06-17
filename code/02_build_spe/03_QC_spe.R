@@ -379,3 +379,11 @@ map(sample_order,
     ))
 dev.off()
 
+# slurmjobs::job_single('03_QC_spe', create_shell = TRUE, memory = '25G', command = "Rscript 03_QC_spe.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()

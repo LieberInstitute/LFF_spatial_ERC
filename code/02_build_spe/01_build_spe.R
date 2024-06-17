@@ -227,6 +227,7 @@ saveRDS(spe_raw, file.path(dir_rdata, "spe_raw.rds"))
 #     # colors = c("in" = "grey90", "out" = "orange")
 # )
 
+# slurmjobs::job_single('01_build_spe', create_shell = TRUE, memory = '25G', command = "Rscript 01_build_spe.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
