@@ -94,7 +94,7 @@ vis_grid_gene(
     spe = spe[,spe$in_tissue],
     geneid = "expr_chrM_ratio",
     pdf = here::here(plot_dir, "spe_erc_grid-expr_chrM_ratio_in_tissue.pdf"),
-    # assayname = "counts",
+    assayname = "counts",
     point_size = 1,
     sample_order = sample_order
 )
@@ -122,6 +122,7 @@ vis_grid_gene(
     spe = spe[,spe$in_tissue],
     geneid = "sum_gene",
     pdf = here::here(plot_dir, "spe_erc_grid-sum_gene_in_tissue.pdf"),
+    assayname = "counts",
     point_size = 1
 )
 
@@ -129,6 +130,7 @@ vis_grid_gene(
     spe = spe[,!spe$in_tissue],
     geneid = "sum_gene",
     pdf = here::here(plot_dir, "spe_erc_grid-sum_gene_out_tissue.pdf"),
+    assayname = "counts",
     point_size = 1
 )
 
