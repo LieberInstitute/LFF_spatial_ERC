@@ -1,4 +1,5 @@
 
+library("ggplot2")
 library("SpotSweeper")
 library("spatialLIBD")
 library("here")
@@ -20,22 +21,22 @@ spe <- spe[, spe$in_tissue]
 dim(spe)
 # [1]  30494 122746
 
-## Add Scuttle QC metrics
-# change from gene id to gene names
-rownames(spe) <- rowData(spe)$gene_name
-
-# identifying the mitochondrial transcripts
-is.mito <- rownames(spe)[grepl("^MT-", rownames(spe))]
-
-# calculating QC metrics for each spot using scuttle
-spe <- scuttle::addPerCellQCMetrics(spe, subsets = list(Mito = is.mito))
-colData(spe)
-
-## subsets_Mito_percent == expr_chrM_ratio*100
-head(colData(spe)[,c("expr_chrM_ratio", "subsets_Mito_percent")], 50)
-mito_diff = spe$expr_chrM_ratio*100 - spe$subsets_Mito_percent
-summary(mito_diff)
-head(mito_diff)
+# ## Add Scuttle QC metrics
+# # change from gene id to gene names
+# rownames(spe) <- rowData(spe)$gene_name
+# 
+# # identifying the mitochondrial transcripts
+# is.mito <- rownames(spe)[grepl("^MT-", rownames(spe))]
+# 
+# # calculating QC metrics for each spot using scuttle
+# spe <- scuttle::addPerCellQCMetrics(spe, subsets = list(Mito = is.mito))
+# colData(spe)
+# 
+# ## subsets_Mito_percent == expr_chrM_ratio*100
+# head(colData(spe)[,c("expr_chrM_ratio", "subsets_Mito_percent")], 50)
+# mito_diff = spe$expr_chrM_ratio*100 - spe$subsets_Mito_percent
+# summary(mito_diff)
+# head(mito_diff)
 
 #### Spot sweeper ####
 # library size
@@ -81,6 +82,8 @@ spe$local_outliers <- as.logical(spe$sum_umi_outliers) |
     as.logical(spe$sum_gene_outliers) |
     as.logical(spe$expr_chrM_ratio_outliers)
 
+table(spe$local_outliers)
+
 library(ggpubr)
 
 # library size
@@ -93,7 +96,7 @@ p1 <- plotQC(spe,
 # unique genes
 p2 <- plotQC(spe,
              metric = "sum_gene_log",
-             outliers = "detected_outliers", point_size = 1.1
+             outliers = "sum_gene_outliers", point_size = 1.1
 ) +
     ggtitle("Sum Genes")
 
@@ -106,7 +109,7 @@ p3 <- plotQC(spe,
 
 # all local outliers
 p4 <- plotQC(spe,
-             metric = "sum_log",
+             metric = "sum_umi_log",
              outliers = "local_outliers", point_size = 1.1, stroke = 0.75
 ) +
     ggtitle("All Local Outliers")
@@ -120,6 +123,7 @@ ggarrange(
 )
 
 # find artifacts using SpotSweeper
+
 spe <- findArtifacts(spe,
                      mito_percent = "expr_chrM_ratio",
                      mito_sum = "expr_chrM",
@@ -127,5 +131,41 @@ spe <- findArtifacts(spe,
                      name = "artifact"
 )
 
-
+# Error in .set_internal_all(x, value, getfun = int_colData, setfun = `int_colData<-`,  : 
+#                                invalid 'value' in 'reducedDims(<SpatialExperiment>) <- value'
+#                            each element of 'value' should have number of rows equal to 'ncol(x)'
+# 4: In .check_reddim_names(x, value[[v]], withDimnames = TRUE, vname = sprintf("value[[%s]]",  :
+#     non-NULL 'rownames(value[[4]])' should be the same as 'colnames(x)' for 'reducedDims<-'. This will
+#   be an error in the next release of Bioconductor.
+#  > traceback()
+# 5: stop("invalid 'value' in '", funstr, "(<", class(x), ">) <- value'\n", 
+#         "each element of 'value' should have number of ", vdimstr, 
+#         " equal to '", xdimstr, "(x)'")
+# 4: .set_internal_all(x, value, getfun = int_colData, setfun = `int_colData<-`, 
+#                      key = .red_key, convertfun = NULL, xdimfun = ncol, vdimfun = nrow, 
+#                      funstr = "reducedDims", xdimstr = "ncol", vdimstr = "rows")
+# 3: `reducedDims<-`(`*tmp*`, value = reducedDims(spe.temp))
+# 2: `reducedDims<-`(`*tmp*`, value = reducedDims(spe.temp))
+# 1: findArtifacts(spe, mito_percent = "expr_chrM_ratio", mito_sum = "expr_chrM", 
+#                 n_rings = 5, name = "artifact")                           
+#                           
+# 
+artifact_list <- purrr::map(unique(spe$sample_id), function(samp){
+    message(Sys.time(), " - ", samp)
+    spe_temp <- findArtifacts(spe[,spe$sample_id == samp],
+                              mito_percent = "expr_chrM_ratio",
+                              mito_sum = "expr_chrM",
+                              n_rings = 5,
+                              name = "artifact"
+    )
+    
+    print(plotQC(spe_temp,
+           metric = "expr_chrM_ratio",
+           outliers = "artifact", 
+           point_size = 1.1, 
+           stroke = 0.75
+    ))
+    
+    return(spe$artifact)
+})
 
