@@ -6,10 +6,10 @@ library("scater")
 library("here")
 library("sessioninfo")
 
-plot_dir <- here("plots", "02_build_spe", "03_QC_spe")
+plot_dir <- here("plots", "02_build_spe", "05_QC_spe")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-data_dir <- here("processed-data", "02_build_spe", "03_QC_spe")
+data_dir <- here("processed-data", "02_build_spe", "05_QC_spe")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 ## load spe
@@ -381,7 +381,7 @@ map(sample_order,
     ))
 dev.off()
 
-# slurmjobs::job_single('03_QC_spe', create_shell = TRUE, memory = '25G', command = "Rscript 03_QC_spe.R")
+# slurmjobs::job_single('05_QC_spe', create_shell = TRUE, memory = '25G', command = "Rscript 05_QC_spe.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

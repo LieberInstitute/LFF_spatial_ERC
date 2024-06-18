@@ -12,7 +12,7 @@ options(repos = BiocManager::repositories())
 
 spe <- readRDS(here("processed-data", "02_build_spe","spe_raw.rds"))
 
-qc_file = here("processed-data", "02_build_spe", "03_QC_spe", "spe_qc_anno_clean.csv")
+qc_file = here("processed-data", "02_build_spe", "05_QC_spe", "spe_qc_anno_clean.csv")
 if(file.exists(qc_file)){
     qc_anno_clean <- read.csv(qc_file)
     pd <- as.data.frame(colData(spe))
