@@ -2,6 +2,7 @@
 library("ggplot2")
 library("SpotSweeper")
 library("spatialLIBD")
+library("purrr")
 library("here")
 library("sessioninfo")
 library("ggpubr")
@@ -14,6 +15,7 @@ data_dir <- here("processed-data", "02_build_spe", "04_SpotSweeper")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 
+set.seed(20240617)
 spe <- readRDS(here("processed-data", "02_build_spe", "spe_raw.rds"))
 colnames(colData(spe))
 
@@ -23,91 +25,50 @@ spe <- spe[, spe$in_tissue]
 dim(spe)
 # [1]  30494 122746
 
-# ## Add Scuttle QC metrics
-# # change from gene id to gene names
-# rownames(spe) <- rowData(spe)$gene_name
-# 
-# # identifying the mitochondrial transcripts
-# is.mito <- rownames(spe)[grepl("^MT-", rownames(spe))]
-# 
-# # calculating QC metrics for each spot using scuttle
-# spe <- scuttle::addPerCellQCMetrics(spe, subsets = list(Mito = is.mito))
-# colData(spe)
-# 
-# ## subsets_Mito_percent == expr_chrM_ratio*100
-# head(colData(spe)[,c("expr_chrM_ratio", "subsets_Mito_percent")], 50)
-# mito_diff = spe$expr_chrM_ratio*100 - spe$subsets_Mito_percent
-# summary(mito_diff)
-# head(mito_diff)
-
 #### Spot sweeper ####
 # library size
+message(Sys.time(), "Local Outliers - sum_umi")
 spe <- localOutliers(spe,
                      metric = "sum_umi",
                      direction = "lower",
                      log = TRUE
 )
+table(spe$sum_umi_outliers)
+
 
 # unique genes
+message(Sys.time(), "Local Outliers - sum_gene")
 spe <- localOutliers(spe,
                      metric = "sum_gene",
                      direction = "lower",
                      log = TRUE
 )
+table(spe$sum_gene_outliers)
 
 # mitochondrial percent
+message(Sys.time(), "Local Outliers - expr_chrM_ratio")
 spe <- localOutliers(spe,
                      metric = "expr_chrM_ratio",
                      direction = "higher",
                      log = FALSE
 )
-
-
-table(spe$sum_umi_outliers, spe$scran_low_lib_size)
-#         TRUE  FALSE
-# FALSE   5994 116432
-# TRUE     223     97
-table(spe$sum_umi_outliers, spe$scran_low_lib_size_edge)
-table(spe$sum_umi_outliers, spe$scran_low_lib_size_edge)
-
-table(spe$sum_gene_outliers)
-table(spe$sum_gene_outliers, spe$scran_low_lib_size)
-
 table(spe$expr_chrM_ratio_outliers)
-# FALSE   TRUE 
-# 122703     43
-table(spe$expr_chrM_ratio_outliers, spe$scran_high_subsets_Mito_percent)
-#        TRUE  FALSE
-# FALSE    458 122245
-# TRUE      11     32
 
 # combine all outliers into "local_outliers" column
 spe$local_outliers <- as.logical(spe$sum_umi_outliers) |
     as.logical(spe$sum_gene_outliers) |
     as.logical(spe$expr_chrM_ratio_outliers)
 
-table(spe$scran_discard)
+message("Local Outliers")
 table(spe$local_outliers)
-# FALSE   TRUE 
-# 122343    403
+
+message("Local Outliers on edge")
 table(spe$local_outliers, spe$edge_spot)
 
 
 #### find artifacts using SpotSweeper ####
 ## Only works one sample at a time
-# spe <- findArtifacts(spe,
-#                      mito_percent = "expr_chrM_ratio",
-#                      mito_sum = "expr_chrM",
-#                      n_rings = 5,
-#                      name = "artifact"
-# )
-
-# Error in .set_internal_all(x, value, getfun = int_colData, setfun = `int_colData<-`,  : 
-#                                invalid 'value' in 'reducedDims(<SpatialExperiment>) <- value'
-#                            each element of 'value' should have number of rows equal to 'ncol(x)'
-
-set.seed(20240617)
-
+message(Sys.time(), " - findArtifact")
 artifact_df <- purrr::map_dfr(unique(spe$sample_id), function(samp){
     message(Sys.time(), " - ", samp)
     spe_temp <- findArtifacts(spe[,spe$sample_id == samp],
@@ -129,7 +90,7 @@ artifact_df <- purrr::map_dfr(unique(spe$sample_id), function(samp){
 
 head(artifact_df)
 
-# colData(spe) <- merge(colData(spe), artifact_df)
+## Add artifact to spe
 identical(spe$key, artifact_df$key)
 spe$artifact <- artifact_df$artifact
 
@@ -194,17 +155,18 @@ plot_all_spot_sweep <- function(spe, sample = unique(spe$sample_id)[1]){
     )
 } 
 
+message(Sys.time(), " - Plot SpotSweeper QC for all samples")
 pdf(here(plot_dir, "SpotSweeper_ERC.pdf"), width = 12, height = 10)
 purrr::map(sort(unique(spe$sample_id)), ~plot_all_spot_sweep(spe = spe, sample = .x))
 dev.off()
 
 ## Consistent Outliers
-spotsweeper_data |>
-    as.tibble() |>
-    filter(local_outliers) |>
-    # count(array_row, array_col, sum_umi_outliers, sum_gene_outliers, expr_chrM_ratio_outliers) |>
-    count(array_row, array_col) |>
-    arrange(-n)
+# spotsweeper_data |>
+#     as.tibble() |>
+#     filter(local_outliers) |>
+#     # count(array_row, array_col, sum_umi_outliers, sum_gene_outliers, expr_chrM_ratio_outliers) |>
+#     count(array_row, array_col) |>
+#     arrange(-n)
     
 #   array_row array_col     n
 # 1        47        77    28
@@ -215,4 +177,11 @@ spotsweeper_data |>
 # 6        28        32    11
 # 7        53       117    10
 
+# slurmjobs::job_single('04_SpotSweeper', create_shell = TRUE, memory = '25G', command = "Rscript 04_SpotSweeper.R")
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
