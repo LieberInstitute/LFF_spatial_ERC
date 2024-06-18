@@ -62,11 +62,13 @@ spe <- localOutliers(spe,
                      log = FALSE
 )
 
-table(spe$sum_umi_outliers)
+
 table(spe$sum_umi_outliers, spe$scran_low_lib_size)
 #         TRUE  FALSE
 # FALSE   5994 116432
 # TRUE     223     97
+table(spe$sum_umi_outliers, spe$scran_low_lib_size_edge)
+table(spe$sum_umi_outliers, spe$scran_low_lib_size_edge)
 
 table(spe$sum_gene_outliers)
 table(spe$sum_gene_outliers, spe$scran_low_lib_size)
@@ -84,7 +86,11 @@ spe$local_outliers <- as.logical(spe$sum_umi_outliers) |
     as.logical(spe$sum_gene_outliers) |
     as.logical(spe$expr_chrM_ratio_outliers)
 
+table(spe$scran_discard)
 table(spe$local_outliers)
+# FALSE   TRUE 
+# 122343    403
+table(spe$local_outliers, spe$edge_spot)
 
 
 #### find artifacts using SpotSweeper ####
@@ -189,7 +195,7 @@ plot_all_spot_sweep <- function(spe, sample = unique(spe$sample_id)[1]){
 } 
 
 pdf(here(plot_dir, "SpotSweeper_ERC.pdf"), width = 12, height = 10)
-purrr::map(sort(unique(spe$sample_id)), ~print(plot_all_spot_sweep(spe = spe, sample = .x)))
+purrr::map(sort(unique(spe$sample_id)), ~plot_all_spot_sweep(spe = spe, sample = .x))
 dev.off()
 
 ## Consistent Outliers
