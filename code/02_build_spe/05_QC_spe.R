@@ -5,7 +5,10 @@ library("scran")
 library("scater")
 library("here")
 library("sessioninfo")
+library("patchwork")
+library("ggridges")
 
+#### set up dirs, load spe ####
 plot_dir <- here("plots", "02_build_spe", "05_QC_spe")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
@@ -199,6 +202,19 @@ pd |>
     dplyr::summarize(umi_cutoff = max(sum_umi)) |>
     arrange(umi_cutoff)
 
+# sample_id umi_cutoff
+# <chr>          <dbl>
+# 1 Br6538            53
+# 2 Br3974            75
+# 3 Br5276            82
+# 4 Br6321           224
+# 5 Br1039           267
+# 6 Br5529           294
+# 7 Br6263           416
+# 8 Br2582           441
+# 9 Br5832           459
+# 10 Br5517           482
+
 ## ggplots for qc
 
 # qc_density_sum_umi <- pd |>
@@ -209,7 +225,6 @@ pd |>
 # 
 # ggsave(qc_density_sum_umi, filename = here(plot_dir, "spe_erc_density-sum_umi.png"), height = 12)
 
-library(ggridges)
 
 qc_ggridge_sum_umi <- pd |>
     ggplot(aes(x = sum_umi, y= sample_id, fill = in_tissue, color = in_tissue)) +
@@ -241,7 +256,7 @@ qc_ggridge_expr_chrM_ratio <- pd |>
 
 ggsave(qc_ggridge_expr_chrM_ratio, filename = here(plot_dir, "spe_erc_ggridge-expr_chrM_ratio.png"), height = 12)
 
-library(patchwork)
+
 
 ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+ 
            qc_ggridge_sum_gene + theme(axis.title.y=element_blank(),axis.text.y=element_blank(), legend.position = "bottom") +
@@ -313,16 +328,6 @@ qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1)
 
 write.csv(qc_anno_clean, file = here(data_dir, "spe_qc_anno_clean.csv"), row.names = FALSE)
 
-qc_summary <- qc_anno_clean |> 
-    count(sample_id, qc_anno) |>
-    arrange(qc_anno) |>
-    mutate(summary = paste0(qc_anno, ":" ,n)) |>
-    group_by(sample_id) |>
-    summarize(n = sum(n),
-              anno = paste(summary, collapse = ","))
-
-write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
-
 # qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
 # 
 # rownames(qc_anno_clean) <- qc_anno_clean$spot_name
@@ -350,10 +355,9 @@ spe$scran_qc_anno <- pd$scran_qc_anno
 
 table(spe$qc_anno)
 # fold       None   out_edge out_tissue       tail     vessel 
-# 1255     120153        258         71         65        944 
+# 1419     119983        257         69         74        944 
 table(spe$scran_qc_anno)
 
-# qc_colors <- RColorBrewer::brewer.pal(name = "Set1", n=6)
 
 qc_colors <- c(`scran-out_edge` = "#6DD3CE",
                out_edge = "#097FE0",
@@ -380,6 +384,89 @@ map(sample_order,
         colors = c(qc_colors, qc_colors2)
     ))
 dev.off()
+
+#### Spot Sweeper Data ####
+
+spotsweeper_data <- read.csv(here("processed-data", "02_build_spe", "04_SpotSweeper", "SpotSweeper_data.csv"), row.names = 1)
+
+pd_qc <- pd |>
+    left_join(spotsweeper_data) |>
+    mutate(Drop = case_when(local_outliers ~ TRUE,
+                            qc_anno %in% c("out_tissue", "tail") ~ TRUE,
+                            !in_tissue ~NA,
+                            TRUE ~ FALSE
+    ))
+
+pd_qc |> 
+    filter(in_tissue) |> 
+    count(scran_discard, local_outliers) |>
+    mutate(precent = 100*n/sum(n))
+# scran_discard local_outliers      n     precent
+# 1          TRUE          FALSE   6663  5.42828280
+# 2          TRUE           TRUE    285  0.23218679
+# 3         FALSE          FALSE 115680 94.24339693
+# 4         FALSE           TRUE    118  0.09613348
+
+
+
+
+# summary
+qc_summary <- qc_anno_clean |> 
+    count(sample_id, qc_anno) |>
+    arrange(qc_anno) |>
+    mutate(summary = paste0(qc_anno, ":" ,n)) |>
+    group_by(sample_id) |>
+    summarize(n = sum(n),
+              anno = paste(summary, collapse = ","))
+
+qc_summary <- pd_qc |> 
+    filter(in_tissue) |>
+    count(sample_id, qc_anno, local_outliers, Drop) |>
+    group_by(sample_id) |>
+    mutate(precent = 100*n/sum(n))
+
+# pd_qc |> 
+#     filter(in_tissue) |>
+#     count(sample_id,  Drop) |>
+#     group_by(sample_id) |>
+#     mutate(precent = 100*n/sum(n))
+
+
+write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
+
+
+#### Drop Spots ####
+
+pd_qc |> count(Drop)
+# Drop      n
+# 1 FALSE 122202
+# 2  TRUE    544
+# 3    NA  32006
+
+pd |> count(qc_anno, local_outliers, Drop)
+# qc_anno local_outliers  Drop      n
+# 1        fold          FALSE FALSE   1408
+# 2        fold           TRUE  TRUE     11
+# 3        None          FALSE FALSE 119633
+# 4        None           TRUE  TRUE    350
+# 5    out_edge          FALSE FALSE    221
+# 6    out_edge           TRUE  TRUE     36
+# 7  out_tissue          FALSE  TRUE     67
+# 8  out_tissue           TRUE  TRUE      2
+# 9        tail          FALSE  TRUE     74
+# 10     vessel          FALSE FALSE    940
+# 11     vessel           TRUE  TRUE      4
+# 12       <NA>             NA FALSE  32006
+
+
+pd_qc <- pd_qc |> 
+    filter(in_tissue, !Drop) 
+
+spe <- spe[,pd_qc$key]
+dim(spe)
+
+saveRDS(spe, file = here("processed-data", "02_build_spe", "spe.rds"))
+
 
 # slurmjobs::job_single('05_QC_spe', create_shell = TRUE, memory = '25G', command = "Rscript 05_QC_spe.R")
 
