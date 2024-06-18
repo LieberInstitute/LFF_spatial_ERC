@@ -104,7 +104,7 @@ write.csv(spotsweeper_data, file = here(data_dir, "SpotSweeper_data.csv"))
 # Br5599 - artifact is not in corner (not sure this is a dry corner)
 # Br6085 - finds vascular tissue 
 # Br6098 - flagged corner + top edge, but lots of other tissue
-table(spe$BrNum[which(spe$Visium_slide %in% dryspots)])
+# table(spe$BrNum[which(spe$Visium_slide %in% dryspots)])
 
 #### plotting ####
 plot_all_spot_sweep <- function(spe, sample = unique(spe$sample_id)[1]){
