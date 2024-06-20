@@ -24,16 +24,17 @@ message(Sys.time(), "- Read in Sample Info")
 ## check datatype, use factors when possible
 sample_info <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_plan.csv")) |>
     filter(is.na(lc_note)) |>
-    mutate(Visium_slide = paste0(`Visium.Slide..`, "_" ,`Visium_subslide`),
+    mutate(VNum = paste0(`Visium.Slide..`, "_" ,`Visium_subslide`),
            APOE = gsub(", ", "/", APOE,),
-           sample_path = here("processed-data", "01_spaceranger", paste0(Visium_slide,"_untrimmed"), ## if untrimmed file exist, select it
+           sample_path = here("processed-data", "01_spaceranger", paste0(VNum,"_untrimmed"), ## if untrimmed file exist, select it
                               "outs"),
            Ancestry = gsub("CAUC", "EA", Ancestry)) |>
-    select(sample_id = BrNum, Visium_slide, APOE, Ancestry, Sex, Age, Diagnosis, Rin, sample_path) |>
+    select(sample_id = BrNum, VNum, Visium_slide = `Visium.Slide..`, APOE, Ancestry, Sex, Age, Diagnosis, Rin, sample_path) |>
     mutate(sample_path = ifelse(file.exists(sample_path),
                                 sample_path, 
                                 gsub("_untrimmed", "", sample_path)),
            base_path = gsub("^.*?/(V.*?)/outs","\\1", sample_path),
+           round = ifelse(grepl("untrimmed", sample_path), "round1","round2"),
            BrNum = sample_id)
 
 ## all files exist
@@ -42,6 +43,11 @@ message("Processing data for ", sum(file.exists(sample_info$sample_path)), " sam
 
 # sample_info$sample_path[!file.exists(sample_info$sample_path)]
 
+## ADD Ancestry Data
+load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.Rdata"), verbose = TRUE)
+
+sample_info <- sample_info |>
+    left_join(samples_ancestry |> rename(Anc_Afr = Afr, Anc_Eur = Eur))
 
 ## write csv for easy access
 write.csv(sample_info, here(dir_rdata, "sample_info.csv"), row.names = FALSE)
@@ -133,7 +139,7 @@ segmentations_list <-
             return(NULL)
         }
         x <- read.csv(file)
-        x$Visium_slide <- gsub("_untrimmed","", gsub("^.*?/(V.*?)/outs","\\1", path))
+        x$VNum <- gsub("_untrimmed","", gsub("^.*?/(V.*?)/outs","\\1", path))
         x$key <- paste0(x$barcode, "_", sample_info$sample_id[which(path == sample_info$sample_path)])
         return(x)
     })
@@ -152,7 +158,7 @@ dim(segmentations)
 segmentation_match <- match(spe$key, segmentations$key)
 segmentation_info <-
     segmentations[segmentation_match, -which(
-        colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key", "Visium_slide")
+        colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key", "VNum")
     )]
 
 head(segmentation_info) 
@@ -168,6 +174,8 @@ message("Genes with no expression: ", length(no_expr), " (", round(length(no_exp
 spe <- spe[-no_expr, ]
 
 spe_raw <- add_qc_metrics(spe)
+
+## Add spot sweeper ?
 
 table(spe_raw$in_tissue, spe_raw$scran_discard)
 
