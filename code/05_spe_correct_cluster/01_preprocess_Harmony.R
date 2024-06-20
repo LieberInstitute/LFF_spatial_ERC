@@ -4,6 +4,7 @@ library("here")
 library("sessioninfo")
 library("scran")
 library("scater")
+library("Harmony")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "01_preprocess_Harmony")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -13,24 +14,47 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 spe <- readRDS(here("processed-data", "02_build_spe", "spe.rds"))
 
-#### Logcounts ####
-spe <- computeLibraryFactors(spe)
-summary(sizeFactors(spe))
-# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-# 0.000506 0.452028 0.845337 1.000000 1.352287 9.960555
 
-# calculate logcounts and store in object
+#### log counts ####
+
+## quick cluster
+message(Sys.time(), " - Running quickCluster()")
+set.seed(20240618)
+spe$scran_quick_cluster <- quickCluster(
+    spe,
+    # BPPARAM = MulticoreParam(4),
+    block = spe$sample_id #,
+    # block.BPPARAM = MulticoreParam(4)
+)
+
+table(spe$scran_quick_cluster)
+
+## plot quick clusters?
+
+## compute size factors
+message(Sys.time(), " - Run computeSumFactors()")
+
+spe <- computeSumFactors(spe,
+                         clusters = spe$scran_quick_cluster #,
+                         # BPPARAM = MulticoreParam(4)
+)
+Sys.time()
+
+
+message("summary sizeFactors")
+summary(sizeFactors(spe))
+
 spe <- logNormCounts(spe)
 
 #### HVGs ####
 
-# identify mitochondrial genes
-is_mito <- grepl("(^MT-)|(^mt-)", rowData(spe)$gene_name)
-table(is_mito)
-
-# remove mitochondrial genes
-spe <- spe[!is_mito, ]
-dim(spe)
+# identify mitochondrial genes ## suggested by bpST
+# is_mito <- grepl("(^MT-)|(^mt-)", rowData(spe)$gene_name)
+# table(is_mito)
+# 
+# # remove mitochondrial genes
+# spe <- spe[!is_mito, ]
+# dim(spe)
 
 # fit mean-variance relationship
 dec <- modelGeneVar(spe)
@@ -49,49 +73,122 @@ top_hvgs <- getTopHVGs(dec, prop = 0.1)
 length(top_hvgs)
 
 #### Reduced Dims ####
-set.seed(20240618)
 
 # compute PCA
+message(Sys.time(), " - Compute PCA")
+set.seed(20240618)
 spe <- runPCA(spe, subset_row = top_hvgs)
-# compute UMAP
-spe <- runUMAP(spe, dimred = "PCA")
 
-reducedDimNames(spe)
+# make elbow plot to determine PCs to use
+percent.var <- attr(reducedDim(spe, "PCA"), "percentVar")
+chosen.elbow <- PCAtools::findElbowPoint(percent.var)
+message("PCA elbow: ", chosen.elbow)
 
-ggplot(
-    data.frame(
-        reducedDim(
-            spe, "PCA"
-        )
-    ),
-    aes(x = PC1, y = PC2, color = spe$sum_umi)
-) +
-    geom_point(size = 1) +
-    theme_bw()
+pdf(file.path(plot_dir, "pca_elbow.pdf"), useDingbats = FALSE)
+plot(percent.var, xlab = "PC", ylab = "Variance explained (%)")
+abline(v = chosen.elbow, col = "red")
+dev.off()
 
-
-ggplot(
-    data.frame(
-        reducedDim(
-            spe, "UMAP"
-        )
-    ),
-    aes(x = UMAP1, y = UMAP2, color = spe$sample_id)
-) +
-    geom_point(size = 1) +
-    theme_bw()
-
-umap <- data.frame(
-    reducedDim(
-        spe, "UMAP"
+## TSNE & UMAP
+message(Sys.time(), " - TSNE")
+set.seed(20240618)
+spe <-
+    runTSNE(spe,
+            dimred = "PCA",
+            name = "TSNE"
     )
-) 
-umap$sample_id <- spe$sample_id
+Sys.time()
 
-umap |>
-    filter(UMAP1 > 6) |>
-    count(sample_id)
+message(Sys.time(), " - UMAP")
+set.seed(20240618)
+spe <- runUMAP(spe, dimred = "PCA")
+colnames(reducedDim(spe, "UMAP")) <- c("UMAP1", "UMAP2")
+Sys.time()
+
+#### plot Uncorrected Data ####
+qc_colors <- c(fold = "#4BA402", out_edge = "#097FE0", vessel ="#BB1EF4", None = "#CCCCCC40")
+scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 
 
+##umap
+umap_sample <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = sample_id))+
+    geom_point(size = 0.2, alpha = 0.3) +
+    coord_equal() +
+    theme_bw() +
+    guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1))) +
+    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+
+ggsave(umap_sample, filename = here(plot_dir, "UMAP_sample_id.png"))
+
+umap_sample_facet <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = sample_id))+
+    geom_point(size = 0.2, alpha = 0.3) +
+    coord_equal() +
+    theme_bw() +
+    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2") +
+    facet_wrap(~sample_id) +
+    theme(legend.position = "None")
+
+ggsave(umap_sample_facet, filename = here(plot_dir, "UMAP_sample_id_facet.png"))
+
+umap_qc_anno <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = qc_anno))+
+    geom_point(size = 0.2, alpha = 0.3) +
+    coord_equal() +
+    theme_bw() +
+    scale_color_manual(values = qc_colors) +
+    guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1))) +
+    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+
+ggsave(umap_qc_anno , filename = here(plot_dir, "UMAP_qc_anno.png"))
+
+umap_scran <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = scran_discard))+
+    geom_point(size = 0.2, alpha = 0.3) +
+    coord_equal() +
+    theme_bw() +
+    scale_color_manual(values = scran_colors) +
+    guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1))) +
+    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+
+ggsave(umap_scran , filename = here(plot_dir, "UMAP_scran.png"))
+
+umap_sum_umi <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = sum_umi))+
+    geom_point(size = 0.2, alpha = 0.3) +
+    coord_equal() +
+    theme_bw() +
+    scale_color_viridis() +
+    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+
+ggsave(umap_scran , filename = here(plot_dir, "umap_sum_umi.png"))
 
 
+#### Harmony Batch Correction ####
+message(Sys.time(), " - Harmony")
+set.seed(20240618)
+spe <- RunHarmony(spe, "sample_id")
+Sys.time()
+
+
+message(Sys.time(), " - Harmony UMAP")
+set.seed(20240618)
+spe <- runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
+Sys.time()
+colnames(reducedDim(spe, "UMAP.HARMONY")) <- c("UMAP1", "UMAP2")
+
+
+message(Sys.time(), " - HARMONY TSNE")
+set.seed(20240618)
+spe <-
+    runTSNE(spe,
+            dimred = "HARMONY",
+            name = "TSNE.HARMONY"
+    )
+Sys.time()
+
+
+# slurmjobs::job_single('01_preprocess_Harmony', create_shell = TRUE, memory = '25G', command = "Rscript 01_preprocess_Harmony.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
