@@ -4,7 +4,7 @@ library("here")
 library("sessioninfo")
 library("scran")
 library("scater")
-library("Harmony")
+library("harmony")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "01_preprocess_Harmony")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)

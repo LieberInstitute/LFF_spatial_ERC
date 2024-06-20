@@ -141,15 +141,15 @@ vis_grid_gene(
 #### Outliers ####
 pdf(here(plot_dir, "spe_erc_QC_outliers_violin_plots.pdf"), width = 21)
 
-plotColData(spe, x = "sample_id", y = "sum_umi", colour_by = "scran_low_lib_size") +
+plotColData(spe[,spe$in_tissue], x = "sample_id", y = "sum_umi", colour_by = "scran_low_lib_size") +
     ggtitle("sum_umi") +
     facet_wrap(~ spe$round[spe$in_tissue], scales = "free_x", nrow = 2)
 
-plotColData(spe, x = "sample_id", y = "sum_gene", colour_by = "scran_low_n_features") +
+plotColData(spe[,spe$in_tissue], x = "sample_id", y = "sum_gene", colour_by = "scran_low_n_features") +
     ggtitle("sum_gene") +
     facet_wrap(~ spe$round[spe$in_tissue], scales = "free_x", nrow = 2)
 
-plotColData(spe, x = "sample_id", y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
+plotColData(spe[,spe$in_tissue], x = "sample_id", y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
     ggtitle("expr_chrM_ratio") +
     facet_wrap(~ spe$round[spe$in_tissue], scales = "free_x", nrow = 2)
 
