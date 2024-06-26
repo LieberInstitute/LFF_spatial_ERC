@@ -308,7 +308,7 @@ qc_anno_clean |>
     count(qc_anno, scran_discard)
 
 ## spots with more than 1 annotation
-qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1)
+stopifnot(all(qc_anno_clean  |> group_by(spot_name) |> count() |> pull(n) == 1))
 
 ## test
 # qc_anno_clean  |> filter(spot_name == "AACTAGCGTATCGCAC-1_Br5517")
@@ -391,13 +391,13 @@ pd_qc |>
 
 
 # summary
-qc_summary <- qc_anno_clean |> 
-    count(sample_id, qc_anno) |>
-    arrange(qc_anno) |>
-    mutate(summary = paste0(qc_anno, ":" ,n)) |>
-    group_by(sample_id) |>
-    summarize(n = sum(n),
-              anno = paste(summary, collapse = ","))
+# qc_summary <- qc_anno_clean |> 
+#     count(sample_id, qc_anno) |>
+#     arrange(qc_anno) |>
+#     mutate(summary = paste0(qc_anno, ":" ,n)) |>
+#     group_by(sample_id) |>
+#     summarize(n = sum(n),
+#               anno = paste(summary, collapse = ","))
 
 qc_summary <- pd_qc |> 
     filter(in_tissue) |>
@@ -423,7 +423,7 @@ pd_qc |> count(Drop)
 # 2  TRUE    544
 # 3    NA  32006
 
-pd |> count(qc_anno, local_outliers, Drop)
+pd_qc |> count(qc_anno, local_outliers, Drop)
 # qc_anno local_outliers  Drop      n
 # 1        fold          FALSE FALSE   1408
 # 2        fold           TRUE  TRUE     11
@@ -443,10 +443,16 @@ pd_qc <- pd_qc |>
     filter(in_tissue, !Drop) 
 
 spe <- spe[,pd_qc$key]
-dim(spe)
+
+message("QCed total spots: ", ncol(spe))
+
+message("QCed spot summary: ")
+sample_in_tissue <- table(spe$sample_id[spe$in_tissue])
+sort(sample_in_tissue)
+
+summary(as.integer(sample_in_tissue))
 
 saveRDS(spe, file = here("processed-data", "02_build_spe", "spe.rds"))
-
 
 # slurmjobs::job_single('05_QC_spe', create_shell = TRUE, memory = '25G', command = "Rscript 05_QC_spe.R")
 
