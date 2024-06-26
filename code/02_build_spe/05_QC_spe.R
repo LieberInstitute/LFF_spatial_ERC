@@ -18,6 +18,8 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 ## load spe
 spe <- readRDS(here("processed-data", "02_build_spe", "spe_raw.rds"))
 
+## fix scran_high_subsets_Mito_percent colname
+colnames(colData(spe))[grep("scran_high_subsets_Mito_percent", colnames(colData(spe)))] <- "scran_high_Mito_percent"
 
 #### In Tissue ####
 sample_in_tissue <- table(spe$sample_id[spe$in_tissue])
