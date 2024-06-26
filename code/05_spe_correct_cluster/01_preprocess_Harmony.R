@@ -99,6 +99,9 @@ walk2(top.hvgs[1:2], names(top.hvgs[1:2]), function(hvgs, hvg_name){
     
 })
 
+reducedDimNames(spe)
+
+message(Sys.time(), " - PCA plots")
 pca_sample <- plotReducedDim(spe, dimred = "PCA_p1",
                              color_by = "sample_id") +
     theme_bw()
@@ -115,9 +118,9 @@ pca_elbow <- ggplot(precent_var, aes(PC, precentVar, color = hvg)) +
 
 ggsave(pca_elbow, filename = here(plot_dir, "PCA_elbow.png"))
 
-percent.var <- attr(reducedDim(spe, "PCA"), "percentVar")
-chosen.elbow <- PCAtools::findElbowPoint(percent.var)
-message("PCA elbow: ", chosen.elbow)
+# percent.var <- attr(reducedDim(spe, "PCA"), "percentVar")
+# chosen.elbow <- PCAtools::findElbowPoint(percent.var)
+# message("PCA elbow: ", chosen.elbow)
 
 ## TSNE & UMAP
 message(Sys.time(), " - TSNE")
