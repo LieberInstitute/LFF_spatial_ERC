@@ -22,6 +22,8 @@ spe <- readRDS(here("processed-data", "02_build_spe", "spe_raw.rds"))
 colnames(colData(spe))[grep("scran_high_subsets_Mito_percent", colnames(colData(spe)))] <- "scran_high_Mito_percent"
 
 #### In Tissue ####
+message(Sys.time(), "- Explore Metrics In and Out Tissue")
+
 sample_in_tissue <- table(spe$sample_id[spe$in_tissue])
 sort(sample_in_tissue)
 # Br2582 Br3974 Br5367 Br2305 Br6263 Br5712 Br1556 Br5832 Br5854 Br6321 Br1289 Br1706 Br5517 Br5415 Br1039 Br6476 Br6085 Br5276 Br5460 
@@ -47,16 +49,6 @@ vis_grid_clus(
 
 
 #### UMI ####
-summary(spe$sum_umi[spe$in_tissue])
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 1    1770    3327    3938    5334   39355 
-
-table(spe$sum_umi[spe$in_tissue] < 10)
-table(spe$sample_id[spe$in_tissue], spe$sum_umi[spe$in_tissue] < 10)
-
-summary(spe$sum_umi[!spe$in_tissue])
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 3.0   179.0   277.0   352.4   417.0  5625.0 
 
 ## spot plots 
 vis_grid_gene(
@@ -68,6 +60,8 @@ vis_grid_gene(
     sample_order = sample_order
 )
 
+summary(spe$sum_umi[spe$in_tissue])
+
 vis_grid_gene(
     spe = spe[,spe$in_tissue],
     geneid = "sum_umi",
@@ -76,6 +70,11 @@ vis_grid_gene(
     point_size = 1,
     sample_order = sample_order
 )
+
+summary(spe$sum_umi[spe$in_tissue])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 1    1770    3327    3938    5334   39355 
+
 
 vis_grid_gene(
     spe = spe[,!spe$in_tissue],
@@ -86,14 +85,12 @@ vis_grid_gene(
     sample_order = sample_order
 )
 
-#### Mito Rate ####
-summary(spe$expr_chrM_ratio[spe$in_tissue])
+summary(spe$sum_umi[!spe$in_tissue])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.0000  0.1747  0.2284  0.2587  0.3057  1.0000 
+# 3.0   179.0   277.0   352.4   417.0  5625.0 
 
-summary(spe$expr_chrM_ratio[!spe$in_tissue])
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.0000  0.1866  0.2444  0.2691  0.3169  0.8623 
+
+#### Mito Rate ####
 
 vis_grid_gene(
     spe = spe[,spe$in_tissue],
@@ -103,6 +100,11 @@ vis_grid_gene(
     point_size = 1,
     sample_order = sample_order
 )
+
+summary(spe$expr_chrM_ratio[spe$in_tissue])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.0000  0.1747  0.2284  0.2587  0.3057  1.0000 
+
 
 vis_grid_gene(
     spe = spe[,!spe$in_tissue],
@@ -115,13 +117,6 @@ vis_grid_gene(
 
 
 #### Sum Gene ####
-summary(spe$sum_gene[spe$in_tissue])
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 1     876    1573    1708    2361    7735
-
-summary(spe$sum_gene[!spe$in_tissue])
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 3.0   121.0   182.0   231.6   277.0  2687.0
 
 vis_grid_gene(
     spe = spe[,spe$in_tissue],
@@ -131,6 +126,10 @@ vis_grid_gene(
     point_size = 1
 )
 
+summary(spe$sum_gene[spe$in_tissue])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 1     876    1573    1708    2361    7735
+
 vis_grid_gene(
     spe = spe[,!spe$in_tissue],
     geneid = "sum_gene",
@@ -139,8 +138,14 @@ vis_grid_gene(
     point_size = 1
 )
 
+summary(spe$sum_gene[!spe$in_tissue])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 3.0   121.0   182.0   231.6   277.0  2687.0
+
 
 #### Outliers ####
+message(Sys.time(), "- Scran Outlier Violin Plots")
+
 pdf(here(plot_dir, "spe_erc_QC_outliers_violin_plots.pdf"), width = 21)
 
 plotColData(spe[,spe$in_tissue], x = "sample_id", y = "sum_umi", colour_by = "scran_low_lib_size") +
@@ -184,20 +189,9 @@ vis_grid_clus(
     colors = c(`TRUE` = "orange", `FALSE` = "lightskyblue3")
 )
 
-## temp 
-
-pdf(here(plot_dir, "spe_erc_Br5276-sum_umi.pdf"))
-vis_gene(
-    spe = spe[,spe$in_tissue],
-    sampleid = "Br5276",
-    geneid = "sum_umi",
-    assayname = "counts"
-    # colors = c("in" = "grey90", "out" = "orange")
-)
-dev.off()
-
 pd <- as.data.frame(colData(spe))
 
+message("Scran UMI cutoffs:")
 pd |> 
     filter(in_tissue, as.logical(scran_low_lib_size)) |> 
     group_by(sample_id) |> 
@@ -217,16 +211,8 @@ pd |>
 # 9 Br5832           459
 # 10 Br5517           482
 
-## ggplots for qc
-
-# qc_density_sum_umi <- pd |>
-#     ggplot(aes(x = sum_umi, color = in_tissue)) +
-#     geom_density() +
-#     # facet_grid(sample_id~.)
-#     facet_wrap(~sample_id, ncol = 2)
-# 
-# ggsave(qc_density_sum_umi, filename = here(plot_dir, "spe_erc_density-sum_umi.png"), height = 12)
-
+#### ggplots for qc ####
+message(Sys.time(), "- ggridge plots")
 
 qc_ggridge_sum_umi <- pd |>
     ggplot(aes(x = sum_umi, y= sample_id, fill = in_tissue, color = in_tissue)) +
@@ -259,7 +245,6 @@ qc_ggridge_expr_chrM_ratio <- pd |>
 ggsave(qc_ggridge_expr_chrM_ratio, filename = here(plot_dir, "spe_erc_ggridge-expr_chrM_ratio.png"), height = 12)
 
 
-
 ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+ 
            qc_ggridge_sum_gene + theme(axis.title.y=element_blank(),axis.text.y=element_blank(), legend.position = "bottom") +
            qc_ggridge_expr_chrM_ratio  + theme(axis.title.y=element_blank(),axis.text.y=element_blank(), legend.position = "None"), 
@@ -268,6 +253,8 @@ ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+
 
 
 #### Read in Annotations ####
+message(Sys.time(), "- Add Manual annotations")
+
 qc_anno <- map_dfr(list.files(here("processed-data", "02_build_spe", "02_QC_app"), full.names = TRUE), 
                    ~read.csv(.x) |> 
                        mutate(file = gsub("spatialLIBD_ManualAnnotation_|.csv", "",basename(.x)))) |>
@@ -331,11 +318,7 @@ qc_anno_clean  |> group_by(spot_name) |> filter(n() > 1)
 write.csv(qc_anno_clean, file = here(data_dir, "spe_qc_anno_clean.csv"), row.names = FALSE)
 
 # qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
-# 
-# rownames(qc_anno_clean) <- qc_anno_clean$spot_name
-# spe$qc_anno <- qc_anno_clean[colnames(spe),]$qc_anno
-# spe$qc_anno[spe$in_tissue & is.na(spe$qc_anno)] <- "None"
-# spe$qc_anno <- factor(spe$qc_anno)
+
 
 # pd$qc_anno <- NULL ## reset
 pd <- pd |>
@@ -347,9 +330,6 @@ pd <- pd |>
 # qc_anno_clean|> count(qc_anno)
 pd|> count(in_tissue, qc_anno)
 pd|> count(in_tissue, qc_anno, scran_qc_anno)
-
-
-# pd |> filter(qc_anno == "out_tissue")
 
 ## add to spe
 spe$qc_anno <- pd$qc_anno
@@ -375,7 +355,6 @@ qc_colors <- c(`scran-out_edge` = "#6DD3CE",
                None = "grey50")
 
 
-
 pdf(here(plot_dir, "spe_erc_QC_annotations.pdf"))
 map(sample_order, 
     ~vis_clus(
@@ -383,11 +362,12 @@ map(sample_order,
         sampleid = .x,
         point_size = 1.2,
         clustervar = "scran_qc_anno",
-        colors = c(qc_colors, qc_colors2)
+        colors = qc_colors
     ))
 dev.off()
 
 #### Spot Sweeper Data ####
+message(Sys.time(), "- Add Spot Sweeper Data")
 
 spotsweeper_data <- read.csv(here("processed-data", "02_build_spe", "04_SpotSweeper", "SpotSweeper_data.csv"), row.names = 1)
 
@@ -408,8 +388,6 @@ pd_qc |>
 # 2          TRUE           TRUE    285  0.23218679
 # 3         FALSE          FALSE 115680 94.24339693
 # 4         FALSE           TRUE    118  0.09613348
-
-
 
 
 # summary
@@ -436,8 +414,8 @@ qc_summary <- pd_qc |>
 
 write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
 
-
 #### Drop Spots ####
+message(Sys.time(), "- Drop Spots and Save")
 
 pd_qc |> count(Drop)
 # Drop      n
