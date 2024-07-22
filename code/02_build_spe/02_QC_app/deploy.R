@@ -19,7 +19,8 @@ rsconnect::deployApp(
     appDir = here("code", "02_build_spe","02_QC_app"),
     appFiles = c(
         "app.R",
-        "spe_qc_filtered_logcounts.rds",
+        "spe_raw.rds",
+        "spe_qc_anno_clean.csv",
         # withr::with_dir(here("code", "03_spatialLIBD_app"), dir("clusters_BayesSpace", full.names = TRUE)),
         withr::with_dir(here("code", "03_spatialLIBD_app"), dir("www", full.names = TRUE))
     ),

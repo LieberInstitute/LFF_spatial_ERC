@@ -49,8 +49,6 @@ vis_grid_clus(
 
 
 #### UMI ####
-
-## spot plots 
 vis_grid_gene(
     spe = spe,
     geneid = "sum_umi",
@@ -91,7 +89,6 @@ summary(spe$sum_umi[!spe$in_tissue])
 
 
 #### Mito Rate ####
-
 vis_grid_gene(
     spe = spe[,spe$in_tissue],
     geneid = "expr_chrM_ratio",
@@ -117,7 +114,6 @@ vis_grid_gene(
 
 
 #### Sum Gene ####
-
 vis_grid_gene(
     spe = spe[,spe$in_tissue],
     geneid = "sum_gene",
@@ -251,6 +247,30 @@ ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+
        filename = here(plot_dir, "spe_erc_ggridge.png"), 
        height = 12, width = 12)
 
+#### Spot Sweeper Data ####
+message(Sys.time(), "- Add Spot Sweeper Data")
+
+spotsweeper_data <- read.csv(here("processed-data", "02_build_spe", "04_SpotSweeper", "SpotSweeper_data.csv"), row.names = 1)
+
+pd <- pd |>
+    left_join(spotsweeper_data) 
+
+# |>
+#     mutate(Drop = case_when(local_outliers ~ TRUE,
+#                             qc_anno %in% c("out_tissue", "tail") ~ TRUE,
+#                             !in_tissue ~NA,
+#                             TRUE ~ FALSE
+#     ))
+
+pd |> 
+    filter(in_tissue) |> 
+    count(scran_discard, local_outliers) |>
+    mutate(precent = 100*n/sum(n))
+# scran_discard local_outliers      n     precent
+# 1          TRUE          FALSE   6663  5.42828280
+# 2          TRUE           TRUE    285  0.23218679
+# 3         FALSE          FALSE 115680 94.24339693
+# 4         FALSE           TRUE    118  0.09613348
 
 #### Read in Annotations ####
 message(Sys.time(), "- Add Manual annotations")
@@ -319,41 +339,57 @@ write.csv(qc_anno_clean, file = here(data_dir, "spe_qc_anno_clean.csv"), row.nam
 
 # qc_anno |> filter((spot_name == "TCTTTCCTTCGAGATA-1_Br5367" & ManualAnnotation == "out_tissue"))
 
-
+## Add qc_anno to pd
 # pd$qc_anno <- NULL ## reset
 pd <- pd |>
     left_join(qc_anno_clean |> select(qc_anno, key = spot_name)) |>
     mutate(qc_anno = factor(ifelse(is.na(qc_anno) & in_tissue, "None", qc_anno)),
-           scran_qc_anno = factor(ifelse(as.logical(scran_discard), paste0("scran-", qc_anno), as.character(qc_anno)))
+           scran_qc_anno = factor(ifelse(as.logical(scran_discard), paste0("scran-", qc_anno), as.character(qc_anno))),
+           ss_qc_anno = factor(ifelse(local_outliers, paste0("ss-", qc_anno), as.character(qc_anno))),
+           qc_anno_all = case_when(local_outliers ~ ss_qc_anno,
+                                   as.logical(scran_low_lib_size_edge) & qc_anno == "None" ~ "scran-edge",
+                                   as.logical(scran_discard) ~ scran_qc_anno,
+                                   TRUE ~ qc_anno
+                                   )
     )
 
 # qc_anno_clean|> count(qc_anno)
 pd|> count(in_tissue, qc_anno)
 pd|> count(in_tissue, qc_anno, scran_qc_anno)
+pd |> count(in_tissue, qc_anno_all)
 
 ## add to spe
 spe$qc_anno <- pd$qc_anno
 spe$scran_qc_anno <- pd$scran_qc_anno
+spe$ss_qc_anno <- pd$ss_qc_anno
+spe$qc_anno_all <- pd$qc_anno_all
 
 table(spe$qc_anno)
 # fold       None   out_edge out_tissue       tail     vessel 
 # 1419     119983        257         69         74        944 
 table(spe$scran_qc_anno)
+table(spe$qc_anno_all)
 
 
-qc_colors <- c(`scran-out_edge` = "#6DD3CE",
+qc_colors <- c(`ss-out_edge` = "#06F8EC",
+               `scran-out_edge` = "#87BBFF",
                out_edge = "#097FE0",
-               `scran-fold` = "#91FA11",
+               `ss-fold` = "#91FA11",
+               `scran-fold` = "#05F8A3",
                fold = "#4BA402",
+               `ss-out_tissue` ="#FFCAD4",
                `scran-out_tissue` ="#FB9D88",
                out_tissue ="#F24018",
+               `ss-tail` = "#FFF899",
                `scran-tail` = "#EDDD00",
                tail = "#FE7215",
+               `ss-vessel` ="#FD6092",
                `scran-vessel` ="#FA73E6",
                vessel ="#BB1EF4",
-               `scran-none` = "black",
+               `scran-edge` = "brown",
+               `ss-None` = "white",
+               `scran-None` = "black",
                None = "grey50")
-
 
 pdf(here(plot_dir, "spe_erc_QC_annotations.pdf"))
 map(sample_order, 
@@ -361,34 +397,10 @@ map(sample_order,
         spe = spe,
         sampleid = .x,
         point_size = 1.2,
-        clustervar = "scran_qc_anno",
+        clustervar = "qc_anno_all",
         colors = qc_colors
     ))
 dev.off()
-
-#### Spot Sweeper Data ####
-message(Sys.time(), "- Add Spot Sweeper Data")
-
-spotsweeper_data <- read.csv(here("processed-data", "02_build_spe", "04_SpotSweeper", "SpotSweeper_data.csv"), row.names = 1)
-
-pd_qc <- pd |>
-    left_join(spotsweeper_data) |>
-    mutate(Drop = case_when(local_outliers ~ TRUE,
-                            qc_anno %in% c("out_tissue", "tail") ~ TRUE,
-                            !in_tissue ~NA,
-                            TRUE ~ FALSE
-    ))
-
-pd_qc |> 
-    filter(in_tissue) |> 
-    count(scran_discard, local_outliers) |>
-    mutate(precent = 100*n/sum(n))
-# scran_discard local_outliers      n     precent
-# 1          TRUE          FALSE   6663  5.42828280
-# 2          TRUE           TRUE    285  0.23218679
-# 3         FALSE          FALSE 115680 94.24339693
-# 4         FALSE           TRUE    118  0.09613348
-
 
 # summary
 # qc_summary <- qc_anno_clean |> 
@@ -415,7 +427,7 @@ qc_summary <- pd_qc |>
 write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
 
 #### Drop Spots ####
-message(Sys.time(), "- Drop Spots and Save")
+message(Sys.time(), "- Drop Spots")
 
 pd_qc |> count(Drop)
 # Drop      n
@@ -452,6 +464,7 @@ sort(sample_in_tissue)
 
 summary(as.integer(sample_in_tissue))
 
+message(Sys.time(), "- Save QCed SPE")
 saveRDS(spe, file = here("processed-data", "02_build_spe", "spe.rds"))
 
 # slurmjobs::job_single('05_QC_spe', create_shell = TRUE, memory = '25G', command = "Rscript 05_QC_spe.R")

@@ -27,6 +27,10 @@ if(file.exists(qc_file)){
     spe$scran_qc_anno <- pd$scran_qc_anno
 }
 
+## Quickly explore the data
+vars <- colnames(colData(spe))
+colnames(colData(spe)) <- vars <- gsub("X10x", "10x", vars)
+
 spe_discrete_vars = c(
     "ManualAnnotation",
     "in_tissue",
@@ -35,12 +39,11 @@ spe_discrete_vars = c(
     "edge_spot",
     "scran_low_lib_size_edge",
     "qc_anno",
-    "scran_qc_anno"
+    "scran_qc_anno",
+    "ss_qc_anno",
+    "qc_anno_all"
 )
 
-## Quickly explore the data
-vars <- colnames(colData(spe))
-colnames(colData(spe)) <- vars <- gsub("X10x", "10x", vars)
 
 spe_discrete_vars <- spe_discrete_vars[spe_discrete_vars %in% vars]
 
