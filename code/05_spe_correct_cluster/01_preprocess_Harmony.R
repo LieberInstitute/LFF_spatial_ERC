@@ -18,6 +18,11 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 spe <- readRDS(here("processed-data", "02_build_spe", "spe.rds"))
 dim(spe)
 
+class(counts(spe))
+# [1] "dgCMatrix"
+# attr(,"package")
+# [1] "Matrix"
+
 #### log counts ####
 
 ## quick cluster
