@@ -208,8 +208,42 @@ pd |>
 # 10 Br5517           482
 
 #### ggplots for qc ####
+median_qc_metrics <- pd |> 
+    filter(in_tissue) |>
+    select(sample_id, round, sum_umi, sum_gene, expr_chrM_ratio) |>
+    pivot_longer(!c(sample_id, round), names_to = "metric", values_to = "value") |>
+    group_by(sample_id, round, metric) |>
+    summarise(median = median(value))
+
+median_qc_metrics_boxplot <- median_qc_metrics |>
+    ggplot(aes(x = round, y = median)) +
+    geom_boxplot(outlier.shape = NULL) +
+    geom_point() +
+    facet_wrap(~metric, scales = "free_y")
+    
+ggsave(median_qc_metrics_boxplot, filename = here(plot_dir, "median_qc_metrics_boxplot.png"), height = 5)
+
+# pd |>
+#     filter(in_tissue) |>
+#     count(sample_id) |>
+#     ggplot(aes(y = n)) +
+#     geom_histogram()
+
+in_tissue_bar_preQC <- pd |>
+    filter(in_tissue) |>
+    count(sample_id) |>
+    ggplot(aes(x= reorder(sample_id, n), y = n)) +
+    geom_col() +
+    coord_flip() +
+    labs(title = "Pre-QC", x = "Sample", y= "n in-tissue spots") +
+    theme_bw()
+    
+ggsave(in_tissue_bar_preQC, filename = here(plot_dir, "in_tissue_bar_preQC.png"), width =5)
+
 message(Sys.time(), "- ggridge plots")
 
+
+#### ggridge plots ####
 qc_ggridge_sum_umi <- pd |>
     ggplot(aes(x = sum_umi, y= sample_id, fill = in_tissue, color = in_tissue)) +
     geom_density_ridges(quantile_lines = TRUE,
@@ -247,6 +281,38 @@ ggsave(qc_ggridge_sum_umi + theme(legend.position = "None")+
        filename = here(plot_dir, "spe_erc_ggridge.png"), 
        height = 12, width = 12)
 
+## in tissue
+qc_ggridge_sum_umi_in <- pd |>
+    filter(in_tissue) |>
+    ggplot(aes(x = sum_umi, y= sample_id)) +
+    geom_density_ridges(quantile_lines = TRUE,
+                        alpha = .5)  
+
+ggsave(qc_ggridge_sum_umi_in, filename = here(plot_dir, "spe_erc_ggridge_in-sum_umi.png"), height = 12)
+
+qc_ggridge_sum_gene_in <- pd |>
+    filter(in_tissue) |>
+    ggplot(aes(x = sum_gene, y= sample_id)) +
+    geom_density_ridges(quantile_lines = TRUE,
+                        alpha = .5)  
+
+ggsave(qc_ggridge_sum_gene_in, filename = here(plot_dir, "spe_erc_ggridge_in-sum_gene.png"), height = 12)
+
+qc_ggridge_expr_chrM_ratio_in <- pd |>
+    filter(in_tissue) |>
+    ggplot(aes(x = expr_chrM_ratio, y= sample_id)) +
+    geom_density_ridges(quantile_lines = TRUE,
+                        alpha = .5)  
+
+ggsave(qc_ggridge_expr_chrM_ratio_in, filename = here(plot_dir, "spe_erc_ggridge_in-expr_chrM_ratio_umi.png"), height = 12)
+
+ggsave(qc_ggridge_sum_umi_in +
+           qc_ggridge_sum_gene_in + 
+           qc_ggridge_expr_chrM_ratio_in,
+       filename = here(plot_dir, "spe_erc_ggridge_in.png"), 
+       height = 12, width = 12)
+
+
 #### Spot Sweeper Data ####
 message(Sys.time(), "- Add Spot Sweeper Data")
 
@@ -255,12 +321,6 @@ spotsweeper_data <- read.csv(here("processed-data", "02_build_spe", "04_SpotSwee
 pd <- pd |>
     left_join(spotsweeper_data) 
 
-# |>
-#     mutate(Drop = case_when(local_outliers ~ TRUE,
-#                             qc_anno %in% c("out_tissue", "tail") ~ TRUE,
-#                             !in_tissue ~NA,
-#                             TRUE ~ FALSE
-#     ))
 
 pd |> 
     filter(in_tissue) |> 
@@ -312,7 +372,8 @@ qc_anno_clean <- qc_anno |>
     as.data.frame()
 
 qc_anno_clean |>
-    count(qc_anno)
+    count(qc_anno) |>
+    mutate(precent = n/sum(spe$in_tissue))
 #      qc_anno    n
 # 1       None    2
 # 2       fold 1419
@@ -350,7 +411,8 @@ pd <- pd |>
                                    as.logical(scran_low_lib_size_edge) & qc_anno == "None" ~ "scran-edge",
                                    as.logical(scran_discard) ~ scran_qc_anno,
                                    TRUE ~ qc_anno
-                                   )
+                                   ),
+           drop = local_outliers | (qc_anno %in% c("out_tissue", "tail"))
     )
 
 # qc_anno_clean|> count(qc_anno)
@@ -358,7 +420,23 @@ pd|> count(in_tissue, qc_anno)
 pd|> count(in_tissue, qc_anno, scran_qc_anno)
 pd |> count(in_tissue, qc_anno_all)
 
+pd |> 
+    count(scran_discard) |>
+    mutate(percent = 100*n/ncol(spe))
+
+pd |> 
+    filter(in_tissue) |>
+    count(drop) |>
+    mutate(percent = 100*n/sum(spe$in_tissue))
+
+# drop      n    percent
+# 1 FALSE 122202 99.5568084
+# 2  TRUE    544  0.4431916
+
+table(pd$qc_anno, pd$local_outliers)
+
 ## add to spe
+spe$local_outliers <- pd$local_outliers
 spe$qc_anno <- pd$qc_anno
 spe$scran_qc_anno <- pd$scran_qc_anno
 spe$ss_qc_anno <- pd$ss_qc_anno
@@ -391,6 +469,17 @@ qc_colors <- c(`ss-out_edge` = "#06F8EC",
                `scran-None` = "black",
                None = "grey50")
 
+#### bar plots ####
+
+pd |> 
+    filter(in_tissue) |>
+    ggplot(aes(x = sample_id, fill = qc_anno_all)) +
+    geom_bar() +
+    scale_fill_manual(values = qc_colors) +
+    coord_flip()
+
+
+
 pdf(here(plot_dir, "spe_erc_QC_annotations.pdf"))
 map(sample_order, 
     ~vis_clus(
@@ -411,31 +500,41 @@ dev.off()
 #     summarize(n = sum(n),
 #               anno = paste(summary, collapse = ","))
 
-qc_summary <- pd_qc |> 
+qc_summary <- pd |> 
     filter(in_tissue) |>
-    count(sample_id, qc_anno, local_outliers, Drop) |>
+    count(sample_id, qc_anno, local_outliers, drop) |>
     group_by(sample_id) |>
     mutate(precent = 100*n/sum(n))
 
-# pd_qc |> 
-#     filter(in_tissue) |>
-#     count(sample_id,  Drop) |>
-#     group_by(sample_id) |>
-#     mutate(precent = 100*n/sum(n))
-
-
 write.csv(qc_summary, file = here(data_dir, "spe_qc_summary.csv"), row.names = FALSE)
 
-#### Drop Spots ####
+
+pd |> 
+    filter(in_tissue,) |>
+    count(sample_id, drop) |>
+    group_by(sample_id) |>
+    mutate(precent = 100*n/sum(n)) |>
+    filter(drop) |>
+    arrange(-precent)
+
+# sample_id drop      n precent
+# <chr>     <lgl> <int>   <dbl>
+#     1 Br1706    TRUE     55   1.47 
+# 2 Br2582    TRUE     29   1.21 
+# 3 Br5276    TRUE     46   1.13 
+# 4 Br5712    TRUE     33   0.969
+# 5 Br5517    TRUE     28   0.727
+    
+#### Drop spots ####
 message(Sys.time(), "- Drop Spots")
 
-pd_qc |> count(Drop)
+pd |> count(drop)
 # Drop      n
 # 1 FALSE 122202
 # 2  TRUE    544
 # 3    NA  32006
 
-pd_qc |> count(qc_anno, local_outliers, Drop)
+pd |> count(qc_anno, local_outliers, drop)
 # qc_anno local_outliers  Drop      n
 # 1        fold          FALSE FALSE   1408
 # 2        fold           TRUE  TRUE     11
@@ -451,8 +550,40 @@ pd_qc |> count(qc_anno, local_outliers, Drop)
 # 12       <NA>             NA FALSE  32006
 
 
-pd_qc <- pd_qc |> 
-    filter(in_tissue, !Drop) 
+pd_qc <- pd |> 
+    filter(in_tissue, !drop) 
+
+table(pd_qc$sample_id)
+# Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974 Br5161 Br5212 Br5276 Br5367 Br5415 Br5426 Br5460 Br5517 Br5529 Br5599 Br5634 Br5712 
+# 3906   3648   3524   4161   3699   3069   2367   2722   4682   4674   4011   2828   3858   4824   4032   3823   4570   4812   4830   3373 
+# Br5832 Br5854 Br5941 Br6085 Br6098 Br6161 Br6263 Br6321 Br6423 Br6476 Br6538 
+# 3546   3575   4869   4017   4570   4864   3226   3641   4315   3964   4202 
+
+pd_qc |> count(sample_id) |> summary()
+
+median_PostQC_metrics <- pd_qc |> 
+    select(sample_id, round, sum_umi, sum_gene, expr_chrM_ratio) |>
+    pivot_longer(!c(sample_id, round), names_to = "metric", values_to = "value") |>
+    group_by(sample_id, round, metric) |>
+    summarise(median_postQC = median(value)) |>
+    left_join(median_qc_metrics |> rename(median_preQC = median))
+
+median_PostQC_metrics |>
+    mutate(diff = median_postQC - median_preQC) |>
+    group_by(metric) |>
+    summarise(mean(diff))
+
+median_PostQC_metrics_boxplot <- median_PostQC_metrics |>
+    pivot_longer(!c(sample_id, round, metric), names_to = "QC", values_to = "median", names_prefix = "median_") |>
+    mutate(QC = factor(QC, levels = c("preQC", "postQC"))) |>
+    ggplot(aes(x = QC, y = median)) +
+    geom_boxplot(outlier.shape = NULL) +
+    geom_point() +
+    geom_line(aes(group = sample_id), color = "skyblue") +
+    facet_wrap(~metric, scales = "free_y")
+
+ggsave(median_PostQC_metrics_boxplot, filename = here(plot_dir, "median_PostQC_metrics_boxplot.png"), height = 7, width = 9)
+
 
 spe <- spe[,pd_qc$key]
 
