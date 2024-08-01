@@ -1,0 +1,169 @@
+Martian Runtime - v4.0.11
+2024-07-30 15:51:05 [build  ] Built with Go version go1.20.6 X:nocoverageredesign
+2024-07-30 15:51:05 [cmdline] mrp __3c_ERC_SVB.mro 3c_ERC_SVB --jobmode=local --localcores=8 --localmem=64
+2024-07-30 15:51:05 [pid    ] 4136792
+2024-07-30 15:51:05 [environ] SHELL=/bin/bash
+2024-07-30 15:51:05 [environ] SLURM_STEP_NUM_TASKS=1
+2024-07-30 15:51:05 [environ] SLURM_JOB_USER=rmiller
+2024-07-30 15:51:05 [environ] SLURM_TASKS_PER_NODE=1
+2024-07-30 15:51:05 [environ] SLURM_JOB_UID=42792
+2024-07-30 15:51:05 [environ] SLURM_CPU_BIND=quiet,mask_cpu:0xF00000F00000
+2024-07-30 15:51:05 [environ] SLURM_TASK_PID=4134644
+2024-07-30 15:51:05 [environ] SLURM_LOCALID=0
+2024-07-30 15:51:05 [environ] SLURM_SUBMIT_DIR=/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/03_cellranger
+2024-07-30 15:51:05 [environ] SLURM_CPU_BIND_VERBOSE=quiet
+2024-07-30 15:51:05 [environ] HOSTNAME=compute-109.cm.cluster
+2024-07-30 15:51:05 [environ] SLURM_STEP_NODELIST=compute-109
+2024-07-30 15:51:05 [environ] SLURM_CLUSTER_NAME=jhpce3
+2024-07-30 15:51:05 [environ] SLURM_CPUS_ON_NODE=8
+2024-07-30 15:51:05 [environ] SLURM_UMASK=0003
+2024-07-30 15:51:05 [environ] SLURM_JOB_CPUS_PER_NODE=8
+2024-07-30 15:51:05 [environ] PWD=/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/03_cellranger
+2024-07-30 15:51:05 [environ] SLURM_GTIDS=0
+2024-07-30 15:51:05 [environ] LOGNAME=rmiller
+2024-07-30 15:51:05 [environ] XDG_SESSION_TYPE=tty
+2024-07-30 15:51:05 [environ] SLURM_JOB_PARTITION=shared
+2024-07-30 15:51:05 [environ] SLURM_JOB_NUM_NODES=1
+2024-07-30 15:51:05 [environ] SLURM_STEPID=0
+2024-07-30 15:51:05 [environ] SLURM_CPU_BIND_LIST=0xF00000F00000
+2024-07-30 15:51:05 [environ] SLURM_JOBID=8844142
+2024-07-30 15:51:05 [environ] SLURM_PTY_PORT=61728
+2024-07-30 15:51:05 [environ] SLURM_LAUNCH_NODE_IPADDR=192.168.11.17
+2024-07-30 15:51:05 [environ] SLURM_JOB_QOS=normal
+2024-07-30 15:51:05 [environ] SLURM_PTY_WIN_ROW=51
+2024-07-30 15:51:05 [environ] HOME=/users/rmiller
+2024-07-30 15:51:05 [environ] LANG=C
+2024-07-30 15:51:05 [environ] SLURM_CPU_BIND_TYPE=mask_cpu:
+2024-07-30 15:51:05 [environ] LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.m4a=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.oga=01;36:*.opus=01;36:*.spx=01;36:*.xspf=01;36:
+2024-07-30 15:51:05 [environ] SLURM_PROCID=0
+2024-07-30 15:51:05 [environ] TMPDIR=/tmp
+2024-07-30 15:51:05 [environ] SLURM_CPUS_PER_TASK=8
+2024-07-30 15:51:05 [environ] SLURM_NTASKS=1
+2024-07-30 15:51:05 [environ] SLURM_TOPOLOGY_ADDR=compute-109
+2024-07-30 15:51:05 [environ] SSH_CONNECTION=67.208.161.210 61473 162.129.223.103 22
+2024-07-30 15:51:05 [environ] SLURM_DISTRIBUTION=cyclic
+2024-07-30 15:51:05 [environ] SLURM_TOPOLOGY_ADDR_PATTERN=node
+2024-07-30 15:51:05 [environ] SLURM_SRUN_COMM_HOST=192.168.11.17
+2024-07-30 15:51:05 [environ] XDG_SESSION_CLASS=user
+2024-07-30 15:51:05 [environ] SLURM_SCRIPT_CONTEXT=prolog_task
+2024-07-30 15:51:05 [environ] SLURM_WORKING_CLUSTER=jhpce3:usher05:6817:9728:109
+2024-07-30 15:51:05 [environ] TERM=xterm-256color
+2024-07-30 15:51:05 [environ] SLURM_PTY_WIN_COL=196
+2024-07-30 15:51:05 [environ] USER=rmiller
+2024-07-30 15:51:05 [environ] SLURM_NODELIST=compute-109
+2024-07-30 15:51:05 [environ] SLURM_SRUN_COMM_PORT=61729
+2024-07-30 15:51:05 [environ] SLURM_STEP_ID=0
+2024-07-30 15:51:05 [environ] SLURM_JOB_ACCOUNT=jhpce
+2024-07-30 15:51:05 [environ] SLURM_PRIO_PROCESS=0
+2024-07-30 15:51:05 [environ] SLURM_NPROCS=1
+2024-07-30 15:51:05 [environ] SHLVL=2
+2024-07-30 15:51:05 [environ] SLURM_NNODES=1
+2024-07-30 15:51:05 [environ] BASH_ENV=/usr/share/lmod/lmod/init/bash
+2024-07-30 15:51:05 [environ] XDG_SESSION_ID=4294967295
+2024-07-30 15:51:05 [environ] SLURM_SUBMIT_HOST=login31.cm.cluster
+2024-07-30 15:51:05 [environ] XDG_RUNTIME_DIR=/run/user/42792
+2024-07-30 15:51:05 [environ] SLURM_JOB_ID=8844142
+2024-07-30 15:51:05 [environ] SLURM_NODEID=0
+2024-07-30 15:51:05 [environ] SLURM_STEP_NUM_NODES=1
+2024-07-30 15:51:05 [environ] SSH_CLIENT=67.208.161.210 61473 22
+2024-07-30 15:51:05 [environ] OMP_NUM_THREADS=1
+2024-07-30 15:51:05 [environ] SLURM_STEP_TASKS_PER_NODE=1
+2024-07-30 15:51:05 [environ] XDG_DATA_DIRS=/users/rmiller/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+2024-07-30 15:51:05 [environ] SLURM_CONF=/etc/slurm/slurm.conf
+2024-07-30 15:51:05 [environ] PATH=/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/lib/bin:/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/external/martian/bin:/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/external/anaconda/bin:/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/bin/tenkit:/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/bin:/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0:/jhpce/shared/libd/core/rmate/1.5.10/rmate/bin:/jhpce/shared/libd/core/ruby/3.2.2/rubyinstall/bin:/jhpce/shared/jhpce/core/JHPCE_tools/3.0/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/users/rmiller/bin
+2024-07-30 15:51:05 [environ] SLURM_JOB_NAME=bash
+2024-07-30 15:51:05 [environ] SSH_TTY=/dev/pts/27
+2024-07-30 15:51:05 [environ] SLURM_STEP_LAUNCHER_PORT=61729
+2024-07-30 15:51:05 [environ] SLURM_JOB_GID=4218
+2024-07-30 15:51:05 [environ] SLURM_JOB_NODELIST=compute-109
+2024-07-30 15:51:05 [environ] BASH_FUNC_ml%%=() {  eval "$($LMOD_DIR/ml_cmd "$@")"
+}
+2024-07-30 15:51:05 [environ] BASH_FUNC_which%%=() {  ( alias;
+ eval ${which_declare} ) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@
+}
+2024-07-30 15:51:05 [environ] BASH_FUNC_module%%=() {  if [ -z "${LMOD_SH_DBG_ON+x}" ]; then
+ case "$-" in 
+ *v*x*)
+ __lmod_sh_dbg='vx'
+ ;;
+ *v*)
+ __lmod_sh_dbg='v'
+ ;;
+ *x*)
+ __lmod_sh_dbg='x'
+ ;;
+ esac;
+ fi;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ set +$__lmod_sh_dbg;
+ echo "Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output" 1>&2;
+ fi;
+ eval "$($LMOD_CMD shell "$@")" && eval "$(${LMOD_SETTARG_CMD:-:} -s sh)";
+ __lmod_my_status=$?;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ echo "Shell debugging restarted" 1>&2;
+ set -$__lmod_sh_dbg;
+ fi;
+ unset __lmod_sh_dbg;
+ return $__lmod_my_status
+}
+2024-07-30 15:51:05 [environ] BASH_FUNC_scl%%=() {  if [ "$1" = "load" -o "$1" = "unload" ]; then
+ eval "module $@";
+ else
+ /usr/bin/scl "$@";
+ fi
+}
+2024-07-30 15:51:05 [environ] _=/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/cellranger
+2024-07-30 15:51:05 [environ] LC_CTYPE=en_US.UTF-8
+2024-07-30 15:51:05 [environ] PYTHONNOUSERSITE=1
+2024-07-30 15:51:05 [environ] MKL_CBWR=COMPATIBLE
+2024-07-30 15:51:05 [environ] HDF5_USE_FILE_LOCKING=FALSE
+2024-07-30 15:51:05 [environ] RUST_BACKTRACE=1
+2024-07-30 15:51:05 [environ] PYTHONPATH=/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/lib/python:/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/external/martian/adapters/python
+2024-07-30 15:51:05 [environ] TENX_PRODUCT=cellranger
+2024-07-30 15:51:05 [environ] TENX_VERSION=cellranger-7.2.0
+2024-07-30 15:51:05 [environ] TENX_COPYRIGHT=Copyright 2023 10x Genomics, Inc. All rights reserved.
+2024-07-30 15:51:05 [options] --localcores=8
+2024-07-30 15:51:05 [options] --localmem=64
+2024-07-30 15:51:05 [environ] MROPATH=/jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/mro
+2024-07-30 15:51:05 [version] MRO Version=cellranger-7.2.0
+2024-07-30 15:51:05 [options] --jobmode=local
+2024-07-30 15:51:05 [options] --vdrmode=rolling
+2024-07-30 15:51:05 [options] --profile=disable
+2024-07-30 15:51:05 [options] --stackvars=false
+2024-07-30 15:51:05 [options] --zip=false
+2024-07-30 15:51:05 [options] --limit-loadavg=false
+2024-07-30 15:51:05 [options] --noexit=false
+2024-07-30 15:51:05 [options] --nopreflight=false
+2024-07-30 15:51:05 [jobmngr] Job config = /jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/external/martian/jobmanagers/config.json
+2024-07-30 15:51:05 [jobmngr] Using 8 cores, per --localcores option.
+2024-07-30 15:51:05 [jobmngr] Using 64 GB, per --localmem option.
+2024-07-30 15:51:05 [sysinfo] linux amd64
+2024-07-30 15:51:05 [sysinfo] Linux kernel release version: 5.14.0-427.13.1.el9_4.x86_64
+2024-07-30 15:51:05 [sysinfo] glibc version: 2.34
+2024-07-30 15:51:05 [filesys] Pipestance path /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/03_cellranger/3c_ERC_SVB
+2024-07-30 15:51:05 [filesys] Pipestance filesystem type nfs
+2024-07-30 15:51:05 [filesys] 162 TB and 315,544,610,029 inodes available.
+2024-07-30 15:51:05 [filesys] Pipestance filesystem nfs4 mount options: rw,noatime,rw,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.109,local_lock=none,addr=192.168.11.201
+2024-07-30 15:51:05 [filesys] Pipestance directory permissions dgrwxrwx--- owned by uid 42792 gid 4218
+2024-07-30 15:51:05 [filesys] Bin path /jhpce/shared/libd/core/cellranger/7.2.0/cellranger-7.2.0/external/martian/bin
+2024-07-30 15:51:05 [filesys] Bin filesystem type nfs
+2024-07-30 15:51:05 [filesys] Bin filesystem nfs4 mount options: rw,noatime,nodiratime,rw,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.109,local_lock=none,addr=192.168.11.204
+2024-07-30 15:51:05 [filesys] Executable file permissions -rwxrwxr-x owned by uid 42792 gid 4246
+2024-07-30 15:51:05 [user   ] User rmiller uid 42792 / gid 4218
+Serving UI at http://compute-109.cm.cluster:37763?auth=4aQYC8qD_xOb9OELJ2E6OUIE5w0Bcqr6d-RVbkhXpzE
+
+Running preflight checks (please wait)...
+2024-07-30 15:51:05 [runtime] (ready)           ID.3c_ERC_SVB.SC_RNA_COUNTER_CS.CELLRANGER_PREFLIGHT_LOCAL
+2024-07-30 15:51:05 [runtime] (run:local)       ID.3c_ERC_SVB.SC_RNA_COUNTER_CS.CELLRANGER_PREFLIGHT_LOCAL.fork0.chnk0.main
+2024-07-30 15:51:05 [runtime] (ready)           ID.3c_ERC_SVB.SC_RNA_COUNTER_CS.CELLRANGER_PREFLIGHT
+2024-07-30 15:51:05 [runtime] (run:local)       ID.3c_ERC_SVB.SC_RNA_COUNTER_CS.CELLRANGER_PREFLIGHT.fork0.chnk0.main
+2024-07-30 15:51:11 Caught signal interrupt
+2024-07-30 15:51:11 [jobmngr] Highest memory usage observed: {
+  "rss": 241192960,
+  "shared": 112852992,
+  "vmem": 2891833344,
+  "text": 6488064,
+  "stack": 308559872,
+  "proc_count": 29
+}
