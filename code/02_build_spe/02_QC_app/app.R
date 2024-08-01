@@ -41,7 +41,8 @@ spe_discrete_vars = c(
     "qc_anno",
     "scran_qc_anno",
     "ss_qc_anno",
-    "qc_anno_all"
+    "qc_anno_all",
+    "local_outliers"
 )
 
 
