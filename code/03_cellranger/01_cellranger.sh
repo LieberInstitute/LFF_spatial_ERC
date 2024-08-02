@@ -4,7 +4,7 @@
 #SBATCH --job-name=ERC-cellranger
 #SBATCH -o logs/cellranger_%a.txt
 #SBATCH -e logs/cellranger_%a.txt
-#SBATCH --array=1-2
+#SBATCH --array=1-19%6
 
 echo "**** Job starts ****"
 date
