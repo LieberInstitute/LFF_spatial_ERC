@@ -5,6 +5,7 @@ library("DropletUtils")
 library("scuttle")
 library("tidyverse")
 library("here")
+library("getopt")
 library("sessioninfo")
 
 ## check dirs 
@@ -15,9 +16,24 @@ plot_dir <- here("plots", "04_snRNA-seq", "01_get_droplet_scores")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## get sample i
-args <- commandArgs(trailingOnly = TRUE)
-sample <- args[[2]]
-sample_path <- here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
+# Import command-line parameters
+spec <- matrix(
+    c(
+        c("sample_id"),
+        c("s"),
+        rep("1", 1),
+        rep("character", 1),
+        rep("snRNA_seq sample", 1)
+    ),
+    ncol = 5
+)
+opt <- getopt(spec)
+
+print("Using the following parameters:")
+print(opt)
+
+
+sample_path <- here("processed-data", "03_cellranger", opt$sample_id, "outs", "raw_feature_bc_matrix") 
 stopifnot(file.exists(sample_path))
 
 message(Sys.time(), " - Reading data from ", sample_path)
