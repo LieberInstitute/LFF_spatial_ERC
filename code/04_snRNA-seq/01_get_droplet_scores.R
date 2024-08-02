@@ -32,8 +32,9 @@ opt <- getopt(spec)
 print("Using the following parameters:")
 print(opt)
 
+sample = opt$sample_id
 
-sample_path <- here("processed-data", "03_cellranger", opt$sample_id, "outs", "raw_feature_bc_matrix") 
+sample_path <- here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
 stopifnot(file.exists(sample_path))
 
 message(Sys.time(), " - Reading data from ", sample_path)
