@@ -1,11 +1,11 @@
 **** Job starts ****
-Fri Aug  2 12:53:09 PM EDT 2024
+Fri Aug  2 12:58:13 PM EDT 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 8914728
+Job id: 8914799
 Job name: 01_get_droplet_scores
-Node name: compute-065
-Task id: 1
+Node name: compute-150
+Task id: 22
 Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
 
@@ -119,23 +119,23 @@ $ARGS
 character(0)
 
 $sample_id
-[1] "11c_ERC_SVB"
+[1] "30c_ERC_SVB"
 
-2024-08-02 12:53:45.936984 - Reading data from /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/03_cellranger/11c_ERC_SVB/outs/raw_feature_bc_matrix
-ncol:1411166
-2024-08-02 12:55:25.330287 - Running barcode ranks.
-'Second knee point' = 205
-knee_lower =305
-2024-08-02 12:55:26.187466 - Starting emptyDrops
-2024-08-02 13:23:06.665114 - Done: saving data
+2024-08-02 12:58:27.609142 - Reading data from /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/03_cellranger/30c_ERC_SVB/outs/raw_feature_bc_matrix
+ncol:1232355
+2024-08-02 12:58:47.637354 - Running barcode ranks.
+'Second knee point' = 142
+knee_lower =242
+2024-08-02 12:58:47.917367 - Starting emptyDrops
+2024-08-02 13:06:05.847464 - Done: saving data
 QC check
        Limited
 Signif    FALSE    TRUE    <NA>     Sum
-  FALSE    4337       0       0    4337
-  TRUE      444    4966       0    5410
-  <NA>        0       0 1401419 1401419
-  Sum      4781    4966 1401419 1411166
-Non-empty: 5410
+  FALSE    4038       0       0    4038
+  TRUE      319    4371       0    4690
+  <NA>        0       0 1223627 1223627
+  Sum      4357    4371 1223627 1232355
+Non-empty: 4690
 Saving 7 x 7 in image
 Warning message:
 In scale_y_continuous(trans = "log10") :
@@ -247,4 +247,4 @@ In scale_y_continuous(trans = "log10") :
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Aug  2 01:24:58 PM EDT 2024
+Fri Aug  2 01:06:32 PM EDT 2024
