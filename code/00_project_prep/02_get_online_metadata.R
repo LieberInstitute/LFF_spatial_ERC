@@ -70,21 +70,30 @@ colnames(metadata_visium_plan)
 write_csv(metadata_visium_plan, file = here(data_dir, "metadata_visium_plan.csv"))
 
 ## snRNA-seq plan
-metadata_sn_plan <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEIBhN7kckInOipyi2ozqtYKLPeAbw1SL6KskWRCLM/edit#gid=0",
-                                   sheet = "snRNA-seq plan",
-                               range = "A:O")|>
+metadata_sn_plan <- read_csv("~/Downloads/ERC Bookkeping (LFF project) - snRNA-seq plan.csv") |>
+# read_sheet("https://docs.google.com/spreadsheets/d/1mHEIBhN7kckInOipyi2ozqtYKLPeAbw1SL6KskWRCLM/edit?gid=917044118#gid=917044118",
+#                                    sheet = "snRNA-seq plan",
+#                                range = "A:O")|>
+    select(-16) |>
     filter(!is.na(Donors),
            Donors != "Donors") |>
     rename(BrNum  = `Donors`, 
-           snRNA_complete  = `snRNA-seq round 1`) |>
+           snRNA_complete  = `snRNA-seq round 1`,
+           Mass_mg = `Total no. of 100um sections/Mass`) |>
     mutate(redisscet = grepl("re-dis", BrNum),
            BrNum = gsub("\\(re-dis\\)", "", BrNum),
            snRNA_complete = snRNA_complete == "Complete",
-           APOE = gsub(",E", ", E", APOE)) |>
+           APOE = gsub(",E", ", E", APOE),
+           Rin = as.double(Rin),
+           Age = as.double(Age),
+           SBox = as.integer(SBox),
+           Mass_mg = as.double(gsub("mg", "", Mass_mg))) |>
     replace_na(list(snRNA_complete = FALSE))
 
 metadata_sn_plan |> count(snRNA_complete)
 metadata_sn_plan |> count(APOE)
+
+colnames(metadata_sn_plan)
 
 write_csv(metadata_sn_plan, file = here(data_dir, "metadata_sn_plan.csv"))
 
