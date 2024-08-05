@@ -71,6 +71,8 @@ message(Sys.time(), " - Running modelGeneVar()")
 # fit mean-variance relationship
 dec <- modelGeneVar(spe)
 
+## TOD save dec to later calc other sets of HVGs
+
 # visualize mean-variance relationship
 fit <- metadata(dec)
 
@@ -81,6 +83,7 @@ curve(fit$trend(x), col = "dodgerblue", add = TRUE, lwd = 2)
 dev.off()
 
 # select top HVGs
+## TODO only use top 10% HVGs + 20%
 top.hvgs <- c(map(c(p1 = 0.1, p2 = 0.2, p5 = 0.5), ~getTopHVGs(dec, prop = .x)),
               map(c(fdr5 = 0.05, fdr1 = 0.01), ~getTopHVGs(dec, fdr.threshold = .x)))
 
@@ -142,7 +145,7 @@ spe <- runUMAP(spe,
 colnames(reducedDim(spe, "UMAP")) <- c("UMAP1", "UMAP2")
 Sys.time()
 
-####   Compute GLM-PCA ####
+####  Compute GLM-PCA ####
 message(Sys.time(), " - Running devianceFeatureSelection()")
 spe <- devianceFeatureSelection(spe, assay = "counts", fam = "binomial", sorted = FALSE, batch = as.factor(spe$sample_id))
 spe <- devianceFeatureSelection(spe, assay = "counts", fam = "poisson", sorted = FALSE, batch = as.factor(spe$sample_id)) 
@@ -157,7 +160,7 @@ spe <- nullResiduals( # default params
     assay = "counts",
     fam = "binomial",
     type = "deviance"
-    # batch = as.factor(spe$sample_id)
+    # batch = as.factor(spe$sample_id) # batch membership of observations - use "round" ?
 )
 
 ## Get HVDG
