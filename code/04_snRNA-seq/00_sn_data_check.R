@@ -6,10 +6,21 @@ library("here")
 metadata_sn <- read.csv(here("processed-data", "00_project_prep", "02_get_online_metadata","metadata_sn_plan.csv"))
 metadata_sn
 
-sample_info_fn <- list.files(here("raw-data", "sample_info_snRNAseq"), full.names = TRUE)
-sample_info <- map_dfr(sample_info_fn, read_excel)
+dim(metadata_sn)
+# [1] 31 16
+
+# sample_info_fn <- list.files(here("raw-data", "sample_info_snRNAseq"), full.names = TRUE)
+sample_info_fn <- list.files(here("raw-data", "sample_info"), full.names = TRUE)
+gsub("^.*_chromium_(round_\\d)_.*$","\\1",basename(sample_info_fn))
+
+sample_info <- map_dfr(sample_info_fn, ~read_excel(.x, sheet = "Summary", range = "Summary!A1:W17") |>
+                       mutate(Ct = as.double(Ct))) |>
+    filter(Tissue == "ERC")
+
+dim(sample_info)
 
 summary(sample_info)
+dim(sample_info)
 
 # Nuclei Sorted   Nuclei Targeted cDNA Amp Cycle Agilent [cDNA] pg/ul Dilution Factor...11 Final [cDNA] pg/ul
 # Min.   :14000   Min.   :9000    Min.   :11     Min.   : 435.4       Min.   :1.000        Min.   : 435.4    
@@ -46,31 +57,28 @@ summary(sample_info)
 # cn <- map(sample_info, colnames)
 # table(unlist(cn))
 
-(cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger")))
-# [1] "10c_ERC_SVB" "11c_ERC_SVB" "12c_ERC_SVB" "13c_ERC_SVB" "14c_ERC_SVB" "1c_ERC_SVB"  "4c_ERC_SVB"  "5c_ERC_SVB" 
-# [9] "6c_ERC_SVB"  "7c_ERC_SVB"  "8c_ERC_SVB"  "9c_ERC_SVB" 
+table(sample_info$`Sequencing Round`)
 
-sample_info |>
+(cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger")))
+# [1] "10c_ERC_SVB" "11c_ERC_SVB" "12c_ERC_SVB" "13c_ERC_SVB" "14c_ERC_SVB" "15c_ERC_SVB" "16c_ERC_SVB" "17c_ERC_SVB"
+# [9] "18c_ERC_SVB" "19c_ERC_SVB" "1c_ERC_SVB"  "20c_ERC_SVB" "21c_ERC_SVB" "22c_ERC_SVB" "23c_ERC_SVB" "24c_ERC_SVB"
+# [17] "25c_ERC_SVB" "26c_ERC_SVB" "27c_ERC_SVB" "28c_ERC_SVB" "29c_ERC_SVB" "2c_ERC_SVB"  "30c_ERC_SVB" "31c_ERC_SVB"
+# [25] "3c_ERC_SVB"  "4c_ERC_SVB"  "5c_ERC_SVB"  "6c_ERC_SVB"  "7c_ERC_SVB"  "8c_ERC_SVB"  "9c_ERC_SVB"
+
+length(cell_ranger_out_paths)
+# [1] 31
+
+in_paths <- setdiff(cell_ranger_out_paths, sample_info$`Sample #`)
+in_info <- setdiff(sample_info$`Sample #`, cell_ranger_out_paths)
+
+sample_info_path <- sample_info |>
     select(sample_id = `Sample #`, BrNum = Brain, exp_round = `Experimental Round`, seq_round = `Sequencing Round`) |>
     mutate(path = here("processed-data", "03_cellranger", sample_id, "outs", "raw_feature_bc_matrix"),
            file_exists = file.exists(path)
            )
-# sample_id   BrNum  Round Seq_Round done 
-# <chr>       <chr>  <dbl>     <dbl> <lgl>
-# 1 1c_ERC_SVB  Br1039     1         1 TRUE 
-# 2 2c_ERC_SVB  Br1556     1        NA FALSE
-# 3 3c_ERC_SVB  Br5212     1        NA FALSE
-# 4 4c_ERC_SVB  Br2582     2         1 TRUE 
-# 5 5c_ERC_SVB  Br5276     2         1 TRUE 
-# 6 6c_ERC_SVB  Br5415     2         1 TRUE 
-# 7 7c_ERC_SVB  Br1691     3         1 TRUE 
-# 8 8c_ERC_SVB  Br3974     3         1 TRUE 
-# 9 9c_ERC_SVB  Br5426     3         1 TRUE 
-# 10 10c_ERC_SVB Br6476     3         1 TRUE 
-# 11 11c_ERC_SVB Br1706     4         1 TRUE 
-# 12 12c_ERC_SVB Br2305     4         1 TRUE 
-# 13 13c_ERC_SVB Br5460     4         1 TRUE 
-# 14 14c_ERC_SVB Br5517     4         1 TRUE 
+
+sample_info_path |> count(file_exist)
+
 
 slurmjobs::job_loop(
     loops = list(sample_id = cell_ranger_out_paths),
