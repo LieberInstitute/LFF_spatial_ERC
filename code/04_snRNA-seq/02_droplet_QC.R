@@ -5,6 +5,7 @@
 library("SingleCellExperiment")
 library("DropletUtils")
 library("tidyverse")
+library("ggrepel")
 library("here")
 library("sessioninfo")
 
@@ -27,7 +28,7 @@ sample_info <- sample_info |>
 colnames(sample_info)
 
 #### get droplet scores ####
-droplet_counts <- tibble(Sample = character(), pre_drop = numeric(), post_drop = numeric())
+droplet_counts <- tibble(chromium_id = character(), pre_drop = numeric(), post_drop = numeric())
 # droplet_counts <- data.frame(colnames = c("Sample", "pre_drop", "post_drop"))
 
 sce_list <- map(sample_list, function(sample){
@@ -51,7 +52,6 @@ sce_list <- map(sample_list, function(sample){
 })
 
 
-
 summary(droplet_counts)
 # Sample             pre_drop         post_drop   
 # Length:31          Min.   : 581462   Min.   :1794  
@@ -61,7 +61,18 @@ summary(droplet_counts)
 #                    3rd Qu.:1411650   3rd Qu.:5720  
 #                    Max.   :1732806   Max.   :7847 
 
-write_csv(droplet_counts, file = here(data_dir, "sn_erc_droplet_counts.csv"))
+## retrieve median reads per cell
+cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger"))
+cell_ranger_metrics <- map_dfr(cell_ranger_out_paths, 
+                               ~read_csv(here("processed-data", "03_cellranger", .x, "outs", "metrics_summary.csv")) |>
+                                   mutate(chromium_id = .x, .before = 1))
+
+cell_ranger_metrics <- cell_ranger_metrics |> left_join(droplet_counts |> rename(chromium_id = Sample))
+
+
+summary(cell_ranger_metrics)
+
+write_csv(cell_ranger_metrics, file = here(data_dir, "cell_ranger_metrics.csv"))
 
 droplet_counts |>
     arrange(post_drop)
@@ -76,3 +87,37 @@ droplet_boxplot <- droplet_counts |>
 
 ggsave(droplet_boxplot, filename = here(plot_dir, "erc_n_droplets_post_drop.png"))
 
+post_drop_v_est_cells <- cell_ranger_metrics |>
+    ggplot(aes(post_drop, `Estimated Number of Cells`)) +
+    geom_point() +
+    geom_text_repel(aes(label = chromium_id), size = 2) +
+    geom_abline(color = "red") +
+    labs(x = "n non-empty droplets (DropletUtils)", "n cells (CellRanger)")
+
+ggsave(post_drop_v_est_cells, filename = here(plot_dir, "erc_post_drop_v_est_cells.png"))
+
+
+post_drop_v_mean_reads <- cell_ranger_metrics |>
+    ggplot(aes(post_drop, `Mean Reads per Cell`)) +
+    geom_point() +
+    geom_text_repel(aes(label = chromium_id), size = 2) +
+    labs(x = "n non-empty droplets (DropletUtils)") +
+    geom_vline(xintercept = 9000, color = "red", linetype = "dashed") +
+    geom_hline(yintercept = 50000, color = "blue", linetype = "dashed")
+
+ggsave(post_drop_v_mean_reads, filename = here(plot_dir, "erc_post_drop_v_mean_reads.png"))
+
+#### Build SCE ####
+map_int(sce_list, nrow)
+
+## check row data is identical
+all(map_lgl(sce_list, ~identical(rownames(sce_list[[1]]), rownames(.x))))
+
+## rbind to one sce
+sce_erc_preQC <- do.call("cbind", sce_list)
+dim(sce_erc_preQC)
+# [1]  38606 154072
+
+## Save preQC-sce
+save(sce_erc_preQC, file = here("processed-data", "sce_objects", 
+                               "sce_erc_preQC.Rdata"))
