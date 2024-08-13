@@ -85,21 +85,19 @@ table(seq_info$round)
 setequal(cell_ranger_out_paths, seq_info$chromium_id)
 setdiff(cell_ranger_out_paths, seq_info$chromium_id)
 #15-31
-setequal(metadata_sn$BrNum, seq_info$BrNum)
 
+setequal(metadata_sn$BrNum, seq_info$BrNum)
 
 sample_info <- metadata_sn |>
     select(BrNum, Genotype, Age, Sex, Ancestry, Diagnosis, Rin, APOE) |>
     left_join(seq_info |>
-                  select(sample_id, BrNum, chromium_id, round, Tissue, 
-                         index_name, Array = `Array #`, Slide = `Slide #`)) 
-
-sample_info$cell_ranger_path  <- cell_ranger_out_paths[order(as.integer(gsub("c_ERC_SVB","", cell_ranger_out_paths)))]
+                  select(sample_id, BrNum, chromium_id, Tissue,
+                         expr_round = `Experimental Round`, seq_round = `Sequencing Round`)) |>
+    mutate(chromium_index = as.integer(gsub("c_ERC_SVB","",chromium_id))) |>
+    arrange(chromium_index) |>
+    select(sample_id, chromium_id, BrNum, everything())
 
 write_csv(sample_info, here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
-
-
-all(file.exists(here("processed-data", "03_cellranger", sample_info$cell_ranger_path, "outs", "raw_feature_bc_matrix")))
 
 ## Create slurm job for droplet scores setup
 slurmjobs::job_loop(
