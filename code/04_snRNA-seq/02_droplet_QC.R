@@ -11,10 +11,22 @@ library("sessioninfo")
 plot_dir <- here("plots", "04_snRNA-seq", "02_droplet_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+data_dir <- here("processed-data", "04_snRNA-seq", "02_droplet_QC")
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
 # Sample names 
 sample_list <- list.files(here("processed-data", "03_cellranger"))
 length(sample_list)
 
+#### get sample info ####
+sample_info <- read_csv(here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
+
+sample_info <- sample_info |> 
+    mutate(sample_id = gsub("Hs_", "", Brain))
+
+colnames(sample_info)
+
+#### get droplet scores ####
 droplet_counts <- tibble(Sample = character(), pre_drop = numeric(), post_drop = numeric())
 # droplet_counts <- data.frame(colnames = c("Sample", "pre_drop", "post_drop"))
 
@@ -37,3 +49,30 @@ sce_list <- map(sample_list, function(sample){
     
     return(sce)
 })
+
+
+
+summary(droplet_counts)
+# Sample             pre_drop         post_drop   
+# Length:31          Min.   : 581462   Min.   :1794  
+# Class :character   1st Qu.:1048624   1st Qu.:4420  
+# Mode  :character   Median :1262252   Median :5072  
+#                    Mean   :1241313   Mean   :4970  
+#                    3rd Qu.:1411650   3rd Qu.:5720  
+#                    Max.   :1732806   Max.   :7847 
+
+write_csv(droplet_counts, file = here(data_dir, "sn_erc_droplet_counts.csv"))
+
+droplet_counts |>
+    arrange(post_drop)
+
+droplet_boxplot <- droplet_counts |>
+    ggplot(aes(x = reorder(Sample, post_drop), y = post_drop)) +
+    geom_col() +
+    theme_bw() +
+    coord_flip() +
+    # geom_hline(yintercept = 5000, color = "red", linetype = "dashed") +
+    labs(x = "Sample", y = "Non-empty Droplets")
+
+ggsave(droplet_boxplot, filename = here(plot_dir, "erc_n_droplets_post_drop.png"))
+
