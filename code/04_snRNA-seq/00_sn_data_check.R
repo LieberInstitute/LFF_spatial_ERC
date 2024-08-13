@@ -13,11 +13,17 @@ dim(metadata_sn)
 sample_info_fn <- list.files(here("raw-data", "sample_info"), full.names = TRUE)
 gsub("^.*_chromium_(round_\\d)_.*$","\\1",basename(sample_info_fn))
 
-sample_info <- map_dfr(sample_info_fn, ~read_excel(.x, sheet = "Summary", range = "Summary!A1:W17") |>
-                       mutate(Ct = as.double(Ct))) |>
-    filter(Tissue == "ERC")
+sample_info <- map_dfr(sample_info_fn, c("round1", "round2"), ~read_excel(.x, sheet = "Summary", range = "Summary!A1:W17") |>
+                       mutate(Ct = as.double(Ct)),
+                       round = .y) |>
+    # filter(Tissue == "ERC") |> 
+    mutate(BrNum = gsub("Hs_", "", Brain),
+           sample_id = BrNum)
 
 dim(sample_info)
+
+
+write_csv(sample_info, here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
 
 summary(sample_info)
 dim(sample_info)
