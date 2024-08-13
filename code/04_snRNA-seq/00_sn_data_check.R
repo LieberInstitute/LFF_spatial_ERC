@@ -9,61 +9,66 @@ metadata_sn
 dim(metadata_sn)
 # [1] 31 16
 
-# sample_info_fn <- list.files(here("raw-data", "sample_info_snRNAseq"), full.names = TRUE)
-sample_info_fn <- list.files(here("raw-data", "sample_info"), full.names = TRUE)
-gsub("^.*_chromium_(round_\\d)_.*$","\\1",basename(sample_info_fn))
+## information about seqencing 
+seq_info_fn <- list.files(here("raw-data", "sample_info"), full.names = TRUE)
+names(seq_info_fn) <- c("round2", "round1")
 
-sample_info <- map_dfr(sample_info_fn, c("round1", "round2"), ~read_excel(.x, sheet = "Summary", range = "Summary!A1:W17") |>
-                       mutate(Ct = as.double(Ct)),
-                       round = .y) |>
-    # filter(Tissue == "ERC") |> 
-    mutate(BrNum = gsub("Hs_", "", Brain),
-           sample_id = BrNum)
+seq_info <- map2(seq_info_fn, names(seq_info_fn), ~read_excel(.x, sheet = "Summary", range = "Summary!A1:W17") |>
+                        mutate(Ct = as.double(Ct),
+                               round = .y))
 
-dim(sample_info)
+seq_info <- do.call("bind_rows", seq_info) |>
+    filter(Tissue == "ERC") |>
+    mutate(BrNum = gsub("\\(re-dis\\)","", gsub("Hs_", "", Brain)),
+           sample_id = BrNum,
+           chromium_id = gsub("_HRD", "", `Sample #`))
 
 
-write_csv(sample_info, here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
+dim(seq_info)
+# [1] 31 26
 
-summary(sample_info)
-dim(sample_info)
+write_csv(seq_info, here("processed-data", "04_snRNA-seq", "erc_sn_seq_info.csv"))
 
-# Nuclei Sorted   Nuclei Targeted cDNA Amp Cycle Agilent [cDNA] pg/ul Dilution Factor...11 Final [cDNA] pg/ul
-# Min.   :14000   Min.   :9000    Min.   :11     Min.   : 435.4       Min.   :1.000        Min.   : 435.4    
-# 1st Qu.:14000   1st Qu.:9000    1st Qu.:11     1st Qu.:1158.1       1st Qu.:1.000        1st Qu.:1412.5    
-# Median :14000   Median :9000    Median :11     Median :1472.8       Median :1.000        Median :1812.1    
-# Mean   :14000   Mean   :9000    Mean   :11     Mean   :1635.9       Mean   :1.214        Mean   :1863.3    
-# 3rd Qu.:14000   3rd Qu.:9000    3rd Qu.:11     3rd Qu.:2003.8       3rd Qu.:1.000        3rd Qu.:2263.9    
-# Max.   :14000   Max.   :9000    Max.   :11     Max.   :3304.7       Max.   :2.000        Max.   :3304.7    
+summary(seq_info)
+# Sample #            Tissue             Brain             Slide #            Array #                Ct       
+# Length:31          Length:31          Length:31          Length:31          Length:31          Min.   :15.35  
+# Class :character   Class :character   Class :character   Class :character   Class :character   1st Qu.:15.91  
+# Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :16.30  
+# Mean   :16.39  
+# 3rd Qu.:16.73  
+# Max.   :18.14  
+# NA's   :4      
+#  cDNA Amp Cycle  Agilent [cDNA] pg/ul Dilution Factor...9 Final [cDNA] pg/ul Total cDNA ng yield   cDNA Input    
+#  Min.   :16.00   Min.   : 874.5       Min.   :1.000       Min.   : 4722      Min.   :188.9       Min.   : 47.22  
+#  1st Qu.:16.00   1st Qu.:1887.1       1st Qu.:3.000       1st Qu.: 8020      1st Qu.:320.8       1st Qu.: 80.20  
+#  Median :17.00   Median :3288.7       Median :3.000       Median : 9875      Median :395.0       Median : 98.75  
+#  Mean   :16.55   Mean   :3247.1       Mean   :4.161       Mean   :11051      Mean   :442.0       Mean   :110.51  
+#  3rd Qu.:17.00   3rd Qu.:3947.0       3rd Qu.:5.000       3rd Qu.:13469      3rd Qu.:538.8       3rd Qu.:134.69  
+#  Max.   :18.00   Max.   :7794.9       Max.   :9.000       Max.   :23385      Max.   :935.4       Max.   :233.85  
+#                                                                                                                  
+#    SI cycles     Ave frag length Agilent [lib] pg/ul Dilution Factor...16 Final [lib] pg/ul  index_name       
+#  Min.   :15.00   Min.   :415.0   Min.   :1035        Min.   : 1.000       Min.   : 6208     Length:31         
+#  1st Qu.:15.00   1st Qu.:443.0   1st Qu.:1326        1st Qu.: 4.000       1st Qu.:10998     Class :character  
+#  Median :16.00   Median :453.0   Median :2046        Median : 7.000       Median :15615     Mode  :character  
+#  Mean   :16.06   Mean   :453.3   Mean   :2151        Mean   : 7.032       Mean   :17833                       
+#  3rd Qu.:17.00   3rd Qu.:465.5   3rd Qu.:2766        3rd Qu.: 9.500       3rd Qu.:22751                       
+#  Max.   :17.00   Max.   :501.0   Max.   :3568        Max.   :23.000       Max.   :50161                       
+#                  NA's   :8       NA's   :8                                NA's   :8                           
+# index(i7)         index2_workflow_a(i5) index2_workflow_b(i5) % Coverage Array Est Read Pairs         round          
+# Length:31          Length:31             Length:31             Min.   :45.00    Min.   :135000000   Length:31         
+# Class :character   Class :character      Class :character      1st Qu.:67.50    1st Qu.:202500000   Class :character  
+# Mode  :character   Mode  :character      Mode  :character      Median :75.00    Median :225000000   Mode  :character  
+# Mean   :75.32    Mean   :225967742                     
+# 3rd Qu.:85.00    3rd Qu.:255000000                     
+# Max.   :98.00    Max.   :294000000                     
 # 
-# Total cDNA ng      cDNA Input       SI cycles     Ave frag length Agilent [lib] pg/ul Dilution Factor...18
-# Min.   : 17.42   Min.   : 4.354   Min.   :14.00   Min.   :438.0   Min.   :1091        Min.   : 4.000      
-# 1st Qu.: 56.50   1st Qu.:14.125   1st Qu.:14.00   1st Qu.:453.2   1st Qu.:2000        1st Qu.: 6.000      
-# Median : 72.48   Median :18.121   Median :14.00   Median :460.5   Median :2143        Median : 8.500      
-# Mean   : 74.53   Mean   :18.633   Mean   :14.57   Mean   :470.4   Mean   :2096        Mean   : 9.964      
-# 3rd Qu.: 90.56   3rd Qu.:22.639   3rd Qu.:15.00   3rd Qu.:486.5   3rd Qu.:2431        3rd Qu.:12.250      
-# Max.   :132.19   Max.   :33.047   Max.   :16.00   Max.   :523.0   Max.   :2569        Max.   :24.000      
-# 
-# Final [lib] pg/ul  index_name         index(i7)         index2_workflow_a(i5) index2_workflow_b(i5)
-# Min.   : 2355     Length:14          Length:14          Length:14             Length:14            
-# 1st Qu.: 9228     Class :character   Class :character   Class :character      Class :character     
-# Median :14837     Mode  :character   Mode  :character   Mode  :character      Mode  :character     
-# Mean   :17912                                                                                      
-# 3rd Qu.:21473                                                                                      
-# Max.   :47348                                                                                      
-# 
-# Est Read Pairs (million)
-# Min.   :420             
-# 1st Qu.:420             
-# Median :420             
-# Mean   :420             
-# 3rd Qu.:420             
-# Max.   :420 
 
 # cn <- map(sample_info, colnames)
 # table(unlist(cn))
 
-table(sample_info$`Sequencing Round`)
+# table(seq_info$round)
+# round1 round2 
+# 16     15
 
 (cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger")))
 # [1] "10c_ERC_SVB" "11c_ERC_SVB" "12c_ERC_SVB" "13c_ERC_SVB" "14c_ERC_SVB" "15c_ERC_SVB" "16c_ERC_SVB" "17c_ERC_SVB"
@@ -74,18 +79,27 @@ table(sample_info$`Sequencing Round`)
 length(cell_ranger_out_paths)
 # [1] 31
 
-in_paths <- setdiff(cell_ranger_out_paths, sample_info$`Sample #`)
-in_info <- setdiff(sample_info$`Sample #`, cell_ranger_out_paths)
+cell_ranger_chrID <- gsub("c", "v", gsub("_SVB", "", cell_ranger_out_paths))
 
-sample_info_path <- sample_info |>
-    select(sample_id = `Sample #`, BrNum = Brain, exp_round = `Experimental Round`, seq_round = `Sequencing Round`) |>
-    mutate(path = here("processed-data", "03_cellranger", sample_id, "outs", "raw_feature_bc_matrix"),
-           file_exists = file.exists(path)
-           )
-
-sample_info_path |> count(file_exist)
+## Samples are all present in chromium files, and metadata
+setequal(cell_ranger_chrID, seq_info$chromium_id)
+setequal(metadata_sn$BrNum, seq_info$BrNum)
 
 
+sample_info <- metadata_sn |>
+    select(BrNum, Genotype, Age, Sex, Ancestry, Diagnosis, Rin, APOE) |>
+    left_join(seq_info |>
+                  select(sample_id, BrNum, chromium_id, round, Tissue, 
+                         index_name, Array = `Array #`, Slide = `Slide #`)) 
+
+sample_info$cell_ranger_path  <- cell_ranger_out_paths[order(as.integer(gsub("c_ERC_SVB","", cell_ranger_out_paths)))]
+
+write_csv(sample_info, here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
+
+
+all(file.exists(here("processed-data", "03_cellranger", sample_info$cell_ranger_path, "outs", "raw_feature_bc_matrix")))
+
+## Create slurm job for droplet scores setup
 slurmjobs::job_loop(
     loops = list(sample_id = cell_ranger_out_paths),
     name = "01_get_droplet_scores",
