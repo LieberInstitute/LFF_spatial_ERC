@@ -138,6 +138,35 @@ summary(spe$sum_gene[!spe$in_tissue])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 3.0   121.0   182.0   231.6   277.0  2687.0
 
+#### marker genes ####
+
+vis_gene_MBP_example <- vis_gene(
+    spe = spe[,spe$in_tissue],
+    sampleid = "Br5460",
+    geneid = "MBP",
+    assayname = "counts",
+    point_size = 1.7
+)
+
+ggsave(vis_gene_MBP_example, filename = here(plot_dir, "vis_gene_MBP_Br5460.png"))
+
+vis_grid_gene(
+    spe = spe[,spe$in_tissue],
+    geneid = "MBP",
+    pdf = here::here(plot_dir, "spe_erc_grid_gene-MBP.pdf"),
+    assayname = "counts",
+    point_size = 1,
+    sample_order = sample_order
+)
+
+vis_grid_clus(
+    spe = spe[,spe$in_tissue],
+    clustervar = "10x_kmeans_9_clusters",
+    pdf = here::here(plot_dir, "spe_erc_grid_clus-10x_kmeans_9_clusters.pdf"),
+    assayname = "counts",
+    point_size = 1,
+    sample_order = sample_order
+)
 
 #### Outliers ####
 message(Sys.time(), "- Scran Outlier Violin Plots")
@@ -239,6 +268,19 @@ in_tissue_bar_preQC <- pd |>
     theme_bw()
     
 ggsave(in_tissue_bar_preQC, filename = here(plot_dir, "in_tissue_bar_preQC.png"), width =5)
+
+in_tissue_boxplot_preQC <- pd |>
+    filter(in_tissue) |>
+    count(APOE, sample_id) |>
+    ggplot(aes(x= APOE, y = n)) +
+    geom_boxplot() +
+    geom_point() +
+    geom_text_repel(aes(label = sample_id), color = "grey50") +
+    labs(title = "Pre-QC", y= "n in-tissue spots") +
+    theme_bw()
+
+ggsave(in_tissue_boxplot_preQC, filename = here(plot_dir, "in_tissue_boxplot_preQC.png"), width =7)
+
 
 message(Sys.time(), "- ggridge plots")
 
