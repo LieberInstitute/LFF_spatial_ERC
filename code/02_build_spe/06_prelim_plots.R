@@ -7,6 +7,7 @@ library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
 library("DeconvoBuddies")
+library("patchwork")
 library("here")
 library("sessioninfo")
 
@@ -75,14 +76,21 @@ walk(focus_samples, function(samp){
 })
 
 walk(focus_samples, function(samp){
-        gene_expres_plot <- plot_gene_express(sce = spe[,spe$sample_id == samp],
-                                           genes = layer_genes,
+        gene_expres_plot_big <- plot_gene_express(sce = spe[,spe$sample_id == samp],
+                                           genes = c("MBP", "SNAP25"),
+                                           assay_name = "counts",
+                                           cat = "kmeans_9_clusters", 
+                                           color_pal = colors,
+                                           plot_points = TRUE)        
+        
+        gene_expres_plot_little <- plot_gene_express(sce = spe[,spe$sample_id == samp],
+                                           genes = c("RELN", "PCP4"),
                                            assay_name = "counts",
                                            cat = "kmeans_9_clusters", 
                                            color_pal = colors,
                                            plot_points = TRUE)
         
-        ggsave(gene_expres_plot, filename = here(plot_dir, paste0("gene_expres_",samp,".png")))
+        ggsave(gene_expres_plot_big/gene_expres_plot_little, filename = here(plot_dir, paste0("gene_expres_",samp,".png")))
 
 })
 
