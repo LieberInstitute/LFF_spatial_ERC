@@ -94,4 +94,8 @@ walk(focus_samples, function(samp){
 
 })
 
+## Reproducibility information
+print("Reproducibility information:")
+options(width = 120)
+session_info()
 
