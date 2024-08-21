@@ -209,19 +209,25 @@ walk2(qc_violin_plots, names(qc_violin_plots),
       ~ggsave(.x, filename = here(plot_dir, paste0("erc_sn_QC_outlier-",.y ,".png")),
               width = 21))
 
+qc_detected_v_mito <- plotColData(sce,
+            x = "detected", y = "subsets_Mito_percent",
+            colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
+)
+
+ggsave(qc_detected_v_mito, filename = here(plot_dir, "erc_sn_QC_detected_v_mito.png"))
+
+# Detected features vs total count
+qc_sum_v_detected <-plotColData(sce,
+            x = "sum", y = "detected",
+            colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
+)
+
+ggsave(qc_sum_v_detected, filename = here(plot_dir, "erc_sn_QC_sum_v_detected.png"))
+
 pdf(here(plot_dir, "erc_sn_QC_outliers.pdf"), width = 21)
 print(qc_violin_plots)
-# # Mito rate vs n detected features
-# plotColData(sce,
-#             x = "detected", y = "subsets_Mito_percent",
-#             colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
-# )
-# 
-# # Detected features vs total count
-# plotColData(sce,
-#             x = "sum", y = "detected",
-#             colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
-# )
+print(qc_detected_v_mito)
+print(qc_sum_v_detected)
 dev.off()
 
 
