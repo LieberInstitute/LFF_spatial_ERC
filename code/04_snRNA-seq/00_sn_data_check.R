@@ -3,10 +3,20 @@ library("tidyverse")
 library("readxl")
 library("here")
 
- 
-# Info from Google doc, dononr phenotype data
-metadata_sn <- read_csv(here("processed-data", "00_project_prep", "02_get_online_metadata","metadata_sn_plan.csv"))
+#### Build Metadata ####
+## load ancestry data
+load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.Rdata"), verbose = TRUE)
+# samples_ancestry
+
+# Info from Google doc, donor phenotype data
+metadata_sn <- read_csv(here("processed-data", "00_project_prep", "02_get_online_metadata","metadata_sn_plan.csv")) |>
+    mutate(APOE = gsub(", ", "/", APOE),
+           Ancestry = gsub('CAUC', "EA", Ancestry)) |>
+    left_join(samples_ancestry) |>
+    rename(Anc_Afr = Afr, Anc_Eur = Eur)
+
 metadata_sn
+
 
 dim(metadata_sn)
 # [1] 31 16
@@ -35,7 +45,7 @@ seq_info <- do.call("bind_rows", seq_info) |>
 seq_info |> count(`Experimental Round`, round)
 
 dim(seq_info)
-[1] 14 27
+# [1] 14 27
 
 # write_csv(seq_info, here("processed-data", "04_snRNA-seq", "erc_sn_seq_info.csv"))
 
@@ -77,10 +87,13 @@ setequal(cell_ranger_out_paths, seq_info2$chromium_id)
 setequal(metadata_sn$BrNum, seq_info2$BrNum)
 
 sample_info <- metadata_sn |>
-    select(BrNum, Genotype, Age, Sex, Ancestry, Diagnosis, Rin, APOE) |>
+    select(BrNum, APOE, Ancestry, Sex, Age, Diagnosis, Rin, Anc_Afr, Anc_Eur) |>
     left_join(seq_info2) |>
     mutate(chromium_index = as.integer(gsub("c_ERC_SVB","",chromium_id)),
-           sample_id = BrNum) |>
+           sample_id = BrNum,
+           exp_round = paste0("round", exp_round),
+           seq_round = paste0("round", seq_round)
+           ) |>
     arrange(chromium_index) |>
     select(sample_id, chromium_id, BrNum, everything())
 
