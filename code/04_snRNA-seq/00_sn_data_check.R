@@ -11,11 +11,13 @@ load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ances
 # Info from Google doc, donor phenotype data
 metadata_sn <- read_csv(here("processed-data", "00_project_prep", "02_get_online_metadata","metadata_sn_plan.csv")) |>
     mutate(APOE = gsub(", ", "/", APOE),
-           Ancestry = gsub('CAUC', "EA", Ancestry)) |>
+           Ancestry = gsub('CAUC', "EA", Ancestry),
+           APOE_carrier = ifelse(grepl("E2", APOE), "E2+", "E4+")) |>
     left_join(samples_ancestry) |>
     rename(Anc_Afr = Afr, Anc_Eur = Eur)
 
-metadata_sn
+metadata_sn 
+metadata_sn  |> count(APOE, APOE_carrier) 
 
 
 dim(metadata_sn)
@@ -87,7 +89,7 @@ setequal(cell_ranger_out_paths, seq_info2$chromium_id)
 setequal(metadata_sn$BrNum, seq_info2$BrNum)
 
 sample_info <- metadata_sn |>
-    select(BrNum, APOE, Ancestry, Sex, Age, Diagnosis, Rin, Anc_Afr, Anc_Eur) |>
+    select(BrNum, APOE, APOE_carrier, Ancestry, Sex, Age, Diagnosis, Rin, Anc_Afr, Anc_Eur) |>
     left_join(seq_info2) |>
     mutate(chromium_index = as.integer(gsub("c_ERC_SVB","",chromium_id)),
            sample_id = BrNum,
