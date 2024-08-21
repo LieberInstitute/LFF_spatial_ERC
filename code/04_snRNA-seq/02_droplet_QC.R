@@ -178,9 +178,9 @@ sce <- scuttle::addPerCellQC(
 )
 
 ## find outliers with Scran
-sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$seq_round)
-sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$seq_round)
-sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$seq_round)
+sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$sample_id)
+sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$sample_id)
+sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$sample_id)
 
 ## drop with any fails
 sce$discard_auto <- sce$high_mito | sce$low_sum | sce$low_detected
@@ -191,36 +191,37 @@ table(sce$discard_auto)
 addmargins(table(sce$BrNum, sce$discard_auto))
 
 #### QC plots ####
+qc_metrics <- c("sum", "detected", "subsets_Mito_percent")
+names(qc_metrics) <- qc_metrics
+qc_cutoff <- c("low_sum", "low_detected", "high_mito")
+
+qc_violin_plots <- map2(qc_metrics, qc_cutoff,
+                       ~plotColData(sce, x = "BrNum", y = .x, colour_by = .y) +
+                           # scale_y_log10() +
+                           # ggtitle(.x) +
+                           facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
+                           theme_bw())
+
+qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10()
+
+
+walk2(qc_violin_plots, names(qc_violin_plots),
+      ~ggsave(.x, filename = here(plot_dir, paste0("erc_sn_QC_outlier-",.y ,".png")),
+              width = 21))
+
 pdf(here(plot_dir, "erc_sn_QC_outliers.pdf"), width = 21)
-## Mito rate
-plotColData(sce, x = "BrNum", y = "subsets_Mito_percent", colour_by = "high_mito") +
-    ggtitle("Mito Precent") +
-    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1)
-
-# ## low sum
-plotColData(sce, x = "BrNum", y = "sum", colour_by = "low_sum") +
-    scale_y_log10() +
-    ggtitle("Total count") +
-    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1)
-
-# ## low detected
-plotColData(sce, x = "BrNum", y = "detected", colour_by = "low_detected") +
-    scale_y_log10() +
-    ggtitle("Detected features") +
-    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1)
-
-# Mito rate vs n detected features
-plotColData(sce,
-            x = "detected", y = "subsets_Mito_percent",
-            colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
-)
-
-# Detected features vs total count
-plotColData(sce,
-            x = "sum", y = "detected",
-            colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
-)
-
+print(qc_violin_plots)
+# # Mito rate vs n detected features
+# plotColData(sce,
+#             x = "detected", y = "subsets_Mito_percent",
+#             colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
+# )
+# 
+# # Detected features vs total count
+# plotColData(sce,
+#             x = "sum", y = "detected",
+#             colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
+# )
 dev.off()
 
 
