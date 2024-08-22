@@ -34,6 +34,7 @@ walk(focus_samples, function(samp){
             sampleid = samp,
             geneid = gene,
             assayname = "counts",
+            minCount = -1,
             point_size = 1.7
         )
         
