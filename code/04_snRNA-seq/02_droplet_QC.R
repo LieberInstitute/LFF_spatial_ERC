@@ -9,9 +9,9 @@ library("ggrepel")
 library("here")
 library("sessioninfo")
 library("EnsDb.Hsapiens.v86")
-library(scran)
-library(scuttle)
-library(scater)
+library("scran")
+library("scuttle")
+library("scater")
 
 plot_dir <- here("plots", "04_snRNA-seq", "02_droplet_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -50,15 +50,30 @@ sce_list <- map(sample_list, function(sample){
     return(sce)
 })
 
+## What were the cutoffs?
+log_fn <- list.files(here("code", "04_snRNA-seq", "logs"), pattern = "01_get_droplet_scores_", full.names = TRUE)
+logs <- map(log_fn, readLines)
+
+knee_lower <- map_dbl(logs, ~ parse_number(.x[grepl("knee_lower =", .x)]))
+names(knee_lower) <- gsub("_[0-9]+.txt", "", gsub("01_get_droplet_scores_", "", basename(log_fn)))
+
+identical(names(knee_lower), droplet_counts$chromium_id)
+
+droplet_counts$knee_lower <- knee_lower
 
 summary(droplet_counts)
-# Sample             pre_drop         post_drop   
-# Length:31          Min.   : 581462   Min.   :1794  
-# Class :character   1st Qu.:1048624   1st Qu.:4420  
-# Mode  :character   Median :1262252   Median :5072  
-#                    Mean   :1241313   Mean   :4970  
-#                    3rd Qu.:1411650   3rd Qu.:5720  
-#                    Max.   :1732806   Max.   :7847 
+# chromium_id          n_pre_drop       n_post_drop     knee_lower   
+# Length:31          Min.   : 581462   Min.   :1794   Min.   :206.0  
+# Class :character   1st Qu.:1048624   1st Qu.:4420   1st Qu.:223.5  
+# Mode  :character   Median :1262252   Median :5072   Median :273.0  
+#                    Mean   :1241313   Mean   :4970   Mean   :353.8  
+#                    3rd Qu.:1411650   3rd Qu.:5720   3rd Qu.:313.0  
+#                    Max.   :1732806   Max.   :7847   Max.   :984.0 
+
+## total droplets sequenced
+sum(droplet_counts$n_pre_drop)
+# [1] 38480710
+
 
 #### Compile sample quality info ####
 ## retrieve median reads per cell
