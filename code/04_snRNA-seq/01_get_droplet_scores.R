@@ -19,11 +19,11 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # Import command-line parameters
 spec <- matrix(
     c(
-        c("sample_id"),
-        c("s"),
-        rep("1", 1),
-        rep("character", 1),
-        rep("snRNA_seq sample", 1)
+        c("sample_id", "knee"),
+        c("s", "k"),
+        c("1","2"),
+        c("character", "integer"),
+        c("snRNA_seq sample", "user supplied knee")
     ),
     ncol = 5
 )
@@ -55,6 +55,12 @@ message(
   "knee_lower =", knee_lower
 )
 
+#### Use Manual Knee if suppled ####
+if(!is.null(opt$knee)){
+    message("Use manual knee: ", opt$knee)
+    knee_lower = opt$knee
+}
+
 #### Run emptyDrops w/ knee + 100 ####
 set.seed(100)
 message(Sys.time(), " - Starting emptyDrops")
@@ -77,17 +83,21 @@ addmargins(table(Signif = e.out$FDR <= FDR_cutoff, Limited = e.out$Limited, useN
 n_cell_anno <- paste("Non-empty:", sum(e.out$FDR < FDR_cutoff, na.rm = TRUE))
 message(n_cell_anno)
 
-my_theme <- theme_bw() +
-  theme(text = element_text(size = 15))
-
 droplet_elbow_plot <- as.data.frame(bcRanks) %>%
   add_column(FDR = e.out$FDR) %>%
   ggplot(aes(x = rank, y = total, color = FDR < FDR_cutoff)) +
   geom_point(alpha = 0.5, size = 1) +
   geom_hline(yintercept = metadata(bcRanks)$knee, linetype = "dotted", color = "gray") +
-  annotate("text", x = 10, y = metadata(bcRanks)$knee, label = "Second Knee", vjust = -1, color = "gray") +
-  geom_hline(yintercept = knee_lower, linetype = "dashed") +
-  annotate("text", x = 100, y = knee_lower, label = "Knee est 'lower'", vjust = -0.5) +
+  annotate("text", x = 10,
+           y = metadata(bcRanks)$knee, 
+           label = paste("Second Knee:", metadata(bcRanks)$knee),
+           vjust = -1, 
+           color = "gray") +
+  geom_hline(yintercept = metadata(bcRanks)$knee + 100, linetype = "dashed") +
+  annotate("text", x = 100, 
+           y = metadata(bcRanks)$knee + 100, 
+           label = paste("Knee est 'lower':", metadata(bcRanks)$knee + 100), 
+           vjust = -0.5) +
   scale_x_continuous(trans = "log10") +
   scale_y_continuous(trans = "log10") +
   labs(
@@ -97,22 +107,25 @@ droplet_elbow_plot <- as.data.frame(bcRanks) %>%
     subtitle = n_cell_anno,
     color = paste("FDR <", FDR_cutoff)
   ) +
-  my_theme +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom",
+        text = element_text(size = 15))
 
-# droplet_scatter_plot <- as.data.frame(e) %>%
-#   ggplot(aes(x = Total, y = -LogProb, color = FDR < FDR_cutoff)) +
-#   geom_point(alpha = 0.5, size = 1) +
-#   labs(x = "Total UMIs", y = "-Log Probability",
-#        color = paste("FDR <", FDR_cutoff)) +
-#   my_theme+
-#   theme(legend.position = "bottom")
-# # print(droplet_elbow_plot/droplet_scatter_plot)
-# ggsave(droplet_elbow_plot/droplet_scatter_plot, filename = here("plots","03_build_sce", "droplet_qc_png",paste0("droplet_qc_",sample,".png")))
+## Add Manual Knee if used
+if(!is.null(opt$knee)){
+    droplet_elbow_plot <- droplet_elbow_plot + 
+        geom_hline(yintercept = opt$knee, linetype = "dotted", color = "red") +
+        annotate("text", x = 10, y = opt$knee, label = paste("Manual Knee:", opt$knee), vjust = -1, color = "red") 
+}
 
 ggsave(droplet_elbow_plot, filename = here(plot_dir, paste0("droplet_qc_", sample, ".png")))
 
 ## slurmjobs defined in 00_sn_data_check.R
+
+# slurmjobs::job_loop(
+#     loops = list(sample_id = c()),
+#     name = "01_get_droplet_scores_manual_knee",
+#     create_shell = TRUE
+# )
 
 ## Reproducibility information
 print("Reproducibility information:")
