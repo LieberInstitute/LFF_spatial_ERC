@@ -29,8 +29,8 @@ spec <- matrix(
 )
 opt <- getopt(spec)
 
-print("Using the following parameters:")
-print(opt)
+## fix knee param for now
+if(opt$knee == "NULL") opt$knee <- NULL
 
 sample = opt$sample_id
 
@@ -107,13 +107,14 @@ droplet_elbow_plot <- as.data.frame(bcRanks) %>%
     subtitle = n_cell_anno,
     color = paste("FDR <", FDR_cutoff)
   ) +
-  theme(legend.position = "bottom",
-        text = element_text(size = 15))
+    theme_bw() +
+    theme(legend.position = "bottom",
+          text = element_text(size = 15)) 
 
 ## Add Manual Knee if used
 if(!is.null(opt$knee)){
     droplet_elbow_plot <- droplet_elbow_plot + 
-        geom_hline(yintercept = opt$knee, linetype = "dotted", color = "red") +
+        geom_hline(yintercept = opt$knee, linetype = "dashed", color = "red") +
         annotate("text", x = 10, y = opt$knee, label = paste("Manual Knee:", opt$knee), vjust = -1, color = "red") 
 }
 
