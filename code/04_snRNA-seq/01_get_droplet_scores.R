@@ -51,13 +51,13 @@ bcRanks <- barcodeRanks(sce, fit.bounds = c(10, 1e3))
 
 knee_lower <- metadata(bcRanks)$knee + 100
 message(
-  "'Second knee point' = ", metadata(bcRanks)$knee, "\n",
-  "knee_lower =", knee_lower
+  "Second knee point = ", metadata(bcRanks)$knee, "\n",
+  "knee_lower = ", knee_lower
 )
 
 #### Use Manual Knee if supplied ####
 if(!is.null(opt$knee)){
-    message("Use manual knee: ", opt$knee)
+    message("Use manual knee = ", opt$knee)
     knee_lower = opt$knee
 }
 
