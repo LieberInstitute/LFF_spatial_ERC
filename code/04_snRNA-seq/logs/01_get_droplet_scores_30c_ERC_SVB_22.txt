@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Aug  2 12:58:13 PM EDT 2024
+Tue Aug 27 04:38:38 PM EDT 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 8914799
+Job id: 9567723
 Job name: 01_get_droplet_scores
-Node name: compute-150
+Node name: compute-157
 Task id: 22
 Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
@@ -114,20 +114,15 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-[1] "Using the following parameters:"
-$ARGS
-character(0)
-
-$sample_id
-[1] "30c_ERC_SVB"
-
-2024-08-02 12:58:27.609142 - Reading data from /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/03_cellranger/30c_ERC_SVB/outs/raw_feature_bc_matrix
+Warning message:
+In value[[3L]](cond) : integer expected, got “NULL”
+2024-08-27 16:38:46.849311 - Reading data from /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/03_cellranger/30c_ERC_SVB/outs/raw_feature_bc_matrix
 ncol:1232355
-2024-08-02 12:58:47.637354 - Running barcode ranks.
+2024-08-27 16:39:04.62895 - Running barcode ranks.
 'Second knee point' = 142
 knee_lower =242
-2024-08-02 12:58:47.917367 - Starting emptyDrops
-2024-08-02 13:06:05.847464 - Done: saving data
+2024-08-27 16:39:04.861085 - Starting emptyDrops
+2024-08-27 16:43:44.577014 - Done: saving data
 QC check
        Limited
 Signif    FALSE    TRUE    <NA>     Sum
@@ -151,7 +146,7 @@ In scale_y_continuous(trans = "log10") :
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-08-02
+ date     2024-08-27
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -161,11 +156,11 @@ In scale_y_continuous(trans = "log10") :
    Biobase              * 2.62.0    2023-10-24 [2] Bioconductor
    BiocGenerics         * 0.48.1    2023-11-01 [2] Bioconductor
    BiocParallel           1.36.0    2023-10-24 [2] Bioconductor
-   bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.2)
-   cli                    3.6.2     2023-12-11 [1] CRAN (R 4.3.2)
+   bitops                 1.0-8     2024-07-29 [1] CRAN (R 4.3.2)
+   cli                    3.6.3     2024-06-21 [1] CRAN (R 4.3.2)
    codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.2)
-   colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.2)
-   crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.2)
+   colorspace             2.1-1     2024-07-26 [1] CRAN (R 4.3.2)
+   crayon                 1.5.3     2024-06-20 [1] CRAN (R 4.3.2)
    DelayedArray           0.28.0    2023-10-24 [2] Bioconductor
    DelayedMatrixStats     1.24.0    2023-10-24 [2] Bioconductor
    dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.3.2)
@@ -190,7 +185,7 @@ In scale_y_continuous(trans = "log10") :
    lattice                0.22-5    2023-10-24 [3] CRAN (R 4.3.2)
    lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.3.2)
    limma                  3.58.1    2023-10-31 [2] Bioconductor
-   locfit                 1.5-9.9   2024-03-01 [1] CRAN (R 4.3.2)
+   locfit                 1.5-9.10  2024-06-24 [1] CRAN (R 4.3.2)
    lubridate            * 1.9.3     2023-09-27 [2] CRAN (R 4.3.2)
    magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.2)
    Matrix                 1.6-5     2024-01-11 [3] CRAN (R 4.3.2)
@@ -205,8 +200,8 @@ In scale_y_continuous(trans = "log10") :
    R.utils                2.12.3    2023-11-18 [2] CRAN (R 4.3.2)
    R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.2)
    ragg                   1.3.2     2024-05-15 [1] CRAN (R 4.3.2)
-   Rcpp                   1.0.12    2024-01-09 [2] CRAN (R 4.3.2)
-   RCurl                  1.98-1.14 2024-01-09 [2] CRAN (R 4.3.2)
+   Rcpp                   1.0.13    2024-07-17 [1] CRAN (R 4.3.2)
+   RCurl                  1.98-1.16 2024-07-11 [1] CRAN (R 4.3.2)
    readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.3.2)
    rhdf5                  2.46.1    2023-11-29 [2] Bioconductor 3.18 (R 4.3.2)
    rhdf5filters           1.14.1    2023-11-06 [2] Bioconductor
@@ -235,7 +230,7 @@ In scale_y_continuous(trans = "log10") :
    tzdb                   0.4.0     2023-05-12 [2] CRAN (R 4.3.2)
    utf8                   1.2.4     2023-10-22 [2] CRAN (R 4.3.2)
    vctrs                  0.6.5     2023-12-01 [1] CRAN (R 4.3.2)
-   withr                  3.0.0     2024-01-16 [2] CRAN (R 4.3.2)
+   withr                  3.0.1     2024-07-31 [1] CRAN (R 4.3.2)
    XVector                0.42.0    2023-10-24 [2] Bioconductor
    zlibbioc               1.48.2    2024-03-13 [1] Bioconductor 3.18 (R 4.3.2)
 
@@ -247,4 +242,4 @@ In scale_y_continuous(trans = "log10") :
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Aug  2 01:06:32 PM EDT 2024
+Tue Aug 27 04:44:01 PM EDT 2024
