@@ -50,16 +50,21 @@ sce_list <- map(sample_list, function(sample){
     return(sce)
 })
 
-## What were the cutoffs?
+## What were the knee cutoffs?
 log_fn <- list.files(here("code", "04_snRNA-seq", "logs"), pattern = "01_get_droplet_scores_", full.names = TRUE)
 logs <- map(log_fn, readLines)
+names(logs) <- gsub("_[0-9]+.txt", "", gsub("01_get_droplet_scores_", "", basename(log_fn)))
 
 knee_lower <- map_dbl(logs, ~ parse_number(.x[grepl("knee_lower =", .x)]))
-names(knee_lower) <- gsub("_[0-9]+.txt", "", gsub("01_get_droplet_scores_", "", basename(log_fn)))
+
+# get manual knee
+use_manual <- map_lgl(logs, ~ any(grepl("Use manual knee", .x)))
+knee_manual <- as.integer(map2(logs, use_manual, ~ifelse(.y, parse_number(.x[grepl("Use manual knee", .x)]), NA)))
 
 identical(names(knee_lower), droplet_counts$chromium_id)
 
 droplet_counts$knee_lower <- knee_lower
+droplet_counts$knee_manual <- knee_manual
 
 summary(droplet_counts)
 # chromium_id          n_pre_drop       n_post_drop     knee_lower   
@@ -74,6 +79,9 @@ summary(droplet_counts)
 sum(droplet_counts$n_pre_drop)
 # [1] 38480710
 
+table(is.na(knee_manual))
+# FALSE  TRUE 
+# 6    25 
 
 #### Compile sample quality info ####
 ## retrieve median reads per cell
@@ -81,6 +89,50 @@ cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger"))
 cell_ranger_metrics <- map_dfr(cell_ranger_out_paths, 
                                ~read_csv(here("processed-data", "03_cellranger", .x, "outs", "metrics_summary.csv")) |>
                                    mutate(chromium_id = .x, .before = 1))
+
+summary(cell_ranger_metrics)
+# chromium_id        Estimated Number of Cells Mean Reads per Cell Median Genes per Cell Number of Reads    
+# Length:31          Min.   :1979              Min.   : 62782      Min.   :1416          Min.   :377788420  
+# Class :character   1st Qu.:4756              1st Qu.: 84448      1st Qu.:2202          1st Qu.:465472465  
+# Mode  :character   Median :5325              Median :101847      Median :2452          Median :525073680  
+#                    Mean   :5268              Mean   :109874      Mean   :2515          Mean   :541737761  
+#                    3rd Qu.:6069              3rd Qu.:120272      3rd Qu.:2847          3rd Qu.:578512992  
+#                    Max.   :7830              Max.   :228840      Max.   :3613          Max.   :793042874  
+# Valid Barcodes     Sequencing Saturation Q30 Bases in Barcode Q30 Bases in RNA Read Q30 Bases in UMI  
+# Length:31          Length:31             Length:31            Length:31             Length:31         
+# Class :character   Class :character      Class :character     Class :character      Class :character  
+# Mode  :character   Mode  :character      Mode  :character     Mode  :character      Mode  :character  
+# 
+# 
+# 
+# Reads Mapped to Genome Reads Mapped Confidently to Genome Reads Mapped Confidently to Intergenic Regions
+# Length:31              Length:31                          Length:31                                     
+# Class :character       Class :character                   Class :character                              
+# Mode  :character       Mode  :character                   Mode  :character                              
+# 
+# 
+# 
+# Reads Mapped Confidently to Intronic Regions Reads Mapped Confidently to Exonic Regions
+# Length:31                                    Length:31                                 
+# Class :character                             Class :character                          
+# Mode  :character                             Mode  :character                          
+# 
+# 
+# 
+# Reads Mapped Confidently to Transcriptome Reads Mapped Antisense to Gene Fraction Reads in Cells Total Genes Detected
+# Length:31                                 Length:31                      Length:31               Min.   :29063       
+# Class :character                          Class :character               Class :character        1st Qu.:33028       
+# Mode  :character                          Mode  :character               Mode  :character        Median :33730       
+# Mean   :33428       
+# 3rd Qu.:34162       
+# Max.   :34831       
+# Median UMI Counts per Cell
+# Min.   : 2530             
+# 1st Qu.: 4538             
+# Median : 5369             
+# Mean   : 5797             
+# 3rd Qu.: 7141             
+# Max.   :10275             
 
 write_csv(cell_ranger_metrics, file = here(data_dir, "cell_ranger_metrics.csv"))
 
