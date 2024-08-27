@@ -108,3 +108,9 @@ slurmjobs::job_loop(
     create_shell = TRUE
 )
 
+#### manual knee values ####
+manual_knee <- c(`8c_ERC_SVB` = 100, `5c_ERC_SVB` = 100, `24c_ERC_SVB` = 100, `27c_ERC_SVB` = 150, `28c_ERC_SVB` = 150, `29c_ERC_SVB` = 150)
+manual_knee <- manual_knee[cell_ranger_out_paths]
+manual_knee[is.na(manual_knee)] <- "NULL"
+paste(manual_knee, collapse = " ")
+
