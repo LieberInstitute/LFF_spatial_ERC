@@ -12,7 +12,7 @@
 all_sample_id=(10c_ERC_SVB 11c_ERC_SVB 12c_ERC_SVB 13c_ERC_SVB 14c_ERC_SVB 15c_ERC_SVB 16c_ERC_SVB 17c_ERC_SVB 18c_ERC_SVB 19c_ERC_SVB 1c_ERC_SVB 20c_ERC_SVB 21c_ERC_SVB 22c_ERC_SVB 23c_ERC_SVB 24c_ERC_SVB 25c_ERC_SVB 26c_ERC_SVB 27c_ERC_SVB 28c_ERC_SVB 29c_ERC_SVB 2c_ERC_SVB 30c_ERC_SVB 31c_ERC_SVB 3c_ERC_SVB 4c_ERC_SVB 5c_ERC_SVB 6c_ERC_SVB 7c_ERC_SVB 8c_ERC_SVB 9c_ERC_SVB)
 all_sample_knee=(NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL 100 NULL NULL 100 NULL)
 sample_id=${all_sample_id[$(( $SLURM_ARRAY_TASK_ID / 1 % 31 ))]}
-sample_knee=${all_sample_id[$(( $SLURM_ARRAY_TASK_ID / 1 % 31 ))]}
+sample_knee=${all_sample_knee[$(( $SLURM_ARRAY_TASK_ID / 1 % 31 ))]}
 
 ## Explicitly pipe script output to a log
 log_path=logs/01_get_droplet_scores_${sample_id}_${SLURM_ARRAY_TASK_ID}.txt
