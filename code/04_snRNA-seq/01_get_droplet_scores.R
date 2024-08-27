@@ -55,7 +55,7 @@ message(
   "knee_lower =", knee_lower
 )
 
-#### Use Manual Knee if suppled ####
+#### Use Manual Knee if supplied ####
 if(!is.null(opt$knee)){
     message("Use manual knee: ", opt$knee)
     knee_lower = opt$knee
