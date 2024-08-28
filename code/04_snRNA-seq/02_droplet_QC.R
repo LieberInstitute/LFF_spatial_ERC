@@ -12,8 +12,8 @@ library("EnsDb.Hsapiens.v86")
 library("scran")
 library("scuttle")
 library("scater")
-library("jaffelab")
 library("scDblFinder")
+library("HDF5Array")
 
 plot_dir <- here("plots", "04_snRNA-seq", "02_droplet_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -70,20 +70,20 @@ droplet_counts$knee_manual <- knee_manual
 
 summary(droplet_counts)
 # chromium_id          n_pre_drop       n_post_drop     knee_lower     knee_manual 
-# Length:31          Min.   : 581462   Min.   :2443   Min.   :206.0   Min.   :100  
-#Class :character   1st Qu.:1048624   1st Qu.:4676   1st Qu.:223.5   1st Qu.:100  
-#Mode  :character   Median :1262252   Median :5222   Median :273.0   Median :125  
-#                   Mean   :1241313   Mean   :5229   Mean   :353.8   Mean   :125  
-#                   3rd Qu.:1411650   3rd Qu.:5900   3rd Qu.:313.0   3rd Qu.:150  
-#                   Max.   :1732806   Max.   :7847   Max.   :984.0   Max.   :150  
-#                                                                     NA's   :25  
+# Length:31          Min.   : 581462   Min.   :2169   Min.   :206.0   Min.   :200  
+# Class :character   1st Qu.:1048624   1st Qu.:4676   1st Qu.:223.5   1st Qu.:200  
+# Mode  :character   Median :1262252   Median :5222   Median :273.0   Median :200  
+#                    Mean   :1241313   Mean   :5185   Mean   :353.8   Mean   :200  
+#                    3rd Qu.:1411650   3rd Qu.:5815   3rd Qu.:313.0   3rd Qu.:200  
+#                    Max.   :1732806   Max.   :7847   Max.   :984.0   Max.   :200  
+#                                                                     NA's   :25 
 
 ## total droplets sequenced
 sum(droplet_counts$n_pre_drop)
 # [1] 38480710
 
 sum(droplet_counts$n_post_drop)
-# [1] 162102
+# [1] 160743
 
 table(is.na(knee_manual))
 # FALSE  TRUE 
@@ -93,7 +93,8 @@ table(is.na(knee_manual))
 ## retrieve median reads per cell
 cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger"))
 cell_ranger_metrics <- map_dfr(cell_ranger_out_paths, 
-                               ~read_csv(here("processed-data", "03_cellranger", .x, "outs", "metrics_summary.csv")) |>
+                               ~read_csv(here("processed-data", "03_cellranger", .x, "outs", "metrics_summary.csv"),
+                                         show_col_types = FALSE) |>
                                    mutate(chromium_id = .x, .before = 1))
 
 summary(cell_ranger_metrics)
@@ -226,7 +227,7 @@ all(map_lgl(sce_list, ~identical(rownames(sce_list[[1]]), rownames(.x))))
 ## rbind to one sce
 sce <- do.call("cbind", sce_list)
 dim(sce)
-# [1]  38606 154072
+# [1]  38606 160743
 
 #### Build colData ####
 colData(sce)
@@ -248,67 +249,68 @@ pd <- as.data.frame(colData(sce)) |>
 
 colData(sce) <- DataFrame(pd)
 
-
 #### Compute QC metrics ####
-
-location <- mapIds(EnsDb.Hsapiens.v86, keys = rowData(sce)$ID, 
+location <- mapIds(EnsDb.Hsapiens.v86, keys = rowData(sce)$ID,
                    column = "SEQNAME", keytype = "GENEID")
-# Unable to map 4792 of 38606 requested IDs. 
-
+# Unable to map 4792 of 38606 requested IDs.
 sce <- scuttle::addPerCellQC(
     sce,
-    # subsets = list(Mito = list(Mito = which(location=="MT")))
     subsets = list(Mito = which(location=="MT"))
-    # ,
-    # BPPARAM = BiocParallel::MulticoreParam(4)
 )
 
-## find outliers with Scran
-sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher")
-sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower")
-sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower")
+table(sce$sum < 200)
+
+#### Doublet detection #### 
+set.seed(821)
+message(Sys.time(), " - ", "Run scDblFinder")
+sce <- scDblFinder(sce, samples = sce$sample_id)
+message(Sys.time(), " - Done")
+
+table(sce$scDblFinder.class)
+# singlet doublet 
+# 149923   10820
+
+100*sum(sce$scDblFinder.class == "doublet")/ncol(sce)
+# 10X-like data tends to have roughly 1% per 1000 cells captured
+
+#### Visualize doublet scores ####
+dbl_violin <- plotColData(sce, x = "BrNum", y = "scDblFinder.score", colour_by = "scDblFinder.class") +
+    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
+    theme_bw()
+
+ggsave(dbl_violin, filename = here(plot_dir, "erc_sn_doublet_scores_violin.png"), width = 21)
+
+dbl_df <- colData(sce) |>
+    as.data.frame() |>
+    dplyr::select(sample_id, scDblFinder.score, scDblFinder.class)
+
+doubletScore_summary <- dbl_df |>
+    group_by(sample_id) |>
+    dplyr::summarize(
+        doubletScore_median = median(scDblFinder.score),
+        n_doublets = sum(scDblFinder.class == "doublet")
+    ) 
+
+summary(doubletScore_summary)
+
+
+#### find qc metric outliers w/ Scuttle::isOutlier ####
+sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$sample_id)
+sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$sample_id)
+sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$sample_id)
 
 ## drop nuclei that are outliers in any of the three metrics
 sce$discard_auto <- sce$high_mito | sce$low_sum | sce$low_detected
 table(sce$discard_auto)
 # FALSE   TRUE 
-# 141018  21084 
+# 140119  20624
 
 addmargins(table(sce$BrNum, sce$discard_auto))
 
-## with seq round as batch
+## add by batch for ref
 sce$high_mito_batch <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$seq_round)
 sce$low_sum_batch <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$seq_round)
 sce$low_detected_batch <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$seq_round)
-
-sce$discard_auto_batch <- sce$high_mito_batch | sce$low_sum_batch | sce$low_detected_batch
-table(sce$discard_auto_batch)
-#        FALSE   TRUE
-# FALSE 122727  18291
-# TRUE    7072  14012
-
-table(sce$low_sum, sce$low_sum_batch)
-table(sce$low_detected, sce$low_detected_batch)
-table(sce$high_mito, sce$high_mito_batch)
-table(sce$discard_auto, sce$discard_auto_batch)
-
-sce$high_mito_both <- case_when(sce$high_mito & sce$high_mito_batch ~ "both",
-                                sce$high_mito ~ "sample",
-                                sce$high_mito_batch ~ "batch",
-                                TRUE ~ "None"
-                                )
-
-sce$low_detected_both <- case_when(sce$low_detected & sce$low_detected_batch ~ "both",
-                                sce$low_detected ~ "sample",
-                                sce$low_detected_batch ~ "batch",
-                                TRUE ~ "None"
-                                )
-
-sce$low_sum_both <- case_when(sce$low_sum & sce$low_sum_batch ~ "both",
-                                sce$low_sum ~ "sample",
-                                sce$low_sum_batch ~ "batch",
-                                TRUE ~ "None"
-                                )
 
 #### QC plots ####
 qc_metrics <- c("sum", "detected", "subsets_Mito_percent")
@@ -322,7 +324,7 @@ qc_violin_plots <- map2(qc_metrics, qc_cutoff,
                            facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
                            theme_bw())
 
-qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10() + geom_hline(yintercept = 200)
+qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10() 
 qc_violin_plots$detected <- qc_violin_plots$detected + scale_y_log10()
 
 walk2(qc_violin_plots, names(qc_violin_plots),
@@ -332,7 +334,7 @@ walk2(qc_violin_plots, names(qc_violin_plots),
 qc_detected_v_mito <- plotColData(sce,
             x = "detected", y = "subsets_Mito_percent",
             colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
-)
+) + theme_bw()
 
 ggsave(qc_detected_v_mito, filename = here(plot_dir, "erc_sn_QC_detected_v_mito.png"))
 
@@ -340,7 +342,7 @@ ggsave(qc_detected_v_mito, filename = here(plot_dir, "erc_sn_QC_detected_v_mito.
 qc_sum_v_detected <-plotColData(sce,
             x = "sum", y = "detected",
             colour_by = "discard_auto", point_size = 2.5, point_alpha = 0.5
-)
+) + theme_bw()
 
 ggsave(qc_sum_v_detected, filename = here(plot_dir, "erc_sn_QC_sum_v_detected.png"))
 
@@ -350,40 +352,27 @@ print(qc_detected_v_mito)
 print(qc_sum_v_detected)
 dev.off()
 
-## Plot batch outliers
-qc_cutoff_batch <- c("low_sum_both", "low_detected_both", "high_mito_both")
-
-qc_violin_plots <- map2(qc_metrics, qc_cutoff_batch,
-                        ~plotColData(sce, x = "BrNum", y = .x, colour_by = .y) +
-                            # scale_y_log10() +
-                            # ggtitle(.x) +
-                            facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
-                            theme_bw())
-
-qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10()
-qc_violin_plots$detected <- qc_violin_plots$detected + scale_y_log10()
-
-walk2(qc_violin_plots, names(qc_violin_plots),
-      ~ggsave(.x, filename = here(plot_dir, paste0("erc_sn_QC_outlier-",.y ,"_batch.png")),
-              width = 21))
-
 #### Add qc counts to qc summary ####
 sample_qc_summary <- 
     sample_qc_summary |>
-    left_join(as.data.frame(colData(sce)) |>
+    left_join(doubletScore_summary |> rename(BrNum = sample_id)) |> ## add doublet data
+    left_join(as.data.frame(colData(sce)) |> 
                   group_by(BrNum) |>
-                  summarise(low_sum = sum(low_sum),
-                            low_detected = sum(low_detected), 
-                            high_mito = sum(high_mito),
-                            discard_auto = sum(discard_auto),
-                            n_postQC = n()-discard_auto))
+                  dplyr::summarise(n_low_sum = sum(low_sum),
+                            n_low_detected = sum(low_detected), 
+                            n_high_mito = sum(high_mito),
+                            n_discard_auto = sum(discard_auto),
+                            n_postQC = n()-n_discard_auto))
+
+              
 
 ## summary of n post-QC
-sum(sample_qc_summary$n_postQC) # [1] 141018
-100*sum(sample_qc_summary$n_postQC)/ncol(sce) # 86.99337
+sum(sample_qc_summary$n_postQC) # [1] 140119
+100*sum(sample_qc_summary$n_postQC)/ncol(sce) 
+# [1] 87.16958
 summary(sample_qc_summary$n_postQC)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 1883    4010    4589    4549    5178    6946
+# 1811    4010    4589    4520    5100    6946 
 
 sample_qc_summary |>
     group_by(APOE_carrier) |>
@@ -391,13 +380,8 @@ sample_qc_summary |>
               median = median(n_postQC))
 # APOE_carrier total median
 # <chr>        <int>  <dbl>
-# 1 E2+          67137  4644.
-# 2 E4+          73881  4250 
-
-#### Drop Auto-drop nuclei ####
-sce <- sce[,!sce$discard_auto]
-dim(sce)
-# [1]  38606 141018
+# 1 E2+          66605  4644.
+# 2 E4+          73514  4250 
 
 #### plot post QC values ####
 n_nuc_qc_barplot <- sample_qc_summary |>
@@ -437,54 +421,28 @@ postQC_boxplot_APOE_carrier <- sample_qc_summary |>
 
 ggsave(postQC_boxplot_APOE_carrier, filename = here(plot_dir, "erc_n_post_QC_boxplot_APOE_carrier.png"), height = 5, width = 5)
 
-#### Doublet detection #### 
-## To speed up, run on sample-level top-HVGs - just take top 1000
-set.seed(821)
-message(Sys.time(), " - ", "Run scDblFinder")
-sce <- scDblFinder(sce, samples = sce$sample_id)
-message(Sys.time(), "Done")
+#### Drop Auto-drop nuclei ####
+sce <- sce[,!sce$discard_auto]
+dim(sce)
+# [1]  38606 140119
 
-table(sce$scDblFinder.class)
-# singlet doublet 
-# 132345    8673
+table(sce$BrNum)
 
-100*sum(sce$scDblFinder.class == "doublet")/ncol(sce)
-# 10X-like data tends to have roughly 1% per 1000 cells captured
-
-
-## Visualize doublet scores ##
-
-dbl_violin <- plotColData(sce, x = "BrNum", y = "scDblFinder.score", colour_by = "scDblFinder.class") +
-    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
-    theme_bw()
-
-ggsave(dbl_violin, filename = here(plot_dir, "erc_sn_doublet_scores_violin.png"), width = 21)
-
-dbl_df <- colData(sce) |>
-    as.data.frame() |>
-    dplyr::select(sample_id, scDblFinder.score, scDblFinder.class)
-
- dbl_df |>
-    group_by(sample_id) |>
-    summarize(
-        doubletScore_median = median(doubletScore),
-        doubletScore_q95 = quantile(doubletScore, .95),
-        doubletScore_n_over5 = sum(doubletScore >= 5),
-        doubletScore_precent_over5 = 100 * doubletScore_n_over5/n()
-    ) 
-
-summary(doubletScore_summary)
+# check n per sample match
+all(sample_qc_summary |> arrange(BrNum) |> pull(n_postQC) == table(sce$BrNum))
 
 #### Save Data ####
 write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
 
-## Save preQC-sce
-save(sce, file = here("processed-data", "sce_objects", 
-                               "sce_erc_preQC.Rdata"))
+####  get logcounts ####
+message(Sys.time(), " - logNormCounts")
+sce <- logNormCounts(sce)
+
 
 ## save HDF5
+message(Sys.time(), " - Save Data")
 saveHDF5SummarizedExperiment(sce,
-                             dir = here("processed-data", "sce_objects", "hdf5_sce"), prefix = "", replace = FALSE,
+                             dir = here("processed-data", "sce_objects", "hdf5_sce_postQC"), prefix = "", replace = FALSE,
                              chunkdim = NULL, level = NULL, as.sparse = TRUE,
                              verbose = TRUE
 )
