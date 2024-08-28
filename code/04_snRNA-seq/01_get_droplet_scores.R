@@ -34,7 +34,7 @@ if(is.null(opt$manual_knee)) opt$manual_knee <- FALSE
 
 sample = opt$sample_id
 
-message("for sample:", sample, "use knee=200: ", opt$manual_knee)
+message("\n#####\nOpt= sample:", sample, ", manual_knee: ", opt$manual_knee)
 
 sample_path <- here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
 stopifnot(file.exists(sample_path))
