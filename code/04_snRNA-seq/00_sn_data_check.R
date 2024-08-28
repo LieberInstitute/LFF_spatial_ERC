@@ -109,8 +109,14 @@ slurmjobs::job_loop(
 )
 
 #### manual knee values ####
-manual_knee <- c(`8c_ERC_SVB` = 100, `5c_ERC_SVB` = 100, `24c_ERC_SVB` = 100, `27c_ERC_SVB` = 150, `28c_ERC_SVB` = 150, `29c_ERC_SVB` = 150)
-manual_knee <- manual_knee[cell_ranger_out_paths]
-manual_knee[is.na(manual_knee)] <- "NULL"
-paste(manual_knee, collapse = " ")
+manual_knee <- c("8c_ERC_SVB", "5c_ERC_SVB", "24c_ERC_SVB", "27c_ERC_SVB", "28c_ERC_SVB", "29c_ERC_SVB")
+manual_knee_lgl <- cell_ranger_out_paths %in% manual_knee
+paste(manual_knee_lgl, collapse = " ")
+
+which(manual_knee_lgl)
+
+array_submit(
+    name = "01_get_droplet_scores",
+    task_ids = c(16, 19, 20, 21, 27, 30)
+)
 
