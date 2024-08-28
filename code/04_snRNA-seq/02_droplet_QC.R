@@ -12,6 +12,8 @@ library("EnsDb.Hsapiens.v86")
 library("scran")
 library("scuttle")
 library("scater")
+library("jaffelab")
+library("scDblFinder")
 
 plot_dir <- here("plots", "04_snRNA-seq", "02_droplet_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -320,7 +322,7 @@ qc_violin_plots <- map2(qc_metrics, qc_cutoff,
                            facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
                            theme_bw())
 
-qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10()
+qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10() + geom_hline(yintercept = 200)
 qc_violin_plots$detected <- qc_violin_plots$detected + scale_y_log10()
 
 walk2(qc_violin_plots, names(qc_violin_plots),
@@ -348,7 +350,7 @@ print(qc_detected_v_mito)
 print(qc_sum_v_detected)
 dev.off()
 
-## explore batch outliers
+## Plot batch outliers
 qc_cutoff_batch <- c("low_sum_both", "low_detected_both", "high_mito_both")
 
 qc_violin_plots <- map2(qc_metrics, qc_cutoff_batch,
@@ -366,27 +368,38 @@ walk2(qc_violin_plots, names(qc_violin_plots),
               width = 21))
 
 #### Add qc counts to qc summary ####
-sample_qc_summary <- sample_qc_summary |>
+sample_qc_summary <- 
+    sample_qc_summary |>
     left_join(as.data.frame(colData(sce)) |>
                   group_by(BrNum) |>
                   summarise(low_sum = sum(low_sum),
                             low_detected = sum(low_detected), 
                             high_mito = sum(high_mito),
                             discard_auto = sum(discard_auto),
-                            # n_postQC2 = sum(!discard_auto), ## not working??
                             n_postQC = n()-discard_auto))
 
-sample_qc_summary |>
-    summarise(total = sum(n_postQC),
-              median = median(n_postQC))
+## summary of n post-QC
+sum(sample_qc_summary$n_postQC) # [1] 141018
+100*sum(sample_qc_summary$n_postQC)/ncol(sce) # 86.99337
+summary(sample_qc_summary$n_postQC)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 1883    4010    4589    4549    5178    6946
 
 sample_qc_summary |>
     group_by(APOE_carrier) |>
     summarise(total = sum(n_postQC),
               median = median(n_postQC))
+# APOE_carrier total median
+# <chr>        <int>  <dbl>
+# 1 E2+          67137  4644.
+# 2 E4+          73881  4250 
+
+#### Drop Auto-drop nuclei ####
+sce <- sce[,!sce$discard_auto]
+dim(sce)
+# [1]  38606 141018
 
 #### plot post QC values ####
-
 n_nuc_qc_barplot <- sample_qc_summary |>
     mutate(BrNum = fct_reorder(BrNum, n_post_drop)) |>
     dplyr::select(BrNum, discard_auto, keep_auto = n_postQC) |>
@@ -424,61 +437,43 @@ postQC_boxplot_APOE_carrier <- sample_qc_summary |>
 
 ggsave(postQC_boxplot_APOE_carrier, filename = here(plot_dir, "erc_n_post_QC_boxplot_APOE_carrier.png"), height = 5, width = 5)
 
-#### Doublet detection #### TODO
+#### Doublet detection #### 
 ## To speed up, run on sample-level top-HVGs - just take top 1000
 set.seed(821)
+message(Sys.time(), " - ", "Run scDblFinder")
+sce <- scDblFinder(sce, samples = sce$sample_id)
+message(Sys.time(), "Done")
 
-colData(sce)$doubletScore <- NA
+table(sce$scDblFinder.class)
+# singlet doublet 
+# 132345    8673
 
-for (i in splitit(sce$Sample)) {
-    sce_temp <- sce[, i]
-    ## To speed up, run on sample-level top-HVGs - just take top 1000
-    normd <- logNormCounts(sce_temp)
-    geneVar <- modelGeneVar(normd)
-    topHVGs <- getTopHVGs(geneVar, n = 1000)
-    
-    dbl_dens <- computeDoubletDensity(normd, subset.row = topHVGs)
-    colData(sce)$doubletScore[i] <- dbl_dens
-}
+100*sum(sce$scDblFinder.class == "doublet")/ncol(sce)
+# 10X-like data tends to have roughly 1% per 1000 cells captured
 
-summary(sce$doubletScore)
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 0.0000  0.1439  0.4391  0.8215  1.0823 31.4607
 
 ## Visualize doublet scores ##
 
-dbl_df <- colData(sce) %>%
-    as.data.frame() %>%
-    select(Sample, doubletScore)
-
-dbl_box_plot <- dbl_df %>%
-    ggplot(aes(x = reorder(Sample, doubletScore, FUN = median), y = doubletScore)) +
-    geom_boxplot() +
-    labs(x = "Sample") +
-    geom_hline(yintercept = 5, color = "red", linetype = "dashed") +
-    coord_flip() +
-    my_theme
-
-ggsave(dbl_box_plot, filename = here(plot_dir, "doublet_scores_boxplot.png"))
-
-dbl_density_plot <- dbl_df %>%
-    ggplot(aes(x = doubletScore)) +
-    geom_density() +
-    labs(x = "doublet score") +
-    facet_grid(Sample ~ .) +
+dbl_violin <- plotColData(sce, x = "BrNum", y = "scDblFinder.score", colour_by = "scDblFinder.class") +
+    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
     theme_bw()
 
-ggsave(dbl_density_plot, filename = here(plot_dir, "doublet_scores_desnity.png"), height = 17)
+ggsave(dbl_violin, filename = here(plot_dir, "erc_sn_doublet_scores_violin.png"), width = 21)
 
-dbl_df %>%
-    group_by(Sample) %>%
+dbl_df <- colData(sce) |>
+    as.data.frame() |>
+    dplyr::select(sample_id, scDblFinder.score, scDblFinder.class)
+
+ dbl_df |>
+    group_by(sample_id) |>
     summarize(
-        median = median(doubletScore),
-        q95 = quantile(doubletScore, .95),
-        drop = sum(doubletScore >= 5),
-        drop_precent = 100 * drop / n()
-    )
+        doubletScore_median = median(doubletScore),
+        doubletScore_q95 = quantile(doubletScore, .95),
+        doubletScore_n_over5 = sum(doubletScore >= 5),
+        doubletScore_precent_over5 = 100 * doubletScore_n_over5/n()
+    ) 
 
+summary(doubletScore_summary)
 
 #### Save Data ####
 write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
