@@ -119,7 +119,7 @@ droplet_elbow_plot <- as.data.frame(bcRanks) %>%
 if(opt$manual_knee){
     droplet_elbow_plot <- droplet_elbow_plot + 
         geom_hline(yintercept = knee_lower, linetype = "dashed", color = "red") +
-        annotate("text", x = 10, y = opt$knee, label = paste("Manual Knee:", knee_lower), vjust = -1, color = "red") 
+        annotate("text", x = 10, y = knee_lower, label = paste("Manual Knee:", knee_lower), vjust = -1, color = "red") 
 }
 
 ggsave(droplet_elbow_plot, filename = here(plot_dir, paste0("droplet_qc_", sample, ".png")))
