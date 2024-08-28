@@ -70,20 +70,20 @@ droplet_counts$knee_manual <- knee_manual
 
 summary(droplet_counts)
 # chromium_id          n_pre_drop       n_post_drop     knee_lower     knee_manual 
-# Length:31          Min.   : 581462   Min.   :2443   Min.   :206.0   Min.   :100  
-#Class :character   1st Qu.:1048624   1st Qu.:4676   1st Qu.:223.5   1st Qu.:100  
-#Mode  :character   Median :1262252   Median :5222   Median :273.0   Median :125  
-#                   Mean   :1241313   Mean   :5229   Mean   :353.8   Mean   :125  
-#                   3rd Qu.:1411650   3rd Qu.:5900   3rd Qu.:313.0   3rd Qu.:150  
-#                   Max.   :1732806   Max.   :7847   Max.   :984.0   Max.   :150  
-#                                                                     NA's   :25  
+# Length:31          Min.   : 581462   Min.   :2169   Min.   :206.0   Min.   :200  
+# Class :character   1st Qu.:1048624   1st Qu.:4676   1st Qu.:223.5   1st Qu.:200  
+# Mode  :character   Median :1262252   Median :5222   Median :273.0   Median :200  
+#                    Mean   :1241313   Mean   :5185   Mean   :353.8   Mean   :200  
+#                    3rd Qu.:1411650   3rd Qu.:5815   3rd Qu.:313.0   3rd Qu.:200  
+#                    Max.   :1732806   Max.   :7847   Max.   :984.0   Max.   :200  
+#                                                                     NA's   :25 
 
 ## total droplets sequenced
 sum(droplet_counts$n_pre_drop)
 # [1] 38480710
 
 sum(droplet_counts$n_post_drop)
-# [1] 162102
+# [1] 160743
 
 table(is.na(knee_manual))
 # FALSE  TRUE 
@@ -93,7 +93,8 @@ table(is.na(knee_manual))
 ## retrieve median reads per cell
 cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger"))
 cell_ranger_metrics <- map_dfr(cell_ranger_out_paths, 
-                               ~read_csv(here("processed-data", "03_cellranger", .x, "outs", "metrics_summary.csv")) |>
+                               ~read_csv(here("processed-data", "03_cellranger", .x, "outs", "metrics_summary.csv"),
+                                         show_col_types = FALSE) |>
                                    mutate(chromium_id = .x, .before = 1))
 
 summary(cell_ranger_metrics)
@@ -248,22 +249,54 @@ pd <- as.data.frame(colData(sce)) |>
 
 colData(sce) <- DataFrame(pd)
 
-
 #### Compute QC metrics ####
-
-location <- mapIds(EnsDb.Hsapiens.v86, keys = rowData(sce)$ID, 
+location <- mapIds(EnsDb.Hsapiens.v86, keys = rowData(sce)$ID,
                    column = "SEQNAME", keytype = "GENEID")
-# Unable to map 4792 of 38606 requested IDs. 
-
+# Unable to map 4792 of 38606 requested IDs.
 sce <- scuttle::addPerCellQC(
     sce,
-    # subsets = list(Mito = list(Mito = which(location=="MT")))
     subsets = list(Mito = which(location=="MT"))
-    # ,
-    # BPPARAM = BiocParallel::MulticoreParam(4)
 )
 
-## find outliers with Scran
+table(sce$sum < 200)
+
+#### Doublet detection #### 
+set.seed(821)
+message(Sys.time(), " - ", "Run scDblFinder")
+sce <- scDblFinder(sce, samples = sce$sample_id)
+message(Sys.time(), "Done")
+
+table(sce$scDblFinder.class)
+# singlet doublet 
+# 132345    8673
+
+100*sum(sce$scDblFinder.class == "doublet")/ncol(sce)
+# 10X-like data tends to have roughly 1% per 1000 cells captured
+
+#### Visualize doublet scores ####
+dbl_violin <- plotColData(sce, x = "BrNum", y = "scDblFinder.score", colour_by = "scDblFinder.class") +
+    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
+    theme_bw()
+
+ggsave(dbl_violin, filename = here(plot_dir, "erc_sn_doublet_scores_violin.png"), width = 21)
+
+dbl_df <- colData(sce) |>
+    as.data.frame() |>
+    dplyr::select(sample_id, scDblFinder.score, scDblFinder.class)
+
+dbl_df |>
+    group_by(sample_id) |>
+    summarize(
+        doubletScore_median = median(doubletScore),
+        doubletScore_q95 = quantile(doubletScore, .95),
+        doubletScore_n_over5 = sum(doubletScore >= 5),
+        doubletScore_precent_over5 = 100 * doubletScore_n_over5/n()
+    ) 
+
+summary(doubletScore_summary)
+
+
+#### find qc metric outliers w/ Scuttle::isOutlier ####
 sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher")
 sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower")
 sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower")
@@ -437,43 +470,6 @@ postQC_boxplot_APOE_carrier <- sample_qc_summary |>
 
 ggsave(postQC_boxplot_APOE_carrier, filename = here(plot_dir, "erc_n_post_QC_boxplot_APOE_carrier.png"), height = 5, width = 5)
 
-#### Doublet detection #### 
-## To speed up, run on sample-level top-HVGs - just take top 1000
-set.seed(821)
-message(Sys.time(), " - ", "Run scDblFinder")
-sce <- scDblFinder(sce, samples = sce$sample_id)
-message(Sys.time(), "Done")
-
-table(sce$scDblFinder.class)
-# singlet doublet 
-# 132345    8673
-
-100*sum(sce$scDblFinder.class == "doublet")/ncol(sce)
-# 10X-like data tends to have roughly 1% per 1000 cells captured
-
-
-## Visualize doublet scores ##
-
-dbl_violin <- plotColData(sce, x = "BrNum", y = "scDblFinder.score", colour_by = "scDblFinder.class") +
-    facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
-    theme_bw()
-
-ggsave(dbl_violin, filename = here(plot_dir, "erc_sn_doublet_scores_violin.png"), width = 21)
-
-dbl_df <- colData(sce) |>
-    as.data.frame() |>
-    dplyr::select(sample_id, scDblFinder.score, scDblFinder.class)
-
- dbl_df |>
-    group_by(sample_id) |>
-    summarize(
-        doubletScore_median = median(doubletScore),
-        doubletScore_q95 = quantile(doubletScore, .95),
-        doubletScore_n_over5 = sum(doubletScore >= 5),
-        doubletScore_precent_over5 = 100 * doubletScore_n_over5/n()
-    ) 
-
-summary(doubletScore_summary)
 
 #### Save Data ####
 write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
