@@ -12,8 +12,8 @@ library("EnsDb.Hsapiens.v86")
 library("scran")
 library("scuttle")
 library("scater")
-library("jaffelab")
 library("scDblFinder")
+library("HDF5Array")
 
 plot_dir <- here("plots", "04_snRNA-seq", "02_droplet_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -353,7 +353,7 @@ print(qc_sum_v_detected)
 dev.off()
 
 #### Add qc counts to qc summary ####
-sample_qc_summary2 <- 
+sample_qc_summary <- 
     sample_qc_summary |>
     left_join(doubletScore_summary |> rename(BrNum = sample_id)) |> ## add doublet data
     left_join(as.data.frame(colData(sce)) |> 
@@ -367,14 +367,14 @@ sample_qc_summary2 <-
               
 
 ## summary of n post-QC
-sum(sample_qc_summary2$n_postQC) # [1] 140119
-100*sum(sample_qc_summary2$n_postQC)/ncol(sce) 
+sum(sample_qc_summary$n_postQC) # [1] 140119
+100*sum(sample_qc_summary$n_postQC)/ncol(sce) 
 # [1] 87.16958
-summary(sample_qc_summary2$n_postQC)
+summary(sample_qc_summary$n_postQC)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 1811    4010    4589    4520    5100    6946 
 
-sample_qc_summary2 |>
+sample_qc_summary |>
     group_by(APOE_carrier) |>
     summarise(total = sum(n_postQC),
               median = median(n_postQC))
@@ -382,11 +382,6 @@ sample_qc_summary2 |>
 # <chr>        <int>  <dbl>
 # 1 E2+          66605  4644.
 # 2 E4+          73514  4250 
-
-#### Drop Auto-drop nuclei ####
-sce <- sce[,!sce$discard_auto]
-dim(sce)
-# [1]  38606 140119
 
 #### plot post QC values ####
 n_nuc_qc_barplot <- sample_qc_summary |>
@@ -426,17 +421,28 @@ postQC_boxplot_APOE_carrier <- sample_qc_summary |>
 
 ggsave(postQC_boxplot_APOE_carrier, filename = here(plot_dir, "erc_n_post_QC_boxplot_APOE_carrier.png"), height = 5, width = 5)
 
+#### Drop Auto-drop nuclei ####
+sce <- sce[,!sce$discard_auto]
+dim(sce)
+# [1]  38606 140119
+
+table(sce$BrNum)
+
+# check n per sample match
+all(sample_qc_summary |> arrange(BrNum) |> pull(n_postQC) == table(sce$BrNum))
 
 #### Save Data ####
 write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
 
-## Save preQC-sce
-save(sce, file = here("processed-data", "sce_objects", 
-                               "sce_erc_preQC.Rdata"))
+####  get logcounts ####
+message(Sys.time(), " - logNormCounts")
+sce <- logNormCounts(sce)
+
 
 ## save HDF5
+message(Sys.time(), " - Save Data")
 saveHDF5SummarizedExperiment(sce,
-                             dir = here("processed-data", "sce_objects", "hdf5_sce"), prefix = "", replace = FALSE,
+                             dir = here("processed-data", "sce_objects", "hdf5_sce_postQC"), prefix = "", replace = FALSE,
                              chunkdim = NULL, level = NULL, as.sparse = TRUE,
                              verbose = TRUE
 )
