@@ -56,7 +56,7 @@ message(
 )
 
 #### Use Manual Knee if supplied ####
-if(!is.null(opt$manual_knee)){
+if(opt$manual_knee){
     message("Use manual knee = 200") # 200 based on minimal reads for dbl detection
     knee_lower <- 200
 }
