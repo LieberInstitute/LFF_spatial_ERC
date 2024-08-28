@@ -67,17 +67,21 @@ droplet_counts$knee_lower <- knee_lower
 droplet_counts$knee_manual <- knee_manual
 
 summary(droplet_counts)
-# chromium_id          n_pre_drop       n_post_drop     knee_lower   
-# Length:31          Min.   : 581462   Min.   :1794   Min.   :206.0  
-# Class :character   1st Qu.:1048624   1st Qu.:4420   1st Qu.:223.5  
-# Mode  :character   Median :1262252   Median :5072   Median :273.0  
-#                    Mean   :1241313   Mean   :4970   Mean   :353.8  
-#                    3rd Qu.:1411650   3rd Qu.:5720   3rd Qu.:313.0  
-#                    Max.   :1732806   Max.   :7847   Max.   :984.0 
+# chromium_id          n_pre_drop       n_post_drop     knee_lower     knee_manual 
+# Length:31          Min.   : 581462   Min.   :2443   Min.   :206.0   Min.   :100  
+#Class :character   1st Qu.:1048624   1st Qu.:4676   1st Qu.:223.5   1st Qu.:100  
+#Mode  :character   Median :1262252   Median :5222   Median :273.0   Median :125  
+#                   Mean   :1241313   Mean   :5229   Mean   :353.8   Mean   :125  
+#                   3rd Qu.:1411650   3rd Qu.:5900   3rd Qu.:313.0   3rd Qu.:150  
+#                   Max.   :1732806   Max.   :7847   Max.   :984.0   Max.   :150  
+#                                                                     NA's   :25  
 
 ## total droplets sequenced
 sum(droplet_counts$n_pre_drop)
 # [1] 38480710
+
+sum(droplet_counts$n_post_drop)
+# [1] 162102
 
 table(is.na(knee_manual))
 # FALSE  TRUE 
@@ -143,14 +147,15 @@ sample_qc_summary <- sample_info |>
                   dplyr::select(1:6)) |> 
     left_join(droplet_counts) 
 
-summary(cell_ranger_metrics)
+summary(sample_qc_summary)
 
 #### Plot  drop values ####
 # n nuclei barplot
 droplet_barplot <- sample_qc_summary |>
-    ggplot(aes(x = reorder(BrNum, n_post_drop), y = n_post_drop)) +
+    mutate(Sample = paste0(chromium_id, "-", BrNum)) |>
+    ggplot(aes(x = reorder(Sample, n_post_drop), y = n_post_drop)) +
     geom_col() +
-    geom_text(aes(label = n_post_drop), nudge_y = -275, color = "white") +
+    geom_text(aes(label = n_post_drop), nudge_y = -290, color = "white") +
     theme_bw() +
     coord_flip() +
     labs(x = "Sample", y = "Non-empty Droplets")
@@ -166,7 +171,7 @@ droplet_boxplot_seq <- sample_qc_summary |>
     theme_bw() +
     labs(x = "Sequencing Round", y = "Non-empty Droplets")
 
-ggsave(droplet_boxplot, filename = here(plot_dir, "erc_n_droplets_post_drop_boxplot_seq.png"))
+ggsave(droplet_boxplot_seq, filename = here(plot_dir, "erc_n_droplets_post_drop_boxplot_seq.png"))
 
 #boxplot by APOE
 droplet_boxplot_apoe <- sample_qc_summary |>
@@ -257,17 +262,51 @@ sce <- scuttle::addPerCellQC(
 )
 
 ## find outliers with Scran
-sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$sample_id)
-sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$sample_id)
-sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$sample_id)
+sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher")
+sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower")
+sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower")
 
-## drop niclei that are outliers in any of the three metrics
+## drop nuclei that are outliers in any of the three metrics
 sce$discard_auto <- sce$high_mito | sce$low_sum | sce$low_detected
 table(sce$discard_auto)
 # FALSE   TRUE 
-# 125682  28390
+# 141018  21084 
 
 addmargins(table(sce$BrNum, sce$discard_auto))
+
+## with seq round as batch
+sce$high_mito_batch <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$seq_round)
+sce$low_sum_batch <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$seq_round)
+sce$low_detected_batch <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$seq_round)
+
+sce$discard_auto_batch <- sce$high_mito_batch | sce$low_sum_batch | sce$low_detected_batch
+table(sce$discard_auto_batch)
+#        FALSE   TRUE
+# FALSE 122727  18291
+# TRUE    7072  14012
+
+table(sce$low_sum, sce$low_sum_batch)
+table(sce$low_detected, sce$low_detected_batch)
+table(sce$high_mito, sce$high_mito_batch)
+table(sce$discard_auto, sce$discard_auto_batch)
+
+sce$high_mito_both <- case_when(sce$high_mito & sce$high_mito_batch ~ "both",
+                                sce$high_mito ~ "sample",
+                                sce$high_mito_batch ~ "batch",
+                                TRUE ~ "None"
+                                )
+
+sce$low_detected_both <- case_when(sce$low_detected & sce$low_detected_batch ~ "both",
+                                sce$low_detected ~ "sample",
+                                sce$low_detected_batch ~ "batch",
+                                TRUE ~ "None"
+                                )
+
+sce$low_sum_both <- case_when(sce$low_sum & sce$low_sum_batch ~ "both",
+                                sce$low_sum ~ "sample",
+                                sce$low_sum_batch ~ "batch",
+                                TRUE ~ "None"
+                                )
 
 #### QC plots ####
 qc_metrics <- c("sum", "detected", "subsets_Mito_percent")
@@ -282,7 +321,7 @@ qc_violin_plots <- map2(qc_metrics, qc_cutoff,
                            theme_bw())
 
 qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10()
-
+qc_violin_plots$detected <- qc_violin_plots$detected + scale_y_log10()
 
 walk2(qc_violin_plots, names(qc_violin_plots),
       ~ggsave(.x, filename = here(plot_dir, paste0("erc_sn_QC_outlier-",.y ,".png")),
@@ -308,6 +347,23 @@ print(qc_violin_plots)
 print(qc_detected_v_mito)
 print(qc_sum_v_detected)
 dev.off()
+
+## explore batch outliers
+qc_cutoff_batch <- c("low_sum_both", "low_detected_both", "high_mito_both")
+
+qc_violin_plots <- map2(qc_metrics, qc_cutoff_batch,
+                        ~plotColData(sce, x = "BrNum", y = .x, colour_by = .y) +
+                            # scale_y_log10() +
+                            # ggtitle(.x) +
+                            facet_wrap(~ sce$seq_round, scales = "free_x", nrow = 1) +
+                            theme_bw())
+
+qc_violin_plots$sum <- qc_violin_plots$sum + scale_y_log10()
+qc_violin_plots$detected <- qc_violin_plots$detected + scale_y_log10()
+
+walk2(qc_violin_plots, names(qc_violin_plots),
+      ~ggsave(.x, filename = here(plot_dir, paste0("erc_sn_QC_outlier-",.y ,"_batch.png")),
+              width = 21))
 
 #### Add qc counts to qc summary ####
 sample_qc_summary <- sample_qc_summary |>
