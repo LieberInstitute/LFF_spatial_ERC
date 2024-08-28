@@ -34,6 +34,8 @@ if(is.null(opt$manual_knee)) opt$manual_knee <- FALSE
 
 sample = opt$sample_id
 
+message("for sample:", sample, "use knee=200: ", opt$manual_knee)
+
 sample_path <- here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
 stopifnot(file.exists(sample_path))
 
@@ -54,6 +56,8 @@ message(
   "Second knee point = ", metadata(bcRanks)$knee, "\n",
   "knee_lower = ", knee_lower
 )
+
+if(knee_lower < 200) warning("knee_lower < 200: may have nuclei w/ sums too low for doublet detection, consider manual_knee=TRUE")
 
 #### Use Manual Knee if supplied ####
 if(opt$manual_knee){
@@ -112,10 +116,10 @@ droplet_elbow_plot <- as.data.frame(bcRanks) %>%
           text = element_text(size = 15)) 
 
 ## Add Manual Knee if used
-if(!is.null(opt$knee)){
+if(opt$manual_knee){
     droplet_elbow_plot <- droplet_elbow_plot + 
-        geom_hline(yintercept = opt$knee, linetype = "dashed", color = "red") +
-        annotate("text", x = 10, y = opt$knee, label = paste("Manual Knee:", opt$knee), vjust = -1, color = "red") 
+        geom_hline(yintercept = knee_lower, linetype = "dashed", color = "red") +
+        annotate("text", x = 10, y = opt$knee, label = paste("Manual Knee:", knee_lower), vjust = -1, color = "red") 
 }
 
 ggsave(droplet_elbow_plot, filename = here(plot_dir, paste0("droplet_qc_", sample, ".png")))
