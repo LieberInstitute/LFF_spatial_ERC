@@ -19,18 +19,18 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # Import command-line parameters
 spec <- matrix(
     c(
-        c("sample_id", "knee"),
+        c("sample_id", "manual_knee"),
         c("s", "k"),
         c("1","2"),
-        c("character", "integer"),
-        c("snRNA_seq sample", "user supplied knee")
+        c("character", "logical"),
+        c("snRNA_seq sample", "use manual knee=200")
     ),
     ncol = 5
 )
 opt <- getopt(spec)
 
-## fix knee param for now
-if(opt$knee == "NULL") opt$knee <- NULL
+## Default knee param
+if(is.null(opt$manual_knee)) opt$manual_knee <- FALSE
 
 sample = opt$sample_id
 
@@ -56,9 +56,9 @@ message(
 )
 
 #### Use Manual Knee if supplied ####
-if(!is.null(opt$knee)){
-    message("Use manual knee = ", opt$knee)
-    knee_lower = opt$knee
+if(!is.null(opt$manual_knee)){
+    message("Use manual knee = 200") # 200 based on minimal reads for dbl detection
+    knee_lower <- 200
 }
 
 #### Run emptyDrops w/ knee + 100 ####

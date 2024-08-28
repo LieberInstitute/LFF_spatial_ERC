@@ -10,7 +10,8 @@
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_sample_id=(10c_ERC_SVB 11c_ERC_SVB 12c_ERC_SVB 13c_ERC_SVB 14c_ERC_SVB 15c_ERC_SVB 16c_ERC_SVB 17c_ERC_SVB 18c_ERC_SVB 19c_ERC_SVB 1c_ERC_SVB 20c_ERC_SVB 21c_ERC_SVB 22c_ERC_SVB 23c_ERC_SVB 24c_ERC_SVB 25c_ERC_SVB 26c_ERC_SVB 27c_ERC_SVB 28c_ERC_SVB 29c_ERC_SVB 2c_ERC_SVB 30c_ERC_SVB 31c_ERC_SVB 3c_ERC_SVB 4c_ERC_SVB 5c_ERC_SVB 6c_ERC_SVB 7c_ERC_SVB 8c_ERC_SVB 9c_ERC_SVB)
-all_sample_knee=(NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL NULL 200 NULL NULL 200 200 200 NULL NULL NULL NULL NULL 200 NULL NULL 200 NULL)
+manual_knee=(FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE TRUE FALSE FALSE TRUE TRUE TRUE FALSE FALSE FALSE FALSE FALSE TRUE FALSE FALSE TRUE FALSE)
+
 sample_id=${all_sample_id[$(( $SLURM_ARRAY_TASK_ID / 1 % 31 ))]}
 sample_knee=${all_sample_knee[$(( $SLURM_ARRAY_TASK_ID / 1 % 31 ))]}
 
@@ -37,7 +38,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 01_get_droplet_scores.R --sample_id ${sample_id} --knee ${sample_knee}
+Rscript 01_get_droplet_scores.R --sample_id ${sample_id} --manual_knee ${sample_knee}
 
 echo "**** Job ends ****"
 date
