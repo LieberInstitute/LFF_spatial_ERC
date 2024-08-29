@@ -460,10 +460,9 @@ write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_d
 ## save HDF5
 message(Sys.time(), " - Save hdf5")
 saveHDF5SummarizedExperiment(sce,
-                             dir = here("processed-data", "sce_objects", "hdf5_sce_postQC"), prefix = "", replace = FALSE,
+                             dir = here("processed-data", "sce_objects", "hdf5_sce_postQC"), prefix = "", replace = TRUE,
                              chunkdim = NULL, level = NULL, as.sparse = TRUE,
-                             verbose = TRUE
-)
+                             verbose = TRUE)
 message(Sys.time(), " - Done save hdf5")
 
 # slurmjobs::job_single('02_droplet_QC', create_shell = TRUE, memory = '25G', command = "Rscript 02_droplet_QC.R")
