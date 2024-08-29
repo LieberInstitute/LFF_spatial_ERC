@@ -405,7 +405,7 @@ n_nuc_qc_barplot <- sample_qc_summary |>
     dplyr::select(BrNum, n_doublets, n_discard_auto, n_postQC) |>
     pivot_longer(!BrNum, values_to = "n_nuclei", names_to = "QC_class") |>
     group_by(BrNum) |>
-    mutate(QC_class = factor(QC_Class, levels = c("n_doublets", "n_discard_auto", "n_postQC"))) |>
+    mutate(QC_class = factor(QC_class, levels = c("n_doublets", "n_discard_auto", "n_postQC"))) |>
     arrange(desc(QC_class)) |>
     mutate(text_y = cumsum(n_nuclei)) |>
     ggplot(aes(x = BrNum, y = n_nuclei, fill = QC_class)) +
