@@ -32,6 +32,7 @@ sample_info <- read_csv(here("processed-data", "04_snRNA-seq", "erc_sn_sample_in
 droplet_counts <- tibble(chromium_id = character(), n_pre_drop = numeric(), n_post_drop = numeric())
 # droplet_counts <- data.frame(colnames = c("Sample", "pre_drop", "post_drop"))
 
+message("Processing Droplet scores...")
 sce_list <- map(sample_list, function(sample){
     fn10x <-  here("processed-data", "03_cellranger", sample, "outs", "raw_feature_bc_matrix") 
     fnDropScore <- here("processed-data", "04_snRNA-seq", "01_get_droplet_scores", paste0("droplet_scores_", sample, ".Rdata"))
@@ -90,6 +91,7 @@ table(is.na(knee_manual))
 # 6    25 
 
 #### Compile sample quality info ####
+message("Compile Sample Quality Info...")
 ## retrieve median reads per cell
 cell_ranger_out_paths <- list.files(here("processed-data", "03_cellranger"))
 cell_ranger_metrics <- map_dfr(cell_ranger_out_paths, 
@@ -153,6 +155,7 @@ sample_qc_summary <- sample_info |>
 summary(sample_qc_summary)
 
 #### Plot  drop values ####
+message("Plot N nuclei after excluding empty droplets...")
 # n nuclei barplot
 droplet_barplot <- sample_qc_summary |>
     mutate(Sample = paste0(chromium_id, "-", BrNum)) |>
@@ -219,6 +222,7 @@ post_drop_v_mean_reads <- sample_qc_summary |>
 ggsave(post_drop_v_mean_reads, filename = here(plot_dir, "erc_post_drop_v_mean_reads.png"))
 
 #### Build SCE ####
+message("Build Initial SCE object...")
 table(map_int(sce_list, nrow))
 
 ## check row data is identical
@@ -230,6 +234,7 @@ dim(sce)
 # [1]  38606 160743
 
 #### Build colData ####
+message("Build colData...")
 colData(sce)
 
 sce$path <- sce$Sample
@@ -250,6 +255,8 @@ pd <- as.data.frame(colData(sce)) |>
 colData(sce) <- DataFrame(pd)
 
 #### Compute QC metrics ####
+message("\nCompute QC metrics...")
+
 location <- mapIds(EnsDb.Hsapiens.v86, keys = rowData(sce)$ID,
                    column = "SEQNAME", keytype = "GENEID")
 # Unable to map 4792 of 38606 requested IDs.
@@ -261,6 +268,7 @@ sce <- scuttle::addPerCellQC(
 table(sce$sum < 200)
 
 #### Doublet detection #### 
+message("\nDoublet Detection...")
 set.seed(821)
 message(Sys.time(), " - ", "Run scDblFinder")
 sce <- scDblFinder(sce, samples = sce$sample_id)
@@ -295,6 +303,8 @@ summary(doubletScore_summary)
 
 
 #### find qc metric outliers w/ Scuttle::isOutlier ####
+message("\nFind QC metric outliers...")
+
 sce$high_mito <- isOutlier(sce$subsets_Mito_percent, nmads = 3, type = "higher", batch = sce$sample_id)
 sce$low_sum <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$sample_id)
 sce$low_detected <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$sample_id)
@@ -313,6 +323,8 @@ sce$low_sum_batch <- isOutlier(sce$sum, log = TRUE, type = "lower", batch = sce$
 sce$low_detected_batch <- isOutlier(sce$detected, log = TRUE, type = "lower", batch = sce$seq_round)
 
 #### QC plots ####
+message("\nQC plots...")
+
 qc_metrics <- c("sum", "detected", "subsets_Mito_percent")
 names(qc_metrics) <- qc_metrics
 qc_cutoff <- c("low_sum", "low_detected", "high_mito")
@@ -353,6 +365,8 @@ print(qc_sum_v_detected)
 dev.off()
 
 #### Add qc counts to qc summary ####
+message("\nAdd qc counts to qc summary...")
+
 sample_qc_summary <- 
     sample_qc_summary |>
     left_join(doubletScore_summary |> rename(BrNum = sample_id)) |> ## add doublet data
@@ -384,11 +398,14 @@ sample_qc_summary |>
 # 2 E4+          73514  4250 
 
 #### plot post QC values ####
+message("\nPlot post QC values...")
+
 n_nuc_qc_barplot <- sample_qc_summary |>
     mutate(BrNum = fct_reorder(BrNum, n_post_drop)) |>
-    dplyr::select(BrNum, discard_auto, keep_auto = n_postQC) |>
+    dplyr::select(BrNum, n_doublets, n_discard_auto, n_postQC) |>
     pivot_longer(!BrNum, values_to = "n_nuclei", names_to = "QC_class") |>
     group_by(BrNum) |>
+    mutate(QC_class = factor(QC_Class, levels = c("n_doublets", "n_discard_auto", "n_postQC"))) |>
     arrange(desc(QC_class)) |>
     mutate(text_y = cumsum(n_nuclei)) |>
     ggplot(aes(x = BrNum, y = n_nuclei, fill = QC_class)) +
@@ -422,6 +439,7 @@ postQC_boxplot_APOE_carrier <- sample_qc_summary |>
 ggsave(postQC_boxplot_APOE_carrier, filename = here(plot_dir, "erc_n_post_QC_boxplot_APOE_carrier.png"), height = 5, width = 5)
 
 #### Drop Auto-drop nuclei ####
+message("\nDrop Nuclei from sce...")
 sce <- sce[,!sce$discard_auto]
 dim(sce)
 # [1]  38606 140119
@@ -431,21 +449,22 @@ table(sce$BrNum)
 # check n per sample match
 all(sample_qc_summary |> arrange(BrNum) |> pull(n_postQC) == table(sce$BrNum))
 
-#### Save Data ####
-write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
-
 ####  get logcounts ####
 message(Sys.time(), " - logNormCounts")
 sce <- logNormCounts(sce)
 
+#### Save Data ####
+message("\nSave Data...")
+write_csv(sample_qc_summary, file = here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
 
 ## save HDF5
-message(Sys.time(), " - Save Data")
+message(Sys.time(), " - Save hdf5")
 saveHDF5SummarizedExperiment(sce,
                              dir = here("processed-data", "sce_objects", "hdf5_sce_postQC"), prefix = "", replace = FALSE,
                              chunkdim = NULL, level = NULL, as.sparse = TRUE,
                              verbose = TRUE
 )
+message(Sys.time(), " - Done save hdf5")
 
 # slurmjobs::job_single('02_droplet_QC', create_shell = TRUE, memory = '25G', command = "Rscript 02_droplet_QC.R")
 
