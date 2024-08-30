@@ -10,7 +10,7 @@ library("HDF5Array")
 library("here")
 library("sessioninfo")
 
-plot_dir <- here("plots", "04_snRNA-seq", "04_GLM_PCA")
+plot_dir <- here("plots", "04_snRNA-seq", "03_GLM_PCA")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## Load HD5F
@@ -64,7 +64,8 @@ sce_uncorrected <- runUMAP(sce_uncorrected, dimred = "GLMPCA_approx")
 
 message("Saving Data - ", Sys.time())
 saveHDF5SummarizedExperiment(sce_uncorrected, dir = here("processed-data", "03_build_sce", "sce_uncorrected"))
-# slurmjobs::job_single('04_GLM_PCA', create_shell = TRUE, memory = '100G', command = "Rscript 04_GLM_PCA.R")
+
+# slurmjobs::job_single('03_GLM_PCA', create_shell = TRUE, memory = '100G', command = "Rscript 03_GLM_PCA.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
