@@ -17,9 +17,9 @@ data_dir <- here("processed-data", "02_build_spe", "03_GLM_Harmony")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 
-#### Save data ####
-message(Sys.time(), " - Saving HDF5 SPE")
-spe <- HDF5Array(here("processed-data", "spe_objects", "spe_postQC"), replace = TRUE)
+#### Load data ####
+message(Sys.time(), " - Load HDF5 SPE")
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
 
 
 ####  Compute GLM-PCA ####
