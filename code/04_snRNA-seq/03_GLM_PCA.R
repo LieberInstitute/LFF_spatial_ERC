@@ -63,7 +63,7 @@ message("running UMAP - ", Sys.time())
 sce_uncorrected <- runUMAP(sce_uncorrected, dimred = "GLMPCA_approx")
 
 message("Saving Data - ", Sys.time())
-saveHDF5SummarizedExperiment(sce_uncorrected, dir = here("processed-data", "03_build_sce", "sce_uncorrected"))
+saveHDF5SummarizedExperiment(sce_uncorrected, dir = here("processed-data", "sce_objects", "sce_uncorrected"))
 
 # slurmjobs::job_single('03_GLM_PCA', create_shell = TRUE, memory = '100G', command = "Rscript 03_GLM_PCA.R")
 
