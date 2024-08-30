@@ -8,6 +8,7 @@ library("harmony")
 library("BiocParallel")
 library("purrr")
 library("scry")
+library("HDF5Array")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "01_preprocess_spe")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
