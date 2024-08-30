@@ -37,8 +37,6 @@ spe$scran_quick_cluster <- quickCluster(
 
 table(spe$scran_quick_cluster)
 
-## plot quick clusters?
-
 ## compute size factors
 message(Sys.time(), " - Run computeSumFactors()")
 
@@ -71,10 +69,11 @@ message(Sys.time(), " - Running modelGeneVar()")
 # fit mean-variance relationship
 dec <- modelGeneVar(spe)
 
-## TOD save dec to later calc other sets of HVGs
-
 # visualize mean-variance relationship
 fit <- metadata(dec)
+
+## save
+save(dec, file = here(data_dir, "modelGeneVar_data.Rdata"))
 
 pdf(here(plot_dir, "spe_mean_var_curve.pdf"))
 plot(fit$mean, fit$var, 
@@ -82,10 +81,8 @@ plot(fit$mean, fit$var,
 curve(fit$trend(x), col = "dodgerblue", add = TRUE, lwd = 2)
 dev.off()
 
-# select top HVGs
-## TODO only use top 10% HVGs + 20%
-top.hvgs <- c(map(c(p1 = 0.1, p2 = 0.2, p5 = 0.5), ~getTopHVGs(dec, prop = .x)),
-              map(c(fdr5 = 0.05, fdr1 = 0.01), ~getTopHVGs(dec, fdr.threshold = .x)))
+## Select top 10% and 20% HVGs
+top.hvgs <- map(c(p1 = 0.1, p2 = 0.2), ~getTopHVGs(dec, prop = .x))
 
 (top.hvgs.length <- map_int(top.hvgs, length))
 save(top.hvgs, file = here(data_dir, "top_hvgs.Rdata"))
@@ -115,7 +112,7 @@ pca_sample <- plotReducedDim(spe, dimred = "PCA_p1",
     theme_bw()
 ggsave(pca_sample, filename = here(plot_dir, "PCA_sample.png"), width = 10)
 
-precent_var <- map_dfr(names(top.hvgs[1:2]), ~data.frame(hvg = .x,
+precent_var <- map_dfr(names(top.hvgs), ~data.frame(hvg = .x,
                                                          PC = seq(ncol(reducedDim(spe, paste0("PCA_", .x)))),
                                                          precentVar = attr(reducedDim(spe, paste0("PCA_", .x)), "percentVar")))
 
