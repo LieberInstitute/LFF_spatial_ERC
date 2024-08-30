@@ -24,7 +24,7 @@ set.seed(606)
 message("running Deviance Feat. Selection - ", Sys.time())
 sce <- devianceFeatureSelection(sce,
     assay = "counts", fam = "binomial", sorted = F,
-    batch = as.factor(sce$round)
+    batch = as.factor(sce$seq_round)
 )
 
 # This temp file just used for getting batch-corrected components (drops a variety of entries)
