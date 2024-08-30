@@ -111,12 +111,14 @@ slurmjobs::job_loop(
 #### manual knee values ####
 manual_knee <- c("8c_ERC_SVB", "5c_ERC_SVB", "24c_ERC_SVB", "27c_ERC_SVB", "28c_ERC_SVB", "29c_ERC_SVB")
 manual_knee_lgl <- cell_ranger_out_paths %in% manual_knee
+names(manual_knee_lgl) <- cell_ranger_out_paths
+
 paste(manual_knee_lgl, collapse = " ")
 
-which(manual_knee_lgl)
 
-array_submit(
+slurmjobs::array_submit(
     name = "01_get_droplet_scores",
-    task_ids = c(16, 19, 20, 21, 27, 30)
+    task_ids = c(which(manual_knee_lgl) -1),
+    submit = TRUE
 )
 
