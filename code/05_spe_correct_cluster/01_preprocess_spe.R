@@ -9,10 +9,10 @@ library("BiocParallel")
 library("purrr")
 library("scry")
 
-plot_dir <- here("plots", "05_spe_correct_cluster", "01_preprocess_Harmony")
+plot_dir <- here("plots", "05_spe_correct_cluster", "01_preprocess_spe")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-data_dir <- here("processed-data", "02_build_spe", "01_preprocess_Harmony")
+data_dir <- here("processed-data", "02_build_spe", "01_preprocess_spe")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 spe <- readRDS(here("processed-data", "02_build_spe", "spe.rds"))
@@ -142,6 +142,14 @@ spe <- runUMAP(spe,
 colnames(reducedDim(spe, "UMAP")) <- c("UMAP1", "UMAP2")
 Sys.time()
 
+#### Save data ####
+message(Sys.time(), " - Saving HDF5 SPE")
+saveHDF5SummarizedExperiment(
+    spe,
+    dir = here(data_dir, "spe_GLM_Harmony"), replace = TRUE
+)
+
+
 ####  Compute GLM-PCA ####
 message(Sys.time(), " - Running devianceFeatureSelection()")
 spe <- devianceFeatureSelection(spe, assay = "counts", fam = "binomial", sorted = FALSE, batch = as.factor(spe$sample_id))
@@ -208,7 +216,7 @@ saveHDF5SummarizedExperiment(
     dir = here(data_dir, "spe_GLM_Harmony"), replace = TRUE
 )
 
-# slurmjobs::job_single('01_preprocess_Harmony', create_shell = TRUE, memory = '25G', command = "Rscript 01_preprocess_Harmony.R")
+# slurmjobs::job_single('01_preprocess_spe', create_shell = TRUE, memory = '25G', command = "Rscript 01_preprocess_spe.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
