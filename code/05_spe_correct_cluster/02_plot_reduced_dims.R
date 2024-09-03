@@ -1,9 +1,13 @@
+# Aug, 2024 - Louise Huuki-Myers
+# Plot uncorrected reduced dim plots for Visium data
+
 library("SpatialExperiment")
 library("here")
 library("sessioninfo")
-library("scran")
 library("scater")
-library("Harmony")
+library("HDF5Array")
+library("viridis")
+library("purrr")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "02_plot_reduced_dims")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -11,58 +15,112 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # data_dir <- here("processed-data", "02_build_spe", "01_preprocess_Harmony")
 # if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-spe <- readRDS(here("processed-data", "02_build_spe", "spe.rds"))
+# spe <- readRDS(here("processed-data", "02_build_spe", "spe.rds"))
 
-#### plot Uncorrected Data ####
+message(Sys.time(), " - Load HDF5 SPE")
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
+spe
+# class: SpatialExperiment 
+# dim: 30494 122202 
+# metadata(0):
+#     assays(2): counts logcounts
+# rownames(30494): ENSG00000243485 ENSG00000238009 ... ENSG00000278817 ENSG00000277196
+# rowData names(7): source type ... gene_type gene_search
+# colnames(122202): AAACAACGAATAGTTC-1_Br5212 AAACAAGTATCTCCCA-1_Br5212 ... TTGTTTGTATTACACG-1_Br6263
+# TTGTTTGTGTAAATTC-1_Br6263
+# colData names(48): sample_id in_tissue ... scran_quick_cluster sizeFactor
+# reducedDimNames(7): 10x_pca 10x_tsne ... TSNE UMAP
+# mainExpName: NULL
+# altExpNames(0):
+#     spatialCoords names(2) : pxl_col_in_fullres pxl_row_in_fullres
+# imgData names(4): sample_id image_id data scaleFactor
+
+reducedDimNames(spe)
+# [1] "10x_pca"  "10x_tsne" "10x_umap" "PCA_p1"   "PCA_p2"   "TSNE"     "UMAP"  
+
+## swap rownames to gene names for plotting markers
+rownames(spe) <- rowData(spe)$gene_name
+
+
+#### Establish color schemes ####
 qc_colors <- c(fold = "#4BA402", out_edge = "#097FE0", vessel ="#BB1EF4", None = "#CCCCCC40")
 scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 
+## define custom plotting function
+my_plot_reduced_dim <- function(spe,
+                                dimred = "UMAP",
+                                my_var = "sample_id",
+                                cat_var = TRUE,
+                                save_plot = TRUE,
+                                sufix = NULL,
+                                color_pal = NULL){
+    
+    rd_x = paste0(dimred, ".1")
+    rd_y = paste0(dimred, ".2")
+    
+    rd_plot <- ggcells(spe, mapping = aes(x = !!sym(rd_x),
+                                          y = !!sym(rd_y),
+                                          color = !!sym(my_var)))+
+        geom_point(size = 0.2, alpha = 0.3) +
+        coord_equal() +
+        theme_bw() +
+        labs(x = paste(dimred, "Dimension 1"),
+             y = paste(dimred, "Dimension 2"))
+    
+    if(cat_var){ ## add larger legend to catagorical variables
+        rd_plot <- rd_plot + guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1)))
+    } else {
+        rd_plot <- rd_plot + scale_color_viridis()
+    }
+    
+    if(!is.null(color_pal))  rd_plot <- rd_plot + scale_color_manual(values = color_pal)
+    
+    if(save_plot){
+        plot_name <- paste(c(dimred, my_var, sufix), collapse = "_")
+        plot_name <- paste0(plot_name, ".png")
+        
+        message("saving: ", plot_name)
+        
+        ggsave(rd_plot, filename = here(plot_dir, plot_name))
+    } 
+    
+    return(rd_plot)
+}
 
-##umap
-umap_sample <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = sample_id))+
-    geom_point(size = 0.2, alpha = 0.3) +
-    coord_equal() +
-    theme_bw() +
-    guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1))) +
-    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+my_plots <- my_plot_reduced_dim(spe = spe)
 
-ggsave(umap_sample, filename = here(plot_dir, "UMAP_sample_id.png"))
+## categorical
+walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
+walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, dimred = "TSNE", my_var = .x, sufix = "uncorrected"))
 
-umap_sample_facet <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = sample_id))+
-    geom_point(size = 0.2, alpha = 0.3) +
-    coord_equal() +
-    theme_bw() +
-    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2") +
-    facet_wrap(~sample_id) +
-    theme(legend.position = "None")
+## categorical + color scheme
+walk2(c("qc_anno", "scran_discard"), list(qc_colors, scran_colors), ~my_plot_reduced_dim(spe, dimred = "UMAP", my_var = .x, sufix = "uncorrected", color_pal = .y))
 
-ggsave(umap_sample_facet, filename = here(plot_dir, "UMAP_sample_id_facet.png"))
+## continuous
+walk(c("sum_umi", "MBP"), ~my_plot_reduced_dim(spe, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "uncorrected"))
 
-umap_qc_anno <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = qc_anno))+
-    geom_point(size = 0.2, alpha = 0.3) +
-    coord_equal() +
-    theme_bw() +
-    scale_color_manual(values = qc_colors) +
-    guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1))) +
-    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+## expression
 
-ggsave(umap_qc_anno , filename = here(plot_dir, "UMAP_qc_anno.png"))
+## plot layer marker genes
+purrr::walk(c("MBP", "PCP4", "RELN", "SNAP25"), function(gene){
+    umap_gene <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = !!sym(gene)))+
+        geom_point(size = 0.2, alpha = 0.3) +
+        coord_equal() +
+        theme_bw() +
+        scale_color_viridis(name = "logcounts") +
+        labs(title = gene, x = "UMAP Dimension 1", y = "UMAP Dimension 2") +
+        theme(plot.title = element_text(face = "italic"))
+    
+    ggsave(umap_gene , filename = here(plot_dir, paste0("UMAP_uncorrected_expression_",gene,".png")))
+})
 
-umap_scran <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = scran_discard))+
-    geom_point(size = 0.2, alpha = 0.3) +
-    coord_equal() +
-    theme_bw() +
-    scale_color_manual(values = scran_colors) +
-    guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1))) +
-    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
 
-ggsave(umap_scran , filename = here(plot_dir, "UMAP_scran.png"))
+# slurmjobs::job_single('02_plot_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 02_plot_reduced_dims.R")
 
-umap_sum_umi <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = sum_umi))+
-    geom_point(size = 0.2, alpha = 0.3) +
-    coord_equal() +
-    theme_bw() +
-    scale_color_viridis() +
-    labs(x = "UMAP Dimension 1", y = "UMAP Dimension 2")
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
-ggsave(umap_scran , filename = here(plot_dir, "umap_sum_umi.png"))
