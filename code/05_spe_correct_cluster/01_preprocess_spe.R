@@ -1,3 +1,5 @@
+# Aug, 2024 - Louise Huuki-Myers
+# Add logcounts, model gene variance, and add reduced dimesions to post-QC visium data
 
 library("SpatialExperiment")
 library("here")

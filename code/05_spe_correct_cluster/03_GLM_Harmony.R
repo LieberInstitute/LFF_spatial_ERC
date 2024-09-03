@@ -1,3 +1,5 @@
+# Aug, 2024 - Louise Huuki-Myers
+# Compute GLM PCA & Run Harmony batch correction
 
 library("SpatialExperiment")
 library("here")
