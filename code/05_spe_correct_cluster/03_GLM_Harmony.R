@@ -27,7 +27,7 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 ####  Compute GLM-PCA ####
 message(Sys.time(), " - Running devianceFeatureSelection()")
 spe <- devianceFeatureSelection(spe, assay = "counts", fam = "binomial", sorted = FALSE, batch = as.factor(spe$sample_id))
-spe <- devianceFeatureSelection(spe, assay = "counts", fam = "poisson", sorted = FALSE, batch = as.factor(spe$sample_id)) 
+# spe <- devianceFeatureSelection(spe, assay = "counts", fam = "poisson", sorted = FALSE, batch = as.factor(spe$sample_id)) 
 
 ## plot binomial and poison deviance in first 100 selected genes ?
 
@@ -42,7 +42,7 @@ spe <- nullResiduals( # default params
     # batch = as.factor(spe$sample_id) # batch membership of observations - use "round" ?
 )
 
-## Get HVDG
+## Get HDGs
 top.hdgs <- map(c(`1k` = 1000, `2k` = 2000, `5k` = 5000),
                 ~rownames(spe)[order(rowData(spe)$binomial_deviance, decreasing = TRUE)][1:.x]
 )
@@ -55,7 +55,7 @@ walk2(top.hdgs, names(top.hdgs), function(hdgs, name_hdgs){
         spe,
         exprs_values = "binomial_deviance_residuals",
         subset_row = hdgs,
-        ncomponents = num_red_dims,
+        ncomponents = 100,
         name = paste0("GLMPCA_approx_", name_hdgs),
         BSPARAM = BiocSingular::IrlbaParam()
     )
