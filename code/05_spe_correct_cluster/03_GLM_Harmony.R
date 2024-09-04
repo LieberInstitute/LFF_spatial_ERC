@@ -1,5 +1,5 @@
 # Aug, 2024 - Louise Huuki-Myers
-# Compute GLM PCA & Run Harmony batch correction
+# Compute GLM PCA & Run Harmony batch correction for Visium data
 
 library("SpatialExperiment")
 library("here")
