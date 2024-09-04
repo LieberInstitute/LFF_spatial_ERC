@@ -1,60 +1,34 @@
 library("SingleCellExperiment")
-library("scran")
 library("scater")
-library("batchelor")
+library("purrr")
+library("HDF5Array")
+library("viridis")
 library("here")
 library("sessioninfo")
-library("patchwork")
-library("purrr")
 
-source(here("code", "03_build_sce", "utils.R"))
+## source reduced dims function
+source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-# Plotting set up
-my_theme <- theme_bw() +
-    theme(
-        text = element_text(size = 15),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()
-    )
-
-plot_dir <- here("plots", "03_build_sce", "05_harmony_correction")
-
+## set up plot dir
+plot_dir <- here("plots", "04_snRNA-seq", "04_plot_uncorrected_reduced_dims")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
-## List normalized files
-sce_fn <- here("processed-data", "03_build_sce", c("sce_uncorrected_glm.Rdata", "sce_harmony_Sample.Rdata"))
-all(file.exists(sce_fn))
+## Load "uncorrected" sce data (postQC, GLMPCA)
+message(Sys.time(), " - load data")
+sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_uncorrected"))
 
-# (sce_fn <- list.files(path = here("processed-data", "03_build_sce"), pattern = "^sce",
-#                       full.names = TRUE))
+## swap rownames to gene names for plotting markers
+rownames(sce) <- rowData(sce)$Symbol 
 
-sce_fn <- here("processed-data", "03_build_sce", c("sce_uncorrected_glm.Rdata", "sce_harmony_Sample.Rdata"))
+#### plot ####
+## categorical
+walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
+walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, dimred = "TSNE", my_var = .x, sufix = "uncorrected"))
 
-(names(sce_fn) <- gsub(".Rdata", "", gsub("sce_", "", basename(sce_fn))))
+## continuous
+walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(sce, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "uncorrected"))
 
-
-walk2(sce_fn, names(sce_fn), function(sce_fn, name) {
-    annotation <- gsub("_", " + ", name)
-    message(annotation)
-    ## Load
-    load(sce_fn, verbose = TRUE)
-
-    if (grepl("uncorrected", name)) sce <- sce_uncorrected
-    all(c("TSNE", "UMAP") %in% reducedDimNames(sce))
-
-    for (t in c("TSNE", "UMAP")) {
-        ## Catagorical plots
-        for (cat in c("round", "subject", "Sample")) {
-            fn <- paste0(t, "_", name, "-color_", cat)
-
-            message("plotting... ", fn)
-            cat_plot <- plot_reducedDim_facet(sce, type = t, facet_by = cat)
-            ggsave(cat_plot, filename = here(plot_dir, paste0(fn, ".png")), width = 13)
-            ggsave(cat_plot, filename = here(plot_dir, paste0(fn, ".pdf")), width = 13)
-        }
-    }
-})
-
-# sgejobs::job_single('05.5_harmony_correction_plots', create_shell = TRUE, queue= 'bluejay', memory = '50G', command = "Rscript 05.5_harmony_correction_plots.R")
+walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "expres_uncorrected"))
 
 ## Reproducibility information
 print("Reproducibility information:")
