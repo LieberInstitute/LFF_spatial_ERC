@@ -1,7 +1,4 @@
 library("spatialLIBD")
-library("markdown")
-library("tidyverse")
-library("here")
 
 ## spatialLIBD uses golem.
 ## Golem is a framework for building production-grade shiny applications
@@ -12,20 +9,6 @@ options(repos = BiocManager::repositories())
 
 spe <- readRDS("spe_raw.rds")
 
-qc_file = "spe_qc_anno_clean.csv"
-if(file.exists(qc_file)){
-    qc_anno_clean <- read.csv(qc_file)
-    pd <- as.data.frame(colData(spe))
-    
-    pd <- pd |>
-        left_join(qc_anno_clean |> select(qc_anno, key = spot_name)) |>
-        mutate(qc_anno = factor(ifelse(is.na(qc_anno) & in_tissue, "None", qc_anno)),
-               scran_qc_anno = factor(ifelse(as.logical(scran_discard), paste0("scran-", qc_anno), as.character(qc_anno)))
-        )
-    
-    spe$qc_anno <- pd$qc_anno
-    spe$scran_qc_anno <- pd$scran_qc_anno
-}
 
 ## Quickly explore the data
 vars <- colnames(colData(spe))
