@@ -1,3 +1,5 @@
+## Adapted from https://github.com/LieberInstitute/spatial_NAc/blob/f3538df2e932f537f8670bf708f2ff9434ef5d91/code/05_harmony_BayesSpace/05-BayesSpace_k_search.R
+
 ## Required libraries
 library("here")
 library("sessioninfo")
@@ -6,9 +8,9 @@ library("spatialLIBD")
 library("BayesSpace")
 library("Polychrome")
 library("tidyverse")
-source(here('code', '07_spot_deconvo', 'shared_functions.R'))
+library("HDF5Array")
 
-set.seed(20230712)
+set.seed(20240905)
 
 ## Choose k
 k <- as.numeric(
@@ -19,25 +21,26 @@ k <- as.numeric(
 k_nice <- sprintf("%02d", k)
 
 ## Create output directories
-dir_plots <- here("plots", "05_harmony_BayesSpace", k)
-dir_rdata <- here("processed-data", "05_harmony_BayesSpace")
-spe_in = file.path(dir_rdata, "spe_harmony.rds")
+dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("k", k_nice))
+if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 
-dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
-dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
-dir.create(file.path(dir_rdata, "clusters_BayesSpace"), showWarnings = FALSE)
+dir_rdata <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace")
+if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
+if(!dir.exists(here(dir_rdata, "clusters_BayesSpace"))) dir.create(here(dir_rdata, "clusters_BayesSpace"), showWarnings = FALSE, recursive = TRUE)
 
 ## Load the data
-spe <- readRDS(spe_in)
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_GLM_Harmony"))
 
 ## Set the BayesSpace metadata using code from
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
-message("Running spatialCluster()")
-Sys.time()
-spe <- spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 10000)
-Sys.time()
+message(Sys.time(), " - Running spatialCluster()")
+spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 10000)
+
+message(Sys.time(), " - Format and Export")
+
+table(spe$spatial.cluster)
 
 spe$bayesSpace_temp <- as.factor(spe$spatial.cluster)
 bayesSpace_name <- paste0("BayesSpace_harmony_k", k_nice)
@@ -46,39 +49,42 @@ colnames(colData(spe))[ncol(colData(spe))] <- bayesSpace_name
 cluster_export(
     spe,
     bayesSpace_name,
-    cluster_dir = file.path(dir_rdata, "clusters_BayesSpace")
+    cluster_dir = here(dir_rdata, "clusters_BayesSpace")
 )
 
 ## Visualize BayesSpace results
+message(Sys.time(), " - Visualize clusters")
 sample_ids <- unique(spe$sample_id)
+
+## create color pallet
 cols <- Polychrome::palette36.colors(k)
+if(k ==2) cols <- cols[seq(2)] ## fix return 3 colors bug
+
 names(cols) <- sort(unique(spe[[bayesSpace_name]]))
 
 #   Use 'vis_grid_clus' to preserve all spots (including overlaps)
 p_list = vis_grid_clus(
     spe = spe,
     clustervar = bayesSpace_name,
+    pdf_file = here(dir_plots, paste0(bayesSpace_name, "-ALL.pdf")),
     sort_clust = FALSE,
     colors = cols,
     spatial = FALSE,
-    point_size = 1,
-    auto_crop = FALSE,
-    return_plots = TRUE
+    point_size = 1
 )
-pdf(file.path(dir_plots, paste0(bayesSpace_name, "_raw.pdf")))
-print(p_list)
-dev.off()
 
-#   Use 'spot_plot', which takes one spot in case of overlaps
-p_list = list()
-for (sample_id in sample_ids) {
-    p_list[[sample_id]] = spot_plot(
-        spe, sample_id = sample_id, var_name = bayesSpace_name, colors = cols
+#  Vis_clus for each sample
+walk(sample_ids, function(samp){
+    spot_plot <- vis_clus(
+        spe = spe,
+        sampleid = samp,
+        clustervar = bayesSpace_name,
+        # sort_clust = FALSE,
+        colors = cols,
+        point_size = 2
     )
-}
-pdf(file.path(dir_plots, paste0(bayesSpace_name, "_fit.pdf")))
-print(p_list)
-dev.off()
+    ggsave(spot_plot, filename = here(dir_plots, paste0(bayesSpace_name, "-", samp, ".pdf")))
+})
 
 ## Reproducibility information
 print("Reproducibility information:")
