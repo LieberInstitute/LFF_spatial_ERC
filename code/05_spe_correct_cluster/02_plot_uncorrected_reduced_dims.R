@@ -9,7 +9,7 @@ library("HDF5Array")
 library("viridis")
 library("purrr")
 
-plot_dir <- here("plots", "05_spe_correct_cluster", "02_plot_reduced_dims")
+plot_dir <- here("plots", "05_spe_correct_cluster", "02_plot_uncorrected_reduced_dims")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 # data_dir <- here("processed-data", "02_build_spe", "01_preprocess_Harmony")
@@ -50,28 +50,23 @@ scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 my_plots <- my_plot_reduced_dim(spe = spe)
 
 ## categorical
-walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
-walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, dimred = "TSNE", my_var = .x, sufix = "uncorrected"))
+walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
+
+## catagorical facet
+walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = "UMAP", my_var = .x, sufix = "uncorrected", facet = TRUE))
 
 ## categorical + color scheme
-walk2(c("qc_anno", "scran_discard"), list(qc_colors, scran_colors), ~my_plot_reduced_dim(spe, dimred = "UMAP", my_var = .x, sufix = "uncorrected", color_pal = .y))
+walk2(c("qc_anno", "scran_discard"), 
+      list(qc_colors, scran_colors), 
+      ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = "UMAP", my_var = .x, sufix = "uncorrected", color_pal = .y))
 
-## continuous
-walk(c("sum_umi", "MBP"), ~my_plot_reduced_dim(spe, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "uncorrected"))
-
-## expression
+## continuous QC metrics
+walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"), 
+     ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
 
 ## plot layer marker genes
 purrr::walk(c("MBP", "PCP4", "RELN", "SNAP25"), function(gene){
-    umap_gene <- ggcells(spe, mapping = aes(x = UMAP.1, y = UMAP.2, color = !!sym(gene)))+
-        geom_point(size = 0.2, alpha = 0.3) +
-        coord_equal() +
-        theme_bw() +
-        scale_color_viridis(name = "logcounts") +
-        labs(title = gene, x = "UMAP Dimension 1", y = "UMAP Dimension 2") +
-        theme(plot.title = element_text(face = "italic"))
-    
-    ggsave(umap_gene , filename = here(plot_dir, paste0("UMAP_uncorrected_expression_",gene,".png")))
+    my_plot_reduced_dim(spe, prefix = "spe_gene", var_type = "express", dimred = "UMAP", my_var = gene, sufix = "uncorrected")
 })
 
 
