@@ -1,27 +1,43 @@
+## Louise Huuki-Myers, September 2024
+## use single nearest neighbors + walk trap to cluster single nuc data
+
 library("SingleCellExperiment")
 library("jaffelab")
 library("scater")
 library("scran")
+library("HDF5Array")
 library("here")
 library("sessioninfo")
 
-## Best normalization result
-load(here("processed-data", "03_build_sce", "sce_harmony_Sample.Rdata"), verbose = TRUE)
+## Prep directories
+data_dir <- here("processed-data", "04_snRNA-seq", "07_cluster_sn")
+if(!dir.exists(data_dir)) dir.create(data_dir)
 
-message("running buildSNNGraph - ", Sys.time())
+## Load HD5F
+message(Sys.time(), "- load Harmony corrected sce")
+sce <- loadHDF5SummarizedExperiment(dir = here("processed-data", "sce_objects", "sce_harmony"))
+sce
+
+## define k
+k=20
+
+## Build SNN graph
+message(Sys.time(), " - running buildSNNGraph: k =", k)
 snn.gr <- buildSNNGraph(sce, k = 20, use.dimred = "HARMONY")
 
-message("running walktrap - ", Sys.time())
+## Run walk trap clustering
+message(Sys.time(), " - running walktrap")
 clusters <- igraph::cluster_walktrap(snn.gr)$membership
-
 table(clusters)
-message("saving data - ", Sys.time())
-save(clusters, file = here("processed-data", "03_build_sce", "clusters.Rdata"))
+
+## save data
+message(Sys.time() , " - saving data")
+save(clusters, file = here(data_dir, "walktrap_snn_",sprintf("%02d", k),"_clusters.Rdata"))
 
 ## Save final sce w/ annotations
 # save(sce, file = here("processed-data", "sce", "sce_DLPFC.Rdata"))
 
-# sgejobs::job_single('06_cluster', create_shell = TRUE, queue= 'bluejay', memory = '100G', command = "Rscript 06_cluster.R subject")
+# slurmjobs::job_single('07_cluster_sn', create_shell = TRUE, memory = '100G', command = "Rscript 07_cluster_sn.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
