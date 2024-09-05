@@ -27,17 +27,19 @@ if(file.exists(qc_file)){
 reducedDimNames(spe)
 # [1] "10x_pca"  "10x_tsne" "10x_umap"
 
-reducedDims(spe)$`10x_tsne` <- NULL
-reducedDims(spe)$`10x_pca` <- NULL
+# reducedDims(spe)$`10x_tsne` <- NULL
+# reducedDims(spe)$`10x_pca` <- NULL
 
-lobstr::obj_size(spe)
-# 5.60 GB
+
+## Drop images we don't really use in the app
+imgData(spe) <- imgData(spe)[
+    !imgData(spe)$image_id %in% c("hires", "detected", "aligned"),
+]
 
 ## remove out_tissue spots?
-spe <- spe[, spe$in_tissue]
+# spe <- spe[, spe$in_tissue]
 
 lobstr::obj_size(spe)
-
-imgData(spe)
+# 2.79 GB
 
 saveRDS(spe, here("code", "02_build_spe", "02_QC_app", "spe_raw.rds"))
