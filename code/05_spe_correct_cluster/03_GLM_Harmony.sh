@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=100G
 #SBATCH --job-name=03_GLM_Harmony
 #SBATCH -c 1
 #SBATCH -o logs/03_GLM_Harmony.txt
