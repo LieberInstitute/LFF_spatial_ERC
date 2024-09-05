@@ -35,7 +35,7 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
-message(Sys.time(), " - Running spatialCluster()")
+message(Sys.time(), " - Running spatialCluster(): k=", k)
 spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 10000)
 
 message(Sys.time(), " - Format and Export")
