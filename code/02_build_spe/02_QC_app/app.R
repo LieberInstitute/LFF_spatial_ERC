@@ -1,4 +1,5 @@
 library("spatialLIBD")
+library("markdown")
 
 ## spatialLIBD uses golem.
 ## Golem is a framework for building production-grade shiny applications
