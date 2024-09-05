@@ -21,6 +21,9 @@ sce
 ## define k
 k=20
 
+## set seed
+set.seed(20240905)
+
 ## Build SNN graph
 message(Sys.time(), " - running buildSNNGraph: k =", k)
 snn.gr <- buildSNNGraph(sce, k = 20, use.dimred = "HARMONY")
