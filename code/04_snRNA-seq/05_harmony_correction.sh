@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=100G
-#SBATCH --job-name=03_GLM_Harmony
+#SBATCH --job-name=05_harmony_correction
 #SBATCH -c 1
-#SBATCH -o logs/03_GLM_Harmony.txt
-#SBATCH -e logs/03_GLM_Harmony.txt
+#SBATCH -o logs/05_harmony_correction.txt
+#SBATCH -e logs/05_harmony_correction.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -26,7 +26,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 03_GLM_Harmony.R
+Rscript 05_harmony_correction.R
 
 echo "**** Job ends ****"
 date
