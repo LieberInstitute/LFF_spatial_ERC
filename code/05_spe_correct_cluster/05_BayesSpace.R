@@ -86,6 +86,8 @@ walk(sample_ids, function(samp){
     ggsave(spot_plot, filename = here(dir_plots, paste0(bayesSpace_name, "-", samp, ".pdf")))
 })
 
+# slurmjobs::job_single('05_BayesSpace', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace.R")
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
