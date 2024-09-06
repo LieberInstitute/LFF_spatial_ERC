@@ -9,6 +9,7 @@ library("BayesSpace")
 library("Polychrome")
 library("tidyverse")
 library("HDF5Array")
+library("getopt")
 
 ## get input file from params
 spec <- matrix(
