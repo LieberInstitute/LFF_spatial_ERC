@@ -10,6 +10,35 @@ library("Polychrome")
 library("tidyverse")
 library("HDF5Array")
 
+## get input file from params
+spec <- matrix(
+    c(
+        c("spe", "dimred", "name"),
+        c("s", "d", "n"),
+        c("1", "2", "3"),
+        c("character", "character", "character"),
+        c("spe filename", "Dimension Reduction", "name for output")
+    ),
+    ncol = 5
+)
+opt <- getopt(spec)
+
+## get opts
+dimred <- opt$dimred
+name <- opt$name
+
+message("Load spe from:", opt$spe)
+message("Dimension Reduction:", dimred)
+message("Output name:", name)
+
+spe_hdf5_path <- here("processed-data", "spe_objects", "spe_GLM_Harmony", opt$spe)
+stopifnot(file.exists(spe_hdf5_path))
+
+## Load the data
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here(spe_hdf5_path))
+stopifnot(dimred %in% reducedDimNames(spe))
+
+## Set Seed
 set.seed(20240905)
 
 ## Choose k
@@ -20,30 +49,29 @@ k <- as.numeric(
 )
 k_nice <- sprintf("%02d", k)
 
+message("k:", k_nice)
+
 ## Create output directories
-dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("k", k_nice, "_GLMPCA_approx_2k"))
+dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name), paste0(name, "_k", k_nice))
 if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 
-dir_rdata <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace")
+dir_rdata <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name))
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
-if(!dir.exists(here(dir_rdata, "clusters_BayesSpace"))) dir.create(here(dir_rdata, "clusters_BayesSpace_GLMPCA_approx_2k"), showWarnings = FALSE, recursive = TRUE)
 
-## Load the data
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_GLM_Harmony"))
 
 ## Set the BayesSpace metadata using code from
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
-message(Sys.time(), " - Running spatialCluster(): k=", k)
-spe <- BayesSpace::spatialCluster(spe, use.dimred = "GLMPCA_approx_2k", q = k, nrep = 10000)
+message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
+spe <- BayesSpace::spatialCluster(spe, use.dimred = dimred, q = k, nrep = 10000)
 
 message(Sys.time(), " - Format and Export")
 
 table(spe$spatial.cluster)
 
 spe$bayesSpace_temp <- as.factor(spe$spatial.cluster)
-bayesSpace_name <- paste0("BayesSpace_GLMPCA-2k_k", k_nice)
+bayesSpace_name <- paste0("BayesSpace_",name,"_k", k_nice)
 colnames(colData(spe))[ncol(colData(spe))] <- bayesSpace_name
 
 cluster_export(
