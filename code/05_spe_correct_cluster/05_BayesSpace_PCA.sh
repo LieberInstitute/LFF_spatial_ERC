@@ -30,7 +30,7 @@ module load conda_R/4.3.x
 ## List current modules for reproducibility
 module list
 
-## Edit with your job command
+## Run BayesSpace on regular (Harmony corrected) PCAs
 Rscript 05_BayesSpace.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony
 
 echo "**** Job ends ****"
