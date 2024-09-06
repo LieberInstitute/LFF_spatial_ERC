@@ -145,6 +145,17 @@ spe <- runUMAP(spe,
 colnames(reducedDim(spe, "UMAP")) <- c("UMAP1", "UMAP2")
 Sys.time()
 
+#### Harmony Batch Correction ####
+
+## Harmony uses the PCA slot - use 10% HVG PCA
+reducedDim(spe, "PCA") <- reducedDim(spe, "PCA_p1")
+
+message(Sys.time(), " - Harmony")
+spe <- RunHarmony(spe, "sample_id")
+
+## Remove redundant PCA
+reducedDim(spe, "PCA") <- NULL
+
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
 saveHDF5SummarizedExperiment(
