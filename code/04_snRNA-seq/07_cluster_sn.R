@@ -35,7 +35,7 @@ table(clusters)
 
 ## save data
 message(Sys.time() , " - saving data")
-save(clusters, file = here(data_dir, "walktrap_snn_",sprintf("%02d", k),"_clusters.Rdata"))
+save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_clusters.Rdata", k)))
 
 ## Save final sce w/ annotations
 # save(sce, file = here("processed-data", "sce", "sce_DLPFC.Rdata"))
