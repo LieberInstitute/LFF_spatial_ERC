@@ -32,7 +32,7 @@ message("Load spe from:", opt$spe)
 message("Dimension Reduction:", dimred)
 message("Output name:", name)
 
-spe_hdf5_path <- here("processed-data", "spe_objects", "spe_GLM_Harmony", opt$spe)
+spe_hdf5_path <- here("processed-data", "spe_objects", opt$spe)
 stopifnot(file.exists(spe_hdf5_path))
 
 ## Load the data
