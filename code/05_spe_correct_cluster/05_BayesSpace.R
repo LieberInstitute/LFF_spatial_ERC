@@ -21,12 +21,12 @@ k <- as.numeric(
 k_nice <- sprintf("%02d", k)
 
 ## Create output directories
-dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("k", k_nice))
+dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("k", k_nice, "_GLMPCA_approx_2k"))
 if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 
 dir_rdata <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace")
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
-if(!dir.exists(here(dir_rdata, "clusters_BayesSpace"))) dir.create(here(dir_rdata, "clusters_BayesSpace"), showWarnings = FALSE, recursive = TRUE)
+if(!dir.exists(here(dir_rdata, "clusters_BayesSpace"))) dir.create(here(dir_rdata, "clusters_BayesSpace_GLMPCA_approx_2k"), showWarnings = FALSE, recursive = TRUE)
 
 ## Load the data
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_GLM_Harmony"))
@@ -36,14 +36,14 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
 message(Sys.time(), " - Running spatialCluster(): k=", k)
-spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 10000)
+spe <- BayesSpace::spatialCluster(spe, use.dimred = "GLMPCA_approx_2k", q = k, nrep = 10000)
 
 message(Sys.time(), " - Format and Export")
 
 table(spe$spatial.cluster)
 
 spe$bayesSpace_temp <- as.factor(spe$spatial.cluster)
-bayesSpace_name <- paste0("BayesSpace_harmony_k", k_nice)
+bayesSpace_name <- paste0("BayesSpace_GLMPCA-2k_k", k_nice)
 colnames(colData(spe))[ncol(colData(spe))] <- bayesSpace_name
 
 cluster_export(

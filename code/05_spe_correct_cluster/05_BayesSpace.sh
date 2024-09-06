@@ -6,7 +6,7 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=2-28%20
+#SBATCH --array=2-10%20
 
 ## Explicitly pipe script output to a log
 log_path=logs/05_BayesSpace_k${SLURM_ARRAY_TASK_ID}.txt
