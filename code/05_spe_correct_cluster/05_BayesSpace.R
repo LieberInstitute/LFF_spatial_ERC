@@ -36,6 +36,7 @@ spe_hdf5_path <- here("processed-data", "spe_objects", opt$spe)
 stopifnot(file.exists(spe_hdf5_path))
 
 ## Load the data
+message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here(spe_hdf5_path))
 stopifnot(dimred %in% reducedDimNames(spe))
 
