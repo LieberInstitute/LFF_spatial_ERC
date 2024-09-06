@@ -35,14 +35,6 @@ message("Output name:", name)
 spe_hdf5_path <- here("processed-data", "spe_objects", opt$spe)
 stopifnot(file.exists(spe_hdf5_path))
 
-## Load the data
-message(Sys.time(), " - Load HDF5 SPE")
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here(spe_hdf5_path))
-stopifnot(dimred %in% reducedDimNames(spe))
-
-## Set Seed
-set.seed(20240905)
-
 ## Choose k
 k <- as.numeric(
     #   Only one of these environment variables will be defined, so grab the
@@ -52,6 +44,14 @@ k <- as.numeric(
 k_nice <- sprintf("%02d", k)
 
 message("k:", k_nice)
+
+## Load the data
+message(Sys.time(), " - Load HDF5 SPE")
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here(spe_hdf5_path))
+stopifnot(dimred %in% reducedDimNames(spe))
+
+## Set Seed
+set.seed(20240905)
 
 ## Create output directories
 dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name), paste0(name, "_k", k_nice))
