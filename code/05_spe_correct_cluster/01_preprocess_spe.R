@@ -153,6 +153,17 @@ reducedDim(spe, "PCA") <- reducedDim(spe, "PCA_p1")
 message(Sys.time(), " - Harmony")
 spe <- RunHarmony(spe, "sample_id")
 
+## ADD UMAP + TSNE
+message(Sys.time(), " - Harmony UMAP")
+spe <- runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
+
+colnames(reducedDim(spe, "UMAP.HARMONY")) <- c("UMAP1", "UMAP2")
+
+message(Sys.time(), " - HARMONY TSNE")
+spe <- runTSNE(spe,
+               dimred = "HARMONY",
+               name = "TSNE.HARMONY")
+
 ## Remove redundant PCA
 reducedDim(spe, "PCA") <- NULL
 
