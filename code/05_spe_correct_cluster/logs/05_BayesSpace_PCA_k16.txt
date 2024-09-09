@@ -1,11 +1,12 @@
 **** Job starts ****
-Fri Sep  6 07:27:32 AM EDT 2024
+Fri Sep  6 05:05:18 PM EDT 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 9627954
-Job name: 05_BayesSpace
-Node name: compute-162
-Task id: 5
+Job id: 9630619
+Job name: 05_BayesSpace_PCA
+Node name: compute-122
+Task id: 16
+Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
@@ -160,16 +161,22 @@ The following object is masked from ‘package:rhdf5’:
 
     h5ls
 
-2024-09-06 07:29:34.775462 - Running spatialCluster(): k=5
+Load spe from:spe_postQC
+Dimension Reduction:HARMONY
+Output name:PCA_Harmony
+k:16
+2024-09-06 17:08:15.530769 - Running spatialCluster: k=16, dimred = HARMONY
 Neighbors were identified for 122202 out of 122202 spots.
 Fitting model...
 Calculating labels using iterations 1000 through 10000.
-2024-09-06 11:17:17.539455 - Format and Export
+2024-09-06 22:54:52.236686 - Format and Export
 
-     1      2      3      4      5 
-  2505 105188   2801   6856   4852 
+    1     2     3     4     5     6     7     8     9    10    11    12    13 
+ 8076 10625  7421  9685  6818  7409  5256  8719  8634 11200  5562  2907  7570 
+   14    15    16 
+ 4892 10415  7013 
 Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
-2024-09-06 11:17:17.900089 - Visualize clusters
+2024-09-06 22:54:52.842473 - Visualize clusters
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
@@ -202,9 +209,9 @@ Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2024-09-06 11:17:45 EDT"
+[1] "2024-09-06 22:55:35 EDT"
      user    system   elapsed 
-13666.681   103.862 13812.927 
+20535.236   303.082 21015.413 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -283,6 +290,7 @@ Saving 7 x 7 in image
    GenomeInfoDbData         1.2.11     2024-02-09 [2] Bioconductor
    GenomicAlignments        1.38.2     2024-01-16 [2] Bioconductor 3.18 (R 4.3.2)
    GenomicRanges          * 1.54.1     2023-10-29 [2] Bioconductor
+   getopt                 * 1.20.4     2023-10-01 [1] CRAN (R 4.3.2)
    ggbeeswarm               0.7.2      2023-04-29 [2] CRAN (R 4.3.2)
    ggplot2                * 3.5.1      2024-04-23 [1] CRAN (R 4.3.2)
    ggrepel                  0.9.5      2024-01-10 [2] CRAN (R 4.3.2)
@@ -406,4 +414,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Sep  6 11:17:46 AM EDT 2024
+Fri Sep  6 10:55:37 PM EDT 2024
