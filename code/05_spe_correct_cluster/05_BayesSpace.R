@@ -116,6 +116,8 @@ walk(sample_ids, function(samp){
     ggsave(spot_plot, filename = here(dir_plots, paste0(bayesSpace_name, "-", samp, ".pdf")))
 })
 
+## in the future, also plot reduced dims by cluster
+
 # slurmjobs::job_single('05_BayesSpace', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace.R")
 
 ## Reproducibility information
