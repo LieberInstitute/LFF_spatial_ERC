@@ -53,7 +53,7 @@ saveHDF5SummarizedExperiment(
     replace = TRUE
 )
 
-# slurmjobs::job_single('07_add_cluster_data', create_shell = TRUE, memory = '5G', command = "Rscript 07_add_cluster_data.R")
+# slurmjobs::job_single('07_add_cluster_data', create_shell = TRUE, memory = '10G', command = "Rscript 07_add_cluster_data.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
