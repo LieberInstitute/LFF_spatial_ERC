@@ -13,7 +13,7 @@ all_k=(10 15 20)
 k=${all_k[$(( $SLURM_ARRAY_TASK_ID / 1 % 3 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/07_cluster_sn_loop_${k}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/07_cluster_sn_k${k}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -35,7 +35,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 07_cluster_sn_loop.R --k ${k}
+Rscript 07_cluster_sn.R --k ${k}
 
 echo "**** Job ends ****"
 date
