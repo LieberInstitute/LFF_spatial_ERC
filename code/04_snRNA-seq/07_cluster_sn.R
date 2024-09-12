@@ -43,7 +43,7 @@ set.seed(20240905)
 
 ## Build SNN graph
 message(Sys.time(), " - running buildSNNGraph: k =", k)
-snn.gr <- buildSNNGraph(sce, k = 20, use.dimred = "HARMONY")
+snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY")
 
 ## Run walk trap clustering
 message(Sys.time(), " - running walktrap")
