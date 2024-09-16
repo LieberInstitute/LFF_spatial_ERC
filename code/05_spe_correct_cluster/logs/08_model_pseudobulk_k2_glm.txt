@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Sep  5 12:13:19 PM EDT 2024
+Mon Sep  9 02:50:49 PM EDT 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 9622740
-Job name: 07_cluster_sn
+Job id: 9637522
+Job name: 08_model_pseudobulk
 Node name: compute-169
-Task id: 
-Unloading conda_R/4.3.x
+Task id: 2
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
@@ -15,6 +14,8 @@ Currently Loaded Modules:
 
  
 
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
 Loading required package: matrixStats
@@ -90,9 +91,6 @@ The following objects are masked from ‘package:matrixStats’:
 
     anyMissing, rowMedians
 
-Loading required package: rafalib
-Loading required package: scuttle
-Loading required package: ggplot2
 Loading required package: DelayedArray
 Loading required package: Matrix
 
@@ -131,33 +129,20 @@ The following object is masked from ‘package:rhdf5’:
 
     h5ls
 
-here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2024-09-05 12:13:27.634148- load Harmony corrected sce
-class: SingleCellExperiment 
-dim: 38606 140119 
-metadata(32): Samples Samples ... Samples scDblFinder.threshold
-assays(3): counts logcounts binomial_deviance_residuals
-rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
-  ENSG00000277196
-rowData names(4): ID Symbol Type binomial_deviance
-colnames(140119): cell1 cell2 ... cell160742 cell160743
-colData names(35): Barcode sample_id ... low_detected_batch sizeFactor
-reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
-mainExpName: NULL
-altExpNames(0):
-2024-09-05 12:13:36.137099 - running buildSNNGraph: k =20
-2024-09-05 12:19:17.279323 - running walktrap
-clusters
-    1     2     3     4     5     6     7     8     9    10    11    12    13 
-19752  8148  3890  1747 11068   662 19327  1088  2321  3570  3734  8999  2185 
-   14    15    16    17    18    19    20    21    22    23    24    25    26 
- 9074 13154   726   650   238   220  1491  1455   109  2313   129 21993    56 
-   27    28    29    30    31    32    33 
-  119   356   209   256   317   457   306 
-2024-09-06 09:26:03.816698 - saving data
-Error in gzfile(file, "wb") : cannot open the connection
-Calls: save -> gzfile
-In addition: Warning message:
-In gzfile(file, "wb") :
-  cannot open compressed file '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/07_cluster_sn/walktrap_snn_/20/_clusters.Rdata', probable reason 'No such file or directory'
+k:02
+2024-09-09 14:51:00.052377 - Load HDF5 SPE
+2024-09-09 14:52:18.303145 - Running Spatial Registration on: BayesSpace_PCA_Harmony_k02
+2024-09-09 14:52:18.321507 make pseudobulk object
+2024-09-09 14:57:20.906808 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2024-09-09 14:57:20.966033 drop lowly expressed genes
+2024-09-09 14:57:21.142761 normalize expression
+2024-09-09 14:57:21.510438 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/08_model_pseudobulk/BayesSpace_PCA_Harmony/spe_pseudobulk-BayesSpace_PCA_Harmony_k02.rds
+2024-09-09 14:57:21.920725 create model matrix
+2024-09-09 14:57:21.990408 run duplicateCorrelation()
+2024-09-09 14:57:29.994153 The estimated correlation is: 0.0303897752230612
+2024-09-09 14:57:29.996516 computing enrichment statistics
+2024-09-09 14:57:30.271669 extract and reformat enrichment results
+2024-09-09 14:57:30.282094 running the baseline pairwise model
+2024-09-09 14:57:30.328393 computing pairwise statistics
+Error: You need 'var_registration' to have at least 3 different values to compute an F-statistic.
 Execution halted
