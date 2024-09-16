@@ -3,9 +3,8 @@ library("iSEE")
 library("shiny")
 
 ## Load data
-sce <- readRDS("sce.rds")
-sn_colors <- readRDS("sn_colors.rds")
-bulk_colors <- readRDS("bulk_colors.rds")
+sce <- readRDS("sce_ERC_iSEE.rds")
+# sn_colors <- readRDS("sn_colors.rds")
 
 ## iSEE configuration
 initial <- list()
@@ -13,6 +12,9 @@ initial <- list()
 ################################################################################
 # Settings for Reduced dimension plot 1
 ################################################################################
+
+## get settings from initial run of iSEE
+## note bug with too many clusters (register app options)
 
 initial[["ReducedDimensionPlot1"]] <- new("ReducedDimensionPlot",
     Type = "PCA", XAxis = 2L, YAxis = 3L,
@@ -121,15 +123,15 @@ initial[["FeatureAssayPlot1"]] <- new("FeatureAssayPlot",
 
 ## Build the iSEE app
 iSEE(sce,
-        appTitle = "habenulaPilot - snRNA-seq", initial = initial,
-        colormap = ExperimentColorMap(
-            colData = list(
-                final_Annotations = function(n) {
-                    return(sn_colors)
-                },
-                broad_Annotations = function(n) {
-                    return(bulk_colors)
-                }
-            )
-        )
+        appTitle = "LFF_ERC - snRNA-seq", initial = initial,
+        # colormap = ExperimentColorMap(
+        #     colData = list(
+        #         final_Annotations = function(n) {
+        #             return(sn_colors)
+        #         },
+        #         broad_Annotations = function(n) {
+        #             return(bulk_colors)
+        #         }
+        #     )
+        # )
     )
