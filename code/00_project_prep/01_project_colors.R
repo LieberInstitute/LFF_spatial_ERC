@@ -15,6 +15,15 @@ cell_type_colors <- c(Excit = "#247FBC",
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
 
+## APOE colors
+APOE_genotype_colors <- c(`E2/E2`="#114B5F", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
+APOE_carrier_colors <- c(`E2+`="#398A84", `E4+`="#D46B43")
+
+## phenotyp colors
+ancestry_colors <- c(EE="#1B3174",AE="#698F3F")
+sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
+
+
 #### create test plots ####
 ## add fake data
 cell_type_levels <- names(cell_type_colors)
