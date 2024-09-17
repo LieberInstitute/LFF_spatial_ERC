@@ -15,7 +15,7 @@ initial <- list()
 
 initial[["ReducedDimensionPlot1"]] <- new("ReducedDimensionPlot", Type = "TSNE", XAxis = 1L, YAxis = 2L, 
                                           FacetRowByColData = "sample_id", FacetColumnByColData = "sample_id", 
-                                          ColorByColumnData = "Sex", ColorByFeatureNameAssay = "logcounts", 
+                                          ColorByColumnData = "snn_k15", ColorByFeatureNameAssay = "logcounts", 
                                           ColorBySampleNameColor = "#FF0000", ShapeByColumnData = "sample_id", 
                                           SizeByColumnData = "sum", TooltipColumnData = character(0), 
                                           FacetRowBy = "None", FacetColumnBy = "None", ColorBy = "Column data", 
@@ -45,8 +45,8 @@ initial[["ReducedDimensionPlot1"]] <- new("ReducedDimensionPlot", Type = "TSNE",
 initial[["ComplexHeatmapPlot1"]] <- new("ComplexHeatmapPlot", Assay = "logcounts", CustomRows = TRUE, 
                                         CustomRowsText = "POU4F1\nGPR151\nCHRNB4\nHTR2C\nLYPD6B\nADARB2\nRORB\nSYT1\nSLC17A6\nGAD1\nMOBP\nPDGFRA\nAQP4\nITIH5\nCSF1R\n\n# ONECUT2\n# CRH\n# MCOLN3\n# TLE2\n# SEMA3D\n# ESRP1\n# CCK\n# CHAT\n# EBF3", 
                                         ClusterRows = FALSE, ClusterRowsDistance = "spearman", ClusterRowsMethod = "ward.D2", 
-                                        DataBoxOpen = FALSE, VisualChoices = "Annotations", ColumnData = "APOE", 
-                                        RowData = "Symbol", CustomBounds = FALSE, LowerBound = NA_real_, 
+                                        DataBoxOpen = FALSE, VisualChoices = "Annotations", ColumnData = "snn_k15", 
+                                        RowData = character(0), CustomBounds = FALSE, LowerBound = NA_real_, 
                                         UpperBound = NA_real_, AssayCenterRows = TRUE, AssayScaleRows = FALSE, 
                                         DivergentColormap = "purple < black < yellow", ShowDimNames = "Rows", 
                                         LegendPosition = "Right", LegendDirection = "Vertical", VisualBoxOpen = FALSE, 
@@ -54,8 +54,8 @@ initial[["ComplexHeatmapPlot1"]] <- new("ComplexHeatmapPlot", Assay = "logcounts
                                         OrderColumnSelection = TRUE, VersionInfo = list(iSEE = structure(list(
                                             c(2L, 16L, 0L)), class = c("package_version", "numeric_version"
                                             ))), PanelId = c(ComplexHeatmapPlot = 1L), PanelHeight = 500L, 
-                                        PanelWidth = 6L, SelectionBoxOpen = FALSE, RowSelectionSource = "---", 
-                                        ColumnSelectionSource = "---", RowSelectionDynamicSource = FALSE, 
+                                        PanelWidth = 6L, SelectionBoxOpen = FALSE, RowSelectionSource = "RowDataTable1", 
+                                        ColumnSelectionSource = "FeatureAssayPlot1", RowSelectionDynamicSource = FALSE, 
                                         ColumnSelectionDynamicSource = FALSE, RowSelectionRestrict = FALSE, 
                                         ColumnSelectionRestrict = FALSE, SelectionHistory = list())
 
@@ -77,11 +77,11 @@ initial[["RowDataTable1"]] <- new("RowDataTable", Selected = "ENSG00000197971", 
 ################################################################################
 
 initial[["FeatureAssayPlot1"]] <- new("FeatureAssayPlot", Assay = "logcounts", XAxis = "Column data", 
-                                      XAxisColumnData = "sample_id", XAxisFeatureName = "ENSG00000290825", 
+                                      XAxisColumnData = "snn_k15", XAxisFeatureName = "ENSG00000290825", 
                                       XAxisFeatureSource = "---", XAxisFeatureDynamicSource = FALSE, 
                                       YAxisFeatureName = "ENSG00000197971", YAxisFeatureSource = "RowDataTable1", 
                                       YAxisFeatureDynamicSource = FALSE, FacetRowByColData = "sample_id", 
-                                      FacetColumnByColData = "sample_id", ColorByColumnData = "APOE_carrier", 
+                                      FacetColumnByColData = "sample_id", ColorByColumnData = "snn_k15", 
                                       ColorByFeatureNameAssay = "logcounts", ColorBySampleNameColor = "#FF0000", 
                                       ShapeByColumnData = "sample_id", SizeByColumnData = "sum", 
                                       TooltipColumnData = character(0), FacetRowBy = "None", FacetColumnBy = "None", 
