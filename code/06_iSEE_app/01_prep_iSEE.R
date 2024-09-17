@@ -10,6 +10,20 @@ message(Sys.time(), "- load Harmony corrected sce")
 sce <- loadHDF5SummarizedExperiment(dir = here("processed-data", "sce_objects", "sce_harmony"))
 sce
 
+## load cluster outputs
+cluster_fn <- list.files(here("processed-data", "04_snRNA-seq", "07_cluster_sn"), full.names = TRUE)
+names(cluster_fn) <- jaffelab::ss(basename(cluster_fn), "_", 3)
+
+clusters <- purrr::map(cluster_fn, ~get(load(.x)))
+
+purrr::map(clusters, max)
+purrr::map(clusters, table)
+
+sce$snn_k10 <- sprintf("k10c%02d", clusters$k10)
+sce$snn_k15 <- sprintf("k15c%02d", clusters$k15)
+sce$snn_k20 <- sprintf("k20c%02d", clusters$k20)
+
+
 ## Drop data we don't need for iSEE
 assayNames(sce)
 # [1] "counts"                      "binomial_deviance_residuals" "logcounts"
@@ -35,13 +49,23 @@ sce$total <- NULL
 
 ## Check final size
 lobstr::obj_size(sce)
-# 290.37 MB
+# 5.87 GB
+
+sce
+# class: SingleCellExperiment 
+# dim: 38606 140119 
+# metadata(0):
+#     assays(1): logcounts
+# rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817 ENSG00000277196
+# rowData names(4): ID Symbol Type binomial_deviance
+# colnames(140119): cell1 cell2 ... cell160742 cell160743
+# colData names(34): Barcode sample_id ... low_detected_batch sizeFactor
 
 sce 
 saveRDS(sce, file = here("code", "06_iSEE_app", "sce_ERC_iSEE.rds"))
 # saveRDS(sn_colors, file = here("code", "06_iSEE_app", "sn_colors.rds"))
 
-# slurmjobs::job_single('01_prep', create_shell = TRUE, memory = '25G', command = "Rscript 02_prep.R")
+# slurmjobs::job_single('01_prep_iSEE', create_shell = TRUE, memory = '25G', command = "Rscript 01_prep_iSEE.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
