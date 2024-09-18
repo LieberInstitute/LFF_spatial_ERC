@@ -105,7 +105,7 @@ initial[["FeatureAssayPlot1"]] <- new("FeatureAssayPlot", Assay = "logcounts", X
                                       SelectionHistory = list())
 ## Build the iSEE app
 iSEE(sce,
-        appTitle = "LFF_ERC - snRNA-seq", initial = initial,
+        appTitle = "LFF_ERC_snRNA-seq", initial = initial,
         # colormap = ExperimentColorMap(
         #     colData = list(
         #         final_Annotations = function(n) {
