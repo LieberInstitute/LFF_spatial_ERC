@@ -15,10 +15,10 @@ library("DeconvoBuddies")
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "08_cluster_annotation")
+plot_dir <- here("plots", "04_snRNA-seq", "09_cluster_annotation")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "08_cluster_annotation")
+data_dir <- here("processed-data", "04_snRNA-seq", "09_cluster_annotation")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F sce
@@ -52,13 +52,19 @@ walk(names(clusters), function(k){
 })
 
 
-#### iSEE export ####
-lobstr::obj_size(sce)
-# 292.63 MB
+#### plot marker genes ####
 
-assays(sce)$binomial_deviance_residuals <- NULL
+lit_markers <- read.csv(here("processed-data", "04_snRNA-seq", "lit_marker_genes.csv")) |>
+    filter(gene_name %in% rowData(sce)$Symbol)
 
-saveRDS(sce, here("code", "06_iSEE_app", "sce_ERC_iSEE.rds"))
+lit_markers_list <- map(splitit(lit_markers$cell_type), ~lit_markers$gene_name[.x])
+
+plot_marker_express_List(sce, 
+                         lit_markers_list, 
+                         pdf_fn = here(plot_dir, "ssn_k15_Grubman_markers.pdf"),
+                         cellType_col = "snn_k15",
+                         gene_name_col = "Symbol"
+                         )
 
 
 
