@@ -9,12 +9,13 @@ library("tidyverse")
 library("HDF5Array")
 library("here")
 library("sessioninfo")
+library("DeconvoBuddies")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 ## Prep directories
-plot_dir <- here("processed-data", "04_snRNA-seq", "08_cluster_annotation")
+plot_dir <- here("plots", "04_snRNA-seq", "08_cluster_annotation")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
 data_dir <- here("processed-data", "04_snRNA-seq", "08_cluster_annotation")
@@ -31,13 +32,24 @@ names(cluster_fn) <- ss(basename(cluster_fn), "_", 3)
 
 clusters <- map(cluster_fn, ~get(load(.x)))
 
-map(clusters, max)
+map_int(clusters, max)
+# k10 k15 k20 
+# 62  28  33 
+
+map_int(clusters, ~sum(table(.x) < 100))
+# k10 k15 k20 
+# 12   4   1 
+
 map(clusters, table)
 
+sce$snn_k10 <- sprintf("k10c%02d", clusters$k10)
+sce$snn_k15 <- sprintf("k15c%02d", clusters$k15)
 sce$snn_k20 <- sprintf("k20c%02d", clusters$k20)
-table(sce$snn_k20)
 
-walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "sn", var_type = "cat", dimred = .x, my_var = "snn_k20", sufix = "HARMONY"))
+## plot on UMAP + TSNE
+walk(names(clusters), function(k){
+    walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "sn", var_type = "cat", dimred = .x, my_var = paste0("snn_",k), sufix = "HARMONY"))
+})
 
 
 #### iSEE export ####
