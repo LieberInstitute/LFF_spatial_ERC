@@ -33,6 +33,22 @@ imgData(spe) <- imgData(spe)[
 ]
 
 lobstr::obj_size(spe)
-# 2.79 GB
+# 5.34 GB
+
+spe
+# class: SpatialExperiment 
+# dim: 30494 122202 
+# metadata(0):
+#     assays(2): counts logcounts
+# rownames(30494): ENSG00000243485 ENSG00000238009 ... ENSG00000278817 ENSG00000277196
+# rowData names(7): source type ... gene_type gene_search
+# colnames(122202): AAACAACGAATAGTTC-1_Br5212 AAACAAGTATCTCCCA-1_Br5212 ... TTGTTTGTATTACACG-1_Br6263
+# TTGTTTGTGTAAATTC-1_Br6263
+# colData names(76): sample_id in_tissue ... BayesSpace_PCA_Harmony_k27 BayesSpace_PCA_Harmony_k28
+# reducedDimNames(5): PCA_p1 PCA_p2 TSNE UMAP HARMONY
+# mainExpName: NULL
+# altExpNames(0):
+#     spatialCoords names(2) : pxl_col_in_fullres pxl_row_in_fullres
+# imgData names(4): sample_id image_id data scaleFactor
 
 saveRDS(spe, here("code", "07_spatialLIBD_app", "spe_ERC_app.rds"))
