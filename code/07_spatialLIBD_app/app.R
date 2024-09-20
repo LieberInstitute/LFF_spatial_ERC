@@ -13,18 +13,18 @@ spe <- readRDS("spe_ERC_app.rds")
 ## k09 pseudobulk +modeling data
 spe_pb_k09 <- readRDS("spe_pseudobulk-BayesSpace_PCA_Harmony_k09.rds")
 modeling_results_k09 <- readRDS("modeling_results-BayesSpace_PCA_Harmony_k09.rds")
-sig_genes_k09 <- readRDS("sig_gnes_k09.rds")
+sig_genes_k09 <- readRDS("sig_genes_k09.rds")
 
 ## Quickly explore the data
 vars <- colnames(colData(spe))
 colnames(colData(spe)) <- vars <- gsub("X10x", "10x", vars)
 
-## Colors 
-colors_BayesSpace <- Polychrome::palette36.colors(28)
-names(colors_BayesSpace) <- c(1:28)
-m <- match(as.character(spe$BayesSpace_harmony_09), names(colors_BayesSpace))
-stopifnot(all(!is.na(m)))
-spe$BayesSpace_colors <- spe$BayesSpace_harmony_09_colors <- colors_BayesSpace[m]
+# ## Colors 
+# colors_BayesSpace <- Polychrome::palette36.colors(28)
+# names(colors_BayesSpace) <- c(1:28)
+# m <- match(as.character(spe$BayesSpace_harmony_09), names(colors_BayesSpace))
+# stopifnot(all(!is.na(m)))
+# spe$BayesSpace_colors <- spe$BayesSpace_harmony_09_colors <- colors_BayesSpace[m]
 
 spe_discrete_vars = c(
     "ManualAnnotation",
