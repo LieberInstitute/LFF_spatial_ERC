@@ -52,3 +52,29 @@ spe
 # imgData names(4): sample_id image_id data scaleFactor
 
 saveRDS(spe, here("code", "07_spatialLIBD_app", "spe_ERC_app.rds"))
+
+#### Extract sig genes #####
+
+modeling_results_k09 <- readRDS("modeling_results-BayesSpace_PCA_Harmony_k09.rds")
+spe_pb_k09 <- readRDS("spe_pseudobulk-BayesSpace_PCA_Harmony_k09.rds")
+
+##define cluster col - needs better documentation in spatialLIBD::sig_genes_extract_all 
+
+spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_PCA_Harmony_k09
+
+tests <- lapply(modeling_results_k09, function(x) {
+    colnames(x)[grep("stat", colnames(x))]
+})
+k=9
+stopifnot(length(tests$anova) == 1) ## assuming only "all"
+stopifnot(length(tests$enrichment) == k)
+stopifnot(length(tests$pairwise) == choose(k, 2))
+
+sig_genes_k09 <- sig_genes_extract_all(
+    modeling_results = modeling_results_k09,
+    sce_layer = spe_pb_k09,
+    n=100
+)
+
+saveRDS(sig_genes_k09, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony", "sig_genes_k09.rds"))
+
