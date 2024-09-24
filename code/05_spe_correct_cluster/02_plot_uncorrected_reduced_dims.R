@@ -9,14 +9,17 @@ library("HDF5Array")
 library("viridis")
 library("purrr")
 
+#### source plotting function ####
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+#### prep dirs ####
 plot_dir <- here("plots", "05_spe_correct_cluster", "02_plot_uncorrected_reduced_dims")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 # data_dir <- here("processed-data", "02_build_spe", "01_preprocess_Harmony")
 # if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-# spe <- readRDS(here("processed-data", "02_build_spe", "spe.rds"))
-
+#### load data ####
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
 spe
@@ -41,33 +44,36 @@ reducedDimNames(spe)
 ## swap rownames to gene names for plotting markers
 rownames(spe) <- rowData(spe)$gene_name
 
-
 #### Establish color schemes ####
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 qc_colors <- c(fold = "#4BA402", out_edge = "#097FE0", vessel ="#BB1EF4", None = "#CCCCCC40")
 scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 
-## define custom plotting function
-my_plots <- my_plot_reduced_dim(spe = spe)
 
-## categorical
-walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
-
-## catagorical facet
-walk(c("sample_id", "round", "APOE"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = "UMAP", my_var = .x, sufix = "uncorrected", facet = TRUE))
-
-## categorical + color scheme
-walk2(c("qc_anno", "scran_discard"), 
-      list(qc_colors, scran_colors), 
-      ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = "UMAP", my_var = .x, sufix = "uncorrected", color_pal = .y))
-
-## continuous QC metrics
-walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"), 
-     ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
-
-## plot layer marker genes
-purrr::walk(c("MBP", "PCP4", "RELN", "SNAP25"), function(gene){
-    my_plot_reduced_dim(spe, prefix = "spe_gene", var_type = "express", dimred = "UMAP", my_var = gene, sufix = "uncorrected")
+walk(c("UMAP", "TSNE"), function(dim){
+    ## categorical
+    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected"))
+    
+    ## categorical facet
+    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected", facet = TRUE))
+    walk2(c("APOE"), list(APOE_genotype_colors), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected", facet = TRUE, color_pal = .y))
+    
+    ## categorical + color scheme
+    walk2(c("qc_anno", "scran_discard", "APOE"), 
+          list(qc_colors, scran_colors, APOE_genotype_colors), 
+          ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected", color_pal = .y))
+    
+    ## continuous QC metrics
+    walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"), 
+         ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = dim, my_var = .x, sufix = "uncorrected"))
+    
+    ## plot layer marker genes
+    purrr::walk(c("MBP", "PCP4", "RELN", "SNAP25"), function(gene){
+        my_plot_reduced_dim(spe, prefix = "spe_gene", var_type = "express", dimred = dim, my_var = gene, sufix = "uncorrected")
+    })
 })
+
 
 
 # slurmjobs::job_single('02_plot_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 02_plot_reduced_dims.R")
