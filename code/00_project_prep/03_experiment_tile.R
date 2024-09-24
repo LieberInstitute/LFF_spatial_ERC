@@ -4,6 +4,8 @@ library("googlesheets4")
 library("sessioninfo")
 library("here")
 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 list.files(here("processed-data", "00_project_prep", "02_get_online_metadata"))
 
 plot_dir <- here("plots", "00_project_prep", "03_experiment_tile")
@@ -38,6 +40,46 @@ experiment_tile <- metadata_plan |>
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
     
 ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile.png"), height = 4, width = 7)
+
+#### Donor Info ####
+
+sample_info <- read_csv(here("processed-data", "02_build_spe", "sample_info.csv"))
+sample_info$APOE_carrier = ifelse(grepl("E2", sample_info$APOE), "E2+", "E4+")
+
+table(sample_info$Sex)
+# F  M 
+# 9 22
+
+table(sample_info$Ancestry)
+# AA EA 
+# 17 14 
+
+table(sample_info$APOE_carrier)
+# E2+ E4+ 
+# 14  17
+
+table(sample_info$APOE)
+# E2/E2 E2/E3 E3/E4 E4/E4 
+# 6     8    10     7 
+
+summary(sample_info$Age)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 29.95   47.61   51.63   52.36   59.92   68.38
+
+APOE_ancestry_tile <- sample_info |> 
+    count(Ancestry, APOE) |>
+    ggplot(aes(x = APOE, y = Ancestry, 
+               fill = APOE)) +
+    geom_tile(color = "white") +
+    geom_text(aes(label = n), color = "black") +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    # scale_color_manual(values = ancestry_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(APOE_ancestry_tile, filename = here(plot_dir, "LFF_ERC_APOE_ancestry_tileplot.png"), height = 2, width = 3)
+    
+
 
 # slurmjobs::job_single('03_experiment_tile', create_shell = TRUE, memory = '5G', command = "Rscript 03_experiment_tile.R")
 
