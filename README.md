@@ -22,5 +22,5 @@ We provide the following interactive websites to explore the ERC data:
 - 🔭 [LFF_ERC_Visium_QC](https://libd.shinyapps.io/LFF_ERC_Visium_QC/):
     Visium data for 31 samples pre-QC drops (including out-tissue spots)
     
-- 👀 [LFF_ERC_Visium_QC](https://libd.shinyapps.io/LFF_ERC_snRNA-seq/):
+- 👀 [iSEE](https://libd.shinyapps.io/LFF_ERC_snRNA-seq/):
     snRNA-seq data for 31 samples
