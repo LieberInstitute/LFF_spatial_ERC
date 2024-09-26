@@ -5,6 +5,7 @@ library("spatialLIBD")
 library("scater")
 library("tidyverse")
 library("DeconvoBuddies")
+library("bluster")
 library("here")
 library("sessioninfo")
 
@@ -15,59 +16,118 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "05_spe_correct_cluster", "11_SpD_check")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+#### source plotting function ####
+source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 #### specify and load data ####
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
-
+reducedDimNames(spe)
+# [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"       "TSNE"         "UMAP"        
+# [8] "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
 
 ## create color pallet
-k <- 9
 
-SpD_colors <- Polychrome::palette36.colors(k)
-names(SpD_colors) <- sort(unique(spe$BayesSpace_PCA_Harmony_k09))
+SpD_colors <- map(c(2:9), function(k){
+    
+    colors <- Polychrome::palette36.colors(k)
+    if(k < 3) colors <- colors[1:2]
+    names(colors) <- sort(unique(spe[[sprintf("BayesSpace_PCA_Harmony_k%02d", k)]]))
+    return(colors)
+})
 
-# Sp09D01   Sp09D02   Sp09D03   Sp09D04   Sp09D05   Sp09D06   Sp09D07   Sp09D08   Sp09D09 
-# "#5A5156" "#E4E1E3" "#F6222E" "#FE00FA" "#16FF32" "#3283FE" "#FEAF16" "#B00068" "#1CFFCE" 
+names(SpD_colors) <- sprintf("k%02d", 2:9)
+
+
+
+#### Plot clusters in reduced dims ####
+
+walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
+my_plot_reduced_dim(spe, 
+                    prefix = "spe", 
+                    var_type = "cat", 
+                    dimred = dim, 
+                    my_var = "BayesSpace_PCA_Harmony_k02", 
+                    color_pal = SpD_colors[1:2])
+    })
+
+walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
+
+    walk(c(2:9), function(k){
+        
+        SpD_colors_k <- SpD_colors[[sprintf("k%02d", k)]]
+        
+        my_plot_reduced_dim(spe, 
+                            prefix = "spe",
+                            var_type = "cat", 
+                            dimred = dim, 
+                            my_var = sprintf("BayesSpace_PCA_Harmony_k%02d", k), 
+                            color_pal = SpD_colors_k)
+    
+        })
+})
+    
+
 
 #### Check QC metrics by SpD ####
 
 message(Sys.time(), "- Scran Outlier Violin Plots")
 
-pdf(here(plot_dir, "spe_erc_QC_BayesSpace_PCA_Harmony_k09.pdf"), width = 21)
+map(c(2,9), function(k){
+    
+    SpD_colors_k <- SpD_colors[[sprintf("k%02d", k)]]
+    my_var = sprintf("BayesSpace_PCA_Harmony_k%02d", k)
+    
+    pdf(here(plot_dir, sprintf("spe_erc_QC_%s.pdf", my_var)), width = 21)
+    
+    plotColData(spe, x = my_var, y = "sum_umi", colour_by = "scran_low_lib_size") +
+        ggtitle("sum_umi") +
+        scale_fill_manual(values = SpD_colors_k)
+    
+    plotColData(spe, x = my_var, y = "sum_gene", colour_by = "scran_low_n_features") +
+        ggtitle("sum_gene") +
+        scale_fill_manual(values = SpD_colors_k)
+    
+    plotColData(spe, x = my_var, y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
+        ggtitle("expr_chrM_ratio") +
+        scale_fill_manual(values = SpD_colors_k) 
+    
+    dev.off()
+})
 
-plotColData(spe, x = "BayesSpace_PCA_Harmony_k09", y = "sum_umi", colour_by = "scran_low_lib_size") +
-    ggtitle("sum_umi") +
-    scale_fill_manual(values = SpD_colors)
 
-plotColData(spe, x = "BayesSpace_PCA_Harmony_k09", y = "sum_gene", colour_by = "scran_low_n_features") +
-    ggtitle("sum_gene") +
-    scale_fill_manual(values = SpD_colors)
-
-plotColData(spe, x = "BayesSpace_PCA_Harmony_k09", y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
-    ggtitle("expr_chrM_ratio") +
-    scale_fill_manual(values = SpD_colors) 
-
-dev.off()
 
 pd <- as.data.frame(colData(spe))
 
-pd_qc_long <- pd |>
-    select(sample_id, key, BayesSpace_PCA_Harmony_k09, sum_umi, sum_gene, expr_chrM_ratio) |>
-    pivot_longer(!c("sample_id", "key", "BayesSpace_PCA_Harmony_k09"))
+pd_qc_long <- map(c(k02 = 2, k09 = 9), function(k){
+    
+    SpD_colors_k <- SpD_colors[[sprintf("k%02d", k)]]
+    my_var = sprintf("BayesSpace_PCA_Harmony_k%02d", k)
+    
+    pd_qc_long <- pd |>
+        select(sample_id, key, sum_umi, sum_gene, expr_chrM_ratio, all_of(!!my_var)) |>
+        pivot_longer(!c("sample_id", "key", my_var))
+    
+    my_var <- sym(my_var)
+    
+    SpD_qc <- pd_qc_long |>
+        ggplot(aes(x = !!my_var, 
+                   y = value, 
+                   fill = !!my_var)
+               ) +
+        geom_boxplot() +
+        facet_wrap(~name, ncol = 1, scales= "free_y") +
+        scale_fill_manual(values = SpD_colors_k) +
+        theme_bw() +
+        theme(legend.position = "None")
+    
+    ggsave(SpD_qc, filename = here(plot_dir, sprintf("SpD%02d_QC.png", k)))
+    
+    return(pd_qc_long)
+})
 
-SpD_qc <- pd_qc_long |>
-    ggplot(aes(x = BayesSpace_PCA_Harmony_k09, 
-                             y = value, 
-                             fill = BayesSpace_PCA_Harmony_k09)) +
-    geom_boxplot() +
-    facet_wrap(~name, ncol = 1, scales= "free_y") +
-    scale_fill_manual(values = SpD_colors) +
-    theme_bw() +
-    theme(legend.position = "None")
 
-ggsave(SpD_qc, filename = here(plot_dir, "SpD09_QC.png"))
 
 #### Check marker genes by SpD ####
 
@@ -145,7 +205,22 @@ walk(c("AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
 
      )
 
+#### Jaccard indicies #####
 
+table(spe$scran_discard, spe$BayesSpace_PCA_Harmony_k09)
+
+## 70% of Sp09D07 are low library size
+table(spe$scran_low_lib_size, spe$BayesSpace_PCA_Harmony_k09)
+#       Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07 Sp09D08 Sp09D09
+# TRUE        2     329      18      72      15     114    3693       5    1669
+# FALSE    8310    5666    8942   54805   10210   10086    1544    9697    7025
+
+table(spe$BayesSpace_PCA_Harmony_k02, spe$BayesSpace_PCA_Harmony_k09)
+#         Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07 Sp09D08 Sp09D09
+# Sp02D01    8312    5991    8960   54877   10225   10200    1720    9702    8648
+# Sp02D02       0       4       0       0       0       0    3517       0      46
+
+jacc.mat <- linkClustersMatrix(spe$BayesSpace_PCA_Harmony_k02, spe$BayesSpace_PCA_Harmony_k09)
 
 
 # slurmjobs::job_single('05_BayesSpace', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace.R")
