@@ -31,8 +31,8 @@ module load conda_R/4.4
 module list
 
 ## Run BayesSpace on regular (Harmony corrected) PCAs
-Rscript 05_BayesSpace.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
-Rscript 05_BayesSpace.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim_id --prelim 10x_id
+Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
+Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim_id --prelim 10x_id
 
 echo "**** Job ends ****"
 date
