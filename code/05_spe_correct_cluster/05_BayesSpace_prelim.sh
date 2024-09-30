@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=100G
-#SBATCH --job-name=05_BayesSpace_PCA
+#SBATCH --job-name=05_BayesSpace_prelim
 #SBATCH -c 1
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
@@ -9,7 +9,7 @@
 #SBATCH --array=2-28%20
 
 ## Explicitly pipe script output to a log
-log_path=logs/05_BayesSpace_PCA_k${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/05_BayesSpace_prelim_k${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -25,13 +25,14 @@ echo "Node name: ${SLURMD_NODENAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.3.x
+module load conda_R/4.4
 
 ## List current modules for reproducibility
 module list
 
 ## Run BayesSpace on regular (Harmony corrected) PCAs
-Rscript 05_BayesSpace.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony
+Rscript 05_BayesSpace.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
+Rscript 05_BayesSpace.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim_id --prelim 10x_id
 
 echo "**** Job ends ****"
 date
