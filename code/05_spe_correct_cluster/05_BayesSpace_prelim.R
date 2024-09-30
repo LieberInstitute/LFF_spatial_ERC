@@ -26,6 +26,9 @@ spec <- matrix(
 )
 opt <- getopt(spec)
 
+## to test
+# opt <- list(spe = "spe_postQC", dimred = "HARMONY", name = "PCA_Harmony_prelim", prelim = "10x")
+
 ## get opts
 dimred <- opt$dimred
 name <- opt$name
@@ -39,14 +42,10 @@ spe_hdf5_path <- here("processed-data", "spe_objects", opt$spe)
 stopifnot(file.exists(spe_hdf5_path))
 
 ## Choose k
-k <- as.numeric(
-    #   Only one of these environment variables will be defined, so grab the
-    #   defined one (handle SGE or SLURM)
-    paste0(Sys.getenv("SLURM_ARRAY_TASK_ID"), Sys.getenv("SGE_TASK_ID"))
-)
+k <- as.numeric(Sys.getenv("SLURM_ARRAY_TASK_ID"))
 k_nice <- sprintf("%02d", k)
 
-message("k:", k_nice)
+message("k:", k)
 
 ## Load the data
 message(Sys.time(), " - Load HDF5 SPE")
@@ -89,7 +88,6 @@ message(Sys.time(), sprintf(" - Running spatialCluster: k = %d, dimred = %s, ini
 spe <- BayesSpace::spatialCluster(spe, 
                                   use.dimred = dimred,
                                   q = k, 
-                                  platform = "Visium",
                                   init = prelim_cluster,
                                   nrep = 10000)
 
