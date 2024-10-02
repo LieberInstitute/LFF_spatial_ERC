@@ -30,7 +30,7 @@ spec <- matrix(
 opt <- getopt(spec)
 
 #test
-opt <- list(k=2, input_genes = "HVG")
+# opt <- list(k=2, input_genes = "HVG")
 
 print("Using the following parameters:")
 print(opt)
