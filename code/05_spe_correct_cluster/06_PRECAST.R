@@ -106,7 +106,7 @@ pre_obj <- AddParSetting(
 )
 
 #   Fit model
-message(Sys.time(), " - Run PRECAST")
+message(Sys.time(), " - Run PRECAST, k=", opt$k)
 pre_obj <- PRECAST(pre_obj, K = opt$k)
 pre_obj <- SelectModel(pre_obj)
 pre_obj <- IntegrateSpaData(pre_obj, species = "Human")
@@ -120,8 +120,10 @@ pre_obj@meta.data |>
     rename_with(~ sub("_PRE_CAST", "", .x)) |>
     write_csv(out_path)
 
-slurmjobs::job_loop(loops = list(input_genes = c("HVG")),
-                    name ='05_PRECAST', create_shell = TRUE, memory = '50G')
+# slurmjobs::job_loop(loops = list(input_genes = c("HVG")),
+#                     name ='06_PRECAST', create_shell = TRUE, memory = '50G')
+
+# slurmjobs::array_submit(name = "06_PRECAST", task_ids = c(3:10), submit = TRUE)
 
 ## Reproducibility information
 print("Reproducibility information:")
