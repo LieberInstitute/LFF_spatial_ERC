@@ -1,15 +1,23 @@
-#   A version of 06_precast.* but using capture area as sample ID and initial
-#   array coordinates from spaceranger
+## October 2024, Louise Huuki-Myers
+## Run PRECAST clustering
+## Adapted from https://github.com/LieberInstitute/visiumStitched_brain/blob/9d2f716bd76a3359b2aeca1cac3c90720c12bfb1/code/03_stitching/07_precast_unstitched.R
 
-library(getopt)
-library(sessioninfo)
-library(here)
-library(PRECAST)
-library(HDF5Array)
-library(Seurat)
-library(tidyverse)
-library(Matrix)
-library(SpatialExperiment)
+library("getopt")
+library("sessioninfo")
+library("here")
+library("PRECAST")
+library("HDF5Array")
+library("Seurat")
+library("tidyverse")
+library("Matrix")
+library("SpatialExperiment")
+
+#### define dirs ####
+data_dir <- here("processed-data", "05_spe_correct_cluster", "06_PRECAST")
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+# 
+# plot_dir <- here("plots", "05_spe_correct_cluster", "06_PRECAST")
+# if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 # Import command-line parameters
 spec <- matrix(
@@ -21,58 +29,61 @@ spec <- matrix(
 )
 opt <- getopt(spec)
 
+#test
+opt <- list(k=2, input_genes = "HVG")
+
 print("Using the following parameters:")
 print(opt)
 
-spe_dir <- here("processed-data", "03_stitching", "spe")
-if (opt$input_genes == "HVG") {
-    out_path <- here(
-        "processed-data", "03_stitching", "precast_out_unstitched",
-        sprintf("PRECAST_k%s.csv", opt$k)
-    )
-    hvg_path = here("processed-data", "03_stitching", "HVGs.txt")
-} else {
-    out_path <- here(
-        "processed-data", "03_stitching", "precast_out_unstitched",
-        sprintf("PRECAST_k%s_SVG.csv", opt$k)
-    )
-    svg_path = here(
-        "processed-data", "03_stitching", "nnSVG_out_unstitched",
-        "top500_SVGs.txt"
-    )
-}
+## load HVGs (TODO SVGs)
+load(here("processed-data", "02_build_spe","01_preprocess_spe", "top_hvgs.Rdata"), verbose = TRUE)
+# top.hvgs
+# map_int(top.hvgs, length)
+# p1   p2 
+# 2021 4042
 
-set.seed(1)
+## define output path
+out_path <- here(
+    data_dir,
+    sprintf("PRECAST_%s_k%02d.csv", opt$input_genes, opt$k)
+)
+
 dir.create(dirname(out_path), showWarnings = FALSE)
 
-spe <- loadHDF5SummarizedExperiment(spe_dir)
+#### Load SPE data ####
+message(Sys.time(), " - Loading SPE data")
+spe <- loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
 
 #   PRECAST expects array coordinates in 'row' and 'col' columns. Use unstitched
 #   coordinates intentionally
-spe$row <- spe$array_row_original
-spe$col <- spe$array_col_original
+spe$row <- spe$array_row
+spe$col <- spe$array_col
 
+#### convert to seurat object ####
 #   Create a list of three Seurat objects at the capture-area level
+message(Sys.time(), " - Convert to Seurat Object")
 seu_list = lapply(
-    unique(spe$capture_area),
-    function(capture_area) {
-        small_spe = spe[, spe$capture_area == capture_area]
+    unique(spe$sample_id),
+    function(sample_id) {
+        small_spe = spe[, spe$sample_id == sample_id]
         
         CreateSeuratObject(
             #   Bring into memory to greatly improve speed
             counts = as(assays(small_spe)$counts, "dgCMatrix"),
             meta.data = as.data.frame(colData(small_spe)),
-            project = "visiumStitched_brain"
+            project = "LFF_ERC"
         )
     }
 )
 
-#   Run PRECAST using either HVGs or SVGs as input
+####   Run PRECAST using either HVGs or SVGs as input ####
+set.seed(1)
+message(Sys.time(), " - Create PRECAST object")
 if (opt$input_genes == "HVG") {
     pre_obj <- CreatePRECASTObject(
         seuList = seu_list,
         selectGenesMethod = NULL,
-        customGenelist = readLines(hvg_path),
+        customGenelist = top.hvgs$p1,
     )
 } else {
     pre_obj <- CreatePRECASTObject(
@@ -95,11 +106,13 @@ pre_obj <- AddParSetting(
 )
 
 #   Fit model
+message(Sys.time(), " - Run PRECAST")
 pre_obj <- PRECAST(pre_obj, K = opt$k)
 pre_obj <- SelectModel(pre_obj)
 pre_obj <- IntegrateSpaData(pre_obj, species = "Human")
 
 #   Extract PRECAST results, clean up column names, and export to CSV
+message(Sys.time(), " - Extract & export results")
 pre_obj@meta.data |>
     rownames_to_column("key") |>
     as_tibble() |>
@@ -107,4 +120,12 @@ pre_obj@meta.data |>
     rename_with(~ sub("_PRE_CAST", "", .x)) |>
     write_csv(out_path)
 
+slurmjobs::job_loop(loops = list(input_genes = c("HVG")),
+                    name ='05_PRECAST', create_shell = TRUE, memory = '50G')
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
 session_info()
