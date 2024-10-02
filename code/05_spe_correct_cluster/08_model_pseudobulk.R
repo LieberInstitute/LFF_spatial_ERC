@@ -54,6 +54,8 @@ saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results-%s.rds
 
 # slurmjobs::job_single('08_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 08_model_pseudobulk.R")
 
+# slurmjobs::array_submit(name = "08_model_pseudobulk", task_ids = c(2), submit = TRUE)
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
