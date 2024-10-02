@@ -134,7 +134,9 @@ pd_qc_long <- map(c(k02 = 2, k09 = 9), function(k){
 rownames(spe) <- rowData(spe)$gene_name
 
 spe_pb_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","spe_pseudobulk-BayesSpace_PCA_Harmony_k09.rds"))
+spe_pb_k02 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","spe_pseudobulk-BayesSpace_PCA_Harmony_k02.rds"))
 modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","modeling_results-BayesSpace_PCA_Harmony_k09.rds"))
+modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","modeling_results-BayesSpace_PCA_Harmony_k02.rds"))
 
 modeling_results_k09$enrichment |> 
     select(gene, ends_with("Sp09D07")) |>
@@ -177,6 +179,57 @@ plot_marker_express_List(
     color_pal = SpD_colors,
     plot_points = FALSE
 )
+
+sig_genes_k02 <- sig_genes_extract_all(
+    modeling_results = modeling_results_k02,
+    sce_layer = spe_pb_k02,
+    n = 10
+) |>
+    as.data.frame()
+
+
+modeling_results_k02$enrichment |>     
+    dplyr::filter(logFC_Sp02D02 > 0) |>
+    dplyr::arrange(fdr_Sp02D02) |>
+    head()
+
+# t_stat_Sp02D01 t_stat_Sp02D02 p_value_Sp02D01 p_value_Sp02D02  fdr_Sp02D01  fdr_Sp02D02 logFC_Sp02D01
+# ENSG00000197971      -4.027751       4.027751    0.0001531692    0.0001531692 0.0001829491 0.0001829491    -1.3134630
+# ENSG00000168314      -3.778068       3.778068    0.0003515309    0.0003515309 0.0004022662 0.0004022662    -1.2530633
+# ENSG00000160781      -2.632721       2.632721    0.0106279208    0.0106279208 0.0110006968 0.0110006968    -0.7610147
+# ENSG00000131095      -2.618882       2.618882    0.0110239323    0.0110239323 0.0113993786 0.0113993786    -0.7789849
+# ENSG00000123560      -2.607316       2.607316    0.0113651575    0.0113651575 0.0117448760 0.0117448760    -0.8642089
+# ENSG00000108387      -2.409959       2.409959    0.0188687516    0.0188687516 0.0194049051 0.0194049051    -0.6677911
+# logFC_Sp02D02         ensembl    gene
+# ENSG00000197971     1.3134630 ENSG00000197971     MBP
+# ENSG00000168314     1.2530633 ENSG00000168314    MOBP
+# ENSG00000160781     0.7610147 ENSG00000160781   PAQR6
+# ENSG00000131095     0.7789849 ENSG00000131095    GFAP
+# ENSG00000123560     0.8642089 ENSG00000123560    PLP1
+# ENSG00000108387     0.6677911 ENSG00000108387 SEPTIN4
+
+modeling_results_k02$enrichment |>     
+    dplyr::filter(logFC_Sp02D01 > 0) |>
+    dplyr::arrange(fdr_Sp02D01) |>
+    head()
+
+# t_stat_Sp02D01 t_stat_Sp02D02 p_value_Sp02D01 p_value_Sp02D02  fdr_Sp02D01  fdr_Sp02D02 logFC_Sp02D01
+# ENSG00000137413       33.68944      -33.68944    3.605340e-42    3.605340e-42 4.170658e-38 4.170658e-38      6.071708
+# ENSG00000123975       31.16121      -31.16121    3.833033e-40    3.833033e-40 2.217026e-36 2.217026e-36      6.055455
+# ENSG00000177054       22.67885      -22.67885    4.081454e-32    4.081454e-32 1.573808e-28 1.573808e-28      6.171540
+# ENSG00000119328       22.43205      -22.43205    7.570381e-32    7.570381e-32 2.189354e-28 2.189354e-28      6.366399
+# ENSG00000255366       20.98213      -20.98213    3.185335e-30    3.185335e-30 6.870747e-27 6.870747e-27      5.900472
+# ENSG00000183060       20.93975      -20.93975    3.563666e-30    3.563666e-30 6.870747e-27 6.870747e-27      5.810567
+# logFC_Sp02D02         ensembl       gene
+# ENSG00000137413     -6.071708 ENSG00000137413       TAF8
+# ENSG00000123975     -6.055455 ENSG00000123975       CKS2
+# ENSG00000177054     -6.171540 ENSG00000177054    ZDHHC13
+# ENSG00000119328     -6.366399 ENSG00000119328    ABITRAM
+# ENSG00000255366     -5.900472 ENSG00000255366 AC120036.4
+# ENSG00000183060     -5.810567 ENSG00000183060     LYSMD4
+
+
+# write_csv(modeling_results_k02$enrichment, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "modeling_results-BayesSpace_PCA_Harmony_k02.csv"))
 
 ## from litature
 modeling_results <- fetch_data(type = "modeling_results")
