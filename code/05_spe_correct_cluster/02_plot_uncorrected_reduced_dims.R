@@ -51,26 +51,37 @@ qc_colors <- c(fold = "#4BA402", out_edge = "#097FE0", vessel ="#BB1EF4", None =
 scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 
 
-walk(c("UMAP", "TSNE"), function(dim){
+walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
+    
+    sufix = "PCA_p1"
+    
     ## categorical
-    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected"))
-    
+    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix))
+
     ## categorical facet
-    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected", facet = TRUE))
-    walk2(c("APOE"), list(APOE_genotype_colors), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected", facet = TRUE, color_pal = .y))
-    
+    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, facet = TRUE))
+
     ## categorical + color scheme
-    walk2(c("qc_anno", "scran_discard", "APOE"), 
-          list(qc_colors, scran_colors, APOE_genotype_colors), 
-          ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "uncorrected", color_pal = .y))
-    
-    ## continuous QC metrics
-    walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"), 
-         ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = dim, my_var = .x, sufix = "uncorrected"))
-    
-    ## plot layer marker genes
+    walk2(c("qc_anno", "scran_discard", "APOE", "Ancestry", "Sex"),
+          list(qc_colors, scran_colors, APOE_genotype_colors, ancestry_colors, sex_colors),
+          ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, color_pal = .y))
+
+    walk2(c("APOE", "Ancestry", "Sex"),
+          list(APOE_genotype_colors, ancestry_colors, sex_colors),
+          ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, facet = TRUE, color_pal = .y))
+
+    ## continuous
+    walk(c("Age", "Rin"),
+         ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "con", dimred = dim, my_var = .x, sufix = sufix))
+
+
+    # ## continuous QC metrics
+    walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"),
+         ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = dim, my_var = .x, sufix = sufix))
+
+    # ## plot layer marker genes
     purrr::walk(c("MBP", "PCP4", "RELN", "SNAP25"), function(gene){
-        my_plot_reduced_dim(spe, prefix = "spe_gene", var_type = "express", dimred = dim, my_var = gene, sufix = "uncorrected")
+        my_plot_reduced_dim(spe, prefix = "spe_gene", var_type = "express", dimred = dim, my_var = gene, sufix = sufix)
     })
 })
 
