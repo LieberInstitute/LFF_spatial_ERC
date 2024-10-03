@@ -53,7 +53,7 @@ colData(spe) <- cbind(colData(spe), precast_tab)
 sample_ids <- sort(unique(spe$sample_id))
 #   Use 'vis_grid_clus' to preserve all spots (including overlaps)
 
-walk(colnames(precast_tab)[4:6], function(precast_name){
+walk(colnames(precast_tab), function(precast_name){
     
     k = parse_number(precast_name)
     
@@ -93,7 +93,7 @@ walk(colnames(precast_tab)[4:6], function(precast_name){
     
 })
 
-# slurmjobs::job_single('06.5_PRECAST_plot.R', create_shell = TRUE, memory = '10G', command = "Rscript 06.5_PRECAST_plot.R.R")
+# slurmjobs::job_single('06.5_PRECAST_plot', create_shell = TRUE, memory = '10G', command = "Rscript 06.5_PRECAST_plot.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
