@@ -1,0 +1,1558 @@
+**** Job starts ****
+Wed Oct  2 03:42:42 PM EDT 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 9976931
+Job name: 06_PRECAST
+Node name: compute-167
+Task id: 16
+Unloading conda_R/4.4
+Loading conda_R/4.4
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: parallel
+Loading required package: gtools
+PRECAST :  An efficient data integration method is provided for multiple spatial transcriptomics data with non-cluster-relevant effects such as the complex batch effects. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets. More details can be referred to Wei Liu, et al. (2023) <doi:10.1038/s41467-023-35947-w>.   Check out our Package website (https://feiyoung.github.io/PRECAST/index.html) for a more complete description of the methods and analyses
+Loading required package: DelayedArray
+Loading required package: stats4
+Loading required package: Matrix
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
+    tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:Matrix’:
+
+    expand, unname
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: SparseArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+Loading required package: SeuratObject
+Loading required package: sp
+
+Attaching package: ‘sp’
+
+The following object is masked from ‘package:IRanges’:
+
+    %over%
+
+
+Attaching package: ‘SeuratObject’
+
+The following object is masked from ‘package:IRanges’:
+
+    intersect
+
+The following object is masked from ‘package:S4Vectors’:
+
+    intersect
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    intersect
+
+The following objects are masked from ‘package:base’:
+
+    intersect, t
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand(), Matrix::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ tidyr::pack()         masks Matrix::pack()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ purrr::simplify()     masks DelayedArray::simplify()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ tidyr::unpack()       masks Matrix::unpack()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: GenomicRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:SparseArray’:
+
+    rowMedians
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘SummarizedExperiment’
+
+The following object is masked from ‘package:Seurat’:
+
+    Assays
+
+The following object is masked from ‘package:SeuratObject’:
+
+    Assays
+
+[1] "Using the following parameters:"
+$ARGS
+character(0)
+
+$k
+[1] 16
+
+$input_genes
+[1] "HVG"
+
+Loading objects:
+  top.hvgs
+2024-10-02 15:42:57.412466 - Loading SPE data
+2024-10-02 15:45:15.420734 - Convert to Seurat Object
+2024-10-02 15:49:28.706352 - Create PRECAST object
+Filter spots and features from Raw count data...
+ 
+ 
+2024-10-02 15:49:48.61852 : ***** Filtering step for raw count data finished!, 0.332 mins elapsed.
+Select the variable genes for each data batch...
+CreatePRECASTObject: remove genes:ENSG00000118271  ENSG00000240583  ENSG00000134817  ENSG00000125730  ENSG00000167755  ENSG00000229807  ENSG00000111341  ENSG00000006128  ENSG00000173369  ENSG00000145423  ENSG00000129824  ENSG00000169562  ENSG00000259001  ENSG00000228408  ENSG00000241563  ENSG00000086205  ENSG00000204278  ENSG00000011600  ENSG00000204472  ENSG00000205358  ENSG00000196136  ENSG00000159189  ENSG00000133392  ENSG00000188153  ENSG00000180739  ENSG00000105519  ENSG00000026508  ENSG00000140479  ENSG00000144230  ENSG00000239922  ENSG00000266844  ENSG00000099282  ENSG00000254584  ENSG00000164707  ENSG00000106809  ENSG00000168329  ENSG00000171840  ENSG00000158352  ENSG00000162444  ENSG00000176912  ENSG00000081479  ENSG00000249306  ENSG00000251442  ENSG00000160223  ENSG00000173110  ENSG00000154864  ENSG00000153446  ENSG00000225140  ENSG00000183196  ENSG00000166426  ENSG00000277494  ENSG00000158869  ENSG00000179344  ENSG00000151466  ENSG00000078401  ENSG00000170458  ENSG00000157978  ENSG00000148908  ENSG00000283907  ENSG00000128591  ENSG00000272398  ENSG00000111181  ENSG00000160255  ENSG00000203883  ENSG00000012124  ENSG00000103888  ENSG00000183960  with low count reads in seuList.
+2024-10-02 15:49:48.74388 : ***** Gene selection finished!, 0.002 mins elapsed.
+Filter spots and features from SVGs(HVGs) count data...
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+2024-10-02 15:51:33.532203 : ***** Filtering step for count data with variable genes finished!, 1.593 mins elapsed.
+Neighbors were identified for 4674 out of 4674 spots.
+Neighbors were identified for 3903 out of 3903 spots.
+Neighbors were identified for 3523 out of 3523 spots.
+Neighbors were identified for 3904 out of 3905 spots.
+Neighbors were identified for 2367 out of 2367 spots.
+Neighbors were identified for 3858 out of 3858 spots.
+Neighbors were identified for 2690 out of 2690 spots.
+Neighbors were identified for 4161 out of 4161 spots.
+Neighbors were identified for 3964 out of 3964 spots.
+Neighbors were identified for 4824 out of 4824 spots.
+Neighbors were identified for 3699 out of 3699 spots.
+Neighbors were identified for 4032 out of 4032 spots.
+Neighbors were identified for 3820 out of 3820 spots.
+Neighbors were identified for 3069 out of 3069 spots.
+Neighbors were identified for 3373 out of 3373 spots.
+Neighbors were identified for 2828 out of 2828 spots.
+Neighbors were identified for 4869 out of 4869 spots.
+Neighbors were identified for 4812 out of 4812 spots.
+Neighbors were identified for 3546 out of 3546 spots.
+Neighbors were identified for 4830 out of 4830 spots.
+Neighbors were identified for 4017 out of 4017 spots.
+Neighbors were identified for 4864 out of 4864 spots.
+Neighbors were identified for 3575 out of 3575 spots.
+Neighbors were identified for 3647 out of 3648 spots.
+Neighbors were identified for 4314 out of 4315 spots.
+Neighbors were identified for 4569 out of 4569 spots.
+Neighbors were identified for 4682 out of 4682 spots.
+Neighbors were identified for 4556 out of 4556 spots.
+Neighbors were identified for 3641 out of 3641 spots.
+Neighbors were identified for 4200 out of 4200 spots.
+Neighbors were identified for 3226 out of 3226 spots.
+2024-10-02 15:51:48.887399 - Run PRECAST, k=16
+-----Intergrative data info.: 31 samples, 1954 genes X 122040 spots------
+-----PRECAST model setting: error_heter=TRUE, Sigma_equal=FALSE, Sigma_diag=TRUE, mix_prop_heter=TRUE
+Start computing intial values... 
+
+fitting ...
+  |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
+2024-10-02 16:25:26.203676 : ***** Initialization finished!, 32.955 mins elapsed.
+----Fitting PRECAST model----------------
+
+variable initialize finish! 
+predict Y and V! 
+diff Energy = 0.852529 
+diff Energy = 3.113745 
+diff Energy = 26.451210 
+diff Energy = 4.093528 
+diff Energy = 4.150224 
+Finish ICM step! 
+iter = 2, loglik= -47785368.000000, dloglik=0.977748 
+predict Y and V! 
+diff Energy = 3.914010 
+diff Energy = 10.827317 
+diff Energy = 18.776253 
+diff Energy = 3.906604 
+diff Energy = 15.627126 
+diff Energy = 32.462047 
+diff Energy = 6.630128 
+diff Energy = 8.503054 
+diff Energy = 9.152981 
+diff Energy = 5.760801 
+diff Energy = 10.266696 
+diff Energy = 44.617777 
+diff Energy = 27.651588 
+diff Energy = 12.103637 
+diff Energy = 8.527344 
+diff Energy = 8.424976 
+diff Energy = 4.266979 
+diff Energy = 2.321534 
+diff Energy = 8.621127 
+diff Energy = 14.496781 
+diff Energy = 10.497580 
+diff Energy = 0.897607 
+diff Energy = 13.868992 
+diff Energy = 0.488168 
+diff Energy = 7.109536 
+diff Energy = 0.487099 
+diff Energy = 11.658364 
+diff Energy = 1.321442 
+Finish ICM step! 
+iter = 3, loglik= -47257568.000000, dloglik=0.011045 
+predict Y and V! 
+diff Energy = 15.160439 
+diff Energy = 35.306734 
+diff Energy = 21.375965 
+diff Energy = 2.209319 
+diff Energy = 14.630614 
+diff Energy = 50.116895 
+diff Energy = 34.443928 
+diff Energy = 15.481505 
+diff Energy = 16.164167 
+diff Energy = 9.592201 
+diff Energy = 15.624641 
+diff Energy = 24.238570 
+diff Energy = 59.787486 
+diff Energy = 46.580685 
+diff Energy = 29.581260 
+diff Energy = 27.933951 
+diff Energy = 44.308288 
+diff Energy = 51.809659 
+diff Energy = 33.476921 
+diff Energy = 17.401950 
+diff Energy = 6.134885 
+diff Energy = 28.558261 
+diff Energy = 34.365712 
+diff Energy = 42.077330 
+diff Energy = 10.215863 
+diff Energy = 35.215582 
+diff Energy = 25.289481 
+diff Energy = 8.040298 
+diff Energy = 21.185075 
+diff Energy = 24.628080 
+diff Energy = 10.204417 
+Finish ICM step! 
+iter = 4, loglik= -47054860.000000, dloglik=0.004289 
+predict Y and V! 
+diff Energy = 21.777142 
+diff Energy = 57.393970 
+diff Energy = 36.130457 
+diff Energy = 8.565226 
+diff Energy = 15.233974 
+diff Energy = 80.106422 
+diff Energy = 30.061666 
+diff Energy = 2.607095 
+diff Energy = 13.636697 
+diff Energy = 5.660598 
+diff Energy = 16.469847 
+diff Energy = 16.991012 
+diff Energy = 62.802041 
+diff Energy = 39.636688 
+diff Energy = 44.699414 
+diff Energy = 27.814155 
+diff Energy = 57.360566 
+diff Energy = 42.094805 
+diff Energy = 46.815933 
+diff Energy = 39.357828 
+diff Energy = 6.562294 
+diff Energy = 37.292140 
+diff Energy = 40.357931 
+diff Energy = 33.699850 
+diff Energy = 6.791452 
+diff Energy = 24.770963 
+diff Energy = 24.530521 
+diff Energy = 16.336415 
+diff Energy = 19.404865 
+diff Energy = 40.353374 
+diff Energy = 11.899673 
+Finish ICM step! 
+iter = 5, loglik= -46954640.000000, dloglik=0.002130 
+predict Y and V! 
+diff Energy = 44.105737 
+diff Energy = 26.211822 
+diff Energy = 36.179792 
+diff Energy = 7.542338 
+diff Energy = 25.291096 
+diff Energy = 43.006275 
+diff Energy = 10.862220 
+diff Energy = 19.419517 
+diff Energy = 16.128156 
+diff Energy = 28.553919 
+diff Energy = 9.509977 
+diff Energy = 16.485377 
+diff Energy = 30.343858 
+diff Energy = 46.801465 
+diff Energy = 28.227193 
+diff Energy = 21.205583 
+diff Energy = 31.901523 
+diff Energy = 37.706767 
+diff Energy = 23.513862 
+diff Energy = 12.140787 
+diff Energy = 17.833112 
+diff Energy = 19.362412 
+diff Energy = 33.629617 
+diff Energy = 25.578578 
+diff Energy = 30.934420 
+diff Energy = 16.163492 
+diff Energy = 33.246853 
+diff Energy = 21.718754 
+diff Energy = 21.889295 
+diff Energy = 37.176733 
+diff Energy = 8.323387 
+Finish ICM step! 
+iter = 6, loglik= -46895760.000000, dloglik=0.001254 
+predict Y and V! 
+diff Energy = 1.916332 
+diff Energy = 46.985316 
+diff Energy = 9.047159 
+diff Energy = 11.288150 
+diff Energy = 5.405332 
+diff Energy = 16.383649 
+diff Energy = 38.608217 
+diff Energy = 11.324347 
+diff Energy = 15.775726 
+diff Energy = 24.310036 
+diff Energy = 29.957410 
+diff Energy = 18.024193 
+diff Energy = 27.707194 
+diff Energy = 31.535842 
+diff Energy = 16.508612 
+diff Energy = 24.778107 
+diff Energy = 9.102542 
+diff Energy = 22.983400 
+diff Energy = 21.006314 
+diff Energy = 5.402160 
+diff Energy = 15.114322 
+diff Energy = 24.876036 
+diff Energy = 20.404359 
+diff Energy = 20.705336 
+diff Energy = 41.502007 
+diff Energy = 21.970251 
+diff Energy = 20.302320 
+diff Energy = 20.739802 
+diff Energy = 26.978859 
+diff Energy = 25.469460 
+diff Energy = 5.744103 
+Finish ICM step! 
+iter = 7, loglik= -46857668.000000, dloglik=0.000812 
+predict Y and V! 
+diff Energy = 12.580264 
+diff Energy = 29.421977 
+diff Energy = 12.802920 
+diff Energy = 10.849269 
+diff Energy = 42.558957 
+diff Energy = 23.469056 
+diff Energy = 9.909208 
+diff Energy = 2.919689 
+diff Energy = 0.416033 
+diff Energy = 11.208390 
+diff Energy = 6.946954 
+diff Energy = 8.489298 
+diff Energy = 25.947677 
+diff Energy = 8.119634 
+diff Energy = 23.333272 
+diff Energy = 31.401338 
+diff Energy = 32.746832 
+diff Energy = 35.156664 
+diff Energy = 12.506221 
+diff Energy = 10.830596 
+diff Energy = 18.619783 
+diff Energy = 20.503234 
+diff Energy = 7.646104 
+diff Energy = 1.762955 
+diff Energy = 16.778366 
+diff Energy = 24.331006 
+diff Energy = 19.716477 
+diff Energy = 19.305680 
+diff Energy = 18.203323 
+Finish ICM step! 
+iter = 8, loglik= -46831212.000000, dloglik=0.000565 
+predict Y and V! 
+diff Energy = 14.584357 
+diff Energy = 13.942469 
+diff Energy = 24.075754 
+diff Energy = 2.502762 
+diff Energy = 14.302265 
+diff Energy = 5.287804 
+diff Energy = 23.210838 
+diff Energy = 16.527694 
+diff Energy = 23.967068 
+diff Energy = 6.043592 
+diff Energy = 3.090045 
+diff Energy = 25.060728 
+diff Energy = 25.370446 
+diff Energy = 5.830129 
+diff Energy = 14.897579 
+diff Energy = 31.874987 
+diff Energy = 47.548721 
+diff Energy = 31.503932 
+diff Energy = 31.130356 
+diff Energy = 12.426630 
+diff Energy = 34.814782 
+diff Energy = 18.909848 
+diff Energy = 21.431349 
+diff Energy = 10.409919 
+diff Energy = 7.727475 
+diff Energy = 4.237401 
+diff Energy = 6.148978 
+diff Energy = 2.183608 
+diff Energy = 14.161678 
+diff Energy = 11.512629 
+Finish ICM step! 
+iter = 9, loglik= -46811708.000000, dloglik=0.000416 
+predict Y and V! 
+diff Energy = 9.110097 
+diff Energy = 3.900141 
+diff Energy = 2.296377 
+diff Energy = 5.776088 
+diff Energy = 4.056117 
+diff Energy = 13.841175 
+diff Energy = 10.610709 
+diff Energy = 7.630901 
+diff Energy = 1.825183 
+diff Energy = 37.686731 
+diff Energy = 2.256422 
+diff Energy = 1.490349 
+diff Energy = 15.934261 
+diff Energy = 17.918241 
+diff Energy = 34.935670 
+diff Energy = 32.860398 
+diff Energy = 17.175931 
+diff Energy = 17.568676 
+diff Energy = 6.231477 
+diff Energy = 7.754419 
+diff Energy = 25.166413 
+diff Energy = 6.094607 
+diff Energy = 12.238308 
+diff Energy = 2.561153 
+diff Energy = 21.681358 
+diff Energy = 1.436717 
+diff Energy = 9.826935 
+diff Energy = 17.027957 
+diff Energy = 4.154835 
+diff Energy = 1.882577 
+diff Energy = 9.812343 
+Finish ICM step! 
+iter = 10, loglik= -46796600.000000, dloglik=0.000323 
+predict Y and V! 
+diff Energy = 21.003291 
+diff Energy = 2.421633 
+diff Energy = 9.484305 
+diff Energy = 3.174949 
+diff Energy = 11.060929 
+diff Energy = 16.293341 
+diff Energy = 13.257161 
+diff Energy = 3.510244 
+diff Energy = 11.827726 
+diff Energy = 17.102256 
+diff Energy = 1.548059 
+diff Energy = 9.310534 
+diff Energy = 12.495923 
+diff Energy = 19.173381 
+diff Energy = 7.133761 
+diff Energy = 27.869290 
+diff Energy = 17.555327 
+diff Energy = 15.171692 
+diff Energy = 16.492606 
+diff Energy = 3.041127 
+diff Energy = 14.989856 
+diff Energy = 8.800518 
+diff Energy = 7.289214 
+diff Energy = 5.229784 
+diff Energy = 39.774425 
+diff Energy = 31.158048 
+diff Energy = 16.300186 
+diff Energy = 5.043757 
+diff Energy = 7.182386 
+diff Energy = 17.981761 
+Finish ICM step! 
+iter = 11, loglik= -46784764.000000, dloglik=0.000253 
+predict Y and V! 
+diff Energy = 9.464900 
+diff Energy = 19.502277 
+diff Energy = 11.287777 
+diff Energy = 8.168847 
+diff Energy = 12.811876 
+diff Energy = 0.852568 
+diff Energy = 35.277927 
+diff Energy = 7.191163 
+diff Energy = 4.716124 
+diff Energy = 9.778976 
+diff Energy = 8.239923 
+diff Energy = 15.767830 
+diff Energy = 10.283857 
+diff Energy = 15.687137 
+diff Energy = 5.693027 
+diff Energy = 27.259953 
+diff Energy = 6.041223 
+diff Energy = 13.452891 
+diff Energy = 22.124939 
+diff Energy = 15.236054 
+diff Energy = 19.044987 
+diff Energy = 12.758581 
+diff Energy = 8.599408 
+diff Energy = 18.772370 
+diff Energy = 12.959430 
+diff Energy = 7.452512 
+diff Energy = 22.929070 
+diff Energy = 7.042102 
+diff Energy = 12.486846 
+diff Energy = 5.429532 
+diff Energy = 4.352463 
+Finish ICM step! 
+iter = 12, loglik= -46775204.000000, dloglik=0.000204 
+predict Y and V! 
+diff Energy = 7.868027 
+diff Energy = 2.149849 
+diff Energy = 0.836604 
+diff Energy = 2.211623 
+diff Energy = 9.314202 
+diff Energy = 9.173163 
+diff Energy = 5.604692 
+diff Energy = 9.569523 
+diff Energy = 5.154496 
+diff Energy = 19.715401 
+diff Energy = 5.854767 
+diff Energy = 16.124979 
+diff Energy = 11.865855 
+diff Energy = 16.163976 
+diff Energy = 0.775451 
+diff Energy = 31.880212 
+diff Energy = 0.209315 
+diff Energy = 12.008829 
+diff Energy = 21.562613 
+diff Energy = 0.319532 
+diff Energy = 25.932528 
+diff Energy = 12.122763 
+diff Energy = 10.180577 
+diff Energy = 4.674400 
+diff Energy = 4.860911 
+diff Energy = 4.675832 
+diff Energy = 1.491237 
+diff Energy = 0.637588 
+diff Energy = 12.431177 
+diff Energy = 1.117091 
+diff Energy = 12.022746 
+Finish ICM step! 
+iter = 13, loglik= -46767380.000000, dloglik=0.000167 
+predict Y and V! 
+diff Energy = 9.873836 
+diff Energy = 7.681204 
+diff Energy = 2.338846 
+diff Energy = 15.413635 
+diff Energy = 6.763772 
+diff Energy = 8.674130 
+diff Energy = 9.788616 
+diff Energy = 9.250812 
+diff Energy = 9.329437 
+diff Energy = 15.818226 
+diff Energy = 13.389036 
+diff Energy = 12.673227 
+diff Energy = 15.417942 
+diff Energy = 5.354353 
+diff Energy = 5.016376 
+diff Energy = 27.098531 
+diff Energy = 4.075749 
+diff Energy = 11.825918 
+diff Energy = 10.472838 
+diff Energy = 7.276058 
+diff Energy = 25.561134 
+diff Energy = 12.001690 
+diff Energy = 24.817524 
+diff Energy = 14.446997 
+diff Energy = 15.544635 
+diff Energy = 0.708490 
+diff Energy = 10.653445 
+diff Energy = 0.834620 
+diff Energy = 9.005864 
+diff Energy = 1.295092 
+diff Energy = 7.865251 
+Finish ICM step! 
+iter = 14, loglik= -46760876.000000, dloglik=0.000139 
+predict Y and V! 
+diff Energy = 7.941239 
+diff Energy = 9.048211 
+diff Energy = 5.052864 
+diff Energy = 6.583983 
+diff Energy = 29.170956 
+diff Energy = 0.803264 
+diff Energy = 5.238938 
+diff Energy = 3.740649 
+diff Energy = 16.705858 
+diff Energy = 0.365677 
+diff Energy = 13.616755 
+diff Energy = 15.235828 
+diff Energy = 6.044453 
+diff Energy = 0.968307 
+diff Energy = 23.298573 
+diff Energy = 1.520946 
+diff Energy = 13.456949 
+diff Energy = 17.863412 
+diff Energy = 31.116973 
+diff Energy = 20.461669 
+diff Energy = 14.331778 
+diff Energy = 17.683183 
+diff Energy = 4.335731 
+diff Energy = 13.942670 
+diff Energy = 5.091519 
+diff Energy = 2.103871 
+diff Energy = 4.173294 
+diff Energy = 1.462209 
+diff Energy = 4.214718 
+diff Energy = 4.078009 
+Finish ICM step! 
+iter = 15, loglik= -46755196.000000, dloglik=0.000121 
+predict Y and V! 
+diff Energy = 16.337875 
+diff Energy = 12.873204 
+diff Energy = 0.289308 
+diff Energy = 6.466832 
+diff Energy = 0.507960 
+diff Energy = 1.011717 
+diff Energy = 9.665974 
+diff Energy = 9.887532 
+diff Energy = 14.917725 
+diff Energy = 3.011808 
+diff Energy = 12.485091 
+diff Energy = 4.290794 
+diff Energy = 8.901988 
+diff Energy = 1.483630 
+diff Energy = 29.206526 
+diff Energy = 4.426203 
+diff Energy = 9.969159 
+diff Energy = 7.343330 
+diff Energy = 0.419427 
+diff Energy = 29.863752 
+diff Energy = 13.173436 
+diff Energy = 1.834608 
+diff Energy = 3.422984 
+diff Energy = 8.588629 
+diff Energy = 1.702050 
+diff Energy = 6.025213 
+diff Energy = 11.619996 
+diff Energy = 7.710622 
+diff Energy = 10.423818 
+Finish ICM step! 
+iter = 16, loglik= -46750328.000000, dloglik=0.000104 
+predict Y and V! 
+diff Energy = 17.054278 
+diff Energy = 5.661816 
+diff Energy = 1.002513 
+diff Energy = 4.240967 
+diff Energy = 11.809159 
+diff Energy = 5.423577 
+diff Energy = 0.622601 
+diff Energy = 0.528774 
+diff Energy = 16.582923 
+diff Energy = 15.251042 
+diff Energy = 6.669376 
+diff Energy = 13.426335 
+diff Energy = 9.229010 
+diff Energy = 5.375987 
+diff Energy = 2.203647 
+diff Energy = 33.525333 
+diff Energy = 1.580464 
+diff Energy = 8.567325 
+diff Energy = 13.964591 
+diff Energy = 0.425718 
+diff Energy = 24.967109 
+diff Energy = 18.060861 
+diff Energy = 4.987836 
+diff Energy = 10.332809 
+diff Energy = 11.987769 
+diff Energy = 2.270508 
+diff Energy = 30.109927 
+diff Energy = 1.560733 
+diff Energy = 11.340710 
+diff Energy = 20.848533 
+diff Energy = 5.708751 
+Finish ICM step! 
+iter = 17, loglik= -46746120.000000, dloglik=0.000090 
+predict Y and V! 
+diff Energy = 8.711328 
+diff Energy = 5.349783 
+diff Energy = 2.604408 
+diff Energy = 0.938056 
+diff Energy = 13.242833 
+diff Energy = 5.649645 
+diff Energy = 4.830505 
+diff Energy = 6.286450 
+diff Energy = 8.448436 
+diff Energy = 14.191941 
+diff Energy = 5.937713 
+diff Energy = 17.888334 
+diff Energy = 20.122703 
+diff Energy = 15.096185 
+diff Energy = 0.008521 
+diff Energy = 26.256171 
+diff Energy = 0.070028 
+diff Energy = 8.865824 
+diff Energy = 7.497499 
+diff Energy = 2.518003 
+diff Energy = 13.831839 
+diff Energy = 16.095640 
+diff Energy = 2.134781 
+diff Energy = 19.620573 
+diff Energy = 8.862757 
+diff Energy = 0.386355 
+diff Energy = 1.613049 
+diff Energy = 0.516280 
+diff Energy = 2.422123 
+diff Energy = 17.381671 
+diff Energy = 4.961627 
+Finish ICM step! 
+iter = 18, loglik= -46742268.000000, dloglik=0.000082 
+predict Y and V! 
+diff Energy = 1.608231 
+diff Energy = 1.706646 
+diff Energy = 5.265408 
+diff Energy = 1.345954 
+diff Energy = 7.203842 
+diff Energy = 5.157196 
+diff Energy = 2.856056 
+diff Energy = 3.239911 
+diff Energy = 10.025055 
+diff Energy = 19.134567 
+diff Energy = 4.958426 
+diff Energy = 10.220555 
+diff Energy = 0.222882 
+diff Energy = 22.724004 
+diff Energy = 2.495983 
+diff Energy = 8.752809 
+diff Energy = 11.030535 
+diff Energy = 0.813616 
+diff Energy = 34.012612 
+diff Energy = 11.650456 
+diff Energy = 0.528990 
+diff Energy = 0.419542 
+diff Energy = 11.661722 
+diff Energy = 0.234325 
+diff Energy = 0.465821 
+diff Energy = 0.437920 
+diff Energy = 5.604181 
+diff Energy = 4.604668 
+diff Energy = 9.450303 
+Finish ICM step! 
+iter = 19, loglik= -46738860.000000, dloglik=0.000073 
+predict Y and V! 
+diff Energy = 0.876975 
+diff Energy = 6.636263 
+diff Energy = 2.827257 
+diff Energy = 13.134781 
+diff Energy = 3.909005 
+diff Energy = 3.057347 
+diff Energy = 34.778353 
+diff Energy = 7.117418 
+diff Energy = 5.000736 
+diff Energy = 1.617219 
+diff Energy = 16.916093 
+diff Energy = 14.469714 
+diff Energy = 2.189941 
+diff Energy = 2.465448 
+diff Energy = 24.896458 
+diff Energy = 1.378618 
+diff Energy = 5.600175 
+diff Energy = 11.202597 
+diff Energy = 6.556870 
+diff Energy = 10.499079 
+diff Energy = 7.374433 
+diff Energy = 2.156608 
+diff Energy = 6.834574 
+diff Energy = 10.150412 
+diff Energy = 3.066434 
+diff Energy = 4.749165 
+diff Energy = 0.332510 
+diff Energy = 8.082719 
+diff Energy = 5.716461 
+diff Energy = 6.574256 
+Finish ICM step! 
+iter = 20, loglik= -46735840.000000, dloglik=0.000065 
+predict Y and V! 
+diff Energy = 1.283233 
+diff Energy = 1.020834 
+diff Energy = 4.795840 
+diff Energy = 2.715284 
+diff Energy = 3.050379 
+diff Energy = 1.627485 
+diff Energy = 0.838198 
+diff Energy = 8.765954 
+diff Energy = 15.291494 
+diff Energy = 9.952974 
+diff Energy = 3.070356 
+diff Energy = 15.390817 
+diff Energy = 15.059605 
+diff Energy = 9.687432 
+diff Energy = 3.517365 
+diff Energy = 25.070134 
+diff Energy = 6.201870 
+diff Energy = 6.496676 
+diff Energy = 6.490746 
+diff Energy = 5.143371 
+diff Energy = 16.154678 
+diff Energy = 8.200500 
+diff Energy = 0.832535 
+diff Energy = 3.915323 
+diff Energy = 11.031041 
+diff Energy = 3.224630 
+diff Energy = 0.206721 
+diff Energy = 7.434103 
+diff Energy = 0.891555 
+diff Energy = 6.847236 
+diff Energy = 4.975923 
+Finish ICM step! 
+iter = 21, loglik= -46732940.000000, dloglik=0.000062 
+predict Y and V! 
+diff Energy = 0.020035 
+diff Energy = 0.612569 
+diff Energy = 19.792368 
+diff Energy = 0.151662 
+diff Energy = 9.201228 
+diff Energy = 1.564071 
+diff Energy = 2.549750 
+diff Energy = 19.529622 
+diff Energy = 0.104220 
+diff Energy = 8.242348 
+diff Energy = 1.537293 
+diff Energy = 38.696113 
+diff Energy = 9.802577 
+diff Energy = 11.491670 
+diff Energy = 0.208762 
+diff Energy = 43.333693 
+diff Energy = 0.871136 
+diff Energy = 5.349770 
+diff Energy = 5.919578 
+diff Energy = 1.447425 
+diff Energy = 19.022269 
+diff Energy = 6.153418 
+diff Energy = 1.683080 
+diff Energy = 0.974098 
+diff Energy = 9.219861 
+diff Energy = 2.343755 
+diff Energy = 2.423222 
+diff Energy = 1.616390 
+diff Energy = 7.925738 
+diff Energy = 3.983735 
+Finish ICM step! 
+iter = 22, loglik= -46730312.000000, dloglik=0.000056 
+predict Y and V! 
+diff Energy = 2.608915 
+diff Energy = 0.249617 
+diff Energy = 2.343044 
+diff Energy = 2.373362 
+diff Energy = 8.257085 
+diff Energy = 0.919546 
+diff Energy = 1.134385 
+diff Energy = 3.827030 
+diff Energy = 7.673992 
+diff Energy = 9.407472 
+diff Energy = 13.649715 
+diff Energy = 10.264760 
+diff Energy = 9.616234 
+diff Energy = 0.726820 
+diff Energy = 17.406374 
+diff Energy = 4.000865 
+diff Energy = 7.864887 
+diff Energy = 6.828823 
+diff Energy = 2.168925 
+diff Energy = 11.480943 
+diff Energy = 5.283269 
+diff Energy = 12.881928 
+diff Energy = 12.182528 
+diff Energy = 0.454983 
+diff Energy = 1.920571 
+diff Energy = 1.554640 
+diff Energy = 5.661667 
+diff Energy = 9.755221 
+diff Energy = 2.348792 
+Finish ICM step! 
+iter = 23, loglik= -46727832.000000, dloglik=0.000053 
+predict Y and V! 
+diff Energy = 0.007901 
+diff Energy = 0.262598 
+diff Energy = 4.719030 
+diff Energy = 6.567660 
+diff Energy = 0.903112 
+diff Energy = 5.089147 
+diff Energy = 6.197453 
+diff Energy = 1.678060 
+diff Energy = 5.562796 
+diff Energy = 2.468453 
+diff Energy = 14.671487 
+diff Energy = 6.965424 
+diff Energy = 12.764531 
+diff Energy = 0.861907 
+diff Energy = 17.927913 
+diff Energy = 5.581235 
+diff Energy = 6.455638 
+diff Energy = 34.235411 
+diff Energy = 2.192870 
+diff Energy = 6.070367 
+diff Energy = 9.428440 
+diff Energy = 3.247797 
+diff Energy = 4.595917 
+diff Energy = 18.366974 
+diff Energy = 1.972486 
+diff Energy = 6.503550 
+diff Energy = 1.651917 
+diff Energy = 4.808409 
+diff Energy = 12.454975 
+diff Energy = 4.682615 
+Finish ICM step! 
+iter = 24, loglik= -46725448.000000, dloglik=0.000051 
+predict Y and V! 
+diff Energy = 0.953250 
+diff Energy = 1.968417 
+diff Energy = 0.764525 
+diff Energy = 0.395768 
+diff Energy = 2.590331 
+diff Energy = 1.461957 
+diff Energy = 1.683368 
+diff Energy = 6.389985 
+diff Energy = 4.564156 
+diff Energy = 13.442904 
+diff Energy = 3.052287 
+diff Energy = 17.221105 
+diff Energy = 8.257234 
+diff Energy = 13.518449 
+diff Energy = 0.144735 
+diff Energy = 13.468568 
+diff Energy = 3.654772 
+diff Energy = 5.311376 
+diff Energy = 8.247316 
+diff Energy = 5.582219 
+diff Energy = 8.563554 
+diff Energy = 8.772872 
+diff Energy = 2.236798 
+diff Energy = 1.417876 
+diff Energy = 4.395786 
+diff Energy = 1.755783 
+diff Energy = 0.369560 
+diff Energy = 2.421268 
+diff Energy = 0.498401 
+diff Energy = 4.678888 
+Finish ICM step! 
+iter = 25, loglik= -46723204.000000, dloglik=0.000048 
+predict Y and V! 
+diff Energy = 0.004179 
+diff Energy = 3.477518 
+diff Energy = 6.246906 
+diff Energy = 6.594003 
+diff Energy = 1.941888 
+diff Energy = 8.582256 
+diff Energy = 6.549777 
+diff Energy = 7.192949 
+diff Energy = 7.013603 
+diff Energy = 12.254544 
+diff Energy = 13.751871 
+diff Energy = 8.844119 
+diff Energy = 0.151814 
+diff Energy = 21.019769 
+diff Energy = 3.193248 
+diff Energy = 10.059317 
+diff Energy = 3.740703 
+diff Energy = 0.818317 
+diff Energy = 10.170084 
+diff Energy = 8.368887 
+diff Energy = 2.100795 
+diff Energy = 1.042627 
+diff Energy = 7.173655 
+diff Energy = 4.580241 
+diff Energy = 1.475613 
+diff Energy = 2.964798 
+diff Energy = 5.408388 
+diff Energy = 8.068320 
+Finish ICM step! 
+iter = 26, loglik= -46721108.000000, dloglik=0.000045 
+predict Y and V! 
+diff Energy = 3.267091 
+diff Energy = 4.548177 
+diff Energy = 2.848152 
+diff Energy = 4.230087 
+diff Energy = 1.923011 
+diff Energy = 0.886867 
+diff Energy = 5.437385 
+diff Energy = 0.354824 
+diff Energy = 12.049669 
+diff Energy = 4.591429 
+diff Energy = 15.150474 
+diff Energy = 9.897707 
+diff Energy = 8.269005 
+diff Energy = 15.754298 
+diff Energy = 3.675419 
+diff Energy = 1.655615 
+diff Energy = 6.718707 
+diff Energy = 9.941857 
+diff Energy = 8.333398 
+diff Energy = 2.145935 
+diff Energy = 4.665269 
+diff Energy = 5.348529 
+diff Energy = 4.288904 
+diff Energy = 0.785824 
+diff Energy = 5.270810 
+diff Energy = 2.418906 
+Finish ICM step! 
+iter = 27, loglik= -46719016.000000, dloglik=0.000045 
+predict Y and V! 
+diff Energy = 0.004807 
+diff Energy = 0.520961 
+diff Energy = 9.245406 
+diff Energy = 0.903819 
+diff Energy = 3.946349 
+diff Energy = 0.727991 
+diff Energy = 0.263881 
+diff Energy = 9.941214 
+diff Energy = 3.416767 
+diff Energy = 9.648064 
+diff Energy = 0.256372 
+diff Energy = 16.979566 
+diff Energy = 7.449519 
+diff Energy = 16.853124 
+diff Energy = 1.295552 
+diff Energy = 12.175561 
+diff Energy = 2.332370 
+diff Energy = 12.428317 
+diff Energy = 7.002095 
+diff Energy = 0.586578 
+diff Energy = 7.798428 
+diff Energy = 8.846030 
+diff Energy = 3.639423 
+diff Energy = 1.033620 
+diff Energy = 6.702247 
+diff Energy = 3.619754 
+diff Energy = 2.270319 
+diff Energy = 2.584501 
+diff Energy = 5.650586 
+Finish ICM step! 
+iter = 28, loglik= -46716984.000000, dloglik=0.000043 
+predict Y and V! 
+diff Energy = 5.436482 
+diff Energy = 1.793570 
+diff Energy = 4.271640 
+diff Energy = 0.346332 
+diff Energy = 3.685885 
+diff Energy = 7.397822 
+diff Energy = 2.619470 
+diff Energy = 8.634451 
+diff Energy = 3.458230 
+diff Energy = 8.627352 
+diff Energy = 0.628934 
+diff Energy = 9.736230 
+diff Energy = 1.332661 
+diff Energy = 13.419447 
+diff Energy = 2.504772 
+diff Energy = 10.310921 
+diff Energy = 3.414836 
+diff Energy = 3.359880 
+diff Energy = 6.003986 
+diff Energy = 3.349105 
+diff Energy = 0.684508 
+diff Energy = 3.615716 
+diff Energy = 5.748281 
+diff Energy = 3.793537 
+diff Energy = 2.415618 
+diff Energy = 1.042490 
+diff Energy = 5.011309 
+diff Energy = 5.802571 
+Finish ICM step! 
+iter = 29, loglik= -46714976.000000, dloglik=0.000043 
+predict Y and V! 
+diff Energy = 0.106414 
+diff Energy = 0.047406 
+diff Energy = 5.602797 
+diff Energy = 0.255549 
+diff Energy = 3.154773 
+diff Energy = 2.566456 
+diff Energy = 3.304264 
+diff Energy = 6.773318 
+diff Energy = 2.797720 
+diff Energy = 6.530043 
+diff Energy = 2.463081 
+diff Energy = 7.584223 
+diff Energy = 9.173038 
+diff Energy = 8.661412 
+diff Energy = 2.727565 
+diff Energy = 10.703976 
+diff Energy = 1.936610 
+diff Energy = 10.470363 
+diff Energy = 9.272980 
+diff Energy = 5.580995 
+diff Energy = 8.655869 
+diff Energy = 6.060537 
+diff Energy = 4.496637 
+diff Energy = 6.220447 
+diff Energy = 3.921536 
+diff Energy = 0.894764 
+diff Energy = 2.719785 
+diff Energy = 0.233945 
+diff Energy = 3.703514 
+diff Energy = 0.248478 
+diff Energy = 1.452844 
+Finish ICM step! 
+iter = 30, loglik= -46713012.000000, dloglik=0.000042 
+2024-10-02 19:41:59.722066 : ***** PRECAST model fitting finished!, 196.559 mins elapsed.
+The total number of spots exceeds 8e4, thus the subsampling schema will be used to speed up computation.
+IntegrateSRTData: the subsampling schema will be used to speed up computation since subsample_rate is smaller than 1.
+Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.
+Start integration...
+2024-10-02 19:42:52.982943 : ***** Data integration finished!, 0.863 mins elapsed.
+Put the data into a new Seurat object...
+2024-10-02 19:43:02.860904 : ***** New Seurat object is generated!, 0.165 mins elapsed.
+2024-10-02 19:43:02.861593 - Extract & export results
+[1] "Reproducibility information:"
+[1] "2024-10-02 19:43:03 EDT"
+     user    system   elapsed 
+13431.010   949.514 14420.236 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.0 Patched (2024-05-22 r86590)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2024-10-02
+ pandoc   3.1.13 @ /jhpce/shared/community/core/conda_R/4.4/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version date (UTC) lib source
+ abind                * 1.4-8   2024-09-12 [1] CRAN (R 4.4.0)
+ backports              1.5.0   2024-05-23 [2] CRAN (R 4.4.0)
+ beachmat               2.20.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ beeswarm               0.4.0   2021-06-01 [2] CRAN (R 4.4.0)
+ Biobase              * 2.64.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ BiocGenerics         * 0.50.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ BiocNeighbors          1.22.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ BiocParallel           1.38.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ BiocSingular           1.20.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ bit                    4.5.0   2024-09-20 [1] CRAN (R 4.4.0)
+ bit64                  4.5.2   2024-09-22 [1] CRAN (R 4.4.0)
+ broom                  1.0.7   2024-09-26 [1] CRAN (R 4.4.0)
+ car                    3.1-3   2024-09-27 [1] CRAN (R 4.4.0)
+ carData                3.0-5   2022-01-06 [2] CRAN (R 4.4.0)
+ cli                    3.6.3   2024-06-21 [2] CRAN (R 4.4.0)
+ cluster                2.1.6   2023-12-01 [3] CRAN (R 4.4.0)
+ codetools              0.2-20  2024-03-31 [3] CRAN (R 4.4.0)
+ colorspace             2.1-1   2024-07-26 [2] CRAN (R 4.4.0)
+ CompQuadForm           1.4.3   2017-04-12 [1] CRAN (R 4.4.0)
+ cowplot                1.1.3   2024-01-22 [2] CRAN (R 4.4.0)
+ crayon                 1.5.3   2024-06-20 [2] CRAN (R 4.4.0)
+ data.table             1.16.0  2024-08-27 [1] CRAN (R 4.4.0)
+ DelayedArray         * 0.30.1  2024-05-07 [2] Bioconductor 3.19 (R 4.4.0)
+ DelayedMatrixStats     1.26.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ deldir                 2.0-4   2024-02-28 [2] CRAN (R 4.4.0)
+ digest                 0.6.37  2024-08-19 [1] CRAN (R 4.4.0)
+ dotCall64              1.1-1   2023-11-28 [2] CRAN (R 4.4.0)
+ dplyr                * 1.1.4   2023-11-17 [2] CRAN (R 4.4.0)
+ DR.SC                  3.4     2024-03-19 [1] CRAN (R 4.4.0)
+ fansi                  1.0.6   2023-12-08 [2] CRAN (R 4.4.0)
+ farver                 2.1.2   2024-05-13 [2] CRAN (R 4.4.0)
+ fastDummies            1.7.4   2024-08-16 [1] CRAN (R 4.4.0)
+ fastmap                1.2.0   2024-05-15 [2] CRAN (R 4.4.0)
+ fitdistrplus           1.2-1   2024-07-12 [2] CRAN (R 4.4.0)
+ forcats              * 1.0.0   2023-01-29 [2] CRAN (R 4.4.0)
+ Formula                1.2-5   2023-02-24 [2] CRAN (R 4.4.0)
+ future                 1.34.0  2024-07-29 [2] CRAN (R 4.4.0)
+ future.apply           1.11.2  2024-03-28 [2] CRAN (R 4.4.0)
+ generics               0.1.3   2022-07-05 [2] CRAN (R 4.4.0)
+ GenomeInfoDb         * 1.40.1  2024-05-24 [1] Bioconductor 3.19 (R 4.4.0)
+ GenomeInfoDbData       1.2.12  2024-05-23 [2] Bioconductor
+ GenomicRanges        * 1.56.1  2024-06-12 [2] Bioconductor 3.19 (R 4.4.0)
+ getopt               * 1.20.4  2023-10-01 [1] CRAN (R 4.4.0)
+ ggbeeswarm             0.7.2   2023-04-29 [2] CRAN (R 4.4.0)
+ ggplot2              * 3.5.1   2024-04-23 [2] CRAN (R 4.4.0)
+ ggpubr                 0.6.0   2023-02-10 [2] CRAN (R 4.4.0)
+ ggrepel                0.9.6   2024-09-07 [1] CRAN (R 4.4.0)
+ ggridges               0.5.6   2024-01-23 [2] CRAN (R 4.4.0)
+ ggsignif               0.6.4   2022-10-13 [2] CRAN (R 4.4.0)
+ ggthemes               5.1.0   2024-02-10 [1] CRAN (R 4.4.0)
+ GiRaF                  1.0.1   2020-10-14 [1] CRAN (R 4.4.0)
+ globals                0.16.3  2024-03-08 [2] CRAN (R 4.4.0)
+ glue                   1.8.0   2024-09-30 [1] CRAN (R 4.4.0)
+ goftest                1.2-3   2021-10-07 [2] CRAN (R 4.4.0)
+ gridExtra              2.3     2017-09-09 [2] CRAN (R 4.4.0)
+ gtable                 0.3.5   2024-04-22 [2] CRAN (R 4.4.0)
+ gtools               * 3.9.5   2023-11-20 [2] CRAN (R 4.4.0)
+ HDF5Array            * 1.32.1  2024-08-11 [2] Bioconductor 3.19 (R 4.4.0)
+ here                 * 1.0.1   2020-12-13 [2] CRAN (R 4.4.0)
+ hms                    1.1.3   2023-03-21 [2] CRAN (R 4.4.0)
+ htmltools              0.5.8.1 2024-04-04 [2] CRAN (R 4.4.0)
+ htmlwidgets            1.6.4   2023-12-06 [2] CRAN (R 4.4.0)
+ httpuv                 1.6.15  2024-03-26 [2] CRAN (R 4.4.0)
+ httr                   1.4.7   2023-08-15 [2] CRAN (R 4.4.0)
+ ica                    1.0-3   2022-07-08 [2] CRAN (R 4.4.0)
+ igraph                 2.0.3   2024-03-13 [2] CRAN (R 4.4.0)
+ IRanges              * 2.38.1  2024-07-03 [2] Bioconductor 3.19 (R 4.4.0)
+ irlba                  2.3.5.1 2022-10-03 [2] CRAN (R 4.4.0)
+ jsonlite               1.8.9   2024-09-20 [1] CRAN (R 4.4.0)
+ KernSmooth             2.23-24 2024-05-17 [3] CRAN (R 4.4.0)
+ later                  1.3.2   2023-12-06 [2] CRAN (R 4.4.0)
+ lattice                0.22-6  2024-03-20 [3] CRAN (R 4.4.0)
+ lazyeval               0.2.2   2019-03-15 [2] CRAN (R 4.4.0)
+ leiden                 0.4.3.1 2023-11-17 [2] CRAN (R 4.4.0)
+ lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.4.0)
+ listenv                0.9.1   2024-01-29 [2] CRAN (R 4.4.0)
+ lmtest                 0.9-40  2022-03-21 [2] CRAN (R 4.4.0)
+ lubridate            * 1.9.3   2023-09-27 [2] CRAN (R 4.4.0)
+ magick                 2.8.5   2024-09-20 [1] CRAN (R 4.4.0)
+ magrittr               2.0.3   2022-03-30 [2] CRAN (R 4.4.0)
+ MASS                   7.3-61  2024-06-13 [3] CRAN (R 4.4.0)
+ Matrix               * 1.7-0   2024-04-26 [3] CRAN (R 4.4.0)
+ MatrixGenerics       * 1.16.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ matrixStats          * 1.4.1   2024-09-08 [1] CRAN (R 4.4.0)
+ mclust                 6.1.1   2024-04-29 [2] CRAN (R 4.4.0)
+ mime                   0.12    2021-09-28 [2] CRAN (R 4.4.0)
+ miniUI                 0.1.1.1 2018-05-18 [2] CRAN (R 4.4.0)
+ munsell                0.5.1   2024-04-01 [2] CRAN (R 4.4.0)
+ nlme                   3.1-166 2024-08-14 [3] CRAN (R 4.4.0)
+ parallelly             1.38.0  2024-07-27 [2] CRAN (R 4.4.0)
+ patchwork              1.3.0   2024-09-16 [1] CRAN (R 4.4.0)
+ pbapply                1.7-2   2023-06-27 [2] CRAN (R 4.4.0)
+ pillar                 1.9.0   2023-03-22 [2] CRAN (R 4.4.0)
+ pkgconfig              2.0.3   2019-09-22 [2] CRAN (R 4.4.0)
+ plotly                 4.10.4  2024-01-13 [2] CRAN (R 4.4.0)
+ plyr                   1.8.9   2023-10-02 [2] CRAN (R 4.4.0)
+ png                    0.1-8   2022-11-29 [2] CRAN (R 4.4.0)
+ polyclip               1.10-7  2024-07-23 [2] CRAN (R 4.4.0)
+ PRECAST              * 1.6.5   2024-10-01 [1] Github (feiyoung/PRECAST@5e38812)
+ progressr              0.14.0  2023-08-10 [2] CRAN (R 4.4.0)
+ promises               1.3.0   2024-04-05 [2] CRAN (R 4.4.0)
+ purrr                * 1.0.2   2023-08-10 [2] CRAN (R 4.4.0)
+ R6                     2.5.1   2021-08-19 [2] CRAN (R 4.4.0)
+ RANN                   2.6.2   2024-08-25 [1] CRAN (R 4.4.0)
+ RColorBrewer           1.1-3   2022-04-03 [2] CRAN (R 4.4.0)
+ Rcpp                   1.0.13  2024-07-17 [2] CRAN (R 4.4.0)
+ RcppAnnoy              0.0.22  2024-01-23 [2] CRAN (R 4.4.0)
+ RcppHNSW               0.6.0   2024-02-04 [2] CRAN (R 4.4.0)
+ readr                * 2.1.5   2024-01-10 [2] CRAN (R 4.4.0)
+ reshape2               1.4.4   2020-04-09 [2] CRAN (R 4.4.0)
+ reticulate             1.39.0  2024-09-05 [1] CRAN (R 4.4.0)
+ rhdf5                * 2.48.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ rhdf5filters           1.16.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ Rhdf5lib               1.26.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ rjson                  0.2.23  2024-09-16 [1] CRAN (R 4.4.0)
+ rlang                  1.1.4   2024-06-04 [1] CRAN (R 4.4.0)
+ ROCR                   1.0-11  2020-05-02 [2] CRAN (R 4.4.0)
+ rprojroot              2.0.4   2023-11-05 [2] CRAN (R 4.4.0)
+ RSpectra               0.16-2  2024-07-18 [2] CRAN (R 4.4.0)
+ rstatix                0.7.2   2023-02-01 [2] CRAN (R 4.4.0)
+ rsvd                   1.0.5   2021-04-16 [2] CRAN (R 4.4.0)
+ Rtsne                  0.17    2023-12-07 [2] CRAN (R 4.4.0)
+ S4Arrays             * 1.4.1   2024-05-20 [2] Bioconductor 3.19 (R 4.4.0)
+ S4Vectors            * 0.42.1  2024-07-03 [2] Bioconductor 3.19 (R 4.4.0)
+ ScaledMatrix           1.12.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ scales                 1.3.0   2023-11-28 [2] CRAN (R 4.4.0)
+ scater                 1.32.1  2024-07-21 [2] Bioconductor 3.19 (R 4.4.0)
+ scattermore            1.2     2023-06-12 [2] CRAN (R 4.4.0)
+ sctransform            0.4.1   2023-10-19 [2] CRAN (R 4.4.0)
+ scuttle                1.14.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ sessioninfo          * 1.2.2   2021-12-06 [2] CRAN (R 4.4.0)
+ Seurat               * 5.1.0   2024-05-10 [2] CRAN (R 4.4.0)
+ SeuratObject         * 5.0.2   2024-05-08 [2] CRAN (R 4.4.0)
+ shiny                  1.9.1   2024-08-01 [2] CRAN (R 4.4.0)
+ SingleCellExperiment * 1.26.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ sp                   * 2.1-4   2024-04-30 [2] CRAN (R 4.4.0)
+ spam                   2.10-0  2023-10-23 [2] CRAN (R 4.4.0)
+ SparseArray          * 1.4.8   2024-05-24 [1] Bioconductor 3.19 (R 4.4.0)
+ sparseMatrixStats      1.16.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ SpatialExperiment    * 1.14.0  2024-05-01 [2] Bioconductor 3.19 (R 4.4.0)
+ spatstat.data          3.1-2   2024-06-21 [2] CRAN (R 4.4.0)
+ spatstat.explore       3.3-2   2024-08-21 [1] CRAN (R 4.4.0)
+ spatstat.geom          3.3-3   2024-09-18 [1] CRAN (R 4.4.0)
+ spatstat.random        3.3-2   2024-09-18 [1] CRAN (R 4.4.0)
+ spatstat.sparse        3.1-0   2024-06-21 [2] CRAN (R 4.4.0)
+ spatstat.univar        3.0-1   2024-09-05 [1] CRAN (R 4.4.0)
+ spatstat.utils         3.1-0   2024-08-17 [1] CRAN (R 4.4.0)
+ stringi                1.8.4   2024-05-06 [2] CRAN (R 4.4.0)
+ stringr              * 1.5.1   2023-11-14 [2] CRAN (R 4.4.0)
+ SummarizedExperiment * 1.34.0  2024-05-01 [2] Bioconductor 3.19 (R 4.4.0)
+ survival               3.7-0   2024-06-05 [3] CRAN (R 4.4.0)
+ tensor                 1.5     2012-05-05 [2] CRAN (R 4.4.0)
+ tibble               * 3.2.1   2023-03-20 [2] CRAN (R 4.4.0)
+ tidyr                * 1.3.1   2024-01-24 [2] CRAN (R 4.4.0)
+ tidyselect             1.2.1   2024-03-11 [2] CRAN (R 4.4.0)
+ tidyverse            * 2.0.0   2023-02-22 [2] CRAN (R 4.4.0)
+ timechange             0.3.0   2024-01-18 [2] CRAN (R 4.4.0)
+ tzdb                   0.4.0   2023-05-12 [2] CRAN (R 4.4.0)
+ UCSC.utils             1.0.0   2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ utf8                   1.2.4   2023-10-22 [2] CRAN (R 4.4.0)
+ uwot                   0.2.2   2024-04-21 [2] CRAN (R 4.4.0)
+ vctrs                  0.6.5   2023-12-01 [2] CRAN (R 4.4.0)
+ vipor                  0.4.7   2023-12-18 [2] CRAN (R 4.4.0)
+ viridis                0.6.5   2024-01-29 [2] CRAN (R 4.4.0)
+ viridisLite            0.4.2   2023-05-02 [2] CRAN (R 4.4.0)
+ vroom                  1.6.5   2023-12-05 [2] CRAN (R 4.4.0)
+ withr                  3.0.1   2024-07-31 [2] CRAN (R 4.4.0)
+ xtable                 1.8-4   2019-04-21 [2] CRAN (R 4.4.0)
+ XVector                0.44.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ zlibbioc               1.50.0  2024-04-30 [2] Bioconductor 3.19 (R 4.4.0)
+ zoo                    1.8-12  2023-04-13 [2] CRAN (R 4.4.0)
+
+ [1] /users/lhuuki/R/4.4
+ [2] /jhpce/shared/community/core/conda_R/4.4/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.4/R/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Oct  2 07:43:03 PM EDT 2024
