@@ -56,10 +56,10 @@ walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
     sufix = "PCA_p1"
     
     ## categorical
-    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix))
+    walk(c("sample_id", "round", "Visium_slide"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix))
 
     ## categorical facet
-    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, facet = TRUE))
+    walk(c("sample_id", "round", "Visium_slide"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, facet = TRUE))
 
     ## categorical + color scheme
     walk2(c("qc_anno", "scran_discard", "APOE", "Ancestry", "Sex"),
@@ -86,6 +86,49 @@ walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
 })
 
 
+annotations <- unique(map_dfr(list.files(here("processed-data", "05_spe_correct_cluster","reduced_dim_anno"), full.names = TRUE), read.csv))
+
+annotations |> dplyr::count(sample_id, ManualAnnotation)
+# sample_id ManualAnnotation    n
+# 1    Br1691    UMAP_outliers 3109
+# 2    Br5276   UMAP_high_mito 1975
+# 3    Br5529   UMAP_high_mito 1692
+# 4    Br5599    UMAP_outliers 4209
+# 5    Br5634    UMAP_outliers 3442
+# 6    Br6085    UMAP_outliers   69
+# 7    Br6538    UMAP_outliers 1818
+
+annotations2 <- annotations |> 
+    mutate(ManualAnnotation_BrNum = paste(ManualAnnotation, sample_id)) |>
+    as_tibble() |>
+    column_to_rownames("spot_name") |>
+    select(-sample_id)
+
+annotations2 <- annotations2[colnames(spe), ]
+
+colData(spe) <- cbind(colData(spe), annotations2)
+
+
+walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
+    
+    sufix = "PCA_p1"
+    
+    # ## categorical
+    walk(c("ManualAnnotation", "ManualAnnotation_BrNum"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix))
+
+})
+
+
+sample_ids <- sort(unique(spe$sample_id))
+spatialLIBD::vis_grid_clus(
+    spe = spe,
+    clustervar = "ManualAnnotation",
+    pdf_file = here(plot_dir, "UMAP_outlier_spot_plot-ALL.pdf"),
+    sort_clust = FALSE,
+    spatial = FALSE,
+    point_size = 1,
+    sample_order = sample_ids
+)
 
 # slurmjobs::job_single('02_plot_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 02_plot_reduced_dims.R")
 
