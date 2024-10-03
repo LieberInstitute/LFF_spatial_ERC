@@ -5,7 +5,6 @@ library("HDF5Array")
 library("spatialLIBD")
 library("tidyverse")
 library("Polychrome")
-
 library("here")
 library("sessioninfo")
         
@@ -21,11 +20,10 @@ message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
 ## PRECAST data
-precast_output <- list.files(data_dir, full.names = TRUE)
+precast_output <- list.files(data_dir, "PRECAST_HVG", full.names = TRUE)
 names(precast_output) <- gsub("PRECAST_HVG_(k[0-9]+).csv", "\\1", basename(precast_output))
 
 precast_cluster <- map(precast_output, read.csv)
-Reduce(identical, map(precast_cluster, ~.x$key))
 
 ## key is in same order for all tables
 all(map_lgl(precast_cluster, ~identical(.x$key, precast_cluster$k02$key)))
@@ -48,6 +46,23 @@ write.csv(precast_tab, file = here(data_dir, "PRECAST_clusters.csv"))
 
 ##Add data to spe
 colData(spe) <- cbind(colData(spe), precast_tab)
+
+## which spots are missing?
+table(is.na(spe$PRECAST_k02), spe$scran_discard)
+table(is.na(spe$PRECAST_k02), spe$scran_low_lib_size)
+#         TRUE  FALSE
+# FALSE   5755 116285
+# TRUE     162      0
+
+table(is.na(spe$PRECAST_k02), spe$sample_id)
+# Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974 Br5161 Br5212 Br5276 Br5367 Br5415 Br5426 Br5460 Br5517
+# FALSE   3903   3648   3523   4161   3699   3069   2367   2690   4682   4674   3905   2828   3858   4824   4032   3820
+# TRUE       3      0      1      0      0      0      0     32      0      0    106      0      0      0      0      3
+# 
+# Br5529 Br5599 Br5634 Br5712 Br5832 Br5854 Br5941 Br6085 Br6098 Br6161 Br6263 Br6321 Br6423 Br6476 Br6538
+# FALSE   4556   4812   4830   3373   3546   3575   4869   4017   4569   4864   3226   3641   4315   3964   4200
+# TRUE      14      0      0      0      0      0      0      0      1      0      0      0      0      0      2
+
 
 #### spot plots ####
 sample_ids <- sort(unique(spe$sample_id))
@@ -79,7 +94,7 @@ walk(colnames(precast_tab), function(precast_name){
     )
     
     #  Vis_clus for each sample
-    walk(sample_ids, function(samp){
+    walk(c("Br5517"), function(samp){
         spot_plot <- vis_clus(
             spe = spe,
             sampleid = samp,
@@ -89,6 +104,7 @@ walk(colnames(precast_tab), function(precast_name){
             point_size = 2
         )
         ggsave(spot_plot, filename = here(plot_dir2, paste0(precast_name, "-", samp, ".pdf")))
+        ggsave(spot_plot, filename = here(plot_dir2, paste0(precast_name, "-", samp, ".png")))
     })
     
 })
