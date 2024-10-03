@@ -39,19 +39,21 @@ scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 
 walk(c("UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
     ## categorical
-    walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "GLM"))
+    walk(c("sample_id", "round", "Visium_slide"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "GLM"))
     
     ## categorical facet
     walk(c("sample_id", "round"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "GLM", facet = TRUE))
     walk2(c("APOE"), list(APOE_genotype_colors), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "GLM", facet = TRUE, color_pal = .y))
     
     ## categorical + color scheme
-    walk2(c("qc_anno", "scran_discard", "APOE"), 
-          list(qc_colors, scran_colors, APOE_genotype_colors), 
+    walk2(c("qc_anno", "scran_discard", "APOE", "Ancestry"),
+          list(qc_colors, scran_colors, APOE_genotype_colors, ancestry_colors),
           ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "GLM", color_pal = .y))
     
+    
+    
     ## continuous QC metrics
-    walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"), 
+    walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"),
          ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = dim, my_var = .x, sufix = "GLM"))
     
     ## plot layer marker genes
@@ -60,7 +62,41 @@ walk(c("UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
     })
 })
 
+#### UMAP annotations ####
 
+head(reducedDims(spe)$UMAP.HARMONY)
+
+outliers <- rownames(reducedDims(spe)$UMAP.HARMONY[reducedDims(spe)$UMAP.HARMONY[,"UMAP1"] < -5,])
+length(outliers)
+# [1] 1524
+
+spe$GLM_outlier <- spe$key %in% outliers
+
+table(spe$GLM_outlier, spe$sample_id)
+table(spe$GLM_outlier, spe$scran_discard)
+#         TRUE  FALSE
+# FALSE   5284 115394
+# TRUE    1345    179
+
+sample_ids <- sort(unique(spe$sample_id))
+spatialLIBD::vis_grid_clus(
+    spe = spe,
+    clustervar = "GLM_outlier",
+    pdf_file = here(plot_dir, "GLM_outlier_spot_plot-ALL.pdf"),
+    sort_clust = FALSE,
+    colors = c(`TRUE` = "blue", `FALSE` = "#CCCCCC40"),
+    spatial = FALSE,
+    point_size = 1,
+    sample_order = sample_ids
+)
+
+walk(c("UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
+
+    ## categorical + color scheme
+    walk2(c("GLM_outlier"),
+          list(c(`TRUE` = "blue", `FALSE` = "#CCCCCC40")),
+          ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = "GLM", color_pal = .y))
+    })
 
 # slurmjobs::job_single('04_plot_harmony_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 04_plot_harmony_reduced_dims.R")
 
