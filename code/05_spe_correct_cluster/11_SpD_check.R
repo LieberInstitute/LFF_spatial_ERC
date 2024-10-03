@@ -41,6 +41,7 @@ names(SpD_colors) <- sprintf("k%02d", 2:9)
 
 
 
+
 #### Plot clusters in reduced dims ####
 
 walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
@@ -257,6 +258,22 @@ walk(c("AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
          sample_order = sample_order)
 
      )
+
+#### spot plots ####
+dir.create(here(plot_dir, "spot_plots"))
+
+sample_ids <- sort(unique(spe$sample_id))
+
+p_list = vis_grid_clus(
+    spe = spe,
+    clustervar = 'BayesSpace_PCA_Harmony_k02',
+    pdf_file = here(plot_dir, "spot_plots", "spe_BayesSpace_PCA_Harmony_k02-ALL.pdf"),
+    sort_clust = FALSE,
+    spatial = FALSE,
+    point_size = 1,
+    sample_order = sample_ids
+)
+
 
 #### Jaccard indicies #####
 
