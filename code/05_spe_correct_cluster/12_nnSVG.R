@@ -18,7 +18,7 @@ spec <- matrix(
         c("s"),
         rep("1", 1),
         rep("character", 1),
-        rep("Add variable description here", 1)
+        rep("sample in spe", 1)
     ),
     ncol = 5
 )
@@ -69,7 +69,7 @@ spe <- nnSVG(spe)
 message(Sys.time(), " - Exporting results")
 write_csv(as_tibble(rowData(spe)), here(data_dir, sprintf("nnSVG_%s.csv", opt$sample)))
 
-# slurmjobs::job_loop(loops = list(sample = samples), '12_nnSVG', create_shell = TRUE, memory = '50G')
+# slurmjobs::job_loop(loops = list(sample = sort(unique(spe$sample_id))), '12_nnSVG', create_shell = TRUE, memory = '50G')
 
 ## Reproducibility information
 print("Reproducibility information:")
