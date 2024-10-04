@@ -1,55 +1,79 @@
+## October 2024, Louise Huuki-Myers
+## Run nnSVG by sample 
+## Adapted from https://github.com/LieberInstitute/visiumStitched_brain/blob/9d2f716bd76a3359b2aeca1cac3c90720c12bfb1/code/03_stitching/04_nnSVG.R#L7
 
-library(SpatialExperiment)
-library(here)
-library(tidyverse)
-library(sessioninfo)
-library(HDF5Array)
-library(Matrix)
-library(nnSVG)
+# library(tidyverse)
+library("SpatialExperiment")
+library("HDF5Array")
+library("Matrix")
+library("nnSVG")
+library("getopt")
+library("here")
+library("sessioninfo")
 
-spe_dir <- here("processed-data", "03_stitching", "spe")
-out_path <- here(
-    "processed-data", "03_stitching", "nnSVG_out", "Br2719.csv"
+#### Import command-line parameters ####
+spec <- matrix(
+    c(
+        c("sample"),
+        c("s"),
+        rep("1", 1),
+        rep("character", 1),
+        rep("Add variable description here", 1)
+    ),
+    ncol = 5
 )
+opt <- getopt(spec)
 
-set.seed(0)
-dir.create(dirname(out_path), showWarnings = FALSE)
+print("Using the following parameters:")
+print(opt)
 
-message(Sys.time(), " | Loading SpatialExperiment")
-spe <- loadHDF5SummarizedExperiment(spe_dir)
+message(sprintf("Sample [%d]: %s", Sys.getenv("SLURM_ARRAY_TASK_ID"), opt$sample))
 
-#-------------------------------------------------------------------------------
-#   Bring into memory for speed
-#-------------------------------------------------------------------------------
+#### define dirs ####
+data_dir <- here("processed-data", "05_spe_correct_cluster", "12_nnSVG")
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-message(Sys.time(), " | Bringing into memory")
+#### load data ####
+message(Sys.time(), " - Load HDF5 SPE")
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
+
+##sub set to sample
+spe <- spe[,spe$sample_id == opt$sample]
+
+####   Bring assays into memory for speed ####
+message(Sys.time(), " - Bringing into memory")
 assays(spe) <- list(
     counts = as(assays(spe)$counts, "dgCMatrix"),
     logcounts = as(assays(spe)$logcounts, "dgCMatrix")
 )
 
-#-------------------------------------------------------------------------------
-#   Filter lowly expressed and mitochondrial genes
-#-------------------------------------------------------------------------------
+#### Filter lowly expressed and mitochondrial genes ####
+set.seed(0)
 
-message(Sys.time(), " | Filtering genes and spots")
+message(Sys.time(), " - Filtering genes and spots")
 spe <- filter_genes(
     spe,
     filter_genes_ncounts = 3,
     filter_genes_pcspots = 0.5,
     filter_mito = TRUE
 )
-message("Dimensions of spe after filtering:")
-print(dim(spe))
 
-#-------------------------------------------------------------------------------
-#   Run nnSVG and export results
-#-------------------------------------------------------------------------------
+message("Post filter spots: ", ncol(spe))
+message("Post filter genes: ", nrow(spe))
 
-message(Sys.time(), " | Running nnSVG")
+
+#####   Run nnSVG and export results ####
+message(Sys.time(), " - Running nnSVG")
 spe <- nnSVG(spe)
 
-message(Sys.time(), " | Exporting results")
-write_csv(as_tibble(rowData(spe)), out_path)
+message(Sys.time(), " - Exporting results")
+write_csv(as_tibble(rowData(spe)), here(data_dir, sprintf("nnSVG_%s.csv", opt$sample)))
 
+# slurmjobs::job_loop(loops = list(sample = samples), '12_nnSVG', create_shell = TRUE, memory = '50G')
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
 session_info()
