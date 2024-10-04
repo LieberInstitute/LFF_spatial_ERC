@@ -27,7 +27,7 @@ opt <- getopt(spec)
 print("Using the following parameters:")
 print(opt)
 
-message(sprintf("Sample [%d]: %s", Sys.getenv("SLURM_ARRAY_TASK_ID"), opt$sample))
+message(sprintf("Sample [%s]: %s", Sys.getenv("SLURM_ARRAY_TASK_ID"), opt$sample))
 
 #### define dirs ####
 data_dir <- here("processed-data", "05_spe_correct_cluster", "12_nnSVG")
