@@ -67,7 +67,7 @@ message(Sys.time(), " - Running nnSVG")
 spe <- nnSVG(spe)
 
 message(Sys.time(), " - Exporting results")
-write_csv(as_tibble(rowData(spe)), here(data_dir, sprintf("nnSVG_%s.csv", opt$sample)))
+write.csv(as_tibble(rowData(spe)), here(data_dir, sprintf("nnSVG_%s.csv", opt$sample)))
 
 # slurmjobs::job_loop(loops = list(sample = sort(unique(spe$sample_id))), '12_nnSVG', create_shell = TRUE, memory = '50G')
 
