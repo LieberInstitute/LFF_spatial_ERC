@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=50G
+#SBATCH --mem=15G
 #SBATCH --job-name=12_nnSVG
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
