@@ -30,17 +30,11 @@ spec <- matrix(
 opt <- getopt(spec)
 
 #test
-# opt <- list(k=2, input_genes = "HVG")
+# opt <- list(k=2, input_genes = "SVG")
 
 print("Using the following parameters:")
 print(opt)
 
-## load HVGs (TODO SVGs)
-load(here("processed-data", "02_build_spe","01_preprocess_spe", "top_hvgs.Rdata"), verbose = TRUE)
-# top.hvgs
-# map_int(top.hvgs, length)
-# p1   p2 
-# 2021 4042
 
 ## define output path
 out_path <- here(
@@ -80,20 +74,33 @@ seu_list = lapply(
 set.seed(1)
 message(Sys.time(), " - Create PRECAST object")
 if (opt$input_genes == "HVG") {
+    
+    ## load HVGs
+    load(here("processed-data", "02_build_spe","01_preprocess_spe", "top_hvgs.Rdata"), verbose = TRUE)
+    # top.hvgs
+    # map_int(top.hvgs, length)
+    # p1   p2 
+    # 2021 4042
+    
+    message("Run with HVGs: ", length(top.hvgs$p1))
+    
     pre_obj <- CreatePRECASTObject(
         seuList = seu_list,
         selectGenesMethod = NULL,
         customGenelist = top.hvgs$p1,
     )
-} else {
+} else if (opt$input_genes == "SVG"){
+    
+    ## load SVGs
+    load(here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG", "top_svg.Rdata"), verbose = TRUE)
+    message("Run with SVGs: ", length(top.svg))
+    
     pre_obj <- CreatePRECASTObject(
         seuList = seu_list,
         selectGenesMethod = NULL,
-        customGenelist = readLines(svg_path),
-        premin.spots = 0,
-        postmin.spots = 0
+        customGenelist = readLines(svg_path)
     )
-}
+} else stop(opt$input_genes, " Not valid input gene option")
 
 pre_obj <- AddAdjList(pre_obj, platform = "Visium")
 
