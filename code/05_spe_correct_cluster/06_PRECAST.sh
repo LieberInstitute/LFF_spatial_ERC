@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=50G
+#SBATCH --mem=100G
 #SBATCH --job-name=06_PRECAST
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=2-10%20
+#SBATCH --array=11-28%10
 
 ## Define loops and appropriately subset each variable for the array task ID
 ## all_input_genes=(HVG)
