@@ -3,13 +3,13 @@
 
 library("SpatialExperiment")
 library("HDF5Array")
-library(tidyverse)
+library("tidyverse")
 library("here")
 library("sessioninfo")
 
 #### load spe data ####
 message(Sys.time(), " - Load HDF5 SPE")
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
+# spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
 #### define dirs ####
 data_dir <- here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG")
@@ -58,16 +58,46 @@ nnSVG_avg |>
     ggplot(aes(x = n, y = nnsvg_avg_rank)) +
     geom_point()
 
+nnSVG_avg |>
+    ggplot(aes(x = n)) +
+    geom_histogram()
+
 # A tibble: 5,879 × 4
 # Groups:   gene_id [5,879]
 
-## genes we're rareley evalauted in all samples
+## genes we're rarely evalauted in all samples
 nnSVG_avg |> ungroup() |> count(n == 31)
 # `n == 31`     n
 # <lgl>     <int>
 # 1 FALSE      5614
 # 2 TRUE        265
 
+nnSVG_avg |> ungroup() |> count(n >= 20)
+
+
+top.svg <- nnSVG_avg |> 
+    ungroup() |>
+    filter(n > 5,
+           nnsvg_avg_rank < 1500) |>
+    pull(gene_id)
+
+length(top.svg)
+# [1] 1454
+
+save(top.svg, file = here(data_dir, "top_svg.Rdata"))
+
+load(here("processed-data", "02_build_spe","01_preprocess_spe", "top_hvgs.Rdata"), verbose = TRUE)
+load(here("processed-data", "05_spe_correct_cluster", "03_GLM_Harmony", "top_hdgs.rdata"), verbose = TRUE)
+
+hdg_vs_hvg_overlap <- intersect(top.hvgs$p1, top.hdgs$`2k`)
+length(hdg_vs_hvg_overlap) #[1] 405
+
+SVG_vs_hvg_overlap <- intersect(top.hvgs$p1, top.svg)
+SVG_vs_hdg_overlap <- intersect(top.hdgs$`1k`, top.svg)
+
+length(SVG_vs_hvg_overlap) #[1] 176
+length(SVG_vs_hdg_overlap) #[1] 464
+ 
 # slurmjobs::job_single('13_gather_nnSVG', create_shell = TRUE, memory = '10G', command = "Rscript 13_gather_nnSVG.R")
 
 ## Reproducibility information
