@@ -1,23 +1,13 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
-#SBATCH --job-name=06_PRECAST
+#SBATCH --mem=50G
+#SBATCH --job-name=12_nnSVG
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o /dev/null
-#SBATCH -e /dev/null
+#SBATCH -o logs/12_nnSVG.txt
+#SBATCH -e logs/12_nnSVG.txt
 #SBATCH --mail-type=ALL
-#SBATCH --array=11-28%10
 
-## Define loops and appropriately subset each variable for the array task ID
-## all_input_genes=(HVG)
-## input_genes=${all_input_genes[$(( $SLURM_ARRAY_TASK_ID / 1 % 1 ))]}
-input_genes=HVG
-
-## Explicitly pipe script output to a log
-log_path=logs/06_PRECAST_${input_genes}_k${SLURM_ARRAY_TASK_ID}.txt
-
-{
 set -e
 
 echo "**** Job starts ****"
@@ -37,13 +27,10 @@ module load conda_R/4.4
 module list
 
 ## Edit with your job command
-Rscript 06_PRECAST.R --k ${SLURM_ARRAY_TASK_ID} --input_genes ${input_genes}
+Rscript 12_nnSVG.R
 
 echo "**** Job ends ****"
 date
 
-} > $log_path 2>&1
-
 ## This script was made using slurmjobs version 1.2.5
 ## available from http://research.libd.org/slurmjobs/
-
