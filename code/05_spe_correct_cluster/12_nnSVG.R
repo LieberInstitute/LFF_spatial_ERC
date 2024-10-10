@@ -2,7 +2,6 @@
 ## Run nnSVG by sample 
 ## Adapted from https://github.com/LieberInstitute/visiumStitched_brain/blob/9d2f716bd76a3359b2aeca1cac3c90720c12bfb1/code/03_stitching/04_nnSVG.R#L7
 
-# library(tidyverse)
 library("SpatialExperiment")
 library("HDF5Array")
 library("Matrix")
