@@ -51,5 +51,5 @@ dlpfc_layers_top100 <- pilot_layer_top100 |>
                   select(ensembl, gene, dataset, SpD, layer, layer_combo, top, marker_anno)) |>
     as_tibble()
 
-
+write_csv(dlpfc_layers_top100, file = here(data_dir, "dlpfc_layers_top100.csv"))
 
