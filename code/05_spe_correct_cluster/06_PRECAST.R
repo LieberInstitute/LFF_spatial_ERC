@@ -98,7 +98,7 @@ if (opt$input_genes == "HVG") {
     pre_obj <- CreatePRECASTObject(
         seuList = seu_list,
         selectGenesMethod = NULL,
-        customGenelist = readLines(svg_path)
+        customGenelist = top.svg
     )
 } else stop(opt$input_genes, " Not valid input gene option")
 
