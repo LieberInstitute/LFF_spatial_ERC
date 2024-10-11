@@ -15,7 +15,7 @@ library("HDF5Array")
 plot_dir <- here("plots", "05_spe_correct_cluster", "03_GLM_Harmony")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-data_dir <- here("processed-data", "02_build_spe", "03_GLM_Harmony")
+data_dir <- here("processed-data", "05_spe_correct_cluster", "03_GLM_Harmony")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 
