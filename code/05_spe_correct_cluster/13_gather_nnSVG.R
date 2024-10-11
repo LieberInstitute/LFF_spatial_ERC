@@ -15,6 +15,8 @@ message(Sys.time(), " - Load HDF5 SPE")
 data_dir <- here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
+plot_dir <- here("plots", "05_spe_correct_cluster", "13_gather_nnSVG")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load nnSVG outputs ####
 
@@ -33,11 +35,22 @@ nnSVG_data |> count(sample_id) |> arrange(n)
 # 4     Br6321 1555
 # 5     Br6161 1602
 
+dlpfc_layers_top100 <-  read_csv(here("processed-data", "00_project_prep", "06_marker_genes", "dlpfc_layers_top100.csv"))
+length(unique(dlpfc_layers_top100$ensembl)) # [1] 1129
+
+
 nnSVG_avg <- nnSVG_data |>
     group_by(gene_id, gene_name) |>
     summarize(nnsvg_avg_rank = mean(rank),
               n = n()) |>
-    arrange(nnsvg_avg_rank)
+    arrange(nnsvg_avg_rank) |>
+    ungroup() |>
+    mutate(top.svg = (n > 5 & nnsvg_avg_rank < 1500),
+           DLPFC_layer_marker = gene_id %in% dlpfc_layers_top100$ensembl) 
+
+nnSVG_avg |> count(top.svg)
+
+nnSVG_avg |> count(top.svg, DLPFC_layer_marker)
 
 write_csv(nnSVG_avg, file = here(data_dir, "nnSVG_avg.csv"))
 
@@ -54,18 +67,25 @@ write_csv(nnSVG_avg, file = here(data_dir, "nnSVG_avg.csv"))
 # 9 ENSG00000165507 DEPP1              29.5      2
 # 10 ENSG00000171617 ENC1               29.6     31
 
-nnSVG_avg |>
-    ggplot(aes(x = n, y = nnsvg_avg_rank)) +
+nnSVG_n_vs_avg_rank <- nnSVG_avg |>
+    ggplot(aes(x = n, y = nnsvg_avg_rank, color = top.svg)) +
     geom_point()
 
-nnSVG_avg |>
+ggsave(nnSVG_n_vs_avg_rank, filename = here(plot_dir, "nnSVG_n_vs_avg_rank.png"))
+
+nnSVG_n_vs_avg_rank_DLPFC <- nnSVG_avg |>
+    ggplot(aes(x = n, y = nnsvg_avg_rank, color = DLPFC_layer_marker)) +
+    geom_point()
+
+ggsave(nnSVG_n_vs_avg_rank_DLPFC, filename = here(plot_dir, "nnSVG_n_vs_avg_rank-DLPFC_markers.png"))
+
+nnSVG_n_histogram <- nnSVG_avg |>
     ggplot(aes(x = n)) +
-    geom_histogram()
+    geom_histogram(binwidth = 1)
 
-# A tibble: 5,879 × 4
-# Groups:   gene_id [5,879]
+ggsave(nnSVG_n_histogram, filename = here(plot_dir, "nnSVG_n_histogram.png"))
 
-## genes we're rarely evalauted in all samples
+## genes were rarely evaluated in all samples
 nnSVG_avg |> ungroup() |> count(n == 31)
 # `n == 31`     n
 # <lgl>     <int>
@@ -97,6 +117,11 @@ SVG_vs_hdg_overlap <- intersect(top.hdgs$`1k`, top.svg)
 
 length(SVG_vs_hvg_overlap) #[1] 176
 length(SVG_vs_hdg_overlap) #[1] 464
+
+#### Load SPE data ####
+message(Sys.time(), " - Loading SPE data")
+spe <- loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
+
  
 # slurmjobs::job_single('13_gather_nnSVG', create_shell = TRUE, memory = '10G', command = "Rscript 13_gather_nnSVG.R")
 
