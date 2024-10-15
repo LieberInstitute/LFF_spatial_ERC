@@ -5,6 +5,8 @@ library("HDF5Array")
 library("spatialLIBD")
 library("tidyverse")
 library("Polychrome")
+library("bluster")
+library("pheatmap")
 library("here")
 library("sessioninfo")
         
@@ -20,18 +22,17 @@ message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
 ## PRECAST data
-precast_output <- list.files(data_dir, "PRECAST_HVG", full.names = TRUE)
-names(precast_output) <- gsub("PRECAST_HVG_(k[0-9]+).csv", "\\1", basename(precast_output))
+precast_output <- list.files(data_dir, "*VG_k*", full.names = TRUE)
+names(precast_output) <- gsub(".csv", "", basename(precast_output))
 
 precast_cluster <- map(precast_output, read.csv)
 
 ## key is in same order for all tables
-all(map_lgl(precast_cluster, ~identical(.x$key, precast_cluster$k02$key)))
+all(map_lgl(precast_cluster, ~identical(.x$key, precast_cluster$PRECAST_HVG_k02$key)))
 
 ##combine
 precast_tab <- as.data.frame(map_dfc(precast_cluster, ~.x$cluster))
-colnames(precast_tab) <- paste0("PRECAST_",colnames(precast_tab))
-rownames(precast_tab) <- precast_cluster$k02$key
+rownames(precast_tab) <- precast_cluster$PRECAST_HVG_k02$key
 # precast_tab <- bind_cols(precast_cluster$k02[,c("key"),drop = FALSE], precast_tab)
 head(precast_tab)
 
@@ -48,13 +49,13 @@ write.csv(precast_tab, file = here(data_dir, "PRECAST_clusters.csv"))
 colData(spe) <- cbind(colData(spe), precast_tab)
 
 ## which spots are missing?
-table(is.na(spe$PRECAST_k02), spe$scran_discard)
-table(is.na(spe$PRECAST_k02), spe$scran_low_lib_size)
+table(is.na(spe$PRECAST_HVG_k02), spe$scran_discard)
+table(is.na(spe$PRECAST_HVG_k02), spe$scran_low_lib_size)
 #         TRUE  FALSE
 # FALSE   5755 116285
 # TRUE     162      0
 
-table(is.na(spe$PRECAST_k02), spe$sample_id)
+table(is.na(spe$PRECAST_HVG_k02), spe$sample_id)
 # Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974 Br5161 Br5212 Br5276 Br5367 Br5415 Br5426 Br5460 Br5517
 # FALSE   3903   3648   3523   4161   3699   3069   2367   2690   4682   4674   3905   2828   3858   4824   4032   3820
 # TRUE       3      0      1      0      0      0      0     32      0      0    106      0      0      0      0      3
@@ -68,7 +69,7 @@ table(is.na(spe$PRECAST_k02), spe$sample_id)
 sample_ids <- sort(unique(spe$sample_id))
 #   Use 'vis_grid_clus' to preserve all spots (including overlaps)
 
-walk(colnames(precast_tab), function(precast_name){
+walk(colnames(precast_tab)[36:55], function(precast_name){
     
     k = parse_number(precast_name)
     
@@ -108,6 +109,41 @@ walk(colnames(precast_tab), function(precast_name){
     })
     
 })
+
+#### how does HVG vs. SVG clustering compare? ####
+library(bluster)
+table(precast_tab$PRECAST_HVG_k02, precast_tab$PRECAST_SVG_k02)
+table(precast_tab$PRECAST_HVG_k03, precast_tab$PRECAST_SVG_k03)
+
+## Adjusted Rand Index
+# 0.5 corresponds to “good” similarity
+pairwiseRand <- map_dbl(2:28, ~pairwiseRand(precast_tab[[sprintf("PRECAST_HVG_k%02d",.x)]], precast_tab[[sprintf("PRECAST_SVG_k%02d",.x)]], mode = "index"))
+
+compare_cluster <- tibble(k = 2:28, pairwiseRand)
+
+plot_dir2 <- here(plot_dir, "00_explore")
+if(!dir.exists(plot_dir2)) create_dir(plot_dir2)
+
+rand_col <- ggplot(compare_cluster, aes(x = k, y = pairwiseRand)) +
+    geom_col() +
+    geom_hline(yintercept = 0.5)
+
+ggsave(rand_col, file = here(plot_dir2, "pairwiseRand_col-PRECAST_HVG_vs_SVG.png"))
+
+
+walk(2:28, function(k){
+    message(k)
+    jacc.mat <- linkClustersMatrix(precast_tab[[sprintf("PRECAST_HVG_k%02d",k)]], 
+                                   precast_tab[[sprintf("PRECAST_SVG_k%02d", k)]])
+    
+    png(here(plot_dir2, sprintf("jacc_heatmap-PRECAST_HVG_vs_SVG_k%02d.png", k)), 
+        height = 800, width = 800)
+    pheatmap(jacc.mat)
+    dev.off()
+})
+
+
+
 
 # slurmjobs::job_single('06.5_PRECAST_plot', create_shell = TRUE, memory = '10G', command = "Rscript 06.5_PRECAST_plot.R")
 
