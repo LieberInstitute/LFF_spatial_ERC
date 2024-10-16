@@ -18,13 +18,12 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 colData(spe)$APOE_carrier = ifelse(grepl("E2", spe$APOE), "E2+", "E4+")
 table(spe$APOE_carrier)
 
-## Load clustering data
-cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-PCA_Harmony", "clusters_BayesSpace"),
+#### Load BayesSpace clustering data ####
+bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-PCA_Harmony", "clusters_BayesSpace"),
            recursive = TRUE,
            full.names = TRUE)
 
-
-clusters <- map2(cluster_fn, map(str_split(cluster_fn, "/"), 12), function(file, name){
+bayes_clusters <- map2(bayes_cluster_fn, map(str_split(bayes_cluster_fn, "/"), 12), function(file, name){
     sp = sprintf("Sp%02d",parse_number(name))
     clus <- read.csv(file) |>
         mutate(cluster = factor(paste0(sp, "D", str_pad(cluster, 2,  pad = "0"))))
@@ -33,17 +32,31 @@ clusters <- map2(cluster_fn, map(str_split(cluster_fn, "/"), 12), function(file,
     return(clus)
 })
 
-clusters2 <- purrr::reduce(clusters, dplyr::left_join, by = c("key"))
+bayes_clusters_tab <- purrr::reduce(bayes_clusters, dplyr::left_join, by = c("key"))
+head(bayes_clusters_tab)
 
 ## fix double BrNum in key
-clusters2$key <- gsub("(^.*?_Br[0-9]+)_Br[0-9+]+$", "\\1", clusters2$key)
-identical(colnames(spe), clusters2$key)
-clusters2$key <- NULL
+bayes_clusters_tab$key <- gsub("(^.*?_Br[0-9]+)_Br[0-9+]+$", "\\1", bayes_clusters_tab$key)
+identical(colnames(spe), bayes_clusters_tab$key)
+bayes_clusters_tab$key <- NULL
+
+bayes_clusters_tab[1:5,1:5]
+
+#### PRECAST DATA ####
+precast_tab <-read.csv(file = here("processed-data", "05_spe_correct_cluster", "06_PRECAST", "PRECAST_bayes_clusters.csv"), row.names = 1)
+identical(rownames(precast_tab), colnames(spe))
+
+precast_tab[1:5, 1:5]
+
+all_bayes_clusters <- cbind(bayes_clusters_tab, precast_tab)
+
+dim(all_bayes_clusters)
 
 ## bind tables
-colData(spe) <- cbind(colData(spe), clusters2)
+colData(spe) <- cbind(colData(spe), all_bayes_clusters)
 
 colnames(colData(spe))
+
 
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
