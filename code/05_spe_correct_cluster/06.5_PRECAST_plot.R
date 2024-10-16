@@ -25,13 +25,17 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 precast_output <- list.files(data_dir, "*VG_k*", full.names = TRUE)
 names(precast_output) <- gsub(".csv", "", basename(precast_output))
 
-precast_cluster <- map(precast_output, read.csv)
+precast_cluster <- map2(precast_output, parse_number(names(precast_output)), 
+                        ~read.csv(.x) |>
+                           mutate(SpD = sprintf("Sp%02dD%02d", .y, cluster)))
+
+head(precast_cluster[[1]])
 
 ## key is in same order for all tables
 all(map_lgl(precast_cluster, ~identical(.x$key, precast_cluster$PRECAST_HVG_k02$key)))
 
 ##combine
-precast_tab <- as.data.frame(map_dfc(precast_cluster, ~.x$cluster))
+precast_tab <- as.data.frame(map_dfc(precast_cluster, ~.x$SpD))
 rownames(precast_tab) <- precast_cluster$PRECAST_HVG_k02$key
 # precast_tab <- bind_cols(precast_cluster$k02[,c("key"),drop = FALSE], precast_tab)
 head(precast_tab)
@@ -41,8 +45,11 @@ table(spe$key %in% rownames(precast_tab))
 # FALSE   TRUE 
 # 162 122040
 
+## order and add rownames to match spe
 precast_tab <- precast_tab[spe$key, ]
+rownames(precast_tab) <- colnames(spe)
 
+## export to CVS
 write.csv(precast_tab, file = here(data_dir, "PRECAST_clusters.csv"))
 
 ##Add data to spe
