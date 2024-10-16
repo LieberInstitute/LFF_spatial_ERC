@@ -48,17 +48,22 @@ find_t <- function(L, proportion = 0.05) {
 }
 
 t <- find_t(L = colData(spe)[[cluster_k]], proportion = 0.01)
-message("Initial t:", t)
+message("Initial t: ", t)
 
-cluster_prop <- table(colData(spe)[[cluster_k]]) / ncol(spe)
-bad_clusters <- which(cluster_prop < 0.01 / k)
+message("cluster proportions:")
+(cluster_prop <- table(colData(spe)[[cluster_k]])/ncol(spe))
+
+min_prop <- 0.01/opt$k
+
+message("Testing for clusters < ", min_prop)
+bad_clusters <- which(cluster_prop < min_prop)
 
 if (length(bad_clusters) > 0) {
-    message("For ", nice_k, " we are dropping small clusters: ", paste(names(bad_clusters), collapse = ", "))
-    spe <- spe[, !colData(spe)[[cluster_k]] %in% as.integer(names(bad_clusters))]
+    message("For ", nice_k, " drop small clusters: ", paste(names(bad_clusters), collapse = ", "))
+    spe <- spe[, !colData(spe)[[cluster_k]] %in% names(bad_clusters)]
     t <- find_t(colData(spe)[[cluster_k]], 0.01)
     message("Updated t: ", t)
-}
+} else message("No small clusters")
 
 
 #### Run fasthplus ####
