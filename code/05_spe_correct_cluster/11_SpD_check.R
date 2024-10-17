@@ -232,7 +232,7 @@ modeling_results_k02$enrichment |>
 
 # write_csv(modeling_results_k02$enrichment, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "modeling_results-BayesSpace_PCA_Harmony_k02.csv"))
 
-## from litature
+## from literature
 modeling_results <- fetch_data(type = "modeling_results")
 
 layer_marker_genes <- read.csv(here(data_dir, "layer_marker_genes.csv"))
@@ -248,7 +248,8 @@ plot_marker_express_List(
 )
 
 sample_order <- sort(unique(spe$BrNum))
-walk(c("AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
+walk(c("MBP"),
+# walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
           ~vis_grid_gene(
          spe = spe,
          geneid = .x,
@@ -258,6 +259,63 @@ walk(c("AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
          sample_order = sample_order)
 
      )
+
+## SVGs
+
+nnSVG_avg <- read.csv(here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG", "nnSVG_avg.csv"))
+
+nnSVG_avg$gene_name
+
+walk(top.svg,
+     ~vis_grid_gene(
+         spe = spe,
+         geneid = .x,
+         pdf = here::here(plot_dir, sprintf("spe_erc-SVG_%s.pdf", .x)),
+         assayname = "logcounts",
+         point_size = 1,
+         sample_order = sample_order))
+     
+#### position ####
+spe_position <- read.table(here("processed-data", "02_build_spe", "spe_position.csv"), sep = "\t", header = TRUE)
+
+# missing order
+sample_order[!sample_order %in% spe_position$sample_id]
+# [1] "Br1039" "Br1556" "Br1691" "Br1706" "Br2305" "Br3974" "Br5460" "Br5529" "Br5599" "Br5832" "Br5854" "Br5941"
+# [13] "Br6085" "Br6098" "Br6476"
+
+rownames(spe_position) <- spe_position$sample_id
+
+spe$position <- spe_position[spe$sample_id, "position"]
+
+spe$sample_id <- paste(spe$position, spe$sample_id)
+
+table(spe$position)
+
+dir.create(here(plot_dir, "position"))
+
+sample_order <- sort(unique(spe$sample_id))
+# walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
+walk(c("GULP1","COL25A1", "SATB1", "PEX5L"),
+     ~vis_grid_gene(
+         spe = spe,
+         geneid = .x,
+         pdf = here::here(plot_dir, "position", sprintf("spe_erc_AMY-%s.pdf", .x)),
+         assayname = "logcounts",
+         point_size = 1,
+         sample_order = sample_order)
+     
+)
+
+walk(c("FN1", "NTS", "TLE1"),
+     ~vis_grid_gene(
+         spe = spe,
+         geneid = .x,
+         pdf = here::here(plot_dir, "position", sprintf("spe_erc_HP-%s.pdf", .x)),
+         assayname = "logcounts",
+         point_size = 1,
+         sample_order = sample_order)
+     
+)
 
 #### spot plots ####
 dir.create(here(plot_dir, "spot_plots"))
