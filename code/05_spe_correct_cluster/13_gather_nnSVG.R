@@ -38,6 +38,18 @@ nnSVG_data |> count(sample_id) |> arrange(n)
 dlpfc_layers_top100 <-  read_csv(here("processed-data", "00_project_prep", "06_marker_genes", "dlpfc_layers_top100.csv"))
 length(unique(dlpfc_layers_top100$ensembl)) # [1] 1129
 
+## other gene sets
+load(here("processed-data", "02_build_spe","01_preprocess_spe", "top_hvgs.Rdata"), verbose = TRUE)
+load(here("processed-data", "05_spe_correct_cluster", "03_GLM_Harmony", "top_hdgs.rdata"), verbose = TRUE)
+
+# hdg_vs_hvg_overlap <- intersect(top.hvgs$p1, top.hdgs$`2k`)
+# length(hdg_vs_hvg_overlap) #[1] 405
+# 
+# SVG_vs_hvg_overlap <- intersect(top.hvgs$p1, top.svg)
+# SVG_vs_hdg_overlap <- intersect(top.hdgs$`1k`, top.svg)
+# 
+# length(SVG_vs_hvg_overlap) #[1] 176
+# length(SVG_vs_hdg_overlap) #[1] 464
 
 nnSVG_avg <- nnSVG_data |>
     group_by(gene_id, gene_name) |>
@@ -46,11 +58,16 @@ nnSVG_avg <- nnSVG_data |>
     arrange(nnsvg_avg_rank) |>
     ungroup() |>
     mutate(top.svg = (n > 5 & nnsvg_avg_rank < 1500),
-           DLPFC_layer_marker = gene_id %in% dlpfc_layers_top100$ensembl) 
+           DLPFC_layer_marker = gene_id %in% dlpfc_layers_top100$ensembl,
+           top.hvg = gene_id %in% top.hvgs$p1,
+           top.hdg = gene_id %in% top.hdgs$`1k`) 
 
 nnSVG_avg |> count(top.svg)
 
 nnSVG_avg |> count(top.svg, DLPFC_layer_marker)
+
+nnSVG_avg |> count(top.svg, DLPFC_layer_marker)
+nnSVG_avg |> count(top.svg, top.hvg, top.hdg, DLPFC_layer_marker)
 
 write_csv(nnSVG_avg, file = here(data_dir, "nnSVG_avg.csv"))
 
@@ -106,17 +123,6 @@ length(top.svg)
 
 save(top.svg, file = here(data_dir, "top_svg.Rdata"))
 
-load(here("processed-data", "02_build_spe","01_preprocess_spe", "top_hvgs.Rdata"), verbose = TRUE)
-load(here("processed-data", "05_spe_correct_cluster", "03_GLM_Harmony", "top_hdgs.rdata"), verbose = TRUE)
-
-hdg_vs_hvg_overlap <- intersect(top.hvgs$p1, top.hdgs$`2k`)
-length(hdg_vs_hvg_overlap) #[1] 405
-
-SVG_vs_hvg_overlap <- intersect(top.hvgs$p1, top.svg)
-SVG_vs_hdg_overlap <- intersect(top.hdgs$`1k`, top.svg)
-
-length(SVG_vs_hvg_overlap) #[1] 176
-length(SVG_vs_hdg_overlap) #[1] 464
 
 #### Load SPE data ####
 message(Sys.time(), " - Loading SPE data")
