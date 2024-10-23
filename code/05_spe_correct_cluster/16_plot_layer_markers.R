@@ -19,6 +19,7 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 
 logcounts(spe)[1:5,1:5]
 rownames(spe) <- rowData(spe)$gene_name
+sample_order <- sort(unique(spe$sample_id))
 
 ## load layer markers
 rna_scope_markers <- read_csv(here(data_dir, "rnascope_layer_markers.csv")) |>
@@ -51,27 +52,30 @@ genes_to_plot <- bind_rows(dlpf_top_markers, rna_scope_markers) |>
     summarize(n = n(), 
               Source = paste(sort(Source), collapse = ", "), 
               Layer = paste(sort(Layer), collapse = ", ")) |>
-    mutate(Layer_Simple = gsub(",| .*?$","",Layer)) |>
+    mutate(Layer_Simple = gsub(",| .*?$","",Layer),
+           anno = paste(gene, ":", Source, ":", Layer),
+           in_data = gene %in% rownames(spe)) |>
     arrange(Layer)
+
+write_csv(genes_to_plot, file = here(data_dir, "genes_to_plot.csv"))
+
+## RELM not in spe
+
+genes_to_plot <- genes_to_plot |> filter(in_data)
     
-pmap(genes_to_plot, function(gene, Layer_Simple){
+pmap(list(gene = genes_to_plot$gene, Layer_Simple = genes_to_plot$Layer_Simple), function(gene, Layer_Simple){
+# pmap(genes_to_plot, function(gene, Layer_Simple){ ## straight from table?
     
     filename = sprintf("spe_erc_%s-%s.pdf", Layer_Simple, gene)
-    return(filename)
+    message(Sys.time(), " - ",filename)
+    
+    vis_grid_gene(
+        spe = spe,
+        geneid = gene,
+        pdf = here::here(plot_dir, filename),
+        assayname = "logcounts",
+        point_size = 1.2,
+        sample_order = sample_order)
     
 })
 
-#### Plot Layer Markers ####
-
-sample_order <- sort(unique(spe$BrNum))
-walk(c("MBP"),
-     # walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
-     ~vis_grid_gene(
-         spe = spe,
-         geneid = .x,
-         pdf = here::here(plot_dir, sprintf("spe_erc-%s.pdf", .x)),
-         assayname = "logcounts",
-         point_size = 1,
-         sample_order = sample_order)
-     
-)
