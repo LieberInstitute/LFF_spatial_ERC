@@ -79,3 +79,34 @@ pmap(list(gene = genes_to_plot$gene, Layer_Simple = genes_to_plot$Layer_Simple),
     
 })
 
+#### Multi gene plots ####
+
+markers_top25 <- dlpfc_layer_markers |>
+    mutate(Layer = ifelse(is.na(SpD), layer, paste0(layer,"-", SpD))) |>
+    filter(top <= 25, gene %in% rownames(spe), Source == "HumanPilot") |>
+    group_by(Source, Layer, marker_anno) |>
+    summarise(genes = list(gene),
+              n = n())
+
+pmap(markers_top25, function(Source, Layer, marker_anno, genes, n){
+    
+    filename = sprintf("spe_erc_top25_%s-%s.pdf", Layer, Source)
+    message(sprintf("\n%s - %s: %s genes\n", Layer, Source, n))
+    message(paste(genes, collapse = ", "))
+
+    vis_grid_gene(
+        spe = spe,
+        geneid = genes,
+        pdf = here::here(plot_dir, filename),
+        assayname = "logcounts",
+        point_size = 1.2,
+        sample_order = sample_order)
+})
+
+
+
+
+
+
+
+
