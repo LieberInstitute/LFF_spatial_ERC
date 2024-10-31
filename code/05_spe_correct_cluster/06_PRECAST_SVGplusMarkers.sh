@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=50G
 #SBATCH --job-name=06_PRECAST_SVGplusMarkers
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
