@@ -1,0 +1,20 @@
+gene,n,Source,Layer,Layer_Simple,anno,in_data,erc_note
+AQP4,1,HumanPilot RNAScope,Layer1,Layer1,AQP4 : HumanPilot RNAScope : Layer1,TRUE,
+MT1G,1,HumanPilot,Layer1,Layer1,MT1G : HumanPilot : Layer1,TRUE,
+RELM,1,ERC RNAScope,Layer1,Layer1,RELM : ERC RNAScope : Layer1,FALSE,
+CLDN5,1,spatialDLPFC,Layer1 ~ Sp09D01,Layer1,CLDN5 : spatialDLPFC : Layer1 ~ Sp09D01,TRUE,
+MT-ATP8,1,spatialDLPFC,Layer1 ~ Sp09D02,Layer1,MT-ATP8 : spatialDLPFC : Layer1 ~ Sp09D02,TRUE,
+DACT1,1,HumanPilot,Layer2,Layer2,DACT1 : HumanPilot : Layer2,TRUE,
+HPCAL1,2,"HumanPilot RNAScope, spatialDLPFC","Layer2, Layer2 ~ Sp09D03",Layer2,"HPCAL1 : HumanPilot RNAScope, spatialDLPFC : Layer2, Layer2 ~ Sp09D03",TRUE,nice
+FREM3,1,ERC RNAScope,Layer3,Layer3,FREM3 : ERC RNAScope : Layer3,TRUE,low expression
+CARTPT,2,"HumanPilot, spatialDLPFC","Layer3, Layer3 ~ Sp09D05",Layer3,"CARTPT : HumanPilot, spatialDLPFC : Layer3, Layer3 ~ Sp09D05",TRUE,med exprssion - not layer specific in most samples
+VAMP1,1,HumanPilot,Layer4,Layer4,VAMP1 : HumanPilot : Layer4,TRUE,good expression
+NEFM,1,spatialDLPFC,Layer4 ~ Sp09D08,Layer4,NEFM : spatialDLPFC : Layer4 ~ Sp09D08,TRUE,
+TRABD2A,2,"ERC RNAScope, HumanPilot RNAScope","Layer5, Layer5",Layer5,"TRABD2A : ERC RNAScope, HumanPilot RNAScope : Layer5, Layer5",TRUE,"low expression - aparse but specific, did not find layers in some samples"
+PCP4,2,"HumanPilot, spatialDLPFC","Layer5, Layer5 ~ Sp09D04",Layer5,"PCP4 : HumanPilot, spatialDLPFC : Layer5, Layer5 ~ Sp09D04",TRUE,nice! High and L5 specific expression in most samples
+ISLR,1,HumanPilot,Layer6,Layer6,ISLR : HumanPilot : Layer6,TRUE,low expression - not layer specific in most samples
+KRT17,1,HumanPilot RNAScope,Layer6,Layer6,KRT17 : HumanPilot RNAScope : Layer6,TRUE,nice! High and L6 specific expression in most samples
+NPTX1,1,spatialDLPFC,Layer6 ~ Sp09D07,Layer6,NPTX1 : spatialDLPFC : Layer6 ~ Sp09D07,TRUE,High expression in most GM layers
+NDRG1,1,HumanPilot,WM,WM,NDRG1 : HumanPilot : WM,TRUE,"higher expression in WM, not super specific"
+ABCA2,1,spatialDLPFC,WM ~ Sp09D06,WM,ABCA2 : spatialDLPFC : WM ~ Sp09D06,TRUE,"all over expression, but many 0s, higer in expression in WM, not the best"
+MBP,2,"ERC RNAScope, spatialDLPFC","WM, WM ~ Sp09D09",WM,"MBP : ERC RNAScope, spatialDLPFC : WM, WM ~ Sp09D09",TRUE,"all over expression, high and clear expression in WM"
