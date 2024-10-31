@@ -1,15 +1,20 @@
 ## October 2024, Louise Huuki-Myers
 ## Load sample-wise nnSVG data, average the ranks of the SVGs
+## Examine gene set similarities & differences 
 
 library("SpatialExperiment")
 library("HDF5Array")
+library("spatialLIBD")
 library("tidyverse")
+library("UpSetR")
 library("here")
 library("sessioninfo")
 
 #### load spe data ####
 message(Sys.time(), " - Load HDF5 SPE")
-# spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
+
+rowData(spe)
 
 #### define dirs ####
 data_dir <- here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG")
@@ -123,12 +128,97 @@ length(top.svg)
 
 save(top.svg, file = here(data_dir, "top_svg.Rdata"))
 
+#### upset plots ####
 
-#### Load SPE data ####
-message(Sys.time(), " - Loading SPE data")
-spe <- loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
+gene_list = list(HVG_10p = top.hvgs$p1,
+                 HDG_1k = top.hdgs$`1k`,
+                 SVG = top.svg,
+                 spatialDLPFC = unique(dlpfc_layers_top100$ensembl))
+
+## Selected gene list only
+pdf(here(plot_dir, "gene_set_upset.pdf"))
+upset(fromList(gene_list[1:3]), 
+      order.by = "freq", 
+      sets = names(gene_list[1:3]), 
+      keep.order = TRUE
+)
+dev.off()
+
+## compare to 
+pdf(here(plot_dir, "gene_set_upset_markers.pdf"))
+upset(fromList(gene_list), 
+      order.by = "freq", 
+      sets = names(gene_list), 
+      keep.order = TRUE
+)
+
+dev.off()
+
 
  
+#### Compute the gene set enrichment results ####
+modeling_results <- fetch_data(type = "spatialDLPFC_Visium_modeling_results")
+gene_list_enrichment <- gene_set_enrichment(
+    gene_list = gene_list[1:3],
+    modeling_results = modeling_results,
+    model_type = "enrichment"
+)
+
+dlpfc_anno <- read.csv(here("processed-data", "00_project_prep", "spatialDLPFC_Data", "bayesSpace_layer_annotations.csv")) |>
+    dplyr::filter(bayesSpace == "k09") |>
+    select(SpD = cluster,
+           layer = layer_annotation,
+           layer_combo)
+
+gene_list_enrichment$test <- dlpfc_anno$layer_combo[match(gene_list_enrichment$test, dlpfc_anno$SpD)]
+
+pdf(here(plot_dir, "gene_set_enrichment.pdf"))
+gene_set_enrichment_plot(
+    gene_list_enrichment,
+    xlabs = unique(gene_list_enrichment$ID),
+    )
+dev.off()
+
+#### Check top marker genes for each layer ####
+
+dlpfc_layers_top100_sets <- dlpfc_layers_top100 |>
+    mutate(top.svg = ensembl %in% top.svg,
+           top.hvg = ensembl %in% top.hvgs$p1,
+           top.hdg = ensembl %in% top.hdgs$`1k`) |>
+    mutate(layer = ifelse(is.na(SpD), layer, paste(layer,"~", SpD)))
+
+dlpfc_layers_top100_sets |>
+    pivot_longer(!c("ensembl", "gene", "dataset", "layer", "top", "marker_anno", "SpD", "layer_combo"),
+                 names_to = "gene_set", values_to = "member") |>
+    filter(top <= 25) |>
+    count(dataset, gene_set, member) |>
+    pivot_wider(names_from = "member", values_from = "n") |>
+    mutate(precent_TRUE = 100*`TRUE`/(`TRUE` + `FALSE`))
+
+# dataset      gene_set `FALSE` `TRUE` precent_TRUE
+# <chr>        <chr>      <int>  <int>        <dbl>
+# 1 HumanPilot   top.hdg      139     36         20.6
+# 2 HumanPilot   top.hvg      115     60         34.3
+# 3 HumanPilot   top.svg       93     82         46.9
+# 4 spatialDLPFC top.hdg      111    114         50.7
+# 5 spatialDLPFC top.hvg       95    130         57.8
+# 6 spatialDLPFC top.svg       66    159         70.7
+
+top_marker_set_tile <-  dlpfc_layers_top100_sets |>
+    # filter(top <= 25) |>
+    pivot_longer(!c("ensembl", "gene", "dataset", "layer", "top", "marker_anno", "SpD", "layer_combo"),
+                 names_to = "gene_set", values_to = "member") |>
+    group_by(dataset, layer, gene_set) |>
+    count(member) |>
+    ggplot(aes(x = member, y = layer, fill = n)) +
+    geom_tile() +
+    geom_text(aes(label = n)) +
+    facet_grid(dataset~gene_set, scales = "free") +
+    theme_bw()
+
+ggsave(top_marker_set_tile, filename = here(plot_dir, "marker_set_tile_top100.png"))
+    
+
 # slurmjobs::job_single('13_gather_nnSVG', create_shell = TRUE, memory = '10G', command = "Rscript 13_gather_nnSVG.R")
 
 ## Reproducibility information
