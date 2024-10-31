@@ -23,7 +23,7 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 spec <- matrix(
     c(
         "k", "k", "1", "numeric", "Number of clusters",
-        "input_genes", "i", "1", "character", "'HVG' or 'SVG'"
+        "input_genes", "i", "1", "character", "'HVG', 'SVG', or 'SVGplusMarkers'"
     ),
     ncol = 5, byrow = TRUE
 )
@@ -99,6 +99,17 @@ if (opt$input_genes == "HVG") {
         seuList = seu_list,
         selectGenesMethod = NULL,
         customGenelist = top.svg
+    )
+}else if (opt$input_genes == "SVGplusMarkers"){
+    
+    ## load SVGs
+    load(here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG", "top.svg.plusMarkers.Rdata"), verbose = TRUE)
+    message("Run with SVGs + spatialDLPFC marker genes: ", length(top.svg.plusMarkers))
+    
+    pre_obj <- CreatePRECASTObject(
+        seuList = seu_list,
+        selectGenesMethod = NULL,
+        customGenelist = top.svg.plusMarkers
     )
 } else stop(opt$input_genes, " Not valid input gene option")
 
