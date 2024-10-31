@@ -182,6 +182,7 @@ dev.off()
 #### Check top marker genes for each layer ####
 
 dlpfc_layers_top100_sets <- dlpfc_layers_top100 |>
+    filter(ensembl %in% rownames(spe)) |> # 2 genes are not in SPE
     mutate(top.svg = ensembl %in% top.svg,
            top.hvg = ensembl %in% top.hvgs$p1,
            top.hdg = ensembl %in% top.hdgs$`1k`) |>
@@ -217,7 +218,23 @@ top_marker_set_tile <-  dlpfc_layers_top100_sets |>
     theme_bw()
 
 ggsave(top_marker_set_tile, filename = here(plot_dir, "marker_set_tile_top100.png"))
-    
+
+## pull spatialDLPFC marker genes, combine w/ top.svgs
+marker_genes <- dlpfc_layers_top100 |>
+    filter(ensembl %in% rownames(spe), dataset == "spatialDLPFC") |>
+    pull(ensembl) |>
+    unique()
+
+length(marker_genes)
+
+table(marker_genes %in% top.svg)
+# FALSE  TRUE 
+# 311   441
+
+top.svg.plusMarkers <- union(marker_genes, top.svg)
+length(top.svg.plusMarkers) #[1] 1765
+
+save(top.svg.plusMarkers, file = here(data_dir, "top.svg.plusMarkers.Rdata"))
 
 # slurmjobs::job_single('13_gather_nnSVG', create_shell = TRUE, memory = '10G', command = "Rscript 13_gather_nnSVG.R")
 
