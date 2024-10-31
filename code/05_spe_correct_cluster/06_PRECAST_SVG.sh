@@ -7,7 +7,7 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-28%10
+#SBATCH --array=2-28%10
 
 ## Define loops and appropriately subset each variable for the array task ID
 ## all_input_genes=(HVG)
