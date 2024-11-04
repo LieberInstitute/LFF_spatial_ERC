@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=100G
 #SBATCH --job-name=05_BayesSpace_SVGm
 #SBATCH -c 1
