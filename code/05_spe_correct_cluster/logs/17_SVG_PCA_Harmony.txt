@@ -1,0 +1,262 @@
+**** Job starts ****
+Mon Nov  4 10:24:34 AM EST 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 10409536
+Job name: 17_SVG_PCA_Harmony
+Node name: compute-121
+Task id: 
+Unloading conda_R/4.4
+Loading conda_R/4.4
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
+    tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: scuttle
+Loading required package: ggplot2
+Loading required package: Rcpp
+
+Attaching package: ‘purrr’
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    reduce
+
+The following object is masked from ‘package:IRanges’:
+
+    reduce
+
+Loading required package: DelayedArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: SparseArray
+
+Attaching package: ‘DelayedArray’
+
+The following object is masked from ‘package:purrr’:
+
+    simplify
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+ [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"      
+ [6] "TSNE"         "UMAP"         "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
+Loading objects:
+  top.svg.plusMarkers
+2024-11-04 10:27:15.985045 - Compute PCA
+2024-11-04 10:35:36.408528 - PCA plots
+Saving 10 x 7 in image
+Saving 7 x 7 in image
+# A tibble: 3 × 2
+  geneset elbow
+  <chr>   <int>
+1 PCA_SVG     6
+2 PCA_p1      3
+3 PCA_p2     50
+2024-11-04 10:35:40.901518 - TSNE
+2024-11-04 11:02:07.134619 - UMAP
+2024-11-04 11:03:22.334759 - Done Reduced Dims...
+2024-11-04 11:03:22.386729 - Harmony
+Transposing data matrix
+Initializing state using k-means centroids initialization
+Harmony 1/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony 2/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony 3/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony converged after 3 iterations
+Warning messages:
+1: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+2: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+3: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+4: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+5: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+2024-11-04 11:05:18.579991 - Harmony UMAP
+2024-11-04 11:06:39.391196 - HARMONY TSNE
+2024-11-04 11:40:10.766866 - Saving HDF5 SPE
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+saving: spe_UMAP-sample_id-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-round-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Visium_slide-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-sample_id-SVGm_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-round-SVGm_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Visium_slide-SVGm_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-qc_anno-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-scran_discard-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-APOE-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Ancestry-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Sex-SVGm.png
+Saving 7 x 7 in image
+saving: spe_UMAP-APOE-SVGm_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Ancestry-SVGm_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Sex-SVGm_facet.png
+Saving 7 x 7 in image
+Error in `map()`:
+ℹ In index: 1.
+Caused by error in `map()`:
+ℹ In index: 1.
+Caused by error in `scale_color_viridis()`:
+! could not find function "scale_color_viridis"
+Backtrace:
+     ▆
+  1. ├─purrr::walk(...)
+  2. │ └─purrr::map(.x, .f, ..., .progress = .progress)
+  3. │   └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
+  4. │     ├─purrr:::with_indexed_errors(...)
+  5. │     │ └─base::withCallingHandlers(...)
+  6. │     ├─purrr:::call_with_cleanup(...)
+  7. │     └─global .f(.x[[i]], ...)
+  8. │       └─purrr::walk(...)
+  9. │         └─purrr::map(.x, .f, ..., .progress = .progress)
+ 10. │           └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
+ 11. │             ├─purrr:::with_indexed_errors(...)
+ 12. │             │ └─base::withCallingHandlers(...)
+ 13. │             ├─purrr:::call_with_cleanup(...)
+ 14. │             └─.f(.x[[i]], ...)
+ 15. │               └─global my_plot_reduced_dim(...)
+ 16. └─base::.handleSimpleError(...)
+ 17.   └─purrr (local) h(simpleError(msg, call))
+ 18.     └─cli::cli_abort(...)
+ 19.       └─rlang::abort(...)
+Execution halted
