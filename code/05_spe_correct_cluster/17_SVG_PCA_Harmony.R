@@ -63,9 +63,9 @@ pca_elbow <- ggplot(precent_var, aes(PC, precentVar, color = geneset)) +
 
 ggsave(pca_elbow, filename = here(plot_dir, "PCA_elbow.png"))
 
-precent_var |>
+try(precent_var |>
     dplyr::group_by(geneset) |>
-    dplyr::summarise(elbow = PCAtools::findElbowPoint(percent.var))
+    dplyr::summarise(elbow = PCAtools::findElbowPoint(precentVar)))
 
 # geneset elbow
 # <chr>   <int>
