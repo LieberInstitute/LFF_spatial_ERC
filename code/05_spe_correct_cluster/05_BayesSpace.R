@@ -60,11 +60,15 @@ if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive
 dir_rdata <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name))
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
-
 ## Set the BayesSpace metadata using code from
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
+## Fix colaname for row and col
+spe$row <- spe$array_row
+spe$col <- spe$array_col
+
+## Run BayesSpace
 message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
 spe <- BayesSpace::spatialCluster(spe, use.dimred = dimred, q = k, nrep = 10000)
 
