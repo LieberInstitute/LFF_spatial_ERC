@@ -11,6 +11,7 @@ library("BiocParallel")
 library("purrr")
 library("scry")
 library("HDF5Array")
+library("viridis")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "17_SVG_PCA_Harmony")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -114,6 +115,10 @@ spe <- runTSNE(spe,
 ## Remove redundant PCA
 reducedDim(spe, "PCA") <- NULL
 
+reducedDimNames(spe)
+# [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"       "TSNE"         "UMAP"        
+# [8] "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY" "PCA_SVG"
+
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
 saveHDF5SummarizedExperiment(
@@ -136,40 +141,54 @@ qc_colors <- c(fold = "#4BA402", out_edge = "#097FE0", vessel ="#BB1EF4", None =
 scran_colors <- c(`TRUE` = "red", `FALSE` = "#CCCCCC40")
 
 
-walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
+walk(c("UAMP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
     
     sufix = "SVGm"
-    
+
     ## categorical
     walk(c("sample_id", "round", "Visium_slide"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix))
-    
+
     ## categorical facet
     walk(c("sample_id", "round", "Visium_slide"), ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, facet = TRUE))
-    
+
     ## categorical + color scheme
     walk2(c("qc_anno", "scran_discard", "APOE", "Ancestry", "Sex"),
           list(qc_colors, scran_colors, APOE_genotype_colors, ancestry_colors, sex_colors),
           ~my_plot_reduced_dim(spe,prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, color_pal = .y))
-    
+
     walk2(c("APOE", "Ancestry", "Sex"),
           list(APOE_genotype_colors, ancestry_colors, sex_colors),
           ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = dim, my_var = .x, sufix = sufix, facet = TRUE, color_pal = .y))
-    
+
     ## continuous
     walk(c("Age", "Rin"),
          ~my_plot_reduced_dim(spe, prefix = "spe", var_type = "con", dimred = dim, my_var = .x, sufix = sufix))
-    
-    
+
+
     ## continuous QC metrics
     walk(c("sum_umi", "sum_gene", "expr_chrM_ratio"),
          ~my_plot_reduced_dim(spe, prefix = "spe_QC", var_type = "con", dimred = dim, my_var = .x, sufix = sufix))
-    
+
     ## plot layer marker genes
     purrr::walk(c("MBP", "PCP4", "RELN", "SNAP25"), function(gene){
         my_plot_reduced_dim(spe, prefix = "spe_gene", var_type = "express", dimred = dim, my_var = gene, sufix = sufix)
     })
 })
 
+## Check small outlier cluster in Br6538
+spe$UMAP_outlier <- reducedDim(spe, "UMAP.HARMONY")[,"UMAP1"]< -1.5 & reducedDim(spe, "UMAP.HARMONY")[,"UMAP2"] < -2.45
+## ALL in Br6538
+table(spe$UMAP_outlier, spe$sample_id)
+## not scan discard..?
+table(spe$UMAP_outlier, spe$scran_discard)
+
+my_plot_reduced_dim(spe, prefix = "spe", var_type = "cat", dimred = "UMAP.HARMONY", my_var = "UMAP_outlier", sufix = "SVGm")
+
+outlier_spot_plot <- spatialLIBD::vis_clus(spe,
+                                           sampleid = "Br6538",
+                                           clustervar = "UMAP_outlier") 
+
+ggsave(outlier_spot_plot, filename = here(plot_dir, "Br6538_UMAP_outliers.png"))
 
 # slurmjobs::job_single('17_SVG_PCA_Harmony', create_shell = TRUE, memory = '25G', command = "Rscript 17_SVG_PCA_Harmony.R")
 
