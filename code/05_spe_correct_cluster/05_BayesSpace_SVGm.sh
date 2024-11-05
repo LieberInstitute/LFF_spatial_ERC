@@ -6,10 +6,10 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=2-28%20
+#SBATCH --array=2-10%20
 
 ## Explicitly pipe script output to a log
-log_path=logs/05_BayesSpace_SVGm_k${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/05_BayesSpace_SVGm_200k_k${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -31,7 +31,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 05_BayesSpace.R --spe spe_PCA_SVG --dimred HARMONY --name SVGm
+Rscript 05_BayesSpace.R --spe spe_PCA_SVG --dimred HARMONY --name SVGm_200k
 
 echo "**** Job ends ****"
 date

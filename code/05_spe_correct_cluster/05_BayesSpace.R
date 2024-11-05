@@ -70,7 +70,7 @@ spe$col <- spe$array_col
 
 ## Run BayesSpace
 message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
-spe <- BayesSpace::spatialCluster(spe, use.dimred = dimred, q = k, nrep = 10000)
+spe <- BayesSpace::spatialCluster(spe, use.dimred = dimred, q = k, nrep = 20000)
 
 message(Sys.time(), " - Format and Export")
 
