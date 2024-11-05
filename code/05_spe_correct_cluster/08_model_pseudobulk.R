@@ -10,8 +10,7 @@ library("spatialLIBD")
 library("HDF5Array")
 
 
-
-cluster_type <- "BayesSpace_PCA_Harmony"
+cluster_type <- "BayesSpace_SVGm"
 
 data_dir <- here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", cluster_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
