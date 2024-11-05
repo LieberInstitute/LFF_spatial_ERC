@@ -1,4 +1,4 @@
-## September 2024, Louise Huuki-Myers
+## September 2024, Louise Huuki-Myers (Update Nov w/ SVGm data)
 ## Add clustering data to spe object 
 
 
@@ -12,14 +12,14 @@ library("tidyverse")
 
 ## Load the data
 message(Sys.time(), " - Load HDF5 SPE")
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects","spe_postQC"))
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_PCA_SVG"))
 
 #### Add missing colData ###
 colData(spe)$APOE_carrier = ifelse(grepl("E2", spe$APOE), "E2+", "E4+")
 table(spe$APOE_carrier)
 
 #### Load BayesSpace clustering data ####
-bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-PCA_Harmony", "clusters_BayesSpace"),
+bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm", "clusters_BayesSpace"),
            recursive = TRUE,
            full.names = TRUE)
 
@@ -43,17 +43,19 @@ bayes_clusters_tab$key <- NULL
 bayes_clusters_tab[1:5,1:5]
 
 #### PRECAST DATA ####
-precast_tab <-read.csv(file = here("processed-data", "05_spe_correct_cluster", "06_PRECAST", "PRECAST_bayes_clusters.csv"), row.names = 1)
-identical(rownames(precast_tab), colnames(spe))
+# precast_tab <-read.csv(file = here("processed-data", "05_spe_correct_cluster", "06_PRECAST", "PRECAST_bayes_clusters.csv"), row.names = 1)
+# identical(rownames(precast_tab), colnames(spe))
+# 
+# precast_tab[1:5, 1:5]
 
-precast_tab[1:5, 1:5]
+## only add BayesSpace data for now
+all_clusters <- cbind(bayes_clusters_tab)
+# all_clusters <- cbind(bayes_clusters_tab, precast_tab)
 
-all_bayes_clusters <- cbind(bayes_clusters_tab, precast_tab)
-
-dim(all_bayes_clusters)
+dim(all_clusters)
 
 ## bind tables
-colData(spe) <- cbind(colData(spe), all_bayes_clusters)
+colData(spe) <- cbind(colData(spe), all_clusters)
 
 colnames(colData(spe))
 
