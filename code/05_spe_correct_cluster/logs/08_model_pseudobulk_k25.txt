@@ -1,12 +1,17 @@
 **** Job starts ****
-Mon Sep  9 04:00:57 PM EDT 2024
+Tue Nov  5 10:19:19 AM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 9637762
+Job id: 10428161
 Job name: 08_model_pseudobulk
 Node name: compute-167
 Task id: 25
+Unloading conda_R/4.4
 Loading conda_R/4.3.x
+
+The following have been reloaded with a version change:
+  1) conda/3-24.3.0 => conda/3-23.3.1     2) conda_R/4.4 => conda_R/4.3.x
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
@@ -130,26 +135,26 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 k:25
-2024-09-09 16:01:09.321151 - Load HDF5 SPE
-2024-09-09 16:02:26.488473 - Running Spatial Registration on: BayesSpace_PCA_Harmony_k25
-2024-09-09 16:02:26.508687 make pseudobulk object
-2024-09-09 16:13:23.250029 dropping 5 pseudo-bulked samples that are below 'min_ncells'.
-2024-09-09 16:13:23.353097 drop lowly expressed genes
-2024-09-09 16:13:23.905256 normalize expression
-2024-09-09 16:13:29.217045 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/08_model_pseudobulk/BayesSpace_PCA_Harmony/spe_pseudobulk-BayesSpace_PCA_Harmony_k25.rds
-2024-09-09 16:13:33.703756 create model matrix
-2024-09-09 16:13:33.763901 run duplicateCorrelation()
-2024-09-09 16:16:38.417732 The estimated correlation is: 0.103812249192076
-2024-09-09 16:16:38.422372 computing enrichment statistics
-2024-09-09 16:17:31.22024 extract and reformat enrichment results
-2024-09-09 16:17:31.28306 running the baseline pairwise model
-2024-09-09 16:17:33.627379 computing pairwise statistics
-2024-09-09 16:17:35.995781 computing F-statistics
-2024-09-09 16:17:38.307586 - Saving Data
+2024-11-05 10:19:30.193342 - Load HDF5 SPE
+2024-11-05 10:20:48.31416 - Running Spatial Registration on: BayesSpace_SVGm_k25
+2024-11-05 10:20:48.332451 make pseudobulk object
+2024-11-05 10:31:40.777195 dropping 6 pseudo-bulked samples that are below 'min_ncells'.
+2024-11-05 10:31:40.895406 drop lowly expressed genes
+2024-11-05 10:31:41.485275 normalize expression
+2024-11-05 10:31:46.756092 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/08_model_pseudobulk/BayesSpace_SVGm/spe_pseudobulk-BayesSpace_SVGm_k25.rds
+2024-11-05 10:31:51.149117 create model matrix
+2024-11-05 10:31:51.217622 run duplicateCorrelation()
+2024-11-05 10:34:48.106782 The estimated correlation is: 0.0918154183642554
+2024-11-05 10:34:48.111 computing enrichment statistics
+2024-11-05 10:35:38.771886 extract and reformat enrichment results
+2024-11-05 10:35:38.838401 running the baseline pairwise model
+2024-11-05 10:35:41.048732 computing pairwise statistics
+2024-11-05 10:35:43.418426 computing F-statistics
+2024-11-05 10:35:45.624205 - Saving Data
 [1] "Reproducibility information:"
-[1] "2024-09-09 16:17:41 EDT"
-    user   system  elapsed 
- 979.720    7.223 1003.551 
+[1] "2024-11-05 10:35:49 EST"
+   user  system elapsed 
+975.177   8.600 989.322 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -160,7 +165,7 @@ k:25
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-09-09
+ date     2024-11-05
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -317,4 +322,4 @@ k:25
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Sep  9 04:17:42 PM EDT 2024
+Tue Nov  5 10:35:49 AM EST 2024

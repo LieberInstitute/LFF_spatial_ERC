@@ -1,11 +1,11 @@
 **** Job starts ****
-Tue Nov  5 10:19:19 AM EST 2024
+Tue Nov  5 10:26:15 AM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 10428146
+Job id: 10428172
 Job name: 08_model_pseudobulk
 Node name: compute-167
-Task id: 28
+Task id: 6
 Unloading conda_R/4.4
 Loading conda_R/4.3.x
 
@@ -134,27 +134,27 @@ The following object is masked from ‘package:rhdf5’:
 
     h5ls
 
-k:28
-2024-11-05 10:19:30.192239 - Load HDF5 SPE
-2024-11-05 10:20:48.314226 - Running Spatial Registration on: BayesSpace_SVGm_k28
-2024-11-05 10:20:48.333421 make pseudobulk object
-2024-11-05 10:32:27.317682 dropping 10 pseudo-bulked samples that are below 'min_ncells'.
-2024-11-05 10:32:27.439761 drop lowly expressed genes
-2024-11-05 10:32:28.042764 normalize expression
-2024-11-05 10:32:33.833446 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/08_model_pseudobulk/BayesSpace_SVGm/spe_pseudobulk-BayesSpace_SVGm_k28.rds
-2024-11-05 10:32:38.679691 create model matrix
-2024-11-05 10:32:38.742391 run duplicateCorrelation()
-2024-11-05 10:36:15.075017 The estimated correlation is: 0.0940808584173723
-2024-11-05 10:36:15.078393 computing enrichment statistics
-2024-11-05 10:37:23.462613 extract and reformat enrichment results
-2024-11-05 10:37:23.534875 running the baseline pairwise model
-2024-11-05 10:37:26.236274 computing pairwise statistics
-2024-11-05 10:37:29.514155 computing F-statistics
-2024-11-05 10:37:32.296083 - Saving Data
+k:06
+2024-11-05 10:26:26.497634 - Load HDF5 SPE
+2024-11-05 10:27:48.156791 - Running Spatial Registration on: BayesSpace_SVGm_k06
+2024-11-05 10:27:48.173214 make pseudobulk object
+2024-11-05 10:33:44.016816 dropping 5 pseudo-bulked samples that are below 'min_ncells'.
+2024-11-05 10:33:44.087963 drop lowly expressed genes
+2024-11-05 10:33:44.292988 normalize expression
+2024-11-05 10:33:45.233704 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/08_model_pseudobulk/BayesSpace_SVGm/spe_pseudobulk-BayesSpace_SVGm_k06.rds
+2024-11-05 10:33:46.051886 create model matrix
+2024-11-05 10:33:46.121467 run duplicateCorrelation()
+2024-11-05 10:33:58.309106 The estimated correlation is: 0.0509564514520777
+2024-11-05 10:33:58.311559 computing enrichment statistics
+2024-11-05 10:33:59.351774 extract and reformat enrichment results
+2024-11-05 10:33:59.366762 running the baseline pairwise model
+2024-11-05 10:33:59.489082 computing pairwise statistics
+2024-11-05 10:33:59.668002 computing F-statistics
+2024-11-05 10:33:59.804976 - Saving Data
 [1] "Reproducibility information:"
-[1] "2024-11-05 10:37:36 EST"
-    user   system  elapsed 
-1081.540    9.225 1096.925 
+[1] "2024-11-05 10:34:00 EST"
+   user  system elapsed 
+456.925   4.517 464.120 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -322,4 +322,4 @@ k:28
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Nov  5 10:37:37 AM EST 2024
+Tue Nov  5 10:34:00 AM EST 2024
