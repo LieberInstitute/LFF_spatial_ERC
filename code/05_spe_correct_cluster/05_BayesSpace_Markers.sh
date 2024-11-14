@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=25G
-#SBATCH --job-name=05_BayesSpace_Marker
+#SBATCH --job-name=05_BayesSpace_Markers
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/05_BayesSpace_Marker.txt
-#SBATCH -e logs/05_BayesSpace_Marker.txt
+#SBATCH -o logs/05_BayesSpace_Markers.txt
+#SBATCH -e logs/05_BayesSpace_Markers.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.4
 module list
 
 ## Edit with your job command
-Rscript 05_BayesSpace_Marker.R
+Rscript 05_BayesSpace_Markers.R
 
 echo "**** Job ends ****"
 date
