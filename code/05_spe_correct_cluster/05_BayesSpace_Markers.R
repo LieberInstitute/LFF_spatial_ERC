@@ -7,6 +7,8 @@ library("Polychrome")
 library("tidyverse")
 library("HDF5Array")
 library("getopt")
+library("scater")
+library("harmony")
 library("here")
 library("sessioninfo")
 
@@ -46,7 +48,7 @@ spe <- scater::runPCA(spe,
 #### Harmony Batch Correction ####
 
 message(Sys.time(), " - Harmony")
-spe <- RunHarmony(spe, "sample_id")
+spe <- harmony::RunHarmony(spe, "sample_id")
 
 ## export Marker PCA & Harmony 
 
