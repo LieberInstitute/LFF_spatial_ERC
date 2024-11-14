@@ -70,7 +70,10 @@ spe <- logNormCounts(spe)
 #### HVGs ####
 message(Sys.time(), " - Running modelGeneVar()")
 # fit mean-variance relationship
-dec <- modelGeneVar(spe)
+dec <- modelGeneVar(spe,
+                    block = spe$sample_id,
+                    BPPARAM = MulticoreParam(4)
+)
 
 # visualize mean-variance relationship
 fit <- metadata(dec)
