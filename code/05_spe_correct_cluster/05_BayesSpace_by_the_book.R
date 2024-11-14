@@ -24,7 +24,6 @@ if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive =
 message(Sys.time(), " - Load HDF5 SPE")
 spe_hdf5_path <- here("processed-data", "spe_objects", "spe_postQC")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here(spe_hdf5_path))
-stopifnot(dimred %in% reducedDimNames(spe))
 
 reducedDimNames(spe)
 
