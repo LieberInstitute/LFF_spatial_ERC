@@ -56,7 +56,7 @@ marker_reduced_dims <- list(marker_pca = reducedDim(spe,"PCA"),
                             marker_harmony = reducedDim(spe,"HARMONY"))
 
 # maybe use fwrite or other 
-save(marker_reduced_dims, here(data_dir, "erc_Marker_reducedDims.Rdata") )
+save(marker_reduced_dims, file = here(data_dir, "erc_Marker_reducedDims.Rdata") )
 
 
 #### Cluster ####
