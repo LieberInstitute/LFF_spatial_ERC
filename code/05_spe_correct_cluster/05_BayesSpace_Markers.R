@@ -83,7 +83,7 @@ dev.off()
 
 walk(c(2, 9, 16), function(k){
     ## Run BayesSpace
-    message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
+    message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = HARMONY")
     spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 20000)
     
     message(Sys.time(), " - Format and Export")
