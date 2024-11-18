@@ -90,8 +90,8 @@ spe$row <- spe$array_row
 spe$col <- spe$array_col
 
 type(spe[[prelim_cluster]]) #[1] "integer"
-
-spe$prelim <- as.character(spe[[prelim_cluster]])
+spe$prelim <- as.double(spe[[prelim_cluster]])
+type(spe[["prelim"]]) 
 
 message(Sys.time(), sprintf(" - Running spatialCluster: k = %d, dimred = %s, inint = %s", k, dimred, prelim_cluster))
 spe <- BayesSpace::spatialCluster(spe, 
@@ -101,7 +101,19 @@ spe <- BayesSpace::spatialCluster(spe,
                                   init = "prelim",
                                   nrep = 10000)
 
-# Error: Not compatible with requested type: [type=character; target=double].
+# Error: Not compatible with requested type: [type=character; target=double]. # "init" as char, double, or int 
+# Traceback 
+# 4: stop(structure(list(message = "Not compatible with requested type: [type=character; target=double].", 
+#                        call = NULL, cppstack = NULL), class = c("Rcpp::not_compatible", 
+#                                                                 "C++Error", "error", "condition")))
+# 3: cluster.FUN(Y = as.matrix(Y), df_j = df_j, nrep = nrep, n = n, 
+#                d = d, gamma = gamma, q = q, init = init, mu0 = mu0, lambda0 = lambda0, 
+#                alpha = alpha, beta = beta)
+# 2: cluster(Y, q, df_j, init = init, model = model, precision = precision, 
+#            mu0 = mu0, lambda0 = lambda0, gamma = gamma, alpha = alpha, 
+#            beta = beta, nrep = nrep)
+# 1: BayesSpace::spatialCluster(spe, use.dimred = dimred, q = k, init = "prelim", 
+#                               nrep = 10000)
 
 message(Sys.time(), " - Format and Export")
 
