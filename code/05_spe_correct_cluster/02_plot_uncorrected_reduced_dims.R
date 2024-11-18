@@ -130,7 +130,7 @@ spatialLIBD::vis_grid_clus(
     sample_order = sample_ids
 )
 
-# slurmjobs::job_single('02_plot_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 02_plot_reduced_dims.R")
+# slurmjobs::job_single('02_plot_uncorrected_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 02_plot_uncorrected_reduced_dims.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
