@@ -35,8 +35,8 @@ name <- opt$name
 
 message("Load spe from:", opt$spe)
 message("Dimension Reduction:", dimred)
+message("Prelim input:", opt$prelim)
 message("Output name:", name)
-message("Output name:", opt$prelim)
 
 spe_hdf5_path <- here("processed-data", "spe_objects", opt$spe)
 stopifnot(file.exists(spe_hdf5_path))
