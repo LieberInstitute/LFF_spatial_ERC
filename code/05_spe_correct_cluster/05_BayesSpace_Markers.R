@@ -56,10 +56,12 @@ marker_reduced_dims <- list(marker_pca = reducedDim(spe,"PCA"),
                             marker_harmony = reducedDim(spe,"HARMONY"))
 
 # maybe use fwrite or other 
+message(Sys.time(), " - Save Reduced Dims")
 save(marker_reduced_dims, file = here(data_dir, "erc_Marker_reducedDims.Rdata") )
 
 
 #### Cluster ####
+message(Sys.time(), " - Set Up Clustering")
 ## Set Seed
 set.seed(20240905)
 
@@ -70,6 +72,14 @@ metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 ## Fix colaname for row and col
 spe$row <- spe$array_row
 spe$col <- spe$array_col
+
+## pick number of clusters
+message(Sys.time(), " - qTune")
+spe <- qTune(spe, qs=seq(2, 28), platform="Visium")
+
+pdf(here(plot_dir, "BayesSpace_Markers_erc_qplot.pdf"))
+qPlot(spe)
+dev.off()
 
 walk(c(2, 9, 16), function(k){
     ## Run BayesSpace
