@@ -98,7 +98,7 @@ spe <- BayesSpace::spatialCluster(spe,
                                   use.dimred = dimred,
                                   q = k, 
                                   # init = prelim_cluster,
-                                  init = "prelim",
+                                  init = spe$prelim,
                                   nrep = 10000)
 
 # Error: Not compatible with requested type: [type=character; target=double]. # "init" as char, double, or int 
