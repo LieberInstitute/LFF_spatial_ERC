@@ -68,10 +68,6 @@ if(!is.null(opt$prelim)){
     table(spe[[prelim_cluster]])
 }
 
-
-## Set Seed
-set.seed(20240905)
-
 ## Create output directories
 dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name), paste0(name, "_k", k_nice))
 if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
@@ -79,17 +75,33 @@ if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive
 dir_rdata <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name))
 if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
+#### Cluster ####
+message(Sys.time(), " - Set Up Clustering")
+
+## Set Seed
+set.seed(20240905)
 
 ## Set the BayesSpace metadata using code from
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
+## Fix colnames for row and col
+spe$row <- spe$array_row
+spe$col <- spe$array_col
+
+type(spe[[prelim_cluster]]) #[1] "integer"
+
+spe$prelim <- as.character(spe[[prelim_cluster]])
+
 message(Sys.time(), sprintf(" - Running spatialCluster: k = %d, dimred = %s, inint = %s", k, dimred, prelim_cluster))
 spe <- BayesSpace::spatialCluster(spe, 
                                   use.dimred = dimred,
                                   q = k, 
-                                  init = prelim_cluster,
+                                  # init = prelim_cluster,
+                                  init = "prelim",
                                   nrep = 10000)
+
+# Error: Not compatible with requested type: [type=character; target=double].
 
 message(Sys.time(), " - Format and Export")
 
@@ -127,17 +139,17 @@ p_list = vis_grid_clus(
 )
 
 #  Vis_clus for each sample
-walk(sample_ids, function(samp){
-    spot_plot <- vis_clus(
-        spe = spe,
-        sampleid = samp,
-        clustervar = bayesSpace_name,
-        # sort_clust = FALSE,
-        colors = cols,
-        point_size = 2
-    )
-    ggsave(spot_plot, filename = here(dir_plots, paste0(bayesSpace_name, "-", samp, ".pdf")))
-})
+# walk(sample_ids, function(samp){
+#     spot_plot <- vis_clus(
+#         spe = spe,
+#         sampleid = samp,
+#         clustervar = bayesSpace_name,
+#         # sort_clust = FALSE,
+#         colors = cols,
+#         point_size = 2
+#     )
+#     ggsave(spot_plot, filename = here(dir_plots, paste0(bayesSpace_name, "-", samp, ".pdf")))
+# })
 
 ## in the future, also plot reduced dims by cluster
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=50G
 #SBATCH --job-name=05_BayesSpace_prelim
 #SBATCH -c 1
 #SBATCH -o /dev/null
@@ -32,7 +32,7 @@ module list
 
 ## Run BayesSpace on regular (Harmony corrected) PCAs
 Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
-Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim_id --prelim 10x_id
+# Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim_id --prelim 10x_id
 
 echo "**** Job ends ****"
 date
