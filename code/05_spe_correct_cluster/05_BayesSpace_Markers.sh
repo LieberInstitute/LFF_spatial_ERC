@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=50G
 #SBATCH --job-name=05_BayesSpace_Markers
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
