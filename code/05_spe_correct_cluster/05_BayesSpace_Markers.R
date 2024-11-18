@@ -14,8 +14,8 @@ library("sessioninfo")
 
 
 ## Create output directories
-dir_plots <- here("plots", "05_spe_correct_cluster", "05_BayesSpace_Marker")
-if(!dir.exists(dir_plots)) dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
+plot_dir <- here("plots", "05_spe_correct_cluster", "05_BayesSpace_Marker")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
 data_dir <- here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -73,13 +73,6 @@ metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 spe$row <- spe$array_row
 spe$col <- spe$array_col
 
-## pick number of clusters
-message(Sys.time(), " - qTune")
-spe <- qTune(spe, qs=seq(2, 28), platform="Visium")
-
-pdf(here(plot_dir, "BayesSpace_Markers_erc_qplot.pdf"))
-qPlot(spe)
-dev.off()
 
 walk(c(2, 9, 16), function(k){
     ## Run BayesSpace
@@ -114,7 +107,7 @@ walk(c(2, 9, 16), function(k){
     p_list = vis_grid_clus(
         spe = spe,
         clustervar = bayesSpace_name,
-        pdf_file = here(dir_plots, paste0(bayesSpace_name, "-ALL.pdf")),
+        pdf_file = here(plot_dir, paste0(bayesSpace_name, "-ALL.pdf")),
         sort_clust = FALSE,
         colors = cols,
         spatial = FALSE,
@@ -124,6 +117,13 @@ walk(c(2, 9, 16), function(k){
     
 })
 
+## pick number of clusters
+message(Sys.time(), " - qTune")
+spe <- qTune(spe, qs=seq(2, 28), platform="Visium")
+
+pdf(here(plot_dir, "BayesSpace_Markers_erc_qplot.pdf"))
+qPlot(spe)
+dev.off()
 
 # slurmjobs::job_single('05_BayesSpace_Marker', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace_Marker.R")
 
