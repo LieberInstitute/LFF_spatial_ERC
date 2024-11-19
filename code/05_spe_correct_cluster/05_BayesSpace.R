@@ -1,3 +1,5 @@
+## Louise Huuki-Myers, Nov 2024
+## Run BayesSpace w/ spatialDLPFC marker genes - run clustering
 ## Adapted from https://github.com/LieberInstitute/spatial_NAc/blob/f3538df2e932f537f8670bf708f2ff9434ef5d91/code/05_harmony_BayesSpace/05-BayesSpace_k_search.R
 
 ## Required libraries
