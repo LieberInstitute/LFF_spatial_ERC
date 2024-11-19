@@ -1,3 +1,5 @@
+## Louise Huuki-Myers, Nov 2024
+## Run BayesSpace w/ spatialDLPFC marker genes - prep reduced dims and run qTune
 ## Adapted from https://github.com/LieberInstitute/spatial_NAc/blob/f3538df2e932f537f8670bf708f2ff9434ef5d91/code/05_harmony_BayesSpace/05-BayesSpace_k_search.R
 
 ## Required libraries
@@ -60,7 +62,7 @@ message(Sys.time(), " - Save Reduced Dims")
 save(marker_reduced_dims, file = here(data_dir, "erc_Marker_reducedDims.Rdata") )
 
 
-#### Cluster ####
+#### Cluster Prep ####
 message(Sys.time(), " - Set Up Clustering")
 ## Set Seed
 set.seed(20240905)
@@ -73,54 +75,16 @@ metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 spe$row <- spe$array_row
 spe$col <- spe$array_col
 
-
-walk(c(2, 9, 16), function(k){
-    ## Run BayesSpace
-    message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = HARMONY")
-    spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 20000)
-    
-    message(Sys.time(), " - Format and Export")
-    
-    table(spe$spatial.cluster)
-    
-    spe$bayesSpace_temp <- as.factor(spe$spatial.cluster)
-    bayesSpace_name <- paste0("BayesSpace_",name,"_k", k_nice)
-    colnames(colData(spe))[ncol(colData(spe))] <- bayesSpace_name
-    
-    cluster_export(
-        spe,
-        bayesSpace_name,
-        cluster_dir = here(data_dir, "clusters_BayesSpace")
-    )
-    
-    ## Visualize BayesSpace results
-    message(Sys.time(), " - Visualize clusters")
-    sample_ids <- unique(spe$sample_id)
-    
-    ## create color pallet
-    cols <- Polychrome::palette36.colors(k)
-    if(k ==2) cols <- cols[seq(2)] ## fix return 3 colors bug
-    
-    names(cols) <- sort(unique(spe[[bayesSpace_name]]))
-    
-    #   Use 'vis_grid_clus' to preserve all spots (including overlaps)
-    p_list = vis_grid_clus(
-        spe = spe,
-        clustervar = bayesSpace_name,
-        pdf_file = here(plot_dir, paste0(bayesSpace_name, "-ALL.pdf")),
-        sort_clust = FALSE,
-        colors = cols,
-        spatial = FALSE,
-        point_size = 1.1
-    )
-    
-    
-})
-
 ## pick number of clusters
 message(Sys.time(), " - qTune")
 spe <- qTune(spe, qs=seq(2, 28), platform="Visium")
 
+attr(spe, "q.logliks")
+
+## save model's log likelihood
+write.csv(attr(spe, "q.logliks"), file = here(data_dir, "qTune_logliks_Markers.csv"))
+
+# qplot
 pdf(here(plot_dir, "BayesSpace_Markers_erc_qplot.pdf"))
 qPlot(spe)
 dev.off()
