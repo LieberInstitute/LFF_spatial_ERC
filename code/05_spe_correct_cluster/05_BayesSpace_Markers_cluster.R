@@ -1,3 +1,5 @@
+## Louise Huuki-Myers, Nov 2024
+## Run BayesSpace w/ spatialDLPFC marker genes - run clustering
 ## Adapted from https://github.com/LieberInstitute/spatial_NAc/blob/f3538df2e932f537f8670bf708f2ff9434ef5d91/code/05_harmony_BayesSpace/05-BayesSpace_k_search.R
 
 ## Required libraries
@@ -6,12 +8,20 @@ library("BayesSpace")
 library("Polychrome")
 library("tidyverse")
 library("HDF5Array")
-library("getopt")
-library("scater")
-library("harmony")
 library("here")
 library("sessioninfo")
 
+## Choose k
+k <- as.numeric(
+    #   Only one of these environment variables will be defined, so grab the
+    #   defined one (handle SGE or SLURM)
+    paste0(Sys.getenv("SLURM_ARRAY_TASK_ID"), Sys.getenv("SGE_TASK_ID"))
+)
+
+# k <-9
+
+k_nice <- sprintf("k%02d", k)
+message("Run BayesSpace: ", k_nice)
 
 ## Create output directories
 plot_dir <- here("plots", "05_spe_correct_cluster", "05_BayesSpace_Marker")
@@ -26,39 +36,11 @@ if(!dir.exists(here(data_dir,"clusters_BayesSpace"))) dir.create(here(data_dir, 
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
 
-## Extract marker set
+## load marker_reduced_dims
+load(here(data_dir, "erc_Marker_reducedDims.Rdata"), verbose = TRUE)
 
-## pull spatialDLPFC marker genes, combine w/ top.svgs
-dlpfc_layer_markers <- read_csv(here("processed-data", "00_project_prep", "06_marker_genes", "dlpfc_layers_top100.csv"))
-
-marker_genes <- dlpfc_layer_markers |>
-    filter(ensembl %in% rownames(spe), dataset == "spatialDLPFC") |>
-    pull(ensembl) |>
-    unique()
-
-length(marker_genes) # [1] 752
-
-#### Get reduced dims ####
-message(Sys.time(), " - PCA")
-spe <- scater::runPCA(spe, 
-               subset_row = marker_genes,
-               ncomponents = 50,
-               name = paste0("PCA"))
-
-#### Harmony Batch Correction ####
-
-message(Sys.time(), " - Harmony")
-spe <- harmony::RunHarmony(spe, "sample_id")
-
-## export Marker PCA & Harmony 
-
-marker_reduced_dims <- list(marker_pca = reducedDim(spe,"PCA"),
-                            marker_harmony = reducedDim(spe,"HARMONY"))
-
-# maybe use fwrite or other 
-message(Sys.time(), " - Save Reduced Dims")
-save(marker_reduced_dims, file = here(data_dir, "erc_Marker_reducedDims.Rdata") )
-
+reducedDim(spe, "HARMONY") <- marker_reduced_dims$marker_harmony
+reducedDim(spe, "PCA") <- marker_reduced_dims$marker_pca
 
 #### Cluster ####
 message(Sys.time(), " - Set Up Clustering")
@@ -73,57 +55,46 @@ metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 spe$row <- spe$array_row
 spe$col <- spe$array_col
 
+## Run BayesSpace
+message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = HARMONY")
+spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 20000)
 
-walk(c(2, 9, 16), function(k){
-    ## Run BayesSpace
-    message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = HARMONY")
-    spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 20000)
-    
-    message(Sys.time(), " - Format and Export")
-    
-    table(spe$spatial.cluster)
-    
-    spe$bayesSpace_temp <- as.factor(spe$spatial.cluster)
-    bayesSpace_name <- paste0("BayesSpace_",name,"_k", k_nice)
-    colnames(colData(spe))[ncol(colData(spe))] <- bayesSpace_name
-    
-    cluster_export(
-        spe,
-        bayesSpace_name,
-        cluster_dir = here(data_dir, "clusters_BayesSpace")
-    )
-    
-    ## Visualize BayesSpace results
-    message(Sys.time(), " - Visualize clusters")
-    sample_ids <- unique(spe$sample_id)
-    
-    ## create color pallet
-    cols <- Polychrome::palette36.colors(k)
-    if(k ==2) cols <- cols[seq(2)] ## fix return 3 colors bug
-    
-    names(cols) <- sort(unique(spe[[bayesSpace_name]]))
-    
-    #   Use 'vis_grid_clus' to preserve all spots (including overlaps)
-    p_list = vis_grid_clus(
-        spe = spe,
-        clustervar = bayesSpace_name,
-        pdf_file = here(plot_dir, paste0(bayesSpace_name, "-ALL.pdf")),
-        sort_clust = FALSE,
-        colors = cols,
-        spatial = FALSE,
-        point_size = 1.1
-    )
-    
-    
-})
+message(Sys.time(), " - Format and Export")
 
-## pick number of clusters
-message(Sys.time(), " - qTune")
-spe <- qTune(spe, qs=seq(2, 28), platform="Visium")
+table(spe$spatial.cluster)
 
-pdf(here(plot_dir, "BayesSpace_Markers_erc_qplot.pdf"))
-qPlot(spe)
-dev.off()
+spe$bayesSpace_temp <- as.factor(spe$spatial.cluster)
+bayesSpace_name <- paste0("BayesSpace_Markers_", k_nice)
+colnames(colData(spe))[ncol(colData(spe))] <- bayesSpace_name
+
+if(!dir.exists(here(data_dir, bayesSpace_name))) dir.create(here(data_dir, bayesSpace_name))
+
+cluster_export(
+    spe,
+    bayesSpace_name,
+    cluster_dir = here(data_dir, bayesSpace_name)
+)
+
+## Visualize BayesSpace results
+message(Sys.time(), " - Visualize clusters")
+sample_ids <- unique(spe$sample_id)
+
+## create color pallet
+cols <- Polychrome::palette36.colors(k)
+if(k ==2) cols <- cols[seq(2)] ## fix return 3 colors bug
+
+names(cols) <- sort(unique(spe[[bayesSpace_name]]))
+
+#   Use 'vis_grid_clus' to preserve all spots (including overlaps)
+p_list = vis_grid_clus(
+    spe = spe,
+    clustervar = bayesSpace_name,
+    pdf_file = here(plot_dir, paste0(bayesSpace_name, "-ALL.pdf")),
+    sort_clust = FALSE,
+    colors = cols,
+    spatial = FALSE,
+    point_size = 1.1
+)
 
 # slurmjobs::job_single('05_BayesSpace_Marker', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace_Marker.R")
 
