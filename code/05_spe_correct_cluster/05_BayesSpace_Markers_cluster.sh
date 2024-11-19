@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p katun
+#SBATCH -p shared
 #SBATCH --mem=100G
 #SBATCH --job-name=05_BayesSpace_Markers_cluster
 #SBATCH -c 1
