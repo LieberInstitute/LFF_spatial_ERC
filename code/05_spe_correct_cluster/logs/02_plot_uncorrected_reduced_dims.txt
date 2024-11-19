@@ -1,0 +1,368 @@
+**** Job starts ****
+Mon Nov 18 01:11:39 PM EST 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 10771825
+Job name: 02_plot_uncorrected_reduced_dims
+Node name: compute-157
+Task id: 
+Loading conda_R/4.4
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
+    tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: scuttle
+Loading required package: ggplot2
+Loading required package: DelayedArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: SparseArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+Loading required package: viridisLite
+
+Attaching package: ‘purrr’
+
+The following object is masked from ‘package:DelayedArray’:
+
+    simplify
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    reduce
+
+The following object is masked from ‘package:IRanges’:
+
+    reduce
+
+2024-11-18 13:11:46.235108 - Load HDF5 SPE
+class: SpatialExperiment 
+dim: 30494 122202 
+metadata(0):
+assays(2): counts logcounts
+rownames(30494): ENSG00000243485 ENSG00000238009 ... ENSG00000278817
+  ENSG00000277196
+rowData names(7): source type ... gene_type gene_search
+colnames(122202): AAACAACGAATAGTTC-1_Br5212 AAACAAGTATCTCCCA-1_Br5212
+  ... TTGTTTGTATTACACG-1_Br6263 TTGTTTGTGTAAATTC-1_Br6263
+colData names(48): sample_id in_tissue ... scran_quick_cluster
+  sizeFactor
+reducedDimNames(10): 10x_pca 10x_tsne ... UMAP.HARMONY TSNE.HARMONY
+mainExpName: NULL
+altExpNames(0):
+spatialCoords names(2) : pxl_col_in_fullres pxl_row_in_fullres
+imgData names(4): sample_id image_id data scaleFactor
+ [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"      
+ [6] "TSNE"         "UMAP"         "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+saving: spe_UMAP-sample_id-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-round-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Visium_slide-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-sample_id-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-round-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Visium_slide-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-qc_anno-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-scran_discard-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-APOE-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Ancestry-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Sex-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-APOE-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Ancestry-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Sex-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Age-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP-Rin-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_UMAP-sum_umi-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_UMAP-sum_gene-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_UMAP-expr_chrM_ratio-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP-MBP-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP-PCP4-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP-RELN-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP-SNAP25-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-sample_id-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-round-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Visium_slide-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-sample_id-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE-round-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Visium_slide-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE-qc_anno-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-scran_discard-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-APOE-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Ancestry-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Sex-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-APOE-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Ancestry-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Sex-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Age-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE-Rin-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_TSNE-sum_umi-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_TSNE-sum_gene-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_TSNE-expr_chrM_ratio-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE-MBP-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE-PCP4-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE-RELN-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE-SNAP25-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-sample_id-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-round-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Visium_slide-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-sample_id-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-round-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Visium_slide-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-qc_anno-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-scran_discard-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-APOE-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Ancestry-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Sex-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-APOE-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Ancestry-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Sex-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Age-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_UMAP.HARMONY-Rin-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_UMAP.HARMONY-sum_umi-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_UMAP.HARMONY-sum_gene-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_UMAP.HARMONY-expr_chrM_ratio-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP.HARMONY-MBP-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP.HARMONY-PCP4-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP.HARMONY-RELN-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_UMAP.HARMONY-SNAP25-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-sample_id-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-round-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Visium_slide-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-sample_id-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-round-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Visium_slide-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-qc_anno-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-scran_discard-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-APOE-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Ancestry-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Sex-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-APOE-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Ancestry-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Sex-PCA_p1_facet.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Age-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_TSNE.HARMONY-Rin-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_TSNE.HARMONY-sum_umi-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_TSNE.HARMONY-sum_gene-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_QC_TSNE.HARMONY-expr_chrM_ratio-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE.HARMONY-MBP-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE.HARMONY-PCP4-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE.HARMONY-RELN-PCA_p1.png
+Saving 7 x 7 in image
+saving: spe_gene_TSNE.HARMONY-SNAP25-PCA_p1.png
+Saving 7 x 7 in image
+  sample_id ManualAnnotation    n
+1    Br1691    UMAP_outliers 3109
+2    Br5276   UMAP_high_mito 1975
+3    Br5529   UMAP_high_mito 1692
+4    Br5599    UMAP_outliers 4209
+5    Br5634    UMAP_outliers 3442
+6    Br6085    UMAP_outliers   69
+7    Br6538    UMAP_outliers 1818
+Error in select(column_to_rownames(as_tibble(mutate(annotations, ManualAnnotation_BrNum = paste(ManualAnnotation,  : 
+  could not find function "select"
+Execution halted

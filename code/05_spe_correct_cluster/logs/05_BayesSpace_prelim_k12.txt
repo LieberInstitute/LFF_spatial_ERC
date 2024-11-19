@@ -1,11 +1,11 @@
 **** Job starts ****
-Mon Nov 18 02:28:13 PM EST 2024
+Mon Nov 18 02:30:08 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 10778564
+Job id: 10778556
 Job name: 05_BayesSpace_prelim
-Node name: compute-159
-Task id: 9
+Node name: compute-154
+Task id: 12
 Loading conda_R/4.4
 
 Currently Loaded Modules:
@@ -164,17 +164,8 @@ Load spe from:spe_postQC
 Dimension Reduction:HARMONY
 Prelim input:10x
 Output name:PCA_Harmony_prelim
-k:9
-2024-11-18 14:28:25.762745 - Load HDF5 SPE
-prelim cluster col:10x_kmeans_9_clusters
-
-    1     2     3     4     5     6     7     8     9 
-31111 25217 19240 16198 13167  8811  5280  2556   622 
-2024-11-18 14:30:06.119472 - Set Up Clustering
-[1] "integer"
-[1] "double"
-2024-11-18 14:30:06.257504 - Running spatialCluster: k = 9, dimred = HARMONY, inint = 10x_kmeans_9_clusters
-Neighbors were identified for 122202 out of 122202 spots.
-Fitting model...
-Calculating labels using iterations 1000 through 10000.
-/var/spool/slurm/d/job10778564/slurm_script: line 40: 1291200 Killed                  Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
+k:12
+2024-11-18 14:30:22.545211 - Load HDF5 SPE
+prelim cluster col:10x_kmeans_12_clusters
+Error: prelim_cluster %in% colnames(colData(spe)) is not TRUE
+Execution halted

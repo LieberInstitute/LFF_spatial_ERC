@@ -1,11 +1,11 @@
 **** Job starts ****
-Mon Nov 18 02:28:13 PM EST 2024
+Mon Nov 18 09:30:49 AM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 10778564
-Job name: 05_BayesSpace_prelim
-Node name: compute-159
-Task id: 9
+Job id: 10770204
+Job name: 05_BayesSpace_Markers
+Node name: compute-169
+Task id: 
 Loading conda_R/4.4
 
 Currently Loaded Modules:
@@ -14,7 +14,7 @@ Currently Loaded Modules:
 
  
 
-here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SpatialExperiment
 Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
@@ -160,21 +160,53 @@ The following object is masked from ‘package:rhdf5’:
 
     h5ls
 
-Load spe from:spe_postQC
-Dimension Reduction:HARMONY
-Prelim input:10x
-Output name:PCA_Harmony_prelim
-k:9
-2024-11-18 14:28:25.762745 - Load HDF5 SPE
-prelim cluster col:10x_kmeans_9_clusters
+Loading required package: scuttle
+Loading required package: Rcpp
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+2024-11-18 09:31:02.605971 - Load HDF5 SPE
+Rows: 1600 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (7): ensembl, gene, dataset, layer, marker_anno, SpD, layer_combo
+dbl (1): top
 
-    1     2     3     4     5     6     7     8     9 
-31111 25217 19240 16198 13167  8811  5280  2556   622 
-2024-11-18 14:30:06.119472 - Set Up Clustering
-[1] "integer"
-[1] "double"
-2024-11-18 14:30:06.257504 - Running spatialCluster: k = 9, dimred = HARMONY, inint = 10x_kmeans_9_clusters
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+[1] 752
+2024-11-18 09:32:53.448986 - PCA
+2024-11-18 09:39:39.226036 - Harmony
+Transposing data matrix
+Initializing state using k-means centroids initialization
+Harmony 1/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony 2/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony 3/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony converged after 3 iterations
+Warning messages:
+1: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+2: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+3: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+2024-11-18 09:41:37.000759 - Save Reduced Dims
+2024-11-18 09:41:41.647976 - Set Up Clustering
+2024-11-18 09:41:41.766863 - Running spatialCluster: k=2, dimred = HARMONY
 Neighbors were identified for 122202 out of 122202 spots.
 Fitting model...
-Calculating labels using iterations 1000 through 10000.
-/var/spool/slurm/d/job10778564/slurm_script: line 40: 1291200 Killed                  Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
+/var/spool/slurm/d/job10770204/slurm_script: line 30: 1439606 Killed                  Rscript 05_BayesSpace_Markers.R
+slurmstepd: error: Detected 1 oom-kill event(s) in StepId=10770204.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.

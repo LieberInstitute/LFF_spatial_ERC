@@ -1,12 +1,11 @@
 **** Job starts ****
-Mon Sep 30 05:32:42 PM EDT 2024
+Mon Nov 18 02:28:13 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 9918664
+Job id: 10778565
 Job name: 05_BayesSpace_prelim
-Node name: compute-141
+Node name: compute-159
 Task id: 10
-Unloading conda_R/4.4
 Loading conda_R/4.4
 
 Currently Loaded Modules:
@@ -163,16 +162,19 @@ The following object is masked from ‘package:rhdf5’:
 
 Load spe from:spe_postQC
 Dimension Reduction:HARMONY
+Prelim input:10x
 Output name:PCA_Harmony_prelim
-Output name:10x
 k:10
-2024-09-30 17:33:01.077667 - Load HDF5 SPE
+2024-11-18 14:28:25.76275 - Load HDF5 SPE
 prelim cluster col:10x_kmeans_10_clusters
 
     1     2     3     4     5     6     7     8     9    10 
 27808 24007 18595 15432 13208 10005  6574  4063  2012   498 
-2024-09-30 17:34:58.739738 - Running spatialCluster: k = 10, dimred = HARMONY, inint = 10x_kmeans_10_clusters
+2024-11-18 14:30:06.12508 - Set Up Clustering
+[1] "integer"
+[1] "double"
+2024-11-18 14:30:06.265109 - Running spatialCluster: k = 10, dimred = HARMONY, inint = 10x_kmeans_10_clusters
 Neighbors were identified for 122202 out of 122202 spots.
 Fitting model...
-Error: Not compatible with requested type: [type=character; target=double].
-Execution halted
+Calculating labels using iterations 1000 through 10000.
+/var/spool/slurm/d/job10778565/slurm_script: line 40: 1291205 Killed                  Rscript 05_BayesSpace_prelim.R --spe spe_postQC --dimred HARMONY --name PCA_Harmony_prelim --prelim 10x
