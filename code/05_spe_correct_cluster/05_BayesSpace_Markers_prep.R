@@ -76,6 +76,9 @@ spe$row <- spe$array_row
 spe$col <- spe$array_col
 
 ## pick number of clusters
+## qTune uses PCA - replace w/ HARMONY reduced dims
+reducedDim(spe, "PCA") <- marker_reduced_dims$marker_harmony
+
 message(Sys.time(), " - qTune")
 spe <- qTune(spe, qs=seq(2, 28), platform="Visium")
 
