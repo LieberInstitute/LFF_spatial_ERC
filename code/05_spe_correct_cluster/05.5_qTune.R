@@ -61,7 +61,7 @@ spe$col <- spe$array_col
 
 ## pick number of clusters
 ## qTune uses PCA - replace w/ HARMONY reduced dims
-message("Use ", dimred, "as 'PCA'")
+message("Use '", dimred, "' as 'PCA'")
 reducedDim(spe, "PCA") <- reducedDim(spe, dimred) 
 
 message(Sys.time(), " - qTune")
