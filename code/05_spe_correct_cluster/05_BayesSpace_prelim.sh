@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=50G
+#SBATCH --mem=100G
 #SBATCH --job-name=05_BayesSpace_prelim
 #SBATCH -c 1
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=2-12%10
+#SBATCH --array=4,6,7,9,10%10
 
 ## Explicitly pipe script output to a log
 log_path=logs/05_BayesSpace_prelim_k${SLURM_ARRAY_TASK_ID}.txt
