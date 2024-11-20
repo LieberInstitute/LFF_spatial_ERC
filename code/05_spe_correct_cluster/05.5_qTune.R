@@ -4,12 +4,8 @@
 ## Required libraries
 library("spatialLIBD")
 library("BayesSpace")
-library("Polychrome")
-library("tidyverse")
 library("HDF5Array")
 library("getopt")
-library("scater")
-library("harmony")
 library("here")
 library("sessioninfo")
 
@@ -47,6 +43,9 @@ message(Sys.time(), " - Load HDF5 SPE")
 spe_hdf5_path <- here("processed-data", "spe_objects", opt$spe)
 stopifnot(file.exists(spe_hdf5_path))
 
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here(spe_hdf5_path))
+stopifnot(dimred %in% reducedDimNames(spe))
+
 #### Cluster Prep ####
 message(Sys.time(), " - Set Up Clustering")
 ## Set Seed
@@ -62,7 +61,7 @@ spe$col <- spe$array_col
 
 ## pick number of clusters
 ## qTune uses PCA - replace w/ HARMONY reduced dims
-message("Use ", dimred, "as 'PCA'")
+message("Use '", dimred, "' as 'PCA'")
 reducedDim(spe, "PCA") <- reducedDim(spe, dimred) 
 
 message(Sys.time(), " - qTune")
