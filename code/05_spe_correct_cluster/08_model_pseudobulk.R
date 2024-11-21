@@ -10,7 +10,15 @@ library("spatialLIBD")
 library("HDF5Array")
 
 
-cluster_type <- "BayesSpace_SVGm"
+# Import command-line parameters
+spec <- matrix(
+    c(  "cluster", "i", "1", "character", "Name of cluster"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(spec)
+
+# cluster_type <- "BayesSpace_SVGm"
+cluster_type <- opt$cluster
 
 data_dir <- here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", cluster_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
