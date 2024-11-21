@@ -8,7 +8,7 @@ library("sessioninfo")
 library("SpatialExperiment")
 library("spatialLIBD")
 library("HDF5Array")
-
+library("getopt")
 
 # Import command-line parameters
 spec <- matrix(
