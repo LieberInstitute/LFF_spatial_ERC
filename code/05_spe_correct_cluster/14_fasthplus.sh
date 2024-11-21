@@ -10,7 +10,7 @@
 #SBATCH --array=2-28%10
 
 ## Define loops and appropriately subset each variable for the array task ID
-cluster=PRECAST_SVG
+cluster=BayesSpace_SVGm
 
 ## Explicitly pipe script output to a log
 log_path=logs/14_fasthplus_${cluster}_k${SLURM_ARRAY_TASK_ID}.txt
