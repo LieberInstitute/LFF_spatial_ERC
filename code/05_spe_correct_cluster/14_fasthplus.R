@@ -14,14 +14,15 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 # Import command-line parameters
 spec <- matrix(
     c(  "cluster", "i", "1", "character", "Name of cluster",
-        "k", "k", "1", "numeric", "Number of clusters"
+        "k", "k", "1", "numeric", "Number of clusters",
+        "drop_WM", "d", "1", "boolean", "drop White Matter - defined in script"
         ),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(spec)
 
 # for testing
-# opt <- list(cluster ="PRECAST_SVG", k = 10)
+# opt <- list(cluster ="BayesSpace_SVGm", k = 10, drop_WM = TRUE)
 
 print("Using the following parameters:")
 print(opt)
@@ -38,6 +39,15 @@ stopifnot(cluster_k %in% colnames(colData(spe)))
 # hpb estimate. t = pre-bootstrap sample size, D = reduced dimensions matrix, L = cluster labels, r = number of bootstrap iterations
 dim(reducedDims(spe)$HARMONY)
 # [1] 122202     50
+
+## drop WM
+if(opt$drop_WM){
+    message("Dropping WM")
+    spe <- spe[, spe$BayesSpace_SVGm_k02 != "Sp02D02"]
+} 
+
+#### Set up eval ####
+message(Sys.time(), " - Setup fasthplus")
 
 ## find intitial t
 find_t <- function(L, proportion = 0.05) {
@@ -80,7 +90,7 @@ message("Results: ", cluster_k,  "H+ :", fasthplus)
 
 ## save results
 results <- data.frame(cluster = cluster_k, fasthplus = fasthplus)
-write.table(results, file = here(data_dir, "fasthplus_results.csv"), append = TRUE)
+write.table(results, file = here(data_dir, sprintf("fasthplus_results-%s.csv", opt$cluster), append = TRUE))
 
 ## Reproducibility information
 print("Reproducibility information:")
