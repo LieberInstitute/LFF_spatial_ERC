@@ -32,7 +32,24 @@ bayes_clusters <- map2(bayes_cluster_fn, map(str_split(bayes_cluster_fn, "/"), 1
     return(clus)
 })
 
-bayes_clusters_tab <- purrr::reduce(bayes_clusters, dplyr::left_join, by = c("key"))
+bayes_cluster_markers_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker"),
+                                       recursive = TRUE,
+                                       full.names = TRUE,
+                                       pattern = "clusters.csv")
+## only select k02 and k11
+bayes_cluster_markers_fn <- bayes_cluster_markers_fn[grepl("k02|k11", bayes_cluster_markers_fn)]
+
+bayes_clusters_markers <- map2(bayes_cluster_markers_fn, map(str_split(bayes_cluster_markers_fn, "/"), 11), function(file, name){
+    sp = sprintf("Sp%02d",parse_number(name))
+    clus <- read.csv(file) |>
+        mutate(cluster = factor(paste0(sp, "D", str_pad(cluster, 2,  pad = "0"))))
+    
+    colnames(clus)[2] <- name
+    return(clus)
+})
+
+
+bayes_clusters_tab <- purrr::reduce(c(bayes_clusters, bayes_clusters_markers), dplyr::left_join, by = c("key"))
 head(bayes_clusters_tab)
 
 ## fix double BrNum in key
@@ -41,6 +58,7 @@ identical(colnames(spe), bayes_clusters_tab$key)
 bayes_clusters_tab$key <- NULL
 
 bayes_clusters_tab[1:5,1:5]
+
 
 #### PRECAST DATA ####
 # precast_tab <-read.csv(file = here("processed-data", "05_spe_correct_cluster", "06_PRECAST", "PRECAST_bayes_clusters.csv"), row.names = 1)
