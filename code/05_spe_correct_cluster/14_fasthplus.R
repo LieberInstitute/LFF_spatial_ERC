@@ -14,8 +14,8 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 # Import command-line parameters
 spec <- matrix(
     c(  "cluster", "i", "1", "character", "Name of cluster",
-        "k", "k", "1", "numeric", "Number of clusters",
-        "drop_WM", "d", "1", "boolean", "drop White Matter - defined in script"
+        "k", "k", "2", "numeric", "Number of clusters",
+        "drop_WM", "d", "3", "logical", "drop White Matter - defined in script"
         ),
     ncol = 5, byrow = TRUE
 )
