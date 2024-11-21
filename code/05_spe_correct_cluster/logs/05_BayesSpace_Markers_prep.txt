@@ -1,8 +1,8 @@
 **** Job starts ****
-Tue Nov 19 10:29:48 AM EST 2024
+Wed Nov 20 12:45:35 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 10790521
+Job id: 10811445
 Job name: 05_BayesSpace_Markers_prep
 Node name: compute-168
 Task id: 
@@ -163,7 +163,7 @@ The following object is masked from ‘package:rhdf5’:
 Loading required package: scuttle
 Loading required package: Rcpp
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2024-11-19 10:30:01.017944 - Load HDF5 SPE
+2024-11-20 12:45:46.852392 - Load HDF5 SPE
 Rows: 1600 Columns: 8
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -173,8 +173,8 @@ dbl (1): top
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 [1] 752
-2024-11-19 10:31:43.53794 - PCA
-2024-11-19 10:38:53.865156 - Harmony
+2024-11-20 12:47:09.249238 - PCA
+2024-11-20 12:53:13.395278 - Harmony
 Transposing data matrix
 Initializing state using k-means centroids initialization
 Harmony 1/10
@@ -199,13 +199,11 @@ Harmony 3/10
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
 Harmony converged after 3 iterations
-Warning messages:
-1: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
-2: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
-3: Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
-2024-11-19 10:40:30.304142 - Save Reduced Dims
-2024-11-19 10:40:35.678082 - Set Up Clustering
-2024-11-19 10:40:35.776533 - qTune
+Warning message:
+Quick-TRANSfer stage steps exceeded maximum (= 6110100) 
+2024-11-20 12:54:46.888469 - Save Reduced Dims
+2024-11-20 12:54:50.668627 - Set Up Clustering
+2024-11-20 12:54:50.771237 - qTune
 Neighbors were identified for 122202 out of 122202 spots.
 Fitting model...
 Fitting model...
@@ -235,39 +233,39 @@ Fitting model...
 Fitting model...
 Fitting model...
     q   loglik
-1   2 -2860958
-2   3 -2872855
-3   4 -2886690
-4   5 -2908130
-5   6 -2919703
-6   7 -2939084
-7   8 -2965069
-8   9 -2969906
-9  10 -3099510
-10 11 -3085098
-11 12 -3076099
-12 13 -3068821
-13 14 -3052264
-14 15 -3047824
-15 16 -3042940
-16 17 -3022862
-17 18 -3014619
-18 19 -3011625
-19 20 -3002376
-20 21 -2995418
-21 22 -2989388
-22 23 -2988667
-23 24 -2981960
-24 25 -2977173
-25 26 -2968657
-26 27 -2963310
-27 28 -2958184
+1   2 -2377088
+2   3 -2389044
+3   4 -2400225
+4   5 -2416276
+5   6 -2439388
+6   7 -2459310
+7   8 -2475790
+8   9 -2518601
+9  10 -2560431
+10 11 -2661519
+11 12 -2653204
+12 13 -2652805
+13 14 -2648102
+14 15 -2645726
+15 16 -2643843
+16 17 -2642272
+17 18 -2641331
+18 19 -2638517
+19 20 -2625232
+20 21 -2619440
+21 22 -2627991
+22 23 -2622728
+23 24 -2612750
+24 25 -2623618
+25 26 -2607167
+26 27 -2607481
+27 28 -2604384
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2024-11-19 20:48:53 EST"
+[1] "2024-11-20 22:40:59 EST"
      user    system   elapsed 
-36690.851   273.247 37144.320 
+35429.637   118.548 35722.704 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.0 Patched (2024-05-22 r86590)
@@ -278,7 +276,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-11-19
+ date     2024-11-20
  pandoc   3.1.13 @ /jhpce/shared/community/core/conda_R/4.4/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -468,4 +466,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Nov 19 08:48:55 PM EST 2024
+Wed Nov 20 10:40:59 PM EST 2024
