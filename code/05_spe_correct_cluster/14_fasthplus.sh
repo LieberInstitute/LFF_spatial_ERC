@@ -35,7 +35,7 @@ module load conda_R/4.4
 module list
 
 ## Edit with your job command
-Rscript 14_fasthplus.R --cluster ${cluster} --k ${SLURM_ARRAY_TASK_ID}
+Rscript 14_fasthplus.R --cluster ${cluster} --k ${SLURM_ARRAY_TASK_ID} --drop_WM TRUE
 
 echo "**** Job ends ****"
 date
