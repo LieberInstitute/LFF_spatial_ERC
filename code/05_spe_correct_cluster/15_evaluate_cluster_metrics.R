@@ -23,3 +23,14 @@ fasthplus <- read.csv(here("processed-data","05_spe_correct_cluster","14_fasthpl
     arrange(k)
 
 fasthplus |> arrange(desc(fasthplus))
+
+## get fasthplus from logs
+fh_logs <- map(list.files(here("code", "05_spe_correct_cluster", "logs"), pattern = "14_fasthplus_BayesSpace_SVGm", full.names = TRUE),
+               readLines)
+
+fh_text <- map(fh_logs, ~.x[grep("Results: ", .x)])
+parse_number("Results: BayesSpace_SVGm_k22H+ :0.228198132474115")
+
+
+
+
