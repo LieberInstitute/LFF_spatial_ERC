@@ -1,0 +1,135 @@
+**** Job starts ****
+Thu Nov 21 04:30:12 PM EST 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 10836115
+Job name: 14_fasthplus
+Node name: compute-169
+Task id: 14
+Unloading conda_R/4.4
+Loading conda_R/4.4
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4
+
+ 
+
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
+    tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+[1] "Using the following parameters:"
+$ARGS
+character(0)
+
+$cluster
+[1] "BayesSpace_SVGm"
+
+$k
+[1] 14
+
+$drop_WM
+[1] TRUE
+
+Runnign fast h+ on: BayesSpace_SVGm_k14
+2024-11-21 16:30:24.470725 - Load HDF5 SPE
+[1] 122202     50
+Dropping WM
+2024-11-21 16:32:23.715684 - Setup fasthplus
+Initial t: 1169
+cluster proportions:
+
+    Sp14D01     Sp14D02     Sp14D03     Sp14D04     Sp14D05     Sp14D06 
+0.070749032 0.115709755 0.092656700 0.115162705 0.062910822 0.092152388 
+    Sp14D07     Sp14D08     Sp14D09     Sp14D10     Sp14D11     Sp14D12 
+0.004718312 0.043157166 0.042627211 0.052858767 0.016043969 0.112547119 
+    Sp14D13     Sp14D14 
+0.065799933 0.112906121 
+Testing for clusters < 0.000714285714285714
+No small clusters
+2024-11-21 16:32:23.727754 - Run fasthplus
+2024-11-21 17:55:00.127716 - Done
+Results: BayesSpace_SVGm_k14H+ :0.229037126842013
+Error in file(file, ifelse(append, "a", "w")) : 
+  cannot open the connection
+Calls: write.table -> file
+In addition: Warning messages:
+1: Arguments must be unnamed 
+2: In file(file, ifelse(append, "a", "w")) :
+  cannot open file '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/14_fasthplus/fasthplus_results-BayesSpace_SVGm.csv/TRUE': No such file or directory
+Execution halted
