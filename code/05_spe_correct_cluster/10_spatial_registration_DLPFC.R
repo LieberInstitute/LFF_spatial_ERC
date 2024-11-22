@@ -19,9 +19,14 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
 
 #### load data ####
-modeling_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm"),
+modeling_fn <- c(
+    list.files(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm"),
+           pattern = "modeling_results",
+           full.names = TRUE),
+    list.files(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_Markers"),
            pattern = "modeling_results",
            full.names = TRUE)
+    )
 
 names(modeling_fn) <- gsub("modeling_results-|.rds", "", basename(modeling_fn))
 
