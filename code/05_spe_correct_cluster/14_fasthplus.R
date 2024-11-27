@@ -90,7 +90,12 @@ message("Results: ", cluster_k,  "H+ :", fasthplus)
 
 ## save results
 results <- data.frame(cluster = cluster_k, fasthplus = fasthplus)
-write.table(results, file = here(data_dir, sprintf("fasthplus_results-%s.csv", opt$cluster), append = TRUE))
+
+## make sure file exists
+output_file <- here(data_dir, sprintf("fasthplus_results-%s.csv", opt$cluster))
+system(sprintf("touch %s", output_file))
+
+write.table(results, file = output_file, append = TRUE))
 
 ## Reproducibility information
 print("Reproducibility information:")
