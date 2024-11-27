@@ -173,3 +173,23 @@ map2(svgVm_jacc_mat, names(svgVm_jacc_mat), function(jacc.mat, name){
     dev.off()
     
 })
+
+#### which cluster has syrong correlation with Human Pilot layers? ####
+
+
+
+#### graph likleyhoods together ####
+
+q_tune = map_dfr(list(markers = here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker", "qTune_logliks_Markers.csv"),
+         SVGm = here("processed-data", "05_spe_correct_cluster", "05.5_qTune", "qTune_logliks_SVGm.csv")),
+    ~read.csv(.x, row.names = 1) |>
+        mutate(input = gsub("qTune_logliks_(.*?).csv", "\\1", basename(.x))))
+
+q_tune_line = ggplot(q_tune, 
+                     aes(x = q, y = -loglik, color = input)) +
+    geom_line() +
+    theme_bw()
+
+ggsave(q_tune_line, filename = here(plot_dir, "q_tune_line.png"), height = 5)
+
+
