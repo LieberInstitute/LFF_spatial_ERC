@@ -248,17 +248,6 @@ plot_marker_express_List(
 )
 
 sample_order <- sort(unique(spe$BrNum))
-walk(c("MBP"),
-# walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
-          ~vis_grid_gene(
-         spe = spe,
-         geneid = .x,
-         pdf = here::here(plot_dir, sprintf("spe_erc-%s.pdf", .x)),
-         assayname = "logcounts",
-         point_size = 1,
-         sample_order = sample_order)
-
-     )
 
 ## SVGs
 
@@ -349,49 +338,6 @@ table(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
 # Sp02D02       0       4       0       0       0       0    3517       0      46
 
 jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
-
-#### compare Marker and SVGm clusters ####
-plot_dir <- here(plot_dir, "SVGm_vs_Marker")
-if(!dir.exists(plot_dir)) dir.create(plot_dir)
-
-svg_marker_pairs <- list(svg2_m2 = c("BayesSpace_SVGm_k02", "BayesSpace_Markers_k02"),
-                         svg9_m11 = c("BayesSpace_SVGm_k09", "BayesSpace_Markers_k11"),
-                         svg11_m11 = c("BayesSpace_SVGm_k11", "BayesSpace_Markers_k11")
-                         )
-
-svgVm_jacc_mat <- map(svg_marker_pairs, ~linkClustersMatrix(spe[[.x[[1]]]], spe[[.x[[2]]]]))
-
-library(ComplexHeatmap)
-
-svgVm_jacc_mat_long <- map(svgVm_jacc_mat, ~.x |> 
-                               reshape2::melt() |>
-                               rename(SVGm = Var1, Marker = Var2, Jacc = value))
-
-
-svgVm_jacc_mat_long$svg11_m11 |>
-    group_by(Marker) |>
-    arrange(-Jacc) |>
-    slice(1) |>
-    arrange(Marker)
-
-
-map2(svgVm_jacc_mat, names(svgVm_jacc_mat), function(jacc.mat, name){
- 
-    pdf(here(plot_dir, sprintf("jacc_mat_%s.pdf", name)))
-    
-    print(Heatmap(jacc.mat,
-            name = "Correspondence",
-            # right_annotation = row_ha,
-            # right_annotation = hc_count,
-            # bottom_annotation = col_ha,
-            # bottom_annotation = az_count,
-            col = c("black", viridisLite::plasma(100)),
-            na_col = "black"
-    ))
-    
-    dev.off()
-       
-})
 
 # slurmjobs::job_single('05_BayesSpace', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace.R")
 
