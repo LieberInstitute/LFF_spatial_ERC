@@ -52,7 +52,12 @@ cluster_eval_anno <- map(my_clusters,
                              )
 
 anno_cluster_table <- as.data.frame(map2(my_clusters, cluster_eval_anno, ~.y$anno[match(spe[[.x]], .y$cluster)]))
-head(anno_cluster_test)
+head(anno_cluster_table)
+
+cluster_eval_anno_long <- do.call("rbind", cluster_eval_anno) |>
+    rownames_to_column("input") |>
+    mutate(input = gsub("\\.[0-9]+", "", input)) |>
+    select(input, SpD = cluster, anno)
 
 ## reset
 # colData(spe)[,names(my_clusters)] <- NULL
@@ -174,11 +179,30 @@ map2(svgVm_jacc_mat, names(svgVm_jacc_mat), function(jacc.mat, name){
     
 })
 
-#### which cluster has syrong correlation with Human Pilot layers? ####
+#### which cluster has strong correlation with Human Pilot layers? ####
+
+cluster_eval_cor <- do.call("rbind", map2(my_clusters, names(my_clusters), 
+                         ~cor_anno[[.x]]$cor_layer$HumanPilot |>
+                            reshape2::melt() |>
+                             rename(SpD = Var1, HumanPilot = Var2, cor = value) |>
+                             mutate(input = .y))) |> 
+    left_join(cluster_eval_anno_long)
 
 
+cluster_eval_cor |> count(anno)
 
-#### graph likleyhoods together ####
+
+cluster_cor_point <- cluster_eval_cor |>
+    filter(grepl("k11", input)) |>
+    ggplot(aes(x = HumanPilot, y = cor, shape = input, color = anno)) +
+    geom_point(position = position_jitter(w = 0.2, h = 0), size = 1.5) +
+    scale_color_manual(values = c(SpD_colors$k11_Markers_anno, SpD_colors$k11_SVGm_anno)) +
+    theme_bw()
+
+ggsave(cluster_cor_point, filename = here(plot_dir, "cluster_cor_point.png"))
+
+
+#### graph likelihoods together ####
 
 q_tune = map_dfr(list(markers = here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker", "qTune_logliks_Markers.csv"),
          SVGm = here("processed-data", "05_spe_correct_cluster", "05.5_qTune", "qTune_logliks_SVGm.csv")),
