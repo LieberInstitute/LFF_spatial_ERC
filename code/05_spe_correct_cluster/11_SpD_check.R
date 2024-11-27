@@ -29,18 +29,18 @@ reducedDimNames(spe)
 
 ## create color pallet
 
-SpD_colors <- map(c(2:9), function(k){
+SpD_colors <- map(c(2:28), function(k){
     
     colors <- Polychrome::palette36.colors(k)
     if(k < 3) colors <- colors[1:2]
-    names(colors) <- sort(unique(spe[[sprintf("BayesSpace_PCA_Harmony_k%02d", k)]]))
+    names(colors) <- sort(unique(spe[[sprintf("BayesSpace_SVGm_k%02d", k)]]))
     return(colors)
 })
 
-names(SpD_colors) <- sprintf("k%02d", 2:9)
+names(SpD_colors) <- sprintf("k%02d", 2:28)
 
 
-
+table(spe$BayesSpace_SVGm_k02)
 
 #### Plot clusters in reduced dims ####
 
@@ -49,8 +49,8 @@ my_plot_reduced_dim(spe,
                     prefix = "spe", 
                     var_type = "cat", 
                     dimred = dim, 
-                    my_var = "BayesSpace_PCA_Harmony_k02", 
-                    color_pal = SpD_colors[1:2])
+                    my_var = "BayesSpace_SVGm_k02", 
+                    color_pal = SpD_colors$k02)
     })
 
 walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
@@ -63,7 +63,7 @@ walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
                             prefix = "spe",
                             var_type = "cat", 
                             dimred = dim, 
-                            my_var = sprintf("BayesSpace_PCA_Harmony_k%02d", k), 
+                            my_var = sprintf("BayesSpace_SVGm_k%02d", k), 
                             color_pal = SpD_colors_k)
     
         })
@@ -78,7 +78,7 @@ message(Sys.time(), "- Scran Outlier Violin Plots")
 map(c(2,9), function(k){
     
     SpD_colors_k <- SpD_colors[[sprintf("k%02d", k)]]
-    my_var = sprintf("BayesSpace_PCA_Harmony_k%02d", k)
+    my_var = sprintf("BayesSpace_SVGm_k%02d", k)
     
     pdf(here(plot_dir, sprintf("spe_erc_QC_%s.pdf", my_var)), width = 21)
     
@@ -104,7 +104,7 @@ pd <- as.data.frame(colData(spe))
 pd_qc_long <- map(c(k02 = 2, k09 = 9), function(k){
     
     SpD_colors_k <- SpD_colors[[sprintf("k%02d", k)]]
-    my_var = sprintf("BayesSpace_PCA_Harmony_k%02d", k)
+    my_var = sprintf("BayesSpace_SVGm_k%02d", k)
     
     pd_qc_long <- pd |>
         select(sample_id, key, sum_umi, sum_gene, expr_chrM_ratio, all_of(!!my_var)) |>
@@ -134,10 +134,10 @@ pd_qc_long <- map(c(k02 = 2, k09 = 9), function(k){
 
 rownames(spe) <- rowData(spe)$gene_name
 
-spe_pb_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","spe_pseudobulk-BayesSpace_PCA_Harmony_k09.rds"))
-spe_pb_k02 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","spe_pseudobulk-BayesSpace_PCA_Harmony_k02.rds"))
-modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","modeling_results-BayesSpace_PCA_Harmony_k09.rds"))
-modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony","modeling_results-BayesSpace_PCA_Harmony_k02.rds"))
+spe_pb_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k09.rds"))
+spe_pb_k02 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k02.rds"))
+modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","modeling_results-BayesSpace_SVGm_k09.rds"))
+modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","modeling_results-BayesSpace_SVGm_k02.rds"))
 
 modeling_results_k09$enrichment |> 
     select(gene, ends_with("Sp09D07")) |>
@@ -157,7 +157,7 @@ modeling_results_k09$enrichment |>
 # ENSG00000123560     PLP1       4.090538    5.629261e-05 6.195332e-05     1.2083869 * Oligo
 # ENSG00000064393    HIPK2       4.047131    6.711421e-05 7.364323e-05     0.8292675
 
-spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_PCA_Harmony_k09
+spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_SVGm_k09
 
 sig_genes <- sig_genes_extract_all(
     modeling_results = modeling_results_k09,
@@ -175,7 +175,7 @@ plot_marker_express_List(
     sce = spe,
     gene_list = enrich_top_list,
     pdf_fn = here(plot_dir, "SpD09_enrichment_top5.pdf"),
-    cellType_col = "BayesSpace_PCA_Harmony_k09",
+    cellType_col = "BayesSpace_SVGm_k09",
     gene_name_col = "gene_name",
     color_pal = SpD_colors,
     plot_points = FALSE
@@ -230,7 +230,7 @@ modeling_results_k02$enrichment |>
 # ENSG00000183060     -5.810567 ENSG00000183060     LYSMD4
 
 
-# write_csv(modeling_results_k02$enrichment, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "modeling_results-BayesSpace_PCA_Harmony_k02.csv"))
+# write_csv(modeling_results_k02$enrichment, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "modeling_results-BayesSpace_SVGm_k02.csv"))
 
 ## from literature
 modeling_results <- fetch_data(type = "modeling_results")
@@ -241,24 +241,13 @@ plot_marker_express_List(
     sce = spe,
     gene_list = list(`Maynard_NatNeuro` = layer_marker_genes$gene),
     pdf_fn = here(plot_dir, "SpD09_layer_markers.pdf"),
-    cellType_col = "BayesSpace_PCA_Harmony_k09",
+    cellType_col = "BayesSpace_SVGm_k09",
     gene_name_col = "gene_name",
     color_pal = SpD_colors,
     plot_points = FALSE
 )
 
 sample_order <- sort(unique(spe$BrNum))
-walk(c("MBP"),
-# walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
-          ~vis_grid_gene(
-         spe = spe,
-         geneid = .x,
-         pdf = here::here(plot_dir, sprintf("spe_erc-%s.pdf", .x)),
-         assayname = "logcounts",
-         point_size = 1,
-         sample_order = sample_order)
-
-     )
 
 ## SVGs
 
@@ -324,8 +313,8 @@ sample_ids <- sort(unique(spe$sample_id))
 
 p_list = vis_grid_clus(
     spe = spe,
-    clustervar = 'BayesSpace_PCA_Harmony_k02',
-    pdf_file = here(plot_dir, "spot_plots", "spe_BayesSpace_PCA_Harmony_k02-ALL.pdf"),
+    clustervar = 'BayesSpace_SVGm_k02',
+    pdf_file = here(plot_dir, "spot_plots", "spe_BayesSpace_SVGm_k02-ALL.pdf"),
     sort_clust = FALSE,
     spatial = FALSE,
     point_size = 1,
@@ -335,21 +324,20 @@ p_list = vis_grid_clus(
 
 #### Jaccard indicies #####
 
-table(spe$scran_discard, spe$BayesSpace_PCA_Harmony_k09)
+table(spe$scran_discard, spe$BayesSpace_SVGm_k09)
 
 ## 70% of Sp09D07 are low library size
-table(spe$scran_low_lib_size, spe$BayesSpace_PCA_Harmony_k09)
+table(spe$scran_low_lib_size, spe$BayesSpace_SVGm_k09)
 #       Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07 Sp09D08 Sp09D09
 # TRUE        2     329      18      72      15     114    3693       5    1669
 # FALSE    8310    5666    8942   54805   10210   10086    1544    9697    7025
 
-table(spe$BayesSpace_PCA_Harmony_k02, spe$BayesSpace_PCA_Harmony_k09)
+table(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
 #         Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07 Sp09D08 Sp09D09
 # Sp02D01    8312    5991    8960   54877   10225   10200    1720    9702    8648
 # Sp02D02       0       4       0       0       0       0    3517       0      46
 
-jacc.mat <- linkClustersMatrix(spe$BayesSpace_PCA_Harmony_k02, spe$BayesSpace_PCA_Harmony_k09)
-
+jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
 
 # slurmjobs::job_single('05_BayesSpace', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace.R")
 
