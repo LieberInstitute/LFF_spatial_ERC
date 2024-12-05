@@ -69,7 +69,8 @@ SpD_colors$k11_Markers_anno <-SpD_colors$k11[cluster_eval_anno$Markers_k11$clust
 names(SpD_colors$k11_Markers_anno) <- cluster_eval_anno$Markers_k11$anno
 
 #### Compare clusters with Jacquard Matrix ####
-svg_marker_pairs <- list(svg9_m11 = c("SVGm_k09", "SVGm_k11"),
+svg_marker_pairs <- list(svg9_m11 = c("SVGm_k09", "Markers_k11"),
+                         svg9_svg11 = c("SVGm_k09", "SVGm_k11"),
                          svg11_m11 = c("SVGm_k11", "Markers_k11")
 )
 
@@ -79,20 +80,28 @@ svgVm_jacc_mat_long <- map(svgVm_jacc_mat, ~.x |>
                                reshape2::melt() |>
                                rename(SVGm = Var1, Marker = Var2, Jacc = value))
 
+## think about colnames here - Marker is actually svg11
+head(svgVm_jacc_mat_long$svg9_svg11)
 
-marker_match <- svgVm_jacc_mat_long$svg11_m11 |>
-    group_by(Marker) |>
-    arrange(-Jacc) |>
-    slice(1) |>
-    mutate(Marker_unanno = gsub("^.*?~", "", Marker)) |>
-    arrange(Marker_unanno)
 
-SpD_colors$k11_SVGm_anno <- SpD_colors$k11[marker_match$Marker_unanno]
-names(SpD_colors$k11_SVGm_anno) <- marker_match$SVGm
+marker_match <- map(svgVm_jacc_mat_long, ~.x |>
+                        group_by(SVGm) |>
+                        arrange(-Jacc) |>
+                        slice(1) |>
+                        mutate(Marker_unanno = gsub("^.*?~", "", Marker)) |>
+                        arrange(Marker_unanno))
+
+#### Match colors ####
+
+## M11 vs svg11
+SpD_colors$k11_SVGm_anno <- SpD_colors$k11[marker_match$svg11_m11$Marker_unanno]
+names(SpD_colors$k11_SVGm_anno) <- marker_match$svg11_m11$SVGm
 
 ## replace Sp11D10 color which has poor match
-SpD_colors$k11_SVGm_anno[[11]] <- "#FE7215" 
-names(SpD_colors$k11_SVGm_anno)[[11]] <- "L4/3~Sp11D10"
+i_replace <- match("L4/3~Sp11D10", marker_match$svg11_m11$SVGm)
+
+SpD_colors$k11_SVGm_anno[[i_replace ]] <- "#FE7215" 
+names(SpD_colors$k11_SVGm_anno)[[i_replace ]] <- "L4/3~Sp11D10"
 
 SpD_colors$k11_SVGm_anno <- SpD_colors$k11_SVGm_anno[sort(names(SpD_colors$k11_SVGm_anno))]
 
@@ -102,7 +111,21 @@ SpD_colors$k11_SVGm_anno
 # WM~Sp11D07     WM~Sp11D08     WM~Sp11D11
 # "#FEAF16"      "#1CFFCE"      "#B00068"
 
+## M11 vs svg9
+SpD_colors$k09_SVGm_anno <- SpD_colors$k11[marker_match$svg9_m11$Marker_unanno]
+names(SpD_colors$k09_SVGm_anno) <- marker_match$svg9_m11$SVGm
 
+## replace poor match for L4~Sp09D09
+i_replace <- match("L4~Sp09D09", names(SpD_colors$k09_SVGm_anno))
+SpD_colors$k09_SVGm_anno[[i_replace ]] <- "brown" 
+names(SpD_colors$k09_SVGm_anno)[[i_replace ]] <- "L4~Sp09D09"
+
+(SpD_colors$k09_SVGm_anno <- SpD_colors$k09_SVGm_anno[sort(names(SpD_colors$k09_SVGm_anno))])
+
+# L1~Sp09D05   L1~Sp09D08 L2/3~Sp09D01   L3~Sp09D02   L4~Sp09D09 L5/4~Sp09D03   L6~Sp09D04   WM~Sp09D06   WM~Sp09D07 
+# "#16FF32"    "#90AD1C"    "#5A5156"    "#3283FE"      "brown"    "#FE00FA"    "#F6222E"    "#FEAF16"    "#1CFFCE" 
+
+#### Spot plots ####
 sample_order <- sort(unique(spe$BrNum))
 ## plot SVGm with Marker color match
 
@@ -122,6 +145,15 @@ vis_grid_clus(
     sort_clust = FALSE,
     point_size = 1.2,
     colors = SpD_colors$k11_SVGm_anno,
+    sample_order = sample_order)
+
+vis_grid_clus(
+    spe = spe,
+    clustervar = "SVGm_k09",
+    pdf = here::here(plot_dir, "spe_erc-BayesSpace_SVGm_k09_Marker_colors.pdf"),
+    sort_clust = FALSE,
+    point_size = 1.2,
+    colors = SpD_colors$k09_SVGm_anno,
     sample_order = sample_order)
 
 #### Jacc heatmaps ####
@@ -193,10 +225,10 @@ cluster_eval_cor |> count(anno)
 
 
 cluster_cor_point <- cluster_eval_cor |>
-    filter(grepl("k11", input)) |>
+    # filter(grepl("k11", input)) |>
     ggplot(aes(x = HumanPilot, y = cor, shape = input, color = anno)) +
     geom_point(position = position_jitter(w = 0.2, h = 0), size = 1.5) +
-    scale_color_manual(values = c(SpD_colors$k11_Markers_anno, SpD_colors$k11_SVGm_anno)) +
+    scale_color_manual(values = c(SpD_colors$k11_Markers_anno, SpD_colors$k11_SVGm_anno, SpD_colors$k09_SVGm_anno)) +
     theme_bw()
 
 ggsave(cluster_cor_point, filename = here(plot_dir, "cluster_cor_point.png"))

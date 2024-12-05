@@ -1,3 +1,5 @@
+## Louise Huuki-Myers, Nov 2024
+## Export spe object after removing unneeded images + reduced dims for size and convering assays from HDF5 to sparse Matrix for portability
 
 library("spatialLIBD")
 library("HDF5Array")
@@ -10,9 +12,9 @@ message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
 # lobstr::obj_size(spe)
-# 3.15 GB <- but assays are DelayedArray
+# 3.20 GB <- but assays are DelayedArray
 
-#### Convert Assays to sparaseMatrix for portability #### 
+#### Convert Assays to sparseMatrix for portability #### 
 assayNames(spe)
 # [1] "counts"    "logcounts"
 
@@ -55,16 +57,17 @@ saveRDS(spe, here("code", "07_spatialLIBD_app", "spe_ERC_app.rds"))
 
 #### Extract sig genes #####
 
-modeling_results_k09 <- readRDS("modeling_results-BayesSpace_PCA_Harmony_k09.rds")
-spe_pb_k09 <- readRDS("spe_pseudobulk-BayesSpace_PCA_Harmony_k09.rds")
+modeling_results_k09 <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
+spe_pb_k09 <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k09.rds"))
 
 ##define cluster col - needs better documentation in spatialLIBD::sig_genes_extract_all 
 
-spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_PCA_Harmony_k09
+spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_SVGm_k09
 
 tests <- lapply(modeling_results_k09, function(x) {
     colnames(x)[grep("stat", colnames(x))]
 })
+
 k=9
 stopifnot(length(tests$anova) == 1) ## assuming only "all"
 stopifnot(length(tests$enrichment) == k)
@@ -76,5 +79,13 @@ sig_genes_k09 <- sig_genes_extract_all(
     n=100
 )
 
-saveRDS(sig_genes_k09, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_PCA_Harmony", "sig_genes_k09.rds"))
+saveRDS(sig_genes_k09, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", "sig_genes_k09.rds"))
 
+# slurmjobs::job_single('01_prep_data', create_shell = TRUE, memory = '50G', command = "Rscript 01_prep_data.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
