@@ -11,13 +11,14 @@ library("here")
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
-# lobstr::obj_size(spe)
+lobstr::obj_size(spe)
 # 3.20 GB <- but assays are DelayedArray
 
 #### Convert Assays to sparseMatrix for portability #### 
 assayNames(spe)
 # [1] "counts"    "logcounts"
 
+message(Sys.time(), " - Convert Assays")
 logcounts(spe) <- as(logcounts(spe), "sparseMatrix")  
 counts(spe) <- as(counts(spe), "sparseMatrix")  
 
