@@ -23,7 +23,7 @@ rsconnect::deployApp(
         "spe_pseudobulk_k09.rds",
         "modeling_results_k09.rds",
         "sig_genes_k09.rds",
-        withr::with_dir(here("code", "02_build_spe", "02_QC_app"), dir("www", full.names = TRUE))
+        withr::with_dir(here("code", "07_spatialLIBD_app"), dir("www", full.names = TRUE))
     ),
     appName = "LFF_ERC_Visium",
     account = "libd",
