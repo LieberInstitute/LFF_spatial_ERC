@@ -19,8 +19,10 @@ rsconnect::deployApp(
     appDir = here("code", "02_build_spe","02_QC_app"),
     appFiles = c(
         "app.R",
-        "spe_raw.rds",
-        # withr::with_dir(here("code", "03_spatialLIBD_app"), dir("clusters_BayesSpace", full.names = TRUE)),
+        "spe_ERC_app.rds",
+        "spe_pseudobulk_k09.rds",
+        "modeling_results_k09.rds",
+        "sig_genes_k09.rds",
         withr::with_dir(here("code", "02_build_spe", "02_QC_app"), dir("www", full.names = TRUE))
     ),
     appName = "LFF_ERC_Visium",
