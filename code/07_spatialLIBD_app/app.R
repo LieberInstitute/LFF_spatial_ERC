@@ -38,7 +38,8 @@ spe_discrete_vars = c(
     "ss_qc_anno",
     "qc_anno_all",
     "local_outliers",
-    sprintf("BayesSpace_PCA_Harmony_k%02d", 2:28)
+    sprintf("BayesSpace_SVGm_k%02d", 2:28),
+    sprintf("BayesSpace_Markers_k%02d", c(2,11))
 )
 
 
@@ -58,6 +59,6 @@ spatialLIBD::run_app(
         "expr_chrM_ratio",
         "edge_distance"
     ),
-    default_cluster = "10x_graphclust",
+    default_cluster = "BayesSpace_SVGm_k09",
     docs_path = "www"
 )

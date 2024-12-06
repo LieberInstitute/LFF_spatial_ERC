@@ -23,7 +23,7 @@ rsconnect::deployApp(
         # withr::with_dir(here("code", "03_spatialLIBD_app"), dir("clusters_BayesSpace", full.names = TRUE)),
         withr::with_dir(here("code", "02_build_spe", "02_QC_app"), dir("www", full.names = TRUE))
     ),
-    appName = "LFF_ERC_Visium_QC",
+    appName = "LFF_ERC_Visium",
     account = "libd",
     server = "shinyapps.io"
 )
