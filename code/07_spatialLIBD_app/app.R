@@ -11,8 +11,8 @@ options(repos = BiocManager::repositories())
 #### load data ####
 spe <- readRDS("spe_ERC_app.rds")
 ## k09 pseudobulk +modeling data
-spe_pb_k09 <- readRDS("spe_pseudobulk-BayesSpace_PCA_Harmony_k09.rds")
-modeling_results_k09 <- readRDS("modeling_results-BayesSpace_PCA_Harmony_k09.rds")
+spe_pb_k09 <- readRDS("spe_pseudobulk_k09.rds")
+modeling_results_k09 <- readRDS("modeling_results_k09.rds")
 sig_genes_k09 <- readRDS("sig_genes_k09.rds")
 
 ## Quickly explore the data
