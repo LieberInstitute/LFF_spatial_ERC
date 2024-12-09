@@ -48,7 +48,7 @@ modeling_results <-registration_wrapper(
     sce = spe,
     var_registration = cluster_var,
     var_sample_id = "sample_id",
-    covars = c("Sex", "Age", "Anc_Afr"),
+    covars = c("APOE", "Sex", "Age", "Anc_Afr"),
     gene_ensembl = "gene_id",
     gene_name = "gene_name",
     # suffix = k_nice,
