@@ -339,7 +339,7 @@ table(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
 
 jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
 
-# slurmjobs::job_single('05_BayesSpace', create_shell = TRUE, memory = '25G', command = "Rscript 05_BayesSpace.R")
+# slurmjobs::job_single('011_SpD_check', create_shell = TRUE, memory = '25G', command = "Rscript 011_SpD_check.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
