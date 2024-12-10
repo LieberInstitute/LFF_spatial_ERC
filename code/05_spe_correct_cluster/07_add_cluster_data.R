@@ -58,25 +58,13 @@ identical(colnames(spe), bayes_clusters_tab$key)
 bayes_clusters_tab$key <- NULL
 
 bayes_clusters_tab[1:5,1:5]
-
-
-#### PRECAST DATA ####
-# precast_tab <-read.csv(file = here("processed-data", "05_spe_correct_cluster", "06_PRECAST", "PRECAST_bayes_clusters.csv"), row.names = 1)
-# identical(rownames(precast_tab), colnames(spe))
-# 
-# precast_tab[1:5, 1:5]
-
-## only add BayesSpace data for now
-all_clusters <- cbind(bayes_clusters_tab)
-# all_clusters <- cbind(bayes_clusters_tab, precast_tab)
-
-dim(all_clusters)
+dim(bayes_clusters_tab)
+# [1] 122202     29
 
 ## bind tables
-colData(spe) <- cbind(colData(spe), all_clusters)
+colData(spe) <- cbind(colData(spe), bayes_clusters_tab)
 
 colnames(colData(spe))
-
 
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
