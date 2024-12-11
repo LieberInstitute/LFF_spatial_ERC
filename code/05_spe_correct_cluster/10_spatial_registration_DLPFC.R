@@ -1,6 +1,9 @@
 ## September 2024, Louise Huuki-Myers
 ## Compare ERC spatial Domains to DLPFC layers
 
+## use PR#91 for layer_stat_cor_plot_complex
+# remotes::install_github(repo="LieberInstitute/spatialLIBD", ref = remotes::github_pull(91))
+
 library("spatialLIBD")
 library("purrr")
 library("tidyverse")
@@ -31,7 +34,6 @@ modeling_fn <- c(
 names(modeling_fn) <- gsub("modeling_results-|.rds", "", basename(modeling_fn))
 
 modeling_fn
-
 
 ## Add spatialDLPFC spatial domain annotations to modeling
 dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/bayesSpace_layer_annotations.csv") |>
@@ -85,32 +87,31 @@ cor_anno <- map2(modeling_fn, names(modeling_fn), function(fn, name){
 ## save data
 save(cor_anno, file = here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"))
 
-
 cor_anno$BayesSpace_SVGm_k09$cor$spatialDLPFC
+
+cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot
+# cluster layer_confidence   layer_label layer_label_simple
+# 1 Sp09D06             good            WM                 WM
+# 2 Sp09D07             good            WM                 WM
+# 3 Sp09D05             good        Layer1                 L1
+# 4 Sp09D08             good        Layer1                 L1
+# 5 Sp09D04             good        Layer6                 L6
+# 6 Sp09D03             good Layer5/Layer4               L5/4
+# 7 Sp09D09             good        Layer4                 L4
+# 8 Sp09D01             good Layer2/Layer3               L2/3
+# 9 Sp09D02             good        Layer3                 L3
 
 cor_anno$BayesSpace_SVGm_k09$layer_anno$spatialDLPFC
 # cluster layer_confidence                                 layer_label
-# 1 Sp09D06             good                                  WM Sp09D06
-# 2 Sp09D07             good                       WM Sp09D06/WM Sp09D09
-# 3 Sp09D05             good                                  L1 Sp09D02
-# 4 Sp09D08             good                                  L1 Sp09D01
-# 5 Sp09D04             good                                  L6 Sp09D07
-# 6 Sp09D03             good L5 Sp09D04/L4 Sp09D08/L3 Sp09D05/L6 Sp09D07
-# 7 Sp09D02             good                       L3 Sp09D05/L2 Sp09D03
-# 8 Sp09D01             good                       L3 Sp09D05/L2 Sp09D03
-# 9 Sp09D09             good L4 Sp09D08/L3 Sp09D05/L5 Sp09D04/L2 Sp09D03
-
-# layer_anno_k9 <- cor_anno$BayesSpace_PCA_Harmony_k09$layer_anno$spatialDLPFC |>
-#     rename(SD_layer_confidence = layer_confidence, 
-#            SD_layer_label = layer_label) |>
-#     mutate(SD_domains = gsub(" ~ L[0-9]| ~ WM", "",SD_layer_label),
-#            SD_layer = gsub("Sp09D0[0-9] ~ ", "",SD_layer_label)) |>
-#     left_join(cor_anno$BayesSpace_PCA_Harmony_k09$layer_anno$HumanPilot |>
-#                   rename(HP_layer_confidence = layer_confidence, HP_layer_label = layer_label)) |>
-#     mutate(maf_label = gsub("Sp09D0", "ERC_D", cluster))
-# 
-# 
-# layer_order <- layer_anno_k9 |> arrange(HP_layer_label) |> pull(maf_label)
+# 1 Sp09D06             good                                  WM~Sp09D06
+# 2 Sp09D07             good                       WM~Sp09D06/WM~Sp09D09
+# 3 Sp09D05             good                                  L1~Sp09D02
+# 4 Sp09D08             good                                  L1~Sp09D01
+# 5 Sp09D04             good                                  L6~Sp09D07
+# 6 Sp09D03             good L5~Sp09D04/L4~Sp09D08/L3~Sp09D05/L6~Sp09D07
+# 7 Sp09D02             good                       L3~Sp09D05/L2~Sp09D03
+# 8 Sp09D01             good                       L3~Sp09D05/L2~Sp09D03
+# 9 Sp09D09             good L4~Sp09D08/L3~Sp09D05/L5~Sp09D04/L2~Sp09D03
 
 #### complex heatmap ####
 # 
@@ -136,49 +137,51 @@ cor_anno$BayesSpace_SVGm_k09$layer_anno$spatialDLPFC
 
 
 walk2(cor_anno, names(cor_anno), function(cor, name){
+    pdf(here(plot_dir, sprintf("spatial_registration_heatmap_erc_%s_v_%s.pdf", knice, dataset)), height = 5, width = 5)
+    print(layer_stat_cor_plot_complex(
+        cor_stat_layer = cor$cor_layer,
+        annotation = cor$layer_anno
+        
+    ))
+    dev.off()
+})
+})
     
-    cor <- cor$cor
     
+walk2(cor_anno, names(cor_anno), function(ca, name){
+
     #get numeric k
     k <- readr::parse_number(name)
     knice <- gsub("BayesSpace_SVGm_", "", name)
-    
-    message(Sys.time(), " - ", knice)
+        message(Sys.time(), " - ", knice)
     
     ## create color pallet
     erc_colors <- Polychrome::palette36.colors(k)
     if(k ==2) erc_colors <- erc_colors[seq(2)] ## fix return 3 colors bug
     
-    names(erc_colors) <- sort(rownames(cor[[1]]))
+    names(erc_colors) <- sort(rownames(ca$cor_layer[[1]]))
     
-    walk2(cor, names(cor), function(cor_matrix, dataset){
-        
-        ## maf naming
-        
-        ## green-purple color scale
-        theSeq <- seq(min(cor_matrix), max(cor_matrix), by = 0.01)
-        my.col <-
-            grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
+    pwalk(list(cor_matrix = ca$cor_layer, 
+               dataset=names(ca$cor_layer), 
+               anno= ca$layer_anno), 
+          function(cor_matrix, dataset, anno){
         
         ## spatial domain color bar
         erc_colors <- erc_colors[rownames(cor_matrix)]
         
-        erc_color_bar <- rowAnnotation(
-            " " = names(erc_colors),
-            col = list(" " = erc_colors),
-            show_legend = FALSE
-        )
+        if(dataset == "HumanPilot"){
+            ref_color <- spatialLIBD::libd_layer_colors
+            } else ref_color <- NULL
         
         # Create heatmap
         pdf(here(plot_dir, sprintf("spatial_registration_heatmap_erc_%s_v_%s.pdf", knice, dataset)), height = 5, width = 5)
-        print(ComplexHeatmap::Heatmap(cor_matrix,
-                                      name = "Cor",
-                                      col = my.col,
-                                      cluster_rows = TRUE,
-                                      cluster_columns = FALSE,
-                                      # ,
-                                      # bottom_annotation = lc_color_bar,
-                                      right_annotation = erc_color_bar
+        print(layer_stat_cor_plot_complex(
+            cor_stats_layer = cor_matrix,
+            query_colors = erc_colors,
+            reference_colors = ref_color,
+            annotation = anno,
+            cluster_columns = FALSE
+            
         ))
         dev.off()
     })
