@@ -61,10 +61,20 @@ bayes_clusters_tab[1:5,1:5]
 dim(bayes_clusters_tab)
 # [1] 122202     29
 
+#### Add annotations ####
+load(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"), verbose = TRUE)
+# cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot
+
+cluster_anno_k9 <- cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot |>
+    mutate(BayesSpace_SVGm_k09_anno = paste0(layer_label_simple, "~", cluster))
+
+bayes_clusters_tab$BayesSpace_SVGm_k09_anno <- cluster_anno_k9$BayesSpace_SVGm_k09_anno[match(bayes_clusters_tab$BayesSpace_SVGm_k09, cluster_anno_k9$cluster)]
+
 ## bind tables
 colData(spe) <- cbind(colData(spe), bayes_clusters_tab)
 
 colnames(colData(spe))
+
 
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
