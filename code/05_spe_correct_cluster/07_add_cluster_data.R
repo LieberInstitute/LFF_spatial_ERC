@@ -62,6 +62,7 @@ dim(bayes_clusters_tab)
 # [1] 122202     29
 
 #### Add annotations ####
+## TODO add to metadata
 load(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"), verbose = TRUE)
 # cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot
 
