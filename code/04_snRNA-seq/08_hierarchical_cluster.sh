@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=10G
 #SBATCH --job-name=08_hierarchical_cluster
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
