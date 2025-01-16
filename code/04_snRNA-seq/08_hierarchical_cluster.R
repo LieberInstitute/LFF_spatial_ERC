@@ -1,5 +1,9 @@
+## Louise Huuki-Myers, January 2025
+## Preform hierarchical clustering on ssn clusters
 
+## load libraries
 library("SingleCellExperiment")
+library("HDF5Array")
 library("scater")
 library("jaffelab")
 library("dendextend")
@@ -7,66 +11,97 @@ library("dynamicTreeCut")
 library("here")
 library("sessioninfo")
 library("dplyr")
+library("getopt")
 
-# Plotting set up
-my_theme <- theme_bw() +
-    theme(text = element_text(size = 15))
+# Import command-line parameters
+spec <- matrix(
+    c(
+        c("ssn"),
+        c("s"),
+        rep("1", 1),
+        rep("character", 1),
+        rep("ssn resolution", 1)
+    ),
+    ncol = 5
+)
+opt <- getopt(spec)
 
-plot_dir <- here("plots", "03_build_sce", "cluster")
+#test
+# opt <- list(snn = "k10")
 
-if (!dir.exists(plot_dir)) dir.create(plot_dir)
+print("Using the following parameters:")
+print(opt)
+
+## Prep directories
+plot_dir <- here("plots", "04_snRNA-seq", "08_hierarchical_cluster")
+if(!dir.exists(plot_dir)) dir.create(plot_dir)
+
+data_dir <- here("processed-data", "04_snRNA-seq", "08_hierarchical_cluster")
+if(!dir.exists(data_dir)) dir.create(data_dir)
+
+## load cluster data
+cluster_fn <- here("processed-data", "04_snRNA-seq", "07_cluster_sn", sprintf("walktrap_snn_%s_clusters.Rdata", opt$snn))
+stopifnot(file.exists(cluster_fn))
+
+load(cluster_fn, verbose = TRUE)
+#clusters
 
 ## Load sce object
-load(here("processed-data", "03_build_sce", "sce_harmony_Sample.Rdata"), verbose = TRUE)
-load(here("processed-data", "03_build_sce", "clusters.Rdata"), verbose = TRUE)
+sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_harmony"))
+sce
 
 # Assign as 'prelimCluster'
-sce$prelimCluster <- factor(clusters)
-length(levels(sce$prelimCluster))
-# [1] 296
+sce$prelimCluster <- sprintf("%sc%02d", opt$snn, clusters)
+
+message(opt$snn, ": n clusters: ", length(unique(sce$prelimCluster)))
 table(sce$prelimCluster)
 
 clusIndexes <- splitit(sce$prelimCluster)
 
-message("Pseudobulk - ", Sys.time())
+message(Sys.time(), " - Pseudobulk")
 prelimCluster.PBcounts <- sapply(clusIndexes, function(ii) {
     rowSums(assays(sce)$counts[, ii])
 })
 
+message("PB dim")
 dim(prelimCluster.PBcounts)
 # [1] 36601   297
 
-# And btw...
+message("Zero Sum Genes")
 table(rowSums(prelimCluster.PBcounts) == 0)
 
-message("Get Lib Size Factors - ", Sys.time())
+message(Sys.time(), " - Get Lib Size Factors")
 # Compute LSFs at this level
 sizeFactors.PB.all <- librarySizeFactors(prelimCluster.PBcounts)
 
 # Normalize with these LSFs
-message("Normalize - ", Sys.time())
+message(Sys.time() , " - Normalize", )
 geneExprs.temp <- t(apply(prelimCluster.PBcounts, 1, function(x) {
     log2(x / sizeFactors.PB.all + 1)
 }))
 
 ## Perform hierarchical clustering
-message("Cluster Again - ", Sys.time())
+message(Sys.time(), " - Cluster Again")
 dist.clusCollapsed <- dist(t(geneExprs.temp))
 tree.clusCollapsed <- hclust(dist.clusCollapsed, "ward.D2")
 
 dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
 
+message(Sys.time(), " - Plot")
 # Print for future reference
-pdf(here(plot_dir, "dend.pdf"), height = 12)
+pdf(here(plot_dir, sprintf("dend_%s.pdf", opt$snn)), height = 12)
 par(cex = 0.6, font = 2)
 plot(dend, main = "hierarchical cluster dend", horiz = TRUE)
 # abline(v = 525, lty = 2)
 dev.off()
 
 ## Save data
-save(dend, tree.clusCollapsed, dist.clusCollapsed, file = here("processed-data", "03_build_sce", "HC_dend.Rdata"))
+message(Sys.time(), " - Save")
+save(dend, tree.clusCollapsed, dist.clusCollapsed, file = here(data_dir, sprintf("HC_dend_%s.Rdata", opt$snn)))
 
-# sgejobs::job_single('hierarchical_cluster', create_shell = TRUE, memory = '100G', command = "Rscript hierarchical_cluster.R")
+# slurmjobs::job_loop(loops = list(ssn = c("k10", "k15", "k20")),
+#                     name = "10_hierarchical_cluster",
+#                     create_shell = TRUE)
 
 ## Reproducibility information
 print("Reproducibility information:")

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=25G
-#SBATCH --job-name=08_hierachial_cluster
+#SBATCH --job-name=08_hierarchical_cluster
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
@@ -14,7 +14,7 @@ all_ssn=(k10 k15 k20)
 ssn=${all_ssn[$(( $SLURM_ARRAY_TASK_ID / 1 % 3 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/08_hierachial_cluster_${ssn}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/08_hierarchical_cluster_${ssn}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -36,7 +36,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 08_hierachial_cluster.R --ssn ${ssn}
+Rscript 08_hierarchical_cluster.R --ssn ${ssn}
 
 echo "**** Job ends ****"
 date
