@@ -77,7 +77,7 @@ message(Sys.time(), " - Get Lib Size Factors")
 sizeFactors.PB.all <- librarySizeFactors(prelimCluster.PBcounts)
 
 # Normalize with these LSFs
-message(Sys.time() , " - Normalize", )
+message(Sys.time() , " - Normalize")
 geneExprs.temp <- t(apply(prelimCluster.PBcounts, 1, function(x) {
     log2(x / sizeFactors.PB.all + 1)
 }))
