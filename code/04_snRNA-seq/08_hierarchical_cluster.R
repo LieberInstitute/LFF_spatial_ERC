@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, January 2025
-## Preform hierarchical clustering on ssn clusters
+## Preform hierarchical clustering on snn clusters
 
 ## load libraries
 library("SingleCellExperiment")
@@ -16,11 +16,11 @@ library("getopt")
 # Import command-line parameters
 spec <- matrix(
     c(
-        c("ssn"),
+        c("snn"),
         c("s"),
         rep("1", 1),
         rep("character", 1),
-        rep("ssn resolution", 1)
+        rep("snn resolution", 1)
     ),
     ncol = 5
 )
@@ -41,6 +41,8 @@ if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## load cluster data
 cluster_fn <- here("processed-data", "04_snRNA-seq", "07_cluster_sn", sprintf("walktrap_snn_%s_clusters.Rdata", opt$snn))
+
+message("Cluster data from: ", cluster_fn)
 stopifnot(file.exists(cluster_fn))
 
 load(cluster_fn, verbose = TRUE)
@@ -99,7 +101,7 @@ dev.off()
 message(Sys.time(), " - Save")
 save(dend, tree.clusCollapsed, dist.clusCollapsed, file = here(data_dir, sprintf("HC_dend_%s.Rdata", opt$snn)))
 
-# slurmjobs::job_loop(loops = list(ssn = c("k10", "k15", "k20")),
+# slurmjobs::job_loop(loops = list(snn = c("k10", "k15", "k20")),
 #                     name = "10_hierarchical_cluster",
 #                     create_shell = TRUE)
 

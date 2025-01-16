@@ -10,11 +10,11 @@
 #SBATCH --array=1-3%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_ssn=(k10 k15 k20)
-ssn=${all_ssn[$(( $SLURM_ARRAY_TASK_ID / 1 % 3 ))]}
+all_snn=(k10 k15 k20)
+snn=${all_snn[$(( $SLURM_ARRAY_TASK_ID / 1 % 3 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/08_hierarchical_cluster_${ssn}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/08_hierarchical_cluster_${snn}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -36,7 +36,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 08_hierarchical_cluster.R --ssn ${ssn}
+Rscript 08_hierarchical_cluster.R --snn ${snn}
 
 echo "**** Job ends ****"
 date
