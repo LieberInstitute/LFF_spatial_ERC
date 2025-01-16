@@ -10,6 +10,7 @@ library("HDF5Array")
 library("here")
 library("sessioninfo")
 library("DeconvoBuddies")
+library("ComplexHeatmap")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -23,7 +24,7 @@ if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F sce
 message(Sys.time(), "- load Harmony corrected sce")
-sce <- loadHDF5SummarizedExperiment(dir = here("processed-data", "sce_objects", "sce_harmony"))
+sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_harmony"))
 sce
 
 ## load cluster outputs
@@ -52,6 +53,8 @@ walk(names(clusters), function(k){
 })
 
 
+table(sce$snn_k15, sce$snn_k20)
+
 #### plot marker genes ####
 
 lit_markers <- read.csv(here("processed-data", "04_snRNA-seq", "lit_marker_genes.csv")) |>
@@ -66,5 +69,41 @@ plot_marker_express_List(sce,
                          gene_name_col = "Symbol"
                          )
 
+plot_marker_express_List(sce, 
+                         lit_markers_list, 
+                         pdf_fn = here(plot_dir, "ssn_k20_Grubman_markers.pdf"),
+                         cellType_col = "snn_k20",
+                         gene_name_col = "Symbol"
+                         )
 
 
+#### write annotation csv ####
+cluster_names <- sprintf("snn_k%d", c(10, 15, 20))
+
+cluster_names %in% colnames(colData(sce))
+
+map(cluster_names, ~colData(sce) |> 
+        as.data.frame() |> 
+        count(!!sym(.x)) |> 
+        mutate(cell_type = "") |>
+        write.csv(file = here(data_dir, paste0("cluster_annotation", .x,".csv")), row.names = FALSE))
+
+#### Compare clustering w/ Jaccard Index ####
+cluster_combos <- as.data.frame(t(combn(cluster_names, 2)))
+colnames(cluster_combos) <- c("c1", "c2")
+
+cluster_combos <- cluster_combos |> 
+    mutate(name = gsub("snn_", "",paste0(c1, "_",c2))) 
+
+jacc.mat <- map2(cluster_combos$c1, cluster_combos$c2, ~linkClustersMatrix(sce[[.x]], sce[[.y]]))
+names(jacc.mat) <- cluster_combos$name
+
+walk2(jacc.mat, names(jacc.mat), function(j, name){
+    pdf(here(plot_dir, paste0("jacc_matrix-",name,".pdf")), height = 12, width = 8)
+    print(Heatmap(j,
+                  name = "Correspondence",
+                  col = c("black", viridisLite::plasma(100)),
+                  na_col = "black"
+    ))
+    dev.off()
+})
