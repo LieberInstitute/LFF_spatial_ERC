@@ -5,6 +5,7 @@ library("spatialLIBD")
 library("HDF5Array")
 library("Matrix")
 library("here")
+library("sessioninfo")
 
 ## local data
 #### Load the data ####
@@ -89,4 +90,4 @@ print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
-session_info()
+sessioninfo::session_info()
