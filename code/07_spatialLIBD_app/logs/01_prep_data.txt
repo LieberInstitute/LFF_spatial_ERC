@@ -1,12 +1,17 @@
 **** Job starts ****
-Thu Dec  5 04:33:26 PM EST 2024
+Tue Dec 17 03:14:10 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 11013858
+Job id: 11285796
 Job name: 01_prep_data
-Node name: compute-163
+Node name: compute-168
 Task id: 
+Unloading conda_R/4.4.x
 Loading conda_R/4.4
+
+The following have been reloaded with a version change:
+  1) conda_R/4.4.x => conda_R/4.4
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -130,8 +135,10 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2024-12-05 16:33:38.360464 - Load HDF5 SPE
+2024-12-17 15:14:21.68635 - Load HDF5 SPE
+3.20 GB
 [1] "counts"    "logcounts"
+2024-12-17 15:16:45.87084 - Convert Assays
  [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"      
  [6] "TSNE"         "UMAP"         "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
 [11] "PCA_SVG"     
@@ -145,16 +152,16 @@ rownames(30494): ENSG00000243485 ENSG00000238009 ... ENSG00000278817
 rowData names(7): source type ... gene_type gene_search
 colnames(122202): AAACAACGAATAGTTC-1_Br5212 AAACAAGTATCTCCCA-1_Br5212
   ... TTGTTTGTATTACACG-1_Br6263 TTGTTTGTGTAAATTC-1_Br6263
-colData names(80): sample_id in_tissue ... BayesSpace_Markers_k02
-  BayesSpace_Markers_k11
+colData names(79): sample_id in_tissue ... BayesSpace_Markers_k11
+  BayesSpace_SVGm_k09_anno
 reducedDimNames(8): PCA_p1 PCA_p2 ... TSNE.HARMONY PCA_SVG
 mainExpName: NULL
 altExpNames(0):
 spatialCoords names(2) : pxl_col_in_fullres pxl_row_in_fullres
 imgData names(4): sample_id image_id data scaleFactor
 [1] "Reproducibility information:"
-[1] "2024-12-05 16:43:31 EST"
+[1] "2024-12-17 15:24:21 EST"
    user  system elapsed 
-561.230  17.980 604.717 
+558.561  18.618 610.514 
 Error in session_info() : could not find function "session_info"
 Execution halted
