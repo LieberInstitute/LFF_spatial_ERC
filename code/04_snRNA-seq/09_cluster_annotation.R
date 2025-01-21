@@ -88,21 +88,61 @@ type_short <- tibble(type = c(
         'Neu_matu')
 )
 
+cell_type_levels = type_short$type_short
+
 sctype <- map(sctype , ~.x|> 
                   left_join(type_short) |>
                   group_by(type) |>
                   arrange(-ncells) |> 
                   mutate(type_rank = row_number(),
-                         ct_fine = paste0(type_short, type_rank)) ## TODO zero padding
+                         ct_fine = paste0(type_short, 
+                                          width = str_pad(type_rank, 
+                                                  nchar(as.character(max(type_rank))),
+                                          side = "left",
+                                          pad = "0")),
+                         type_short = factor(type_short, levels = cell_type_levels),
+                         )
               )
 
-# map(sctype, ~.x |> arrange(-type_rank))
-map(sctype, ~.x |> count(type_short))
+map(sctype, ~levels(.x$type_short))
 
+fine_levels <- map(sctype, ~.x |> arrange(type_short) |> pull(ct_fine))
+
+sctype <- map2(sctype, fine_levels, ~.x |>
+         mutate(ct_fine = factor(ct_fine, levels = .y))
+)
+
+map(sctype, ~levels(.x$ct_fine))
+
+levels(sctype$k15$type_short)
+
+map(sctype, ~.x |> arrange(-type_rank))
+map(sctype, ~.x |> count(type_short) |> arrange(type_short))
+
+# $k15
+# # A tibble: 7 × 3
+# # Groups:   type [7]
+# type                            type_short     n
+# <chr>                           <fct>      <int>
+# 1 Astrocytes                      Astro          6
+# 2 Endothelial cells               Endo           1
+# 3 Microglial cells                Micro          2
+# 4 Oligodendrocytes                Oligo          4
+# 5 Oligodendrocyte precursor cells OPC            1
+# 6 GABAergic neurons               Neu_GABA       3
+# 7 Glutamatergic neurons           Neu_Glut      11
+
+## write annotation csv 
+walk2(sctype, names(sctype), ~write.csv(.x, file = here(data_dir, paste0("cluster_annotation_snn_", .y,".csv")), row.names = FALSE))
+
+## match to clusters in sce
 anno_table <- map2_dfc(sctype, names(sctype), function(sct, name){
     cl_col <- paste0("snn_", name)
-    anno_df = data.frame(ct_broad = sct$type_short[match(sce[[cl_col]], sct$cluster)],
-               ct_fine = sct$ct_fine[match(sce[[cl_col]], sct$cluster)])
+    anno_df = data.frame(
+        ct_broad = factor(sct$type_short[match(sce[[cl_col]], sct$cluster)],
+                          cell_type_levels),
+        ct_fine = factor(sct$ct_fine[match(sce[[cl_col]], sct$cluster)]), 
+        fine_levels[[.y]])
     
     colnames(anno_df) = paste0(colnames(anno_df), "_", name)
     
@@ -112,6 +152,8 @@ anno_table <- map2_dfc(sctype, names(sctype), function(sct, name){
 head(anno_table)
 
 table(anno_table$ct_broad_k20, anno_table$ct_broad_k15)
+
+levels(anno_table$ct_fine_k15)
 
 ## add to colData
 colData(sce) <- cbind(colData(sce), anno_table)
@@ -130,36 +172,41 @@ table(sce$snn_k15, sce$snn_k20)
 
 #### plot marker genes ####
 
+## summarize marker genes from lit 
 lit_markers <- read.csv(here("processed-data", "04_snRNA-seq", "lit_marker_genes.csv")) |>
-    filter(gene_name %in% rowData(sce)$Symbol)
+    group_by(gene_name, cell_type) |>
+    summarize(n_studies = n(),
+            studies = paste0(source, collapse = ",")) |>
+    mutate(in_data = gene_name %in% rowData(sce)$Symbol)
+    
+lit_markers |> write_csv(here("processed-data", "04_snRNA-seq", "lit_marker_summary.csv"))
+
+## missing from our data
+lit_markers |> filter(!in_data)
+# gene_name cell_type          n_studies studies        in_data
+# <chr>     <chr>                  <int> <chr>          <lgl>  
+# 1 GR1A1     Glutamate receptor         1 Grubman et al. FALSE  
+# 2 PDCH15    OPC                        1 Grubman et al. FALSE
+
+lit_markers <- lit_markers |> filter(in_data)
 
 lit_markers_list <- map(splitit(lit_markers$cell_type), ~lit_markers$gene_name[.x])
 
 plot_marker_express_List(sce, 
                          lit_markers_list, 
-                         pdf_fn = here(plot_dir, "ssn_k15_Grubman_markers.pdf"),
+                         pdf_fn = here(plot_dir, "ssn_k15_lit_markers.pdf"),
                          cellType_col = "ct_fine_k15",
                          gene_name_col = "Symbol"
                          )
 
 plot_marker_express_List(sce, 
                          lit_markers_list, 
-                         pdf_fn = here(plot_dir, "ssn_k20_Grubman_markers.pdf"),
+                         pdf_fn = here(plot_dir, "ssn_k20_lit_markers.pdf"),
                          cellType_col = "ct_fine_k20",
                          gene_name_col = "Symbol"
                          )
 
 
-#### write annotation csv ####
-cluster_names <- sprintf("snn_k%d", c(10, 15, 20))
-
-cluster_names %in% colnames(colData(sce))
-
-map(cluster_names, ~colData(sce) |> 
-        as.data.frame() |> 
-        count(!!sym(.x)) |> 
-        mutate(cell_type = "") |>
-        write.csv(file = here(data_dir, paste0("cluster_annotation", .x,".csv")), row.names = FALSE))
 
 #### Compare clustering w/ Jaccard Index ####
 
@@ -187,6 +234,8 @@ walk(c("broad", "fine"), function(resolution){
     })
     
 })
+
+## examine heriachial clustering ####
 
 # slurmjobs::job_single('09_cluster_annotation', create_shell = TRUE, memory = '5G', command = "09_cluster_annotation.R")
 
