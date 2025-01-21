@@ -109,7 +109,8 @@ map(sctype, ~levels(.x$type_short))
 fine_levels <- map(sctype, ~.x |> arrange(type_short) |> pull(ct_fine))
 
 sctype <- map2(sctype, fine_levels, ~.x |>
-         mutate(ct_fine = factor(ct_fine, levels = .y))
+                   mutate(ct_fine = factor(ct_fine, levels = .y)) |>
+                   arrange(ct_fine)
 )
 
 map(sctype, ~levels(.x$ct_fine))
@@ -141,8 +142,9 @@ anno_table <- map2_dfc(sctype, names(sctype), function(sct, name){
     anno_df = data.frame(
         ct_broad = factor(sct$type_short[match(sce[[cl_col]], sct$cluster)],
                           cell_type_levels),
-        ct_fine = factor(sct$ct_fine[match(sce[[cl_col]], sct$cluster)]), 
-        fine_levels[[.y]])
+        ct_fine = factor(sct$ct_fine[match(sce[[cl_col]], sct$cluster)], 
+                         fine_levels[[name]])
+    )
     
     colnames(anno_df) = paste0(colnames(anno_df), "_", name)
     
@@ -154,6 +156,7 @@ head(anno_table)
 table(anno_table$ct_broad_k20, anno_table$ct_broad_k15)
 
 levels(anno_table$ct_fine_k15)
+levels(anno_table$ct_fine_k20)
 
 ## add to colData
 colData(sce) <- cbind(colData(sce), anno_table)
@@ -235,7 +238,27 @@ walk(c("broad", "fine"), function(resolution){
     
 })
 
-## examine heriachial clustering ####
+## examine hierarchical clustering ####
+h_clus_fn <- list.files(here("processed-data", "04_snRNA-seq", "08_hierarchical_cluster"), full.names = TRUE)
+names(h_clus_fn) <- ss(basename(h_clus_fn), "_|\\.", 3)
+
+h_clus <- map(h_clus_fn, ~mget(load(.x)))
+
+dend_ct <- map2(h_clus, sctype, function(hc, sct){
+    
+    d <- hc$dend
+    labels(d) <- sct$ct_fine[match(labels(d), sct$cluster)]
+    return(d)
+})
+
+labels(dend_ct$k10)
+
+walk2(dend_ct, names(dend_ct), function(d, name){
+    pdf(here(plot_dir, sprintf("dend_ct_%s.pdf", name)), height = 10, width = 12)
+    par(cex = 0.6, font = 2)
+    plot(d, main = sprintf("hierarchical cluster dend - %s", name), horiz = TRUE)
+    dev.off()
+    })
 
 # slurmjobs::job_single('09_cluster_annotation', create_shell = TRUE, memory = '5G', command = "09_cluster_annotation.R")
 
