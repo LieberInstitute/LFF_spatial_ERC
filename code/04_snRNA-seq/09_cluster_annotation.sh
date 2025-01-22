@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-09_cluster_annotation.R
+Rscript 09_cluster_annotation.R
 
 echo "**** Job ends ****"
 date

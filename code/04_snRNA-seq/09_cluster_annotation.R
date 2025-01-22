@@ -260,6 +260,12 @@ walk2(dend_ct, names(dend_ct), function(d, name){
     dev.off()
     })
 
+#### Output annotations ####
+message(Sys.time(), " - Save annotated sce")
+
+save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
+saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC"))
+
 # slurmjobs::job_single('09_cluster_annotation', create_shell = TRUE, memory = '5G', command = "09_cluster_annotation.R")
 
 ## Reproducibility information
