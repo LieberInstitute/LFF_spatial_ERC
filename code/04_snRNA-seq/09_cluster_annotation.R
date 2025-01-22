@@ -74,8 +74,8 @@ type_short <- tibble(type = c(
     'Microglial cells',
     'Oligodendrocytes',
     'Oligodendrocyte precursor cells',
-    'GABAergic neurons',
     'Glutamatergic neurons',
+    'GABAergic neurons',
     'Mature neurons'), 
     type_short  = c(
         'Astro',
@@ -83,9 +83,9 @@ type_short <- tibble(type = c(
         "Micro",
         'Oligo',
         'OPC',
-        'Neu_GABA',
-        'Neu_Glut',
-        'Neu_matu')
+        'Excit',
+        'Inhib',
+        'Neu')
 )
 
 cell_type_levels = type_short$type_short
