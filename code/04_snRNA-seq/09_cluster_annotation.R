@@ -10,6 +10,7 @@ library("sessioninfo")
 library("DeconvoBuddies")
 library("ComplexHeatmap")
 library("bluster")
+library("dendextend")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -26,7 +27,8 @@ message(Sys.time(), "- load Harmony corrected sce")
 sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_harmony"))
 sce
 
-## load cluster outputs
+#### load cluster outputs ####
+message(Sys.time(), " - Load cluster data")
 cluster_fn <- list.files(here("processed-data", "04_snRNA-seq", "07_cluster_sn"), full.names = TRUE)  
 names(cluster_fn) <- ss(basename(cluster_fn), "_", 3)
 
@@ -47,6 +49,8 @@ sce$snn_k15 <- sprintf("k15c%02d", clusters$k15)
 sce$snn_k20 <- sprintf("k20c%02d", clusters$k20)
 
 #### load sc-type output ####
+message(Sys.time(), " - scType data")
+
 sctype_fn <- list.files(here("processed-data", "04_snRNA-seq", "10_sctype"), pattern = ".csv", full.names = TRUE)
 names(sctype_fn) <- ss(basename(sctype_fn), "_|\\.", 4)
 
@@ -161,7 +165,9 @@ levels(anno_table$ct_fine_k20)
 ## add to colData
 colData(sce) <- cbind(colData(sce), anno_table)
 
-## plot on UMAP + TSNE
+#### plot on UMAP + TSNE ####
+message(Sys.time(), " - Plot UMAP + TSNE")
+
 walk(names(clusters), function(k){
     walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "sn", var_type = "cat", dimred = .x, my_var = paste0("snn_",k), sufix = "HARMONY"))
 })
@@ -174,7 +180,7 @@ walk(colnames(anno_table), function(ct){
 table(sce$snn_k15, sce$snn_k20)
 
 #### plot marker genes ####
-
+message(Sys.time(), " - Plot marker genes")
 ## summarize marker genes from lit 
 lit_markers <- read.csv(here("processed-data", "04_snRNA-seq", "lit_marker_genes.csv")) |>
     group_by(gene_name, cell_type) |>
@@ -212,6 +218,7 @@ plot_marker_express_List(sce,
 
 
 #### Compare clustering w/ Jaccard Index ####
+message(Sys.time(), " - Compare clusters")
 
 walk(c("broad", "fine"), function(resolution){
     
@@ -239,6 +246,8 @@ walk(c("broad", "fine"), function(resolution){
 })
 
 ## examine hierarchical clustering ####
+message(Sys.time(), " - Plot HC with ct names")
+
 h_clus_fn <- list.files(here("processed-data", "04_snRNA-seq", "08_hierarchical_cluster"), full.names = TRUE)
 names(h_clus_fn) <- ss(basename(h_clus_fn), "_|\\.", 3)
 
