@@ -1,67 +1,49 @@
-## September 2024, Louise Huuki-Myers
-## Run spatialLIBD::registration_wrapper to get layer modeling and pseudobulk data
-
+## Louise Huuki-Myers, January 2025
+## Run spatialLIBD::registration_wrapper to get cell type modeling and pseudobulk data
 
 ## Required libraries
 library("here")
 library("sessioninfo")
-library("SpatialExperiment")
+library("SingleCellExperiment")
 library("spatialLIBD")
 library("HDF5Array")
 library("getopt")
 
 # Import command-line parameters
-spec <- matrix(
-    c(  "cluster", "i", "1", "character", "Name of cluster"),
+scec <- matrix(
+    c(  "cluster", "c", "1", "character", "Name of cluster"),
     ncol = 5, byrow = TRUE
 )
-opt <- getopt(spec)
+opt <- getopt(scec)
 
-# cluster_type <- "BayesSpace_SVGm"
-cluster_type <- opt$cluster
-
-data_dir <- here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", cluster_type)
+data_dir <- here("processed-data", "04_snRNA-seq", "11_sn_model_pseudobulk")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-
-## Choose k
-k <- as.numeric(
-    #   Only one of these environment variables will be defined, so grab the
-    #   defined one (handle SGE or SLURM)
-    paste0(Sys.getenv("SLURM_ARRAY_TASK_ID"), Sys.getenv("SGE_TASK_ID"))
-)
-k_nice <- sprintf("%02d", k)
-
-message("k:", k_nice)
-
 #### Load the data ####
-message(Sys.time(), " - Load HDF5 SPE")
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
-
-cluster_var <- sprintf("%s_k%02d", cluster_type, k)
+message(Sys.time(), " - Load HDF5 sce")
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 
 #### Run Spatial Registration Function ####
+cluster_var <- opt$cluster
+
 message(Sys.time(), " - Running Spatial Registration on: ", cluster_var)
-stopifnot(cluster_var %in% colnames(colData(spe)))
+stopifnot(cluster_var %in% colnames(colData(sce)))
 
 modeling_results <-registration_wrapper(
-    sce = spe,
+    sce = sce,
     var_registration = cluster_var,
     var_sample_id = "sample_id",
     covars = c("APOE", "Sex", "Age", "Anc_Afr"),
-    gene_ensembl = "gene_id",
-    gene_name = "gene_name",
-    # suffix = k_nice,
+    gene_ensembl = "ID",
+    gene_name = "Symbol",
     min_ncells = 10,
-    pseudobulk_rds_file = here(data_dir, sprintf("spe_pseudobulk-%s.rds", cluster_var))
+    pseudobulk_rds_file = here(data_dir, sprintf("sce_pseudobulk-%s.rds", cluster_var))
 )
 
 message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results-%s.rds", cluster_var)))
 
-# slurmjobs::job_single('08_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 08_model_pseudobulk.R")
-
-# slurmjobs::array_submit(name = "08_model_pseudobulk", task_ids = c(2), submit = TRUE)
+# slurmjobs::job_single('11_sn_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 11_sn_model_pseudobulk.R -cluster 'ct_broad_k20'")
 
 ## Reproducibility information
 print("Reproducibility information:")
