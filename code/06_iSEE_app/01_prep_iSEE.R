@@ -7,22 +7,10 @@ library("Matrix")
 
 ## Load HD5F sce
 message(Sys.time(), "- load Harmony corrected sce")
-sce <- loadHDF5SummarizedExperiment(dir = here("processed-data", "sce_objects", "sce_harmony"))
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 sce
 
-## load cluster outputs
-cluster_fn <- list.files(here("processed-data", "04_snRNA-seq", "07_cluster_sn"), full.names = TRUE)
-names(cluster_fn) <- jaffelab::ss(basename(cluster_fn), "_", 3)
-
-clusters <- purrr::map(cluster_fn, ~get(load(.x)))
-
-purrr::map(clusters, max)
-purrr::map(clusters, table)
-
-sce$snn_k10 <- sprintf("k10c%02d", clusters$k10)
-sce$snn_k15 <- sprintf("k15c%02d", clusters$k15)
-sce$snn_k20 <- sprintf("k20c%02d", clusters$k20)
-
+colnames(colData(sce))
 
 ## Drop data we don't need for iSEE
 assayNames(sce)
