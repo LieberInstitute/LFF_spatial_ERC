@@ -13,6 +13,23 @@ cell_type_colors <- c(Excit = "#247FBC",
                       Endo = "#FF56AF",
                       Other = "#4E586A")
 
+# cell_type_colors_alt <- c(Excit = "#246EBD",
+#                       Inhib = "#E83870",
+#                       Oligo = "#DD900B",
+#                       OPC = "#BAD136",
+#                       Astro = "#3BB391",
+#                       Micro = "#4C3894",
+#                       Endo = "#FA63C8",
+#                       Other = "#4E586A")
+# 
+# cell_type_colors_cool <- c(Excit = "#2423BC",
+#                            Inhib = "#94378A",
+#                            Oligo = "#E8A738",
+#                            OPC = "#DDF500",
+#                            Astro = "#8CC82D",
+#                            Micro = "#3BA9B2",
+#                            Endo = "#5C537F")
+
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
 
 ## APOE colors
