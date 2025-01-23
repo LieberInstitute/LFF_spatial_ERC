@@ -26,6 +26,10 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 #### Run Spatial Registration Function ####
 cluster_var <- opt$cluster
 
+## make APOE syntatic
+colData(sce)[,c("APOE", "Sex", "Age", "Anc_Afr")]
+sce$APOE <- gsub("/", "", sce$APOE)
+
 message(Sys.time(), " - Running Spatial Registration on: ", cluster_var)
 stopifnot(cluster_var %in% colnames(colData(sce)))
 
