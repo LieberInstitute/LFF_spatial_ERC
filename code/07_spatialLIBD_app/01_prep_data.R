@@ -78,8 +78,11 @@ stopifnot(length(tests$pairwise) == choose(k, 2))
 sig_genes_k09 <- sig_genes_extract_all(
     modeling_results = modeling_results_k09,
     sce_layer = spe_pb_k09,
-    n=100
+    n = nrow(spe_pb_k09)
 )
+
+nrow(sig_genes_k09)
+# 1023032
 
 saveRDS(sig_genes_k09, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", "sig_genes_k09.rds"))
 
