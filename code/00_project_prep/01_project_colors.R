@@ -5,30 +5,13 @@ library("here")
 
 #### cell types ####
 cell_type_colors <- c(Excit = "#247FBC",
-                      Inhib = "#E83E38", 
-                      Oligo = "#F57A00", 
+                      Inhib = "#E83E38",
+                      Oligo = "#F57A00",
                       OPC = "#D2B037",
                       Astro = "#3BB273",
                       Micro = "#663894",
                       Endo = "#FF56AF",
                       Other = "#4E586A")
-
-# cell_type_colors_alt <- c(Excit = "#246EBD",
-#                       Inhib = "#E83870",
-#                       Oligo = "#DD900B",
-#                       OPC = "#BAD136",
-#                       Astro = "#3BB391",
-#                       Micro = "#4C3894",
-#                       Endo = "#FA63C8",
-#                       Other = "#4E586A")
-# 
-# cell_type_colors_cool <- c(Excit = "#2423BC",
-#                            Inhib = "#94378A",
-#                            Oligo = "#E8A738",
-#                            OPC = "#DDF500",
-#                            Astro = "#8CC82D",
-#                            Micro = "#3BA9B2",
-#                            Endo = "#5C537F")
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
 
@@ -71,7 +54,9 @@ test_pallet_plots <- function(pallet, pallet_name, n=50){
         scale_fill_manual(values = pallet) +
         theme_classic()
     
-    print(preview + geom_text(aes(label = name), color = "black", nudge_y = 0.25))
+    print(preview + 
+              geom_text(aes(label = name), color = "black", nudge_y = 0.25) + 
+              labs(title = pallet_name))
     print(cvd_grid(preview))
     
     #### pairwise ####
@@ -133,9 +118,50 @@ test_pallet_plots <- function(pallet, pallet_name, n=50){
     print(cvd_grid(boxplot_test_fig))
 }
 
-pdf(here("plots", "00_project_prep", "01_project_colors","cell_type_color_test_plots.pdf"))
-test_pallet_plots(cell_type_colors, "Cell Colors")
+## plot offical colors
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_cell_type_colors.pdf"))
+test_pallet_plots(cell_type_colors, "Cell Colors: ERC")
 dev.off()
+
+## other cell type colors to test
+#
+# ## remix for ERC
+# cell_type_remix <- c(Excit = "#374194",
+#                       Inhib = "#f50018", 
+#                       Oligo = "#f57a00", 
+#                       OPC = "#d1cf36",
+#                       Astro = "#3BB273",
+#                       Micro = "#7a3894",
+#                       Endo = "#e8389b",
+#                       Other = "#4E586A")
+# 
+# cell_type_colors_alt <- c(Excit = "#246EBD",
+#                       Inhib = "#E83870",
+#                       Oligo = "#DD900B",
+#                       OPC = "#BAD136",
+#                       Astro = "#3BB391",
+#                       Micro = "#4C3894",
+#                       Endo = "#FA63C8",
+#                       Other = "#4E586A")
+# 
+# cell_type_colors_cool <- c(Excit = "#2423BC",
+#                            Inhib = "#94378A",
+#                            Oligo = "#E8A738",
+#                            OPC = "#DDF500",
+#                            Astro = "#8CC82D",
+#                            Micro = "#3BA9B2",
+#                            Endo = "#5C537F")
+# 
+# cell_type_colors_list <- list(classic = cell_type_colors,
+#                               remix = cell_type_remix,
+#                               alt = cell_type_colors_alt,
+#                               cool = cell_type_colors_cool)
+
+# walk2(cell_type_colors_list, names(cell_type_colors_list), function(colors, name){
+#     pdf(here("plots", "00_project_prep", "01_project_colors", sprintf("cell_type_color_%s_test_plots.pdf", name)))
+#     test_pallet_plots(colors, paste0("Cell Colors: ", name))
+#     dev.off()
+# })
 
 
 ## Reproducibility information
