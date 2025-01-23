@@ -10,7 +10,7 @@ cell_type_colors <- c(Excit = "#247FBC",
                       OPC = "#D2B037",
                       Astro = "#3BB273",
                       Micro = "#663894",
-                      EndoMural = "#FF56AF",
+                      Endo = "#FF56AF",
                       Other = "#4E586A")
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
