@@ -16,6 +16,9 @@ scec <- matrix(
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
+print(opt)
+
+cluster <- opt$cluster
 
 # cluster = "ct_fine_k20"
 
