@@ -167,24 +167,51 @@ levels(anno_table$ct_fine_k20)
 colData(sce) <- cbind(colData(sce), anno_table)
 
 #### Define colors for fine cell types ####
-load(here("processed-data","00_project_prep","cell_type_colors.Rdata"), verbose = TRUE)
-# cell_type_colors
 
-fine_ct <- map(names(clusters), ~levels(anno_table[[paste0("ct_fine_", .x)]]))
-fine_ct <- Reduce("union", fine_ct)
+ks <- c("k10", "k15", "k20")
+names(ks) <- ks
 
-##TODO allow pallet input 
-cell_type_colors_fine <- create_cell_colors(cell_types = fine_ct, pallet = cell_type_colors)
+cell_type_colors <- map(ks ,~create_cell_colors(cell_types = levels(anno_table[[paste0("ct_fine_", .x)]]),
+                                                pallet_name = "classic", 
+                                                split = "\\."))
+# $k20
+# $broad
+# Astro      Endo     Micro     Oligo       OPC     Excit     Inhib 
+# "#3BB273" "#FF56AF" "#663894" "#F57A00" "#D2B037" "#247FBC" "#E83E38" 
+# 
+# $fine
+# Astro.1   Astro.2   Astro.3   Astro.4   Astro.5    Endo.1   Micro.1   Micro.2   Micro.3   Micro.4   Oligo.1   Oligo.2 
+# "#3BB273" "#62C18F" "#89D0AB" "#B0E0C7" "#D7EFE3" "#FF56AF" "#663894" "#8C69AE" "#B29BC9" "#D8CDE4" "#F57A00" "#F79433" 
+# Oligo.3   Oligo.4   Oligo.5     OPC.1  Excit.01  Excit.02  Excit.03  Excit.04  Excit.05  Excit.06  Excit.07  Excit.08 
+# "#F9AF66" "#FBC999" "#FDE4CC" "#D2B037" "#247FBC" "#3388C0" "#4391C5" "#529ACA" "#62A3CF" "#72ACD3" "#81B5D8" "#91BFDD" 
+# Excit.09  Excit.10  Excit.11  Excit.12  Excit.13  Excit.14   Inhib.1   Inhib.2   Inhib.3 
+# "#A1C8E2" "#B0D1E7" "#C0DAEB" "#D0E3F0" "#DFECF5" "#EFF5FA" "#E83E38" "#EF7E7A" "#F7BEBC"
+
+## save all color output
+save(cell_type_colors, file = here(data_dir, "cell_type_colors_allK.Rdata"))
 
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
 
+## plot clusters
 walk(names(clusters), function(k){
-    walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "sn", var_type = "cat", dimred = .x, my_var = paste0("snn_",k), sufix = "HARMONY"))
+    walk(c("UMAP", "TSNE"),  
+         ~my_plot_reduced_dim(sce, 
+                              prefix = "sn", 
+                              var_type = "cat", 
+                              dimred = .x, 
+                              my_var = paste0("snn_",k), 
+                              sufix = "HARMONY"))
 })
-
-walk(colnames(anno_table), function(ct){
-    walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "sn", var_type = "cat", dimred = .x, my_var = ct, sufix = "HARMONY"))
+## plot annotations
+walk2(colnames(anno_table), unlist(cell_type_colors, recursive = FALSE), function(ct, colors){
+    
+    walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "sn",
+                                                  var_type = "cat", 
+                                                  dimred = .x, 
+                                                  my_var = ct, 
+                                                  color_pal = colors,
+                                                  sufix = "HARMONY"))
 })
 
 
@@ -216,17 +243,17 @@ plot_marker_express_List(sce,
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ssn_k15_lit_markers.pdf"),
                          cellType_col = "ct_fine_k15",
-                         gene_name_col = "Symbol"
+                         gene_name_col = "Symbol",
+                         color_pal = cell_type_colors$k15$fine,
                          )
 
 plot_marker_express_List(sce, 
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ssn_k20_lit_markers.pdf"),
                          cellType_col = "ct_fine_k20",
-                         gene_name_col = "Symbol"
+                         gene_name_col = "Symbol",
+                         color_pal = cell_type_colors$k20$fine,
                          )
-
-
 
 #### Compare clustering w/ Jaccard Index ####
 message(Sys.time(), " - Compare clusters")
@@ -279,6 +306,11 @@ walk2(dend_ct, names(dend_ct), function(d, name){
     plot(d, main = sprintf("hierarchical cluster dend - %s", name), horiz = TRUE)
     dev.off()
     })
+
+
+#### Add colors to metadata ####
+
+metadata(sce)$cell_type_colors <- cell_type_colors$k20
 
 #### Output annotations ####
 message(Sys.time(), " - Save annotated sce")
