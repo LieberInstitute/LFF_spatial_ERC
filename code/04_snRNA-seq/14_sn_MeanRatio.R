@@ -9,6 +9,7 @@ library("DeconvoBuddies")
 library("HDF5Array")
 library("ggplot2")
 library("getopt")
+library("dplyr")
 
 # Import command-line parameters
 scec <- matrix(
@@ -52,7 +53,7 @@ marker_stats_1vAll <- findMarkers_1vAll(
     sce = sce,
     assay_name = "counts",
     cellType_col = cluster,
-    mod = "~BrNum"
+    mod = "~sample_id + APOE + Sex + Age + Anc_Afr"
 )
 
 #### Join and save data ####
