@@ -100,6 +100,7 @@ sctype <- map(sctype , ~.x|>
                   arrange(-ncells) |> 
                   mutate(type_rank = row_number(),
                          ct_fine = paste0(type_short, 
+                                          ".",
                                           width = str_pad(type_rank, 
                                                   nchar(as.character(max(type_rank))),
                                           side = "left",
@@ -164,6 +165,16 @@ levels(anno_table$ct_fine_k20)
 
 ## add to colData
 colData(sce) <- cbind(colData(sce), anno_table)
+
+#### Define colors for fine cell types ####
+load(here("processed-data","00_project_prep","cell_type_colors.Rdata"), verbose = TRUE)
+# cell_type_colors
+
+fine_ct <- map(names(clusters), ~levels(anno_table[[paste0("ct_fine_", .x)]]))
+fine_ct <- Reduce("union", fine_ct)
+
+##TODO allow pallet input 
+cell_type_colors_fine <- create_cell_colors(cell_types = fine_ct, pallet = cell_type_colors)
 
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
