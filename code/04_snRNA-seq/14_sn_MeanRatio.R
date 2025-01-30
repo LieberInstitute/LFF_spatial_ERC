@@ -60,7 +60,7 @@ marker_stats_1vAll <- findMarkers_1vAll(
 message(Sys.time(), " - Done - Join data & save")
 ## join the two marker_stats tables
 marker_stats <- marker_stats_MeanRatio |>
-    left_join(marker_stats_1vAll, by = join_by(gene, cellType.target))
+    dplyr::left_join(marker_stats_1vAll, by = join_by(gene, cellType.target))
 
 save(marker_stats, file = here(data_dir, sprintf("MarkerStats_%s.Rdata", cluster)))
 
