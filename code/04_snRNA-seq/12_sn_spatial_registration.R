@@ -9,10 +9,10 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC")
+data_dir <- here("processed-data", "05_spe_correct_cluster", "12_sn_spatial_registration")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "05_spe_correct_cluster", "10_spatial_registration_DLPFC")
+plot_dir <- here("plots", "05_spe_correct_cluster", "12_sn_spatial_registration")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### get reference layer enrichment statistics ####
@@ -45,13 +45,13 @@ annotate_registered_clusters(
     cor_stats_layer = .x,
     confidence_threshold = 0.25,
     cutoff_merge_ratio = 0.25
-))
+)
 
 
 #### create registration heatmaps ####
 
 
-# slurmjobs::job_single('10_spatial_registration_DLPFC', create_shell = TRUE, memory = '25G', command = "Rcript 10_spatial_registration_DLPFC.R")
+# slurmjobs::job_single('12_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rcript 12_sn_spatial_registration.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
