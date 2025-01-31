@@ -48,12 +48,20 @@ marker_stats_MeanRatio <- get_mean_ratio(
 )
 
 ## Run 1vALL 
+
+## make APOE syntatic
+## only ~sample_ID is full rank
+# sce$APOE <- gsub("/", "", sce$APOE)
+# c("sample_id", "APOE" ,"Sex", "Age","Anc_Afr") %in% colnames(colData(sce))
+# mod <- model.matrix(~sample_id + Sex , colData(sce))
+# limma::is.fullrank(mod)
+
 message(Sys.time(), " - Run 1vALL on ", cluster)
 marker_stats_1vAll <- findMarkers_1vAll(
     sce = sce,
     assay_name = "counts",
     cellType_col = cluster,
-    mod = "~sample_id + APOE + Sex + Age + Anc_Afr"
+    mod = "~sample_id"
 )
 
 #### Join and save data ####
