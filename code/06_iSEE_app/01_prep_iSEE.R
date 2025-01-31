@@ -30,10 +30,8 @@ sce$path <- NULL
 sce$total <- NULL
 
 # # sourcing official color palette
-# source(
-#     file = here("code", "99_paper_figs", "source_colors.R"),
-#     echo = TRUE
-# )
+load(here("processed-data", "04_snRNA-seq", "09_cluster_annotation", "cell_type_colors_allK.Rdata"))
+sn_colors<- cell_type_colors$k20$fine
 
 ## Check final size
 lobstr::obj_size(sce)
@@ -51,7 +49,7 @@ sce
 
 sce 
 saveRDS(sce, file = here("code", "06_iSEE_app", "sce_ERC_iSEE.rds"))
-# saveRDS(sn_colors, file = here("code", "06_iSEE_app", "sn_colors.rds"))
+saveRDS(sn_colors, file = here("code", "06_iSEE_app", "sn_colors.rds"))
 
 # slurmjobs::job_single('01_prep_iSEE', create_shell = TRUE, memory = '25G', command = "Rscript 01_prep_iSEE.R")
 
