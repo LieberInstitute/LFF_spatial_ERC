@@ -1,0 +1,218 @@
+**** Job starts ****
+Fri Jan 31 08:36:30 AM EST 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 12940077
+Job name: 14_sn_MeanRatio
+Node name: compute-169
+Task id: 
+Loading conda_R/4.4.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4.x
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:Biobase’:
+
+    combine
+
+The following objects are masked from ‘package:GenomicRanges’:
+
+    intersect, setdiff, union
+
+The following object is masked from ‘package:GenomeInfoDb’:
+
+    intersect
+
+The following objects are masked from ‘package:IRanges’:
+
+    collapse, desc, intersect, setdiff, slice, union
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, intersect, rename, setdiff, setequal, union
+
+The following objects are masked from ‘package:BiocGenerics’:
+
+    combine, intersect, setdiff, union
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+$ARGS
+character(0)
+
+$cluster
+[1] "ct_fine_k20"
+
+2025-01-31 08:36:44.664644 - Load HDF5 sce
+2025-01-31 08:36:52.736012 - Run MeanRatio on ct_fine_k20
+2025-01-31 08:42:48.152229 - Run 1vALL on ct_fine_k20
+Running 1vALL Testing for up-regulated genes
+2025-01-31 08:42:48.238247 - Find markers for: Oligo2
+2025-01-31 09:23:26.164941 - Find markers for: Excit04
+2025-01-31 10:00:59.794645 - Find markers for: Astro1
+2025-01-31 10:37:48.190409 - Find markers for: Inhib2
+2025-01-31 11:14:58.699628 - Find markers for: Inhib1
+2025-01-31 11:50:39.282808 - Find markers for: OPC1
+2025-01-31 12:25:32.490309 - Find markers for: Excit01
+2025-01-31 12:58:55.548918 - Find markers for: Excit03
+2025-01-31 13:31:48.79931 - Find markers for: Excit02
+2025-01-31 14:03:35.703924 - Find markers for: Excit09
+2025-01-31 14:36:15.765859 - Find markers for: Oligo1
+2025-01-31 15:10:02.638238 - Find markers for: Oligo4
+2025-01-31 15:43:22.812992 - Find markers for: Micro1
+2025-01-31 16:17:19.968464 - Find markers for: Excit13
+2025-01-31 16:49:56.579352 - Find markers for: Oligo3
+2025-01-31 17:23:29.463033 - Find markers for: Micro3
+2025-01-31 17:56:23.525739 - Find markers for: Micro2
+2025-01-31 18:31:05.072155 - Find markers for: Excit08
+2025-01-31 19:07:02.900137 - Find markers for: Astro2
+2025-01-31 19:41:10.851956 - Find markers for: Inhib3
+2025-01-31 20:14:05.916844 - Find markers for: Endo1
+2025-01-31 20:47:22.99866 - Find markers for: Excit11
+2025-01-31 21:22:34.125809 - Find markers for: Excit12
+2025-01-31 21:58:05.396363 - Find markers for: Excit07
+2025-01-31 22:33:37.614316 - Find markers for: Oligo5
+2025-01-31 23:06:30.019386 - Find markers for: Excit14
+2025-01-31 23:40:37.294912 - Find markers for: Excit10
+2025-02-01 00:16:22.635584 - Find markers for: Excit06
+2025-02-01 00:50:16.068642 - Find markers for: Astro5
+2025-02-01 01:24:04.130781 - Find markers for: Astro4
+2025-02-01 02:00:00.390131 - Find markers for: Excit05
+2025-02-01 02:35:47.254659 - Find markers for: Astro3
+2025-02-01 03:12:25.892635 - Find markers for: Micro4
+2025-02-01 03:52:52.716983 - Building Table
+** Done! **
+
+2025-02-01 03:52:56.545081 - Done - Join data & save
+Error: object 'stats' not found
+Execution halted
