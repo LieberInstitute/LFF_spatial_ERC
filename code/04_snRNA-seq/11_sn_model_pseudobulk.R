@@ -34,7 +34,7 @@ sce$APOE <- gsub("/", "", sce$APOE)
 message(Sys.time(), " - Running Spatial Registration on: ", cluster_var)
 stopifnot(cluster_var %in% colnames(colData(sce)))
 
-table(sce[[cluster]], sce$sample_id)
+table(sce[[cluster_var]], sce$sample_id)
 
 modeling_results <-registration_wrapper(
     sce = sce,
