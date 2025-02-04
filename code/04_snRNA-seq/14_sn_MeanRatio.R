@@ -74,11 +74,13 @@ save(marker_stats, file = here(data_dir, sprintf("MarkerStats_%s.Rdata", cluster
 
 
 #### plot hockey stick plots & top markers ####
+message(Sys.time(), " - Done - Join data & save")
+
 
 ## plot markers
 plot_marker_express_ALL(
     sce,
-    stats,
+    marker_stats,
     pdf_fn = here(plot_dir, sprintf("sn_violin_MeanRatio_top10-%s.pdf", cluster)),
     n_genes = 10,
     rank_col = "MeanRatio.rank",
