@@ -15,6 +15,7 @@ scec <- matrix(
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
+print(opt)
 
 data_dir <- here("processed-data", "04_snRNA-seq", "11_sn_model_pseudobulk")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -27,7 +28,7 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 cluster_var <- opt$cluster
 
 ## make APOE syntatic
-colData(sce)[,c(cluster, "sample_id", "APOE", "Sex", "Age", "Anc_Afr")]
+colData(sce)[,c(cluster_var, "sample_id", "APOE", "Sex", "Age", "Anc_Afr")]
 sce$APOE <- gsub("/", "", sce$APOE)
 
 message(Sys.time(), " - Running Spatial Registration on: ", cluster_var)
