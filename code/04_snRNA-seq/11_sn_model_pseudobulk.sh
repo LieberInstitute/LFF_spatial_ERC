@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 11_sn_model_pseudobulk.R --cluster 'ct_broad_k20'
+Rscript 11_sn_model_pseudobulk.R --cluster 'ct_fine_k20'
 
 echo "**** Job ends ****"
 date
