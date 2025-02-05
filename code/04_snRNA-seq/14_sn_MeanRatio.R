@@ -72,6 +72,9 @@ marker_stats <- marker_stats_MeanRatio |>
 
 save(marker_stats, file = here(data_dir, sprintf("MarkerStats_%s.Rdata", cluster)))
 
+# Fix '.' add to cell type names
+# marker_stats <- marker_stats |> mutate(cellType.target = gsub("(\\d+)", ".\\1", cellType.target),
+#                        cellType.2nd = gsub("(\\d+)", ".\\1", cellType.2nd))
 
 #### plot hockey stick plots & top markers ####
 message(Sys.time(), " - Plots")
