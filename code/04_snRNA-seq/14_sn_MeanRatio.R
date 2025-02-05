@@ -74,8 +74,15 @@ save(marker_stats, file = here(data_dir, sprintf("MarkerStats_%s.Rdata", cluster
 
 
 #### plot hockey stick plots & top markers ####
-message(Sys.time(), " - Done - Join data & save")
+message(Sys.time(), " - Plots")
 
+load(here("processed-data", "04_snRNA-seq", "09_cluster_annotation", "cell_type_colors_allK.Rdata"), verbose = TRUE)
+
+cluster_split <- unlist(strsplit(cluster, split = "_"))
+cellType_colors <- cell_type_colors[[cluster_split[[3]]]][[cluster_split[[2]]]]
+
+
+cluster %in% colnames(colData(sce))
 
 ## plot markers
 plot_marker_express_ALL(
@@ -87,7 +94,7 @@ plot_marker_express_ALL(
     anno_col = "MeanRatio.anno",
     gene_col = "gene",
     cellType_col = cluster,
-    color_pal = NULL,
+    color_pal = cellType_colors,
     plot_points = FALSE
 )
 
@@ -96,9 +103,34 @@ hockey_plot <- marker_stats |>
     ggplot(aes(MeanRatio, std.logFC)) +
     geom_point() +
     facet_wrap(~cellType.target) +
-    theme_bw()
+    theme_bw() +
+    geom_hline(yintercept = 1, color = "red", linetype = "dashed") +
+    geom_vline(xintercept = 1, color = "blue", linetype = "dashed") 
 
-ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s.pdf", cluster)))
+ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s.pdf", cluster)), width = 10, height = 10)
+
+## add limit
+hockey_plot <- marker_stats |>
+    ggplot(aes(MeanRatio, std.logFC)) +
+    geom_point() +
+    facet_wrap(~cellType.target) +
+    theme_bw() +
+    xlim(0, 30)+
+    geom_hline(yintercept = 1, color = "red", linetype = "dashed") +
+    geom_vline(xintercept = 1, color = "blue", linetype = "dashed") 
+
+ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s_xlim.pdf", cluster)), width = 10, height = 10)
+
+## free scales
+hockey_plot <- marker_stats |>
+    ggplot(aes(MeanRatio, std.logFC)) +
+    geom_point() +
+    facet_wrap(~cellType.target, scales = "free") +
+    theme_bw() +
+    geom_hline(yintercept = 1, color = "red", linetype = "dashed") +
+    geom_vline(xintercept = 1, color = "blue", linetype = "dashed") 
+
+ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s_free.pdf", cluster)), width = 10, height = 10)
 
 # slurmjobs::job_single('14_sn_MeanRatio', create_shell = TRUE, memory = '100G', command = "Rscript 14_sn_MeanRatio.R -cluster 'ct_broad_k20'")
 
