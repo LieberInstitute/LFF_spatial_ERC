@@ -32,6 +32,8 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 
 pd <- as.data.frame(colData(sce))
 
+#### summary by cluster ####
+message(Sys.time(), " - Summarize cluster")
 cluster_info <- pd |>
     group_by(!!sym(cluster)) |>
     summarize(n = n(),
@@ -40,8 +42,8 @@ cluster_info <- pd |>
               cProp_Anc_AA = sum(Ancestry == "AA")/n,
               cProp_Sex_F = sum(Sex == "F")/n,
               median_sum = median(sum),
-              median_detected = median(sum),
-              median_Mito_percent = median(sum),
+              median_detected = median(detected),
+              median_Mito_percent = median(subsets_Mito_percent),
               median_scDbl_score = median(scDblFinder.score)
               )
 
@@ -57,7 +59,24 @@ n_cell_barplot <- cluster_info |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None") 
     
-ggsave(n_cell_barplot, filename = here(plot_dir, sprintf("n_cells_barplot-%s.png", cluster)))
+ggsave(n_cell_barplot, filename = here(plot_dir, sprintf("sn_%s-n_cells_barplot.png", cluster)))
+
+#### Plot Quality Metrics ####
+
+walk(c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"), function(metric){
+    qc_violin_plot <- pd |>
+        ggplot(aes(x = !!sym(cluster), y = !!sym(metric), fill = !!sym(cluster))) +
+        geom_violin(scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
+        scale_fill_manual(values = cluster_colors) +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+              legend.position = "None") 
+    
+    ggsave(qc_violin_plot, filename = here(plot_dir, sprintf("sn_%s-QCviolin_%s.png", cluster, metric)), width = 11)
+    
+})
+
+
 
 # slurmjobs::job_single('11_sn_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 11_sn_model_pseudobulk.R -cluster 'ct_broad_k20'")
 
