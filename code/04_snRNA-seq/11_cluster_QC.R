@@ -78,7 +78,9 @@ walk(c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"), function
 
 
 
-# slurmjobs::job_single('11_sn_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 11_sn_model_pseudobulk.R -cluster 'ct_broad_k20'")
+# slurmjobs::job_single('11_cluster_QC',
+#                       create_shell = TRUE, memory = '10G', 
+#                       command = "Rscript 11_cluster_QC.R --cluster 'ct_broad_k20'")
 
 ## Reproducibility information
 print("Reproducibility information:")
