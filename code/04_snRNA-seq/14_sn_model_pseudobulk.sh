@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=100G
-#SBATCH --job-name=11_sn_model_pseudobulk
+#SBATCH --job-name=14_sn_model_pseudobulk
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/11_sn_model_pseudobulk.txt
-#SBATCH -e logs/11_sn_model_pseudobulk.txt
+#SBATCH -o logs/14_sn_model_pseudobulk.txt
+#SBATCH -e logs/14_sn_model_pseudobulk.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 11_sn_model_pseudobulk.R --cluster 'ct_fine_k20'
+Rscript 14_sn_model_pseudobulk.R --cluster 'ct_fine_k20'
 
 echo "**** Job ends ****"
 date
