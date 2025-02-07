@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=5G
-#SBATCH --job-name=09_cluster_annotation
+#SBATCH --mem=100G
+#SBATCH --job-name=13_sn_MeanRatio
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/09_cluster_annotation.txt
-#SBATCH -e logs/09_cluster_annotation.txt
+#SBATCH -o logs/13_sn_MeanRatio.txt
+#SBATCH -e logs/13_sn_MeanRatio.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 09_cluster_annotation.R
+Rscript 13_sn_MeanRatio.R --cluster 'ct_fine_k20'
 
 echo "**** Job ends ****"
 date
