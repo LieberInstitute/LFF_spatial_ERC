@@ -10,20 +10,20 @@ library("HDF5Array")
 library("getopt")
 
 # Import command-line parameters
-# scec <- matrix(
-#     c(  "cluster", "c", "1", "character", "Name of cluster"),
-#     ncol = 5, byrow = TRUE
-# )
-# opt <- getopt(scec)
+scec <- matrix(
+    c(  "cluster", "c", "1", "character", "Name of cluster"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
 
 cluster <- opt$cluster
 
 # cluster = "ct_fine_k20"
 
-data_dir <- here("processed-data", "04_snRNA-seq", "13_cluster_check")
+data_dir <- here("processed-data", "04_snRNA-seq", "11_cluster_QC")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "13_cluster_check")
+plot_dir <- here("plots", "04_snRNA-seq", "11_cluster_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
