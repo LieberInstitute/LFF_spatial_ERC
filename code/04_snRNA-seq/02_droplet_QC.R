@@ -450,7 +450,11 @@ table(sce$BrNum)
 all(sample_qc_summary |> arrange(BrNum) |> pull(n_postQC) == table(sce$BrNum))
 
 ####  get logcounts ####
+message(Sys.time(), " - Quick Cluster")
+sce$quick_cluster <- quickCluster(sce) 
+
 message(Sys.time(), " - logNormCounts")
+sce <- computeSumFactors(sce, cluster=sce$quick_cluster)
 sce <- logNormCounts(sce)
 
 #### Save Data ####
