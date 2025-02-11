@@ -1,3 +1,5 @@
+# Aug, 2024 - Louise Huuki-Myers
+#  Prep snRNA-seq data, Build metadata and collect sample info
 
 library("tidyverse")
 library("readxl")

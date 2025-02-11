@@ -1,3 +1,5 @@
+# Aug, 2024 - Louise Huuki-Myers
+# Run droplet detection (DropletUtils::emptyDrops) by sample
 
 library("SingleCellExperiment")
 library("DropletUtils")

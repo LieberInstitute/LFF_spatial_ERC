@@ -1,5 +1,5 @@
-## Louise Huuki-Myers, September 2024
-## Add cluster data to sce object, explore and annotate clusters
+## Louise Huuki-Myers, February 2024
+## Evaluate different clustering results with Silhouette width and Jacquard matrix
 
 library("SingleCellExperiment")
 library("jaffelab")
@@ -12,14 +12,11 @@ library("ComplexHeatmap")
 library("bluster")
 library("dendextend")
 
-## source reduced dims function
-source(here("code", "utils", "my_plot_reduced_dim.R"))
-
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "09_cluster_annotation")
+plot_dir <- here("plots", "04_snRNA-seq", "09_cluster_eval")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "09_cluster_annotation")
+data_dir <- here("processed-data", "04_snRNA-seq", "09_cluster_eval")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F sce
@@ -318,7 +315,7 @@ message(Sys.time(), " - Save annotated sce")
 save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
 saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC"), replace=TRUE)
 
-# slurmjobs::job_single('09_cluster_annotation', create_shell = TRUE, memory = '5G', command = "09_cluster_annotation.R")
+# slurmjobs::job_single('09_cluster_eval', create_shell = TRUE, memory = '5G', command = "09_cluster_eval.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
