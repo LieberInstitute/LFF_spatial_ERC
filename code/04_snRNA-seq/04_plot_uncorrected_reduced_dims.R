@@ -1,3 +1,6 @@
+# Feb, 2025 - Louise Huuki-Myers
+# Plot uncorrected reduced dimesions for snRNA-seq data
+
 library("SingleCellExperiment")
 library("scater")
 library("purrr")
@@ -22,13 +25,14 @@ rownames(sce) <- rowData(sce)$Symbol
 
 #### plot ####
 ## categorical
-walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, dimred = "UMAP", my_var = .x, sufix = "uncorrected"))
-walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, dimred = "TSNE", my_var = .x, sufix = "uncorrected"))
+walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "UMAP", my_var = .x, var_type = "cat", sufix = "uncorrected"))
+walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "TSNE", my_var = .x, var_type = "cat", sufix = "uncorrected"))
 
 ## continuous
-walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(sce, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "uncorrected"))
+walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "UMAP", my_var = .x, var_type = "con", sufix = "uncorrected"))
 
-walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "expres_uncorrected"))
+walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, dimred = "UMAP", var_type = "express", my_var = .x, sufix = "uncorrected"))
+walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, dimred = "UMAP", var_type = "express", my_var = .x, sufix = "uncorrected"))
 
 # slurmjobs::job_single('04_plot_uncorrected_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 04_plot_uncorrected_reduced_dims.R")
 
