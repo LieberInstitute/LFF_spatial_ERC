@@ -30,6 +30,8 @@ walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(sce, dim
 
 walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, dimred = "UMAP", cat_var = FALSE, my_var = .x, sufix = "expres_uncorrected"))
 
+# slurmjobs::job_single('04_plot_uncorrected_reduced_dims', create_shell = TRUE, memory = '25G', command = "Rscript 04_plot_uncorrected_reduced_dims.R")
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
