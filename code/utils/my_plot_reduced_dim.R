@@ -55,13 +55,13 @@ my_plot_reduced_dim <- function(spe,
     
     if(save_plot){
         
-        # if(var_type == "express"){
-        #     # plot_name <- paste(paste(c(prefix, dimred, "expression", my_var, sufix), collapse = "_")
-        #     plot_name <-plot_name <- paste(c(paste(c(prefix, dimred,"expression"), collapse = "_"), my_var, sufix), collapse = "-")
-        # } else {
+        if(var_type == "express"){
+            # plot_name <- paste(paste(c(prefix, dimred, "expression", my_var, sufix), collapse = "_")
+            plot_name <-plot_name <- paste(c(paste(c(prefix, dimred,"expression"), collapse = "_"), my_var, sufix), collapse = "-")
+        } else {
             plot_name <- paste(c(paste(c(prefix, dimred), collapse = "_"), my_var, sufix), collapse = "-")
             if(facet) plot_name <- paste0(plot_name, "_facet")
-        # }
+        }
         
         plot_name <- paste0(plot_name, ".png")
         
