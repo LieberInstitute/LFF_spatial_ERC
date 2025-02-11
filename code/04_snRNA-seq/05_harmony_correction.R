@@ -40,7 +40,7 @@ message("Done TSNE + UMAP - Saving data...", Sys.time())
 save(sce, file = here("processed-data", "spe_objects", "sce_harmony.Rdata"))
 
 # saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "03_build_sce", paste0("sce_harmony_", correction)))
-saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_harmony"))
+saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_harmony"), replace = TRUE)
 
 # slurmjobs::job_single('05_harmony_correction', create_shell = TRUE, memory = '100G', command = "Rscript 05_harmony_correction.R")
 
