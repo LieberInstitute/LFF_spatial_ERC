@@ -27,8 +27,8 @@ rownames(sce) <- rowData(sce)$Symbol
 
 #### plot ####
 ## categorical
-walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "UMAP", my_var = .x, var_type = "cat", sufix = "HARMONY"))
-walk(c("sample_id", "seq_round", "exp_round","APOE"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "TSNE", my_var = .x, var_type = "cat", sufix = "HARMONY"))
+walk(c("sample_id", "seq_round", "exp_round","APOE", "quick_cluster"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "UMAP", my_var = .x, var_type = "cat", sufix = "HARMONY"))
+walk(c("sample_id", "seq_round", "exp_round","APOE", "quick_cluster"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "TSNE", my_var = .x, var_type = "cat", sufix = "HARMONY"))
 
 ## continuous
 walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(sce, prefix = "ERC_sn", dimred = "UMAP", my_var = .x, var_type = "con", sufix = "HARMONY"))
