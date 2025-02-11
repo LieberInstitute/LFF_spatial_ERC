@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, September 2024
-## use single nearest neighbors + walk trap to cluster single nuc data
+## use single nearest neighbors + walk trap to find prelim cluster single nuc data
 
 library("SingleCellExperiment")
 library("jaffelab")
@@ -52,14 +52,9 @@ table(clusters)
 
 ## save data
 message(Sys.time() , " - saving data")
-save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_clusters.Rdata", k)))
+save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_clusters_prelim.Rdata", k)))
 
 # slurmjobs::job_single('07_cluster_sn_prelim', create_shell = TRUE, memory = '100G', command = "Rscript 07_cluster_sn_prelim.R -k 10")
-# slurmjobs::job_loop(
-#     loops = list(k = c("10", "15", "20")),
-#     name = "07_cluster_sn_prelim",
-#     create_shell = TRUE
-# )
 
 ## Reproducibility information
 print("Reproducibility information:")
