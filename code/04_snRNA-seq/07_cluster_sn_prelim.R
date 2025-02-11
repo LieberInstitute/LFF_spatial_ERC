@@ -29,7 +29,7 @@ print(opt)
 k = opt$k
 
 ## Prep directories
-data_dir <- here("processed-data", "04_snRNA-seq", "07_cluster_sn")
+data_dir <- here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F
@@ -54,10 +54,10 @@ table(clusters)
 message(Sys.time() , " - saving data")
 save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_clusters.Rdata", k)))
 
-# slurmjobs::job_single('07_cluster_sn', create_shell = TRUE, memory = '100G', command = "Rscript 07_cluster_sn.R")
+# slurmjobs::job_single('07_cluster_sn_prelim', create_shell = TRUE, memory = '100G', command = "Rscript 07_cluster_sn_prelim.R -k 10")
 # slurmjobs::job_loop(
 #     loops = list(k = c("10", "15", "20")),
-#     name = "07_cluster_sn",
+#     name = "07_cluster_sn_prelim",
 #     create_shell = TRUE
 # )
 
