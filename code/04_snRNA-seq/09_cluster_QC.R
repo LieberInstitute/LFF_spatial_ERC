@@ -20,10 +20,10 @@ cluster <- opt$cluster
 
 # cluster = "ct_fine_k20"
 
-data_dir <- here("processed-data", "04_snRNA-seq", "11_cluster_QC")
+data_dir <- here("processed-data", "04_snRNA-seq", "09_cluster_QC")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "11_cluster_QC")
+plot_dir <- here("plots", "04_snRNA-seq", "09_cluster_QC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
@@ -78,9 +78,9 @@ walk(c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"), function
 
 
 
-# slurmjobs::job_single('11_cluster_QC',
+# slurmjobs::job_single('09_cluster_QC',
 #                       create_shell = TRUE, memory = '10G', 
-#                       command = "Rscript 11_cluster_QC.R --cluster 'ct_broad_k20'")
+#                       command = "Rscript 09_cluster_QC.R --cluster 'ct_broad_k20'")
 
 ## Reproducibility information
 print("Reproducibility information:")
