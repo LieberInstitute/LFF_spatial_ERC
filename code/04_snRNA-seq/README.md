@@ -15,15 +15,17 @@
 
 * `06_plot_corrected_reduced_dims`  Plot Harmony corrected reduced dimensions for snRNA-seq data
 
-* `07_sn_prelim_cluster` Use single nearest neighbors + walk trap to cluster single nuc data
+* `07_sn_prelim_cluster` Use single nearest neighbors + walk trap to cluster single nuc data k=10 (Long runtime ~13h)
 
-* `10_cluster_anno_sctype` `08_cluster_anno_sctype_prelim` 
+CLEAN
 
-* `11_cluster_QC.R` `09_cluster_qc`
+* `08_cluster_anno_sctype_prelim` <- `10_cluster_anno_sctype` 
+
+* `09_cluster_qc` <- `11_cluster_QC.R`
 
 * `10_GLM_PCA_Harmony2` Read in cluster QC SCE created in Run GLM PCA
 
-* `11_sn_cluster` Cluster high quality nuclei over many values of k
+* `11_cluster_sn` Cluster high quality nuclei over many values of k
 
 * `12_cluster_eval` Evaluate silhouette score for clustering
 

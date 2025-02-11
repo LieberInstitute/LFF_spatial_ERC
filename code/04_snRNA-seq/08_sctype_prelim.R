@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, January 2025
-## Annotate clusters with SC Type
+## Annotate preliminary clusters with SC Type
 
 ## load libraries
 library("dplyr")
@@ -17,25 +17,21 @@ source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sct
 # source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_wrapper.R")
 
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "10_sctype")
+plot_dir <- here("plots", "04_snRNA-seq", "08_sctype_prelim")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "10_sctype")
+data_dir <- here("processed-data", "04_snRNA-seq", "08_sctype_prelim")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load sce object
 sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_harmony"))
 sce
 
-# load cluster outputs
-cluster_fn <- list.files(here("processed-data", "04_snRNA-seq", "07_cluster_sn"), full.names = TRUE)
-names(cluster_fn) <- jaffelab::ss(basename(cluster_fn), "_", 3)
+## load cluster outputs
+load(here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim", "walktrap_snn_k%02d_clusters_prelim.Rdata"), verbose = TRUE)
+# clusters
 
-clusters <- purrr::map(cluster_fn, ~get(load(.x)))
-
-sce$snn_k10 <- sprintf("k10c%02d", clusters$k10)
-sce$snn_k15 <- sprintf("k15c%02d", clusters$k15)
-sce$snn_k20 <- sprintf("k20c%02d", clusters$k20)
+sce$snn_k10 <- sprintf("k10c%02d", clusters)
 
 #### SC Type #### 
 # get cell-type-specific gene sets from our in-built database (DB)
@@ -67,7 +63,8 @@ save(es.max, file = here(data_dir, "sctype_es_max.Rdata"))
 #### annotate clusters ####
 message(Sys.time(), " - Annotate clusters")
 
-cluster_cols <- c("snn_k10", "snn_k15", "snn_k20")
+## TODO unnest
+cluster_cols <- c("snn_k10")
 names(cluster_cols) <- cluster_cols
 
 sctype_scores <- map(cluster_cols, function(cl_col){
@@ -96,7 +93,7 @@ sctype_scores <- map(cluster_cols, function(cl_col){
     return(sctype_scores)
 })
 
-# slurmjobs::job_single('10_sctype', create_shell = TRUE, memory = '25G', command = "Rscript 10_sctype.R")
+# slurmjobs::job_single('08_sctype_prelim', create_shell = TRUE, memory = '25G', command = "Rscript 08_sctype_prelim.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
