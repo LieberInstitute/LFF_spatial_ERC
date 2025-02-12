@@ -154,8 +154,8 @@ sctype <- sctype_scores |>
 ## add levels to cell type fine
 fine_levels <- sctype |> arrange(cell_type_broad) |> pull(cell_type_fine)
 sctype <- sctype|>
-    mutate(ct_fine = factor(cell_type_fine, levels = fine_levels)) |>
-    arrange(ct_fine)
+    mutate(cell_type_fine = factor(cell_type_fine, levels = fine_levels)) |>
+    arrange(cell_type_fine)
 
 write.csv(sctype, file = here(data_dir, paste0("sctype_prelim.csv")), row.names = FALSE)
 save(sctype, file = here(data_dir, paste0("sctype_prelim.Rdata")))
