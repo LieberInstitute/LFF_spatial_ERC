@@ -10,6 +10,7 @@ library("HGNChelper")
 library("openxlsx")
 library("here")
 library("sessioninfo")
+library(bluster)
 
 ## source sc-type functions
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
@@ -28,10 +29,20 @@ sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_h
 sce
 
 ## load cluster outputs
-load(here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim", "walktrap_snn_k%02d_clusters_prelim.Rdata"), verbose = TRUE)
+load(here("processed-data", "04_snRNA-seq", "11_cluster_sn", "walktrap_snn_k10_clusters.Rdata"), verbose = TRUE) ## temp
+# load(here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim", "walktrap_snn_k%02d_clusters_prelim.Rdata"), verbose = TRUE)
 # clusters
 
 sce$snn_k10 <- sprintf("k10c%02d", clusters)
+table(sce$snn_k10)
+
+
+table(sce$quick_cluster, sce$snn_k10)
+
+## Adjusted Rand Index
+# 0.5 corresponds to “good” similarity
+pairwiseRand(sce$quick_cluster, sce$snn_k10, mode = "index") #0.420571
+
 
 #### SC Type #### 
 # get cell-type-specific gene sets from our in-built database (DB)
@@ -63,35 +74,30 @@ save(es.max, file = here(data_dir, "sctype_es_max.Rdata"))
 #### annotate clusters ####
 message(Sys.time(), " - Annotate clusters")
 
-## TODO unnest
-cluster_cols <- c("snn_k10")
-names(cluster_cols) <- cluster_cols
+cl_col <- "snn_k10"
 
-sctype_scores <- map(cluster_cols, function(cl_col){
+clusters <- sort(unique(sce[[cl_col]]))
+
+## compile scores
+cL_results <- purrr::map_dfr(clusters, function(cluster){
+    cluster_index = sce[[cl_col]] == cluster
     
-    clusters <- sort(unique(sce[[cl_col]]))
-    
-    cL_results <- purrr::map_dfr(clusters, function(cluster){
-        cluster_index = sce[[cl_col]] == cluster
-        
-        es.max.cl = sort(rowSums(es.max[,cluster_index]), decreasing = !0)
-        cL_resutls <- head(tibble(cluster = cluster, 
-                                  type = names(es.max.cl), 
-                                  scores = es.max.cl, 
-                                  ncells = sum(cluster_index)
-        ),10)
-        return(cL_resutls)
-    })
-    
-    sctype_scores <-  cL_results |> 
-        group_by(cluster) |> 
-        top_n(n = 1, wt = scores)  |>
-        mutate(confident = scores >= (ncells/4))
-    
-    write.csv(sctype_scores, file = here(data_dir, paste0("sctype_scores_", cl_col,".csv")))
-    
-    return(sctype_scores)
+    es.max.cl = sort(rowSums(es.max[,cluster_index]), decreasing = !0)
+    cL_resutls <- head(tibble(cluster = cluster, 
+                              type = names(es.max.cl), 
+                              scores = es.max.cl, 
+                              ncells = sum(cluster_index)
+    ),10)
+    return(cL_resutls)
 })
+
+sctype_scores <-  cL_results |> 
+    group_by(cluster) |> 
+    top_n(n = 1, wt = scores)  |>
+    mutate(confident = scores >= (ncells/4))
+
+## write output
+write.csv(sctype_scores, file = here(data_dir, paste0("sctype_scores_", cl_col,".csv")))
 
 # slurmjobs::job_single('08_sctype_prelim', create_shell = TRUE, memory = '25G', command = "Rscript 08_sctype_prelim.R")
 
