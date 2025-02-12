@@ -41,9 +41,9 @@ cluster_info <- pd |>
     group_by(snn_k10, cell_type_class, cell_type_broad, cell_type_fine) |>
     summarize(n = n(),
               prop = n/ncol(sce),
-              cProp_APOE_carrier = sum(APOE_carrier == "E4+")/n,
-              cProp_Anc_AA = sum(Ancestry == "AA")/n,
-              cProp_Sex_F = sum(Sex == "F")/n,
+              # cProp_APOE_carrier = sum(APOE_carrier == "E4+")/n,
+              # cProp_Anc_AA = sum(Ancestry == "AA")/n,
+              # cProp_Sex_F = sum(Sex == "F")/n,
               median_sum = median(sum),
               median_detected = median(detected),
               median_Mito_percent = median(subsets_Mito_percent),
@@ -90,6 +90,8 @@ cluster_info |>
     group_by(passALL_metricQC, cell_type_broad) |>
     summarize(n = sum(n))
 
+write.csv(cluster_info, file = here(data_dir, "sn_clusterQC_info.csv"), row.names = FALSE)
+
 #### Plot Quality Metrics ####
 
 ## median boxplots 
@@ -125,8 +127,6 @@ qc_violins <- map(c("sum", "detected", "subsets_Mito_percent", "scDblFinder.scor
     return(qc_violin_plot)
     
 })
-
-
 
 
 map(c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"), function(m){
