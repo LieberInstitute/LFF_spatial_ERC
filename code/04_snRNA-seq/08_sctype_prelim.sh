@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=50G
+#SBATCH --mem=150G
 #SBATCH --job-name=08_sctype_prelim
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
