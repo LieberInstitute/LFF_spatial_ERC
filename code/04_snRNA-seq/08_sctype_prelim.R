@@ -2,15 +2,14 @@
 ## Annotate preliminary clusters with SC Type
 
 ## load libraries
-library("dplyr")
-library("purrr")
+library("tidyverse")
 library("Seurat")
 library("HDF5Array")
 library("HGNChelper")
 library("openxlsx")
 library("here")
 library("sessioninfo")
-library(bluster)
+library("bluster")
 
 ## source sc-type functions
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
@@ -37,7 +36,7 @@ sce$snn_k10 <- sprintf("k10c%02d", clusters)
 table(sce$snn_k10)
 
 
-table(sce$quick_cluster, sce$snn_k10)
+# table(sce$quick_cluster, sce$snn_k10)
 
 ## Adjusted Rand Index
 # 0.5 corresponds to “good” similarity
@@ -96,8 +95,70 @@ sctype_scores <-  cL_results |>
     top_n(n = 1, wt = scores)  |>
     mutate(confident = scores >= (ncells/4))
 
-## write output
-write.csv(sctype_scores, file = here(data_dir, paste0("sctype_scores_", cl_col,".csv")))
+#### Annotate ####
+
+sctype_scores |> group_by(type) |>  summarize(ncells = sum(ncells), n_cluster = n())
+# type                            ncells n_cluster
+# <chr>                            <int>     <int>
+# 1 Astrocytes                       24913        11
+# 2 Endothelial cells                 1693         1
+# 3 GABAergic neurons                10668         6
+# 4 Glutamatergic neurons            19327        23
+# 5 Mature neurons                     404         1
+# 6 Microglial cells                 15223         6
+# 7 Oligodendrocyte precursor cells  15373         5
+# 8 Oligodendrocytes                 52518         9
+
+## short names 
+type_short <- tibble(type = c(
+    'Astrocytes',
+    'Endothelial cells',
+    'Microglial cells',
+    'Oligodendrocytes',
+    'Oligodendrocyte precursor cells',
+    'Glutamatergic neurons',
+    'GABAergic neurons',
+    'Mature neurons'), 
+    cell_type_broad  = c(
+        'Astro',
+        'Endo',
+        "Micro",
+        'Oligo',
+        'OPC',
+        'Excit',
+        'Inhib',
+        'Neu'),
+    cell_type_class =c(
+        rep("glia", 5),
+        rep("neuron", 3)
+    )
+)
+
+
+cell_type_levels = type_short$cell_type_broad
+
+sctype <- sctype_scores |> 
+    left_join(type_short) |>
+    group_by(type) |>
+    arrange(-ncells) |> 
+    mutate(type_rank = row_number(),
+           cell_type_fine = paste0(cell_type_broad, 
+                                   ".",
+                                   width = str_pad(type_rank, 
+                                                   nchar(as.character(max(type_rank))),
+                                                   side = "left",
+                                                   pad = "0")),
+           cell_type_broad = factor(cell_type_broad, levels = cell_type_levels),
+    )
+
+## add levels to cell type fine
+fine_levels <- sctype |> arrange(cell_type_broad) |> pull(cell_type_fine)
+sctype <- sctype|>
+    mutate(ct_fine = factor(cell_type_fine, levels = fine_levels)) |>
+    arrange(ct_fine)
+
+write.csv(sctype, file = here(data_dir, paste0("sctype_prelim.csv")), row.names = FALSE)
+save(sctype, file = here(data_dir, paste0("sctype_prelim.Rdata")))
 
 # slurmjobs::job_single('08_sctype_prelim', create_shell = TRUE, memory = '25G', command = "Rscript 08_sctype_prelim.R")
 
