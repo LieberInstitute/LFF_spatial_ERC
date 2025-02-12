@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=50G
 #SBATCH --job-name=05_harmony_correction
 #SBATCH -c 1
 #SBATCH -o logs/05_harmony_correction.txt
