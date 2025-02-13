@@ -143,7 +143,6 @@ cluster_info |>
 #### Plot Quality Metrics ####
 cell_type_colors <- DeconvoBuddies::create_cell_colors(levels(sctype$cell_type_fine), split = "\\.")
 
-
 ## quality scatter
 median_sum_v_detected <- cluster_info |>
     ggplot(aes(median_sum, median_detected, fill = cell_type_fine, shape = passALL_metricQC)) +
@@ -350,7 +349,7 @@ cluster_info <- cluster_info |>
 cluster_info |> ungroup()|> count(pass_clusterQC, passALL_metricQC, pass_sampleQC)
 
 cluster_info |>
-    group_by(passALL_metricQC) |>
+    group_by(pass_clusterQC) |>
     summarize(n = sum(n),
               prop = n/nrow(pd),
               n_clusters = length(unique(cell_type_fine)))
