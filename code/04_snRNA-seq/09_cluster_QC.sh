@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=200G
-#SBATCH --job-name=07_cluster_sn_prelim
+#SBATCH --mem=10G
+#SBATCH --job-name=09_cluster_QC
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/07_cluster_sn_prelim.txt
-#SBATCH -e logs/07_cluster_sn_prelim.txt
+#SBATCH -o logs/09_cluster_QC.txt
+#SBATCH -e logs/09_cluster_QC.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -21,13 +21,13 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4.x
+module load conda_R/4.4
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 07_cluster_sn_prelim.R -k 10
+Rscript 09_cluster_QC.R
 
 echo "**** Job ends ****"
 date

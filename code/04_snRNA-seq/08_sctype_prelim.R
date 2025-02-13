@@ -17,8 +17,8 @@ source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sct
 # source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_wrapper.R")
 
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "08_sctype_prelim")
-if(!dir.exists(plot_dir)) dir.create(plot_dir)
+# plot_dir <- here("plots", "04_snRNA-seq", "08_sctype_prelim")
+# if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
 data_dir <- here("processed-data", "04_snRNA-seq", "08_sctype_prelim")
 if(!dir.exists(data_dir)) dir.create(data_dir)
