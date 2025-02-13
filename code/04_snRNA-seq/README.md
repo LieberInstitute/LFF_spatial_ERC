@@ -17,11 +17,11 @@
 
 * `07_sn_prelim_cluster` Use single nearest neighbors + walk trap to cluster single nuc data k=10 (Long runtime ~13h)
 
-CLEAN
-
-* `08_cluster_anno_sctype_prelim` <- `10_cluster_anno_sctype` 
+* `08_sctype_prelim` Annotate preliminary clusters with SC Type
 
 * `09_cluster_qc` <- `11_cluster_QC.R`
+
+CLEAN ^^^
 
 * `10_GLM_PCA_Harmony2` Read in cluster QC SCE created in Run GLM PCA
 
@@ -29,7 +29,7 @@ CLEAN
 
 * `12_cluster_eval` Evaluate silhouette score for clustering
 
-* `13_cluster_anno_sntype` Annotate optimal clustering 
+* `13_sctype_fine` Annotate optimal clustering 
 
 * `14_finalize_snRNAseq` ?
 
