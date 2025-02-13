@@ -28,11 +28,13 @@ sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_h
 sce
 
 ## load cluster outputs
-load(here("processed-data", "04_snRNA-seq", "11_cluster_sn", "walktrap_snn_k10_clusters.Rdata"), verbose = TRUE) ## temp
-# load(here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim", "walktrap_snn_k%02d_clusters_prelim.Rdata"), verbose = TRUE)
+load(here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim", "walktrap_snn_k10_clusters_prelim.Rdata"), verbose = TRUE)
 # clusters
 
 sce$snn_k10 <- sprintf("k10c%02d", clusters)
+
+message("k10 prelim clusters: ", length(unique(sce$snn_k10)))
+
 table(sce$snn_k10)
 
 
@@ -40,7 +42,8 @@ table(sce$snn_k10)
 
 ## Adjusted Rand Index
 # 0.5 corresponds to “good” similarity
-pairwiseRand(sce$quick_cluster, sce$snn_k10, mode = "index") #0.420571
+message("Rand Index w/ Quick Cluster")
+pairwiseRand(sce$quick_cluster, sce$snn_k10, mode = "index") #0.4513222
 
 
 #### SC Type #### 
