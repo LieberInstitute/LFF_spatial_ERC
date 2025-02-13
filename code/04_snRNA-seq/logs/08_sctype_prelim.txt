@@ -1,8 +1,8 @@
 **** Job starts ****
-Wed Feb 12 05:58:08 AM EST 2025
+Thu Feb 13 03:05:29 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 13700894
+Job id: 13761288
 Job name: 08_sctype_prelim
 Node name: compute-161
 Task id: 
@@ -15,17 +15,16 @@ Currently Loaded Modules:
 
  
 
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Loading required package: SeuratObject
 Loading required package: sp
 ‘SeuratObject’ was built under R 4.4.0 but the current version is
@@ -43,6 +42,13 @@ The following objects are masked from ‘package:base’:
 
 Loading required package: SparseArray
 Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
 Loading required package: BiocGenerics
 
 Attaching package: ‘BiocGenerics’
@@ -50,6 +56,10 @@ Attaching package: ‘BiocGenerics’
 The following object is masked from ‘package:SeuratObject’:
 
     intersect
+
+The following objects are masked from ‘package:lubridate’:
+
+    intersect, setdiff, union
 
 The following objects are masked from ‘package:dplyr’:
 
@@ -107,9 +117,17 @@ The following objects are masked from ‘package:Matrix’:
 
     expand, unname
 
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
 The following objects are masked from ‘package:dplyr’:
 
     first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
 
 The following object is masked from ‘package:utils’:
 
@@ -129,13 +147,17 @@ The following object is masked from ‘package:sp’:
 
     %over%
 
-The following object is masked from ‘package:purrr’:
+The following object is masked from ‘package:lubridate’:
 
-    reduce
+    %within%
 
 The following objects are masked from ‘package:dplyr’:
 
     collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
 
 
 Attaching package: ‘S4Arrays’
@@ -225,204 +247,19 @@ mainExpName: NULL
 altExpNames(0):
 Loading objects:
   clusters
+k10 prelim clusters: 44
 
 k10c01 k10c02 k10c03 k10c04 k10c05 k10c06 k10c07 k10c08 k10c09 k10c10 k10c11 
-   707   5717   2427   1693    157     89    404   2608   6317   2395   8170 
+  7364   1309   2884   2949  10363  13986   1909    809    596    160    919 
 k10c12 k10c13 k10c14 k10c15 k10c16 k10c17 k10c18 k10c19 k10c20 k10c21 k10c22 
-  2184    627   1607   8250  12833    588  13345  15354   8555  11902   3041 
+ 15594    694    770    839   1672   2243   8680   8484  13680    216   4745 
 k10c23 k10c24 k10c25 k10c26 k10c27 k10c28 k10c29 k10c30 k10c31 k10c32 k10c33 
-   740    686   2413    258    994    650    193    257    218    397    127 
+  8787     39    420   3117    341    396    459    668  22929    774    325 
 k10c34 k10c35 k10c36 k10c37 k10c38 k10c39 k10c40 k10c41 k10c42 k10c43 k10c44 
-   707    639    639     29    158    420    115    209    288    602    207 
-k10c45 k10c46 k10c47 k10c48 k10c49 k10c50 k10c51 k10c52 k10c53 k10c54 k10c55 
-  1693     76    527    202    211     56    198     77    392  15150     81 
-k10c56 k10c57 k10c58 k10c59 k10c60 k10c61 k10c62 
-  1390     37     24     14     31     15     29 
-    
-     k10c01 k10c02 k10c03 k10c04 k10c05 k10c06 k10c07 k10c08 k10c09 k10c10
-  1       0      5      0      7      0      0      0     12      0      1
-  2       0      3      0      1      0      0      0      0      0      0
-  3       0   1846      0      0      0     50      0      9      1    417
-  4       0      1      0      0      0      0      0      0      0      0
-  5       2     10   2296      3     10      0    390      0   6013      0
-  6       0      2      0      4      0      0      0      0      0      1
-  7       0    267      0      0      0      3      0      0      0     55
-  8       0    317      4      4      0      0      0      0     20    122
-  9       0   1542      0     16      0      6      0      8      0    855
-  10      0      0      0      0      0      0      0     15      0      1
-  11      0      0      0      0      0      0      0      2      0      0
-  12      0      1      0      0      0      0      0     16      0      2
-  13      0      0      0      0      0      0      0      0      0      0
-  14      0      0      0      0      0      0      0   1557      0     47
-  15      0      0     18      0      0      0      0      1     40      0
-  16     63     80     25      1     30      0      0      0     14      8
-  17      0    411      0      6      0      5      0      1      2    173
-  18      0      0     13      0      0      0      0      0     33      0
-  19      0     20      0      2      0      0      0      0      0      0
-  20      0      9      0      0      0      0      0      0      0      0
-  21      0      0      0      0      0      0      0      0      0      0
-  22      0    477      0      0      0      0      0      1      0     42
-  23    542      2      6      0    113      0      0      0      6      0
-  24      0     63      0      0      0      0      0      0      0      0
-    
-     k10c11 k10c12 k10c13 k10c14 k10c15 k10c16 k10c17 k10c18 k10c19 k10c20
-  1      11      1      0      0      0      1      0      0      0     68
-  2       1      0      0      0      0     30      0      0     50      0
-  3       0     38    260      0      0    682      0      0      0      0
-  4       0      0      0      0      0      6      0    204     45      0
-  5       0    753      0      0    404     63    572      2      3     13
-  6     184      0      0      0      0      1      0    131      0      0
-  7       0      4     11      0      0    113      0     17      0      0
-  8       0    142      0      0     17    203      0      0      0      0
-  9       0      8     55      0      0   2552      0      1     77      1
-  10      0      0      0      0      0     13      0      0     28     48
-  11      0      1      0      0      0      1      0     31      0     34
-  12      0      0      0      0      0      1      0      0      0    101
-  13   7264      0      0      0      0      0      0      0      0      0
-  14      0      8      0      0      1      5      0      0      0   4865
-  15      0      9      0      0      6      0      3      0      0     20
-  16      0    593      0      7   1307    104      0      0      2      9
-  17      2      8     83      0      2     90      0      0      0      1
-  18    168      2      0      0      2      0      3      1      0      0
-  19      4     27      0      0      3    104      0   5872      1      2
-  20    126      2      0      0      0      9      0      0      1      0
-  21     21      0      0      0      0      0      0      0      0      0
-  22      0      0      0      0      0   7625      0      8   5176      0
-  23      0    132      0    553   5246      3      0      1      0      1
-  24      0      4      0      0      1     73      0      1      0      0
-    
-     k10c21 k10c22 k10c23 k10c24 k10c25 k10c26 k10c27 k10c28 k10c29 k10c30
-  1      70     12      0      0     13      0      0      3      0      3
-  2     110      0      0      0      7      0      0      0      0      0
-  3       0      0      0      0      4      0      0      0      0      0
-  4       0      0      0      0      0      0      0      0      0      0
-  5       2      1      0      4      1      0      3      0      0      0
-  6     103      0      0      0      1      0      0      0      0      0
-  7       0      0      0      0     22      0      0      0      0      0
-  8       4      0      0      0      4      0      0      0      0      0
-  9       1      0      0      0      4      0      0      0      0      0
-  10      0     10      0      0      0      0      0      0      0    210
-  11      0     35      0      0      0      0      0      0      0      0
-  12      0     42      0      0      0      0      0      4      0     42
-  13   6197      0      0      0     36      0      0      0      0      0
-  14      0    564      0      0      0      0      0    574      0      0
-  15      0     39      0      0      0      0      0      0      0      0
-  16      0      2     51     74      9      0     29      0      3      0
-  17    283      0      0      0    623      0      0      0      0      0
-  18     32      0      0      0      1      0      0      0      0      0
-  19      8      5      0      0      3      0      0      0      0      1
-  20    285      0      0      0     25      0      0      0      0      0
-  21     74      0      0      0      0      0      0      0      0      0
-  22      0      0      0      0      0      0      0      0      0      0
-  23      3      0    656    564      0     85    704      0    137      0
-  24     20      0      0      0      6      0      0      0      0      0
-    
-     k10c31 k10c32 k10c33 k10c34 k10c35 k10c36 k10c37 k10c38 k10c39 k10c40
-  1       0      3      0      0      0      0      0      0      0      0
-  2       0    214      0      0      0      0      0      0      0      0
-  3       0      0      0      0      0      0      0     42    365      0
-  4       0      0      0      0      0      0      0      0      0      0
-  5       0      0      0      0      0      1      0      0      0    114
-  6       0      0      0      0      0      0      0      0      0      0
-  7       0      0      0      0      0      0      0      0      0      0
-  8       0      0      0      0      0      0      0      2      0      0
-  9       0      0      0      2      0      0      0     24      1      0
-  10      0      0      0      0      0      0      0      0      0      0
-  11      0      0      0      0      0      0      0      0      0      0
-  12      0      0      0      0      0      0      0      0      0      0
-  13      0      0      0      0      0      0      0      0      0      0
-  14      0      0      0      0      0      0      0      9      0      0
-  15      0      0      0      0      0      0      0      0      0      0
-  16      0      0      3      0     19     14      0      0      0      0
-  17      0      0      0      0      0      0      0     24      7      0
-  18      0      1      0      0      0      0      0      0      0      1
-  19      0      9      0      0      0      0      0      0      0      0
-  20      0    170      0      0      0      0      0      0      0      0
-  21      0      0      0      0      0      0      0      0      0      0
-  22      0      0      0     12      0      0      0      0      0      0
-  23    209      0    119      0    502    586     27      0      0      0
-  24      0      0      0      0      0      0      0      0      0      0
-    
-     k10c41 k10c42 k10c43 k10c44 k10c45 k10c46 k10c47 k10c48 k10c49 k10c50
-  1      50      0      0      0      0      0      0      0      0      0
-  2       0      0      0      0      0      0      0      0      0      0
-  3       0    264      0      0      1      0      0      0      0      0
-  4       0      0      0      0      7      0      0    202      0      0
-  5       0      0    592    198      1      0    512      0      0      0
-  6       1      0      0      0     13      0      0      0      0     56
-  7       0      1      0      0    400      0      0      0      0      0
-  8       0      0      0      0      0      0      0      0      0      0
-  9       0      0      0      0      0      0      0      0      0      0
-  10      0      0      0      0      0     67      0      0      0      0
-  11      0      0      0      0      4      0      0      0      0      0
-  12      0      0      0      0      0      4      0      0      0      0
-  13      0      0      0      0      0      0      0      0      0      0
-  14      0      0      0      0      0      0      0      0    157      0
-  15      0      0      1      1      0      0      4      0      0      0
-  16      0      0      0      0      5      0      0      0      0      0
-  17      0      3      0      0      0      0      0      0      0      0
-  18      1      0      1      1      0      0      2      0      0      0
-  19      3      0      0      0   1229      0      0      0      0      0
-  20      0      0      0      0      0      0      0      0      0      0
-  21    154      0      0      0      0      0      0      0      0      0
-  22      0      0      0      0      0      0      0      0      0      0
-  23      0      0      0      2      1      0      1      0      0      0
-  24      0      0      0      0     10      0      0      0      0      0
-    
-     k10c51 k10c52 k10c53 k10c54 k10c55 k10c56 k10c57 k10c58 k10c59 k10c60
-  1       0      0      1      2      0      0      0      0      0      0
-  2       0      0      0     63      0      0      0      0      0      0
-  3       0      0    186      0      0      1      0      0      0      0
-  4       0      1      0     31      0      0      0      0      0      0
-  5       0      0      0      1      0     63      0      0      0     31
-  6       0      1      0      0      0      0      0      0      0      0
-  7       0      0      7      0      0      0      0      0      0      0
-  8       0      0      5      0      0     13      0      0      0      0
-  9       0      0     42    332      0      0      0      0      0      0
-  10      0      0      0     25      0      0      0      0      0      0
-  11      0     74      0      0      0      0      0      0      0      0
-  12      0      0      0      0      0      0      0      0      0      0
-  13      0      0      0      0      0      0      0      0      0      0
-  14      0      0      0      0      0      0      0      0      0      0
-  15      0      0      0      0      0      2      0      0      0      0
-  16      3      0      2      0      0    499      1      0      0      0
-  17      0      0    110      0     80      0      0      0     14      0
-  18      0      0      0      0      1      0      0      0      0      0
-  19      0      1      0      2      0      0      0      0      0      0
-  20      0      0      1      1      0      0      0      0      0      0
-  21      0      0      0      0      0      0      0      0      0      0
-  22      0      0      0  11426      0      0      0      0      0      0
-  23    157      0      0      0      0    736     33      8      0      0
-  24      0      0      1      2      0      0      0      0      0      0
-    
-     k10c61 k10c62
-  1       0      0
-  2       0      0
-  3      10      0
-  4       0      0
-  5       0      0
-  6       0      0
-  7       0      0
-  8       0      0
-  9       0      0
-  10      0      0
-  11      0      0
-  12      0      0
-  13      0      0
-  14      0      0
-  15      0      0
-  16      0      0
-  17      0      0
-  18      0      0
-  19      0      5
-  20      0      0
-  21      0      0
-  22      0      0
-  23      0      0
-  24      0      0
- [ reached getOption("max.print") -- omitted 16 rows ]
-[1] 0.420571
-2025-02-12 05:58:25.13772- sctype score
+   137    197     44    139     41     67     73     84     25    178     14 
+Rand Index w/ Quick Cluster
+[1] 0.4513222
+2025-02-13 03:05:47.609859- sctype score
 [1]     24 140119
                          cell1     cell2     cell3    cell4     cell5
 Astrocytes           1.0756983 0.6709084 0.6998120 7.053197 0.2953109
@@ -430,14 +267,26 @@ Cholinergic neurons  0.0000000 0.2067822 0.0000000 0.000000 0.0000000
 Dopaminergic neurons 0.0000000 0.7953108 0.9894965 0.000000 0.2476941
 Endothelial cells    0.7896211 0.0000000 0.0000000 0.000000 0.0000000
 GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
-2025-02-12 06:01:30.705122 - Annotate clusters
+2025-02-13 03:09:25.711195 - Annotate clusters
+# A tibble: 8 × 3
+  type                            ncells n_cluster
+  <chr>                            <int>     <int>
+1 Astrocytes                       24242         9
+2 Endothelial cells                 1672         1
+3 GABAergic neurons                10831         5
+4 Glutamatergic neurons            18924        14
+5 Mature neurons                     420         1
+6 Microglial cells                 17769         5
+7 Oligodendrocyte precursor cells  13931         3
+8 Oligodendrocytes                 52330         6
+Joining with `by = join_by(type)`
 [1] "Reproducibility information:"
-[1] "2025-02-12 06:01:30 EST"
+[1] "2025-02-13 03:09:26 EST"
    user  system elapsed 
-149.157  13.042 201.201 
+176.813  18.419 235.749 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.2 Patched (2025-02-07 r87710)
+ version  R version 4.4.2 Patched (2025-02-07 r87714)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -445,7 +294,7 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-02-12
+ date     2025-02-13
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -473,13 +322,14 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
  fastDummies            1.7.5   2025-01-20 [2] CRAN (R 4.4.2)
  fastmap                1.2.0   2024-05-15 [2] CRAN (R 4.4.0)
  fitdistrplus           1.2-2   2025-01-07 [2] CRAN (R 4.4.2)
+ forcats              * 1.0.0   2023-01-29 [2] CRAN (R 4.4.0)
  future                 1.34.0  2024-07-29 [2] CRAN (R 4.4.1)
  future.apply           1.11.3  2024-10-27 [2] CRAN (R 4.4.2)
  generics               0.1.3   2022-07-05 [2] CRAN (R 4.4.0)
  GenomeInfoDb         * 1.42.3  2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13  2024-10-01 [2] Bioconductor
  GenomicRanges        * 1.58.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- ggplot2                3.5.1   2024-04-23 [2] CRAN (R 4.4.0)
+ ggplot2              * 3.5.1   2024-04-23 [2] CRAN (R 4.4.0)
  ggrepel                0.9.6   2024-09-07 [2] CRAN (R 4.4.1)
  ggridges               0.5.6   2024-01-23 [2] CRAN (R 4.4.0)
  globals                0.16.3  2024-03-08 [2] CRAN (R 4.4.0)
@@ -490,6 +340,7 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
  HDF5Array            * 1.34.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  here                 * 1.0.1   2020-12-13 [2] CRAN (R 4.4.0)
  HGNChelper           * 0.8.15  2024-11-16 [1] CRAN (R 4.4.2)
+ hms                    1.1.3   2023-03-21 [2] CRAN (R 4.4.0)
  htmltools              0.5.8.1 2024-04-04 [2] CRAN (R 4.4.0)
  htmlwidgets            1.6.4   2023-12-06 [2] CRAN (R 4.4.0)
  httpuv                 1.6.15  2024-03-26 [2] CRAN (R 4.4.0)
@@ -506,6 +357,7 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
  lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.4.0)
  listenv                0.9.1   2024-01-29 [2] CRAN (R 4.4.0)
  lmtest                 0.9-40  2022-03-21 [2] CRAN (R 4.4.0)
+ lubridate            * 1.9.4   2024-12-08 [2] CRAN (R 4.4.2)
  magrittr               2.0.3   2022-03-30 [2] CRAN (R 4.4.0)
  MASS                   7.3-64  2025-01-04 [3] CRAN (R 4.4.2)
  Matrix               * 1.7-2   2025-01-23 [3] CRAN (R 4.4.2)
@@ -534,6 +386,7 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
  Rcpp                   1.0.14  2025-01-12 [2] CRAN (R 4.4.2)
  RcppAnnoy              0.0.22  2024-01-23 [2] CRAN (R 4.4.0)
  RcppHNSW               0.6.0   2024-02-04 [2] CRAN (R 4.4.0)
+ readr                * 2.1.5   2024-01-10 [2] CRAN (R 4.4.0)
  reshape2               1.4.4   2020-04-09 [2] CRAN (R 4.4.0)
  reticulate             1.40.0  2024-11-15 [2] CRAN (R 4.4.2)
  rhdf5                * 2.50.2  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
@@ -566,17 +419,22 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
  spatstat.utils         3.1-2   2025-01-08 [2] CRAN (R 4.4.2)
  splitstackshape        1.4.8   2019-04-21 [1] CRAN (R 4.4.2)
  stringi                1.8.4   2024-05-06 [2] CRAN (R 4.4.0)
- stringr                1.5.1   2023-11-14 [2] CRAN (R 4.4.0)
+ stringr              * 1.5.1   2023-11-14 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  survival               3.8-3   2024-12-17 [3] CRAN (R 4.4.2)
  tensor                 1.5     2012-05-05 [2] CRAN (R 4.4.0)
- tibble                 3.2.1   2023-03-20 [2] CRAN (R 4.4.0)
- tidyr                  1.3.1   2024-01-24 [2] CRAN (R 4.4.0)
+ tibble               * 3.2.1   2023-03-20 [2] CRAN (R 4.4.0)
+ tidyr                * 1.3.1   2024-01-24 [2] CRAN (R 4.4.0)
  tidyselect             1.2.1   2024-03-11 [2] CRAN (R 4.4.0)
+ tidyverse            * 2.0.0   2023-02-22 [2] CRAN (R 4.4.0)
+ timechange             0.3.0   2024-01-18 [2] CRAN (R 4.4.0)
+ tzdb                   0.4.0   2023-05-12 [2] CRAN (R 4.4.0)
  UCSC.utils             1.2.0   2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ utf8                   1.2.4   2023-10-22 [2] CRAN (R 4.4.0)
  uwot                   0.2.2   2024-04-21 [2] CRAN (R 4.4.0)
  vctrs                  0.6.5   2023-12-01 [2] CRAN (R 4.4.0)
  viridisLite            0.4.2   2023-05-02 [2] CRAN (R 4.4.0)
+ withr                  3.0.2   2024-10-28 [2] CRAN (R 4.4.2)
  xtable                 1.8-4   2019-04-21 [2] CRAN (R 4.4.0)
  XVector                0.46.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  zip                    2.3.2   2025-02-01 [2] CRAN (R 4.4.2)
@@ -590,4 +448,4 @@ GABAergic neurons    1.4789692 2.1789964 4.3743801 1.660812 5.3187950
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb 12 06:01:31 AM EST 2025
+Thu Feb 13 03:09:26 AM EST 2025
