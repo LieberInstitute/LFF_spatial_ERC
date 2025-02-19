@@ -6,7 +6,7 @@
 #' @param my_var 
 #' @param cat_var 
 #' @param save_plot 
-#' @param sufix 
+#' @param suffix 
 #' @param color_pal 
 #'
 #' @return
@@ -19,7 +19,7 @@ my_plot_reduced_dim <- function(spe,
                                 my_var = "sample_id",
                                 var_type = c("cat", "con", "express"),
                                 save_plot = TRUE,
-                                sufix = NULL,
+                                suffix = NULL,
                                 color_pal = NULL,
                                 facet = FALSE){
     
@@ -56,10 +56,10 @@ my_plot_reduced_dim <- function(spe,
     if(save_plot){
         
         if(var_type == "express"){
-            # plot_name <- paste(paste(c(prefix, dimred, "expression", my_var, sufix), collapse = "_")
-            plot_name <-plot_name <- paste(c(paste(c(prefix, dimred,"expression"), collapse = "_"), my_var, sufix), collapse = "-")
+            # plot_name <- paste(paste(c(prefix, dimred, "expression", my_var, suffix), collapse = "_")
+            plot_name <-plot_name <- paste(c(paste(c(prefix, dimred,"expression"), collapse = "_"), my_var, suffix), collapse = "-")
         } else {
-            plot_name <- paste(c(paste(c(prefix, dimred), collapse = "_"), my_var, sufix), collapse = "-")
+            plot_name <- paste(c(paste(c(prefix, dimred), collapse = "_"), my_var, suffix), collapse = "-")
             if(facet) plot_name <- paste0(plot_name, "_facet")
         }
         
