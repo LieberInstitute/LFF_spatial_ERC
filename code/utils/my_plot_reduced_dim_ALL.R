@@ -1,4 +1,6 @@
 source(here("code", "utils", "my_plot_reduced_dim.R"))
+load(here::here("processed-data", "project_colors.Rdata"))
+
 my_plot_reduced_dim_ALL <- function(prefix, suffix, nested_dir = TRUE){
     
     if(nested_dir){
@@ -13,13 +15,25 @@ my_plot_reduced_dim_ALL <- function(prefix, suffix, nested_dir = TRUE){
     walk(c("UMAP", "TSNE"), function(rdim_name){
         
         ## Categorical vars 
-        cat_vars <- c("sample_id", "seq_round", "exp_round","APOE","quick_cluster")
+        cat_vars <- c("seq_round", "exp_round", "quick_cluster")
         if(any(!cat_vars %in% colnames(colData(sce)))) warning("Missing cat vars: ", paste0(cat_vars[!cat_vars %in% colnames(colData(sce))], collapse = ", "))
         
         cat_vars <- cat_vars[cat_vars %in% colnames(colData(sce))]
         
         walk(cat_vars, ~my_plot_reduced_dim(sce, prefix = prefix, dimred = rdim_name, my_var = .x, var_type = "cat", suffix = suffix))
         walk(cat_vars, ~my_plot_reduced_dim(sce, prefix = prefix, dimred = rdim_name, my_var = .x, var_type = "cat", suffix = suffix, facet = TRUE))
+        
+        
+        ## Categorical vars with colors
+        cat_vars <- c("Ancestry","sex","APOE","quick_cluster", "sample_id")
+        cat_colors <- c(ancestry_colors, sex_colors, APOE_genotype_colors, sample_colors)
+        
+        if(any(!cat_vars %in% colnames(colData(sce)))) warning("Missing cat vars: ", paste0(cat_vars[!cat_vars %in% colnames(colData(sce))], collapse = ", "))
+        cat_vars <- cat_vars[cat_vars %in% colnames(colData(sce))]
+        cat_colors <- cat_colors[cat_vars %in% colnames(colData(sce))]
+        
+        walk2(cat_vars, cat_colors, ~my_plot_reduced_dim(sce, prefix = prefix, dimred = rdim_name, my_var = .x, var_type = "cat", suffix = suffix, color_pal = .y))
+        walk2(cat_vars, cat_colors, ~my_plot_reduced_dim(sce, prefix = prefix, dimred = rdim_name, my_var = .x, var_type = "cat", suffix = suffix, facet = TRUE, color_pal = .y))
         
         ## Continuous variables
         con_vars <- c("sum", "detected", "subsets_Mito_percent")
