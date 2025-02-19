@@ -24,8 +24,30 @@ APOE_carrier_colors <- c(`E2+`="#398A84", `E4+`="#D46B43")
 ancestry_colors <- c(EA="#1B3174",AA="#698F3F")
 sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
 
+#### sample colors ####
+sample_info <- read.csv(here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
+
+apoe_colors_tb <- sample_info |> 
+    select(sample_id, APOE) |> 
+    unique() |>
+    group_by(APOE) |>
+    arrange(sample_id) |>
+    mutate(APOE_color = paste0(APOE, ".", row_number())) |>
+    arrange(APOE_color)
+
+apoe_colors <- DeconvoBuddies::create_cell_colors(apoe_colors_tb$APOE_color, pallet = APOE_genotype_colors, split = "\\.")
+sample_colors <- apoe_colors$fine
+names(sample_colors) <- apoe_colors_tb$sample_id
+
+# Br1556    Br2582    Br5529    Br5712    Br5832    Br6161    Br5212    Br5367    Br5415    Br5426    Br5634    Br5854    Br6423
+# "#186E8B" "#3E869E" "#659EB1" "#8BB6C4" "#B2CED8" "#D8E6EB" "#61C9A8" "#74CFB2" "#88D6BD" "#9CDDC8" "#B0E3D3" "#C3EADE" "#D7F1E9"
+# Br6538    Br3974    Br6476    Br5276    Br5460    Br5517    Br5599    Br6085    Br6098    Br6263    Br6321    Br1039    Br1289
+# "#EBF8F4" "#ED9B40" "#EEA453" "#F0AF66" "#F2B979" "#F4C38C" "#F6CD9F" "#F7D7B2" "#F9E1C5" "#FBEBD8" "#FDF5EB" "#BA3B46" "#C35760"
+# Br1691    Br1706    Br2305    Br5161    Br5941
+# "#CD727A" "#D78F95" "#E1ABAF" "#EBC6CA" "#F5E3E4"
+
 ## save
-save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors,
+save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors, sample_colors,
      file = here("processed-data", "project_colors.Rdata"))
 
 #### create test plots ####
