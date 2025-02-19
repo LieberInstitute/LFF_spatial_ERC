@@ -46,7 +46,7 @@ my_plot_reduced_dim <- function(spe,
         rd_plot <- rd_plot + scale_color_viridis()
     } else if(var_type == "express") {
         rd_plot <- rd_plot + 
-            scale_color_viridis(name = "logcount") +  # label colorscheme as logcounts
+            viridis::scale_color_viridis(name = "logcount") +  # label colorscheme as logcounts
             labs(title = my_var) +
             theme(plot.title = element_text(face = "italic")) # make gene name title italic
     } 
@@ -56,8 +56,7 @@ my_plot_reduced_dim <- function(spe,
     if(save_plot){
         
         if(var_type == "express"){
-            # plot_name <- paste(paste(c(prefix, dimred, "expression", my_var, suffix), collapse = "_")
-            plot_name <-plot_name <- paste(c(paste(c(prefix, dimred,"expression"), collapse = "_"), my_var, suffix), collapse = "-")
+            plot_name <- plot_name <- paste(c(paste(c(prefix, dimred, "expression"), collapse = "_"), my_var, suffix), collapse = "-")
         } else {
             plot_name <- paste(c(paste(c(prefix, dimred), collapse = "_"), my_var, suffix), collapse = "-")
             if(facet) plot_name <- paste0(plot_name, "_facet")
@@ -65,7 +64,7 @@ my_plot_reduced_dim <- function(spe,
         
         plot_name <- paste0(plot_name, ".png")
         
-        message("saving: ", plot_name)
+        message(plot_name, " - " ,appendLF= FALSE)
         
         ggsave(rd_plot, filename = here(plot_dir, plot_name))
     } 
