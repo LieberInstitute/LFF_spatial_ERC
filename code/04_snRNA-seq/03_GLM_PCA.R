@@ -45,12 +45,12 @@ sce <- nullResiduals(sce,
 )
 
 
-hdgs.hb <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
+hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
 
 message(Sys.time(), " - running PCA - ")
 sce <- runPCA(sce,
     exprs_values = "binomial_deviance_residuals",
-    subset_row = hdgs.hb,
+    subset_row = hdgs,
     ncomponents = 100,
     name = "GLMPCA_approx",
     BSPARAM = BiocSingular::IrlbaParam()
