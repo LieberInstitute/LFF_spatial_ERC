@@ -67,18 +67,18 @@ sce <- nullResiduals(sce,
 )
 
 
-hdgs.hb <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
+hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
 
 message(Sys.time(), " - running PCA")
 sce <- runPCA(sce,
               exprs_values = "binomial_deviance_residuals",
-              subset_row = hdgs.hb,
+              subset_row = hdgs,
               ncomponents = 100,
               name = "GLMPCA_approx",
               BSPARAM = BiocSingular::IrlbaParam()
 )
 
-#### Reduce Dims####
+#### Reduce Dims - UNCORRECTED ####
 
 message(Sys.time(), " - running TSNE")
 sce <- runTSNE(sce, dimred = "GLMPCA_approx")
@@ -93,6 +93,7 @@ message("Reduced Dim Names:")
 reducedDimNames(sce)
 
 #### plot uncorrected reduced dims ####
+message(Sys.time(), " - Reduced Dim plots - UNCORRECTED")
 my_plot_reduced_dim_ALL(prefix = "ERC_sn_reprocess", suffix = "uncorrected")
 
 #### Batch Correction ####
@@ -109,7 +110,7 @@ sce <- RunHarmony(sce, group.by.vars = correction, verbose = TRUE)
 ## Remove redundant PCA
 reducedDim(sce, "PCA") <- NULL
 
-#### TSNE & UMAP ####
+#### Reduce Dims - CORRECTED ####
 set.seed(602)
 message("running TSNE - ", Sys.time())
 sce <- runTSNE(sce, dimred = "HARMONY")
@@ -117,17 +118,20 @@ sce <- runTSNE(sce, dimred = "HARMONY")
 message("running UMAP - ", Sys.time())
 sce <- runUMAP(sce, dimred = "HARMONY")
 
+#### Save data ####
 message("Done TSNE + UMAP - Saving data...", Sys.time())
+saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_reprocess"), replace = TRUE)
 
-# save(sce, file = here("processed-data", "spe_objects", paste0("sce_harmony_", correction, ".Rdata")))
-save(sce, file = here("processed-data", "spe_objects", "sce_harmony.Rdata"))
+#### plot corrected reduced dims ####
+message(Sys.time(), " - Reduced Dim plots - CORRECTED")
+my_plot_reduced_dim_ALL(prefix = "ERC_sn_reprocess", suffix = "uncorrected")
 
-# saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "03_build_sce", paste0("sce_harmony_", correction)))
-saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_harmony"), replace = TRUE)
+# slurmjobs::job_single('10_reprocess_quality_sn', create_shell = TRUE, memory = '100G', command = "Rscript 10_reprocess_quality_sn.R")
 
-#### plot uncorrected reduced dims ####
-
-plot_dir <- here("plots", "04_snRNA-seq", "10_reprocess_quality_sn","reduced_dims_corrected")
-if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
-
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
