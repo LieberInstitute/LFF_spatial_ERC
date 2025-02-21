@@ -1,4 +1,5 @@
 ## Louise Huuki-Myers, February 2025
+## re-process data after luster QC
 ## drop low quality prelim-clusters, re-run normalization, feature selection, dimension reduction
 
 ## Required libraries
@@ -6,6 +7,7 @@ library("SingleCellExperiment")
 library("tidyverse")
 library("HDF5Array")
 library("scran")
+library("scry")
 library("here")
 library("sessioninfo")
 
@@ -45,7 +47,7 @@ sce <- logNormCounts(sce)
 set.seed(219)
 
 message(Sys.time(), " - running Deviance Feat. Selection")
-sce <- devianceFeatureSelection(sce,
+sce <- scry::devianceFeatureSelection(sce,
                                 assay = "counts", fam = "binomial", sorted = F,
                                 batch = as.factor(sce$seq_round)
 )
