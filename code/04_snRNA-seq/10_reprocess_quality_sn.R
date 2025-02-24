@@ -12,6 +12,9 @@ library("scry")
 library("here")
 library("sessioninfo")
 
+## source functions
+source(here("code", "utils", "my_plot_reduced_dim_ALL.R"))
+
 ## Set up dirs
 data_dir <- here("processed-data", "04_snRNA-seq", "10_reprocess_quality_sn")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
