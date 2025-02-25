@@ -48,7 +48,7 @@ if(!file.exists(here(data_dir, "quickCluster.Rdata"))){
     message(Sys.time(), " - Load Quick Cluster")
     load(here(data_dir, "quickCluster.Rdata"))
 }
-spe$quick_cluster <- quick_cluster
+sce$quick_cluster <- quick_cluster
 
 
 message(Sys.time(), " - logNormCounts")
