@@ -40,8 +40,16 @@ sce <- sce[, sce$snn_k10 %in% clusters_passQC]
 message("Nuclei post-cluster QC: ", ncol(sce))
 
 #### Normalize logcounts ####
-message(Sys.time(), " - Quick Cluster")
-sce$quick_cluster <- quickCluster(sce) 
+if(!file.exists(here(data_dir, "quickCluster.Rdata"))){
+    message(Sys.time(), " - Run Quick Cluster")
+    quick_cluster <- quickCluster(sce) 
+    save(quick_cluster, file = here(data_dir, "quickCluster.Rdata"))
+} else {
+    message(Sys.time(), " - Load Quick Cluster")
+    load(here(data_dir, "quickCluster.Rdata"))
+}
+spe$quick_cluster <- quick_cluster
+
 
 message(Sys.time(), " - logNormCounts")
 sce <- computeSumFactors(sce, cluster=sce$quick_cluster)

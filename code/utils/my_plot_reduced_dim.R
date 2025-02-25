@@ -21,7 +21,9 @@ my_plot_reduced_dim <- function(spe,
                                 save_plot = TRUE,
                                 suffix = NULL,
                                 color_pal = NULL,
-                                facet = FALSE){
+                                facet = FALSE,
+                                plot_dir_rd = plot_dir,
+                                verbose = TRUE){
     
     rd_x = paste0(dimred, ".1")
     rd_y = paste0(dimred, ".2")
@@ -43,7 +45,7 @@ my_plot_reduced_dim <- function(spe,
                 theme(legend.position = "None") # no legend with facet
         }
     } else if(var_type == "con") {
-        rd_plot <- rd_plot + scale_color_viridis()
+        rd_plot <- rd_plot + viridis::scale_color_viridis()
     } else if(var_type == "express") {
         rd_plot <- rd_plot + 
             viridis::scale_color_viridis(name = "logcount") +  # label colorscheme as logcounts
@@ -64,9 +66,9 @@ my_plot_reduced_dim <- function(spe,
         
         plot_name <- paste0(plot_name, ".png")
         
-        message(plot_name, " - " ,appendLF= FALSE)
+        if(verbose) message(plot_name, " - " ,appendLF= FALSE)
         
-        ggsave(rd_plot, filename = here(plot_dir, plot_name))
+        ggsave(rd_plot, filename = here(plot_dir_rd, plot_name))
     } 
     
     return(rd_plot)
