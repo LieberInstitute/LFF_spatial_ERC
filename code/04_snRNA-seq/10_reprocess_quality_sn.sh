@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=150G
 #SBATCH --job-name=10_reprocess_quality_sn
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
