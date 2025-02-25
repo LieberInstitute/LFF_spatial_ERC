@@ -108,7 +108,7 @@ reducedDimNames(sce)
 
 #### plot uncorrected reduced dims ####
 message(Sys.time(), " - Reduced Dim plots - UNCORRECTED")
-my_plot_reduced_dim_ALL(prefix = "ERC_sn_reprocess", suffix = "uncorrected")
+try(my_plot_reduced_dim_ALL(prefix = "ERC_sn_reprocess", suffix = "uncorrected"))
 
 #### Batch Correction ####
 correction = "sample_id"
