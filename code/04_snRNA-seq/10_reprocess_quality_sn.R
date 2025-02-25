@@ -132,13 +132,16 @@ sce <- runTSNE(sce, dimred = "HARMONY")
 message("running UMAP - ", Sys.time())
 sce <- runUMAP(sce, dimred = "HARMONY")
 
+message("Reduced Dim Names:")
+reducedDimNames(sce)
+
 #### Save data ####
 message("Done TSNE + UMAP - Saving data...", Sys.time())
 saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_reprocess"), replace = TRUE)
 
 #### plot corrected reduced dims ####
 message(Sys.time(), " - Reduced Dim plots - CORRECTED")
-my_plot_reduced_dim_ALL(prefix = "ERC_sn_reprocess", suffix = "uncorrected")
+try(my_plot_reduced_dim_ALL(prefix = "ERC_sn_reprocess", suffix = "corrected"))
 
 # slurmjobs::job_single('10_reprocess_quality_sn', create_shell = TRUE, memory = '100G', command = "Rscript 10_reprocess_quality_sn.R")
 
