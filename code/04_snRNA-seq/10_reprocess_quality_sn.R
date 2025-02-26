@@ -6,6 +6,7 @@
 library("SingleCellExperiment")
 library("tidyverse")
 library("HDF5Array")
+library("harmony")
 library("scran")
 library("scater")
 library("scry")
@@ -119,7 +120,7 @@ message("HARMONY Correcting by: ", correction)
 reducedDim(sce, "PCA") <- reducedDim(sce, "GLMPCA_approx")
 
 message("running Harmony - ", Sys.time())
-sce <- RunHarmony(sce, group.by.vars = correction, verbose = TRUE)
+sce <- harmony::RunHarmony(sce, group.by.vars = correction, verbose = TRUE)
 
 ## Remove redundant PCA
 reducedDim(sce, "PCA") <- NULL
