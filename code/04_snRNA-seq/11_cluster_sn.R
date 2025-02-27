@@ -1,5 +1,5 @@
-## Louise Huuki-Myers, September 2024
-## use single nearest neighbors + walk trap to cluster single nuc data
+## Louise Huuki-Myers, Febuary 2024
+## use single nearest neighbors + walk trap to cluster reprocessed single nuc data
 
 library("SingleCellExperiment")
 library("jaffelab")
@@ -29,12 +29,12 @@ print(opt)
 k = opt$k
 
 ## Prep directories
-data_dir <- here("processed-data", "04_snRNA-seq", "07_cluster_sn")
+data_dir <- here("processed-data", "04_snRNA-seq", "11_cluster_sn")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F
-message(Sys.time(), "- load Harmony corrected sce")
-sce <- loadHDF5SummarizedExperiment(dir = here("processed-data", "sce_objects", "sce_harmony"))
+message(Sys.time(), "- load reprocessed corrected sce")
+sce <- loadHDF5SummarizedExperiment(dir = here("processed-data", "sce_objects", "sce_reprocess"))
 sce
 
 
@@ -54,10 +54,10 @@ table(clusters)
 message(Sys.time() , " - saving data")
 save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_clusters.Rdata", k)))
 
-# slurmjobs::job_single('07_cluster_sn', create_shell = TRUE, memory = '100G', command = "Rscript 07_cluster_sn.R")
+# slurmjobs::job_single('11_cluster_sn', create_shell = TRUE, memory = '100G', command = "Rscript 11_cluster_sn.R")
 # slurmjobs::job_loop(
 #     loops = list(k = c("10", "15", "20")),
-#     name = "07_cluster_sn",
+#     name = "11_cluster_sn",
 #     create_shell = TRUE
 # )
 
