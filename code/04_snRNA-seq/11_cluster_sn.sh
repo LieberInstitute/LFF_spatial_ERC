@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=200G
+#SBATCH --mem=150G
 #SBATCH --job-name=11_cluster_sn
 #SBATCH -c 1
 #SBATCH -t 2-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=10-11%2
+#SBATCH --array=29%2
 
 ## Define loops and appropriately subset each variable for the array task ID
 
