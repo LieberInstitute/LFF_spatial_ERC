@@ -8,6 +8,7 @@ library("HDF5Array")
 library("here")
 library("sessioninfo")
 library("bluster")
+library("cluster")
 
 ## Prep directories
 plot_dir <- here("plots", "04_snRNA-seq", "12_cluster_eval")
@@ -44,7 +45,7 @@ message(Sys.time(), " - Calc Distantce matrix")
 dist_matrix <- dist(reducedDim(sce, "HARMONY"))
 
 message(Sys.time(), " - Calc Silhouette score")
-silhouette_score <- map(clusters, ~silhouette(.x, dist_matrix))
+silhouette_score <- map(clusters, ~cluster::silhouette(.x, dist_matrix))
 save(silhouette_score, file = "silhouette_score.Rdata")
 
 ## calc mean silhouette score
