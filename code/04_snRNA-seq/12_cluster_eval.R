@@ -9,6 +9,7 @@ library("here")
 library("sessioninfo")
 library("bluster")
 library("cluster")
+library("ggrepel")
 
 ## Prep directories
 plot_dir <- here("plots", "04_snRNA-seq", "12_cluster_eval")
@@ -31,36 +32,38 @@ clusters <- map_dfc(cluster_fn, ~get(load(.x)))
 head(clusters)
 dim(clusters)
 
+message("number of clusters")
 map_int(clusters, max)
-# k10 k15 k20 
-# 62  28  33 
 
+message("number clusters n<100")
 map_int(clusters, ~sum(table(.x) < 100))
-# k10 k15 k20 
-# 12   4   1 
-
 
 #### Calculate Silhouette Score ####
-message(Sys.time(), " - Calc Distantce matrix")
-dist_matrix <- dist(reducedDim(sce, "HARMONY"))
-
 message(Sys.time(), " - Calc Silhouette score")
-silhouette_score <- map(clusters, ~cluster::silhouette(.x, dist_matrix))
-save(silhouette_score, file = "silhouette_score.Rdata")
+sil.approx <- map(clusters, ~approxSilhouette(reducedDim(sce, "HARMONY"), clusters=.x))
+
+message(Sys.time(), " - done...saving")
+save(sil.approx, file = "sil.approx.Rdata")
+
+sil.approx[[1]]
 
 ## calc mean silhouette score
-silhouette_mean <- map(silhouette_score, ~mean(.x[, "sil_width"]))
+silhouette_mean <- map_dbl(sil.approx, ~mean(.x[, "width"]))
 
 cluster_eval <- tibble(k = as.integer(gsub("k", "", colnames(clusters))),
                  n_clus = map_int(clusters, max),
                  silh_score = silhouette_mean)
 
-write_csv(cluster_eval,  file = here(data_dir, "cluster_eval.csv"))
+cluster_eval |> arrange(-silh_score)
 
 ## k value with the highest silhouette score
-optimal_k <- names(silhouette_mean)[which.max(silhouette_mean)]
+optimal_k <-parse_number(names(silhouette_mean)[which.max(silhouette_mean)])
 optimal_k
-# [1] 20
+# [1] "k13"
+
+cluster_eval <- cluster_eval |> mutate(silh_max = optimal_k == k)
+
+write_csv(cluster_eval,  file = here(data_dir, "cluster_eval.csv"))
 
 
 #### plot  ####
@@ -68,6 +71,7 @@ optimal_k
 cluster_eval_k_vs_n <- ggplot(cluster_eval, aes(x = k, y = n_clus)) + ## add color by sil_score?
     geom_point() +
     geom_line() +
+    geom_vline(xintercept = optimal_k, linetype = "dashed", color = "red") +
     theme_bw()
 
 ggsave(cluster_eval_k_vs_n, filename = here(plot_dir, "cluster_eval_k_vs_n.png"))
@@ -76,18 +80,56 @@ ggsave(cluster_eval_k_vs_n, filename = here(plot_dir, "cluster_eval_k_vs_n.png")
 cluster_eval_k_vs_silh <- ggplot(cluster_eval, aes(x = k, y = silh_score)) +
     geom_point() +
     geom_line() +
-    theme_bw()
+    geom_vline(xintercept = optimal_k, linetype = "dashed", color = "red") +
+    theme_bw()  +
+    labs(y = "Mean silhouette score")
 
 ggsave(cluster_eval_k_vs_silh, filename = here(plot_dir, "cluster_eval_k_vs_silh.png"))
 
 ## silhouette score vs. n cluster
 cluster_eval_n_vs_silh <- ggplot(cluster_eval, aes(x = n_clus, y = silh_score)) +
-    geom_point() +
-    # geom_line() +
-    theme_bw()
+    geom_point(aes(color = k)) +
+    geom_text_repel(aes(label = k)) +
+    theme_bw() +
+    labs(y = "Mean silhouette score")
 
 ggsave(cluster_eval_n_vs_silh, filename = here(plot_dir, "cluster_eval_n_vs_silh.png"))
 
+#### Silh distributions ####
+
+sil.approx.all <- map2_dfr(sil.approx, names(sil.approx), ~as.data.frame(.x) |> mutate(k = .y))
+
+sil_boxplot <- sil.approx.all |>
+    ggplot(aes(x = k, y = width)) +
+    geom_boxplot() +
+    theme_bw()  +
+    labs(y = "silhouette width")
+
+ggsave(sil_boxplot, filename = here(plot_dir, "sil_boxplot.png"))
+
+
+#### concordance matrix ####
+
+k_combn <- combn(colnames(clusters), 2)
+
+rand_scores <-  map2_dfr(k_combn[1,], k_combn[2,], ~list(kx = .x, ky = .y, rand = pairwiseRand(clusters[[.x]], clusters[[.y]], mode = "index")))
+
+rand_scores |> arrange(rand)
+
+rand_scores |>
+    filter(kx == "k13" | ky == "k13") |>
+    arrange(-rand)
+
+rand_tile <- rand_scores |>
+    ggplot(aes(kx, ky, fill = rand)) +
+    geom_tile() +
+    theme_bw() +
+    viridis::scale_fill_viridis() +
+    scale_x_discrete(position = "top") +
+    theme(axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+
+ggsave(rand_tile, filename = here(plot_dir, "rand_tile.png"))
 
 # slurmjobs::job_single('12_cluster_eval', create_shell = TRUE, memory = '5G', command = "12_cluster_eval.R")
 
