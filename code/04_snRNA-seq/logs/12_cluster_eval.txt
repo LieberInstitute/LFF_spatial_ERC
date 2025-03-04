@@ -1,12 +1,11 @@
 **** Job starts ****
-Sun Mar  2 04:37:18 PM EST 2025
+Tue Mar  4 05:25:17 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 14566314
+Job id: 14751439
 Job name: 12_cluster_eval
-Node name: compute-157
+Node name: compute-158
 Task id: 
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -161,7 +160,7 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-03-02 16:37:26.529685- load reprocessed sce
+2025-03-04 05:25:25.757364- load reprocessed sce
 class: SingleCellExperiment 
 dim: 38606 125771 
 metadata(33): Samples Samples ... scDblFinder.threshold
@@ -175,8 +174,8 @@ colData names(45): Barcode sample_id ... ct_fine_k20 quick_cluster
 reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
 mainExpName: NULL
 altExpNames(0):
-2025-03-02 16:37:29.881573 - Load cluster data
-# A tibble: 6 × 20
+2025-03-04 05:25:29.819099 - Load cluster data
+# A tibble: 6 × 21
     k10   k11   k12   k13   k14   k15   k16   k17   k18   k19   k20   k21   k22
   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 1    25     6     6     9     5     7     6    10     9     8     9    10    11
@@ -185,32 +184,209 @@ altExpNames(0):
 4    13    25    22     4    25     2     3     9     2     6     6     4    14
 5    32     1     2     8     3     4     4     8     7     3     7     5    20
 6    10    10     9    12     6    11     7    15    10     9    14    11     4
-# ℹ 7 more variables: k23 <dbl>, k24 <dbl>, k25 <dbl>, k26 <dbl>, k27 <dbl>,
-#   k28 <dbl>, k30 <dbl>
-[1] 125771     20
-k10 k11 k12 k13 k14 k15 k16 k17 k18 k19 k20 k21 k22 k23 k24 k25 k26 k27 k28 k30 
- 44  31  29  23  30  26  26  22  25  25  24  26  35  24  24  19  23  18  15  23 
-k10 k11 k12 k13 k14 k15 k16 k17 k18 k19 k20 k21 k22 k23 k24 k25 k26 k27 k28 k30 
+# ℹ 8 more variables: k23 <dbl>, k24 <dbl>, k25 <dbl>, k26 <dbl>, k27 <dbl>,
+#   k28 <dbl>, k29 <dbl>, k30 <dbl>
+[1] 125771     21
+number of clusters
+k10 k11 k12 k13 k14 k15 k16 k17 k18 k19 k20 k21 k22 k23 k24 k25 k26 k27 k28 k29 
+ 44  31  29  23  30  26  26  22  25  25  24  26  35  24  24  19  23  18  15  19 
+k30 
+ 23 
+number clusters n<100
+k10 k11 k12 k13 k14 k15 k16 k17 k18 k19 k20 k21 k22 k23 k24 k25 k26 k27 k28 k29 
   7   0   0   1   2   1   2   1   1   1   1   2   1   1   2   0   0   0   0   0 
-2025-03-02 16:37:32.307295 - Calc Distantce matrix
-2025-03-02 18:02:12.856881 - Calc Silhouette score
-Error in `map()`:
-ℹ In index: 1.
-ℹ With name: k10.
-Caused by error in `silhouette.default()`:
-! long vectors (argument 1) are not supported in .C
-Backtrace:
-     ▆
-  1. ├─purrr::map(clusters, ~cluster::silhouette(.x, dist_matrix))
-  2. │ └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
-  3. │   ├─purrr:::with_indexed_errors(...)
-  4. │   │ └─base::withCallingHandlers(...)
-  5. │   ├─purrr:::call_with_cleanup(...)
-  6. │   └─global .f(.x[[i]], ...)
-  7. │     ├─cluster::silhouette(.x, dist_matrix)
-  8. │     └─cluster:::silhouette.default(.x, dist_matrix)
-  9. └─base::.handleSimpleError(...)
- 10.   └─purrr (local) h(simpleError(msg, call))
- 11.     └─cli::cli_abort(...)
- 12.       └─rlang::abort(...)
-Execution halted
+k30 
+  0 
+2025-03-04 05:25:32.386796 - Calc Silhouette score
+2025-03-04 05:26:27.850125 - done...saving
+DataFrame with 125771 rows and 3 columns
+             cluster     other      width
+           <numeric> <numeric>  <numeric>
+cell1             25        28  -0.190232
+cell2             11        33   0.134138
+cell4              6        24   0.100900
+cell5             13         5   0.155411
+cell6             32         3   0.167083
+...              ...       ...        ...
+cell160739        20         7  0.1440713
+cell160740         2        19 -0.2455875
+cell160741         6        24  0.0807449
+cell160742        26        23  0.1923469
+cell160743         6        24  0.1336141
+# A tibble: 21 × 3
+       k n_clus silh_score
+   <int>  <int>      <dbl>
+ 1    13     23     0.0493
+ 2    23     24     0.0457
+ 3    15     26     0.0444
+ 4    30     23     0.0425
+ 5    28     15     0.0424
+ 6    29     19     0.0386
+ 7    18     25     0.0385
+ 8    19     25     0.0382
+ 9    14     30     0.0382
+10    21     26     0.0381
+# ℹ 11 more rows
+[1] 13
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+# A tibble: 210 × 3
+   kx    ky     rand
+   <chr> <chr> <dbl>
+ 1 k10   k27   0.510
+ 2 k10   k28   0.513
+ 3 k10   k17   0.514
+ 4 k10   k25   0.525
+ 5 k22   k28   0.532
+ 6 k22   k25   0.540
+ 7 k22   k27   0.554
+ 8 k10   k13   0.556
+ 9 k17   k22   0.562
+10 k10   k26   0.564
+# ℹ 200 more rows
+# A tibble: 20 × 3
+   kx    ky     rand
+   <chr> <chr> <dbl>
+ 1 k12   k13   0.736
+ 2 k13   k29   0.704
+ 3 k13   k21   0.680
+ 4 k13   k30   0.674
+ 5 k11   k13   0.670
+ 6 k13   k22   0.670
+ 7 k13   k18   0.669
+ 8 k13   k16   0.669
+ 9 k13   k19   0.667
+10 k13   k24   0.664
+11 k13   k14   0.652
+12 k13   k20   0.644
+13 k13   k23   0.630
+14 k13   k26   0.617
+15 k13   k17   0.613
+16 k13   k25   0.613
+17 k13   k27   0.609
+18 k13   k15   0.595
+19 k13   k28   0.593
+20 k10   k13   0.556
+Saving 7 x 7 in image
+[1] "Reproducibility information:"
+[1] "2025-03-04 05:28:09 EST"
+   user  system elapsed 
+161.365   7.666 171.859 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.3 Patched (2025-02-28 r87870)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-03-04
+ pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version date (UTC) lib source
+ abind                * 1.4-8   2024-09-12 [2] CRAN (R 4.4.1)
+ Biobase              * 2.66.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocGenerics         * 0.52.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocNeighbors          2.0.1   2024-11-28 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocParallel           1.40.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ bit                    4.5.0.1 2024-12-03 [2] CRAN (R 4.4.2)
+ bit64                  4.6.0-1 2025-01-16 [2] CRAN (R 4.4.2)
+ bluster              * 1.16.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ cli                    3.6.4   2025-02-13 [2] CRAN (R 4.4.2)
+ cluster              * 2.1.8   2024-12-11 [3] CRAN (R 4.4.3)
+ codetools              0.2-20  2024-03-31 [3] CRAN (R 4.4.3)
+ colorspace             2.1-1   2024-07-26 [2] CRAN (R 4.4.1)
+ crayon                 1.5.3   2024-06-20 [2] CRAN (R 4.4.1)
+ DelayedArray         * 0.32.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ dplyr                * 1.1.4   2023-11-17 [2] CRAN (R 4.4.0)
+ farver                 2.1.2   2024-05-13 [2] CRAN (R 4.4.0)
+ forcats              * 1.0.0   2023-01-29 [2] CRAN (R 4.4.0)
+ fs                     1.6.5   2024-10-30 [2] CRAN (R 4.4.2)
+ gargle                 1.5.2   2023-07-20 [2] CRAN (R 4.4.0)
+ generics               0.1.3   2022-07-05 [2] CRAN (R 4.4.0)
+ GenomeInfoDb         * 1.42.3  2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
+ GenomeInfoDbData       1.2.13  2024-10-01 [2] Bioconductor
+ GenomicRanges        * 1.58.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ ggplot2              * 3.5.1   2024-04-23 [2] CRAN (R 4.4.0)
+ ggrepel              * 0.9.6   2024-09-07 [2] CRAN (R 4.4.1)
+ glue                   1.8.0   2024-09-30 [2] CRAN (R 4.4.1)
+ googledrive            2.1.1   2023-06-11 [2] CRAN (R 4.4.0)
+ gridExtra              2.3     2017-09-09 [2] CRAN (R 4.4.0)
+ gtable                 0.3.6   2024-10-25 [2] CRAN (R 4.4.2)
+ HDF5Array            * 1.34.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ here                 * 1.0.1   2020-12-13 [2] CRAN (R 4.4.0)
+ hms                    1.1.3   2023-03-21 [2] CRAN (R 4.4.0)
+ httr                   1.4.7   2023-08-15 [2] CRAN (R 4.4.0)
+ igraph                 2.1.4   2025-01-23 [2] CRAN (R 4.4.2)
+ IRanges              * 2.40.1  2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
+ jaffelab             * 0.99.34 2024-12-10 [1] Github (LieberInstitute/jaffelab@2710795)
+ jsonlite               1.9.0   2025-02-19 [2] CRAN (R 4.4.3)
+ labeling               0.4.3   2023-08-29 [2] CRAN (R 4.4.0)
+ lattice                0.22-6  2024-03-20 [3] CRAN (R 4.4.3)
+ lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.4.0)
+ limma                  3.62.2  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ lubridate            * 1.9.4   2024-12-08 [2] CRAN (R 4.4.2)
+ magrittr               2.0.3   2022-03-30 [2] CRAN (R 4.4.0)
+ MASS                   7.3-65  2025-02-28 [3] CRAN (R 4.4.3)
+ Matrix               * 1.7-2   2025-01-23 [3] CRAN (R 4.4.3)
+ MatrixGenerics       * 1.18.1  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ matrixStats          * 1.5.0   2025-01-07 [2] CRAN (R 4.4.2)
+ munsell                0.5.1   2024-04-01 [2] CRAN (R 4.4.0)
+ nlme                   3.1-167 2025-01-27 [3] CRAN (R 4.4.3)
+ pillar                 1.10.1  2025-01-07 [1] CRAN (R 4.4.2)
+ pkgconfig              2.0.3   2019-09-22 [2] CRAN (R 4.4.0)
+ purrr                * 1.0.4   2025-02-05 [2] CRAN (R 4.4.2)
+ R6                     2.6.1   2025-02-15 [2] CRAN (R 4.4.2)
+ rafalib              * 1.0.0   2015-08-09 [1] CRAN (R 4.4.2)
+ ragg                   1.3.3   2024-09-11 [2] CRAN (R 4.4.1)
+ RColorBrewer           1.1-3   2022-04-03 [2] CRAN (R 4.4.0)
+ Rcpp                   1.0.14  2025-01-12 [2] CRAN (R 4.4.2)
+ readr                * 2.1.5   2024-01-10 [2] CRAN (R 4.4.0)
+ rhdf5                * 2.50.2  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ rhdf5filters           1.18.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ Rhdf5lib               1.28.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ rlang                  1.1.5   2025-01-17 [2] CRAN (R 4.4.2)
+ rprojroot              2.0.4   2023-11-05 [2] CRAN (R 4.4.0)
+ S4Arrays             * 1.6.0   2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ S4Vectors            * 0.44.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ scales                 1.3.0   2023-11-28 [2] CRAN (R 4.4.0)
+ segmented              2.1-3   2024-10-25 [1] CRAN (R 4.4.2)
+ sessioninfo          * 1.2.3   2025-02-05 [2] CRAN (R 4.4.2)
+ SingleCellExperiment * 1.28.1  2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
+ SparseArray          * 1.6.2   2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
+ statmod                1.5.0   2023-01-06 [2] CRAN (R 4.4.0)
+ stringi                1.8.4   2024-05-06 [2] CRAN (R 4.4.0)
+ stringr              * 1.5.1   2023-11-14 [2] CRAN (R 4.4.0)
+ SummarizedExperiment * 1.36.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ systemfonts            1.2.1   2025-01-20 [2] CRAN (R 4.4.2)
+ textshaping            1.0.0   2025-01-20 [2] CRAN (R 4.4.2)
+ tibble               * 3.2.1   2023-03-20 [2] CRAN (R 4.4.0)
+ tidyr                * 1.3.1   2024-01-24 [2] CRAN (R 4.4.0)
+ tidyselect             1.2.1   2024-03-11 [2] CRAN (R 4.4.0)
+ tidyverse            * 2.0.0   2023-02-22 [2] CRAN (R 4.4.0)
+ timechange             0.3.0   2024-01-18 [2] CRAN (R 4.4.0)
+ tzdb                   0.4.0   2023-05-12 [2] CRAN (R 4.4.0)
+ UCSC.utils             1.2.0   2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ utf8                   1.2.4   2023-10-22 [2] CRAN (R 4.4.0)
+ vctrs                  0.6.5   2023-12-01 [2] CRAN (R 4.4.0)
+ viridis                0.6.5   2024-01-29 [2] CRAN (R 4.4.0)
+ viridisLite            0.4.2   2023-05-02 [2] CRAN (R 4.4.0)
+ vroom                  1.6.5   2023-12-05 [2] CRAN (R 4.4.0)
+ withr                  3.0.2   2024-10-28 [2] CRAN (R 4.4.2)
+ XVector                0.46.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ zlibbioc               1.52.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+
+ [1] /users/lhuuki/R/4.4.x
+ [2] /jhpce/shared/community/core/conda_R/4.4.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.4.x/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Tue Mar  4 05:28:10 AM EST 2025
