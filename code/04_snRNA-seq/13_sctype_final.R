@@ -15,8 +15,8 @@ library("getopt")
 # Import command-line parameters
 spec <- matrix(
     c(
-        c("db"),
         c("database"),
+        c("d"),
         rep("1", 1),
         rep("character", 1),
         rep("database selection", 1)
@@ -65,13 +65,13 @@ pairwiseRand(sce$quick_cluster, sce$snn_kOpt, mode = "index")
 #### SC Type #### 
 # get cell-type-specific gene sets from our in-built database (DB)
 # DB file
-if(opt$db == "sctype"){
+if(opt$database == "sctype"){
     db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
-} else if(opt$db == "custom"){
+} else if(opt$database == "custom"){
     ## TODO
 }
 
-message("Using database: '", opt$db, "' file: ", db_)
+message("Using database: '", opt$database, "' file: ", db_)
 
 # prepare gene sets
 gs_list <- gene_sets_prepare(db_, "Brain")
@@ -94,7 +94,7 @@ es.max[1:5, 1:5]
 # Endothelial cells    0.7930059 0.0000000 0.0000000 0.000000 0.0000000
 # GABAergic neurons    1.4841430 2.3017959 4.7711181 1.622680 5.6416159
 
-save(es.max, file = here(data_dir, sprintf("sctype_es_max-%s.Rdata", opt$db)))
+save(es.max, file = here(data_dir, sprintf("sctype_es_max-%s.Rdata", opt$database)))
 
 #### annotate clusters ####
 message(Sys.time(), " - Annotate clusters")
@@ -183,8 +183,8 @@ sctype <- sctype|>
     mutate(cell_type_fine = factor(cell_type_fine, levels = fine_levels)) |>
     arrange(cell_type_fine)
 
-write.csv(sctype, file = here(data_dir, sprintf("sctype_final-%s.csv", opt$db)), row.names = FALSE)
-save(sctype, file = here(data_dir, paste0("sctype_prelim-%s.Rdata", opt$db)))
+write.csv(sctype, file = here(data_dir, sprintf("sctype_final-%s.csv", opt$database)), row.names = FALSE)
+save(sctype, file = here(data_dir, paste0("sctype_prelim-%s.Rdata", opt$database)))
 
 # slurmjobs::job_single('13_sctype_final', create_shell = TRUE, memory = '150G', command = "Rscript 13_sctype_final.R -db sctype")
 
