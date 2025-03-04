@@ -82,6 +82,9 @@ cell_class_cutoffs <- pd |>
 # 7 neuron          subsets_Mito_percent     0.115        0.139       0.531 < 0.53     
 # 8 neuron          sum                  28592        23000.       5592.    > 5592.43   
 
+## save out cutoff data
+write.csv(cell_class_cutoffs, file = here(data_dir,"ERC_sn_cell_class_cutoffs.csv"), row.names = FALSE)
+
 cluster_metrics_long <- pd |> 
     select(snn_k10, cell_type_class, cell_type_broad, cell_type_fine, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
     pivot_longer(!c(snn_k10, cell_type_fine,cell_type_broad, cell_type_class), names_to = "metric") |>
