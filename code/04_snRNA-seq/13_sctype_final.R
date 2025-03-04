@@ -184,7 +184,7 @@ sctype <- sctype|>
     arrange(cell_type_fine)
 
 write.csv(sctype, file = here(data_dir, sprintf("sctype_final-%s.csv", opt$database)), row.names = FALSE)
-save(sctype, file = here(data_dir, paste0("sctype_prelim-%s.Rdata", opt$database)))
+save(sctype, file = here(data_dir, sprintf("sctype_final-%s.Rdata", opt$database)))
 
 # slurmjobs::job_single('13_sctype_final', create_shell = TRUE, memory = '150G', command = "Rscript 13_sctype_final.R -db sctype")
 
