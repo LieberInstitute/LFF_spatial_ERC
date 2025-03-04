@@ -43,7 +43,7 @@ message(Sys.time(), " - Calc Silhouette score")
 sil.approx <- map(clusters, ~approxSilhouette(reducedDim(sce, "HARMONY"), clusters=.x))
 
 message(Sys.time(), " - done...saving")
-save(sil.approx, file = "sil.approx.Rdata")
+# save(sil.approx, file = here(data_dir, "sil.approx.Rdata"))
 
 sil.approx[[1]]
 
