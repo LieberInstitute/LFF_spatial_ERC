@@ -220,13 +220,8 @@ table(sce$snn_k15, sce$snn_k20)
 #### plot marker genes ####
 message(Sys.time(), " - Plot marker genes")
 ## summarize marker genes from lit 
-lit_markers <- read.csv(here("processed-data", "04_snRNA-seq", "lit_marker_genes.csv")) |>
-    group_by(gene_name, cell_type) |>
-    summarize(n_studies = n(),
-            studies = paste0(source, collapse = ",")) |>
-    mutate(in_data = gene_name %in% rowData(sce)$Symbol)
-    
-lit_markers |> write_csv(here("processed-data", "04_snRNA-seq", "lit_marker_summary.csv"))
+
+lit_markers <-  read_csv(here("processed-data", "04_snRNA-seq", "lit_marker_summary.csv"))
 
 ## missing from our data
 lit_markers |> filter(!in_data)
