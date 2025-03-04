@@ -10,16 +10,30 @@ library("openxlsx")
 library("here")
 library("sessioninfo")
 library("bluster")
+library("getopt")
+
+# Import command-line parameters
+spec <- matrix(
+    c(
+        c("db"),
+        c("database"),
+        rep("1", 1),
+        rep("character", 1),
+        rep("database selection", 1)
+    ),
+    ncol = 5
+)
+opt <- getopt(spec)
+
+## to test
+print("Using the following parameters:")
+print(opt)
 
 ## source sc-type functions
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
-# source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_wrapper.R")
 
 ## Prep directories
-# plot_dir <- here("plots", "04_snRNA-seq", "13_sctype_final")
-# if(!dir.exists(plot_dir)) dir.create(plot_dir)
-
 data_dir <- here("processed-data", "04_snRNA-seq", "13_sctype_final")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
@@ -28,7 +42,7 @@ sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_r
 sce
 
 ## load optimal cluster output
-optimal_k = 20
+optimal_k = 13
 message("Load optimal clusters from K=", optimal_k)
 load(here("processed-data", "04_snRNA-seq", "11_cluster_sn", sprintf("walktrap_snn_k%d_clusters.Rdata", optimal_k)), verbose = TRUE)
 # clusters
@@ -46,12 +60,18 @@ table(sce$snn_kOpt)
 # 0.5 corresponds to “good” similarity
 message("Rand Index w/ Quick Cluster")
 pairwiseRand(sce$quick_cluster, sce$snn_kOpt, mode = "index")
-
+# [1] 0.3835664
 
 #### SC Type #### 
 # get cell-type-specific gene sets from our in-built database (DB)
 # DB file
-db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
+if(opt$db == "sctype"){
+    db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
+} else if(opt$db == "custom"){
+    ## TODO
+}
+
+message("Using database: '", opt$db, "' file: ", db_)
 
 # prepare gene sets
 gs_list <- gene_sets_prepare(db_, "Brain")
@@ -74,7 +94,7 @@ es.max[1:5, 1:5]
 # Endothelial cells    0.7930059 0.0000000 0.0000000 0.000000 0.0000000
 # GABAergic neurons    1.4841430 2.3017959 4.7711181 1.622680 5.6416159
 
-save(es.max, file = here(data_dir, "sctype_es_max.Rdata"))
+save(es.max, file = here(data_dir, sprintf("sctype_es_max-%s.Rdata", opt$db)))
 
 #### annotate clusters ####
 message(Sys.time(), " - Annotate clusters")
@@ -163,10 +183,10 @@ sctype <- sctype|>
     mutate(cell_type_fine = factor(cell_type_fine, levels = fine_levels)) |>
     arrange(cell_type_fine)
 
-write.csv(sctype, file = here(data_dir, paste0("sctype_prelim.csv")), row.names = FALSE)
-save(sctype, file = here(data_dir, paste0("sctype_prelim.Rdata")))
+write.csv(sctype, file = here(data_dir, sprintf("sctype_final-%s.csv", opt$db)), row.names = FALSE)
+save(sctype, file = here(data_dir, paste0("sctype_prelim-%s.Rdata", opt$db)))
 
-# slurmjobs::job_single('13_sctype_final', create_shell = TRUE, memory = '25G', command = "Rscript 13_sctype_final.R")
+# slurmjobs::job_single('13_sctype_final', create_shell = TRUE, memory = '150G', command = "Rscript 13_sctype_final.R -db sctype")
 
 ## Reproducibility information
 print("Reproducibility information:")
