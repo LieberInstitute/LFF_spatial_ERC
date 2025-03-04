@@ -24,26 +24,28 @@ data_dir <- here("processed-data", "04_snRNA-seq", "13_sctype_final")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load sce object
-sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_harmony"))
+sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_reprocess"))
 sce
 
-## load cluster outputs
-load(here("processed-data", "04_snRNA-seq", "07_cluster_sn_prelim", "walktrap_snn_k10_clusters_prelim.Rdata"), verbose = TRUE)
+## load optimal cluster output
+optimal_k = 20
+message("Load optimal clusters from K=", optimal_k)
+load(here("processed-data", "04_snRNA-seq", "11_cluster_sn", sprintf("walktrap_snn_k%d_clusters.Rdata", optimal_k)), verbose = TRUE)
 # clusters
 
-sce$snn_k10 <- sprintf("k10c%02d", clusters)
+sce$snn_kOpt <- sprintf("k%dc%02d", optimal_k, clusters)
 
-message("k10 prelim clusters: ", length(unique(sce$snn_k10)))
+message("kOpt clusters: ", length(unique(sce$snn_kOpt)))
 
-table(sce$snn_k10)
+table(sce$snn_kOpt)
 
 
-# table(sce$quick_cluster, sce$snn_k10)
+# table(sce$quick_cluster, sce$snn_kOpt)
 
 ## Adjusted Rand Index
 # 0.5 corresponds to “good” similarity
 message("Rand Index w/ Quick Cluster")
-pairwiseRand(sce$quick_cluster, sce$snn_k10, mode = "index") #0.4513222
+pairwiseRand(sce$quick_cluster, sce$snn_kOpt, mode = "index")
 
 
 #### SC Type #### 
@@ -53,6 +55,7 @@ db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTyp
 
 # prepare gene sets
 gs_list <- gene_sets_prepare(db_, "Brain")
+
 
 rownames(sce) <- rowData(sce)$Symbol
 
@@ -76,7 +79,7 @@ save(es.max, file = here(data_dir, "sctype_es_max.Rdata"))
 #### annotate clusters ####
 message(Sys.time(), " - Annotate clusters")
 
-cl_col <- "snn_k10"
+cl_col <- "snn_kOpt"
 
 clusters <- sort(unique(sce[[cl_col]]))
 
