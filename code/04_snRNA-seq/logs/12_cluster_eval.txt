@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Mar  4 05:25:17 AM EST 2025
+Wed Mar  5 10:59:11 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 14751439
+Job id: 14833003
 Job name: 12_cluster_eval
-Node name: compute-158
+Node name: compute-168
 Task id: 
 Loading conda_R/4.4.x
 
@@ -160,7 +160,7 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-03-04 05:25:25.757364- load reprocessed sce
+2025-03-05 10:59:20.662688- load reprocessed sce
 class: SingleCellExperiment 
 dim: 38606 125771 
 metadata(33): Samples Samples ... scDblFinder.threshold
@@ -174,7 +174,7 @@ colData names(45): Barcode sample_id ... ct_fine_k20 quick_cluster
 reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
 mainExpName: NULL
 altExpNames(0):
-2025-03-04 05:25:29.819099 - Load cluster data
+2025-03-05 10:59:24.982391 - Load cluster data
 # A tibble: 6 × 21
     k10   k11   k12   k13   k14   k15   k16   k17   k18   k19   k20   k21   k22
   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
@@ -197,8 +197,8 @@ k10 k11 k12 k13 k14 k15 k16 k17 k18 k19 k20 k21 k22 k23 k24 k25 k26 k27 k28 k29
   7   0   0   1   2   1   2   1   1   1   1   2   1   1   2   0   0   0   0   0 
 k30 
   0 
-2025-03-04 05:25:32.386796 - Calc Silhouette score
-2025-03-04 05:26:27.850125 - done...saving
+2025-03-05 10:59:27.680119 - Calc Silhouette score
+2025-03-05 11:00:28.715382 - done...saving
 DataFrame with 125771 rows and 3 columns
              cluster     other      width
            <numeric> <numeric>  <numeric>
@@ -271,12 +271,12 @@ Saving 7 x 7 in image
 20 k10   k13   0.556
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2025-03-04 05:28:09 EST"
+[1] "2025-03-05 11:02:16 EST"
    user  system elapsed 
-161.365   7.666 171.859 
+173.090   8.252 183.764 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r87870)
+ version  R version 4.4.3 Patched (2025-02-28 r87883)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -284,7 +284,7 @@ Saving 7 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-03-04
+ date     2025-03-05
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -326,7 +326,7 @@ Saving 7 x 7 in image
  igraph                 2.1.4   2025-01-23 [2] CRAN (R 4.4.2)
  IRanges              * 2.40.1  2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
  jaffelab             * 0.99.34 2024-12-10 [1] Github (LieberInstitute/jaffelab@2710795)
- jsonlite               1.9.0   2025-02-19 [2] CRAN (R 4.4.3)
+ jsonlite               1.9.1   2025-03-03 [2] CRAN (R 4.4.3)
  labeling               0.4.3   2023-08-29 [2] CRAN (R 4.4.0)
  lattice                0.22-6  2024-03-20 [3] CRAN (R 4.4.3)
  lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.4.0)
@@ -389,4 +389,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Mar  4 05:28:10 AM EST 2025
+Wed Mar  5 11:02:17 AM EST 2025
