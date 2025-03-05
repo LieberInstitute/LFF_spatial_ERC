@@ -68,7 +68,7 @@ pairwiseRand(sce$quick_cluster, sce$snn_kOpt, mode = "index")
 if(opt$database == "sctype"){
     db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
 } else if(opt$database == "custom"){
-    ## TODO
+    db_ <- here("processed-data", "04_snRNA-seq", "scTypeDB_PEC_PFC_custom.xlsx")
 }
 
 message("Using database: '", opt$database, "' file: ", db_)
@@ -175,6 +175,7 @@ sctype <- sctype_scores |>
                                                    side = "left",
                                                    pad = "0")),
            cell_type_broad = factor(cell_type_broad, levels = cell_type_levels),
+           database = "opt$database"
     )
 
 ## add levels to cell type fine
