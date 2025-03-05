@@ -27,7 +27,7 @@ taupathy |> count(taupathy)
 
 taupathy |> count(BrNum) |> arrange(-n)
 ## two conflicting entries for Br5634
-taupathy |> filter(BrNum == "Br5634")
+taupathy |> filter(BrNum %in% c("Br5634", "Br5599"))
 # BrNum  taupathy
 # <chr>  <lgl>   
 # 1 Br5634 FALSE   
