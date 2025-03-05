@@ -78,13 +78,26 @@ pec_marker_tab |> dplyr::count(cell_type_broad, cell_type_fine)
 
 ## format for sctype Database
 
+pec_db_neuron <- pec_marker_tab |> 
+    filter(is.na(cell_type_fine) & cell_type_broad %in% c("Excit", "Inhib")) |>
+    group_by(cell_type_broad) |>
+    summarise(geneSymbolBroad = paste(gene, collapse = ",")) 
+
 pec_db <- pec_marker_tab |> 
+    filter(!is.na(cell_type_fine) | !cell_type_broad %in% c("Excit", "Inhib")) |>
     mutate(cellName = ifelse(is.na(cell_type_fine), cell_type_broad, paste0(cell_type_broad,"." ,cell_type_fine))) |> 
-    group_by(cellName) |>
+    group_by(cellName, cell_type_broad, cell_type_fine) |>
     summarise(geneSymbolmore1 = paste(gene, collapse = ",")) |>
+    left_join(pec_db_neuron) |>
     mutate(tissueType = "Brain",
-           geneSymbolmore2 = 0) |>
+           geneSymbolmore2 = 0,
+           geneSymbolmore1 = ifelse(is.na(geneSymbolBroad), 
+                                geneSymbolmore1, 
+                                paste0(geneSymbolBroad, ",", geneSymbolmore1)) ## Add neuron broad markers to subtypes
+               ) |>
     select(tissueType, cellName, geneSymbolmore1, geneSymbolmore2)
+
+pec_db |> print(n=35)
 
 writexl::write_xlsx(pec_db, path = here(data_dir, "scTypeDB_PEC_PFC_custom.xlsx"))
 
