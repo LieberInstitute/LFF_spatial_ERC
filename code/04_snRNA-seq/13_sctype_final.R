@@ -201,15 +201,15 @@ if(opt$database == "sctype"){
         group_by(type) |>
         arrange(-ncells) |> 
         mutate(type_rank = row_number(),
-               cell_type_fine = ifelse(n() >1, 
-                                       paste0(type, 
-                                       ".",
-                                       width = str_pad(type_rank, 
-                                                       nchar(as.character(max(type_rank))),
-                                                       side = "left",
-                                                       pad = "0")),
-                                       type),
+               cell_type_fine = case_when(n() > 1 ~ paste0(type, ".",
+                                                           str_pad(type_rank,
+                                                                   width = nchar(as.character(max(type_rank))),
+                                                                   side = "left",
+                                                                   pad = "0")),
+                                          TRUE~type),
+               # check = n() > 1,
                cell_type_broad = factor(jaffelab::ss(type, "\\."), levels = cell_type_levels),
+               cell_type_class = ifelse(cell_type_broad %in% c("Excit", "Inhib"), "Neuron", "Glia"),
                database = opt$database
         )
     
