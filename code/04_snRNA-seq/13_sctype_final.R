@@ -68,7 +68,7 @@ pairwiseRand(sce$quick_cluster, sce$snn_kOpt, mode = "index")
 if(opt$database == "sctype"){
     db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
 } else if(opt$database == "custom"){
-    db_ <- here("processed-data", "04_snRNA-seq", "scTypeDB_PEC_PFC_custom.xlsx")
+    db_ <- here("processed-data", "04_snRNA-seq","00_lit_marker_genes", "scTypeDB_PEC_PFC_custom.xlsx")
 }
 
 message("Using database: '", opt$database, "' file: ", db_)
