@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 13_sctype_final.R --database sctype
+Rscript 13_sctype_final.R --database custom
 
 echo "**** Job ends ****"
 date
