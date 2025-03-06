@@ -17,7 +17,7 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "11_sn_model_pseudobulk")
+data_dir <- here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
@@ -50,7 +50,7 @@ modeling_results <-registration_wrapper(
 message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results-%s.rds", cluster_var)))
 
-# slurmjobs::job_single('11_sn_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 11_sn_model_pseudobulk.R -cluster 'ct_broad_k20'")
+# slurmjobs::job_single('17_sn_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 17_sn_model_pseudobulk.R -cluster 'ct_broad_k20'")
 
 ## Reproducibility information
 print("Reproducibility information:")
