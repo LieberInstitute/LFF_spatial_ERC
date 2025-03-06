@@ -16,12 +16,12 @@ plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load sn ERC modeling ####
-erc_sn_modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "11_sn_model_pseudobulk", "modeling_results-ct_fine_k20.rds"))
+erc_sn_modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk", "modeling_results-cell_type_fine.rds"))
 
-registration_t_stats <- erc_sn_modeling_results$enrichment[, grep("^t_stat", colnames(erc_sn_modeling_results$enrichment))]
-colnames(registration_t_stats) <- gsub("^t_stat_", "", colnames(registration_t_stats))
-
-head(registration_t_stats)
+# registration_t_stats <- erc_sn_modeling_results$enrichment[, grep("^t_stat", colnames(erc_sn_modeling_results$enrichment))]
+# colnames(registration_t_stats) <- gsub("^t_stat_", "", colnames(registration_t_stats))
+# 
+# head(registration_t_stats)
 
 #### get reference layer enrichment statistics ####
 layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
@@ -64,7 +64,8 @@ anno <- map(cor_layer, ~annotate_registered_clusters(
 #### create registration heatmaps ####
 
 ## load colors
-load(here("processed-data", "04_snRNA-seq", "09_cluster_annotation", "cell_type_colors_allK.Rdata"), verbose = TRUE)
+load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+
 # cell_type_colors
 
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
