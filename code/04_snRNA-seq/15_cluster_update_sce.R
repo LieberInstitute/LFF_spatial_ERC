@@ -58,7 +58,7 @@ dim(anno_table)
 colData(sce) <- cbind(colData(sce), anno_table)
 
 #### Define colors for fine cell types ####
-cell_type_colors <- create_cell_colors(cell_types = levels(sctype$cell_type_fine),
+cell_type_colors <- DeconvoBuddies::create_cell_colors(cell_types = levels(sctype$cell_type_fine),
                                                 pallet_name = "classic", 
                                                 split = "\\.")
 # $broad
@@ -73,7 +73,7 @@ cell_type_colors <- create_cell_colors(cell_types = levels(sctype$cell_type_fine
 
 
 ## save all color output
-save(cell_type_colors, file = here(data_dir, "cell_type_colors.Rdata"))
+save(cell_type_colors, file = here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"))
 
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
@@ -272,7 +272,7 @@ cell_type_proportion_bar <- cell_type_proportions |>
 ggsave(cell_type_proportion_bar, filename = here(plot_dir, "ERC_sn_barplot_ct_prop.png"), width = 10)
 
 ## evaluate proportion sample by cell 
-load(here(here("processed-data", "project_colors.Rdata")), verbose = TRUE)
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 # we need sample_colors
 
 sample_proportions <- pd |>
