@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Mar  4 09:11:39 AM EST 2025
+Wed Mar  5 04:59:42 PM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 14752034
+Job id: 14869441
 Job name: 13_sctype_final
-Node name: compute-157
+Node name: compute-146
 Task id: 
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
@@ -201,7 +201,7 @@ $ARGS
 character(0)
 
 $database
-[1] "sctype"
+[1] "custom"
 
 Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
@@ -266,35 +266,41 @@ k13c23
     88 
 Rand Index w/ Quick Cluster
 [1] 0.3835664
-Using database: 'sctype' file: https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx
-2025-03-04 09:11:55.252516- sctype score
-[1]     24 125771
-                         cell1     cell2    cell4     cell5     cell6
-Astrocytes           1.1183987 0.7053719 7.319215 0.3144979 1.0087181
-Cholinergic neurons  0.0000000 0.2192663 0.000000 0.0000000 0.0000000
-Dopaminergic neurons 0.0000000 0.8213083 0.000000 0.2631527 0.9535241
-Endothelial cells    0.8363369 0.0000000 0.000000 0.0000000 0.0000000
-GABAergic neurons    1.5500871 2.2520937 1.751505 5.5228354 6.0144969
-2025-03-04 09:14:48.627985 - Annotate clusters
-# A tibble: 8 × 3
-  type                            ncells n_cluster
-  <chr>                            <int>     <int>
-1 Astrocytes                       22145         2
-2 Endothelial cells                 1448         1
-3 GABAergic neurons                10132         3
-4 Glutamatergic neurons            15764         9
-5 Mature neurons                    1118         2
-6 Microglial cells                 13528         2
-7 Oligodendrocyte precursor cells  14717         1
-8 Oligodendrocytes                 46919         3
-Joining with `by = join_by(type)`
+Using database: 'custom' file: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/00_lit_marker_genes/scTypeDB_PEC_PFC_custom.xlsx
+There were 50 or more warnings (use warnings() to see the first 50)
+2025-03-05 17:00:01.834493- sctype score
+[1]     25 125771
+                 cell1    cell2     cell4     cell5    cell6
+Astro         9.476811 8.521413 39.866872 8.3777339 7.693312
+Endo          6.009203 6.364520 10.231796 5.8330325 6.270738
+Excit.L2_3_IT 2.667150 7.574904  1.420575 0.9961267 1.155910
+Excit.L4_IT   1.878537 5.179509  3.379842 2.6649432 2.462311
+Excit.L5_6_NP 3.079861 4.608713  4.706023 4.1773097 2.707151
+2025-03-05 17:05:07.967804 - Annotate clusters
+# A tibble: 14 × 3
+   type             ncells n_cluster
+   <chr>             <int>     <int>
+ 1 Astro             22145         2
+ 2 Excit.L5_6_NP       152         1
+ 3 Excit.L6_CT         625         1
+ 4 Excit.L6_IT_Car3   2235         1
+ 5 Excit.L6b           897         1
+ 6 Inhib.Chandelier    303         1
+ 7 Inhib.Lamp5_Lhx6   1234         1
+ 8 Inhib.Pax6          125         1
+ 9 Inhib.Pvalb        1363         1
+10 Inhib.Sst           815         1
+11 Micro             13528         2
+12 OPC               14717         1
+13 Oligo             66184         8
+14 VLMC               1448         1
 [1] "Reproducibility information:"
-[1] "2025-03-04 09:14:48 EST"
+[1] "2025-03-05 17:05:08 EST"
    user  system elapsed 
-137.667  12.712 188.164 
+254.079  16.170 325.332 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r87875)
+ version  R version 4.4.3 Patched (2025-02-28 r87883)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -302,7 +308,7 @@ Joining with `by = join_by(type)`
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-03-04
+ date     2025-03-05
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -331,8 +337,10 @@ Joining with `by = join_by(type)`
  fastmap                1.2.0   2024-05-15 [2] CRAN (R 4.4.0)
  fitdistrplus           1.2-2   2025-01-07 [2] CRAN (R 4.4.2)
  forcats              * 1.0.0   2023-01-29 [2] CRAN (R 4.4.0)
+ fs                     1.6.5   2024-10-30 [2] CRAN (R 4.4.2)
  future                 1.34.0  2024-07-29 [2] CRAN (R 4.4.1)
  future.apply           1.11.3  2024-10-27 [2] CRAN (R 4.4.2)
+ gargle                 1.5.2   2023-07-20 [2] CRAN (R 4.4.0)
  generics               0.1.3   2022-07-05 [2] CRAN (R 4.4.0)
  GenomeInfoDb         * 1.42.3  2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13  2024-10-01 [2] Bioconductor
@@ -344,6 +352,7 @@ Joining with `by = join_by(type)`
  globals                0.16.3  2024-03-08 [2] CRAN (R 4.4.0)
  glue                   1.8.0   2024-09-30 [2] CRAN (R 4.4.1)
  goftest                1.2-3   2021-10-07 [2] CRAN (R 4.4.0)
+ googledrive            2.1.1   2023-06-11 [2] CRAN (R 4.4.0)
  gridExtra              2.3     2017-09-09 [2] CRAN (R 4.4.0)
  gtable                 0.3.6   2024-10-25 [2] CRAN (R 4.4.2)
  HDF5Array            * 1.34.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -358,12 +367,14 @@ Joining with `by = join_by(type)`
  igraph                 2.1.4   2025-01-23 [2] CRAN (R 4.4.2)
  IRanges              * 2.40.1  2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
  irlba                  2.3.5.1 2022-10-03 [2] CRAN (R 4.4.0)
+ jaffelab               0.99.34 2024-12-10 [1] Github (LieberInstitute/jaffelab@2710795)
  jsonlite               1.9.1   2025-03-03 [2] CRAN (R 4.4.3)
  KernSmooth             2.23-26 2025-01-01 [3] CRAN (R 4.4.3)
  later                  1.4.1   2024-11-27 [2] CRAN (R 4.4.2)
  lattice                0.22-6  2024-03-20 [3] CRAN (R 4.4.3)
  lazyeval               0.2.2   2019-03-15 [2] CRAN (R 4.4.0)
  lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.4.0)
+ limma                  3.62.2  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
  listenv                0.9.1   2024-01-29 [2] CRAN (R 4.4.0)
  lmtest                 0.9-40  2022-03-21 [2] CRAN (R 4.4.0)
  lubridate            * 1.9.4   2024-12-08 [2] CRAN (R 4.4.2)
@@ -390,6 +401,7 @@ Joining with `by = join_by(type)`
  promises               1.3.2   2024-11-28 [2] CRAN (R 4.4.2)
  purrr                * 1.0.4   2025-02-05 [2] CRAN (R 4.4.2)
  R6                     2.6.1   2025-02-15 [2] CRAN (R 4.4.2)
+ rafalib                1.0.0   2015-08-09 [1] CRAN (R 4.4.2)
  RANN                   2.6.2   2024-08-25 [2] CRAN (R 4.4.1)
  RColorBrewer           1.1-3   2022-04-03 [2] CRAN (R 4.4.0)
  Rcpp                   1.0.14  2025-01-12 [2] CRAN (R 4.4.2)
@@ -411,6 +423,7 @@ Joining with `by = join_by(type)`
  scales                 1.3.0   2023-11-28 [2] CRAN (R 4.4.0)
  scattermore            1.2     2023-06-12 [2] CRAN (R 4.4.0)
  sctransform            0.4.1   2023-10-19 [2] CRAN (R 4.4.0)
+ segmented              2.1-3   2024-10-25 [1] CRAN (R 4.4.2)
  sessioninfo          * 1.2.3   2025-02-05 [2] CRAN (R 4.4.2)
  Seurat               * 5.2.1   2025-01-24 [2] CRAN (R 4.4.2)
  SeuratObject         * 5.0.2   2024-05-08 [2] CRAN (R 4.4.0)
@@ -427,6 +440,7 @@ Joining with `by = join_by(type)`
  spatstat.univar        3.1-1   2024-11-05 [2] CRAN (R 4.4.2)
  spatstat.utils         3.1-2   2025-01-08 [2] CRAN (R 4.4.2)
  splitstackshape        1.4.8   2019-04-21 [1] CRAN (R 4.4.2)
+ statmod                1.5.0   2023-01-06 [2] CRAN (R 4.4.0)
  stringi                1.8.4   2024-05-06 [2] CRAN (R 4.4.0)
  stringr              * 1.5.1   2023-11-14 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -457,4 +471,4 @@ Joining with `by = join_by(type)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Mar  4 09:14:49 AM EST 2025
+Wed Mar  5 05:05:09 PM EST 2025
