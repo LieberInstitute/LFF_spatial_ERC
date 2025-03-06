@@ -9,10 +9,10 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "04_snRNA-seq", "12_sn_spatial_registration")
+data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "12_sn_spatial_registration")
+plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load sn ERC modeling ####
@@ -83,7 +83,7 @@ map(names(cor_layer), function(ref){
 })
 
 
-# slurmjobs::job_single('12_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rcript 12_sn_spatial_registration.R")
+# slurmjobs::job_single('18_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rcript 18_sn_spatial_registration.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

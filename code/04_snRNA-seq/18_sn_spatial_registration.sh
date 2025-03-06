@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
-#SBATCH --job-name=17_sn_model_pseudobulk
+#SBATCH --mem=25G
+#SBATCH --job-name=18_sn_spatial_registration
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/17_sn_model_pseudobulk.txt
-#SBATCH -e logs/17_sn_model_pseudobulk.txt
+#SBATCH -o logs/18_sn_spatial_registration.txt
+#SBATCH -e logs/18_sn_spatial_registration.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,10 +27,10 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 17_sn_model_pseudobulk.R --cluster 'ct_fine_k20'
+Rcript 18_sn_spatial_registration.R
 
 echo "**** Job ends ****"
 date
 
-## This script was made using slurmjobs version 1.2.5
+## This script was made using slurmjobs version 1.3.0
 ## available from http://research.libd.org/slurmjobs/
