@@ -23,10 +23,10 @@ cluster <- opt$cluster
 
 # cluster = "ct_fine_k20"
 
-data_dir <- here("processed-data", "04_snRNA-seq", "14_sn_MeanRatio")
+data_dir <- here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "14_sn_MeanRatio")
+plot_dir <- here("plots", "04_snRNA-seq", "16_sn_MeanRatio")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
@@ -135,7 +135,7 @@ hockey_plot <- marker_stats |>
 
 ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s_free.pdf", cluster)), width = 10, height = 10)
 
-# slurmjobs::job_single('14_sn_MeanRatio', create_shell = TRUE, memory = '100G', command = "Rscript 14_sn_MeanRatio.R -cluster 'ct_broad_k20'")
+# slurmjobs::job_single('16_sn_MeanRatio', create_shell = TRUE, memory = '100G', command = "Rscript 16_sn_MeanRatio.R -cluster 'ct_broad_k20'")
 
 ## Reproducibility information
 print("Reproducibility information:")
