@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 16_sn_MeanRatio.R --cluster 'ct_fine_k20'
+Rscript 16_sn_MeanRatio.R --cluster 'cell_type_fine'
 
 echo "**** Job ends ****"
 date
