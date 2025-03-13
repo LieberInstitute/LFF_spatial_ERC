@@ -78,7 +78,7 @@ map(names(cor_layer), function(ref){
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
-        query_colors = cell_type_colors$k20$fine
+        query_colors = cell_type_colors$fine
     ))
     dev.off()
 })
