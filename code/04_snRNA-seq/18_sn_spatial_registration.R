@@ -28,7 +28,6 @@ layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = 
 
 layer_modeling_results$spatialERC <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
 
-
 ## Add spatialDLPFC spatial domain annotations to spatialDLPFC modeling
 dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/bayesSpace_layer_annotations.csv") |>
     dplyr::filter(bayesSpace == "k09") |>
@@ -40,7 +39,14 @@ colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
 head(layer_modeling_results$spatialDLPFC$enrichment)
 
 ## TODO Add layer annotations to spatial ERC SpDs
-head(layer_modeling_results$spatialERC$enrichment)
+# head(layer_modeling_results$spatialERC$enrichment)
+
+## DLPFC snRNA-seq modeling 
+# layer_modeling_results$snDLPFC_layer <- readRDS("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/05_explore_sce/10_model_cellType_layer/DLPFCsn_modeling_results-cellType_layer.rds")
+
+## PsychENCODE enrichment
+layer_modeling_results$snDLPFC_PEC <- list()
+layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
 
 #### correlate layer stats ####
 cor_layer <- map(layer_modeling_results, function(layer_mod){
@@ -60,6 +66,19 @@ anno <- map(cor_layer, ~annotate_registered_clusters(
     confidence_threshold = 0.5,
     cutoff_merge_ratio = 0.1
 ))
+
+anno_summary <- map2_dfr(anno, names(anno), ~.x |> 
+                             select(cluster, layer_label) |>
+                             mutate(dataset = .y)) |>
+    pivot_wider(names_from = "dataset",
+                values_from = "layer_label") |>
+    arrange(cluster)
+
+write_csv(anno_summary, file = here(data_dir, "ERCsn_spatial_registration_anno_summary.csv"))
+
+## save data
+spatial_registration <- list(cor_layer = cor_layer, anno = anno)
+save(spatial_registration, file = here(data_dir, "ERCsn_spatial_registration.Rdata"))
 
 #### create registration heatmaps ####
 
