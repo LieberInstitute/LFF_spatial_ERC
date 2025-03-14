@@ -11,6 +11,7 @@ library("DeconvoBuddies")
 library("ComplexHeatmap")
 library("bluster")
 library("dendextend")
+library("readxl")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -40,19 +41,30 @@ sce$snn_kOpt <- sprintf("k%dc%02d", optimal_k, clusters)
 
 #### load sc-type output ####
 load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-sctype.Rdata"), verbose = TRUE)
+
+anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
+
 #sctype
 table(sctype$cell_type_broad)
 
 anno_table <- sctype |> 
     ungroup() |>
-    select(cluster, cell_type_class, cell_type_broad, cell_type_fine) |>
+    left_join(anno_notes |> select(cluster, cell_type_anno = guess)) |>
+    select(cluster, cell_type_class, cell_type_broad, cell_type_fine, cell_type_anno) |>
     column_to_rownames("cluster")
+
+cell_type_anno_levels <- anno_table |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno)
+
+anno_table$cell_type_anno <- factor(anno_table$cell_type_anno, levels = cell_type_anno_levels)
 
 levels(anno_table$cell_type_broad)
 levels(anno_table$cell_type_fine)
+levels(anno_table$cell_type_anno)
 
 anno_table <- anno_table[sce$snn_kOpt,]
 dim(anno_table)
+
+#### annotation notes ####
 
 ## add to colData
 colData(sce) <- cbind(colData(sce), anno_table)
@@ -71,6 +83,24 @@ cell_type_colors <- DeconvoBuddies::create_cell_colors(cell_types = levels(sctyp
 # Excit.4   Excit.5   Excit.6   Excit.7   Excit.8   Excit.9   Inhib.1   Inhib.2   Inhib.3     Neu.1     Neu.2 
 # "#6DA9D2" "#85B7D9" "#9DC6E1" "#B5D4E8" "#CEE2F0" "#E6F0F7" "#E83E38" "#EF7E7A" "#F7BEBC" "#4E586A" "#A6ABB4" 
 
+cell_type_colors_anno <- DeconvoBuddies::create_cell_colors(cell_types = cell_type_anno_levels,
+                                                       pallet_name = "classic", 
+                                                       split = "\\.")
+# $broad
+# Astro      Endo     Micro       OPC     Oligo     Excit     Inhib 
+# "#3BB273" "#FF56AF" "#663894" "#F57A00" "#D2B037" "#247FBC" "#E83E38" 
+# 
+# $fine
+# Astro.1          Astro.2             Endo          Micro.1          Micro.2          Oligo.1          Oligo.2 
+# "#3BB273"        "#9DD8B9"        "#FF56AF"        "#663894"        "#B29BC9"        "#F57A00"        "#F8A655" 
+# Oligo.3              OPC     Excit.L2_3.1     Excit.L2_3.2     Excit.L2_3.3       Excit.L4_5         Excit.L5 
+# "#FBD2AA"        "#D2B037"        "#247FBC"        "#3F8FC4"        "#5A9FCC"        "#76AFD5"        "#91BFDD" 
+# Excit.L5_6_NP      Excit.L6_CT        Excit.L6b       Inhib.Pax6 Inhib.Lamp5_Lhx6      Inhib.Pvalb        Inhib.Vip 
+# "#ACCFE5"        "#C8DFEE"        "#E3EFF6"        "#E83E38"        "#EB5E59"        "#EF7E7A"        "#F39E9B" 
+# Inhib.Chandelier        Inhib.Sst 
+# "#F7BEBC"        "#FBDEDD" 
+
+cell_type_colors$anno <- cell_type_colors_anno$fine
 
 ## save all color output
 save(cell_type_colors, file = here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"))
@@ -78,51 +108,56 @@ save(cell_type_colors, file = here("processed-data", "04_snRNA-seq", "cell_type_
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
 
-## plot clusters
+## plot annotated clusters
 walk(c("UMAP", "TSNE"),
      ~my_plot_reduced_dim(sce,
                           prefix = "ERC_sn_reprocess",
                           var_type = "cat",
                           dimred = .x,
                           my_var = "cell_type_fine",
-                          color_pal = "cell_type_colors"
+                          color_pal = cell_type_colors$fine,
                           suffix = "sctype"))
 
-## plot annotations
-walk2(c("cell_type_broad", "cell_type_fine"), cell_type_colors, function(ct, colors){
-    
-    walk(c("UMAP", "TSNE"),  ~my_plot_reduced_dim(sce, prefix = "ERC_sn_reprocess",
-                                                  var_type = "cat", 
-                                                  dimred = .x, 
-                                                  my_var = ct, 
-                                                  color_pal = colors,
-                                                  suffix = "sctype"))
-})
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_reprocess",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "cell_type_fine",
+                          color_pal = cell_type_colors$anno,
+                          suffix = "sctype"))
 
 
 #### plot marker genes ####
 message(Sys.time(), " - Plot marker genes")
 
 ## read in marker genes from lit
-lit_markers <-  read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv"))
+lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
+    mutate(in_data = gene_name %in% rowData(sce)$Symbol,
+           cell_type_broad = factor(cell_type_broad, levels = levels(anno_table$cell_type_broad))) |>
+    arrange(cell_type_broad)
 
 ## missing from our data
 lit_markers |> filter(!in_data)
-# gene_name cell_type          n_studies studies        in_data
-# <chr>     <chr>                  <int> <chr>          <lgl>  
-# 1 GR1A1     Glutamate receptor         1 Grubman et al. FALSE  
-# 2 PDCH15    OPC                        1 Grubman et al. FALSE
+# gene_name cell_type          n_studies studies                  cell_type_broad in_data
+# <chr>     <chr>                  <dbl> <chr>                    <chr>           <lgl>  
+# 1 CEMP      Fibroblast                 1 Davila-Velderrain et al. Endo            FALSE  
+# 2 GR1A1     Glutamate receptor         1 Grubman et al.           Excit           FALSE  
+# 3 PDCH15    OPC                        1 Grubman et al.           OPC             FALSE 
 
 lit_markers <- lit_markers |> filter(in_data)
 
 lit_markers_list <- map(splitit(lit_markers$cell_type), ~lit_markers$gene_name[.x])
 
+lit_marker_order <- lit_markers |> count(cell_type_broad, cell_type) |> pull(cell_type)
+lit_markers_list <- lit_markers_list[lit_marker_order]
+
 plot_marker_express_List(sce, 
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ERC_sn_sctype_lit_markers.pdf"),
-                         cellType_col = "cell_type_fine",
+                         cellType_col = "cell_type_anno",
                          gene_name_col = "Symbol",
-                         color_pal = cell_type_colors$fine,
+                         color_pal = cell_type_colors$anno,
                          )
 
 #### summary by cluster ####
@@ -131,7 +166,7 @@ message(Sys.time(), " - Summarize cluster")
 pd <- as.data.frame(colData(sce))
 
 cluster_info <- pd |>
-    group_by(snn_kOpt, cell_type_class, cell_type_broad, cell_type_fine) |>
+    group_by(snn_kOpt, cell_type_class, cell_type_broad, cell_type_fine, cell_type_anno) |>
     summarize(n = n(),
               prop = n/ncol(sce),
               median_sum = median(sum),
