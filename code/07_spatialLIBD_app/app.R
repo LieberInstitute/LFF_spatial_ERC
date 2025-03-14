@@ -9,9 +9,14 @@ options("golem.app.prod" = TRUE)
 options(repos = BiocManager::repositories())
 
 #### load data ####
+## main spe object
 spe <- readRDS("spe_ERC_app.rds")
+
 ## k09 pseudobulk +modeling data
 spe_pb_k09 <- readRDS("spe_pseudobulk_k09.rds")
+## define spatialLIBD column
+spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_SVGm_k09 
+
 modeling_results_k09 <- readRDS("modeling_results_k09.rds")
 sig_genes_k09 <- readRDS("sig_genes_k09.rds")
 
