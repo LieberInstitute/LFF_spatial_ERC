@@ -21,7 +21,7 @@ print(opt)
 
 cluster <- opt$cluster
 
-# cluster = "ct_fine_k20"
+# cluster = "cell_type_fine"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -79,11 +79,7 @@ save(marker_stats, file = here(data_dir, sprintf("MarkerStats_%s.Rdata", cluster
 #### plot hockey stick plots & top markers ####
 message(Sys.time(), " - Plots")
 
-load(here("processed-data", "04_snRNA-seq", "09_cluster_annotation", "cell_type_colors_allK.Rdata"), verbose = TRUE)
-
-cluster_split <- unlist(strsplit(cluster, split = "_"))
-cellType_colors <- cell_type_colors[[cluster_split[[3]]]][[cluster_split[[2]]]]
-
+load(here("processed-data", "04_snRNA-seq",  "cell_type_colors.Rdata"), verbose = TRUE)
 
 cluster %in% colnames(colData(sce))
 
@@ -97,7 +93,7 @@ plot_marker_express_ALL(
     anno_col = "MeanRatio.anno",
     gene_col = "gene",
     cellType_col = cluster,
-    color_pal = cellType_colors,
+    color_pal = cell_type_colors$fine,
     plot_points = FALSE
 )
 
