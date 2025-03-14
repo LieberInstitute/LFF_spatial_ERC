@@ -140,11 +140,21 @@ sctype_marker_tab |> dplyr::count(cell_type_broad)
 #### summarize marker genes from lit recorded in reading ####
 lit_markers <- read.csv(here("processed-data", "04_snRNA-seq","00_lit_marker_genes", "lit_marker_genes.csv"))
 
+cell_type_key <- tibble(cell_type = c("Glutamate receptor", "Fibroblast", "Inhib-subtype", "Pericytes", "choroid plexis"),
+       cell_type_broad = c("Excit", "Endo", "Inhib", "Endo", "Endo"))
+
 lit_marker_summary <- lit_markers |>
-    group_by(gene_name, cell_type) |>
+    group_by(gene_name, cell_type) |> 
     summarize(n_studies = n(),
               studies = paste0(source, collapse = ",")) |>
-    mutate(in_data = gene_name %in% rowData(sce)$Symbol)
+    left_join(cell_type_key) |>
+    mutate(cell_type_broad = ifelse(is.na(cell_type_broad), cell_type, cell_type_broad)) |>
+    arrange(cell_type_broad, cell_type)
+
+lit_marker_summary |> ungroup() |> dplyr::count(cell_type)
+
+lit_marker_summary |> dplyr::count(gene_name) |> arrange(-n)
+lit_marker_summary |> filter(gene_name == 'SYT1')
 
 lit_marker_summary |> write_csv(here("processed-data", "04_snRNA-seq", "lit_marker_summary.csv"))
 
