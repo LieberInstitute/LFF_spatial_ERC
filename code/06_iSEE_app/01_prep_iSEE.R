@@ -30,8 +30,8 @@ sce$path <- NULL
 sce$total <- NULL
 
 # # sourcing official color palette
-load(here("processed-data", "04_snRNA-seq", "09_cluster_annotation", "cell_type_colors_allK.Rdata"))
-sn_colors<- cell_type_colors$k20$fine
+load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"))
+sn_colors<- cell_type_colors$fine
 
 ## Check final size
 lobstr::obj_size(sce)
