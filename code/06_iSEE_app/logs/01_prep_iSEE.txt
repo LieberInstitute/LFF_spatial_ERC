@@ -1,0 +1,365 @@
+**** Job starts ****
+Fri Mar 14 01:00:08 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 15240356
+Job name: 01_prep_iSEE
+Node name: compute-127
+Task id: 
+Unloading conda_R/4.4.x
+Loading conda_R/4.4.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4.x
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks Matrix::expand(), S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ tidyr::pack()         masks Matrix::pack()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ purrr::simplify()     masks DelayedArray::simplify()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ tidyr::unpack()       masks Matrix::unpack()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+2025-03-14 13:00:17.640973- load Harmony corrected sce
+class: SingleCellExperiment 
+dim: 38606 125683 
+metadata(33): Samples Samples ... scDblFinder.threshold
+  cell_type_colors
+assays(3): counts logcounts binomial_deviance_residuals
+rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+  ENSG00000277196
+rowData names(4): ID Symbol Type binomial_deviance
+colnames: NULL
+colData names(41): Barcode sample_id ... cell_type_fine
+  passALL_metricQC
+reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
+mainExpName: NULL
+altExpNames(0):
+ [1] "Barcode"                "sample_id"              "chromium_id"           
+ [4] "BrNum"                  "APOE"                   "APOE_carrier"          
+ [7] "Ancestry"               "Sex"                    "Age"                   
+[10] "Diagnosis"              "Rin"                    "Anc_Afr"               
+[13] "Anc_Eur"                "exp_round"              "seq_round"             
+[16] "path"                   "sum"                    "detected"              
+[19] "subsets_Mito_sum"       "subsets_Mito_detected"  "subsets_Mito_percent"  
+[22] "total"                  "scDblFinder.sample"     "scDblFinder.class"     
+[25] "scDblFinder.score"      "scDblFinder.weighted"   "scDblFinder.cxds_score"
+[28] "high_mito"              "low_sum"                "low_detected"          
+[31] "discard_auto"           "high_mito_batch"        "low_sum_batch"         
+[34] "low_detected_batch"     "sizeFactor"             "quick_cluster"         
+[37] "snn_kOpt"               "cell_type_class"        "cell_type_broad"       
+[40] "cell_type_fine"         "passALL_metricQC"      
+[1] "counts"                      "logcounts"                  
+[3] "binomial_deviance_residuals"
+[1] "DelayedMatrix"
+attr(,"package")
+[1] "DelayedArray"
+2025-03-14 13:00:22.488073- Convert logcounts to sparse Matrix
+5.57 GB
+# A tibble: 22 × 2
+   cellType.target     n
+   <fct>           <int>
+ 1 Astro.1          2075
+ 2 Astro.2           618
+ 3 Endo.1           1385
+ 4 Micro.1           964
+ 5 Micro.2           322
+ 6 Oligo.1           596
+ 7 Oligo.2          1786
+ 8 OPC.1            1853
+ 9 Excit.1          5203
+10 Excit.2          7991
+# ℹ 12 more rows
+DataFrame with 21 rows and 8 columns
+                             ID          Symbol            Type
+                    <character>     <character>     <character>
+ENSG00000228918 ENSG00000228918       LINC01344 Gene Expression
+ENSG00000287172 ENSG00000287172 ENSG00000287172 Gene Expression
+ENSG00000230552 ENSG00000230552 ENSG00000230552 Gene Expression
+ENSG00000157005 ENSG00000157005             SST Gene Expression
+ENSG00000274441 ENSG00000274441 ENSG00000274441 Gene Expression
+...                         ...             ...             ...
+ENSG00000175985 ENSG00000175985         PLEKHD1 Gene Expression
+ENSG00000172137 ENSG00000172137           CALB2 Gene Expression
+ENSG00000141052 ENSG00000141052           MYOCD Gene Expression
+ENSG00000167615 ENSG00000167615           LENG8 Gene Expression
+ENSG00000171659 ENSG00000171659           GPR34 Gene Expression
+                binomial_deviance cellType.target MeanRatio.rank MeanRatio
+                        <numeric>        <factor>      <integer> <numeric>
+ENSG00000228918          121615.5         Inhib.3              1   8.84128
+ENSG00000287172          293284.5         Excit.2              1   4.72680
+ENSG00000230552           41112.2         Excit.6              1  10.75713
+ENSG00000157005          263299.9         Neu.1                1   7.01942
+ENSG00000274441          168570.2         Astro.1              1   2.05665
+...                           ...             ...            ...       ...
+ENSG00000175985           20080.3         Neu.2                1  12.94421
+ENSG00000172137          185773.8         Inhib.1              1   3.15621
+ENSG00000141052           22729.9         Excit.8              1  12.51874
+ENSG00000167615          154867.5         Excit.1              1   1.07926
+ENSG00000171659           95640.1         Micro.1              1   1.69855
+                        MeanRatio.anno
+                           <character>
+ENSG00000228918 Inhib.3/Inhib.1: 8.841
+ENSG00000287172 Excit.2/Excit.1: 4.727
+ENSG00000230552 Excit.6/Excit.1: 10...
+ENSG00000157005   Neu.1/Inhib.1: 7.019
+ENSG00000274441 Astro.1/Astro.2: 2.057
+...                                ...
+ENSG00000175985  Neu.2/Excit.6: 12.944
+ENSG00000172137 Inhib.1/Excit.9: 3.156
+ENSG00000141052 Excit.8/Endo.1: 12.519
+ENSG00000167615 Excit.1/Excit.3: 1.079
+ENSG00000171659 Micro.1/Micro.2: 1.699
+class: SingleCellExperiment 
+dim: 38606 125683 
+metadata(0):
+assays(1): logcounts
+rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+  ENSG00000277196
+rowData names(8): ID Symbol ... MeanRatio MeanRatio.anno
+colnames: NULL
+colData names(39): Barcode sample_id ... cell_type_fine
+  passALL_metricQC
+reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
+mainExpName: NULL
+altExpNames(0):
+class: SingleCellExperiment 
+dim: 38606 125683 
+metadata(0):
+assays(1): logcounts
+rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+  ENSG00000277196
+rowData names(8): ID Symbol ... MeanRatio MeanRatio.anno
+colnames: NULL
+colData names(39): Barcode sample_id ... cell_type_fine
+  passALL_metricQC
+reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
+mainExpName: NULL
+altExpNames(0):
+[1] "Reproducibility information:"
+[1] "2025-03-14 13:07:56 EDT"
+   user  system elapsed 
+416.744  15.719 467.232 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.3 Patched (2025-02-28 r87967)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-03-14
+ pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version date (UTC) lib source
+ abind                * 1.4-8   2024-09-12 [2] CRAN (R 4.4.1)
+ Biobase              * 2.66.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocGenerics         * 0.52.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ cli                    3.6.4   2025-02-13 [2] CRAN (R 4.4.2)
+ colorspace             2.1-1   2024-07-26 [2] CRAN (R 4.4.1)
+ crayon                 1.5.3   2024-06-20 [2] CRAN (R 4.4.1)
+ DelayedArray         * 0.32.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ dplyr                * 1.1.4   2023-11-17 [2] CRAN (R 4.4.0)
+ forcats              * 1.0.0   2023-01-29 [2] CRAN (R 4.4.0)
+ generics               0.1.3   2022-07-05 [2] CRAN (R 4.4.0)
+ GenomeInfoDb         * 1.42.3  2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
+ GenomeInfoDbData       1.2.13  2024-10-01 [2] Bioconductor
+ GenomicRanges        * 1.58.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ ggplot2              * 3.5.1   2024-04-23 [2] CRAN (R 4.4.0)
+ glue                   1.8.0   2024-09-30 [2] CRAN (R 4.4.1)
+ gtable                 0.3.6   2024-10-25 [2] CRAN (R 4.4.2)
+ HDF5Array            * 1.34.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ here                 * 1.0.1   2020-12-13 [2] CRAN (R 4.4.0)
+ hms                    1.1.3   2023-03-21 [2] CRAN (R 4.4.0)
+ httr                   1.4.7   2023-08-15 [2] CRAN (R 4.4.0)
+ IRanges              * 2.40.1  2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
+ jsonlite               1.9.1   2025-03-03 [2] CRAN (R 4.4.3)
+ lattice                0.22-6  2024-03-20 [3] CRAN (R 4.4.3)
+ lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.4.0)
+ lobstr               * 1.1.2   2022-06-22 [2] CRAN (R 4.4.0)
+ lubridate            * 1.9.4   2024-12-08 [2] CRAN (R 4.4.2)
+ magrittr               2.0.3   2022-03-30 [2] CRAN (R 4.4.0)
+ Matrix               * 1.7-2   2025-01-23 [3] CRAN (R 4.4.3)
+ MatrixGenerics       * 1.18.1  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ matrixStats          * 1.5.0   2025-01-07 [2] CRAN (R 4.4.2)
+ munsell                0.5.1   2024-04-01 [2] CRAN (R 4.4.0)
+ pillar                 1.10.1  2025-01-07 [1] CRAN (R 4.4.2)
+ pkgconfig              2.0.3   2019-09-22 [2] CRAN (R 4.4.0)
+ prettyunits            1.2.0   2023-09-24 [2] CRAN (R 4.4.0)
+ purrr                * 1.0.4   2025-02-05 [2] CRAN (R 4.4.2)
+ R6                     2.6.1   2025-02-15 [2] CRAN (R 4.4.2)
+ readr                * 2.1.5   2024-01-10 [2] CRAN (R 4.4.0)
+ rhdf5                * 2.50.2  2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ rhdf5filters           1.18.1  2025-03-06 [2] Bioconductor 3.20 (R 4.4.3)
+ Rhdf5lib               1.28.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ rlang                  1.1.5   2025-01-17 [2] CRAN (R 4.4.2)
+ rprojroot              2.0.4   2023-11-05 [2] CRAN (R 4.4.0)
+ S4Arrays             * 1.6.0   2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ S4Vectors            * 0.44.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ scales                 1.3.0   2023-11-28 [2] CRAN (R 4.4.0)
+ sessioninfo          * 1.2.3   2025-02-05 [2] CRAN (R 4.4.2)
+ SingleCellExperiment * 1.28.1  2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
+ SparseArray          * 1.6.2   2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
+ stringi                1.8.4   2024-05-06 [2] CRAN (R 4.4.0)
+ stringr              * 1.5.1   2023-11-14 [2] CRAN (R 4.4.0)
+ SummarizedExperiment * 1.36.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ tibble               * 3.2.1   2023-03-20 [2] CRAN (R 4.4.0)
+ tidyr                * 1.3.1   2024-01-24 [2] CRAN (R 4.4.0)
+ tidyselect             1.2.1   2024-03-11 [2] CRAN (R 4.4.0)
+ tidyverse            * 2.0.0   2023-02-22 [2] CRAN (R 4.4.0)
+ timechange             0.3.0   2024-01-18 [2] CRAN (R 4.4.0)
+ tzdb                   0.4.0   2023-05-12 [2] CRAN (R 4.4.0)
+ UCSC.utils             1.2.0   2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ utf8                   1.2.4   2023-10-22 [2] CRAN (R 4.4.0)
+ vctrs                  0.6.5   2023-12-01 [2] CRAN (R 4.4.0)
+ withr                  3.0.2   2024-10-28 [2] CRAN (R 4.4.2)
+ XVector                0.46.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ zlibbioc               1.52.0  2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+
+ [1] /users/lhuuki/R/4.4.x
+ [2] /jhpce/shared/community/core/conda_R/4.4.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.4.x/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Mar 14 01:07:58 PM EDT 2025
