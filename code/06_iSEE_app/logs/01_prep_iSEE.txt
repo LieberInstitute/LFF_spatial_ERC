@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Mar 14 01:00:08 PM EDT 2025
+Fri Mar 14 01:57:35 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 15240356
+Job id: 15244783
 Job name: 01_prep_iSEE
-Node name: compute-127
+Node name: compute-053
 Task id: 
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
@@ -155,7 +155,7 @@ The following object is masked from ‘package:rhdf5’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2025-03-14 13:00:17.640973- load Harmony corrected sce
+2025-03-14 13:57:56.377515- load Harmony corrected sce
 class: SingleCellExperiment 
 dim: 38606 125683 
 metadata(33): Samples Samples ... scDblFinder.threshold
@@ -189,7 +189,7 @@ altExpNames(0):
 [1] "DelayedMatrix"
 attr(,"package")
 [1] "DelayedArray"
-2025-03-14 13:00:22.488073- Convert logcounts to sparse Matrix
+2025-03-14 13:58:03.670572- Convert logcounts to sparse Matrix
 5.57 GB
 # A tibble: 22 × 2
    cellType.target     n
@@ -205,51 +205,51 @@ attr(,"package")
  9 Excit.1          5203
 10 Excit.2          7991
 # ℹ 12 more rows
-DataFrame with 21 rows and 8 columns
+DataFrame with 23 rows and 8 columns
                              ID          Symbol            Type
                     <character>     <character>     <character>
-ENSG00000228918 ENSG00000228918       LINC01344 Gene Expression
+GPR3            ENSG00000181773            GPR3 Gene Expression
+MYOC            ENSG00000034971            MYOC Gene Expression
+LINC01344       ENSG00000228918       LINC01344 Gene Expression
 ENSG00000287172 ENSG00000287172 ENSG00000287172 Gene Expression
 ENSG00000230552 ENSG00000230552 ENSG00000230552 Gene Expression
-ENSG00000157005 ENSG00000157005             SST Gene Expression
-ENSG00000274441 ENSG00000274441 ENSG00000274441 Gene Expression
 ...                         ...             ...             ...
-ENSG00000175985 ENSG00000175985         PLEKHD1 Gene Expression
-ENSG00000172137 ENSG00000172137           CALB2 Gene Expression
-ENSG00000141052 ENSG00000141052           MYOCD Gene Expression
-ENSG00000167615 ENSG00000167615           LENG8 Gene Expression
-ENSG00000171659 ENSG00000171659           GPR34 Gene Expression
+PLEKHD1         ENSG00000175985         PLEKHD1 Gene Expression
+CALB2           ENSG00000172137           CALB2 Gene Expression
+MYOCD           ENSG00000141052           MYOCD Gene Expression
+LENG8           ENSG00000167615           LENG8 Gene Expression
+GPR34           ENSG00000171659           GPR34 Gene Expression
                 binomial_deviance cellType.target MeanRatio.rank MeanRatio
                         <numeric>        <factor>      <integer> <numeric>
-ENSG00000228918          121615.5         Inhib.3              1   8.84128
-ENSG00000287172          293284.5         Excit.2              1   4.72680
-ENSG00000230552           41112.2         Excit.6              1  10.75713
-ENSG00000157005          263299.9         Neu.1                1   7.01942
-ENSG00000274441          168570.2         Astro.1              1   2.05665
+GPR3                     13243.76         Micro.1              1   1.69855
+MYOC                      1907.17         Excit.8              1  12.51874
+LINC01344               121615.51         Inhib.3              1   8.84128
+ENSG00000287172         293284.48         Excit.2              1   4.72680
+ENSG00000230552          41112.25         Excit.6              1  10.75713
 ...                           ...             ...            ...       ...
-ENSG00000175985           20080.3         Neu.2                1  12.94421
-ENSG00000172137          185773.8         Inhib.1              1   3.15621
-ENSG00000141052           22729.9         Excit.8              1  12.51874
-ENSG00000167615          154867.5         Excit.1              1   1.07926
-ENSG00000171659           95640.1         Micro.1              1   1.69855
+PLEKHD1                   20080.3         Neu.2                1  12.94421
+CALB2                    185773.8         Inhib.1              1   3.15621
+MYOCD                     22729.9         Excit.8              1  12.51874
+LENG8                    154867.5         Excit.1              1   1.07926
+GPR34                     95640.1         Micro.1              1   1.69855
                         MeanRatio.anno
                            <character>
-ENSG00000228918 Inhib.3/Inhib.1: 8.841
+GPR3            Micro.1/Micro.2: 1.699
+MYOC            Excit.8/Endo.1: 12.519
+LINC01344       Inhib.3/Inhib.1: 8.841
 ENSG00000287172 Excit.2/Excit.1: 4.727
 ENSG00000230552 Excit.6/Excit.1: 10...
-ENSG00000157005   Neu.1/Inhib.1: 7.019
-ENSG00000274441 Astro.1/Astro.2: 2.057
 ...                                ...
-ENSG00000175985  Neu.2/Excit.6: 12.944
-ENSG00000172137 Inhib.1/Excit.9: 3.156
-ENSG00000141052 Excit.8/Endo.1: 12.519
-ENSG00000167615 Excit.1/Excit.3: 1.079
-ENSG00000171659 Micro.1/Micro.2: 1.699
+PLEKHD1          Neu.2/Excit.6: 12.944
+CALB2           Inhib.1/Excit.9: 3.156
+MYOCD           Excit.8/Endo.1: 12.519
+LENG8           Excit.1/Excit.3: 1.079
+GPR34           Micro.1/Micro.2: 1.699
 class: SingleCellExperiment 
 dim: 38606 125683 
 metadata(0):
 assays(1): logcounts
-rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+rownames(38606): DDX11L2 MIR1302-2HG ... ENSG00000278817
   ENSG00000277196
 rowData names(8): ID Symbol ... MeanRatio MeanRatio.anno
 colnames: NULL
@@ -262,7 +262,7 @@ class: SingleCellExperiment
 dim: 38606 125683 
 metadata(0):
 assays(1): logcounts
-rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+rownames(38606): DDX11L2 MIR1302-2HG ... ENSG00000278817
   ENSG00000277196
 rowData names(8): ID Symbol ... MeanRatio MeanRatio.anno
 colnames: NULL
@@ -272,9 +272,9 @@ reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
 mainExpName: NULL
 altExpNames(0):
 [1] "Reproducibility information:"
-[1] "2025-03-14 13:07:56 EDT"
-   user  system elapsed 
-416.744  15.719 467.232 
+[1] "2025-03-14 14:18:02 EDT"
+    user   system  elapsed 
+1117.359   86.431 1224.423 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.3 Patched (2025-02-28 r87967)
@@ -362,4 +362,4 @@ altExpNames(0):
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Mar 14 01:07:58 PM EDT 2025
+Fri Mar 14 02:18:05 PM EDT 2025
