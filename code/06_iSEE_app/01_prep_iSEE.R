@@ -51,9 +51,6 @@ marker_anno <- marker_stats |>
            MeanRatio.anno) |>
     column_to_rownames("gene_ensembl")
 
-marker_anno |> count(cellType.target) |> print(n = 21)
-
-
 rowData(sce) <- cbind(rowData(sce), marker_anno[rownames(sce),])
 
 rowData(sce)[which(rowData(sce)$MeanRatio.rank ==1),]
