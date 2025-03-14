@@ -4,6 +4,7 @@ library("lobstr")
 library("sessioninfo")
 library("HDF5Array")
 library("Matrix")
+library("tidyverse")
 
 ## Load HD5F sce
 message(Sys.time(), "- load Harmony corrected sce")
@@ -36,6 +37,27 @@ sn_colors<- cell_type_colors$fine
 ## Check final size
 lobstr::obj_size(sce)
 # 5.87 GB
+
+#### Add MeanRatio Marker Gene Details ####
+load(here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio", "MarkerStats_cell_type_fine.Rdata"))
+marker_stats |> dplyr::count(cellType.target)
+
+marker_anno <- marker_stats |>
+    filter(MeanRatio.rank <= 50 & MeanRatio > 1) |>
+    select(gene_ensembl,
+           cellType.target,
+           MeanRatio.rank,
+           MeanRatio,
+           MeanRatio.anno) |>
+    column_to_rownames("gene_ensembl")
+
+marker_anno |> count(cellType.target) |> print(n = 21)
+
+
+rowData(sce) <- cbind(rowData(sce), marker_anno[rownames(sce),])
+
+rowData(sce)[which(rowData(sce)$MeanRatio.rank ==1),]
+
 
 sce
 # class: SingleCellExperiment 
