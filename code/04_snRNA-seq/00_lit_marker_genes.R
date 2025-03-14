@@ -156,7 +156,7 @@ lit_marker_summary |> ungroup() |> dplyr::count(cell_type)
 lit_marker_summary |> dplyr::count(gene_name) |> arrange(-n)
 lit_marker_summary |> filter(gene_name == 'SYT1')
 
-lit_marker_summary |> write_csv(here("processed-data", "04_snRNA-seq", "lit_marker_summary.csv"))
+lit_marker_summary |> write_csv(here(data_dir, "lit_marker_summary.csv"))
 
 #### compile all marker genes ####
 
