@@ -408,7 +408,7 @@ message(Sys.time(), " - Save annotated sce")
 # save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
 saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC"), replace=TRUE)
 
-# slurmjobs::job_single('15_cluster_update_sce', create_shell = TRUE, memory = '5G', command = "15_cluster_update_sce.R")
+# slurmjobs::job_single('15_cluster_update_sce', create_shell = TRUE, memory = '10G', command = "15_cluster_update_sce.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
