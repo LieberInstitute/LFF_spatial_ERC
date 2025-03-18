@@ -2,28 +2,104 @@
 ## Compare ERC spatial Domains to DLPFC layers
 
 library("spatialLIBD")
-library("purrr")
 library("tidyverse")
 library("ComplexHeatmap")
 library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration")
+data_dir <- here("processed-data", "04_snRNA-seq", "19_sn_heatmaps")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration")
+plot_dir <- here("plots", "04_snRNA-seq", "19_sn_heatmaps")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+#### load data ####
 ## load psuedobulked sce data
 sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_fine.rds"))
 dim(sce_pb)
 
+rownames(sce_pb) <- rowData(sce_pb)$Symbol
+
+anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
+
+cell_anno_df <- colData(sce_pb) |>
+    as.data.frame() |>
+    select(sample_id, APOE, Ancestry, Sex, Age, cell_type_broad, cell_type_fine, cell_type_fine, ncells) |>
+    left_join(anno_notes |> select(cell_type_fine, cell_type_anno = guess))
+
+cell_type_anno_levels <- cell_anno_df |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno) |> unique()
+
+cell_anno_df$cell_type_anno <- factor(cell_anno_df$cell_type_anno, levels = cell_type_anno_levels)
+
+rownames(cell_anno_df) <- colnames(sce_pb)
+ 
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
+cell_type_colors_anno <- DeconvoBuddies::create_cell_colors(cell_types = cell_type_anno_levels,
+                                                            pallet_name = "classic", 
+                                                            split = "\\.")
+cell_type_colors$anno <- cell_type_colors_anno$fine
+
+## cell row annotations simple
+
+cell_row_ha_simple <- rowAnnotation(
+    df = cell_anno_df |> select(cell_type_anno),
+    col = list(cell_type_anno = cell_type_colors$anno)
+)
+
+#### Lit gene heatmap ####
+## read in marker genes from lit
+lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
+    mutate(in_data = gene_name %in% rowData(sce_pb)$Symbol,
+           cell_type_broad = factor(cell_type_broad, levels = levels(sce_pb$cell_type_broad))) |>
+    arrange(cell_type_broad)
+
+## missing from pb data
+lit_markers |> filter(is.na(cell_type_broad))
+lit_markers |> filter(!in_data)
+lit_markers |> filter(gene_name == "SYT1")
+
+lit_markers <- lit_markers |> filter(in_data & !is.na(cell_type_broad))
+
+nrow(lit_markers)
+
+## gene annotation df
+
+lit_gene_annotation <- lit_markers |>
+    select(gene_name, cell_type, cell_type_broad) |>
+    column_to_rownames("gene_name")
+
+lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(cell_type_broad),
+                                     col = list(cell_type_broad = cell_type_colors$broad))
+
+## extract z-scores
+lit_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(lit_gene_annotation),]))
+dim(lit_markers_zscore)
+lit_markers_zscore[1:5,1:5]
+
+pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap.pdf"), height = 8, width = 11)
+Heatmap(lit_markers_zscore,
+                      name = "Z Score",
+                      cluster_rows = FALSE,
+                      cluster_columns = FALSE,
+                      show_row_names = FALSE,
+                      column_split = lit_gene_annotation$cell_type_broad,
+                      # row_split = cell_anno_df$cell_type_anno,
+                      right_annotation = cell_row_ha_simple,
+                      bottom_annotation = lit_gene_col_ha
+)
+dev.off()
 
 
-# slurmjobs::job_single('18_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rcript 18_sn_spatial_registration.R")
+#### MeanRatio heatmap ####
+## load marker gene data
+load(here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio", "MarkerStats_cell_type_fine.Rdata"), verbose = TRUE)
+
+
+# slurmjobs::job_single('19_sn_heatmaps', create_shell = TRUE, memory = '25G', command = "Rcript 19_sn_heatmaps.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
