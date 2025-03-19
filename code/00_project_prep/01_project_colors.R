@@ -185,6 +185,36 @@ dev.off()
 #     dev.off()
 # })
 
+#### more cell colors ####
+list(Crimson = "#DC143C",
+     Firebrick = "#B22222",
+     Indian_Red = "#CD5C5C",
+     Light_Coral = "#F08080",
+     Dark_Red = "#8B0000",
+     Tomato = "#FF6347")
+
+list(Red_Violet = "#C71585",
+     Magenta_Red = "#D21868",
+     Crimson_Red = "#DC143C",
+     Pure_Red = "#FF0000",
+     Scarlet_Red = "#FF4500",
+     Red_Orange = "#FF6347")
+
+list(Royal_Blue = "#4169E1",
+     Dodger_Blue = "#1E90FF",
+     Steel_Blue = "#4682B4",
+     Sky_Blue = "#87CEEB",
+     Midnight_Blue = "#191970",
+     Cornflower_Blue = "#6495ED")
+
+list(Green_Blue = "#00B3B3",
+     Teal_Blue = "#0099CC",
+     Cerulean_Blue = "#007ACC",
+     Azure_Blue = "#005FCC",
+     Cobalt_Blue = "#0040CC",
+     Violet_Blue = "#2E2EFF")
+
+
 
 ## Reproducibility information
 print("Reproducibility information:")
