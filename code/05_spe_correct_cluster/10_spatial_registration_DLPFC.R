@@ -1,9 +1,6 @@
 ## September 2024, Louise Huuki-Myers
 ## Compare ERC spatial Domains to DLPFC layers
 
-## use PR#91 for layer_stat_cor_plot_complex
-# remotes::install_github(repo="LieberInstitute/spatialLIBD", ref = remotes::github_pull(91))
-
 library("spatialLIBD")
 library("purrr")
 library("tidyverse")
