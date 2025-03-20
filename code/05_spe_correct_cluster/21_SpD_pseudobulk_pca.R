@@ -9,14 +9,6 @@ library("here")
 library("viridis")
 library("sessioninfo")
 
-# library("scran")
-# library("harmony")
-# library("BiocParallel")
-# library("purrr")
-# library("scry")
-# library("HDF5Array")
-# library("viridis")
-
 plot_dir <- here("plots", "05_spe_correct_cluster", "21_SpD_pseudobulk_pca")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
