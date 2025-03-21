@@ -46,7 +46,7 @@ ggsave(pca_elbow, filename = here(plot_dir, "PCA_elbow.png"))
 
 pd_select <- colData(sce_pb) |>
     as.data.frame() |>
-    select(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, cell_type_fine, ncells) |>
+    select(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, cell_type_fine, ncells, exp_round, seq_round) |>
     rownames_to_column("pseudobulk_sample")
 
 pd_long_num <- pd_select |>
@@ -54,7 +54,7 @@ pd_long_num <- pd_select |>
     pivot_longer(!pseudobulk_sample, names_to = "var_num", values_to = "value_num")
 
 pd_long_cat <- pd_select |>
-    select(pseudobulk_sample, APOE, Sex, Ancestry, cell_type_fine) |>
+    select(pseudobulk_sample, APOE, Sex, Ancestry, cell_type_fine, exp_round, seq_round) |>
     pivot_longer(!pseudobulk_sample, names_to = "var_cat", values_to = "value_cat")
 
 pca_long <- reshape2::melt(pca) |>
@@ -87,9 +87,10 @@ df_aov <- pca_long |>
     group_by(PCA, var_cat) |>
     do(aov = broom::tidy(aov(pca_value ~ value_cat, data = .)))|>
     unnest(aov) |>
-    filter(term == "value_cat")
+    filter(term == "value_cat") |>
+    mutate(FDR = p.adjust(p.value, method = "fdr"))
 
-df_aov |> count(p.value < 0.01)
+df_aov |> count(FDR < 0.001)
 
 ## plot anova p-values
 pca_vs_cat_aov <- df_aov |>
@@ -128,6 +129,18 @@ walk2(c("cell_type_fine", "APOE", "Sex", "Ancestry"), list(cell_type_colors$fine
           
       })
 
+walk(c("cell_type_fine", "APOE", "Sex", "Ancestry"), list(cell_type_colors$fine, APOE_genotype_colors, sex_colors, ancestry_colors),
+      function(var, colors){
+          
+          gg_pca_plot <- ggpairs(pca_wide, columns = paste0("PC", 1:5), aes(colour = !!sym(var))) +
+              scale_color_manual(values = colors) +
+              scale_fill_manual(values = colors) +
+              theme_bw()
+          
+          ggsave(gg_pca_plot, filename = here(plot_dir, sprintf("sn_pseudobulk_pca_ggpair_%s.png", var)))
+          
+      })
+
 #### select scatter plots ####
 
 PC1_PC2_SpD <- pca_wide |>
@@ -137,6 +150,15 @@ PC1_PC2_SpD <- pca_wide |>
     theme_bw()
 
 ggsave(PC1_PC2_SpD, filename = here(plot_dir , "sn_pseudobulk_PC1_vs_PC2.png"))
+
+PC1_PC6_SpD <- pca_wide |>
+    ggplot(aes(x = PC1, y = PC6, color = cell_type_fine, shape = Sex)) +
+    geom_point() +
+    scale_color_manual(values = cell_type_colors$fine) +
+    theme_bw()
+
+ggsave(PC1_PC6_SpD, filename = here(plot_dir , "sn_pseudobulk_PC1_vs_PC6_sex.png"))
+
 
 # slurmjobs::job_single('21_sn_pseudobulk_pca', create_shell = TRUE, memory = '25G', command = "Rscript 21_sn_pseudobulk_pca.R")
 
