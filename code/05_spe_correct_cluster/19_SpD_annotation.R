@@ -3,7 +3,6 @@
 
 library("spatialLIBD")
 library("tidyverse")
-library("DFplyr")
 library("here")
 library("sessioninfo")
 
