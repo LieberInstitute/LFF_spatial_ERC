@@ -7,7 +7,7 @@ library("DFplyr")
 library("here")
 library("sessioninfo")
 
-plot_dir <- here("processed-data", "05_spe_correct_cluster", "19_clusters_vs_groups")
+plot_dir <- here("processed-data", "05_spe_correct_cluster", "19_SpD_annotation")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
