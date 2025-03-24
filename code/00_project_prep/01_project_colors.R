@@ -214,7 +214,25 @@ list(Green_Blue = "#00B3B3",
      Cobalt_Blue = "#0040CC",
      Violet_Blue = "#2E2EFF")
 
+#### SpD colors ####
 
+SpD_colors = c("Orchid"="#E05AD2",
+               "Engineering red"="#C82100",
+               # "Spanish orange"="#E96F00",
+               "light orange"="#FEAF16",
+               # "jonquil yellow"="#FFCD17",
+               # "Citrine"="#E3D348",
+               "lime" = "#16FF32",
+               "Forest green"="#116A52",
+               "Deep Sky Blue"="#00BCF9",
+               "Phthalo blue"="#021380",
+               "Black bean"="#500802",
+               "purple_white"="#E4E1E3")
+
+## plot offical colors
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.pdf"), height = 22, width = 16)
+test_pallet_plots(SpD_colors, "SpD Colors: ERC")
+dev.off()
 
 ## Reproducibility information
 print("Reproducibility information:")
