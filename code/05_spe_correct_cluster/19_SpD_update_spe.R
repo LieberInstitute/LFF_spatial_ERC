@@ -59,15 +59,14 @@ table(spe$SpD, spe$BayesSpace_SVGm_k09)
 #### Define colors for SpD ####
 
 SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
-                "L1~Sp09D05" = "#021380",
+                "L1~Sp09D05" = "#0220DE",
                 "L2.3~Sp09D01" = "#FEAF16",
                 "L3~Sp09D02" = "#00BCF9",
                 "L4.inhib~Sp09D09" = "#C82100",
                 "L5~Sp09D03" = "#16FF32",
                 "L6~Sp09D04" = "#116A52",
                 "WM.uf~Sp09D07" = "#E4E1E3",
-                "WM~Sp09D06" = "#500802")
-
+                "WM~Sp09D06" = "#581009")
 
 color_test <- vis_clus(
     spe = spe,
@@ -305,7 +304,8 @@ sample_proportion_bar <- sample_proportions |>
 
 ggsave(sample_proportion_bar, filename = here(plot_dir, "ERC_SpD_barplot_sample_prop.png"), width = 10)
 
-
+#### Add colors to metadata ####
+metadata(spe)$SpD_colors <- SpD_colors
 
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
