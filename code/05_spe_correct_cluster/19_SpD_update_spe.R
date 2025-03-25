@@ -95,11 +95,7 @@ apoe_anc <- as.data.frame(colData(spe)) |>
 
 all(apoe_anc$sample_id == names(vis_clus_plots))
 
-apoe_anc_split <- splitit(apoe_anc$apoe_anc)
-
-pdf(here(plot_dir, "ERC_SpD_vis_clus_split.pdf"), height = 24, width = 36)
-print(cowplot::plot_grid(plotlist = split_plots))
-dev.off()
+# apoe_anc_split <- splitit(apoe_anc$apoe_anc)
 
 # pdf(here(plot_dir, "ERC_SpD_vis_clus_split.pdf"), height = 12, width = 18)
 # walk2(apoe_anc_split, names(apoe_anc_split), function(index,name){
