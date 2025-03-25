@@ -110,6 +110,17 @@ cor_anno$BayesSpace_SVGm_k09$layer_anno$spatialDLPFC
 # 8 Sp09D01             good                       L3~Sp09D05/L2~Sp09D03
 # 9 Sp09D09             good L4~Sp09D08/L3~Sp09D05/L5~Sp09D04/L2~Sp09D03
 
+anno_summary <- map2_dfr(cor_anno$BayesSpace_SVGm_k09$layer_anno, names(cor_anno$BayesSpace_SVGm_k09$layer_anno), ~.x |> 
+                             select(cluster, layer_label) |>
+                             mutate(dataset = .y)) |>
+    pivot_wider(names_from = "dataset",
+                values_from = "layer_label") |>
+    arrange(cluster)
+
+write_csv(anno_summary, file = here(data_dir, "ERC_SpD_spatial_registration_anno_summary.csv"))
+
+
+
 #### complex heatmap ####
 # 
 # erc_colors <- c(Sp09D01 = "#F6222E", #Vivid_Red
