@@ -3,6 +3,8 @@ library("colorblindr")
 library("tidyverse")
 library("here")
 
+source(here("code", "utils", "test_pallet_plots.R"))
+
 #### cell types ####
 cell_type_colors <- c(Excit = "#247FBC",
                       Inhib = "#E83E38",
@@ -12,6 +14,11 @@ cell_type_colors <- c(Excit = "#247FBC",
                       Micro = "#663894",
                       Endo = "#FF56AF",
                       Other = "#4E586A")
+
+## plot official colors
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_cell_type_colors.pdf"))
+test_pallet_plots(cell_type_colors, "Cell Colors: ERC")
+dev.off()
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
 
@@ -23,6 +30,11 @@ APOE_carrier_colors <- c(`E2+`="#398A84", `E4+`="#D46B43")
 ## phenotype colors
 ancestry_colors <- c(EA="#1B3174",AA="#698F3F")
 sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
+
+## test APOE colors
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_APOE_colors.pdf"))
+test_pallet_plots(APOE_genotype_colors, "APOE_genotype_colors")
+dev.off()
 
 #### sample colors ####
 sample_info <- read.csv(here("processed-data", "04_snRNA-seq", "erc_sn_sample_info.csv"))
@@ -50,100 +62,7 @@ names(sample_colors) <- apoe_colors_tb$sample_id
 save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors, sample_colors,
      file = here("processed-data", "project_colors.Rdata"))
 
-#### create test plots ####
-## add fake data
-cell_type_levels <- names(cell_type_colors)
-
-n = 50
-n_levels <- length(cell_type_levels)
-test_data <- tibble(cell_type = rep(rep(cell_type_levels, each = n),2),
-                    cat = rep(c("block", "mix"), each = n*n_levels),
-                    x = c(unlist(map(1:n_levels, ~rnorm(n, mean = .x))), rnorm(n*n_levels, 5, 2.5)),
-                    y = c(unlist(map(1:n_levels, ~rnorm(n, mean = .x))), rnorm(n*n_levels, 5, 2.5))) |>
-    mutate(cell_type = factor(cell_type, levels = cell_type_levels))
-
-test_pallet_plots <- function(pallet, pallet_name, n=50){
-    
-    ## preview pallet 
-    color_tab <- stack(pallet) |> 
-        select(name = ind, color = values) |>
-        mutate(name = factor(name, levels = names(pallet)))
-    
-    preview <- color_tab |>
-        ggplot(aes(x= "Color", y = name , fill = name)) +
-        geom_tile() +
-        geom_text(aes(label = color), color = "white") +
-        scale_fill_manual(values = pallet) +
-        theme_classic()
-    
-    print(preview + 
-              geom_text(aes(label = name), color = "black", nudge_y = 0.25) + 
-              labs(title = pallet_name))
-    print(cvd_grid(preview))
-    
-    #### pairwise ####
-    color_pairwise_grid <- expand_grid(color1 = names(pallet), color2 = names(pallet)) |>
-        filter(color1 != color2) |>
-        mutate(num = row_number(),
-               pair = map2_chr(color1, color2, ~toString(sort(c(.x, .y))))) |>
-        distinct(pair, .keep_all = TRUE) |>
-        mutate(pair = fct_reorder(pair, num)) |>
-        pivot_longer(!c(pair, num), names_to = "x", values_to = "color") 
-    
-    pairwise_plot <- color_pairwise_grid |> 
-        ggplot(aes(x= x, y = pair , fill = color)) +
-        geom_tile() +
-        scale_fill_manual(values = pallet) +
-        theme_bw()
-    
-    print(pairwise_plot)
-    print(cvd_grid(pairwise_plot))
-    
-    #### test data ####
-    n_levels <- length(pallet)
-    test_data <- tibble(class = rep(rep(names(pallet), each = n),2),
-                        cat = rep(c("block", "mix"), each = n*n_levels),
-                        x = c(unlist(map(1:n_levels, ~rnorm(n, mean = .x))), rnorm(n*n_levels, 5, 2.5)),
-                        y = c(unlist(map(1:n_levels, ~rnorm(n, mean = .x))), rnorm(n*n_levels, 5, 2.5))) |>
-        mutate(class = factor(class, levels = names(pallet)))
-    
-    print(scatter_test_fig <- ggplot(test_data, aes(x = x, y = y, color = class)) +
-               geom_point() +
-               facet_wrap(~cat) +
-               scale_color_manual(values = pallet) +
-               labs(title = pallet_name) +
-              theme_bw()
-          )
-    
-    print(cvd_grid(scatter_test_fig))
-    
-    print(density_test_fig <-test_data |>
-              filter(cat == "block") |>
-              ggplot(aes(x = x, fill = class)) +
-              geom_density(alpha = 0.7)+
-              scale_fill_manual(values = pallet)+
-              labs(title = pallet_name)+
-              theme_bw()
-          )
-    
-    print(cvd_grid(density_test_fig))
-    
-    print(boxplot_test_fig <- test_data |>
-              filter(cat == "block") |>
-              ggplot(aes(x = class, y = y, fill = class)) +
-              geom_boxplot()+
-              scale_fill_manual(values = pallet)+
-              labs(title = pallet_name)+
-              theme_bw()
-          )
-    
-    print(cvd_grid(boxplot_test_fig))
-}
-
-## plot offical colors
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_cell_type_colors.pdf"))
-test_pallet_plots(cell_type_colors, "Cell Colors: ERC")
-dev.off()
+#### Cell type color archive ####
 
 ## other cell type colors to test
 #
@@ -218,19 +137,25 @@ list(Green_Blue = "#00B3B3",
 
 SpD_colors = c("Orchid"="#E05AD2",
                "Engineering red"="#C82100",
-               # "Spanish orange"="#E96F00",
                "light orange"="#FEAF16",
-               # "jonquil yellow"="#FFCD17",
-               # "Citrine"="#E3D348",
                "lime" = "#16FF32",
                "Forest green"="#116A52",
                "Deep Sky Blue"="#00BCF9",
-               "Phthalo blue"="#021380",
-               "Black bean"="#500802",
+               "chrystler blue"="#0220DE",
+               "Blood red" = "#581009",
                "purple_white"="#E4E1E3")
 
+## archive
+# c("Spanish orange"="#E96F00",
+  # "jonquil yellow"="#FFCD17",
+  # "Citrine"="#E3D348",
+  # "Phthalo blue"="#021380",
+  # "Black bean"="#500802")
+
+save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors.Rdata"))
+
 ## plot offical colors
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.pdf"), height = 22, width = 16)
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.pdf"), height = 11, width = 8)
 test_pallet_plots(SpD_colors, "SpD Colors: ERC")
 dev.off()
 
