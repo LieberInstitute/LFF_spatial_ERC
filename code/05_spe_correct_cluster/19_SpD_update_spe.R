@@ -175,7 +175,20 @@ walk(c("UMAP", "TSNE"),
                           my_var = "SpD",
                           color_pal = SpD_colors))
 
+#### plot each sample ####
+plot_dir_sample <- here("plots", "05_spe_correct_cluster", "19_SpD_update_spe", "vis_clus_sample")
+if(!dir.exists(plot_dir_sample)) dir.create(plot_dir_sample, recursive = TRUE)
 
+walk(apoe_anc$sample_id, function(s){
+    vc <- vis_clus(
+        spe = spe,
+        sampleid = s,
+        clustervar = "SpD",
+        colors = SpD_colors,
+        point_size = 1.3
+    )
+    ggsave(vc, filename = here(plot_dir_sample, sprintf("ERC_SpD_%s.png", s)))
+})
 
 #### summary by cluster ####
 message(Sys.time(), " - Summarize cluster")
