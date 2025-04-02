@@ -196,7 +196,7 @@ walk2(cor_anno, names(cor_anno), function(ca, name){
     
 })
 
-# slurmjobs::job_single('10_spatial_registration_DLPFC', create_shell = TRUE, memory = '25G', command = "Rcript 10_spatial_registration_DLPFC.R")
+# slurmjobs::job_single('10_spatial_registration_DLPFC', create_shell = TRUE, memory = '25G', command = "Rscript 10_spatial_registration_DLPFC.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
