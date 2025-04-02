@@ -64,7 +64,7 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
                 "L3~Sp09D02" = "#00BCF9",
                 "L4.inhib~Sp09D09" = "#C82100",
                 "L5~Sp09D03" = "#16FF32",
-                "L6~Sp09D04" = "#116A52",
+                "L6~Sp09D04" = "#178C6D",
                 "WM.uf~Sp09D07" = "#E4E1E3",
                 "WM~Sp09D06" = "#581009")
 
