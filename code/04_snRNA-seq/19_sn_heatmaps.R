@@ -314,7 +314,7 @@ Heatmap(t(enrich_markers_zscore),
 dev.off()
 
 
-# slurmjobs::job_single('19_sn_heatmaps', create_shell = TRUE, memory = '25G', command = "Rcript 19_sn_heatmaps.R")
+# slurmjobs::job_single('19_sn_heatmaps', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

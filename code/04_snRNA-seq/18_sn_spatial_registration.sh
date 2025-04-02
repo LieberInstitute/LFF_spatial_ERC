@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rcript 18_sn_spatial_registration.R
+Rscript 18_sn_spatial_registration.R
 
 echo "**** Job ends ****"
 date

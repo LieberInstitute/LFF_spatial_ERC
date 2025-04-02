@@ -134,7 +134,7 @@ map(names(cor_layer), function(ref){
 })
 
 
-# slurmjobs::job_single('18_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rcript 18_sn_spatial_registration.R")
+# slurmjobs::job_single('18_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rscript 18_sn_spatial_registration.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
