@@ -10,7 +10,7 @@ library("sessioninfo")
 ## local data
 #### Load the data ####
 message(Sys.time(), " - Load HDF5 SPE")
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 
 lobstr::obj_size(spe)
 # 3.20 GB <- but assays are DelayedArray
