@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-15_cluster_update_sce.R
+Rscript 15_cluster_update_sce.R
 
 echo "**** Job ends ****"
 date
