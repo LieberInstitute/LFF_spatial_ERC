@@ -26,27 +26,23 @@ spe
 
 table(spe$SpD, spe$sample_id)
 
+rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
+    filter(rep_section)
+
 #### load SpD annotations ####
-spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx"))
-
-spd_anno$cluster %in% spe$BayesSpace_SVGm_k09
-
-anno_table <- spd_anno |>
-    mutate(Annotation = fct_reorder(Annotation, order)) |>
-    mutate(SpD = fct_reorder(paste0(Annotation, "~", cluster), order)) |>
-    select(cluster, Annotation, SpD) 
 
 #### Define colors for SpD ####
+load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
 
-SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
-                "L1~Sp09D05" = "#0220DE",
-                "L2.3~Sp09D01" = "#FEAF16",
-                "L3~Sp09D02" = "#00BCF9",
-                "L4.inhib~Sp09D09" = "#C82100",
-                "L5~Sp09D03" = "#16FF32",
-                "L6~Sp09D04" = "#116A52",
-                "WM.uf~Sp09D07" = "#E4E1E3",
-                "WM~Sp09D06" = "#581009")
+# SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
+#                 "L1~Sp09D05" = "#0220DE",
+#                 "L2.3~Sp09D01" = "#FEAF16",
+#                 "L3~Sp09D02" = "#00BCF9",
+#                 "L4.inhib~Sp09D09" = "#C82100",
+#                 "L5~Sp09D03" = "#16FF32",
+#                 "L6~Sp09D04" = "#116A52",
+#                 "WM.uf~Sp09D07" = "#E4E1E3",
+#                 "WM~Sp09D06" = "#581009")
 
 
 #### Plot reduced dims ####
@@ -57,6 +53,91 @@ walk(c("UMAP", "TSNE"),
                           dimred = .x,
                           my_var = "SpD",
                           color_pal = SpD_colors))
+
+
+#### Spatial Registration vs. DLPFC ####
+## get reference layer enrichment statistics
+layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
+
+## Add spatialDLPFC spatial domain annotations to modeling
+dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/bayesSpace_layer_annotations.csv") |>
+    dplyr::filter(bayesSpace == "k09") |>
+    mutate(layer_combo2 = gsub(" ", "~", layer_combo2))
+
+dlpfc_colnames <- colnames(layer_modeling_results$spatialDLPFC$enrichment)
+pwalk(dlpfc_anno, function(...) dlpfc_colnames <<- gsub(..5, ..3, dlpfc_colnames))
+colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
+head(layer_modeling_results$spatialDLPFC$enrichment)
+
+
+## Annotate modeling results
+erc_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
+
+erc_spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx")) |>
+    mutate(Annotation = fct_reorder(Annotation, order)) |>
+    mutate(SpD = fct_reorder(paste0(Annotation, "~", cluster), order)) |>
+    select(cluster, Annotation, SpD)
+
+erc_modeling <- map(erc_modeling, function(mod){
+    erc_colnames <- colnames(mod)
+    pwalk(erc_spd_anno, function(...) erc_colnames <<- gsub(..1, ..3, erc_colnames))
+    colnames(mod) <- erc_colnames
+    return(mod)
+})
+
+map(erc_modeling, colnames)
+
+saveRDS(erc_modeling, file = here(data_dir, "modeling_results-BayesSpace_SVGm_k09_annotated.rds"))
+
+cor_layer <- map(layer_modeling_results, function(layer_mod){
+    
+    cor_layer <- layer_stat_cor(stats = erc_modeling$enrichment,
+                                modeling_results = layer_mod,
+                                model_type = "enrichment",
+                                top_n = 100)
+    
+    cor_layer <- cor_layer[levels(spe$SpD),order(colnames(cor_layer))] ## match factor level for SpD
+    
+    return(cor_layer)
+    
+})
+
+anno <- map(cor_layer, ~annotate_registered_clusters(
+    cor_stats_layer = .x,
+    confidence_threshold = 0.6,
+    cutoff_merge_ratio = 0.25
+))
+
+## save data
+save(cor_layer, anno, file = here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"))
+
+## refrence colors
+layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
+                     spatialDLPFC = NULL) #TODO add spatial domain colors)
+                     
+map(names(cor_layer), function(ref){
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)))
+    print(layer_stat_cor_plot(
+        cor_stats_layer = cor_layer[[ref]],
+        reference_colors = layer_colors[[ref]],
+        annotation = anno[[ref]],
+        query_colors = SpD_colors,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE
+    ))
+    dev.off()
+})
+
+map(names(cor_layer), function(ref){
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_cluster.pdf", ref)))
+    print(layer_stat_cor_plot(
+        cor_stats_layer = cor_layer[[ref]],
+        reference_colors = layer_colors[[ref]],
+        annotation = anno[[ref]],
+        query_colors = SpD_colors
+    ))
+    dev.off()
+})
 
 
 # slurmjobs::job_single('22_SpD_clean_plots', create_shell = TRUE, memory = '25G', command = "Rscript 22_SpD_clean_plots.R")
