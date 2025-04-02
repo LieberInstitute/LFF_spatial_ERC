@@ -9,10 +9,10 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration")
+data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration_anno")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration")
+plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration_anno")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load sn ERC modeling ####
@@ -38,8 +38,17 @@ pwalk(dlpfc_anno, function(...) dlpfc_colnames <<- gsub(..5, ..3, dlpfc_colnames
 colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
 head(layer_modeling_results$spatialDLPFC$enrichment)
 
-## TODO Add layer annotations to spatial ERC SpDs
-# head(layer_modeling_results$spatialERC$enrichment)
+## Add layer annotations to spatial ERC SpDs
+erc_spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx")) |>
+    mutate(Annotation = fct_reorder(Annotation, order)) |>
+    mutate(SpD = fct_reorder(paste0(Annotation, "~", cluster), order)) |>
+    select(cluster, Annotation, SpD)
+
+erc_colnames <- colnames(layer_modeling_results$spatialERC$enrichment)
+pwalk(erc_spd_anno, function(...) erc_colnames <<- gsub(..1, ..3, erc_colnames))
+colnames(layer_modeling_results$spatialERC$enrichment) <- erc_colnames
+head(layer_modeling_results$spatialERC$enrichment)
+
 
 ## DLPFC snRNA-seq modeling 
 # layer_modeling_results$snDLPFC_layer <- readRDS("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/05_explore_sce/10_model_cellType_layer/DLPFCsn_modeling_results-cellType_layer.rds")
@@ -47,6 +56,10 @@ head(layer_modeling_results$spatialDLPFC$enrichment)
 ## PsychENCODE enrichment
 layer_modeling_results$snDLPFC_PEC <- list()
 layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
+
+## Add cell type annotations
+sc_anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
+
 
 #### correlate layer stats ####
 cor_layer <- map(layer_modeling_results, function(layer_mod){
@@ -84,12 +97,13 @@ save(spatial_registration, file = here(data_dir, "ERCsn_spatial_registration.Rda
 
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
 
 # cell_type_colors
 
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                   spatialDLPFC = NULL, #TODO add spatial domain colors
-                  spatialERC = NULL)
+                  spatialERC = SpD_colors)
 
 map(names(cor_layer), function(ref){
     pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)))
@@ -98,6 +112,23 @@ map(names(cor_layer), function(ref){
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
         query_colors = cell_type_colors$fine
+    ))
+    dev.off()
+})
+
+## dont cluster - order by layer
+cell_type_colors$fine <- cell_type_colors$fine[names(cell_type_colors$fine) %in% rownames(cor_layer$spatialERC)]
+cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$fine),names(SpD_colors)]
+
+map(names(cor_layer), function(ref){
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_uncluster.pdf", ref)))
+    print(layer_stat_cor_plot(
+        cor_stats_layer = cor_layer[[ref]],
+        reference_colors = layer_colors[[ref]],
+        annotation = anno[[ref]],
+        query_colors = cell_type_colors$fine,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
     ))
     dev.off()
 })
