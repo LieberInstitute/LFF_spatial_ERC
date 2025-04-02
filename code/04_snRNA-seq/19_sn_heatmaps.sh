@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rcript 19_sn_heatmaps.R
+Rscript 19_sn_heatmaps.R
 
 echo "**** Job ends ****"
 date
