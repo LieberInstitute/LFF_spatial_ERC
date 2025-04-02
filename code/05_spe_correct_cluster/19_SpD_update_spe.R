@@ -68,6 +68,8 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
                 "WM.uf~Sp09D07" = "#E4E1E3",
                 "WM~Sp09D06" = "#581009")
 
+save(SpD_colors, file = here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"))
+
 color_test <- vis_clus(
     spe = spe,
     sampleid = "Br5517",
@@ -312,6 +314,29 @@ sample_proportion_bar <- sample_proportions |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
 ggsave(sample_proportion_bar, filename = here(plot_dir, "ERC_SpD_barplot_sample_prop.png"), width = 10)
+
+
+#### GTF file ####
+## Read in the gene information from the annotation GTF file
+gtf <-
+    rtracklayer::import(
+        "/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A/genes/genes.gtf"
+    )
+gtf <- gtf[gtf$type == "gene"]
+names(gtf) <- gtf$gene_id
+
+## Match the genes
+all(rownames(spe) %in% gtf$gene_id)
+
+match_genes <- match(rownames(spe), gtf$gene_id)
+stopifnot(all(!is.na(match_genes)))
+
+## Keep only some columns from the gtf
+mcols(gtf) <- mcols(gtf)[, c("source", "type", "gene_id", "gene_version", "gene_name", "gene_type")]
+
+## Add the gene info to our SPE object
+rowRanges(spe) <- gtf[match_genes]
+
 
 #### Add colors to metadata ####
 metadata(spe)$SpD_colors <- SpD_colors
