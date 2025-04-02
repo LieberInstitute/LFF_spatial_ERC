@@ -22,6 +22,9 @@ dev.off()
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
 
+## load colors
+load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+
 ## APOE colors
 # APOE_genotype_colors <- c(`E2/E2`="#114B5F", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
 APOE_genotype_colors <- c(`E2/E2`="#186E8B", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
@@ -133,8 +136,39 @@ list(Green_Blue = "#00B3B3",
      Cobalt_Blue = "#0040CC",
      Violet_Blue = "#2E2EFF")
 
-#### SpD colors ####
+cell_type_colors_anno = c(Astro.1 = "#3BB273",
+                          Astro.2 = "#9DD8B9",
+                          Endo = "#FF56AF",
+                          Micro.1 = "#663894",
+                          Micro.2 = "#B29BC9",
+                          Oligo.1 = "#F57A00",
+                          Oligo.2 = "#F8A655",
+                          choird_plexis = "#AA7F6E",
+                          OPC = "#D2B037",
+                          Excit.L2_3.1="#4169E1",
+                          Excit.L2_3.2="#1E90FF",
+                          Excit.L2_3.3="#4682B4",
+                          Excit.L4_5 = "#87CEEB",
+                          Excit.L5="#191970",
+                          Excit.L5_6_NP="#6495ED",
+                          Excit.L6_CT="#0099CC",
+                          Excit.L6b="#2E2EFF",
+                          Inhib.Pax6="#DC143C",
+                          Inhib.Lamp5_Lhx6="#B22222",
+                          Inhib.Pvalb="#CD5C5C",
+                          Inhib.Vip="#F08080",
+                          Inhib.Chandelier="#E83E38",
+                          Inhib.Sst="#8B0000")
 
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_cell_type_colors_anno.pdf"), height = 15, width = 11)
+test_pallet_plots(cell_type_colors_anno, "Cell Colors Anno: ERC")
+dev.off()
+
+save(cell_type_colors_anno, file = here("processed-data","00_project_prep","cell_type_colors_anno.Rdata"))
+
+
+#### SpD colors ####
+load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
 SpD_colors = c("Orchid"="#E05AD2",
                "Engineering red"="#C82100",
                "light orange"="#FEAF16",
