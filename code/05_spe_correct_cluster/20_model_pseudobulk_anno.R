@@ -8,7 +8,7 @@ library("SpatialExperiment")
 library("spatialLIBD")
 library("HDF5Array")
 
-data_dir <- here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", cluster_type)
+data_dir <- here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
