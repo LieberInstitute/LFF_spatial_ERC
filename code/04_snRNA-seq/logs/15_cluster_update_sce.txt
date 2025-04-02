@@ -1,0 +1,614 @@
+**** Job starts ****
+Wed Apr  2 10:43:14 AM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 15705590
+Job name: 15_cluster_update_sce
+Node name: compute-119
+Task id: 
+Unloading conda_R/4.4.x
+Loading conda_R/4.4.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4.x
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: rafalib
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following object is masked from ‘package:purrr’:
+
+    simplify
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.22.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+
+---------------------
+Welcome to dendextend version 1.19.0
+Type citation('dendextend') for how to cite the package.
+
+Type browseVignettes(package = 'dendextend') for the package vignette.
+The github page is: https://github.com/talgalili/dendextend/
+
+Suggestions and bug-reports can be submitted at: https://github.com/talgalili/dendextend/issues
+You may ask questions at stackoverflow, use the r and dendextend tags: 
+	 https://stackoverflow.com/questions/tagged/dendextend
+
+	To suppress this message use:  suppressPackageStartupMessages(library(dendextend))
+---------------------
+
+
+Attaching package: ‘dendextend’
+
+The following object is masked from ‘package:stats’:
+
+    cutree
+
+2025-04-02 10:43:43.08908- load Harmony corrected sce
+class: SingleCellExperiment 
+dim: 38606 125771 
+metadata(33): Samples Samples ... scDblFinder.threshold
+  cell_type_colors
+assays(3): counts logcounts binomial_deviance_residuals
+rownames(38606): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+  ENSG00000277196
+rowData names(4): ID Symbol Type binomial_deviance
+colnames(125771): cell1 cell2 ... cell160742 cell160743
+colData names(45): Barcode sample_id ... ct_fine_k20 quick_cluster
+reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
+mainExpName: NULL
+altExpNames(0):
+Load optimal clusters from K=13
+Loading objects:
+  clusters
+Loading objects:
+  sctype
+
+Astro  Endo Micro Oligo   OPC Excit Inhib   Neu 
+    2     1     2     3     1     9     3     2 
+Joining with `by = join_by(cluster)`
+[1] "Astro" "Endo"  "Micro" "Oligo" "OPC"   "Excit" "Inhib" "Neu"  
+ [1] "Astro.1" "Astro.2" "Endo.1"  "Micro.1" "Micro.2" "Oligo.1" "Oligo.2"
+ [8] "Oligo.3" "OPC.1"   "Excit.1" "Excit.2" "Excit.3" "Excit.4" "Excit.5"
+[15] "Excit.6" "Excit.7" "Excit.8" "Excit.9" "Inhib.1" "Inhib.2" "Inhib.3"
+[22] "Neu.1"   "Neu.2"  
+ [1] "Astro.1"          "Astro.2"          "Endo"             "Micro.1"         
+ [5] "Micro.2"          "Oligo.1"          "Oligo.2"          "choird_plexis"   
+ [9] "OPC"              "Excit.L2_3.1"     "Excit.L2_3.2"     "Excit.L2_3.3"    
+[13] "Excit.L4_5"       "Excit.L5"         "Excit.L5_6_NP"    "Excit.L6_CT"     
+[17] "Excit.L6b"        "Inhib.Pax6"       "Inhib.Lamp5_Lhx6" "Inhib.Pvalb"     
+[21] "Inhib.Vip"        "Inhib.Chandelier" "Inhib.Sst"       
+[1] 125771      4
+Creating classic pallet for broad 8 cell types
+Creating fine cell type gradients for 8 cell types
+Loading objects:
+  cell_type_colors_anno
+2025-04-02 10:43:53.766719 - Plot UMAP + TSNE
+ERC_sn_reprocess_UMAP-cell_type_broad-sctype.png - Saving 7 x 7 in image
+ERC_sn_reprocess_TSNE-cell_type_broad-sctype.png - Saving 7 x 7 in image
+ERC_sn_reprocess_UMAP-cell_type_fine-sctype.png - Saving 7 x 7 in image
+ERC_sn_reprocess_TSNE-cell_type_fine-sctype.png - Saving 7 x 7 in image
+ERC_sn_reprocess_UMAP-cell_type_anno-sctype.png - Saving 7 x 7 in image
+ERC_sn_reprocess_TSNE-cell_type_anno-sctype.png - Saving 7 x 7 in image
+2025-04-02 10:44:36.982216 - Plot marker genes
+Rows: 43 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): gene_name, cell_type, studies, cell_type_broad
+dbl (1): n_studies
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+# A tibble: 3 × 6
+  gene_name cell_type          n_studies studies         cell_type_broad in_data
+  <chr>     <chr>                  <dbl> <chr>           <fct>           <lgl>  
+1 CEMP      Fibroblast                 1 Davila-Velderr… Endo            FALSE  
+2 PDCH15    OPC                        1 Grubman et al.  OPC             FALSE  
+3 GR1A1     Glutamate receptor         1 Grubman et al.  Excit           FALSE  
+Using Symbol as gene names
+$Astro
+
+$Endo
+
+$Fibroblast
+
+$Pericytes
+
+$`choroid plexis`
+
+$Micro
+
+$Oligo
+
+$OPC
+
+$Excit
+
+$`Glutamate receptor`
+
+$Inhib
+
+$`Inhib-subtype`
+
+$Neuron
+
+$`T-cells`
+
+null device 
+          1 
+2025-04-02 10:48:09.403567 - Summarize cluster
+`summarise()` has grouped output by 'snn_kOpt', 'cell_type_class',
+'cell_type_broad', 'cell_type_fine'. You can override using the `.groups`
+argument.
+# A tibble: 23 × 11
+# Groups:   snn_kOpt, cell_type_class, cell_type_broad, cell_type_fine [23]
+   snn_kOpt cell_type_class cell_type_broad cell_type_fine cell_type_anno     n
+   <chr>    <chr>           <fct>           <fct>          <fct>          <int>
+ 1 k13c23   glia            Oligo           Oligo.3        choird_plexis     88
+ 2 k13c18   glia            Micro           Micro.2        Micro.2         3066
+ 3 k13c03   glia            Astro           Astro.2        Astro.2         7938
+ 4 k13c09   glia            Oligo           Oligo.1        Oligo.1        30595
+ 5 k13c05   glia            Micro           Micro.1        Micro.1        10462
+ 6 k13c01   glia            Endo            Endo.1         Endo            1448
+ 7 k13c06   glia            Oligo           Oligo.2        Oligo.2        16236
+ 8 k13c12   glia            OPC             OPC.1          OPC            14717
+ 9 k13c10   glia            Astro           Astro.1        Astro.1        14207
+10 k13c07   neuron          Inhib           Inhib.1        Inhib.Vip       7535
+# ℹ 13 more rows
+# ℹ 5 more variables: prop <dbl>, median_sum <dbl>, median_detected <dbl>,
+#   median_Mito_percent <dbl>, median_scDblFinder.score <dbl>
+`summarise()` has grouped output by 'snn_kOpt', 'cell_type_anno',
+'cell_type_fine', 'cell_type_class', 'cell_type_broad'. You can override using
+the `.groups` argument.
+Joining with `by = join_by(cell_type_class, metric)`
+# A tibble: 3 × 3
+  pass_metricQC passALL_metricQC     n
+  <lgl>         <lgl>            <int>
+1 FALSE         FALSE                3
+2 TRUE          FALSE                1
+3 TRUE          TRUE                88
+# A tibble: 1 × 2
+  cell_type_fine passALL_metricQC
+  <fct>          <lgl>           
+1 Oligo.3        FALSE           
+Joining with `by = join_by(cell_type_fine)`
+Joining with `by = join_by(cell_type_fine)`
+Saving 7 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+
+ FALSE   TRUE 
+    88 125683 
+[1]  38606 125683
+ [1] "Astro.1" "Astro.2" "Endo.1"  "Micro.1" "Micro.2" "Oligo.1" "Oligo.2"
+ [8] "OPC.1"   "Excit.1" "Excit.2" "Excit.3" "Excit.4" "Excit.5" "Excit.6"
+[15] "Excit.7" "Excit.8" "Excit.9" "Inhib.1" "Inhib.2" "Inhib.3" "Neu.1"  
+[22] "Neu.2"  
+`summarise()` has grouped output by 'sample_id', 'APOE', 'Sex', 'Ancestry'. You
+can override using the `.groups` argument.
+`summarise()` has grouped output by 'sample_id', 'APOE', 'Sex', 'Ancestry'. You
+can override using the `.groups` argument.
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  sample_colors
+`summarise()` has grouped output by 'sample_id'. You can override using the
+`.groups` argument.
+# A tibble: 644 × 4
+# Groups:   cell_type_anno [22]
+   sample_id cell_type_anno     n  prop
+   <fct>     <fct>          <int> <dbl>
+ 1 Br5460    Excit.L5_6_NP     27 0.178
+ 2 Br5634    Excit.L5_6_NP     24 0.158
+ 3 Br6423    Excit.L2_3.3      95 0.156
+ 4 Br1289    Excit.L4_5        35 0.145
+ 5 Br5854    Excit.L6_CT       90 0.144
+ 6 Br5460    Excit.L5         316 0.141
+ 7 Br5460    Endo             203 0.140
+ 8 Br5854    Excit.L2_3.3      85 0.140
+ 9 Br6085    Excit.L5_6_NP     20 0.132
+10 Br1691    Excit.L5         293 0.131
+# ℹ 634 more rows
+# A tibble: 22 × 4
+   cell_type_anno   n_samples max_prop pass_sampleQC
+   <fct>                <int>    <dbl> <lgl>        
+ 1 Excit.L5_6_NP           19   0.178  TRUE         
+ 2 Excit.L4_5              21   0.145  TRUE         
+ 3 Excit.L2_3.3            25   0.156  TRUE         
+ 4 Inhib.Pax6              28   0.088  TRUE         
+ 5 Excit.L5                29   0.141  TRUE         
+ 6 Excit.L2_3.2            30   0.0991 TRUE         
+ 7 Excit.L6_CT             30   0.144  TRUE         
+ 8 Excit.L6b               30   0.127  TRUE         
+ 9 Inhib.Lamp5_Lhx6        30   0.0673 TRUE         
+10 Inhib.Chandelier        30   0.0858 TRUE         
+# ℹ 12 more rows
+# A tibble: 22 × 4
+   cell_type_anno n_samples max_prop pass_sampleQC
+   <fct>              <int>    <dbl> <lgl>        
+ 1 Excit.L5_6_NP         19   0.178  TRUE         
+ 2 Excit.L2_3.3          25   0.156  TRUE         
+ 3 Excit.L4_5            21   0.145  TRUE         
+ 4 Excit.L6_CT           30   0.144  TRUE         
+ 5 Excit.L5              29   0.141  TRUE         
+ 6 Endo                  31   0.140  TRUE         
+ 7 Excit.L6b             30   0.127  TRUE         
+ 8 Excit.L2_3.2          30   0.0991 TRUE         
+ 9 Inhib.Pvalb           31   0.0983 TRUE         
+10 Inhib.Sst             31   0.0957 TRUE         
+# ℹ 12 more rows
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+[1] TRUE
+2025-04-02 10:49:20.168027 - Save annotated sce
+[1] "Reproducibility information:"
+[1] "2025-04-02 12:37:26 EDT"
+    user   system  elapsed 
+6187.271  154.738 6850.660 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.3 Patched (2025-02-28 r88092)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-04-02
+ pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                * 1.4-8     2024-09-12 [2] CRAN (R 4.4.1)
+ AnnotationDbi          1.68.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ AnnotationHub          3.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ attempt                0.3.1     2020-05-03 [2] CRAN (R 4.4.0)
+ beachmat               2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.4.0)
+ benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.4.0)
+ benchmarkmeData        1.0.4     2020-04-23 [2] CRAN (R 4.4.0)
+ Biobase              * 2.66.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocFileCache          2.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocGenerics         * 0.52.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocIO                 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocManager            1.30.25   2024-08-28 [2] CRAN (R 4.4.1)
+ BiocNeighbors          2.0.1     2024-11-28 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocParallel           1.40.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocSingular           1.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ BiocVersion            3.20.0    2024-05-01 [2] Bioconductor 3.20 (R 4.4.0)
+ Biostrings             2.74.1    2024-12-16 [2] Bioconductor 3.20 (R 4.4.2)
+ bit                    4.6.0     2025-03-06 [2] CRAN (R 4.4.3)
+ bit64                  4.6.0-1   2025-01-16 [2] CRAN (R 4.4.2)
+ bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.4.1)
+ blob                   1.2.4     2023-03-17 [2] CRAN (R 4.4.0)
+ bluster              * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.4.2)
+ cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.4.0)
+ cellranger             1.1.0     2016-07-27 [2] CRAN (R 4.4.0)
+ circlize               0.4.16    2024-02-20 [2] CRAN (R 4.4.0)
+ cli                    3.6.4     2025-02-13 [2] CRAN (R 4.4.2)
+ clue                   0.3-66    2024-11-13 [2] CRAN (R 4.4.2)
+ cluster                2.1.8     2024-12-11 [3] CRAN (R 4.4.3)
+ codetools              0.2-20    2024-03-31 [3] CRAN (R 4.4.3)
+ colorspace             2.1-1     2024-07-26 [2] CRAN (R 4.4.1)
+ ComplexHeatmap       * 2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ config                 0.3.2     2023-08-30 [2] CRAN (R 4.4.0)
+ cowplot                1.1.3     2024-01-22 [2] CRAN (R 4.4.0)
+ crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.4.1)
+ curl                   6.2.2     2025-03-24 [2] CRAN (R 4.4.3)
+ data.table             1.17.0    2025-02-22 [2] CRAN (R 4.4.3)
+ DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.4.0)
+ dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.4.0)
+ DeconvoBuddies       * 0.99.10   2025-01-30 [1] Github (LieberInstitute/DeconvoBuddies@0d76b63)
+ DelayedArray         * 0.32.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ dendextend           * 1.19.0    2024-11-15 [2] CRAN (R 4.4.2)
+ digest                 0.6.37    2024-08-19 [2] CRAN (R 4.4.1)
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.4.0)
+ dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.4.0)
+ dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.4.0)
+ DT                     0.33      2024-04-04 [2] CRAN (R 4.4.0)
+ edgeR                  4.4.2     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
+ ExperimentHub          2.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.4.0)
+ fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.4.0)
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.4.0)
+ forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.4.0)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.4.0)
+ fs                     1.6.5     2024-10-30 [2] CRAN (R 4.4.2)
+ gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.4.0)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.4.0)
+ GenomeInfoDb         * 1.42.3    2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
+ GenomeInfoDbData       1.2.13    2024-10-01 [2] Bioconductor
+ GenomicAlignments      1.42.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ GenomicRanges        * 1.58.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ GetoptLong             1.0.5     2020-12-15 [2] CRAN (R 4.4.0)
+ ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.4.0)
+ ggplot2              * 3.5.1     2024-04-23 [2] CRAN (R 4.4.0)
+ ggrepel                0.9.6     2024-09-07 [2] CRAN (R 4.4.1)
+ GlobalOptions          0.1.2     2020-06-10 [2] CRAN (R 4.4.0)
+ glue                   1.8.0     2024-09-30 [2] CRAN (R 4.4.1)
+ golem                  0.5.1     2024-08-27 [2] CRAN (R 4.4.1)
+ googledrive            2.1.1     2023-06-11 [2] CRAN (R 4.4.0)
+ gridExtra              2.3       2017-09-09 [2] CRAN (R 4.4.0)
+ gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.4.2)
+ HDF5Array            * 1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.4.0)
+ hms                    1.1.3     2023-03-21 [2] CRAN (R 4.4.0)
+ htmltools              0.5.8.1   2024-04-04 [2] CRAN (R 4.4.0)
+ htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.4.0)
+ httpuv                 1.6.15    2024-03-26 [2] CRAN (R 4.4.0)
+ httr                   1.4.7     2023-08-15 [2] CRAN (R 4.4.0)
+ igraph                 2.1.4     2025-01-23 [2] CRAN (R 4.4.2)
+ IRanges              * 2.40.1    2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
+ irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.4.0)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.4.0)
+ jaffelab             * 0.99.34   2024-12-10 [1] Github (LieberInstitute/jaffelab@2710795)
+ jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.4.0)
+ jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.4.3)
+ KEGGREST               1.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ labeling               0.4.3     2023-08-29 [2] CRAN (R 4.4.0)
+ later                  1.4.1     2024-11-27 [2] CRAN (R 4.4.2)
+ lattice                0.22-6    2024-03-20 [3] CRAN (R 4.4.3)
+ lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.4.0)
+ lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.4.0)
+ limma                  3.62.2    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.4.3)
+ lubridate            * 1.9.4     2024-12-08 [2] CRAN (R 4.4.2)
+ magick                 2.8.6     2025-03-23 [2] CRAN (R 4.4.3)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.4.0)
+ MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.4.3)
+ Matrix               * 1.7-2     2025-01-23 [3] CRAN (R 4.4.3)
+ MatrixGenerics       * 1.18.1    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.4.2)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.4.0)
+ metapod                1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
+ munsell                0.5.1     2024-04-01 [2] CRAN (R 4.4.0)
+ nlme                   3.1-167   2025-01-27 [3] CRAN (R 4.4.3)
+ paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
+ pillar                 1.10.1    2025-01-07 [1] CRAN (R 4.4.2)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
+ plotly                 4.10.4    2024-01-13 [2] CRAN (R 4.4.0)
+ plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.4.0)
+ png                    0.1-8     2022-11-29 [2] CRAN (R 4.4.0)
+ promises               1.3.2     2024-11-28 [2] CRAN (R 4.4.2)
+ purrr                * 1.0.4     2025-02-05 [2] CRAN (R 4.4.2)
+ R6                     2.6.1     2025-02-15 [2] CRAN (R 4.4.2)
+ rafalib              * 1.0.0     2015-08-09 [1] CRAN (R 4.4.2)
+ ragg                   1.3.3     2024-09-11 [2] CRAN (R 4.4.1)
+ rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.4.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.4.0)
+ Rcpp                   1.0.14    2025-01-12 [2] CRAN (R 4.4.2)
+ RCurl                  1.98-1.17 2025-03-22 [2] CRAN (R 4.4.3)
+ readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.4.0)
+ readxl               * 1.4.5     2025-03-07 [2] CRAN (R 4.4.3)
+ rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.4.0)
+ reshape2               1.4.4     2020-04-09 [2] CRAN (R 4.4.0)
+ restfulr               0.0.15    2022-06-16 [2] CRAN (R 4.4.0)
+ rhdf5                * 2.50.2    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
+ rhdf5filters           1.18.1    2025-03-06 [2] Bioconductor 3.20 (R 4.4.3)
+ Rhdf5lib               1.28.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.4.1)
+ rlang                  1.1.5     2025-01-17 [2] CRAN (R 4.4.2)
+ rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.4.0)
+ Rsamtools              2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ RSQLite                2.3.9     2024-12-03 [2] CRAN (R 4.4.2)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.4.0)
+ rtracklayer            1.66.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ S4Arrays             * 1.6.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ S4Vectors            * 0.44.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ sass                   0.4.9     2024-03-15 [2] CRAN (R 4.4.0)
+ ScaledMatrix           1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ scales                 1.3.0     2023-11-28 [2] CRAN (R 4.4.0)
+ scater                 1.34.1    2025-03-03 [2] Bioconductor 3.20 (R 4.4.3)
+ scran                  1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ scuttle                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ segmented              2.1-4     2025-02-28 [1] CRAN (R 4.4.3)
+ sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.4.2)
+ shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.4.0)
+ shiny                  1.10.0    2024-12-14 [2] CRAN (R 4.4.2)
+ shinyWidgets           0.9.0     2025-02-21 [2] CRAN (R 4.4.3)
+ SingleCellExperiment * 1.28.1    2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
+ SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
+ SpatialExperiment      1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ spatialLIBD            1.19.11   2025-03-25 [1] Github (LieberInstitute/spatialLIBD@35fe720)
+ statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
+ stringi                1.8.7     2025-03-27 [2] CRAN (R 4.4.3)
+ stringr              * 1.5.1     2023-11-14 [2] CRAN (R 4.4.0)
+ SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ systemfonts            1.2.1     2025-01-20 [2] CRAN (R 4.4.2)
+ textshaping            1.0.0     2025-01-20 [2] CRAN (R 4.4.2)
+ tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
+ tidyr                * 1.3.1     2024-01-24 [2] CRAN (R 4.4.0)
+ tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.4.0)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.4.0)
+ timechange             0.3.0     2024-01-18 [2] CRAN (R 4.4.0)
+ tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.4.3)
+ UCSC.utils             1.2.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ utf8                   1.2.4     2023-10-22 [2] CRAN (R 4.4.0)
+ vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.4.0)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.4.0)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.4.0)
+ viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.4.0)
+ vroom                  1.6.5     2023-12-05 [2] CRAN (R 4.4.0)
+ withr                  3.0.2     2024-10-28 [2] CRAN (R 4.4.2)
+ XML                    3.99-0.18 2025-01-01 [2] CRAN (R 4.4.2)
+ xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.4.0)
+ XVector                0.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ yaml                   2.3.10    2024-07-26 [2] CRAN (R 4.4.1)
+ zlibbioc               1.52.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+
+ [1] /users/lhuuki/R/4.4.x
+ [2] /jhpce/shared/community/core/conda_R/4.4.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.4.x/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Apr  2 12:37:27 PM EDT 2025
