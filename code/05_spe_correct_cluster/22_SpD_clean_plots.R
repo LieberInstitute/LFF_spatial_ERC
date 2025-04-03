@@ -9,6 +9,7 @@ library("sessioninfo")
 library("readxl")
 library("jaffelab")
 library("cowplot")
+library("patchwork")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -43,6 +44,55 @@ load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbo
 #                 "L6~Sp09D04" = "#116A52",
 #                 "WM.uf~Sp09D07" = "#E4E1E3",
 #                 "WM~Sp09D06" = "#581009")
+
+#### Spot plots for representative sections ####
+
+single_vis_clus <- vis_clus(
+    spe = spe,
+    point_size = 1.5,
+    colors = SpD_colors,
+    sampleid = "Br5517",
+    clustervar = "SpD",
+    spatial = FALSE
+) + 
+    guides(fill = guide_legend(override.aes = list(size = 5)))
+
+ggsave(single_vis_clus, filename = here(plot_dir, "vis_clus_Br5517.png")) 
+ggsave(single_vis_clus, filename = here(plot_dir, "vis_clus_Br5517.pdf")) 
+
+cluster_plots <- map(c("AA", "EA"), function(anc) {
+# cluster_plots <- map(unique(spe$APOE), function(anc) {
+    
+    samples <- rep_sections_tb |> filter(Ancestry == anc) |> arrange(APOE)
+    # samples <- rep_sections_tb |> filter(APOE == anc) |> arrange(Ancestry)
+    
+    cluster_row_plots <- map(samples$sample_id, function(s) {
+        vis_clus_plot <- vis_clus(
+            spe = spe,
+            point_size = 1.5,
+            colors = SpD_colors,
+            sampleid = s,
+            clustervar = "SpD"
+        ) +
+            labs(title = s)  +
+            theme(
+                legend.position = "None", ## using heat maps label colors
+                axis.title.x = element_blank(),
+                text = element_text(size = 12),
+                plot.title = element_text(hjust = 0.5)
+            )
+            
+        return(vis_clus_plot)
+    })
+    cluster_row <- Reduce("+", cluster_row_plots) + plot_layout(nrow = 1)
+    # ggsave(cluster_row, filename = here(plot_dir, paste0("vis_clust_",k_label,"_row.png")), width = 18)
+    return(cluster_row)
+})
+
+ggsave(cluster_plots[[1]][[1]], filename = ggsave(here(plot_dir, "test09.png")), width = 18)
+
+cluster_grid <- Reduce("/", cluster_plots)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.pdf"), width = 18, height = 9)
 
 
 #### Plot reduced dims ####

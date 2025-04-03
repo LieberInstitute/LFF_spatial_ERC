@@ -41,8 +41,8 @@ modeling_results <-registration_wrapper(
     var_registration = cluster_var,
     var_sample_id = "sample_id",
     covars = c("APOE", "Sex", "Age", "Anc_Afr"),
-    gene_ensembl = "ID",
-    gene_name = "Symbol",
+    gene_ensembl = "gene_id",
+    gene_name = "gene_name",
     min_ncells = 10,
     pseudobulk_rds_file = here(data_dir, sprintf("sce_pseudobulk-%s.rds", cluster_var))
 )
