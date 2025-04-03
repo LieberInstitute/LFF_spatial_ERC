@@ -9,22 +9,22 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration")
+data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration_anno")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration")
+plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration_anno")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load sn ERC modeling ####
-erc_sn_modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk", "modeling_results-cell_type_fine.rds"))
+erc_sn_modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk", "modeling_results-cell_type_anno.rds"))
 
-# registration_t_stats <- erc_sn_modeling_results$enrichment[, grep("^t_stat", colnames(erc_sn_modeling_results$enrichment))]
-# colnames(registration_t_stats) <- gsub("^t_stat_", "", colnames(registration_t_stats))
-# 
-# head(registration_t_stats)
+cell_types <- colnames(erc_sn_modeling_results$enrichment)[grepl("t_stat", colnames(erc_sn_modeling_results$enrichment))]
+cell_types <- gsub("t_stat_", "", cell_types)
 
 #### get reference layer enrichment statistics ####
-layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
+layer_modeling_results <- map(c(HumanPilot = "modeling_results", 
+                                spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), 
+                              fetch_data)
 
 layer_modeling_results$spatialERC <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
 
@@ -36,7 +36,7 @@ dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialD
 dlpfc_colnames <- colnames(layer_modeling_results$spatialDLPFC$enrichment)
 pwalk(dlpfc_anno, function(...) dlpfc_colnames <<- gsub(..5, ..3, dlpfc_colnames))
 colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
-head(layer_modeling_results$spatialDLPFC$enrichment)
+# head(layer_modeling_results$spatialDLPFC$enrichment)
 
 ## Add layer annotations to spatial ERC SpDs
 erc_spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx")) |>
@@ -47,11 +47,7 @@ erc_spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster
 erc_colnames <- colnames(layer_modeling_results$spatialERC$enrichment)
 pwalk(erc_spd_anno, function(...) erc_colnames <<- gsub(..1, ..3, erc_colnames))
 colnames(layer_modeling_results$spatialERC$enrichment) <- erc_colnames
-head(layer_modeling_results$spatialERC$enrichment)
-
-
-## DLPFC snRNA-seq modeling 
-# layer_modeling_results$snDLPFC_layer <- readRDS("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/05_explore_sce/10_model_cellType_layer/DLPFCsn_modeling_results-cellType_layer.rds")
+# head(layer_modeling_results$spatialERC$enrichment)
 
 ## PsychENCODE enrichment
 layer_modeling_results$snDLPFC_PEC <- list()
@@ -68,7 +64,7 @@ cor_layer <- map(layer_modeling_results, function(layer_mod){
                                 model_type = "enrichment",
                                 top_n = 100)
     
-    cor_layer <- cor_layer[,order(colnames(cor_layer))]
+    cor_layer <- cor_layer[cell_types, order(colnames(cor_layer))]
     
     return(cor_layer)
 })
@@ -94,16 +90,15 @@ spatial_registration <- list(cor_layer = cor_layer, anno = anno)
 save(spatial_registration, file = here(data_dir, "ERCsn_spatial_registration.Rdata"))
 
 #### create registration heatmaps ####
-
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
 
 # cell_type_colors
-
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                   spatialDLPFC = NULL, #TODO add spatial domain colors
-                  spatialERC = SpD_colors)
+                  spatialERC = SpD_colors,
+                  snDLPFC_PEC = NULL)
 
 map(names(cor_layer), function(ref){
     pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)))
@@ -111,14 +106,19 @@ map(names(cor_layer), function(ref){
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
-        query_colors = cell_type_colors$fine
+        query_colors = cell_type_colors$anno
     ))
     dev.off()
 })
 
 ## dont cluster cols - order by layer
-cell_type_colors$fine <- cell_type_colors$fine[names(cell_type_colors$fine) %in% rownames(cor_layer$spatialERC)]
-cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$fine),names(SpD_colors)]
+cell_type_colors$anno <- cell_type_colors$anno[names(cell_type_colors$anno) %in% rownames(cor_layer$spatialERC)]
+cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$anno),names(SpD_colors)]
+
+cor_layer$spatialERC[,names(SpD_colors)]
+cor_layer$spatialERC[names(cell_type_colors$anno),]
+
+names(SpD_colors) %in% colnames(cor_layer$spatialERC)
 
 map(names(cor_layer), function(ref){
     pdf(here(plot_dir, sprintf("layer_stat_cor_%s_uncluster.pdf", ref)))
@@ -126,8 +126,8 @@ map(names(cor_layer), function(ref){
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
-        query_colors = cell_type_colors$fine,
-        cluster_rows = TRUE,
+        query_colors = cell_type_colors$anno,
+        cluster_rows = FALSE,
         cluster_columns = FALSE,
     ))
     dev.off()
