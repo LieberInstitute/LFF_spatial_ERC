@@ -1,5 +1,5 @@
 ## January 2025, Louise Huuki-Myers
-## Compare ERC spatial Domains to DLPFC layers
+## Compare ERC cell type populations to DLPFC & ERC spatial domains
 
 library("spatialLIBD")
 library("purrr")
@@ -9,10 +9,10 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration_anno")
+data_dir <- here("processed-data", "04_snRNA-seq", "18_sn_spatial_registration")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration_anno")
+plot_dir <- here("plots", "04_snRNA-seq", "18_sn_spatial_registration")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load sn ERC modeling ####
@@ -57,8 +57,8 @@ head(layer_modeling_results$spatialERC$enrichment)
 layer_modeling_results$snDLPFC_PEC <- list()
 layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
 
-## Add cell type annotations
-sc_anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
+# ## Add cell type annotations
+# sc_anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
 
 
 #### correlate layer stats ####
@@ -116,7 +116,7 @@ map(names(cor_layer), function(ref){
     dev.off()
 })
 
-## dont cluster - order by layer
+## dont cluster cols - order by layer
 cell_type_colors$fine <- cell_type_colors$fine[names(cell_type_colors$fine) %in% rownames(cor_layer$spatialERC)]
 cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$fine),names(SpD_colors)]
 
@@ -127,7 +127,7 @@ map(names(cor_layer), function(ref){
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
         query_colors = cell_type_colors$fine,
-        cluster_rows = FALSE,
+        cluster_rows = TRUE,
         cluster_columns = FALSE,
     ))
     dev.off()
