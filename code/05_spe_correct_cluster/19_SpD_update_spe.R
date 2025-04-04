@@ -140,6 +140,7 @@ lit_markers |> filter(!in_data)
 # gene_name Layer  n_studies studies      in_data
 # <chr>     <chr>      <dbl> <chr>        <lgl>  
 # 1 RELM      Layer1         1 ERC RNAScope FALSE 
+# 2 KITL      Layer3         1 Ramsden et al. FALSE
 
 lit_markers <- lit_markers |> filter(in_data)
 
