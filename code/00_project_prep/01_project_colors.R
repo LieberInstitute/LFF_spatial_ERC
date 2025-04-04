@@ -1,6 +1,7 @@
 
 library("colorblindr")
 library("tidyverse")
+library("spatialLIBD")
 library("here")
 
 source(here("code", "utils", "test_pallet_plots.R"))
@@ -168,30 +169,50 @@ save(cell_type_colors_anno, file = here("processed-data","00_project_prep","cell
 
 
 #### SpD colors ####
-load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
-SpD_colors = c("Orchid"="#E05AD2",
-               "Engineering red"="#C82100",
-               "light orange"="#FEAF16",
-               "lime" = "#16FF32",
-               "Forest green"="#178C6D",
-               "Deep Sky Blue"="#00BCF9",
-               "chrystler blue"="#0220DE",
-               "Blood red" = "#581009",
-               "purple_white"="#E4E1E3")
+SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
+                "L1~Sp09D05" = "#0220DE", #Chrystler Blue
+                "L2.3~Sp09D01" = "#FEAF16", #light orange
+                "L3~Sp09D02" = "#00BCF9", #dark sky blue
+                "L4.inhib~Sp09D09" = "#C82100", #Engineering red
+                "L5~Sp09D03" = "#16FF32", #lime
+                "L6~Sp09D04" = "#178C6D", #forest green
+                "WM.uf~Sp09D07" = "#E4E1E3", # purpe white
+                "WM~Sp09D06" = "#581009") #brown
+
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.pdf"), height = 11, width = 8)
+test_pallet_plots(SpD_colors2, "SpD Colors: ERC")
+dev.off()
+
+save(SpD_colors, file = here("processed-data","SpD_colors.Rdata"))
+
+SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
+                "L1~Sp09D05" = "#0220DE",
+                "L2.3~Sp09D01" = "#80428A",
+                "L3~Sp09D02" = "#AFADFF",
+                "L4.inhib~Sp09D09" = "#F55200",
+                "L5~Sp09D03" = "#A2E838",
+                "L6~Sp09D04" = "#147B5F",
+                "WM.uf~Sp09D07" = "#E4E1E3",
+                "WM~Sp09D06" = "#581009")
+
+save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors2.Rdata"))
+
+## plot offical colors
+pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.2.pdf"), height = 11, width = 8)
+test_pallet_plots(SpD_colors, "SpD Colors: ERC2")
+dev.off()
+
+## SpD archive colors
+# "#16FF32"    "#90AD1C"    "#5A5156"    "#3283FE"      "brown"    "#FE00FA"    "#F6222E"    "#FEAF16"    "#1CFFCE"
 
 ## archive
 # c("Spanish orange"="#E96F00",
-  # "jonquil yellow"="#FFCD17",
-  # "Citrine"="#E3D348",
-  # "Phthalo blue"="#021380",
-  # "Black bean"="#500802")
+# "jonquil yellow"="#FFCD17",
+# "Citrine"="#E3D348",
+# "Phthalo blue"="#021380",
+# "Black bean"="#500802")
 
-save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors.Rdata"))
 
-## plot offical colors
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.pdf"), height = 11, width = 8)
-test_pallet_plots(SpD_colors, "SpD Colors: ERC")
-dev.off()
 
 ## Reproducibility information
 print("Reproducibility information:")
