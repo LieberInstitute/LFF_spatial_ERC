@@ -9,6 +9,7 @@ library("sessioninfo")
 library("readxl")
 library("jaffelab")
 library("cowplot")
+library("DeconvoBuddies")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -57,30 +58,7 @@ colData(spe) <- cbind(colData(spe), anno_table)
 table(spe$SpD, spe$BayesSpace_SVGm_k09)
 
 #### Define colors for SpD ####
-
-SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
-                "L1~Sp09D05" = "#0220DE",
-                "L2.3~Sp09D01" = "#FEAF16",
-                "L3~Sp09D02" = "#00BCF9",
-                "L4.inhib~Sp09D09" = "#C82100",
-                "L5~Sp09D03" = "#16FF32",
-                "L6~Sp09D04" = "#178C6D",
-                "WM.uf~Sp09D07" = "#E4E1E3",
-                "WM~Sp09D06" = "#581009")
-
-## ALT colors
-# SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
-#                 "L1~Sp09D05" = "#0220DE",
-#                 "L2.3~Sp09D01" = "#80428A",
-#                 "L3~Sp09D02" = "#AFADFF",
-#                 "L4.inhib~Sp09D09" = "#F55200",
-#                 "L5~Sp09D03" = "#A2E838",
-#                 "L6~Sp09D04" = "#147B5F",
-#                 "WM.uf~Sp09D07" = "#E4E1E3",
-#                 "WM~Sp09D06" = "#581009")
-
-
-save(SpD_colors, file = here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"))
+load(here("processed-data", "SpD_colors.Rdata"))
 
 color_test <- vis_clus(
     spe = spe,
@@ -89,7 +67,7 @@ color_test <- vis_clus(
     colors = SpD_colors,
     point_size = 1.5
 )
-ggsave(color_test, filename = here(plot_dir, "SpD_color_test_Br5517_colors.png"))
+ggsave(color_test, filename = here(plot_dir, "SpD_color_test_Br5517.png"))
 
 
 vis_clus_plots <- vis_grid_clus(
@@ -149,8 +127,31 @@ walk(apoe_anc$sample_id, function(s){
 })
 
 #### plot marker genes ####
+message(Sys.time(), " - Plot marker genes")
 
-lit_markers <- read.csv(here("processed-data", "05_spe_correct_cluster", "00_"))
+## read in marker genes from lit
+
+lit_markers <- read_csv(here("processed-data","05_spe_correct_cluster", "00_lit_marker_genes_layer", "lit_layer_marker_summary.csv")) |>
+    mutate(in_data = gene_name %in% rowData(spe)$gene_name) |>
+    arrange(Layer)
+
+## missing from our data
+lit_markers |> filter(!in_data)
+# gene_name Layer  n_studies studies      in_data
+# <chr>     <chr>      <dbl> <chr>        <lgl>  
+# 1 RELM      Layer1         1 ERC RNAScope FALSE 
+
+lit_markers <- lit_markers |> filter(in_data)
+
+lit_markers_list <- map(splitit(lit_markers$Layer), ~lit_markers$gene_name[.x])
+
+plot_marker_express_List(spe, 
+                         lit_markers_list, 
+                         pdf_fn = here(plot_dir, "ERC_SpD_Layer_lit_markers.pdf"),
+                         cellType_col = "SpD",
+                         gene_name_col = "gene_name",
+                         color_pal = SpD_colors,
+)
 
 
 #### summary by cluster ####
