@@ -68,6 +68,18 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
                 "WM.uf~Sp09D07" = "#E4E1E3",
                 "WM~Sp09D06" = "#581009")
 
+## ALT colors
+# SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
+#                 "L1~Sp09D05" = "#0220DE",
+#                 "L2.3~Sp09D01" = "#80428A",
+#                 "L3~Sp09D02" = "#AFADFF",
+#                 "L4.inhib~Sp09D09" = "#F55200",
+#                 "L5~Sp09D03" = "#A2E838",
+#                 "L6~Sp09D04" = "#147B5F",
+#                 "WM.uf~Sp09D07" = "#E4E1E3",
+#                 "WM~Sp09D06" = "#581009")
+
+
 save(SpD_colors, file = here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"))
 
 color_test <- vis_clus(
@@ -75,9 +87,9 @@ color_test <- vis_clus(
     sampleid = "Br5517",
     clustervar = "SpD",
     colors = SpD_colors,
-    point_size = 1.3
+    point_size = 1.5
 )
-ggsave(color_test, filename = here(plot_dir, "SpD_color_test_Br5517.png"))
+ggsave(color_test, filename = here(plot_dir, "SpD_color_test_Br5517_colors.png"))
 
 
 vis_clus_plots <- vis_grid_clus(
@@ -97,59 +109,6 @@ apoe_anc <- as.data.frame(colData(spe)) |>
 
 all(apoe_anc$sample_id == names(vis_clus_plots))
 
-# apoe_anc_split <- splitit(apoe_anc$apoe_anc)
-
-# pdf(here(plot_dir, "ERC_SpD_vis_clus_split.pdf"), height = 12, width = 18)
-# walk2(apoe_anc_split, names(apoe_anc_split), function(index,name){
-#     
-#     split_plots <- vis_clus_plots[index]
-#     message(name, "; ", length(split_plots))
-#     plots <- cowplot::plot_grid(plotlist = split_plots)
-#     
-#     # title
-#     title <- ggdraw() + 
-#         cowplot::draw_label(
-#             name,
-#             fontface = 'bold',
-#             x = 0,
-#             hjust = 0
-#         ) +
-#         theme(
-#             # add margin on the left of the drawing canvas,
-#             # so title is aligned with left edge of first plot
-#             plot.margin = margin(0, 0, 0, 7)
-#         ) 
-#         
-#    print(cowplot::plot_grid(
-#         title, plots,
-#         ncol = 1,
-#         # rel_heights values control vertical title margins
-#         rel_heights = c(0.1, 1)
-#     ))
-# })
-# dev.off()
-# 
-# cowplot_title <- function(my_title, plots){
-#     title <- ggdraw() + 
-#         cowplot::draw_label(
-#             my_title,
-#             fontface = 'bold',
-#             x = 0,
-#             hjust = 0
-#         ) +
-#         theme(
-#             # add margin on the left of the drawing canvas,
-#             # so title is aligned with left edge of first plot
-#             plot.margin = margin(0, 0, 0, 7)
-#         ) 
-#     
-#     print(cowplot::plot_grid(
-#         title, plots,
-#         ncol = 1,
-#         # rel_heights values control vertical title margins
-#         rel_heights = c(0.1, 1)
-#     ))
-# }
 
 ## plot by APOE
 apoe_split <- splitit(apoe_anc$APOE)
@@ -164,9 +123,6 @@ map2(apoe_split, names(apoe_split),
           pdf_file = here(plot_dir, sprintf("ERC_SpD_%s.pdf", gsub("/","",.y)))
       )
       )
-
-## save all color output
-save(SpD_colors, file = here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"))
 
 #### Plot reduced dims ####
 walk(c("UMAP", "TSNE"),
@@ -191,6 +147,11 @@ walk(apoe_anc$sample_id, function(s){
     )
     ggsave(vc, filename = here(plot_dir_sample, sprintf("ERC_SpD_%s.png", s)))
 })
+
+#### plot marker genes ####
+
+lit_markers <- read.csv(here("processed-data", "05_spe_correct_cluster", "00_"))
+
 
 #### summary by cluster ####
 message(Sys.time(), " - Summarize cluster")
