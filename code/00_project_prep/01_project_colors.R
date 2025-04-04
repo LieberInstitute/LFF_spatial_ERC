@@ -6,6 +6,10 @@ library("here")
 
 source(here("code", "utils", "test_pallet_plots.R"))
 
+plot_dir <- here("plots", "00_project_prep", "01_project_colors")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+
 #### cell types ####
 cell_type_colors <- c(Excit = "#247FBC",
                       Inhib = "#E83E38",
@@ -17,7 +21,7 @@ cell_type_colors <- c(Excit = "#247FBC",
                       Other = "#4E586A")
 
 ## plot official colors
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_cell_type_colors.pdf"))
+pdf(here(plot_dir, "ERC_cell_type_colors.pdf"))
 test_pallet_plots(cell_type_colors, "Cell Colors: ERC")
 dev.off()
 
@@ -36,7 +40,7 @@ ancestry_colors <- c(EA="#1B3174",AA="#698F3F")
 sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
 
 ## test APOE colors
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_APOE_colors.pdf"))
+pdf(here(plot_dir, "ERC_APOE_colors.pdf"))
 test_pallet_plots(APOE_genotype_colors, "APOE_genotype_colors")
 dev.off()
 
@@ -103,7 +107,7 @@ save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors, sam
 #                               cool = cell_type_colors_cool)
 
 # walk2(cell_type_colors_list, names(cell_type_colors_list), function(colors, name){
-#     pdf(here("plots", "00_project_prep", "01_project_colors", sprintf("cell_type_color_%s_test_plots.pdf", name)))
+#     pdf(here(plot_dir, sprintf("cell_type_color_%s_test_plots.pdf", name)))
 #     test_pallet_plots(colors, paste0("Cell Colors: ", name))
 #     dev.off()
 # })
@@ -161,7 +165,7 @@ cell_type_colors_anno = c(Astro.1 = "#3BB273",
                           Inhib.Chandelier="#E83E38",
                           Inhib.Sst="#8B0000")
 
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_cell_type_colors_anno.pdf"), height = 15, width = 11)
+pdf(here(plot_dir, "ERC_cell_type_colors_anno.pdf"), height = 15, width = 11)
 test_pallet_plots(cell_type_colors_anno, "Cell Colors Anno: ERC")
 dev.off()
 
@@ -179,7 +183,7 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
                 "WM.uf~Sp09D07" = "#E4E1E3", # purpe white
                 "WM~Sp09D06" = "#581009") #brown
 
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.pdf"), height = 11, width = 8)
+pdf(here(plot_dir, "ERC_SpD_colors.pdf"), height = 11, width = 8)
 test_pallet_plots(SpD_colors2, "SpD Colors: ERC")
 dev.off()
 
@@ -198,7 +202,7 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
 save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors2.Rdata"))
 
 ## plot offical colors
-pdf(here("plots", "00_project_prep", "01_project_colors", "ERC_SpD_colors.2.pdf"), height = 11, width = 8)
+pdf(here(plot_dir, "ERC_SpD_colors.2.pdf"), height = 11, width = 8)
 test_pallet_plots(SpD_colors, "SpD Colors: ERC2")
 dev.off()
 
