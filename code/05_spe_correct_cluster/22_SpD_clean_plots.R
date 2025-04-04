@@ -33,17 +33,7 @@ rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
 #### load SpD annotations ####
 
 #### Define colors for SpD ####
-load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
-
-# SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
-#                 "L1~Sp09D05" = "#0220DE",
-#                 "L2.3~Sp09D01" = "#FEAF16",
-#                 "L3~Sp09D02" = "#00BCF9",
-#                 "L4.inhib~Sp09D09" = "#C82100",
-#                 "L5~Sp09D03" = "#16FF32",
-#                 "L6~Sp09D04" = "#116A52",
-#                 "WM.uf~Sp09D07" = "#E4E1E3",
-#                 "WM~Sp09D06" = "#581009")
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 #### Spot plots for representative sections ####
 
@@ -89,10 +79,9 @@ cluster_plots <- map(c("AA", "EA"), function(anc) {
     return(cluster_row)
 })
 
-ggsave(cluster_plots[[1]][[1]], filename = ggsave(here(plot_dir, "test09.png")), width = 18)
-
 cluster_grid <- Reduce("/", cluster_plots)
 ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.pdf"), width = 18, height = 9)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.png"), width = 18, height = 9)
 
 
 #### Plot reduced dims ####
