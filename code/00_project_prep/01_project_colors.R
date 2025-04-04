@@ -184,7 +184,7 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
                 "WM~Sp09D06" = "#581009") #brown
 
 pdf(here(plot_dir, "ERC_SpD_colors.pdf"), height = 11, width = 8)
-test_pallet_plots(SpD_colors2, "SpD Colors: ERC")
+test_pallet_plots(SpD_colors, "SpD Colors: ERC")
 dev.off()
 
 save(SpD_colors, file = here("processed-data","SpD_colors.Rdata"))
