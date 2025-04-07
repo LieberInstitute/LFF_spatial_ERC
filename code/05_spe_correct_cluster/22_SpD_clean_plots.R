@@ -179,7 +179,7 @@ map(names(cor_layer), function(ref){
 })
 
 
-# slurmjobs::job_single('22_SpD_clean_plots', create_shell = TRUE, memory = '25G', command = "Rscript 22_SpD_clean_plots.R")
+# slurmjobs::job_single('22_SpD_clean_plots', create_shell = TRUE, memory = '5G', command = "Rscript 22_SpD_clean_plots.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
