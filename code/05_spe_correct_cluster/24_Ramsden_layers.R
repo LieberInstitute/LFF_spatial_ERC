@@ -6,8 +6,8 @@ library("HDF5Array")
 library("here")
 library("sessioninfo")
 library("readxl")
+library("jaffelab")
 
-# library("jaffelab")
 # library("cowplot")
 # library("patchwork")
 
@@ -26,10 +26,17 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 #### Load Ramsden Gene lists ####
 # Ensembl mouse database (release 73)
 
-ramsden_sheets <- c("L2only", "L3only", "L5only")
-names(ramsden_sheets) <- ramsden_sheets
-ramsden_data <- map(ramsden_sheets, ~read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = .x))
+# ramsden_sheets <- c("L2only", "L3only", "L5only")
+# names(ramsden_sheets) <- ramsden_sheets
+# ramsden_data <- map(ramsden_sheets, ~read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = .x))
 
+ramsden_data_all <- read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = "AllGene")
+
+ramsden_data_all |> count(Vis) |> print(n = 32)
+
+ramsden_data_all <- ramsden_data |> filter(grepl("^L", Vis))
+
+ramsden_data_list <- map(splitit(ramsden_data_all$Vis), ~ramsden_data_all$Name[.x])
 
 # Basic function to convert mouse to human gene names from https://support.bioconductor.org/p/9153600/
 library(org.Hs.eg.db)
@@ -47,7 +54,8 @@ mouse_to_human <- function(mouseids, horg, morg, orth){
                       Homo_symbol = husymb[,2]))
 }
 
-ramsden_data_human <- map(ramsden_data, ~mouse_to_human(.x$Name, org.Hs.eg.db, org.Mm.eg.db, Orthology.eg.db))
+# ramsden_data_human <- map(ramsden_data, ~mouse_to_human(.x$Name, org.Hs.eg.db, org.Mm.eg.db, Orthology.eg.db))
+ramsden_data_human <- map(ramsden_data_list, ~mouse_to_human(.x, org.Hs.eg.db, org.Mm.eg.db, Orthology.eg.db))
 
 # TODO debug ENSEMBL lookup
 # mouse_to_human_ensembl <- function(mouseids, horg, morg, orth){
@@ -112,8 +120,9 @@ ramsden_enrichment <- gene_set_enrichment(
     model_type = "enrichment"
 )
 
-test <- gene_set_enrichment_plot(enrichment = ramsden_enrichment)
+
 
 pdf(here(plot_dir, "ramsden_ernichment.pdf"))
-print(test)
+gene_set_enrichment_plot(enrichment = ramsden_enrichment,
+                         plot_SetSize_bar = TRUE)
 dev.off()
