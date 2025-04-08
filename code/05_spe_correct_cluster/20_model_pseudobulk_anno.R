@@ -19,6 +19,10 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 spe$SpD_syn <- gsub("~", "_", spe$SpD)
 table(spe$SpD_syn)
 
+## make APOE syntatic
+colData(sce)[,c(cluster_var, "sample_id", "APOE", "Sex", "Age", "Anc_Afr")]
+sce$APOE <- gsub("/", "", sce$APOE)
+
 #### Run Spatial Registration Function ####
 message(Sys.time(), " - Running Spatial Registration on: SpD_syn")
 
