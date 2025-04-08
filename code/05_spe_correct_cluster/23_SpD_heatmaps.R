@@ -8,83 +8,74 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "04_snRNA-seq", "19_sn_heatmaps")
-if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+# data_dir <- here("processed-data", "05_spe_correct_cluster", "23_SpD_heatmaps")
+# if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "19_sn_heatmaps")
+plot_dir <- here("plots", "05_spe_correct_cluster", "23_SpD_heatmaps")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
 ## load psuedobulked sce data
-sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_fine.rds"))
-dim(sce_pb)
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
+dim(spe_pb)
 
-rownames(sce_pb) <- rowData(sce_pb)$Symbol
+rownames(spe_pb) <- rowData(spe_pb)$gene_name
 
-anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
-
-cell_anno_df <- colData(sce_pb) |>
+spd_anno_df <- colData(spe_pb) |>
     as.data.frame() |>
-    select(sample_id, APOE, Ancestry, Sex, Age, cell_type_broad, cell_type_fine, cell_type_fine, ncells) |>
-    left_join(anno_notes |> select(cell_type_fine, cell_type_anno = guess)) |>
+    select(sample_id, APOE, Ancestry, Sex, Age, SpD, ncells) |>
     mutate(APOE = gsub("^(E[2,3,4])(E[2,3,4])","\\1/\\2", APOE))
 
-cell_type_anno_levels <- cell_anno_df |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno) |> unique()
+spd_levels <- levels(spe_pb$SpD)
 
-rownames(cell_anno_df) <- colnames(sce_pb)
+rownames(spd_anno_df) <- colnames(spe_pb)
 
-cell_anno_df$cell_type_anno <- factor(cell_anno_df$cell_type_anno, levels = cell_type_anno_levels)
-cell_anno_df <- cell_anno_df |> arrange(cell_type_anno, sample_id)
+spd_anno_df <- spd_anno_df |> arrange(SpD, sample_id)
 
-sce_pb <- sce_pb[,rownames(cell_anno_df)]
+spe_pb <- spe_pb[,rownames(spd_anno_df)]
 
 ## load colors
-load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
-setequal(names(APOE_genotype_colors), unique(cell_anno_df$APOE))
-
-cell_type_colors_anno <- DeconvoBuddies::create_cell_colors(cell_types = cell_type_anno_levels,
-                                                            pallet_name = "classic", 
-                                                            split = "\\.")
-cell_type_colors$anno <- cell_type_colors_anno$fine
+setequal(names(APOE_genotype_colors), unique(spd_anno_df$APOE))
 
 ## cell annotations simple
-cell_row_ha_simple <- rowAnnotation(
-    df = cell_anno_df |> select(cell_type_anno),
-    col = list(cell_type_anno = cell_type_colors$anno)
+spd_row_ha_simple <- rowAnnotation(
+    df = spd_anno_df |> select(SpD),
+    col = list(SpD = SpD_colors)
 )
 
-cell_col_ha_simple <- HeatmapAnnotation(
-    df = cell_anno_df |> select(cell_type_anno),
-    col = list(cell_type_anno = cell_type_colors$anno)
+spd_col_ha_simple <- HeatmapAnnotation(
+    df = spd_anno_df |> select(SpD),
+    col = list(SpD = SpD_colors)
 )
 
 # cell annotaions with APOE
-cell_row_ha_APOE <- rowAnnotation(
-    df = cell_anno_df |> select(cell_type_anno, APOE),
-    col = list(cell_type_anno = cell_type_colors$anno,
+spd_row_ha_APOE <- rowAnnotation(
+    df = spd_anno_df |> select(SpD, APOE),
+    col = list(SpD = SpD_colors,
                APOE = APOE_genotype_colors)
 )
 
-cell_col_ha_APOE <- HeatmapAnnotation(
-    df = cell_anno_df |> select(cell_type_anno, APOE),
-    col = list(cell_type_anno = cell_type_colors$anno,
+spd_col_ha_APOE <- HeatmapAnnotation(
+    df = spd_anno_df |> select(SpD, APOE),
+    col = list(SpD = SpD_colors,
                APOE = APOE_genotype_colors)
 )
 
 # cell annotations with all details
-cell_row_ha_details <- rowAnnotation(
-    df = cell_anno_df |> select(cell_type_anno, APOE, Ancestry, Sex, Age),
-    col = list(cell_type_anno = cell_type_colors$anno,
+spd_row_ha_details <- rowAnnotation(
+    df = spd_anno_df |> select(SpD, APOE, Ancestry, Sex, Age),
+    col = list(SpD = SpD_colors,
                APOE = APOE_genotype_colors,
                Ancestry = ancestry_colors,
                Sex = sex_colors)
 )
 
-cell_col_ha_details <- HeatmapAnnotation(
-    df = cell_anno_df |> select(cell_type_anno, APOE, Ancestry, Sex, Age),
-    col = list(cell_type_anno = cell_type_colors$anno,
+spd_col_ha_details <- HeatmapAnnotation(
+    df = spd_anno_df |> select(SpD, APOE, Ancestry, Sex, Age),
+    col = list(SpD = SpD_colors,
                APOE = APOE_genotype_colors,
                Ancestry = ancestry_colors,
                Sex = sex_colors)
@@ -92,44 +83,58 @@ cell_col_ha_details <- HeatmapAnnotation(
 
 #### Lit gene heatmap ####
 ## read in marker genes from lit
-lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
-    mutate(in_data = gene_name %in% rowData(sce_pb)$Symbol,
-           cell_type_broad = factor(cell_type_broad, levels = levels(sce_pb$cell_type_broad))) |>
-    arrange(cell_type_broad)
+lit_markers <- read_csv(here("processed-data","05_spe_correct_cluster", "00_lit_marker_genes_layer", "lit_layer_marker_summary.csv")) |>
+    mutate(in_data = gene_name %in% rowData(spe_pb)$gene_name) |>
+    arrange(Layer)
 
 ## missing from pb data
-lit_markers |> filter(is.na(cell_type_broad))
 lit_markers |> filter(!in_data)
-lit_markers |> filter(gene_name == "SYT1")
 
-lit_markers <- lit_markers |> filter(in_data & !is.na(cell_type_broad))
+lit_markers <- lit_markers |> filter(in_data)
 
 nrow(lit_markers)
 
 ## gene annotation df
 
 lit_gene_annotation <- lit_markers |>
-    select(gene_name, cell_type, cell_type_broad) |>
+    select(gene_name, Layer) |>
     column_to_rownames("gene_name")
 
-lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(" " = cell_type_broad),
-                                     col = list(" " = cell_type_colors$broad))
+unique(lit_gene_annotation$Layer)
+
+## libd_layer_colors + more 
+layer_colors <- c(Vasc = '#FF99C0',
+                  Layer1 = "#F0027F",
+                  Layer2 = "#377EB8",
+                  Layer3 = "#4DAF4A",
+                  Layer4 = "#984EA3",
+                  Layer5 = "#FFD700",
+                  Layer5a = "#E9FF70",
+                  Layer5b = "#FF9770",
+                  Layer6 = "#FF7F00",
+                  WM = "grey90",
+                  GM = "grey25",
+                  `Para-subiculum` = "brown")
+
+lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(" " = Layer),
+                                     col = list(" " = layer_colors))
+
 
 ## extract z-scores
-lit_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(lit_gene_annotation),]))
+lit_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(lit_gene_annotation),]))
 dim(lit_markers_zscore)
 lit_markers_zscore[1:5,1:5]
 
 ## plot heatmaps
-pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap.pdf"), height = 8, width = 11)
+pdf(here(plot_dir, "ERC_SpD_lit_gene_heatmap.pdf"), height = 8, width = 11)
 Heatmap(lit_markers_zscore,
                       name = "Z Score",
                       cluster_rows = FALSE,
                       cluster_columns = FALSE,
                       show_row_names = FALSE,
-                      column_split = lit_gene_annotation$cell_type_broad,
-                      # row_split = cell_anno_df$cell_type_anno,
-                      right_annotation = cell_row_ha_simple,
+                      column_split = lit_gene_annotation$Layer,
+                      # row_split = spd_anno_df$SpD,
+                      right_annotation = spd_row_ha_simple,
                       bottom_annotation = lit_gene_col_ha
 )
 dev.off()
@@ -140,9 +145,9 @@ Heatmap(lit_markers_zscore,
         cluster_rows = TRUE,
         cluster_columns = TRUE,
         show_row_names = FALSE,
-        # column_split = lit_gene_annotation$cell_type_broad,
-        # row_split = cell_anno_df$cell_type_anno,
-        right_annotation = cell_row_ha_simple,
+        # column_split = lit_gene_annotation$Layer,
+        # row_split = spd_anno_df$SpD,
+        right_annotation = spd_row_ha_simple,
         bottom_annotation = lit_gene_col_ha
 )
 dev.off()
@@ -153,9 +158,9 @@ Heatmap(lit_markers_zscore,
         cluster_rows = TRUE,
         cluster_columns = TRUE,
         show_row_names = FALSE,
-        # column_split = lit_gene_annotation$cell_type_broad,
-        # row_split = cell_anno_df$cell_type_anno,
-        right_annotation = cell_row_ha_details,
+        # column_split = lit_gene_annotation$SpD,
+        # row_split = spd_anno_df$SpD,
+        right_annotation = spd_row_ha_details,
         bottom_annotation = lit_gene_col_ha
 )
 dev.off()
@@ -163,111 +168,110 @@ dev.off()
 
 #### MeanRatio heatmap ####
 ## load marker gene data
-load(here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio", "MarkerStats_cell_type_fine.Rdata"), verbose = TRUE)
-
-marker_stats_top <- marker_stats |>
-    filter(MeanRatio.rank <= 5, MeanRatio > 1, gene_name %in% rownames(sce_pb)) |>
-    select(gene, MeanRatio.rank, cell_type_fine = cellType.target) |>
-    left_join(anno_notes |> select(cell_type_fine, cell_type_anno = guess)) |>
-    mutate(cell_type_anno = factor(cell_type_anno, levels = cell_type_anno_levels)) |>
-    arrange(cell_type_anno) |>
-    column_to_rownames("gene")
-
-marker_stats_top |> count(cell_type_anno) |> arrange(n)
-
-
-MR_gene_row_ha <- rowAnnotation(df = marker_stats_top |> select(" " = cell_type_anno),
-                                     col = list(" " = cell_type_colors$anno))
-
-MR_gene_col_ha <- HeatmapAnnotation(df = marker_stats_top |> select(" " = cell_type_anno),
-                                     col = list(" " = cell_type_colors$anno))
-
-## extract z-scores
-MR_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(marker_stats_top),]))
-dim(MR_markers_zscore)
-MR_markers_zscore[1:5,1:5]
-
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap.pdf"), height = 14, width = 10)
-Heatmap(t(MR_markers_zscore),
-        name = "Z Score",
-        cluster_rows = FALSE,
-        cluster_columns = FALSE,
-        show_row_names = TRUE,
-        show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 10),
-        # row_split_gp = grid::gpar(fontsize = 10),
-        # column_split = marker_stats_top$cell_type_anno,
-        row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
-        bottom_annotation = cell_col_ha_details,
-        right_annotation = MR_gene_row_ha
-)
-dev.off()
-
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster.pdf"), height = 12, width = 10)
-Heatmap(t(MR_markers_zscore),
-        name = "Z Score",
-        cluster_rows = TRUE,
-        cluster_columns = TRUE,
-        show_row_names = TRUE,
-        show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 9),
-        # column_split = marker_stats_top$cell_type_anno,
-        # row_split = cell_anno_df$cell_type_anno,
-        bottom_annotation = cell_col_ha_simple,
-        right_annotation = MR_gene_row_ha
-)
-dev.off()
-
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_details.pdf"), height = 12, width = 10)
-Heatmap(t(MR_markers_zscore),
-        name = "Z Score",
-        cluster_rows = TRUE,
-        cluster_columns = TRUE,
-        show_row_names = TRUE,
-        show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 9),
-        # column_split = marker_stats_top$cell_type_anno,
-        # row_split = cell_anno_df$cell_type_anno,
-        bottom_annotation = cell_col_ha_details,
-        right_annotation = MR_gene_row_ha
-)
-dev.off()
+# load(here("processed-data", "05_spe_correct_cluster", "16_sn_MeanRatio", "MarkerStats_SpD.Rdata"), verbose = TRUE)
+# 
+# marker_stats_top <- marker_stats |>
+#     filter(MeanRatio.rank <= 5, MeanRatio > 1, gene_name %in% rownames(spe_pb)) |>
+#     select(gene, MeanRatio.rank, SpD = cellType.target) |>
+#     left_join(anno_notes |> select(SpD, SpD = guess)) |>
+#     mutate(SpD = factor(SpD, levels = spd_levels)) |>
+#     arrange(SpD) |>
+#     column_to_rownames("gene")
+# 
+# marker_stats_top |> count(SpD) |> arrange(n)
+# 
+# 
+# MR_gene_row_ha <- rowAnnotation(df = marker_stats_top |> select(" " = SpD),
+#                                      col = list(" " = SpD_colors))
+# 
+# MR_gene_col_ha <- HeatmapAnnotation(df = marker_stats_top |> select(" " = SpD),
+#                                      col = list(" " = SpD_colors))
+# 
+# ## extract z-scores
+# MR_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(marker_stats_top),]))
+# dim(MR_markers_zscore)
+# MR_markers_zscore[1:5,1:5]
+# 
+# pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap.pdf"), height = 14, width = 10)
+# Heatmap(t(MR_markers_zscore),
+#         name = "Z Score",
+#         cluster_rows = FALSE,
+#         cluster_columns = FALSE,
+#         show_row_names = TRUE,
+#         show_column_names = FALSE,
+#         row_names_gp = grid::gpar(fontsize = 10),
+#         # row_split_gp = grid::gpar(fontsize = 10),
+#         # column_split = marker_stats_top$SpD,
+#         row_split = gsub("\\.","\n",marker_stats_top$SpD),
+#         bottom_annotation = spd_col_ha_details,
+#         right_annotation = MR_gene_row_ha
+# )
+# dev.off()
+# 
+# pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster.pdf"), height = 12, width = 10)
+# Heatmap(t(MR_markers_zscore),
+#         name = "Z Score",
+#         cluster_rows = TRUE,
+#         cluster_columns = TRUE,
+#         show_row_names = TRUE,
+#         show_column_names = FALSE,
+#         row_names_gp = grid::gpar(fontsize = 9),
+#         # column_split = marker_stats_top$SpD,
+#         # row_split = spd_anno_df$SpD,
+#         bottom_annotation = spd_col_ha_simple,
+#         right_annotation = MR_gene_row_ha
+# )
+# dev.off()
+# 
+# pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_details.pdf"), height = 12, width = 10)
+# Heatmap(t(MR_markers_zscore),
+#         name = "Z Score",
+#         cluster_rows = TRUE,
+#         cluster_columns = TRUE,
+#         show_row_names = TRUE,
+#         show_column_names = FALSE,
+#         row_names_gp = grid::gpar(fontsize = 9),
+#         # column_split = marker_stats_top$SpD,
+#         # row_split = spd_anno_df$SpD,
+#         bottom_annotation = spd_col_ha_details,
+#         right_annotation = MR_gene_row_ha
+# )
+# dev.off()
 
 #### Enrichment heatmap ####
 ## load marker gene data
-modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk", "modeling_results-cell_type_fine.rds"))
+modeling_results <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
-rowData(sce_pb)$gene_name <- rowData(sce_pb)$ID
+rowData(spe_pb)$gene_name <- rowData(spe_pb)$ID
 
 enrichment_stats_top <- sig_genes_extract(
     n = 5,
     modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
-    sce_layer = sce_pb
+    sce_layer = spe_pb
 ) |>
-    select(ensembl, fdr, top, logFC, cell_type_fine = test) |>
-    left_join(anno_notes |> select(cell_type_fine, cell_type_anno = guess)) |>
-    mutate(cell_type_anno = factor(cell_type_anno, levels = cell_type_anno_levels)) |>
-    arrange(cell_type_anno) |>
+    select(ensembl, fdr, top, logFC, SpD = test) |>
+    mutate(SpD = factor(gsub("_", "~", SpD), levels = spd_levels)) |>
+    arrange(SpD) |>
     column_to_rownames("ensembl")
 
-enrichment_stats_top |> count(cell_type_anno) |> arrange(n)
+enrichment_stats_top |> count(SpD) |> arrange(n)
 
 ## gene annotations
-enrich_gene_row_ha <- rowAnnotation(df = enrichment_stats_top |> select(" " = cell_type_anno),
-                                     col = list(" " = cell_type_colors$anno))
+enrich_gene_row_ha <- rowAnnotation(df = enrichment_stats_top |> select(" " = SpD),
+                                     col = list(" " = SpD_colors))
 
-enrich_gene_col_ha <- HeatmapAnnotation(df = enrichment_stats_top |> select(" " = cell_type_anno),
-                                     col = list(" " = cell_type_colors$anno))
+enrich_gene_col_ha <- HeatmapAnnotation(df = enrichment_stats_top |> select(" " = SpD),
+                                     col = list(" " = SpD_colors))
 
 ## extract z-scores
-enrich_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(enrichment_stats_top),]))
+enrich_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(enrichment_stats_top),]))
 dim(enrich_markers_zscore)
 enrich_markers_zscore[1:5,1:5]
 
 ## plot heatmaps
-pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap.pdf"), height = 14, width = 10)
+pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap.pdf"), height = 14, width = 10)
 Heatmap(t(enrich_markers_zscore),
         name = "Z Score",
         cluster_rows = FALSE,
@@ -276,9 +280,9 @@ Heatmap(t(enrich_markers_zscore),
         show_column_names = FALSE,
         row_names_gp = grid::gpar(fontsize = 10),
         # row_split_gp = grid::gpar(fontsize = 10),
-        # column_split = marker_stats_top$cell_type_anno,
-        row_split = gsub("\\.","\n",enrichment_stats_top$cell_type_anno),
-        bottom_annotation = cell_col_ha_details,
+        # column_split = marker_stats_top$SpD,
+        row_split = gsub("~","\n",enrichment_stats_top$SpD),
+        bottom_annotation = spd_col_ha_details,
         right_annotation = enrich_gene_row_ha
 )
 dev.off()
@@ -291,9 +295,9 @@ Heatmap(t(enrich_markers_zscore),
         show_row_names = TRUE,
         show_column_names = FALSE,
         row_names_gp = grid::gpar(fontsize = 9),
-        # column_split = marker_stats_top$cell_type_anno,
-        # row_split = cell_anno_df$cell_type_anno,
-        bottom_annotation = cell_col_ha_simple,
+        # column_split = marker_stats_top$SpD,
+        # row_split = spd_anno_df$SpD,
+        bottom_annotation = spd_col_ha_simple,
         right_annotation = enrich_gene_row_ha
 )
 dev.off()
@@ -306,15 +310,15 @@ Heatmap(t(enrich_markers_zscore),
         show_row_names = TRUE,
         show_column_names = FALSE,
         row_names_gp = grid::gpar(fontsize = 9),
-        # column_split = marker_stats_top$cell_type_anno,
-        # row_split = cell_anno_df$cell_type_anno,
-        bottom_annotation = cell_col_ha_details,
+        # column_split = marker_stats_top$SpD,
+        # row_split = spd_anno_df$SpD,
+        bottom_annotation = spd_col_ha_details,
         right_annotation = enrich_gene_row_ha
 )
 dev.off()
 
 
-# slurmjobs::job_single('19_sn_heatmaps', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
+# slurmjobs::job_single('23_SpD_heatmaps', create_shell = TRUE, memory = '25G', command = "Rscript 23_SpD_heatmaps.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
