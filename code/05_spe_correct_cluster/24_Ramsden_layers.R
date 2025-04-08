@@ -25,6 +25,12 @@ ramsden_sheets <- c("L2only", "L3only", "L5only")
 names(ramsden_sheets) <- ramsden_sheets
 ramsden_data <- map(ramsden_sheets, ~read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = .x))
 
+## other annotations
+ramsden_sheets2 <- c("LayerPatternedLayer5a6all",'LayerPatternedLayer6all', "LayerPatternedLayer5ball","LayerPatternedIslandsPara","LayerPatternedIslands","LayerPatternedL2b")
+names(ramsden_sheets2) <- ramsden_sheets2
+ramsden_data_other <- map(ramsden_sheets2, ~read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = .x))
+
+
 ## All Gene sheet
 ramsden_data_all <- read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = "AllGene")
 
@@ -49,6 +55,7 @@ mouse_entrez_to_human <- function(mouse_entrez){
 # mouse_entrez_to_human(c("66643", "16498"))
 
 ramsden_data_list_entrez <- map(splitit(ramsden_data_all$Vis), ~ramsden_data_all$Entrez[.x])
+ramsden_data_list_entrez <- c(ramsden_data_list_entrez, map(ramsden_data_other, "Entrez"))
 ramsden_data_human <- map(ramsden_data_list_entrez, ~mouse_entrez_to_human(.x))
 
 ramsden_human_genes <- map(ramsden_data_human, "ENSEMBL")
@@ -87,8 +94,23 @@ ramsden_enrichment <- gene_set_enrichment(
     model_type = "enrichment"
 )
 
-pdf(here(plot_dir, "ramsden_ernichment.pdf"), width = 10)
+#### plot enrichment ####
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+
+ramsden_enrichment <- ramsden_enrichment |> mutate(test = factor(test, levels = names(SpD_colors)))
+
+pdf(here(plot_dir, "ramsden_ernichment.pdf"), width = 12, height = 8)
 gene_set_enrichment_plot(enrichment = ramsden_enrichment,
                          plot_SetSize_bar = TRUE,
-                         )
+                         model_colors = SpD_colors
+)
+dev.off()
+
+ramsden_enrichment_only <- ramsden_enrichment |> filter(grepl("only", ID))
+
+pdf(here(plot_dir, "ramsden_ernichment_only.pdf"), width = 12, height = 8)
+gene_set_enrichment_plot(enrichment = ramsden_enrichment_only,
+                         plot_SetSize_bar = TRUE,
+                         model_colors = SpD_colors
+)
 dev.off()
