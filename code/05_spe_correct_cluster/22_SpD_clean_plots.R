@@ -10,6 +10,7 @@ library("readxl")
 library("jaffelab")
 library("cowplot")
 library("patchwork")
+library("DeconvoBuddies")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -39,13 +40,13 @@ load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 single_vis_clus <- vis_clus(
     spe = spe,
-    point_size = 1.5,
+    point_size = 1.7,
     colors = SpD_colors,
     sampleid = "Br5517",
     clustervar = "SpD",
-    spatial = FALSE
-) + 
-    guides(fill = guide_legend(override.aes = list(size = 5)))
+    spatial = FALSE,
+    guide_point_size = 5
+)
 
 ggsave(single_vis_clus, filename = here(plot_dir, "vis_clus_Br5517.png")) 
 ggsave(single_vis_clus, filename = here(plot_dir, "vis_clus_Br5517.pdf")) 
@@ -110,23 +111,9 @@ head(layer_modeling_results$spatialDLPFC$enrichment)
 
 
 ## Annotate modeling results
-erc_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
+erc_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
-erc_spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx")) |>
-    mutate(Annotation = fct_reorder(Annotation, order)) |>
-    mutate(SpD = fct_reorder(paste0(Annotation, "~", cluster), order)) |>
-    select(cluster, Annotation, SpD)
-
-erc_modeling <- map(erc_modeling, function(mod){
-    erc_colnames <- colnames(mod)
-    pwalk(erc_spd_anno, function(...) erc_colnames <<- gsub(..1, ..3, erc_colnames))
-    colnames(mod) <- erc_colnames
-    return(mod)
-})
-
-map(erc_modeling, colnames)
-
-saveRDS(erc_modeling, file = here(data_dir, "modeling_results-BayesSpace_SVGm_k09_annotated.rds"))
+colnames(erc_modeling$enrichment) <- gsub("_Sp", "~Sp", colnames(erc_modeling$enrichment))
 
 cor_layer <- map(layer_modeling_results, function(layer_mod){
     
@@ -143,14 +130,24 @@ cor_layer <- map(layer_modeling_results, function(layer_mod){
 
 anno <- map(cor_layer, ~annotate_registered_clusters(
     cor_stats_layer = .x,
-    confidence_threshold = 0.6,
-    cutoff_merge_ratio = 0.25
+    confidence_threshold = 0.5,
+    cutoff_merge_ratio = 0.1
 ))
+
+anno_summary <- map2_dfr(anno, names(anno), ~.x |> 
+                             select(cluster, layer_label) |>
+                             mutate(dataset = .y)) |>
+    pivot_wider(names_from = "dataset",
+                values_from = "layer_label") |>
+    arrange(cluster)
+
+write_csv(anno_summary, file = here(data_dir, "ERC_SpD_spatial_registration_anno_summary.csv"))
+
 
 ## save data
 save(cor_layer, anno, file = here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"))
 
-## refrence colors
+## reference colors
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                      spatialDLPFC = NULL) #TODO add spatial domain colors)
                      
@@ -177,6 +174,46 @@ map(names(cor_layer), function(ref){
     ))
     dev.off()
 })
+
+#### plot top markers ####
+
+## load pseuodbulked data
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
+
+rownames(spe) <- rowData(spe)$gene_name
+rownames(spe_pb) <- rowData(spe_pb)$gene_name
+
+top_DEGs <- sig_genes_extract(n = 10,
+                              modeling_results = erc_modeling,
+                              model_type = "enrichment",
+                              sce_layer = spe_pb) |>
+    mutate(cellType.target = test)
+
+plot_marker_express_ALL(
+    spe_pb,
+    top_DEGs,
+    pdf_fn = here(plot_dir, "SpD_top_enrichment_genes_pb.pdf"),
+    n_genes = 10,
+    rank_col = "top",
+    anno_col = NULL,
+    gene_col = "gene",
+    cellType_col = "SpD",
+    color_pal = SpD_colors,
+    plot_points = TRUE
+)
+
+plot_marker_express_ALL(
+    spe,
+    top_DEGs,
+    pdf_fn = here(plot_dir, "SpD_top_enrichment_genes.pdf"),
+    n_genes = 10,
+    rank_col = "top",
+    anno_col = NULL,
+    gene_col = "gene",
+    cellType_col = "SpD",
+    color_pal = SpD_colors,
+    plot_points = FALSE
+)
 
 
 # slurmjobs::job_single('22_SpD_clean_plots', create_shell = TRUE, memory = '5G', command = "Rscript 22_SpD_clean_plots.R")
