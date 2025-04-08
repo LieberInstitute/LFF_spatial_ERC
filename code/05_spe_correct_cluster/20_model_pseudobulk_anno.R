@@ -15,29 +15,30 @@ if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive =
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 
-cluster_var <- "SpD"
+## add syntacticly valid version of SpD
+spe$SpD_syn <- gsub("~", "_", spe$SpD)
+table(spe$SpD_syn)
 
 #### Run Spatial Registration Function ####
-message(Sys.time(), " - Running Spatial Registration on: ", cluster_var)
-stopifnot(cluster_var %in% colnames(colData(spe)))
+message(Sys.time(), " - Running Spatial Registration on: SpD_syn")
 
 modeling_results <-registration_wrapper(
     sce = spe,
-    var_registration = cluster_var,
+    var_registration = "SpD_syn",
     var_sample_id = "sample_id",
     covars = c("APOE", "Sex", "Age", "Anc_Afr"),
     gene_ensembl = "gene_id",
     gene_name = "gene_name",
     # suffix = k_nice,
     min_ncells = 10,
-    pseudobulk_rds_file = here(data_dir, sprintf("spe_pseudobulk-%s.rds", cluster_var))
+    pseudobulk_rds_file = here(data_dir, "spe_pseudobulk-SpD.rds")
 )
 
 message(Sys.time(), " - Saving Data")
-saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results-%s.rds", cluster_var)))
+saveRDS(modeling_results, file = here(data_dir, "modeling_results-SpD.rds"))
 
 #### Extract Top Layer Enrichment Genes ####
-sce_pb <- readRDS(here(data_dir, sprintf("spe_pseudobulk-%s.rds", cluster_var)))
+sce_pb <- readRDS(here(data_dir, "spe_pseudobulk-SpD.rds"))
 
 top_DEGs <- sig_genes_extract(n = 100,
                               modeling_results = modeling_results,
