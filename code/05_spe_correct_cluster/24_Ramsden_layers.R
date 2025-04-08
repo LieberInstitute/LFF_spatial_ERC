@@ -66,6 +66,8 @@ map_int(ramsden_human_genes, length)
 # L3only  L5high   L5mid  L5only  L5weak 
 # 31      83     241      56      19 
 
+save(ramsden_human_genes, file = here(data_dir, "Ramsden_gene_lists.Rdata"))
+
 #### gene enrichment ####
 
 ## get reference layer enrichment statistics
