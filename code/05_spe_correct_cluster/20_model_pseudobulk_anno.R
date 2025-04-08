@@ -41,16 +41,16 @@ message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, "modeling_results-SpD.rds"))
 
 #### Extract Top Layer Enrichment Genes ####
-sce_pb <- readRDS(here(data_dir, "spe_pseudobulk-SpD.rds"))
+spe_pb <- readRDS(here(data_dir, "spe_pseudobulk-SpD.rds"))
 
 top_DEGs <- sig_genes_extract(n = 100,
                               modeling_results = modeling_results,
                               model_type = "enrichment",
-                              sce_layer = spe_pb) |>
-    left_join(cluster_anno_k9)
+                              sce_layer = spe_pb) 
 
-write_csv(top_DEGs, file = here(data_dir, "enrichment_modeling_SpD_top100.csv"))
+top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
+write.csv(top_DEGs, file = here(data_dir, "enrichment_modeling_SpD_top100.csv"), row.names = FALSE)
 
 # slurmjobs::job_single('20_model_pseudobulk_anno', create_shell = TRUE, memory = '100G', command = "Rscript 20_model_pseudobulk_anno.R")
 
