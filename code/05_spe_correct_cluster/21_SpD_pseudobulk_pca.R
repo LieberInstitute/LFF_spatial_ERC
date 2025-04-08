@@ -16,11 +16,11 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 ## load colors
-# load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE) #TODO SpD colors
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### load pseuodbulked data ####
-spe_pb <- readRDS(here("processed-data","05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k09.rds"))
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
 
 
 #### Run PCA ####
@@ -46,7 +46,7 @@ ggsave(pca_elbow, filename = here(plot_dir, "PCA_elbow.png"))
 
 pd_select <- colData(spe_pb) |>
     as.data.frame() |>
-    select(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, BayesSpace_SVGm_k09, ncells) |>
+    select(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, SpD, ncells, Visium_slide) |>
     rownames_to_column("pseudobulk_sample")
     
 pd_long_num <- pd_select |>
@@ -54,7 +54,7 @@ pd_long_num <- pd_select |>
     pivot_longer(!pseudobulk_sample, names_to = "var_num", values_to = "value_num")
 
 pd_long_cat <- pd_select |>
-    select(pseudobulk_sample, APOE, Sex, Ancestry, BayesSpace_SVGm_k09) |>
+    select(pseudobulk_sample, APOE, Sex, Ancestry, SpD, Visium_slide) |>
     pivot_longer(!pseudobulk_sample, names_to = "var_cat", values_to = "value_cat")
 
 pca_long <- reshape2::melt(pca) |>
@@ -112,10 +112,8 @@ pca_vs_cat_boxplot <- pca_long |>
 ggsave(pca_vs_cat_boxplot, filename = here(plot_dir , "SpD_peudobulk_pca_vs_cat_boxplot.png"), height = 10)
 
 #### ggpairs ####
-gg_pca_plot <- ggpairs(pca_wide, columns = paste0("PC", 1:5), aes(colour = BayesSpace_SVGm_k09)) + theme_bw()
-ggsave(gg_pca_plot, filename = here(plot_dir, "SpD_pseudobulk_pca_ggpair_BayesSpace_SVGm_k09.png"), height = 10, width = 10)
 
-walk2(c("APOE", "Sex", "Ancestry"), list(APOE_genotype_colors, sex_colors, ancestry_colors),
+walk2(c("SpD", "APOE", "Sex", "Ancestry"), list(SpD_colors, APOE_genotype_colors, sex_colors, ancestry_colors),
       function(var, colors){
           
           gg_pca_plot <- ggpairs(pca_wide, columns = paste0("PC", 1:5), aes(colour = !!sym(var))) +
@@ -130,11 +128,13 @@ walk2(c("APOE", "Sex", "Ancestry"), list(APOE_genotype_colors, sex_colors, ances
 #### select scatter plots ####
 
 PC1_PC2_SpD <- pca_wide |>
-    ggplot(aes(x = PC1, y = PC2, color = BayesSpace_SVGm_k09)) +
+    ggplot(aes(x = PC1, y = PC2, color = SpD)) +
     geom_point() +
-    theme_bw()
+    scale_color_manual(values = SpD_colors) +
+    theme_bw() +
+    coord_equal()
 
-ggsave(PC1_PC2_SpD, filename = here(plot_dir , "SpD_peudobulk_PC1_vs_PC2.png"))
+ggsave(PC1_PC2_SpD, filename = here(plot_dir , "SpD_peudobulk_PC1_vs_PC2.png"), width = 5, height = 4)
 
 # slurmjobs::job_single('21_SpD_pseudobulk_pca', create_shell = TRUE, memory = '25G', command = "Rscript 21_SpD_pseudobulk_pca.R")
 
