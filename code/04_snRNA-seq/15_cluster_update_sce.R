@@ -267,6 +267,7 @@ sce <- sce[,sce$passALL_metricQC]
 dim(sce)
 
 sce$cell_type_fine <- droplevels(sce$cell_type_fine)
+sce$cell_type_anno <- droplevels(sce$cell_type_anno)
 
 levels(sce$cell_type_fine)
 pd <- as.data.frame(colData(sce))
