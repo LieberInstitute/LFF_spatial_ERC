@@ -144,6 +144,7 @@ cell_type_key <- tibble(cell_type = c("Glutamate receptor", "Fibroblast", "Inhib
        cell_type_broad = c("Excit", "Endo", "Inhib", "Endo", "Endo"))
 
 lit_marker_summary <- lit_markers |>
+    filter(note != "exclude") |>
     group_by(gene_name, cell_type) |> 
     summarize(n_studies = n(),
               studies = paste0(source, collapse = ",")) |>
