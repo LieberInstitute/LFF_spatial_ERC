@@ -26,7 +26,8 @@ layer_modeling_results <- map(c(HumanPilot = "modeling_results",
                                 spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), 
                               fetch_data)
 
-layer_modeling_results$spatialERC <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
+layer_modeling_results$spatialERC <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+# head(layer_modeling_results$spatialERC$enrichment)
 
 ## Add spatialDLPFC spatial domain annotations to spatialDLPFC modeling
 dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/bayesSpace_layer_annotations.csv") |>
@@ -38,24 +39,9 @@ pwalk(dlpfc_anno, function(...) dlpfc_colnames <<- gsub(..5, ..3, dlpfc_colnames
 colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
 # head(layer_modeling_results$spatialDLPFC$enrichment)
 
-## Add layer annotations to spatial ERC SpDs
-erc_spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx")) |>
-    mutate(Annotation = fct_reorder(Annotation, order)) |>
-    mutate(SpD = fct_reorder(paste0(Annotation, "~", cluster), order)) |>
-    select(cluster, Annotation, SpD)
-
-erc_colnames <- colnames(layer_modeling_results$spatialERC$enrichment)
-pwalk(erc_spd_anno, function(...) erc_colnames <<- gsub(..1, ..3, erc_colnames))
-colnames(layer_modeling_results$spatialERC$enrichment) <- erc_colnames
-# head(layer_modeling_results$spatialERC$enrichment)
-
 ## PsychENCODE enrichment
 layer_modeling_results$snDLPFC_PEC <- list()
 layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
-
-# ## Add cell type annotations
-# sc_anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
-
 
 #### correlate layer stats ####
 cor_layer <- map(layer_modeling_results, function(layer_mod){
@@ -92,7 +78,7 @@ save(spatial_registration, file = here(data_dir, "ERCsn_spatial_registration.Rda
 #### create registration heatmaps ####
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
-load(here("processed-data", "05_spe_correct_cluster", "SpD_colors.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 # cell_type_colors
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
