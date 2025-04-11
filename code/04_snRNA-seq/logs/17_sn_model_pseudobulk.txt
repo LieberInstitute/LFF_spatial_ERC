@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Apr  3 02:27:48 PM EDT 2025
+Fri Apr 11 04:14:27 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 15761599
+Job id: 15989252
 Job name: 17_sn_model_pseudobulk
-Node name: compute-155
+Node name: compute-120
 Task id: 
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -136,22 +135,22 @@ character(0)
 $cluster
 [1] "cell_type_anno"
 
-2025-04-03 14:28:00.120005 - Load HDF5 sce
+2025-04-11 16:14:45.506987 - Load HDF5 sce
 DataFrame with 125683 rows and 6 columns
          cell_type_anno   sample_id     APOE      Sex       Age   Anc_Afr
                <factor> <character> <factor> <factor> <numeric> <numeric>
 1      Oligo.1               Br6476    E3/E4        F     42.39     0.973
-2      Excit.L2_3.2          Br6476    E3/E4        F     42.39     0.973
+2      Excit.L2              Br6476    E3/E4        F     42.39     0.973
 3      Astro.1               Br6476    E3/E4        F     42.39     0.973
 4      Inhib.Pvalb           Br6476    E3/E4        F     42.39     0.973
 5      Inhib.Lamp5_Lhx6      Br6476    E3/E4        F     42.39     0.973
 ...                 ...         ...      ...      ...       ...       ...
 125679     Micro.1           Br5426    E2/E3        F     48.75      0.86
-125680     Excit.L2_3.1      Br5426    E2/E3        F     48.75      0.86
+125680     Excit.L2_5.1      Br5426    E2/E3        F     48.75      0.86
 125681     Astro.1           Br5426    E2/E3        F     48.75      0.86
-125682     Excit.L4_5        Br5426    E2/E3        F     48.75      0.86
+125682     Excit.L5.2        Br5426    E2/E3        F     48.75      0.86
 125683     Astro.1           Br5426    E2/E3        F     48.75      0.86
-2025-04-03 14:28:03.804917 - Running Spatial Registration on: cell_type_anno
+2025-04-11 16:14:50.160715 - Running Spatial Registration on: cell_type_anno
                   
                    Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974
   Astro.1             477    612   1003    455    530    692    324     28
@@ -161,13 +160,12 @@ DataFrame with 125683 rows and 6 columns
   Micro.2              88    162     83     44    156     67     58    114
   Oligo.1             933   1397    879    456    576    874    993    696
   Oligo.2             685    757    882     19    666    450    521    256
-  choird_plexis         0      0      0      0      0      0      0      0
   OPC                 602    631    628    560    649    544    274    164
-  Excit.L2_3.1         86    424     86    789    216    387    190     37
-  Excit.L2_3.2         18     96      6    167     86     62      8      7
-  Excit.L2_3.3          6     58      3      0     55     34     13     13
-  Excit.L4_5            0     35      0      0     22      7      9      0
-  Excit.L5              4     51      0    293     54     25     17      3
+  Excit.L2             18     96      6    167     86     62      8      7
+  Excit.L2_5.1         86    424     86    789    216    387    190     37
+  Excit.L2_5.2          6     58      3      0     55     34     13     13
+  Excit.L5.1            4     51      0    293     54     25     17      3
+  Excit.L5.2            0     35      0      0     22      7      9      0
   Excit.L5_6_NP         0      1      0     14      3      2      0      0
   Excit.L6_CT           3     41      3      2     35     55      4      3
   Excit.L6b             5     59      7      5     31    114      3     10
@@ -186,13 +184,12 @@ DataFrame with 125683 rows and 6 columns
   Micro.2             149     77     32    182     76    124    148     89
   Oligo.1            1093   1603    601   1048   1352    863    578    556
   Oligo.2             259   1019    339    324    968    398    270    593
-  choird_plexis         0      0      0      0      0      0      0      0
   OPC                 512    777    360    633    507    544    585    528
-  Excit.L2_3.1        577     92     11    423     67    219    649    267
-  Excit.L2_3.2        148     20      0    150      4     80    219    146
-  Excit.L2_3.3         26      5      0     19     15     11      1     53
-  Excit.L4_5           10      4      0      3      3     16      4     21
-  Excit.L5            104     22      0     50      3     44    316     35
+  Excit.L2            148     20      0    150      4     80    219    146
+  Excit.L2_5.1        577     92     11    423     67    219    649    267
+  Excit.L2_5.2         26      5      0     19     15     11      1     53
+  Excit.L5.1          104     22      0     50      3     44    316     35
+  Excit.L5.2           10      4      0      3      3     16      4     21
   Excit.L5_6_NP         9      2      0      2      0      2     27      0
   Excit.L6_CT           8      4      0     37     15      6     19     59
   Excit.L6b             5      0      1     56     13     12     13     63
@@ -211,13 +208,12 @@ DataFrame with 125683 rows and 6 columns
   Micro.2              17    165     65     59     66     42    143     76
   Oligo.1            1984    760   1228    964   1126   1254   1127    331
   Oligo.2             431    267    982    729    614    699    750    187
-  choird_plexis         0      0      0      0      0      0      0      0
   OPC                 324    387    390    398    353    293    363    409
-  Excit.L2_3.1        188    341    163    111    338    177    262    284
-  Excit.L2_3.2          4     87     41     16     19     21     74    104
-  Excit.L2_3.3          0      0      0      5      3     85     15      1
-  Excit.L4_5            1      0      0      1      0     17      5      0
-  Excit.L5             20    116    140      3     88     45     87    273
+  Excit.L2              4     87     41     16     19     21     74    104
+  Excit.L2_5.1        188    341    163    111    338    177    262    284
+  Excit.L2_5.2          0      0      0      5      3     85     15      1
+  Excit.L5.1           20    116    140      3     88     45     87    273
+  Excit.L5.2            1      0      0      1      0     17      5      0
   Excit.L5_6_NP         0     18     24      1      1      0      2     20
   Excit.L6_CT           3      4     15     40      9     90     36     22
   Excit.L6b             7      5     33     71     73     66     43      9
@@ -236,13 +232,12 @@ DataFrame with 125683 rows and 6 columns
   Micro.2             105     13    129    166     75    146    150
   Oligo.1             540    400   1794    395   2410    737   1047
   Oligo.2             274    445    406    222   1007    299    518
-  choird_plexis         0      0      0      0      0      0      0
   OPC                 442    673    470    465    451    461    340
-  Excit.L2_3.1        189    166    364    267    235    686    380
-  Excit.L2_3.2         93     85     87     76     39    169     77
-  Excit.L2_3.3         41      4      5     38     95      0      5
-  Excit.L4_5           26     14     11      7     21      4      0
-  Excit.L5             23     16     20     70     65    226     22
+  Excit.L2             93     85     87     76     39    169     77
+  Excit.L2_5.1        189    166    364    267    235    686    380
+  Excit.L2_5.2         41      4      5     38     95      0      5
+  Excit.L5.1           23     16     20     70     65    226     22
+  Excit.L5.2           26     14     11      7     21      4      0
   Excit.L5_6_NP         0      0      0      2      1     16      5
   Excit.L6_CT          13      6      2     24     28     20     19
   Excit.L6b            15     28     19      4     88      9     30
@@ -252,27 +247,27 @@ DataFrame with 125683 rows and 6 columns
   Inhib.Vip           272    231    241    245    269    557    127
   Inhib.Chandelier     13     18     19      6      4     10      0
   Inhib.Sst            18     14     11     35     29     78     16
-2025-04-03 14:28:03.828145 make pseudobulk object
-2025-04-03 14:50:26.287453 dropping 120 pseudo-bulked samples that are below 'min_ncells'.
-2025-04-03 14:50:26.426551 drop lowly expressed genes
-2025-04-03 14:50:27.177573 normalize expression
-2025-04-03 14:50:38.161028 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/17_sn_model_pseudobulk/sce_pseudobulk-cell_type_anno.rds
-2025-04-03 14:50:48.905431 create model matrix
-2025-04-03 14:50:48.956001 run duplicateCorrelation()
-2025-04-03 14:55:20.396667 The estimated correlation is: 0.128866567313706
-2025-04-03 14:55:20.401582 computing enrichment statistics
-2025-04-03 14:56:31.991686 extract and reformat enrichment results
-2025-04-03 14:56:32.156046 running the baseline pairwise model
-2025-04-03 14:56:35.881156 computing pairwise statistics
-2025-04-03 14:56:42.867531 computing F-statistics
-2025-04-03 14:56:46.602676 - Saving Data
+2025-04-11 16:14:50.201451 make pseudobulk object
+2025-04-11 16:43:16.550551 dropping 120 pseudo-bulked samples that are below 'min_ncells'.
+2025-04-11 16:43:16.698685 drop lowly expressed genes
+2025-04-11 16:43:17.496196 normalize expression
+2025-04-11 16:43:29.582479 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/17_sn_model_pseudobulk/sce_pseudobulk-cell_type_anno.rds
+2025-04-11 16:43:39.797975 create model matrix
+2025-04-11 16:43:39.867409 run duplicateCorrelation()
+2025-04-11 16:50:09.654513 The estimated correlation is: 0.128866567313706
+2025-04-11 16:50:09.674966 computing enrichment statistics
+2025-04-11 16:51:49.736685 extract and reformat enrichment results
+2025-04-11 16:51:49.939822 running the baseline pairwise model
+2025-04-11 16:51:55.060149 computing pairwise statistics
+2025-04-11 16:52:02.69639 computing F-statistics
+2025-04-11 16:52:07.933536 - Saving Data
 [1] "Reproducibility information:"
-[1] "2025-04-03 14:56:55 EDT"
+[1] "2025-04-11 16:52:16 EDT"
     user   system  elapsed 
-1693.979   14.231 1745.804 
+2201.512   17.481 2266.855 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88102)
+ version  R version 4.4.3 Patched (2025-02-28 r88138)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -280,7 +275,7 @@ DataFrame with 125683 rows and 6 columns
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-03
+ date     2025-04-11
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -300,7 +295,7 @@ DataFrame with 125683 rows and 6 columns
  BiocIO                 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  BiocManager            1.30.25   2024-08-28 [2] CRAN (R 4.4.1)
  BiocNeighbors          2.0.1     2024-11-28 [2] Bioconductor 3.20 (R 4.4.2)
- BiocParallel           1.40.1    2025-03-31 [2] Bioconductor 3.20 (R 4.4.3)
+ BiocParallel           1.40.2    2025-04-10 [2] Bioconductor
  BiocSingular           1.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  BiocVersion            3.20.0    2024-05-01 [2] Bioconductor 3.20 (R 4.4.0)
  Biostrings             2.74.1    2024-12-16 [2] Bioconductor 3.20 (R 4.4.2)
@@ -342,7 +337,7 @@ DataFrame with 125683 rows and 6 columns
  getopt               * 1.20.4    2023-10-01 [1] CRAN (R 4.4.2)
  GetoptLong             1.0.5     2020-12-15 [2] CRAN (R 4.4.0)
  ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.4.0)
- ggplot2                3.5.1     2024-04-23 [2] CRAN (R 4.4.0)
+ ggplot2                3.5.2     2025-04-09 [2] CRAN (R 4.4.3)
  ggrepel                0.9.6     2024-09-07 [2] CRAN (R 4.4.1)
  GlobalOptions          0.1.2     2020-06-10 [2] CRAN (R 4.4.0)
  glue                   1.8.0     2024-09-30 [2] CRAN (R 4.4.1)
@@ -361,7 +356,7 @@ DataFrame with 125683 rows and 6 columns
  jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.4.0)
  jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.4.3)
  KEGGREST               1.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- later                  1.4.1     2024-11-27 [2] CRAN (R 4.4.2)
+ later                  1.4.2     2025-04-08 [2] CRAN (R 4.4.3)
  lattice                0.22-6    2024-03-20 [3] CRAN (R 4.4.3)
  lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.4.0)
  lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.4.0)
@@ -376,7 +371,7 @@ DataFrame with 125683 rows and 6 columns
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
  munsell                0.5.1     2024-04-01 [2] CRAN (R 4.4.0)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
- pillar                 1.10.1    2025-01-07 [1] CRAN (R 4.4.2)
+ pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
  plotly                 4.10.4    2024-01-13 [2] CRAN (R 4.4.0)
  png                    0.1-8     2022-11-29 [2] CRAN (R 4.4.0)
@@ -393,7 +388,7 @@ DataFrame with 125683 rows and 6 columns
  rhdf5filters           1.18.1    2025-03-06 [2] Bioconductor 3.20 (R 4.4.3)
  Rhdf5lib               1.28.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.4.1)
- rlang                  1.1.5     2025-01-17 [2] CRAN (R 4.4.2)
+ rlang                  1.1.6     2025-04-11 [2] CRAN (R 4.4.3)
  rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.4.0)
  Rsamtools              2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  RSQLite                2.3.9     2024-12-03 [2] CRAN (R 4.4.2)
@@ -413,7 +408,7 @@ DataFrame with 125683 rows and 6 columns
  SingleCellExperiment * 1.28.1    2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment    * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- spatialLIBD          * 1.19.11   2025-03-25 [1] Github (LieberInstitute/spatialLIBD@35fe720)
+ spatialLIBD          * 1.19.12   2025-04-08 [1] Github (LieberInstitute/spatialLIBD@5a2e570)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
@@ -437,4 +432,4 @@ DataFrame with 125683 rows and 6 columns
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Apr  3 02:56:55 PM EDT 2025
+Fri Apr 11 04:52:16 PM EDT 2025
