@@ -27,7 +27,8 @@ layer_modeling_results <- map(c(HumanPilot = "modeling_results",
                               fetch_data)
 
 layer_modeling_results$spatialERC <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-# head(layer_modeling_results$spatialERC$enrichment)
+colnames(layer_modeling_results$spatialERC$enrichment) <- gsub("_Sp", "~Sp", colnames(layer_modeling_results$spatialERC$enrichment))
+colnames(layer_modeling_results$spatialERC$enrichment) 
 
 ## Add spatialDLPFC spatial domain annotations to spatialDLPFC modeling
 dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/bayesSpace_layer_annotations.csv") |>
@@ -86,7 +87,11 @@ layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                   spatialERC = SpD_colors,
                   snDLPFC_PEC = NULL)
 
+
+map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
+
 map(names(cor_layer), function(ref){
+    message(ref)
     pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)))
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
@@ -98,11 +103,11 @@ map(names(cor_layer), function(ref){
 })
 
 ## dont cluster cols - order by layer
-cell_type_colors$anno <- cell_type_colors$anno[names(cell_type_colors$anno) %in% rownames(cor_layer$spatialERC)]
-cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$anno),names(SpD_colors)]
-
-cor_layer$spatialERC[,names(SpD_colors)]
-cor_layer$spatialERC[names(cell_type_colors$anno),]
+# cell_type_colors$anno <- cell_type_colors$anno[names(cell_type_colors$anno) %in% rownames(cor_layer$spatialERC)]
+# cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$anno),names(SpD_colors)]
+# 
+# cor_layer$spatialERC[,names(SpD_colors)]
+# cor_layer$spatialERC[names(cell_type_colors$anno),]
 
 names(SpD_colors) %in% colnames(cor_layer$spatialERC)
 
