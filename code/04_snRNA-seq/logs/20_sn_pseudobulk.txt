@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Apr 14 01:21:16 PM EDT 2025
+Mon Apr 14 02:12:03 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16024839
-Job name: 16_sn_MeanRatio
-Node name: compute-158
+Job id: 16025722
+Job name: 20_sn_pseudobulk
+Node name: compute-156
 Task id: 
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
@@ -16,6 +16,8 @@ Currently Loaded Modules:
  
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
 Loading required package: matrixStats
@@ -129,56 +131,32 @@ The following object is masked from ‘package:rhdf5’:
 
     h5ls
 
-
-Attaching package: ‘dplyr’
-
-The following object is masked from ‘package:Biobase’:
-
-    combine
-
-The following objects are masked from ‘package:GenomicRanges’:
-
-    intersect, setdiff, union
-
-The following object is masked from ‘package:GenomeInfoDb’:
-
-    intersect
-
-The following objects are masked from ‘package:IRanges’:
-
-    collapse, desc, intersect, setdiff, slice, union
-
-The following objects are masked from ‘package:S4Vectors’:
-
-    first, intersect, rename, setdiff, setequal, union
-
-The following objects are masked from ‘package:BiocGenerics’:
-
-    combine, intersect, setdiff, union
-
-The following object is masked from ‘package:matrixStats’:
-
-    count
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
 $ARGS
 character(0)
 
 $cluster
 [1] "cell_type_anno"
 
-2025-04-14 13:21:30.032163 - Load HDF5 sce
-2025-04-14 13:21:34.220513 - Run MeanRatio on cell_type_anno
-2025-04-14 13:25:41.634756 - Run 1vALL on cell_type_anno
-Running 1vALL Testing for up-regulated genes
-2025-04-14 13:25:41.693128 - Find markers for: Oligo.1
-2025-04-14 13:47:35.745884 - Find markers for: Excit.L2
-2025-04-14 14:09:44.972742 - Find markers for: Astro.1
-2025-04-14 14:33:53.897817 - Find markers for: Inhib.Pvalb
+2025-04-14 14:12:18.120935 - Load HDF5 sce
+
+         Astro.1          Astro.2             Endo          Micro.1 
+           14207             7938             1448            10462 
+         Micro.2          Oligo.1          Oligo.2              OPC 
+            3066            30595            16236            14717 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+            2209             8671              609             2235 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+             241              152              625              897 
+      Inhib.Pax6 Inhib.Lamp5_Lhx6      Inhib.Pvalb        Inhib.Vip 
+             125             1234             1363             7535 
+Inhib.Chandelier        Inhib.Sst 
+             303              815 
+2025-04-14 14:12:22.271206 make pseudobulk object
+2025-04-14 14:23:17.743801 - normalize expression
+Error in `assays<-`(`*tmp*`, withDimnames = withDimnames, ..., value = `*vtmp*`) : 
+  please use 'assay(x, withDimnames=FALSE) <- value' or 'assays(x,
+  withDimnames=FALSE) <- value' when the rownames or colnames of the
+  supplied assay(s) are not identical to those of the receiving
+  SingleCellExperiment object 'x'
+Calls: logcounts<- ... logcounts<- -> assay<- -> assay<- -> assays<- -> assays<-
+Execution halted
