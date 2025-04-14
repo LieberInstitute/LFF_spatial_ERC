@@ -95,7 +95,7 @@ plot_marker_express_ALL(
     anno_col = "MeanRatio.anno",
     gene_col = "gene",
     cellType_col = cluster,
-    color_pal = cell_type_colors$fine,
+    color_pal = cell_type_colors$anno,
     plot_points = FALSE
 )
 
