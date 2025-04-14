@@ -30,6 +30,15 @@ stopifnot(cluster_var %in% colnames(colData(spe)))
 
 table(spe[[cluster_var]])
 
+if(cluster_var == "SpD"){
+    ## add syntacticly valid version of SpD
+    spe$SpD_syn <- gsub("~", "_", spe$SpD)
+    table(spe$SpD_syn)
+    
+    cluster_var <- "SpD_syn"
+}
+
+
 message(Sys.time(), " make pseudobulk object")
 spe_pseudo <- scuttle::aggregateAcrossCells(
     spe,
