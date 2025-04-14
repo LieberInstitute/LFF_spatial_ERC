@@ -298,8 +298,6 @@ enrichment_stats_top <- sig_genes_extract(
     sce_layer = sce_pb
 ) |>
     select(ensembl, fdr, top, logFC, cell_type_anno = test) |>
-    left_join(anno_notes |> select(cell_type_anno, cell_type_anno = guess)) |>
-    mutate(cell_type_anno = factor(cell_type_anno, levels = cell_type_anno_levels)) |>
     arrange(cell_type_anno) |>
     column_to_rownames("ensembl")
 
