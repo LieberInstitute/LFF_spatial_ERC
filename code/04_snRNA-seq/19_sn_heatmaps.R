@@ -165,11 +165,20 @@ dev.off()
 lit_markers_Excit_subtype <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes","Davila-Velderrain_Excit_subtype_markers.csv"))
 
 subtype_gene_annotation <- lit_markers_Excit_subtype |>
-    filter(in_data) |>
+    mutate(in_data = gene_name %in% rowData(sce_pb)$gene_name) |>
+    filter(in_data, is.na(note) | note != "exclude") |>
     select(gene_name, cell_type) |>
-    column_to_rownames("gene_name")
+    column_to_rownames("gene_name") |>
+    arrange(cell_type)
+
+subtype_gene_annotation |> count(cell_type)
 
 subtype_gene_col_ha <- HeatmapAnnotation(df = subtype_gene_annotation |> select(cell_type))
+
+cell_excit_row_ha_simple <- rowAnnotation(
+    df = cell_anno_df |> filter(grepl("Excit", cell_type_anno)) |> select(cell_type_anno),
+    col = list(cell_type_anno = cell_type_colors$anno[grepl("Excit", names(cell_type_colors$anno))])
+)
 
 ## extract z-scores
 subtype_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(subtype_gene_annotation), grep("Excit", colnames(sce_pb))]))
@@ -180,15 +189,26 @@ subtype_markers_zscore[1:5,1:5]
 pdf(here(plot_dir, "ERC_sn_Excit_subtype_gene_heatmap.pdf"), height = 8, width = 11)
 Heatmap(subtype_markers_zscore,
         name = "Z Score",
-        cluster_rows = TRUE,
-        cluster_columns = TRUE,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
         show_row_names = FALSE,
-        # row_split = cell_anno_df$cell_type_anno,
-        # right_annotation = cell_row_ha_simple,
+        # row_split = cell_anno_df |> filter(grepl("Excit", cell_type_anno)) |> select(cell_type_anno),
+        right_annotation = cell_excit_row_ha_simple,
         bottom_annotation = subtype_gene_col_ha
 )
 dev.off()
 
+pdf(here(plot_dir, "ERC_sn_Excit_subtype_gene_heatmap_cluster.pdf"), height = 8, width = 11)
+Heatmap(subtype_markers_zscore,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        show_row_names = FALSE,
+        # row_split = cell_anno_df |> filter(grepl("Excit", cell_type_anno)) |> select(cell_type_anno),
+        right_annotation = cell_excit_row_ha_simple,
+        bottom_annotation = subtype_gene_col_ha
+)
+dev.off()
 
 
 
