@@ -39,6 +39,20 @@ sce_pseudo <- scuttle::aggregateAcrossCells(
     )
 )
 
+## Compute the logcounts
+message(Sys.time(), " - normalize expression")
+logcounts(sce_pseudo) <-
+    edgeR::cpm(edgeR::calcNormFactors(sce_pseudo),
+               log = TRUE,
+               prior.count = 1
+    )
+
+
+## Drop things we don't need
+spatialCoords(sce_pseudo) <- NULL
+imgData(sce_pseudo) <- NULL
+
+message(Sys.time(), " - save data")
 saveRDS(sce_pseudo, file = here(data_dir, sprintf("sce_pseudobulk_only-%s.rds", cluster_var)))
 
 # slurmjobs::job_single('20_sn_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 20_sn_pseudobulk.R -cluster 'cell_type_anno'")
