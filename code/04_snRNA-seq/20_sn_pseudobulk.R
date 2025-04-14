@@ -1,5 +1,5 @@
-## Louise Huuki-Myers, January 2025
-## Run spatialLIBD::registration_wrapper to get cell type modeling and pseudobulk data
+## Louise Huuki-Myers, April 2025
+## Run scuttle::aggregateAcrossCells to pseudobulk data
 
 ## Required libraries
 library("here")
@@ -39,21 +39,34 @@ sce_pseudo <- scuttle::aggregateAcrossCells(
     )
 )
 
+colnames(sce_pseudo) <- sce_pseudo$cluster_var
+
+## Drop lowly-expressed genes
+# message(Sys.time(), " drop lowly expressed genes")
+# keep_expr <-
+#     edgeR::filterByExpr(sce_pseudo, group = sce_pseudo$cluster_var)
+# sce_pseudo <- sce_pseudo[which(keep_expr), ]
+
+message(sprintf("pseudobulk dims: %d row, %d col", nrow(sce_pseudo), ncol(sce_pseudo)))
+
 ## Compute the logcounts
 message(Sys.time(), " - normalize expression")
-logcounts(sce_pseudo) <-
-    edgeR::cpm(edgeR::calcNormFactors(sce_pseudo),
+logcounts(sce_pseudo) <- edgeR::cpm(edgeR::calcNormFactors(sce_pseudo),
                log = TRUE,
                prior.count = 1
     )
 
+logcounts(sce_pseudo)[1:5,1:5]
 
-## Drop things we don't need
-spatialCoords(sce_pseudo) <- NULL
-imgData(sce_pseudo) <- NULL
+if(is(sce_pseudo, "SpatialExperiment")) {
+    ## Drop things we don't need
+    spatialCoords(sce_pseudo) <- NULL
+    imgData(sce_pseudo) <- NULL
+}
 
 message(Sys.time(), " - save data")
 saveRDS(sce_pseudo, file = here(data_dir, sprintf("sce_pseudobulk_only-%s.rds", cluster_var)))
+sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_only-%s.rds", cluster_var)))
 
 # slurmjobs::job_single('20_sn_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 20_sn_pseudobulk.R -cluster 'cell_type_anno'")
 
