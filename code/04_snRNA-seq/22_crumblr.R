@@ -101,7 +101,8 @@ plotTreeTest(res)
 # Plot hierarchy and regression coefficients
 plotTreeTestBeta(res)
 
-combined_fig <- fig.vp |
+combined_fig <- fig.vp +
+    theme(legend.position = "left") |
     plotTreeTestBeta(res) +
     theme(legend.position = "bottom", legend.box = "vertical") |
     plotForest(res, hide = FALSE) 
