@@ -310,10 +310,9 @@ Heatmap(t(MR_markers_zscore),
         cluster_columns = FALSE,
         show_row_names = TRUE,
         show_column_names = TRUE,
-        # row_names_gp = grid::gpar(fontsize = 10),
-        # row_split_gp = grid::gpar(fontsize = 10),
+        row_names_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$cell_type_anno,
-        # row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
+        row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
         # bottom_annotation = MR_gene_col_ha, # flip
         bottom_annotation = cell_col_ha_simple,
         # right_annotation = cell_row_ha_simple #flip
@@ -328,10 +327,7 @@ Heatmap(t(MR_markers_zscore),
         cluster_columns = TRUE,
         show_row_names = TRUE,
         show_column_names = TRUE,
-        # row_names_gp = grid::gpar(fontsize = 10),
-        # row_split_gp = grid::gpar(fontsize = 10),
-        # column_split = marker_stats_top$cell_type_anno,
-        # row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
+        row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
         bottom_annotation = cell_col_ha_simple,
         right_annotation = MR_gene_row_ha
 )
@@ -393,8 +389,6 @@ dev.off()
 ## load marker gene data
 modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk", "modeling_results-cell_type_anno.rds"))
 
-rowData(sce_pb)$gene_name <- rowData(sce_pb)$ID
-
 enrichment_stats_top <- sig_genes_extract(
     n = 5,
     modeling_results = modeling_results,
@@ -432,7 +426,7 @@ Heatmap(t(enrich_markers_zscore),
         # row_split_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$cell_type_anno,
         row_split = gsub("\\.","\n",enrichment_stats_top$cell_type_anno),
-        bottom_annotation = cell_col_ha_details,
+        bottom_annotation = cell_col_ha_simple,
         right_annotation = enrich_gene_row_ha
 )
 dev.off()
@@ -447,10 +441,13 @@ Heatmap(t(enrich_markers_zscore),
         row_names_gp = grid::gpar(fontsize = 9),
         # column_split = marker_stats_top$cell_type_anno,
         # row_split = cell_anno_df$cell_type_anno,
-        bottom_annotation = cell_sample_col_ha_simple,
+        bottom_annotation = cell_col_ha_simple,
         right_annotation = enrich_gene_row_ha
 )
 dev.off()
+
+
+## TODO do by sample
 
 pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster_details.pdf"), height = 12, width = 10)
 Heatmap(t(enrich_markers_zscore),
