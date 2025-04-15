@@ -46,6 +46,7 @@ spe_pseudo <- scuttle::aggregateAcrossCells(
         cluster_var = spe[[cluster_var]]
     )
 )
+# Error in .local(x, ..., value) : New 'sample_id's must map uniquely
 
 colnames(spe_pseudo) <- spe_pseudo$cluster_var
 

@@ -16,23 +16,26 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
 ## load psuedobulked sce data
-spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
-dim(spe_pb)
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk","spe_pseudobulk-SpD.rds"))
+dim(spe_pb_sample)
 
-rownames(spe_pb) <- rowData(spe_pb)$gene_name
+spe_pb_sample <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
+dim(spe_pb_sample)
 
-spd_anno_df <- colData(spe_pb) |>
+rownames(spe_pb_sample) <- rowData(spe_pb_sample)$gene_name
+
+spd_anno_df <- colData(spe_pb_sample) |>
     as.data.frame() |>
     select(sample_id, APOE, Ancestry, Sex, Age, SpD, ncells) |>
     mutate(APOE = gsub("^(E[2,3,4])(E[2,3,4])","\\1/\\2", APOE))
 
-spd_levels <- levels(spe_pb$SpD)
+spd_levels <- levels(spe_pb_sample$SpD)
 
-rownames(spd_anno_df) <- colnames(spe_pb)
+rownames(spd_anno_df) <- colnames(spe_pb_sample)
 
 spd_anno_df <- spd_anno_df |> arrange(SpD, sample_id)
 
-spe_pb <- spe_pb[,rownames(spd_anno_df)]
+spe_pb_sample <- spe_pb_sample[,rownames(spd_anno_df)]
 
 ## load colors
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
@@ -84,7 +87,7 @@ spd_col_ha_details <- HeatmapAnnotation(
 #### Lit gene heatmap ####
 ## read in marker genes from lit
 lit_markers <- read_csv(here("processed-data","05_spe_correct_cluster", "00_lit_marker_genes_layer", "lit_layer_marker_summary.csv")) |>
-    mutate(in_data = gene_name %in% rowData(spe_pb)$gene_name) |>
+    mutate(in_data = gene_name %in% rowData(spe_pb_sample)$gene_name) |>
     arrange(Layer)
 
 ## missing from pb data
@@ -121,7 +124,7 @@ lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(" " = La
 
 
 ## extract z-scores
-lit_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(lit_gene_annotation),]))
+lit_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(lit_gene_annotation),]))
 dim(lit_markers_zscore)
 lit_markers_zscore[1:5,1:5]
 
@@ -171,7 +174,7 @@ dev.off()
 # load(here("processed-data", "05_spe_correct_cluster", "16_sn_MeanRatio", "MarkerStats_SpD.Rdata"), verbose = TRUE)
 # 
 # marker_stats_top <- marker_stats |>
-#     filter(MeanRatio.rank <= 5, MeanRatio > 1, gene_name %in% rownames(spe_pb)) |>
+#     filter(MeanRatio.rank <= 5, MeanRatio > 1, gene_name %in% rownames(spe_pb_sample)) |>
 #     select(gene, MeanRatio.rank, SpD = cellType.target) |>
 #     left_join(anno_notes |> select(SpD, SpD = guess)) |>
 #     mutate(SpD = factor(SpD, levels = spd_levels)) |>
@@ -188,7 +191,7 @@ dev.off()
 #                                      col = list(" " = SpD_colors))
 # 
 # ## extract z-scores
-# MR_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(marker_stats_top),]))
+# MR_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(marker_stats_top),]))
 # dim(MR_markers_zscore)
 # MR_markers_zscore[1:5,1:5]
 # 
@@ -242,14 +245,14 @@ dev.off()
 ## load marker gene data
 modeling_results <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
-rowData(spe_pb)$gene_name <- rowData(spe_pb)$ID
+rowData(spe_pb_sample)$gene_name <- rowData(spe_pb_sample)$ID
 
 enrichment_stats_top <- sig_genes_extract(
     n = 5,
     modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
-    sce_layer = spe_pb
+    sce_layer = spe_pb_sample
 ) |>
     select(ensembl, fdr, top, logFC, SpD = test) |>
     mutate(SpD = factor(gsub("_", "~", SpD), levels = spd_levels)) |>
@@ -266,7 +269,7 @@ enrich_gene_col_ha <- HeatmapAnnotation(df = enrichment_stats_top |> select(" " 
                                      col = list(" " = SpD_colors))
 
 ## extract z-scores
-enrich_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(enrichment_stats_top),]))
+enrich_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(enrichment_stats_top),]))
 dim(enrich_markers_zscore)
 enrich_markers_zscore[1:5,1:5]
 
