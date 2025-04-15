@@ -15,28 +15,34 @@ plot_dir <- here("plots", "04_snRNA-seq", "19_sn_heatmaps")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
-## load psuedobulked sce data
-sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_anno.rds"))
+## load psuedobulked (by cluster) sce data
+sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_pseudobulk_only-cell_type_anno.rds"))
 dim(sce_pb)
 
 rownames(sce_pb) <- rowData(sce_pb)$gene_name
 
+## load psuedobulked (by cluster + sample) sce data
+sce_pb_sample <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_anno.rds"))
+dim(sce_pb_sample)
+
+rownames(sce_pb_sample) <- rowData(sce_pb_sample)$gene_name
+
 table(sce_pb$cell_type_anno)
 
-# anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
-
-cell_anno_df <- colData(sce_pb) |>
+#### Prep cell type annotations ####
+## Pull annotations 
+cell_anno_df <- colData(sce_pb_sample) |>
     as.data.frame() |>
     select(sample_id, APOE, Ancestry, Sex, Age, cell_type_broad, cell_type_anno, cell_type_anno, ncells) |>
     mutate(APOE = gsub("^(E[2,3,4])(E[2,3,4])","\\1/\\2", APOE),
            cell_type_anno = droplevels(cell_type_anno)) |> 
     arrange(cell_type_anno, sample_id)
 
-rownames(cell_anno_df) <- colnames(sce_pb)
+all(rownames(cell_anno_df) == colnames(sce_pb_sample))
 
 cell_type_anno_levels <- levels(sce_pb$cell_type_anno)
 
-sce_pb <- sce_pb[,rownames(cell_anno_df)]
+# sce_pb <- sce_pb[,rownames(cell_anno_df)]
 
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
@@ -49,18 +55,29 @@ setequal(names(cell_type_colors$anno), cell_type_anno_levels)
 
 setequal(names(APOE_genotype_colors), unique(cell_anno_df$APOE))
 
-## cell annotations simple
+## cell + sample annotations simple
 cell_row_ha_simple <- rowAnnotation(
-    df = cell_anno_df |> select(cell_type_anno),
+    cell_type_anno = colData(sce_pb)$cell_type_anno,
     col = list(cell_type_anno = cell_type_colors$anno)
 )
 
 cell_col_ha_simple <- HeatmapAnnotation(
+    cell_type_anno = colData(sce_pb)$cell_type_anno,
+    col = list(cell_type_anno = cell_type_colors$anno)
+)
+
+## cell + sample annotations simple
+cell_sample_row_ha_simple <- rowAnnotation(
     df = cell_anno_df |> select(cell_type_anno),
     col = list(cell_type_anno = cell_type_colors$anno)
 )
 
-# cell annotaions with APOE
+cell_sample_col_ha_simple <- HeatmapAnnotation(
+    df = cell_anno_df |> select(cell_type_anno),
+    col = list(cell_type_anno = cell_type_colors$anno)
+)
+
+# cell + sample annotations with APOE
 cell_row_ha_APOE <- rowAnnotation(
     df = cell_anno_df |> select(cell_type_anno, APOE),
     col = list(cell_type_anno = cell_type_colors$anno,
@@ -100,9 +117,6 @@ lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_gen
 ## missing from pb data
 lit_markers |> filter(is.na(cell_type_broad))
 lit_markers |> filter(!in_data)
-lit_markers |> filter(gene_name == "SYT1")
-
-lit_markers |> count(studies)
 
 lit_markers <- lit_markers |> filter(in_data & !is.na(cell_type_broad))
 
@@ -116,18 +130,17 @@ lit_gene_annotation <- lit_markers |>
 lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(" " = cell_type_broad),
                                      col = list(" " = cell_type_colors$broad))
 
-## extract z-scores
+## extract z-scores - cell type pb
 lit_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(lit_gene_annotation),]))
 dim(lit_markers_zscore)
 lit_markers_zscore[1:5,1:5]
 
-## plot heatmaps
+## plot heatmaps - cell type only
 pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap.pdf"), height = 8, width = 11)
 Heatmap(lit_markers_zscore,
                       name = "Z Score",
                       cluster_rows = FALSE,
                       cluster_columns = FALSE,
-                      show_row_names = FALSE,
                       column_split = lit_gene_annotation$cell_type_broad,
                       # row_split = cell_anno_df$cell_type_anno,
                       right_annotation = cell_row_ha_simple,
@@ -140,7 +153,7 @@ Heatmap(lit_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        show_row_names = FALSE,
+        show_row_names = TRUE,
         # column_split = lit_gene_annotation$cell_type_broad,
         # row_split = cell_anno_df$cell_type_anno,
         right_annotation = cell_row_ha_simple,
@@ -148,8 +161,48 @@ Heatmap(lit_markers_zscore,
 )
 dev.off()
 
+
+#### Lit heatmaps - cell type + sample ####
+## subset gene annotatoins 
+lit_gene_annotation <- lit_gene_annotation[rownames(lit_gene_annotation) %in% rownames(sce_pb_sample),]
+nrow(lit_gene_annotation)
+
+lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(" " = cell_type_broad),
+                                     col = list(" " = cell_type_colors$broad))
+
+## extract z-scores - cell type + sample pb
+lit_markers_zscore_sample <- scale(t(logcounts(sce_pb_sample)[rownames(lit_gene_annotation),]))
+dim(lit_markers_zscore_sample)
+
+## plot heatmaps
+pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_sample.pdf"), height = 8, width = 11)
+Heatmap(lit_markers_zscore_sample,
+                      name = "Z Score",
+                      cluster_rows = FALSE,
+                      cluster_columns = FALSE,
+                      show_row_names = FALSE,
+                      # column_split = lit_gene_annotation$cell_type_broad,
+                      # row_split = cell_anno_df$cell_type_anno,
+                      right_annotation = cell_sample_row_ha_simple,
+                      bottom_annotation = lit_gene_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_sample.pdf"), height = 8, width = 11)
+Heatmap(lit_markers_zscore_sample,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        show_row_names = FALSE,
+        # column_split = lit_gene_annotation$cell_type_broad,
+        # row_split = cell_anno_df$cell_type_anno,
+        right_annotation = cell_sample_row_ha_simple,
+        bottom_annotation = lit_gene_col_ha
+)
+dev.off()
+
 pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_details.pdf"), height = 8, width = 11)
-Heatmap(lit_markers_zscore,
+Heatmap(lit_markers_zscore_sample,
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
@@ -173,9 +226,22 @@ subtype_gene_annotation <- lit_markers_Excit_subtype |>
 
 subtype_gene_annotation |> count(cell_type)
 
-subtype_gene_col_ha <- HeatmapAnnotation(df = subtype_gene_annotation |> select(cell_type))
+subtype_gene_col_ha <- HeatmapAnnotation(df = subtype_gene_annotation |> select(" " = cell_type),
+                                         col = list(" " = c(Excit_L2 = "#377EB8",
+                                                                  Excit_L2_3 = "aquamarine",
+                                                                  Excit_L3 = "#4DAF4A",
+                                                                  Excit_L3b = "darkgreen",
+                                                                  Excit_L5 = "#FFD700",
+                                                                  # Excit_L5b = "#FF9770",
+                                                                  Excit_L6 = "#FF7F00")))
 
-cell_excit_row_ha_simple <- rowAnnotation(
+## Excit only cell type annotations
+# cell_excit_row_ha_simple <- rowAnnotation(
+#     cell_type_anno = sce_pb$cell_type_anno[grepl("Excit",sce_pb$cell_type_anno)],
+#     col = list(cell_type_anno = cell_type_colors$anno[grepl("Excit", names(cell_type_colors$anno))])
+# )
+
+cell_excit_row_ha_simple_sample <- rowAnnotation(
     df = cell_anno_df |> filter(grepl("Excit", cell_type_anno)) |> select(cell_type_anno),
     col = list(cell_type_anno = cell_type_colors$anno[grepl("Excit", names(cell_type_colors$anno))])
 )
@@ -191,7 +257,7 @@ Heatmap(subtype_markers_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
-        show_row_names = FALSE,
+        show_row_names = TRUE,
         # row_split = cell_anno_df |> filter(grepl("Excit", cell_type_anno)) |> select(cell_type_anno),
         right_annotation = cell_excit_row_ha_simple,
         bottom_annotation = subtype_gene_col_ha
@@ -203,7 +269,7 @@ Heatmap(subtype_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        show_row_names = FALSE,
+        show_row_names = TRUE,
         # row_split = cell_anno_df |> filter(grepl("Excit", cell_type_anno)) |> select(cell_type_anno),
         right_annotation = cell_excit_row_ha_simple,
         bottom_annotation = subtype_gene_col_ha
@@ -218,11 +284,10 @@ load(here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio", "MarkerStats_cell
 
 marker_stats_top <- marker_stats |>
     filter(MeanRatio.rank <= 5, MeanRatio > 1, gene_name %in% rownames(sce_pb)) |>
-    select(gene, MeanRatio.rank, cell_type_anno = cellType.target) |>
-    left_join(anno_notes |> select(cell_type_anno, cell_type_anno = guess)) |>
+    select(gene_name, MeanRatio.rank, cell_type_anno = cellType.target) |>
     mutate(cell_type_anno = factor(cell_type_anno, levels = cell_type_anno_levels)) |>
     arrange(cell_type_anno) |>
-    column_to_rownames("gene")
+    column_to_rownames("gene_name")
 
 marker_stats_top |> count(cell_type_anno) |> arrange(n)
 
@@ -244,12 +309,14 @@ Heatmap(t(MR_markers_zscore),
         cluster_rows = FALSE,
         cluster_columns = FALSE,
         show_row_names = TRUE,
-        show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 10),
+        show_column_names = TRUE,
+        # row_names_gp = grid::gpar(fontsize = 10),
         # row_split_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$cell_type_anno,
-        row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
-        bottom_annotation = cell_col_ha_details,
+        # row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
+        # bottom_annotation = MR_gene_col_ha, # flip
+        bottom_annotation = cell_col_ha_simple,
+        # right_annotation = cell_row_ha_simple #flip
         right_annotation = MR_gene_row_ha
 )
 dev.off()
@@ -260,17 +327,55 @@ Heatmap(t(MR_markers_zscore),
         cluster_rows = TRUE,
         cluster_columns = TRUE,
         show_row_names = TRUE,
-        show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 9),
+        show_column_names = TRUE,
+        # row_names_gp = grid::gpar(fontsize = 10),
+        # row_split_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$cell_type_anno,
-        # row_split = cell_anno_df$cell_type_anno,
+        # row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
         bottom_annotation = cell_col_ha_simple,
         right_annotation = MR_gene_row_ha
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_details.pdf"), height = 12, width = 10)
+#### Mean Ratio heatmap - cell type + sample ####
+## extract z-scores
+MR_markers_zscore_sample <- scale(t(logcounts(sce_pb_sample)[rownames(marker_stats_top),]))
+dim(MR_markers_zscore_sample)
+MR_markers_zscore_sample[1:5,1:5]
+
+pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_sample.pdf"), height = 14, width = 10)
+Heatmap(t(MR_markers_zscore_sample),
+        name = "Z Score",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        show_row_names = TRUE,
+        show_column_names = FALSE,
+        row_names_gp = grid::gpar(fontsize = 10),
+        # row_split_gp = grid::gpar(fontsize = 10),
+        # column_split = marker_stats_top$cell_type_anno,
+        row_split = gsub("\\.","\n",marker_stats_top$cell_type_anno),
+        bottom_annotation = cell_col_ha_details,
+        right_annotation = MR_gene_row_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_sample.pdf"), height = 12, width = 10)
 Heatmap(t(MR_markers_zscore),
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        show_row_names = TRUE,
+        show_column_names = FALSE,
+        row_names_gp = grid::gpar(fontsize = 9),
+        # column_split = marker_stats_top$cell_type_anno,
+        # row_split = cell_anno_df$cell_type_anno,
+        bottom_annotation = cell_sample_col_ha_simple,
+        right_annotation = MR_gene_row_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_details.pdf"), height = 12, width = 10)
+Heatmap(t(MR_markers_zscore_sample),
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
@@ -342,7 +447,7 @@ Heatmap(t(enrich_markers_zscore),
         row_names_gp = grid::gpar(fontsize = 9),
         # column_split = marker_stats_top$cell_type_anno,
         # row_split = cell_anno_df$cell_type_anno,
-        bottom_annotation = cell_col_ha_simple,
+        bottom_annotation = cell_sample_col_ha_simple,
         right_annotation = enrich_gene_row_ha
 )
 dev.off()
