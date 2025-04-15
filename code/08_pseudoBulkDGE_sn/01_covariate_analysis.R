@@ -1,3 +1,7 @@
+## Louise Huuki-Myers, April 2025
+## Examine covaraites in dataset for DGE
+## adapted from https://github.com/LieberInstitute/dlpfc_asd/blob/a250a1d7e20bd754c5f1186aa96ce0752d55e556/code/08_pseudoBulkDGE_s/02_covariate_analysis.R
+
 library("spatialLIBD")
 library("SingleCellExperiment")
 library("scran")
@@ -10,134 +14,117 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "06_differential_expression", "01_pseudobulk_data")
+data_dir <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data")
 #if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Set up dirs ####
-plot_dir <- here("plots", "06_differential_expression", "01_covariate_analysis")
+plot_dir <- here("plots", "08_pseudoBulkDGE_sn", "01_covariate_analysis")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
-# message(Sys.time(), " - Load HDF5 SPE")
-# spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "04_spe_correct_cluster", "spe_ASD"))
+# message(Sys.time(), " - Load HDF5 sce")
+# sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 
-# Define k values to iterate over
-k_values <- c(7, 9, 11, 12, 28)
+data <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_anno.rds"))
 
-for (k in k_values) {
-    
-    k_nice <- sprintf("%02d", k)  # Formatting k as two digits
-    
-    # Load the data from the .rds file for current value of k
-    data_file <- file.path(data_dir, paste0("summed_k", k_nice, ".rds"))
-    
-    if (file.exists(data_file)) {
-        # Load the RDS file and extract relevant data
-        data <- readRDS(data_file)
-        
-        # Extract the relevant columns from the loaded data
-        plot_data <- as.data.frame(colData(data)) |>
-            select(sample_id, age, diagnosis, BayesSpace, nspots, sum_umi, expr_chrM_ratio, pmi)
-    } else {
-        message("*****************************************************************")
-        warning(paste("Data file not found for k =", k_nice, ". Skipping this k."))
-        message("*****************************************************************")
-        next  # Skip this k if the file is not found
-    }
-    
-    # Generate nspots boxplots for each BayesSpace domain
-    plot_name <- paste0("nspots_by_bayesspace_k", k_nice, ".pdf")
-    pdf(here(plot_dir, plot_name), width = 8, height = 6)
-    for (domain in unique(plot_data$BayesSpace)) {
-        y_max_nspots <- max(plot_data$nspots) + 20
-        domain_data <- plot_data |> filter(BayesSpace == domain)
-        plot <- ggboxplot(
-            domain_data, x = "diagnosis", y = "nspots", 
-            color = "diagnosis", palette = c("blue", "red"), 
-            add = "jitter", shape = 19, 
-            xlab = "Diagnosis", ylab = "Number of Spots"
+# Extract the relevant columns from the loaded data
+plot_data <- as.data.frame(colData(data)) |>
+    select(sample_id, age, diagnosis, BayesSpace, nspots, sum_umi, expr_chrM_ratio, pmi)
+
+
+# Generate nspots boxplots for each BayesSpace domain
+plot_name <- paste0("nspots_by_bayesspace_k", k_nice, ".pdf")
+pdf(here(plot_dir, plot_name), width = 8, height = 6)
+for (domain in unique(plot_data$BayesSpace)) {
+    y_max_nspots <- max(plot_data$nspots) + 20
+    domain_data <- plot_data |> filter(BayesSpace == domain)
+    plot <- ggboxplot(
+        domain_data, x = "diagnosis", y = "nspots", 
+        color = "diagnosis", palette = c("blue", "red"), 
+        add = "jitter", shape = 19, 
+        xlab = "Diagnosis", ylab = "Number of Spots"
+    ) + 
+        geom_text(
+            aes(label = sample_id),
+            position = position_jitter(width = 0.1, height = 0.2),
+            hjust = 0.5, vjust = 1,
+            size = 3
         ) + 
-            geom_text(
-                aes(label = sample_id),
-                position = position_jitter(width = 0.1, height = 0.2),
-                hjust = 0.5, vjust = 1,
-                size = 3
-            ) + 
-            ggtitle(paste("BayesSpace Domain:", domain)) +
-            theme_bw() + 
-            theme(legend.position = "none") +
-            stat_compare_means(aes(group = diagnosis, label = paste0("p = ", after_stat(p.format))),
-                               label.y = y_max_nspots, method = "t.test")
-        print(plot)
-    }
-    dev.off()
-    
-    ## nspots boxplots with all spatial domains in 1 plot
-    p_values_nspots <- compare_means(nspots ~ diagnosis, data = plot_data, group.by = "BayesSpace", method = "t.test")
-    p_values_nspots$fdr <- p.adjust(p_values_nspots$p, method = "fdr")
-    y_max_nspots <- max(plot_data$nspots) + 50
-    plot <- ggboxplot(
-        plot_data, x = "BayesSpace", y = "nspots", 
-        color = "diagnosis", palette = c("blue", "red"), 
-        add = "jitter", shape = 19, 
-        xlab = "BayesSpace Domain", ylab = "Number of Spots"
-    ) + 
-        geom_text(aes(label = sample_id, color = diagnosis), position = position_jitter(width = 0.1, height = 0.2), size = 1.75, hjust = 0.5, vjust = 1) + 
+        ggtitle(paste("BayesSpace Domain:", domain)) +
         theme_bw() + 
-        theme(legend.position = "bottom") +
-        stat_compare_means(aes(group = diagnosis,label = paste0("p = ", after_stat(p.format))),label.y = y_max_nspots, method = "t.test")+
-        geom_text(data = p_values_nspots, aes(x = BayesSpace, y = y_max_nspots - 20, label = paste0("FDR = ", signif(fdr, 3))), size = 3, color = "black")
-    plot_name <- paste0("nspots_boxplot_k", k_nice, ".png")  
-    ggsave(filename = here(plot_dir, plot_name), plot = plot, width = 12, height = 8)
-    
-    # Generate sum_umi boxplots across BayesSpace domains
-    p_values_sum_umi <- compare_means(sum_umi ~ diagnosis, data = plot_data, group.by = "BayesSpace", method = "t.test")
-    p_values_sum_umi$fdr <- p.adjust(p_values_sum_umi$p, method = "fdr")
-    y_max_sum_umi <- max(plot_data$sum_umi) + 600000
-    plot <- ggboxplot(
-        plot_data, x = "BayesSpace", y = "sum_umi", 
-        color = "diagnosis", palette = c("blue", "red"), 
-        add = "jitter", shape = 19, 
-        xlab = "BayesSpace Domain", ylab = "sum_umi"
-    ) + 
-        geom_text(aes(label = sample_id, color = diagnosis), 
-                  position = position_jitter(width = 0.1, height = 0.2), 
-                  size = 1.75, hjust = 0.5, vjust = 1) + 
-        theme_bw() + 
-        theme(legend.position = "bottom") +
+        theme(legend.position = "none") +
         stat_compare_means(aes(group = diagnosis, label = paste0("p = ", after_stat(p.format))),
-                           label.y = y_max_sum_umi, method = "t.test") +
-        geom_text(data = p_values_sum_umi, aes(x = BayesSpace, y = y_max_sum_umi - 200000, 
-                                               label = paste0("FDR = ", signif(fdr, 3))), 
-                  size = 3, color = "black")
-    
-    plot_name <- paste0("sum_umi_boxplot_k", k_nice, ".png")
-    ggsave(filename = here(plot_dir, plot_name), plot = plot, width = 12, height = 8)
-    
-    # Generate expr_chrM_ratio boxplots with all spatial domains in 1 plot
-    p_values_mito <- compare_means(expr_chrM_ratio ~ diagnosis, data = plot_data, group.by = "BayesSpace", method = "t.test")
-    p_values_mito$fdr <- p.adjust(p_values_mito$p, method = "fdr")
-    y_max_mito <- max(plot_data$expr_chrM_ratio) + 0.02
-    plot <- ggboxplot(
-        plot_data, x = "BayesSpace", y = "expr_chrM_ratio", 
-        color = "diagnosis", palette = c("blue", "red"), 
-        add = "jitter", shape = 19, 
-        xlab = "BayesSpace Domain", ylab = "expr_chrM_ratio"
-    ) + 
-        geom_text(aes(label = sample_id, color = diagnosis), 
-                  position = position_jitter(width = 0, height = 0), 
-                  size = 1.75, hjust = 0, vjust = 1) + 
-        theme_bw() + 
-        theme(legend.position = "bottom") + 
-        stat_compare_means(aes(group = diagnosis, label = paste0("p = ", after_stat(p.format))),
-                           label.y = y_max_mito, method = "t.test") +
-        geom_text(data = p_values_mito, aes(x = BayesSpace, y = y_max_mito - 0.005, 
-                                            label = paste0("FDR = ", signif(fdr, 3))), 
-                  size = 3, color = "black")
-    
-    plot_name <- paste0("expr_chrM_ratio_boxplot_k", k_nice, ".png")
-    ggsave(filename = here(plot_dir, plot_name), plot = plot, width = 12, height = 8)
+                           label.y = y_max_nspots, method = "t.test")
+    print(plot)
 }
+dev.off()
+
+## nspots boxplots with all spatial domains in 1 plot
+p_values_nspots <- compare_means(nspots ~ diagnosis, data = plot_data, group.by = "BayesSpace", method = "t.test")
+p_values_nspots$fdr <- p.adjust(p_values_nspots$p, method = "fdr")
+y_max_nspots <- max(plot_data$nspots) + 50
+plot <- ggboxplot(
+    plot_data, x = "BayesSpace", y = "nspots", 
+    color = "diagnosis", palette = c("blue", "red"), 
+    add = "jitter", shape = 19, 
+    xlab = "BayesSpace Domain", ylab = "Number of Spots"
+) + 
+    geom_text(aes(label = sample_id, color = diagnosis), position = position_jitter(width = 0.1, height = 0.2), size = 1.75, hjust = 0.5, vjust = 1) + 
+    theme_bw() + 
+    theme(legend.position = "bottom") +
+    stat_compare_means(aes(group = diagnosis,label = paste0("p = ", after_stat(p.format))),label.y = y_max_nspots, method = "t.test")+
+    geom_text(data = p_values_nspots, aes(x = BayesSpace, y = y_max_nspots - 20, label = paste0("FDR = ", signif(fdr, 3))), size = 3, color = "black")
+plot_name <- paste0("nspots_boxplot_k", k_nice, ".png")  
+ggsave(filename = here(plot_dir, plot_name), plot = plot, width = 12, height = 8)
+
+# Generate sum_umi boxplots across BayesSpace domains
+p_values_sum_umi <- compare_means(sum_umi ~ diagnosis, data = plot_data, group.by = "BayesSpace", method = "t.test")
+p_values_sum_umi$fdr <- p.adjust(p_values_sum_umi$p, method = "fdr")
+y_max_sum_umi <- max(plot_data$sum_umi) + 600000
+plot <- ggboxplot(
+    plot_data, x = "BayesSpace", y = "sum_umi", 
+    color = "diagnosis", palette = c("blue", "red"), 
+    add = "jitter", shape = 19, 
+    xlab = "BayesSpace Domain", ylab = "sum_umi"
+) + 
+    geom_text(aes(label = sample_id, color = diagnosis), 
+              position = position_jitter(width = 0.1, height = 0.2), 
+              size = 1.75, hjust = 0.5, vjust = 1) + 
+    theme_bw() + 
+    theme(legend.position = "bottom") +
+    stat_compare_means(aes(group = diagnosis, label = paste0("p = ", after_stat(p.format))),
+                       label.y = y_max_sum_umi, method = "t.test") +
+    geom_text(data = p_values_sum_umi, aes(x = BayesSpace, y = y_max_sum_umi - 200000, 
+                                           label = paste0("FDR = ", signif(fdr, 3))), 
+              size = 3, color = "black")
+
+plot_name <- paste0("sum_umi_boxplot_k", k_nice, ".png")
+ggsave(filename = here(plot_dir, plot_name), plot = plot, width = 12, height = 8)
+
+# Generate expr_chrM_ratio boxplots with all spatial domains in 1 plot
+p_values_mito <- compare_means(expr_chrM_ratio ~ diagnosis, data = plot_data, group.by = "BayesSpace", method = "t.test")
+p_values_mito$fdr <- p.adjust(p_values_mito$p, method = "fdr")
+y_max_mito <- max(plot_data$expr_chrM_ratio) + 0.02
+plot <- ggboxplot(
+    plot_data, x = "BayesSpace", y = "expr_chrM_ratio", 
+    color = "diagnosis", palette = c("blue", "red"), 
+    add = "jitter", shape = 19, 
+    xlab = "BayesSpace Domain", ylab = "expr_chrM_ratio"
+) + 
+    geom_text(aes(label = sample_id, color = diagnosis), 
+              position = position_jitter(width = 0, height = 0), 
+              size = 1.75, hjust = 0, vjust = 1) + 
+    theme_bw() + 
+    theme(legend.position = "bottom") + 
+    stat_compare_means(aes(group = diagnosis, label = paste0("p = ", after_stat(p.format))),
+                       label.y = y_max_mito, method = "t.test") +
+    geom_text(data = p_values_mito, aes(x = BayesSpace, y = y_max_mito - 0.005, 
+                                        label = paste0("FDR = ", signif(fdr, 3))), 
+              size = 3, color = "black")
+
+plot_name <- paste0("expr_chrM_ratio_boxplot_k", k_nice, ".png")
+ggsave(filename = here(plot_dir, plot_name), plot = plot, width = 12, height = 8)
+
 
 
 ###### Additional analysis (since age and PMI remain constant) #############
