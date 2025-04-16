@@ -37,8 +37,20 @@ sce_pseudo <- registration_pseudobulk(
 )
 
 message(Sys.time(), " - Done pseudobulk")
-#### Additional edits ####
 
+message(sprintf("nrow: %d, ncol: %d", nrow(sce_pseudo), ncol(sce_pseudo)))
+
+## Drop cell types w/ not enough pseudobulk samples?
+table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_anno)
+# Astro.1 Astro.2 Endo Micro.1 Micro.2 Oligo.1 Oligo.2 OPC Excit.L2 Excit.L2_5.1 Excit.L2_5.2 Excit.L5.1 Excit.L5.2
+# E2+      14      14   14      14      14      14      14  14       10           14            6         11          4
+# E4+      17      17   16      17      17      17      17  17       15           17            9         14          6
+# 
+# Excit.L5_6_NP Excit.L6_CT Excit.L6b Inhib.Pax6 Inhib.Lamp5_Lhx6 Inhib.Pvalb Inhib.Vip Inhib.Chandelier Inhib.Sst
+# E2+             1           7        10          0               12          11        14                4        12
+# E4+             5          10         9          2               15          16        17               11        15
+
+#### Additional edits ####
 ## drop all NA cols
 all_na <- sapply(colData(sce_pseudo), function(x)all(is.na(x)))
 colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
