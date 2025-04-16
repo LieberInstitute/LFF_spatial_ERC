@@ -19,7 +19,7 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 
-rowData(sce)
+# rowData(sce)
 
 #### run pseudbulk ####
 mito_genes <- as.logical(seqnames(sce) == "chrM")
@@ -40,12 +40,21 @@ message(Sys.time(), " - Done pseudobulk")
 #### Additional edits ####
 
 ## drop all NA cols
+all_na <- sapply(colData(sce_pseudo), function(x)all(is.na(x)))
+colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
 
 ## add syntactic APOE vars
+sce_pseudo$APOE_syn <- factor(gsub("/", ".", sce_pseudo$APOE))
+levels(sce_pseudo$APOE_syn)
+
+sce_pseudo$APOE_carrier_syn <- factor(gsub("\\+", "", sce_pseudo$APOE_carrier))
+levels(sce_pseudo$APOE_carrier_syn)
 
 #### save ####
 message(Sys.time(), " - Save")
 saveRDS(sce_pseudo, file = here(data_dir, "sce_pseudo_DGE.RDS"))
+
+# sce_pseudo <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "sce_pseudo_DGE.RDS"))
 
 # slurmjobs::job_single('01_pseudobulk_data', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data.R")
 
