@@ -20,7 +20,7 @@ load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose =
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### load pseuodbulked data ####
-sce_pb <- readRDS(here("processed-data","04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_fine.rds"))
+sce_pb <- readRDS(here("processed-data","04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_anno.rds"))
 
 
 #### Run PCA ####
@@ -46,7 +46,7 @@ ggsave(pca_elbow, filename = here(plot_dir, "PCA_elbow.png"))
 
 pd_select <- colData(sce_pb) |>
     as.data.frame() |>
-    select(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, cell_type_fine, ncells, exp_round, seq_round) |>
+    select(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, cell_type_anno, ncells, exp_round, seq_round) |>
     rownames_to_column("pseudobulk_sample")
 
 pd_long_num <- pd_select |>
@@ -54,7 +54,7 @@ pd_long_num <- pd_select |>
     pivot_longer(!pseudobulk_sample, names_to = "var_num", values_to = "value_num")
 
 pd_long_cat <- pd_select |>
-    select(pseudobulk_sample, APOE, Sex, Ancestry, cell_type_fine, exp_round, seq_round) |>
+    select(pseudobulk_sample, APOE, Sex, Ancestry, cell_type_anno, exp_round, seq_round) |>
     pivot_longer(!pseudobulk_sample, names_to = "var_cat", values_to = "value_cat")
 
 pca_long <- reshape2::melt(pca) |>
@@ -117,7 +117,7 @@ ggsave(pca_vs_cat_boxplot, filename = here(plot_dir , "sn_pseudobulk_pca_vs_cat_
 # Error in cor.test.default(x, y, method = method, use = use) : 
 #     not enough finite observations
 
-walk2(c("cell_type_fine", "APOE", "Sex", "Ancestry"), list(cell_type_colors$fine, APOE_genotype_colors, sex_colors, ancestry_colors),
+walk2(c("cell_type_anno", "APOE", "Sex", "Ancestry"), list(cell_type_colors$anno, APOE_genotype_colors, sex_colors, ancestry_colors),
       function(var, colors){
           
           gg_pca_plot <- ggpairs(pca_wide, columns = paste0("PC", 1:5), aes(colour = !!sym(var))) +
@@ -129,7 +129,7 @@ walk2(c("cell_type_fine", "APOE", "Sex", "Ancestry"), list(cell_type_colors$fine
           
       })
 
-walk(c("cell_type_fine", "APOE", "Sex", "Ancestry"), list(cell_type_colors$fine, APOE_genotype_colors, sex_colors, ancestry_colors),
+walk(c("cell_type_anno", "APOE", "Sex", "Ancestry"), list(cell_type_colors$anno, APOE_genotype_colors, sex_colors, ancestry_colors),
       function(var, colors){
           
           gg_pca_plot <- ggpairs(pca_wide, columns = paste0("PC", 1:5), aes(colour = !!sym(var))) +
@@ -144,23 +144,23 @@ walk(c("cell_type_fine", "APOE", "Sex", "Ancestry"), list(cell_type_colors$fine,
 #### select scatter plots ####
 
 PC1_PC2_SpD <- pca_wide |>
-    ggplot(aes(x = PC1, y = PC2, color = cell_type_fine, shape = APOE)) +
+    ggplot(aes(x = PC1, y = PC2, color = cell_type_anno, shape = APOE)) +
     geom_point() +
-    scale_color_manual(values = cell_type_colors$fine) +
+    scale_color_manual(values = cell_type_colors$anno) +
     theme_bw()
 
 ggsave(PC1_PC2_SpD, filename = here(plot_dir , "sn_pseudobulk_PC1_vs_PC2.png"))
 
 PC1_PC6_SpD <- pca_wide |>
-    ggplot(aes(x = PC1, y = PC6, color = cell_type_fine, shape = Sex)) +
+    ggplot(aes(x = PC1, y = PC6, color = cell_type_anno, shape = Sex)) +
     geom_point() +
-    scale_color_manual(values = cell_type_colors$fine) +
+    scale_color_manual(values = cell_type_colors$anno) +
     theme_bw()
 
 ggsave(PC1_PC6_SpD, filename = here(plot_dir , "sn_pseudobulk_PC1_vs_PC6_sex.png"))
 
 
-# slurmjobs::job_single('21_sn_pseudobulk_pca', create_shell = TRUE, memory = '25G', command = "Rscript 21_sn_pseudobulk_pca.R")
+# slurmjobs::job_single('21_sn_pseudobulk_pca', create_shell = TRUE, memory = '10G', command = "Rscript 21_sn_pseudobulk_pca.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
