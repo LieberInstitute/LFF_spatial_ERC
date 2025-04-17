@@ -281,7 +281,7 @@ cell_class_proportions <- pd |>
 sample_neuron_order <- cell_class_proportions |> filter(cell_type_class == "neuron") |> arrange(prop) |> pull(sample_id)
 
 cell_type_proportions <- pd |>
-    group_by(sample_id, APOE, Sex, Ancestry, cell_type_anno) |>
+    group_by(sample_id, APOE, APOE_carrier, Sex, Age, Ancestry, Anc_Afr, exp_round, seq_round, cell_type_anno) |>
     summarize(n = n()) |> 
     group_by(sample_id, APOE, Sex, Ancestry) |>
     mutate(prop = n/sum(n),
