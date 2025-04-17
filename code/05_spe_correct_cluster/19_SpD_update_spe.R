@@ -213,6 +213,11 @@ SpD_proportions <- pd |>
     mutate(prop = n/sum(n),
            sample_id = factor(sample_id, levels = sample_GM_order))
 
+## save proportion data
+save(SpD_proportions, file = here(data_dir, "SpD_proportions.Rdata"))
+write.csv(SpD_proportions, file = here(data_dir, "SpD_proportions.csv"))
+
+## proportion plots
 SpD_proportion_bar <- SpD_proportions |>
     ggplot(aes(x = sample_id, y = prop, fill = SpD)) +
     geom_col() +
