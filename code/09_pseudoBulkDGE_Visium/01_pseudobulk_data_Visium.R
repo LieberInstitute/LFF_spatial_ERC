@@ -66,7 +66,7 @@ saveRDS(spe_pseudo, file = here(data_dir, "spe_pseudo_DGE.RDS"))
 
 # spe_pseudo <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "spe_pseudo_DGE.RDS"))
 
-# slurmjobs::job_single('01_pseudobulk_data_Visium', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data_Visium.R")
+# slurmjobs::job_single('01_pseudobulk_data_Visium', create_shell = TRUE, memory = '50G', command = "Rscript 01_pseudobulk_data_Visium.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
