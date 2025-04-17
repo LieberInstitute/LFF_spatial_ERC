@@ -27,7 +27,7 @@ mito_genes <- as.logical(seqnames(spe) == "chrM")
 table(mito_genes)
 
 ## add syntacticly valid version of SpD
-spe$SpD_syn <- gsub("~", "_", spe$SpD)
+spe$SpD_syn <- factor(gsub("~", "_", spe$SpD), levels = gsub("~", "_", levels(spe$SpD)))
 table(spe$SpD_syn)
 
 spe_pseudo <- registration_pseudobulk(
