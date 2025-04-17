@@ -4,7 +4,7 @@
 
 library("spatialLIBD")
 library("SingleCellExperiment")
-library("scran")
+# library("scran")
 # library("BayesSpace")
 library("tidyverse")
 library("ggpubr")
@@ -12,45 +12,38 @@ library("ggrepel")
 library("here")
 library("sessioninfo")
 
-#### Set up dirs ####
-data_dir <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data")
-#if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Set up dirs ####
-plot_dir <- here("plots", "08_pseudoBulkDGE_sn", "02_covariate_analysis")
+plot_dir <- here("plots", "09_pseudoBulkDGE_Visium", "02_covariate_analysis_Visium")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
-# message(Sys.time(), " - Load HDF5 sce")
-# sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
-
-data <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_anno.rds"))
+data <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
 
 ## load colors
-load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 # Extract the relevant columns from the data
 plot_data <- as.data.frame(colData(data)) |>
-    select(sample_id, cell_type_anno, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE, exp_round, seq_round, ncells) |>
-    mutate(APOE = factor(gsub("^(E[2,3,4])(E[2,3,4])","\\1/\\2", APOE)))
+    select(sample_id, SpD, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE, Visium_slide, round, nspots = ncells, pseudo_sum_umi, pseudo_expr_chrM_ratio) |>
+    mutate(APOE = factor(APOE))
            
-levels(plot_data$APOE)
 
 ## TODO add pseudobulk quality metrics sum_umi, expr_chrM_ratio, pmi
 
 # Generate n cell boxplots for each cell_type
 
-pdf(here(plot_dir, "ERC_sn_ncells_vs_APOE.pdf"), width = 8, height = 6)
-for (cell_type in levels(plot_data$cell_type_anno)) {
+pdf(here(plot_dir, "ERC_Visium_nspots_vs_APOE.pdf"), width = 8, height = 6)
+for (d in levels(plot_data$SpD)) {
     
-    cell_type_data <- plot_data |> filter(cell_type_anno == cell_type)
-    y_max_ncells <- max(cell_type_data$ncells)*1.1
+    cell_type_data <- plot_data |> filter(SpD == d)
+    y_max_ncells <- max(cell_type_data$nspots)*1.1
     
     plot <- ggboxplot(
         cell_type_data, 
         x = "APOE_carrier", 
-        y = "ncells", 
+        y = "nspots", 
         color = "APOE_carrier", 
         palette = APOE_carrier_colors,
         add = "jitter", 
@@ -65,7 +58,7 @@ for (cell_type in levels(plot_data$cell_type_anno)) {
             vjust = 1,
             size = 3
         ) + 
-        ggtitle(paste("Cell Type:", cell_type)) +
+        ggtitle(paste("SpD:", d)) +
         theme_bw() + 
         theme(legend.position = "none") +
         stat_compare_means(
