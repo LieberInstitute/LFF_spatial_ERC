@@ -269,7 +269,7 @@ dim(sce)
 sce$cell_type_fine <- droplevels(sce$cell_type_fine)
 sce$cell_type_anno <- droplevels(sce$cell_type_anno)
 
-levels(sce$cell_type_fine)
+levels(sce$cell_type_anno)
 pd <- as.data.frame(colData(sce))
 ####  Cell Type Proportions ####
 cell_class_proportions <- pd |>
@@ -286,6 +286,10 @@ cell_type_proportions <- pd |>
     group_by(sample_id, APOE, Sex, Ancestry) |>
     mutate(prop = n/sum(n),
            sample_id = factor(sample_id, levels = sample_neuron_order))
+
+## save proportion data
+save(cell_type_proportions, file = here(data_dir, "cell_type_proportions.Rdata"))
+write.csv(cell_type_proportions, file = here(data_dir, "cell_type_proportions.csv"))
 
 ## plot n per sample
 cell_type_sample_n_bar <- cell_type_proportions |>
