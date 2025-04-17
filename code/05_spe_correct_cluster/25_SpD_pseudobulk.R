@@ -20,7 +20,7 @@ cluster_var <- opt$cluster
 # cluster_var <- "SpD"
 
 ## prep dir
-data_dir <- here("processed-data", "04_snRNA-seq", "25_SpD_pseudobulk")
+data_dir <- here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
