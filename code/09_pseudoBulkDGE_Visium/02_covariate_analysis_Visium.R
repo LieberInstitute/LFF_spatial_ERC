@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, April 2025
-## Examine covaraites in dataset for DGE
+## Examine covaraites in Visium dataset for DGE
 ## adapted from https://github.com/LieberInstitute/dlpfc_asd/blob/a250a1d7e20bd754c5f1186aa96ce0752d55e556/code/08_pseudoBulkDGE_s/02_covariate_analysis.R
 
 library("spatialLIBD")
