@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Apr 17 10:29:35 AM EDT 2025
+Thu Apr 17 12:12:58 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16110183
+Job id: 16115093
 Job name: 01_pseudobulk_data_Visium
-Node name: compute-119
+Node name: compute-156
 Task id: 
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -131,7 +130,7 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-04-17 10:29:52.436053 - Load HDF5 SPE
+2025-04-17 12:13:10.624718 - Load HDF5 SPE
 class: SpatialExperiment 
 dim: 30494 122202 
 metadata(1): SpD_colors
@@ -151,14 +150,14 @@ mito_genes
 FALSE  TRUE 
 30481    13 
 
-   L1_Sp09D05  L2.3_Sp09D01    L3_Sp09D02    L5_Sp09D03    L6_Sp09D04 
-        15363         11471         26479         11617         19464 
-   LD_Sp09D09  Vasc_Sp09D08    WM_Sp09D06 WM.uf_Sp09D07 
-         6915          6217         12166         12510 
-2025-04-17 10:32:26.400803 make pseudobulk object
-2025-04-17 10:47:40.535216 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2025-04-17 10:47:40.765147 normalize expression
-2025-04-17 10:47:46.639802 - Done pseudobulk
+ Vasc_Sp09D08    L1_Sp09D05  L2.3_Sp09D01    L3_Sp09D02    LD_Sp09D09 
+         6217         15363         11471         26479          6915 
+   L5_Sp09D03    L6_Sp09D04 WM.uf_Sp09D07    WM_Sp09D06 
+        11617         19464         12510         12166 
+2025-04-17 12:14:57.303522 make pseudobulk object
+2025-04-17 12:23:50.000612 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2025-04-17 12:23:50.157011 normalize expression
+2025-04-17 12:23:54.739494 - Done pseudobulk
 nrow: 30494, ncol: 279
      
       Vasc~Sp09D08 L1~Sp09D05 L2.3~Sp09D01 L3~Sp09D02 LD~Sp09D09 L5~Sp09D03
@@ -170,11 +169,11 @@ nrow: 30494, ncol: 279
   E4+         17            17         17
 [1] "E2.E2" "E2.E3" "E3.E4" "E4.E4"
 [1] "E2" "E4"
-2025-04-17 10:47:46.739578 - Save
+2025-04-17 12:23:54.776849 - Save
 [1] "Reproducibility information:"
-[1] "2025-04-17 10:47:51 EDT"
-    user   system  elapsed 
-1060.701   14.442 1095.762 
+[1] "2025-04-17 12:23:59 EDT"
+   user  system elapsed 
+636.397   7.267 660.656 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.3 Patched (2025-02-28 r88150)
@@ -341,4 +340,4 @@ nrow: 30494, ncol: 279
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Apr 17 10:47:52 AM EDT 2025
+Thu Apr 17 12:24:00 PM EDT 2025
