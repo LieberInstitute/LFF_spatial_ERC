@@ -5,6 +5,7 @@ library("SingleCellExperiment")
 library("tidyverse")
 library("crumblr")
 library("variancePartition")
+library("dendextend")
 library("here")
 library("sessioninfo")
 
@@ -14,6 +15,10 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
 data_dir <- here("processed-data", "04_snRNA-seq", "22_crumblr_sn")
 if(!dir.exists(data_dir)) dir.create(data_dir)
+
+## load colors
+load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE) 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### Load data ####
 load(here("processed-data", "04_snRNA-seq", "15_cluster_update_sce","cell_type_proportions.Rdata"), verbose = TRUE)
@@ -61,7 +66,7 @@ clr_prop_long <- cobj$E |>
 
 
 # Partition variance into components for sample
-form <- ~ (1 | APOE_carrier) + (1 | Sex) + Age + Anc_Afr + (1 | exp_round)+ (1 | seq_round)
+form <- ~ (1 | APOE) + (1 | APOE_carrier) + (1 | Sex) + Age + Anc_Afr + (1 | exp_round)+ (1 | seq_round)
 vp <- fitExtractVarPartModel(cobj, form, erc_info)
 
 # Plot variance fractions
@@ -78,7 +83,7 @@ df_pca <- merge(pca$x, erc_info, by = "row.names")
 
 # Plot PCA
 #   shape by Stimulated vs unstimulated
-ggplot(df_pca, aes(PC1, PC2, color = exp_round, shape = APOE_carrier)) +
+ggplot(df_pca, aes(PC1, PC2, color = exp_round, shape = APOE)) +
     geom_point(size = 3) +
     theme_classic() +
     theme(aspect.ratio = 1) +
@@ -86,13 +91,55 @@ ggplot(df_pca, aes(PC1, PC2, color = exp_round, shape = APOE_carrier)) +
     xlab("PC1") +
     ylab("PC2")
 
+#### CLR plots ####
+
+clr_boxplot_APOE <- clr_prop_long |>
+    ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
+    geom_boxplot() +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(clr_boxplot_APOE, filename = "clr_boxplot_APOE.png")
+
+clr_boxplot_APOE_jitter <- clr_prop_long |>
+    ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(clr_boxplot_APOE_jitter, filename = "clr_boxplot_APOE_jitter.png")
+
+clr_boxplot_APOE_carrier <- clr_prop_long |>
+    ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
+    geom_boxplot() +
+    # geom_boxplot(outlier.shape = NA) +
+    # geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw()
+
+ggsave(clr_boxplot_APOE_carrier, filename = "clr_boxplot_APOE_carrier.png")
+
+clr_boxplot_exp_round<- clr_prop_long |>
+    ggplot(aes(x = exp_round, y = CLR, fill = exp_round)) +
+    geom_boxplot() +
+    # geom_boxplot(outlier.shape = NA) +
+    # geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_exp_round, filename = "clr_boxplot_exp_round.png")
+
+
 #### Hierarchical clustering ####
-library("dendextend")
+sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_pseudobulk_only-cell_type_anno.rds"))
+dim(sce_pb)
 
-sce_pb2 <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_pseudobulk_only-cell_type_anno.rds"))
-dim(sce_pb2)
-
-dist.clusCollapsed <- dist(t(logcounts(sce_pb2)))
+dist.clusCollapsed <- dist(t(logcounts(sce_pb)))
 tree.clusCollapsed <- hclust(dist.clusCollapsed, "ward.D2")
 
 dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
