@@ -32,7 +32,7 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive =
 #### Load the data ####
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
-# rownames(sce) <- rowData(sce)$gene_name
+rownames(sce) <- rowData(sce)$gene_name
 
 stopifnot(cluster %in% colnames(colData(sce)))
 #### calculate marker stats ####
