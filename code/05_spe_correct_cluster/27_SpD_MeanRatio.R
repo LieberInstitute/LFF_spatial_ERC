@@ -39,7 +39,7 @@ stopifnot(cluster %in% colnames(colData(spe)))
 
 ## Run Mean Ratio
 message(Sys.time(), " - Run MeanRatio on ", cluster)
-marker_stats_MeanRatio <- get_mean_ratio(
+marker_stats <- get_mean_ratio(
     sce = spe,
     assay_name = "logcounts",
     cellType_col = cluster,
@@ -47,7 +47,7 @@ marker_stats_MeanRatio <- get_mean_ratio(
     gene_name = "gene_name"
 )
 
-save(marker_stats_MeanRatio, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", cluster)))
+save(marker_stats, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", cluster)))
 
 
 #### plot top markers ####
