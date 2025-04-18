@@ -24,7 +24,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # message(Sys.time(), " - Load HDF5 sce")
 # sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 
-data <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk","sce_pseudobulk-cell_type_anno.rds"))
+data <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data","sce_pseudo_DGE.RDS"))
 
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
@@ -77,7 +77,7 @@ for (cell_type in levels(plot_data$cell_type_anno)) {
 }
 dev.off()
 
-
+## bar plot of n samples by cell type that pass pseudobulk cutoff 
 
 # slurmjobs::job_single('01_create_pseudobulk_data', create_shell = TRUE, memory = '25G', command = "Rscript 01_create_pseudobulk_data.R")
 
