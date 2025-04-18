@@ -27,10 +27,10 @@ load(here("processed-data", "04_snRNA-seq", "15_cluster_update_sce","cell_type_p
 pd <- colData(sce_pb) |> as.data.frame()
 
 ## calc error formula for standard error of propotion SE = sqrt(p*(1-p)/n)
-error <- cell_type_proportions |>
+error <- cell_type_proportions |> #already grouped by sample
     mutate(error = sqrt((prop * (1-prop))/sum(n)),
            anno = paste0(n,"/", sum(n))) |>
-    select(sample_id, cell_type_anno, error, anno)
+    select(sample_id, cell_type_anno, prop, error, anno)
 
 ## create cell count matrix
 cell_counts <- cell_type_proportions |> 
@@ -62,8 +62,8 @@ clr_prop_long <- cobj$E |>
     rownames_to_column("cell_type_anno") |>
     pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR") |>
     left_join(erc_info |> rownames_to_column("sample_id")) |>
-    left_join(error)
-
+    left_join(error) |>
+    replace_na(list(prop = 0, error = 0))
 
 # Partition variance into components for sample
 form <- ~ (1 | APOE) + (1 | APOE_carrier) + (1 | Sex) + Age + Anc_Afr + (1 | exp_round)+ (1 | seq_round)
@@ -74,6 +74,13 @@ fig.vp <- plotPercentBars(vp)
 fig.vp
 
 ggsave(fig.vp, filename = here(plot_dir, "crumblr_cell_type_vp.png"))
+
+#### variable correlation ####
+C <- canCorPairs(form, erc_info)
+# APOE and APOE_carrier
+pdf("variable_CorrMatrix_sn.pdf", height = 5, width = 5)
+plotCorrMatrix(C)
+dev.off()
 
 #### PCA ####
 pca <- prcomp(t(standardize(cobj)))
@@ -92,6 +99,10 @@ ggplot(df_pca, aes(PC1, PC2, color = exp_round, shape = APOE)) +
     ylab("PC2")
 
 #### CLR plots ####
+
+clr_v_prop <- clr_prop_long |>
+    ggplot(aes(prop, CLR, color = error)) +
+    geom_point()
 
 clr_boxplot_APOE <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
@@ -145,17 +156,24 @@ tree.clusCollapsed <- hclust(dist.clusCollapsed, "ward.D2")
 dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
 # plot(dend, main = "hierarchical cluster dend", horiz = TRUE)
 
+#### fit APOE_carrier ####
 # Use variancePartition workflow to analyze each cell type
 # Perform regression on each cell type separately
 #  then use eBayes to shrink residual variance
 
-# fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round + seq_round , erc_info)
-fit <- dream(cobj, ~ APOE_carrier + Age + Anc_Afr + exp_round , erc_info)
-# fit <- dream(cobj, ~ APOE_carrier, erc_info)
+fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round , erc_info)
 fit <- eBayes(fit)
 
 # Extract results for each cell type
-topTable(fit, coef = "APOE_carrierE4+", number = Inf)
+(diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
+
+#                        logFC    AveExpr           t     P.Value  adj.P.Val         B
+# Excit.L6b        -1.131278815 -1.0645145 -3.04776590 0.005820038 0.06032501 -2.171401
+# Oligo.2          -0.742218153  2.2535239 -2.92328889 0.007775356 0.06032501 -2.406501
+# Excit.L2          0.704993511 -0.1314255  2.89889100 0.008226138 0.06032501 -2.484467
+# Oligo.1          -0.526610281  2.9638510 -2.46905513 0.021622913 0.10594576 -3.225206
+
+write.csv(diff_prop_APOE_carrier, file = here(data_dir, "diff_prop_APOE_carrier.csv"))
 
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
@@ -165,6 +183,7 @@ plotTreeTest(res)
 
 # Plot hierarchy and regression coefficients
 plotTreeTestBeta(res)
+plotForest(res, hide = FALSE) 
 
 combined_fig <- fig.vp +
     theme(legend.position = "left") |
@@ -172,7 +191,106 @@ combined_fig <- fig.vp +
     theme(legend.position = "bottom", legend.box = "vertical") |
     plotForest(res, hide = FALSE) 
 
-ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined.png"))
+ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_APOE_carrier.png"), width = 10)
+
+## clr plot of top results
+clr_boxplot_APOE_carrier_Excit.L6b <- clr_prop_long |>
+    filter(cell_type_anno == "Excit.L6b") |>
+    ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
+    # geom_boxplot() +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw()
+
+ggsave(clr_boxplot_APOE_carrier_Excit.L6b, filename = "clr_boxplot_APOE_carrier_Excit.L6b.png")
+
+prop_boxplot_APOE_carrier_Excit.L6b <- clr_prop_long |>
+    filter(cell_type_anno == "Excit.L6b") |>
+    ggplot(aes(x = APOE_carrier, y = prop, fill = APOE_carrier)) +
+    # geom_boxplot() +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw()
+
+ggsave(clr_boxplot_APOE_carrier_Excit.L6b, filename = "clr_boxplot_APOE_carrier_Excit.L6b.png")
+
+#### fit exp_round ####
+# Extract results for each cell type
+topTable(fit, coef = "exp_roundround2", number = Inf)
+
+#                        logFC    AveExpr           t   P.Value adj.P.Val         B
+# Astro.1          -0.61245101  2.1654993 -1.55953049 0.1328783 0.9693659 -4.573971
+# Inhib.Lamp5_Lhx6  0.61170837 -0.4007870  1.48596918 0.1512167 0.9693659 -4.574353
+# Excit.L2         -0.95274566 -0.1314255 -1.25339076 0.2229793 0.9693659 -4.588706
+# Inhib.Pvalb       0.63602081 -0.4311626  1.24669577 0.2253792 0.9693659 -4.582203
+
+topTable(fit, coef = "SexM", number = Inf)
+
+# write.csv(diff_prop_APOE_carrier, file = here(data_dir, "diff_prop_APOE_carrier.csv"))
+
+
+#### fit APOE ####
+
+fit2 <- dream(cobj, ~ APOE + Age + Anc_Afr + exp_round , erc_info)
+fit2 <- eBayes(fit2)
+
+# Test APOE carrier
+(geno <- colnames(fit2$design)[grep("APOE", colnames(fit2$design))])
+(diff_prop_APOE <- topTable(fit2, coef = geno, number = Inf))
+#                   APOEE2.E3    APOEE3.E4    APOEE4.E4    AveExpr         F    P.Value adj.P.Val
+# Excit.L6b        -0.3774346 -1.642397391 -1.017496429 -1.0645145 4.7032782 0.01140097 0.2374917
+# Oligo.2          -0.3884539 -1.142631475 -0.882662486  2.2535239 3.7707442 0.02588605 0.2374917
+# Excit.L2          0.1743530  0.984704658  0.653632584 -0.1314255 3.2310558 0.04272876 0.2374917
+
+write.csv(diff_prop_APOE, file = here(data_dir, "diff_prop_APOE.csv"))
+
+
+# Perform multivariate test across the hierarchy
+topTable(fit, coef = "APOEE4/E4", number = Inf)
+
+res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOEE4/E4")
+
+# Plot hierarchy and testing results
+plotTreeTest(res)
+
+# Plot hierarchy and regression coefficients
+plotTreeTestBeta(res)
+plotForest(res, hide = FALSE) 
+
+combined_fig <- fig.vp +
+    theme(legend.position = "left") |
+    plotTreeTestBeta(res) +
+    theme(legend.position = "bottom", legend.box = "vertical") |
+    plotForest(res, hide = FALSE) 
+
+ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_APOEE4.E4.png"))
+
+clr_boxplot_APOE_Excit.L6b <- clr_prop_long |>
+    filter(cell_type_anno == "Excit.L6b") |>
+    ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(clr_boxplot_APOE_Excit.L6b, filename = "clr_boxplot_APOE_Excit.L6b.png")
+
+prop_boxplot_APOE_Excit.L6b <- clr_prop_long |>
+    filter(cell_type_anno == "Excit.L6b") |>
+    ggplot(aes(x = APOE, y = prop, fill = APOE)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = error), width = .1) +
+    facet_wrap(~cell_type_anno) +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(prop_boxplot_APOE_Excit.L6b, filename = "prop_boxplot_APOE_Excit.L6b.png")
+
 
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
 
