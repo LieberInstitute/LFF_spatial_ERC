@@ -20,7 +20,7 @@ cluster_var <- opt$cluster
 # cluster_var <- "SpD"
 
 ## prep dir
-data_dir <- here("processed-data", "04_snRNA-seq", "25_SpD_pseudobulk")
+data_dir <- here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
@@ -33,14 +33,14 @@ stopifnot(cluster_var %in% colnames(colData(spe)))
 table(spe[[cluster_var]])
 class(spe)
 
+## conver to SingleCellExperiment to prevent bug with aggregateAcrossCells
 spatialCoords(spe) <- NULL
 imgData(spe) <- NULL
 
-## make single cell 
 spe <- as(spe, "SingleCellExperiment")
 
+## add syntacticly valid version of SpD
 if(cluster_var == "SpD"){
-    ## add syntacticly valid version of SpD
     spe$SpD_syn <- factor(gsub("~", "_", spe$SpD), levels = gsub("~", "_", levels(spe$SpD)))
     table(spe$SpD_syn)
     
@@ -48,12 +48,13 @@ if(cluster_var == "SpD"){
 }
 
 #### pseudobulk ####
-message(Sys.time(), " make pseudobulk object")
+message(Sys.time(), " make pseudobulk object on ", cluster_var)
+class(spe)
+
 spe_pseudo <- scuttle::aggregateAcrossCells(
     spe,
-    ids = spe[["cluster_var"]]
+    ids = spe[[cluster_var]]
 )
-
 
 message(sprintf("pseudobulk dims: %d row, %d col", nrow(spe_pseudo), ncol(spe_pseudo)))
 
@@ -74,7 +75,7 @@ if(is(spe_pseudo, "SpatialExperiment")) {
 
 message(Sys.time(), " - save data")
 saveRDS(spe_pseudo, file = here(data_dir, sprintf("spe_pseudobulk_only-%s.rds", cluster_var)))
-spe_pseudo <- readRDS(here(data_dir, sprintf("spe_pseudobulk_only-%s.rds", cluster_var)))
+# spe_pseudo <- readRDS(here(data_dir, sprintf("spe_pseudobulk_only-%s.rds", cluster_var)))
 
 # slurmjobs::job_single('25_SpD_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 25_SpD_pseudobulk.R --cluster 'SpD'")
 
