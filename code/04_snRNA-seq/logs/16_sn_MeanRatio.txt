@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Apr 14 01:21:16 PM EDT 2025
+Fri Apr 18 03:45:42 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16024839
+Job id: 16139819
 Job name: 16_sn_MeanRatio
-Node name: compute-158
+Node name: compute-154
 Task id: 
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
@@ -174,37 +174,37 @@ character(0)
 $cluster
 [1] "cell_type_anno"
 
-2025-04-14 13:21:30.032163 - Load HDF5 sce
-2025-04-14 13:21:34.220513 - Run MeanRatio on cell_type_anno
-2025-04-14 13:25:41.634756 - Run 1vALL on cell_type_anno
+2025-04-18 15:45:55.820671 - Load HDF5 sce
+2025-04-18 15:46:05.648571 - Run MeanRatio on cell_type_anno
+2025-04-18 15:50:51.208366 - Run 1vALL on cell_type_anno
 Running 1vALL Testing for up-regulated genes
-2025-04-14 13:25:41.693128 - Find markers for: Oligo.1
-2025-04-14 13:47:35.745884 - Find markers for: Excit.L2
-2025-04-14 14:09:44.972742 - Find markers for: Astro.1
-2025-04-14 14:33:53.897817 - Find markers for: Inhib.Pvalb
-2025-04-14 14:57:47.676754 - Find markers for: Inhib.Lamp5_Lhx6
-2025-04-14 15:23:30.310879 - Find markers for: OPC
-2025-04-14 15:52:49.329834 - Find markers for: Inhib.Sst
-2025-04-14 16:21:31.0683 - Find markers for: Excit.L2_5.1
-2025-04-14 16:49:38.695055 - Find markers for: Excit.L5.1
-2025-04-14 17:18:00.734875 - Find markers for: Astro.2
-2025-04-14 17:43:52.937176 - Find markers for: Inhib.Vip
-2025-04-14 18:11:40.039071 - Find markers for: Micro.1
-2025-04-14 18:39:57.124206 - Find markers for: Oligo.2
-2025-04-14 19:10:38.730734 - Find markers for: Excit.L6_CT
-2025-04-14 19:40:05.924217 - Find markers for: Micro.2
-2025-04-14 20:09:39.282565 - Find markers for: Inhib.Chandelier
-2025-04-14 20:41:21.015607 - Find markers for: Excit.L5_6_NP
-2025-04-14 21:12:13.923194 - Find markers for: Endo
-2025-04-14 21:40:27.290871 - Find markers for: Inhib.Pax6
-2025-04-14 22:10:56.518188 - Find markers for: Excit.L6b
-2025-04-14 22:39:36.352702 - Find markers for: Excit.L5.2
-2025-04-14 23:05:03.041413 - Find markers for: Excit.L2_5.2
-2025-04-14 23:31:51.24332 - Building Table
+2025-04-18 15:50:51.270745 - Find markers for: Oligo.1
+2025-04-18 16:14:35.115216 - Find markers for: Excit.L2
+2025-04-18 16:44:29.804294 - Find markers for: Astro.1
+2025-04-18 17:10:55.238148 - Find markers for: Inhib.Pvalb
+2025-04-18 17:38:43.87243 - Find markers for: Inhib.Lamp5_Lhx6
+2025-04-18 18:07:36.670907 - Find markers for: OPC
+2025-04-18 18:36:04.130148 - Find markers for: Inhib.Sst
+2025-04-18 19:03:18.414883 - Find markers for: Excit.L2_5.1
+2025-04-18 19:30:05.107013 - Find markers for: Excit.L5.1
+2025-04-18 19:54:21.515151 - Find markers for: Astro.2
+2025-04-18 20:18:12.291341 - Find markers for: Inhib.Vip
+2025-04-18 20:41:36.329094 - Find markers for: Micro.1
+2025-04-18 21:04:22.156374 - Find markers for: Oligo.2
+2025-04-18 21:27:06.200854 - Find markers for: Excit.L6_CT
+2025-04-18 21:50:19.383003 - Find markers for: Micro.2
+2025-04-18 22:14:32.697955 - Find markers for: Inhib.Chandelier
+2025-04-18 22:39:14.531901 - Find markers for: Excit.L5_6_NP
+2025-04-18 23:02:13.800692 - Find markers for: Endo
+2025-04-18 23:25:23.131945 - Find markers for: Inhib.Pax6
+2025-04-18 23:49:00.382866 - Find markers for: Excit.L6b
+2025-04-19 00:12:27.273139 - Find markers for: Excit.L5.2
+2025-04-19 00:36:17.527097 - Find markers for: Excit.L2_5.2
+2025-04-19 01:00:58.99925 - Building Table
 ** Done! **
 
-2025-04-14 23:31:53.116267 - Done - Join data & save
-2025-04-14 23:31:54.008144 - Plots
+2025-04-19 01:01:00.797514 - Done - Join data & save
+2025-04-19 01:01:01.67499 - Plots
 Loading objects:
   cell_type_colors
 [1] TRUE
@@ -258,12 +258,12 @@ Warning message:
 Removed 4 rows containing missing values or values outside the scale range
 (`geom_point()`). 
 [1] "Reproducibility information:"
-[1] "2025-04-14 23:41:08 EDT"
+[1] "2025-04-19 01:11:12 EDT"
      user    system   elapsed 
-36703.381   200.653 37191.065 
+33272.519   204.222 33929.513 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88141)
+ version  R version 4.4.3 Patched (2025-02-28 r88154)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -271,7 +271,7 @@ Removed 4 rows containing missing values or values outside the scale range
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-14
+ date     2025-04-19
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -348,7 +348,7 @@ Removed 4 rows containing missing values or values outside the scale range
  here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.4.0)
  htmltools              0.5.8.1   2024-04-04 [2] CRAN (R 4.4.0)
  htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.4.0)
- httpuv                 1.6.15    2024-03-26 [2] CRAN (R 4.4.0)
+ httpuv                 1.6.16    2025-04-16 [2] CRAN (R 4.4.3)
  httr                   1.4.7     2023-08-15 [2] CRAN (R 4.4.0)
  igraph                 2.1.4     2025-01-23 [2] CRAN (R 4.4.2)
  IRanges              * 2.40.1    2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
@@ -416,7 +416,7 @@ Removed 4 rows containing missing values or values outside the scale range
  SingleCellExperiment * 1.28.1    2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment      1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- spatialLIBD            1.19.12   2025-04-08 [1] Github (LieberInstitute/spatialLIBD@5a2e570)
+ spatialLIBD            1.19.12   2025-04-16 [1] Github (LieberInstitute/spatialLIBD@0e32c65)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.4.3)
  stringr                1.5.1     2023-11-14 [2] CRAN (R 4.4.0)
@@ -445,4 +445,4 @@ Removed 4 rows containing missing values or values outside the scale range
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Apr 14 11:41:09 PM EDT 2025
+Sat Apr 19 01:11:13 AM EDT 2025
