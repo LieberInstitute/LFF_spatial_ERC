@@ -30,16 +30,40 @@ data <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_dat
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
+colnames(colData(data))
+
 # Extract the relevant columns from the data
 plot_data <- as.data.frame(colData(data)) |>
-    select(sample_id, cell_type_anno, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE, exp_round, seq_round, ncells) |>
-    mutate(APOE = factor(gsub("^(E[2,3,4])(E[2,3,4])","\\1/\\2", APOE)))
-           
+    select(sample_id, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE,
+           cell_type_anno, ncells, exp_round, seq_round,
+           pseudo_sum_umi, pseudo_expr_chrM, pseudo_expr_chrM_ratio) 
+
 levels(plot_data$APOE)
 
-## TODO add pseudobulk quality metrics sum_umi, expr_chrM_ratio, pmi
-
 # Generate n cell boxplots for each cell_type
+
+cell_type_count <- plot_data |> group_by(APOE_carrier, cell_type_anno) |> count()
+
+pb_cell_type_bar_APOE_carrier <- plot_data |>
+    count(APOE_carrier, cell_type_anno) |> 
+    ggplot(aes(x = cell_type_anno, y=n, fill = APOE_carrier)) +
+    geom_col() +
+    geom_text(aes(label = n), position = position_stack(vjust = .5)) +
+    coord_flip() +
+    scale_fill_manual(values = APOE_carrier_colors)
+
+ggsave(pb_cell_type_bar_APOE_carrier, filename = here(plot_dir, 'pb_cell_type_bar_APOE_carrier.png'))
+
+pb_cell_type_bar_APOE <- plot_data |>
+    count(APOE, cell_type_anno) |> 
+    ggplot(aes(x = cell_type_anno, y=n, fill = APOE)) +
+    geom_col() +
+    geom_text(aes(label = n), position = position_stack(vjust = .5)) +
+    coord_flip() +
+    scale_fill_manual(values = APOE_genotype_colors)
+
+ggsave(pb_cell_type_bar_APOE, filename = here(plot_dir, 'pb_cell_type_bar_APOE.png'))
+
 
 pdf(here(plot_dir, "ERC_sn_ncells_vs_APOE.pdf"), width = 8, height = 6)
 for (cell_type in levels(plot_data$cell_type_anno)) {
@@ -77,7 +101,7 @@ for (cell_type in levels(plot_data$cell_type_anno)) {
 }
 dev.off()
 
-## bar plot of n samples by cell type that pass pseudobulk cutoff 
+
 
 # slurmjobs::job_single('01_create_pseudobulk_data', create_shell = TRUE, memory = '25G', command = "Rscript 01_create_pseudobulk_data.R")
 
