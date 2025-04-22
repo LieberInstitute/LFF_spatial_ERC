@@ -25,72 +25,40 @@ load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 # Extract the relevant columns from the data
-plot_data <- as.data.frame(colData(spe_pb)) |>
+pd <- as.data.frame(colData(spe_pb)) |>
     select(sample_id, SpD, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE, Visium_slide, round, nspots = ncells, pseudo_sum_umi, pseudo_expr_chrM_ratio) |>
     mutate(APOE = factor(APOE))
            
 
-# Generate n sample boxplots for each SpD
+#### t-test variables ####
 
-sample_count <- plot_data |> group_by(APOE_carrier, SpD) |> count()
+## nspots
+y_position <- pd |>
+    group_by(SpD) |>
+    summarise(y.position = max(nspots) + .05*max(nspots))
 
-pb_SpD_bar_APOE_carrier <- plot_data |>
-    count(APOE_carrier, SpD) |> 
-    ggplot(aes(x = SpD, y=n, fill = APOE_carrier)) +
-    geom_col() +
-    geom_text(aes(label = n), position = position_stack(vjust = .5)) +
-    coord_flip() +
-    scale_fill_manual(values = APOE_carrier_colors)
+nspots_t_test <- pd |>
+    filter(SpD != "Excit.L5_6_NP") |>
+    mutate(SpD = droplevels(SpD)) |>
+    do(compare_means(nspots ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "SpD")) |>
+    ungroup() |>
+    mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
+                                    p.adj < 0.01 ~"**",
+                                    p.adj < 0.05 ~"*",
+                                    TRUE~""),
+           fdr_anno = sprintf("FDR=%.3f%s", p.adj, p.signif.fdr)) |>
+    left_join(y_position)
 
-ggsave(pb_SpD_bar_APOE_carrier, filename = here(plot_dir, 'pb_SpD_bar_APOE_carrier.png'))
+boxplot_nspots <- pd |>
+    ggplot() +
+    geom_boxplot(aes(y = nspots, x = APOE_carrier, fill = APOE_carrier), outlier.shape = NA) +
+    geom_point(aes(y = nspots, x = APOE_carrier, fill = APOE_carrier)) +
+    geom_text(data = nspots_t_test, aes(label = fdr_anno, x = 1, y = 1500))+
+    facet_wrap(~SpD) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw() 
 
-pb_SpD_bar_APOE <- plot_data |>
-    count(APOE, SpD) |> 
-    ggplot(aes(x = SpD, y=n, fill = APOE)) +
-    geom_col() +
-    geom_text(aes(label = n), position = position_stack(vjust = .5)) +
-    coord_flip() +
-    scale_fill_manual(values = APOE_genotype_colors)
-
-ggsave(pb_SpD_bar_APOE, filename = here(plot_dir, 'pb_SpD_bar_APOE.png'))
-
-# Generate n cell boxplots for each SpD
-
-pdf(here(plot_dir, "ERC_Visium_nspots_vs_APOE.pdf"), width = 8, height = 6)
-for (d in levels(plot_data$SpD)) {
-    
-    SpD_data <- plot_data |> filter(SpD == d)
-    y_max_ncells <- max(SpD_data$nspots)*1.1
-    
-    plot <- ggboxplot(
-        SpD_data, 
-        x = "APOE_carrier", 
-        y = "nspots", 
-        color = "APOE_carrier", 
-        palette = APOE_carrier_colors,
-        add = "jitter", 
-        shape = 19, 
-        xlab = "APOE Genotype", 
-        ylab = "Number of Nuclei"
-    ) + 
-        geom_text_repel(
-            aes(label = sample_id),
-            position = position_jitter(width = 0.1, height = 0.2),
-            hjust = 0.5, 
-            vjust = 1,
-            size = 3
-        ) + 
-        ggtitle(paste("SpD:", d)) +
-        theme_bw() + 
-        theme(legend.position = "none") +
-        stat_compare_means(
-            aes(group = APOE_carrier, label = paste0("p = ", after_stat(p.format))),
-                           label.x = 0.5,
-                           label.y = y_max_ncells,
-                           method = "t.test")
-    print(plot)
-}
-dev.off()
+ggsave(boxplot_nspots, filename = here(plot_dir, "boxplot_nspots_APOE_carrier.png"), height = 8 , width = 10)
 
 #### variance parition on Sample level data ####
 
@@ -108,7 +76,7 @@ pd_sample <- as.data.frame(colData(spe_pb_sample))
 # Assess correlation between all pairs of variables
 colnames(pd_sample)
 
-form <- ~ APOE + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + ncells
+form <- ~ APOE + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + nspots
 
 ## TODO test  + pseudo_sum_umi +pseudo_expr_chrM, pseudo_expr_chrM_ratio
 
@@ -120,7 +88,7 @@ C <- canCorPairs(form, pd_sample)
 # sample_id and Rin
 # sample_id and Visium_slide
 # sample_id and round
-# sample_id and ncells
+# sample_id and nspots
 # Visium_slide and round
 
 pdf(here(plot_dir, "Visium_variable_cor_matrix.pdf"))
