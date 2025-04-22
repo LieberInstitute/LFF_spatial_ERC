@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, April 2025
-## Examine covaraites in dataset for DGE
+## Examine covairates in sn dataset for DGE
 ## adapted from https://github.com/LieberInstitute/dlpfc_asd/blob/a250a1d7e20bd754c5f1186aa96ce0752d55e556/code/08_pseudoBulkDGE_s/02_covariate_analysis.R
 
 library("spatialLIBD")
@@ -13,7 +13,7 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data")
+data_dir <- here("processed-data", "08_pseudoBulkDGE_sn", "02_covariate_analysis")
 #if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Set up dirs ####
@@ -33,18 +33,17 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 colnames(colData(sce_pb))
 
 # Extract the relevant columns from the data
-plot_data <- as.data.frame(colData(sce_pb)) |>
+pd <- as.data.frame(colData(sce_pb)) |>
     select(sample_id, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE,
            cell_type_anno, ncells, exp_round, seq_round,
            pseudo_sum_umi, pseudo_expr_chrM, pseudo_expr_chrM_ratio) 
 
-levels(plot_data$APOE)
 
-# Generate n cell boxplots for each cell_type
+#### Generate n sample barplots for each cell_type ####
 
-cell_type_count <- plot_data |> group_by(APOE_carrier, cell_type_anno) |> count()
+cell_type_count <- pd |> group_by(APOE_carrier, cell_type_anno) |> count()
 
-pb_cell_type_bar_APOE_carrier <- plot_data |>
+pb_cell_type_bar_APOE_carrier <- pd |>
     count(APOE_carrier, cell_type_anno) |> 
     ggplot(aes(x = cell_type_anno, y=n, fill = APOE_carrier)) +
     geom_col() +
@@ -54,7 +53,7 @@ pb_cell_type_bar_APOE_carrier <- plot_data |>
 
 ggsave(pb_cell_type_bar_APOE_carrier, filename = here(plot_dir, 'pb_cell_type_bar_APOE_carrier.png'))
 
-pb_cell_type_bar_APOE <- plot_data |>
+pb_cell_type_bar_APOE <- pd |>
     count(APOE, cell_type_anno) |> 
     ggplot(aes(x = cell_type_anno, y=n, fill = APOE)) +
     geom_col() +
@@ -64,42 +63,36 @@ pb_cell_type_bar_APOE <- plot_data |>
 
 ggsave(pb_cell_type_bar_APOE, filename = here(plot_dir, 'pb_cell_type_bar_APOE.png'))
 
+#### t-test variables ####
 
-pdf(here(plot_dir, "ERC_sn_ncells_vs_APOE.pdf"), width = 8, height = 6)
-for (cell_type in levels(plot_data$cell_type_anno)) {
-    
-    cell_type_data <- plot_data |> filter(cell_type_anno == cell_type)
-    y_max_ncells <- max(cell_type_data$ncells)*1.1
-    
-    plot <- ggboxplot(
-        cell_type_data, 
-        x = "APOE_carrier", 
-        y = "ncells", 
-        color = "APOE_carrier", 
-        palette = APOE_carrier_colors,
-        add = "jitter", 
-        shape = 19, 
-        xlab = "APOE Genotype", 
-        ylab = "Number of Nuclei"
-    ) + 
-        geom_text_repel(
-            aes(label = sample_id),
-            position = position_jitter(width = 0.1, height = 0.2),
-            hjust = 0.5, 
-            vjust = 1,
-            size = 3
-        ) + 
-        ggtitle(paste("Cell Type:", cell_type)) +
-        theme_bw() + 
-        theme(legend.position = "none") +
-        stat_compare_means(
-            aes(group = APOE_carrier, label = paste0("p = ", after_stat(p.format))),
-                           label.x = 0.5,
-                           label.y = y_max_ncells,
-                           method = "t.test")
-    print(plot)
-}
-dev.off()
+## ncells 
+
+y_position <- pd |>
+    group_by(cell_type_anno) |>
+    summarise(y.position = max(ncells) + .05*max(ncells))
+
+n_cell_t_test <- pd |>
+    filter(cell_type_anno != "Excit.L5_6_NP") |>
+    mutate(cell_type_anno = droplevels(cell_type_anno)) |>
+    do(compare_means(ncells ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "cell_type_anno")) |>
+    ungroup() |>
+    mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
+                                     p.adj < 0.01 ~"**",
+                                    p.adj < 0.05 ~"*",
+                                     TRUE~""),
+           fdr_anno = sprintf("FDR=%.3f%s", p.adj, p.signif.fdr)) |>
+    left_join(y_position)
+
+boxplot_ncells <- pd |>
+    ggplot() +
+    geom_boxplot(aes(y = ncells, x = APOE_carrier, fill = APOE_carrier), outlier.shape = NA) +
+    geom_point(aes(y = ncells, x = APOE_carrier, fill = APOE_carrier)) +
+    geom_text(data = n_cell_t_test, aes(label = fdr_anno, x = 1, y = y.position))+
+    facet_wrap(~cell_type_anno, scales = "free_y") +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw() 
+
+ggsave(boxplot_ncells, filename = here(plot_dir, "boxplot_ncells_APOE_carrier.png"), height = 8 , width = 10)
 
 #### variance parition on Sample level data ####
 library("variancePartition")
@@ -120,8 +113,10 @@ pd_sample <- as.data.frame(colData(sce_pb_sample))
 colnames(pd_sample)
 
 # form <- ~ APOE + sample_id + Sex + Age + Anc_Afr + exp_round + seq_round + ncells
-form <- ~ APOE + sample_id + exp_round
+# form <- ~ APOE + sample_id + exp_round
 # form <- ~ APOE + Sex + Age + Anc_Afr + exp_round + seq_round + ncells
+
+## TODO test  + pseudo_sum_umi +pseudo_expr_chrM, pseudo_expr_chrM_ratio
 
 C <- canCorPairs(form, pd_sample)
 # ~ APOE + sample_id + Sex + Age + Anc_Afr + exp_round + seq_round + ncells
