@@ -5,6 +5,7 @@ library("SingleCellExperiment")
 # library("edgeR")
 library("scran")
 library("tidyverse")
+library("ggrepel")
 library("here")
 library("sessioninfo")
 
@@ -37,8 +38,8 @@ de_results <- pseudoBulkDGE(
 # Error in glmFit.default(sely, design, offset = seloffset, dispersion = 0.05,  : 
 #                             nrow(design) disagrees with ncol(y)
 
-map(de_results, ~sum(.x$FDR<0.05, na.rm = TRUE))
-map(de_results, ~sum(.x$FDR<0.2, na.rm = TRUE))
+map_int(de_results, ~sum(.x$FDR<0.05, na.rm = TRUE))
+map_int(de_results, ~sum(.x$FDR<0.2, na.rm = TRUE))
 
 map(de_results, ~min(.x$FDR, na.rm = TRUE))
 
@@ -58,6 +59,8 @@ de_results_tb |> dplyr::count(cell_type_anno, DE_class)
 
 de_results_tb |> group_by(cell_type_anno) |> dplyr::arrange(FDR) |> dplyr::slice(1)
 
+de_results_tb |> filter(gene_name == "APOE") |> arrange(FDR)
+
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 (pval_lim <- min(de_results_tb$PValue[de_results_tb$FDR < 0.05]))
@@ -73,7 +76,7 @@ violin_plot_cell_type_anno <- de_results_tb |>
     scale_color_manual(values = c(APOE_carrier_colors, Other = "grey")) +
     theme_bw() +
     labs(title = "Visium PseudoBulkDGE", 
-         subtitle = "~APOE_carrier + Anc_Afr + Age + Sex + Rin + Visium_slide")
+         subtitle = "~APOE_carrier + Anc_Afr + Age + Sex + exp_round")
 
-ggsave(violin_plot_cell_type_anno, filename = here(plot_dir, "Visium_DGE_violin_plot.png"), width = 10, height = 8)
+ggsave(violin_plot_cell_type_anno, filename = here(plot_dir, "sn_DGE_violin_plot.png"), width = 10, height = 8)
 
