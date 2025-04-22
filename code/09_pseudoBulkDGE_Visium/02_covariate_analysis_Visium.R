@@ -38,8 +38,6 @@ y_position <- pd |>
     summarise(y.position = max(nspots) + .05*max(nspots))
 
 nspots_t_test <- pd |>
-    filter(SpD != "Excit.L5_6_NP") |>
-    mutate(SpD = droplevels(SpD)) |>
     do(compare_means(nspots ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "SpD")) |>
     ungroup() |>
     mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
@@ -59,6 +57,23 @@ boxplot_nspots <- pd |>
     theme_bw() 
 
 ggsave(boxplot_nspots, filename = here(plot_dir, "boxplot_nspots_APOE_carrier.png"), height = 8 , width = 10)
+
+## other variables
+t_test_variables <- c("pseudo_sum_umi", "pseudo_expr_chrM_ratio")
+names(t_test_variables) <- t_test_variables
+var_t_test <- map(t_test_variables,
+                  ~pd |>
+                      do(compare_means(!!sym(.x) ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "SpD")) |>
+                      mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
+                                                      p.adj < 0.01 ~"**",
+                                                      p.adj < 0.05 ~"*",
+                                                      TRUE~""),
+                             fdr_anno = sprintf("FDR=%.3f%s", p.adj, p.signif.fdr)) 
+                  )
+
+
+
+
 
 #### variance parition on Sample level data ####
 
