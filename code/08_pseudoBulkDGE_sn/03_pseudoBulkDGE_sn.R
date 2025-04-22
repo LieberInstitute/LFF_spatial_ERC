@@ -67,8 +67,8 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 violin_plot_cell_type_anno <- de_results_tb |>
     ggplot(aes(x = logFC, y = -log10(PValue), color = DE_class)) +
-    geom_point(size = 1) +
-    geom_text_repel(aes(label = ifelse(PValue < 0.05 | abs(logFC) > 1, gene_name, "")), size = 2) +
+    geom_point(size = .6) +
+    geom_text_repel(aes(label = ifelse(PValue < 0.05 | abs(logFC) > 1, gene_name, "")), size = 1.7) +
     facet_wrap(~cell_type_anno) +
     geom_vline(xintercept = c(-1,1), linetype = "dashed") +
     geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
@@ -78,5 +78,5 @@ violin_plot_cell_type_anno <- de_results_tb |>
     labs(title = "Visium PseudoBulkDGE", 
          subtitle = "~APOE_carrier + Anc_Afr + Age + Sex + exp_round")
 
-ggsave(violin_plot_cell_type_anno, filename = here(plot_dir, "sn_DGE_violin_plot.png"), width = 10, height = 8)
+ggsave(violin_plot_cell_type_anno, filename = here(plot_dir, "sn_DGE_violin_plot.png"), width = 12, height = 10)
 
