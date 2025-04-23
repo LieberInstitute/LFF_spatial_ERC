@@ -44,6 +44,9 @@ colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
 layer_modeling_results$snDLPFC_PEC <- list()
 layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
 
+## sestan sn enrichment
+layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
+
 #### correlate layer stats ####
 cor_layer <- map(layer_modeling_results, function(layer_mod){
     cor_layer <- layer_stat_cor(stats = erc_sn_modeling_results$enrichment,
@@ -85,14 +88,14 @@ load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                   spatialDLPFC = NULL, #TODO add spatial domain colors
                   spatialERC = SpD_colors,
-                  snDLPFC_PEC = NULL)
-
+                  snDLPFC_PEC = NULL,
+                  sestan_EC = NULL)
 
 map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
 
-map(names(cor_layer), function(ref){
+walk(names(cor_layer), function(ref){
     message(ref)
-    pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)))
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7))
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
@@ -103,16 +106,16 @@ map(names(cor_layer), function(ref){
 })
 
 ## dont cluster cols - order by layer
-# cell_type_colors$anno <- cell_type_colors$anno[names(cell_type_colors$anno) %in% rownames(cor_layer$spatialERC)]
-# cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$anno),names(SpD_colors)]
-# 
-# cor_layer$spatialERC[,names(SpD_colors)]
-# cor_layer$spatialERC[names(cell_type_colors$anno),]
+cell_type_colors$anno <- cell_type_colors$anno[names(cell_type_colors$anno) %in% rownames(cor_layer$spatialERC)]
+cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$anno),names(SpD_colors)]
+ 
+cor_layer$spatialERC[,names(SpD_colors)]
+cor_layer$spatialERC[names(cell_type_colors$anno),]
 
 names(SpD_colors) %in% colnames(cor_layer$spatialERC)
 
-map(names(cor_layer), function(ref){
-    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_uncluster.pdf", ref)))
+walk(names(cor_layer), function(ref){
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_uncluster.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7))
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
