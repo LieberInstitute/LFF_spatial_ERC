@@ -22,11 +22,11 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 # rowData(sce)
 
 ## add syntactic APOE vars
-sce_pseudo$APOE_syn <- factor(gsub("/", ".", sce_pseudo$APOE))
-levels(sce_pseudo$APOE_syn)
+sce$APOE_syn <- factor(gsub("/", ".", sce$APOE))
+levels(sce$APOE_syn)
 
-sce_pseudo$APOE_carrier_syn <- factor(gsub("\\+", "", sce_pseudo$APOE_carrier))
-levels(sce_pseudo$APOE_carrier_syn)
+sce$APOE_carrier_syn <- factor(gsub("\\+", "", sce$APOE_carrier))
+levels(sce$APOE_carrier_syn)
 
 ## get mito genes
 mito_genes <- as.logical(seqnames(sce) == "chrM")
