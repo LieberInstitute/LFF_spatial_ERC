@@ -65,7 +65,7 @@ saveRDS(sce_pseudo, file = here(data_dir, "sce_pseudo_DGE.RDS"))
 message(Sys.time(), "pseudobulk cell_type_broad")
 sce_pseudo <- registration_pseudobulk(
     sce,
-    var_registration = "cell_type_bulk",
+    var_registration = "cell_type_broad",
     var_sample_id = "sample_id",
     covars = NULL,
     min_ncells = 10,
