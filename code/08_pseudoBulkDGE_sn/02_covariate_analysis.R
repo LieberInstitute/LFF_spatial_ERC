@@ -27,6 +27,8 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data","sce_pseudo_DGE.RDS"))
 
+table(sce_pb$cell_type_anno)
+
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
@@ -34,11 +36,7 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 colnames(colData(sce_pb))
 
 # Extract the relevant columns from the data
-pd <- as.data.frame(colData(sce_pb)) |>
-    select(sample_id, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE,
-           cell_type_anno, ncells, exp_round, seq_round, Rin,
-           pseudo_sum_umi, pseudo_expr_chrM, pseudo_expr_chrM_ratio) 
-
+pd <- as.data.frame(colData(sce_pb))
 
 #### Generate n sample barplots for each cell_type ####
 
@@ -63,6 +61,16 @@ pb_cell_type_bar_APOE <- pd |>
     scale_fill_manual(values = APOE_genotype_colors)
 
 ggsave(pb_cell_type_bar_APOE, filename = here(plot_dir, 'pb_cell_type_bar_APOE.png'))
+
+## Drop cell types with low samples (<3)
+(low_n_ct <- cell_type_count |> filter(n < 3) |> pull(cell_type_anno) |> unique())
+# [1] Excit.L5_6_NP Inhib.Pax6  
+
+sce_pb <- sce_pb[,! sce_pb$cell_type_anno %in% low_n_ct]
+sce_pb$cell_type_anno <- droplevels(sce_pb$cell_type_anno)
+
+table(sce_pb$cell_type_anno)
+pd <- as.data.frame(colData(sce_pb))
 
 #### t-test variables ####
 
@@ -102,6 +110,9 @@ var_t_test <- map(test_variables, function(test_var){
     
 })
 
+map(var_t_test, ~.x|> filter(p.adj < 0.05))
+
+
 #### variance partition on Sample level data ####
 
 # load sample level data
@@ -114,8 +125,6 @@ table(sce_pb$APOE_carrier)
 # 228 296
 
 table(is.na(pd$Rin))
-# FALSE  TRUE 
-# 30     1 
 
 # Assess correlation between all pairs of variables
 colnames(pd)
@@ -141,8 +150,11 @@ dev.off()
 
 ## test variance partition 
 ## TODO add Rin
+
+message(Sys.time(), " - fitExtractVarPartModel")
+
 # form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi + pseudo_expr_chrM_ratio
-form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi
+form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round)
 varPart <- fitExtractVarPartModel(logcounts(sce_pb), form, pd)
 vp <- sortCols(varPart)
 
