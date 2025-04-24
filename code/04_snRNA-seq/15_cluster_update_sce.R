@@ -31,6 +31,10 @@ sce
 ## clean up colData
 colData(sce) <- colData(sce)[,!grepl("snn|ct_", colnames(colData(sce)))]
 
+## fix missing Rin value
+# Br5832 Rin=8.4 
+sce$Rin[,sce$sample_id == "Br5832"] <- 8.4
+
 #### Add optimal cluster output ####
 optimal_k = 13
 message("Load optimal clusters from K=", optimal_k)
