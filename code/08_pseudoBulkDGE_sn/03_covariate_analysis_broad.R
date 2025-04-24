@@ -1,10 +1,11 @@
 ## Louise Huuki-Myers, April 2025
-## Examine covairates in sn dataset for DGE
+## Examine covairates in sn dataset for DGE from broad cell type
 
 library("SingleCellExperiment")
 library("scran")
 library("tidyverse")
 library("ggrepel")
+library("ggpubr")
 library("variancePartition")
 library("here")
 library("sessioninfo")
@@ -146,6 +147,8 @@ dev.off()
 
 ## test variance partition 
 ## TODO add Rin
+
+message(Sys.time(), " - fitExtractVarPartModel")
 
 # Some predictor variables are on very different scales: consider rescaling
 # form <- ~ (1 | cell_type_broad) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi + pseudo_expr_chrM_ratio
