@@ -68,6 +68,7 @@ colnames(metadata_visium_plan)
 # [15] "remade_libaries" "slide_index" 
 
 write_csv(metadata_visium_plan, file = here(data_dir, "metadata_visium_plan.csv"))
+# metadata_visium_plan <- read_csv(here(data_dir, "metadata_visium_plan.csv"))
 
 ## snRNA-seq plan
 metadata_sn_plan <- read_csv("~/Downloads/ERC Bookkeping (LFF project) - snRNA-seq plan.csv") |>
@@ -96,6 +97,7 @@ metadata_sn_plan |> count(APOE)
 colnames(metadata_sn_plan)
 
 write_csv(metadata_sn_plan, file = here(data_dir, "metadata_sn_plan.csv"))
+# metadata_sn_plan <- read_csv(here(data_dir, "metadata_sn_plan.csv"))
 
 ## RNAscope
 metadata_rnascope <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEIBhN7kckInOipyi2ozqtYKLPeAbw1SL6KskWRCLM/edit#gid=0",
@@ -104,6 +106,15 @@ metadata_rnascope <- read_sheet("https://docs.google.com/spreadsheets/d/1mHEIBhN
     fill(Panel)
 
 write_csv(metadata_rnascope, file = here(data_dir, "metadata_rnascope.csv"))
+
+## check donor data matches
+donor_sn <- metadata_sn_plan |> select(BrNum, Age, Sex, Ancestry, Rin, APOE) |> arrange(BrNum)
+donor_vis <- metadata_visium_plan |> filter(is.na(lc_note)) |> select(BrNum, Age, Sex, Ancestry, Rin, APOE) |> arrange(BrNum)
+
+all.equal(donor_sn, donor_vis)
+# [1] "Component “Rin”: 'is.NA' value mismatch: 0 in current 1 in target"
+
+donor_vis |> filter(BrNum == "Br5832")
 
 # slurmjobs::job_single('02_get_online_metadata', create_shell = TRUE, memory = '5G', command = "Rscript 02_get_online_metadata.R")
 
