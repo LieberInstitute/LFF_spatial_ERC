@@ -66,41 +66,43 @@ ggsave(pb_cell_type_bar_APOE, filename = here(plot_dir, 'pb_cell_type_bar_APOE.p
 
 #### t-test variables ####
 
-## ncells 
+test_variables <- c("ncells", "pseudo_sum_umi", "pseudo_expr_chrM_ratio")
+names(test_variables) <- test_variables
 
-y_position <- pd |>
-    group_by(cell_type_anno) |>
-    summarise(y.position = max(ncells) + .05*max(ncells))
+summary(pd[,test_variables])
 
-n_cell_t_test <- pd |>
-    filter(cell_type_anno != "Excit.L5_6_NP") |>
-    mutate(cell_type_anno = droplevels(cell_type_anno)) |>
-    do(compare_means(ncells ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "cell_type_anno")) |>
-    ungroup() |>
-    mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
-                                     p.adj < 0.01 ~"**",
-                                    p.adj < 0.05 ~"*",
-                                     TRUE~""),
-           fdr_anno = sprintf("FDR=%.3f%s", p.adj, p.signif.fdr)) |>
-    left_join(y_position)
+var_t_test <- map(test_variables, function(test_var){
+    
+    y_position <- pd |>
+        group_by(cell_type_anno) |>
+        summarise(y.position = max(!!sym(test_var)) + .05*max(!!sym(test_var)))
+    
+    var_t_test <- pd |>
+        do(compare_means(!!sym(test_var) ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "cell_type_anno")) |>
+        ungroup() |>
+        mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
+                                        p.adj < 0.01 ~"**",
+                                        p.adj < 0.05 ~"*",
+                                        TRUE~""),
+               fdr_anno = sprintf("FDR=%.3f%s", p.adj, p.signif.fdr)) |>
+        left_join(y_position)
+    
+    boxplot_test_var <- pd |>
+        ggplot() +
+        geom_boxplot(aes(y = !!sym(test_var), x = APOE_carrier, fill = APOE_carrier), outlier.shape = NA) +
+        geom_point(aes(y = !!sym(test_var), x = APOE_carrier, fill = APOE_carrier)) +
+        geom_text(data = var_t_test, aes(label = fdr_anno, x = 1, y = y.position))+
+        facet_wrap(~cell_type_anno, scales = "free_y") +
+        scale_fill_manual(values = APOE_carrier_colors) +
+        theme_bw() 
+    
+    ggsave(boxplot_test_var, filename = here(plot_dir, sprintf("boxplot_%s_APOE_carrier.png", test_var)), width = 10)
+    
+    return(var_t_test)
+    
+})
 
-n_cell_t_test |> filter(p.adj < 0.05)
-# cell_type_anno .y.    group1 group2       p p.adj p.format p.signif method p.signif.fdr fdr_anno   y.position
-# <fct>          <chr>  <chr>  <chr>    <dbl> <dbl> <chr>    <chr>    <chr>  <chr>        <chr>           <dbl>
-#1 Oligo.2        ncells E2+    E4+    0.00244 0.049 0.0024   **       T-test *            FDR=0.049*      1070.
-
-boxplot_ncells <- pd |>
-    ggplot() +
-    geom_boxplot(aes(y = ncells, x = APOE_carrier, fill = APOE_carrier), outlier.shape = NA) +
-    geom_point(aes(y = ncells, x = APOE_carrier, fill = APOE_carrier)) +
-    geom_text(data = n_cell_t_test, aes(label = fdr_anno, x = 1, y = y.position))+
-    facet_wrap(~cell_type_anno, scales = "free_y") +
-    scale_fill_manual(values = APOE_carrier_colors) +
-    theme_bw() 
-
-ggsave(boxplot_ncells, filename = here(plot_dir, "boxplot_ncells_APOE_carrier.png"), height = 8 , width = 10)
-
-#### variance parition on Sample level data ####
+#### variance partition on Sample level data ####
 
 # load sample level data
 dim(sce_pb)
@@ -139,7 +141,7 @@ dev.off()
 
 ## test variance partition 
 ## TODO add Rin
-form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi + pseudo_expr_chrM_ratio
+# form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi + pseudo_expr_chrM_ratio
 form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi
 varPart <- fitExtractVarPartModel(logcounts(sce_pb), form, pd)
 vp <- sortCols(varPart)
@@ -148,7 +150,7 @@ vp <- sortCols(varPart)
 sn_vp_violin <- plotVarPart(vp)
 ggsave(sn_vp_violin, filename = here(plot_dir, "sn_vp_violin.png"))
 
-# slurmjobs::job_single('01_create_pseudobulk_data', create_shell = TRUE, memory = '25G', command = "Rscript 01_create_pseudobulk_data.R")
+# slurmjobs::job_single('02_covariate_analysis', create_shell = TRUE, memory = '50G', command = "Rscript 02_covariate_analysis.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
