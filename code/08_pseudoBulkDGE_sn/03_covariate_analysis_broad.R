@@ -156,7 +156,7 @@ vp <- sortCols(varPart)
 
 ## violin plot 
 sn_vp_violin <- plotVarPart(vp)
-ggsave(sn_vp_violin, filename = here(plot_dir, "sn_vp_violin.png"))
+ggsave(sn_vp_violin, filename = here(plot_dir, "sn_broad_vp_violin.png"))
 
 # slurmjobs::job_single('03_covariate_analysis_broad', create_shell = TRUE, memory = '50G', command = "Rscript 03_covariate_analysis_broad.R")
 
