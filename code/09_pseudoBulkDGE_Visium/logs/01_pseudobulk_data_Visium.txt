@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Apr 17 12:12:58 PM EDT 2025
+Thu Apr 24 04:33:42 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16115093
+Job id: 16344057
 Job name: 01_pseudobulk_data_Visium
-Node name: compute-156
+Node name: compute-159
 Task id: 
 Loading conda_R/4.4.x
 
@@ -130,7 +130,7 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-04-17 12:13:10.624718 - Load HDF5 SPE
+2025-04-24 16:33:54.643615 - Load HDF5 SPE
 class: SpatialExperiment 
 dim: 30494 122202 
 metadata(1): SpD_colors
@@ -154,10 +154,10 @@ FALSE  TRUE
          6217         15363         11471         26479          6915 
    L5_Sp09D03    L6_Sp09D04 WM.uf_Sp09D07    WM_Sp09D06 
         11617         19464         12510         12166 
-2025-04-17 12:14:57.303522 make pseudobulk object
-2025-04-17 12:23:50.000612 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2025-04-17 12:23:50.157011 normalize expression
-2025-04-17 12:23:54.739494 - Done pseudobulk
+2025-04-24 16:35:37.722719 make pseudobulk object
+2025-04-24 16:43:51.856944 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2025-04-24 16:43:51.999408 normalize expression
+2025-04-24 16:43:56.319628 - Done pseudobulk
 nrow: 30494, ncol: 279
      
       Vasc~Sp09D08 L1~Sp09D05 L2.3~Sp09D01 L3~Sp09D02 LD~Sp09D09 L5~Sp09D03
@@ -169,14 +169,20 @@ nrow: 30494, ncol: 279
   E4+         17            17         17
 [1] "E2.E2" "E2.E3" "E3.E4" "E4.E4"
 [1] "E2" "E4"
-2025-04-17 12:23:54.776849 - Save
+   
+    E2/E2 E2/E3 E3/E4 E4/E4
+  0    54     0     0     0
+  1     0    72     0     0
+  2     0     0    90     0
+  3     0     0     0    63
+2025-04-24 16:43:56.369845 - Save
 [1] "Reproducibility information:"
-[1] "2025-04-17 12:23:59 EDT"
+[1] "2025-04-24 16:44:01 EDT"
    user  system elapsed 
-636.397   7.267 660.656 
+593.929   5.653 617.831 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88150)
+ version  R version 4.4.3 Patched (2025-02-28 r88175)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -184,7 +190,7 @@ nrow: 30494, ncol: 279
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-17
+ date     2025-04-24
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -215,7 +221,7 @@ nrow: 30494, ncol: 279
  bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.4.2)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.4.0)
  circlize               0.4.16    2024-02-20 [2] CRAN (R 4.4.0)
- cli                    3.6.4     2025-02-13 [2] CRAN (R 4.4.2)
+ cli                    3.6.5     2025-04-23 [2] CRAN (R 4.4.3)
  clue                   0.3-66    2024-11-13 [2] CRAN (R 4.4.2)
  cluster                2.1.8     2024-12-11 [3] CRAN (R 4.4.3)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.4.3)
@@ -229,12 +235,14 @@ nrow: 30494, ncol: 279
  DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.4.0)
  dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.4.0)
  DelayedArray         * 0.32.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.4.0)
  digest                 0.6.37    2024-08-19 [2] CRAN (R 4.4.1)
  doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.4.0)
  dplyr                  1.1.4     2023-11-17 [2] CRAN (R 4.4.0)
  DT                     0.33      2024-04-04 [2] CRAN (R 4.4.0)
  edgeR                  4.4.2     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  ExperimentHub          2.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.4.0)
  fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.4.0)
  filelock               1.0.3     2023-12-11 [2] CRAN (R 4.4.0)
  foreach                1.5.2     2022-02-02 [2] CRAN (R 4.4.0)
@@ -277,7 +285,6 @@ nrow: 30494, ncol: 279
  matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.4.2)
  memoise                2.0.1     2021-11-26 [2] CRAN (R 4.4.0)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
- munsell                0.5.1     2024-04-01 [2] CRAN (R 4.4.0)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
  pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
@@ -306,7 +313,7 @@ nrow: 30494, ncol: 279
  S4Vectors            * 0.44.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  sass                   0.4.10    2025-04-11 [2] CRAN (R 4.4.3)
  ScaledMatrix           1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- scales                 1.3.0     2023-11-28 [2] CRAN (R 4.4.0)
+ scales                 1.4.0     2025-04-24 [1] CRAN (R 4.4.3)
  scater                 1.34.1    2025-03-03 [2] Bioconductor 3.20 (R 4.4.3)
  scuttle                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.4.2)
@@ -316,7 +323,7 @@ nrow: 30494, ncol: 279
  SingleCellExperiment * 1.28.1    2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment    * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- spatialLIBD          * 1.19.12   2025-04-16 [1] Github (LieberInstitute/spatialLIBD@0e32c65)
+ spatialLIBD          * 1.21.3    2025-04-24 [1] Github (LieberInstitute/spatialLIBD@3b5964f)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
@@ -340,4 +347,4 @@ nrow: 30494, ncol: 279
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Apr 17 12:24:00 PM EDT 2025
+Thu Apr 24 04:44:01 PM EDT 2025
