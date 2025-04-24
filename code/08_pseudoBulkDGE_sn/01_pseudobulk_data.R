@@ -50,7 +50,7 @@ message(Sys.time(), " - Done pseudobulk")
 message(sprintf("nrow: %d, ncol: %d", nrow(sce_pseudo), ncol(sce_pseudo)))
 
 ## Drop cell types w/ not enough pseudobulk samples?
-table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_bulk)
+table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_anno)
 
 #### Additional edits + Save ####
 ## drop all NA cols
@@ -79,7 +79,7 @@ message(Sys.time(), " - Done pseudobulk")
 message(sprintf("nrow: %d, ncol: %d", nrow(sce_pseudo), ncol(sce_pseudo)))
 
 ## Drop cell types w/ not enough pseudobulk samples?
-table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_bulk)
+table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_broad)
 
 #### Additional edits + Save ####
 ## drop all NA cols
