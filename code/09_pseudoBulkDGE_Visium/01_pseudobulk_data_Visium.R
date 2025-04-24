@@ -1,10 +1,6 @@
 ## Louise Huuki-Myers, April 2025
 ## Pseudobulk single nuc dataset for DGE
 
-## using pseudobulkDGE_compatable pull request 
-# remotes::install_github("LieberInstitute/spatialLIBD", ref = remotes::github_pull(108))
-# spatialLIBD          * 1.19.12   2025-04-16 [1] Github (LieberInstitute/spatialLIBD@0e32c65)
-
 library("spatialLIBD")
 library("SingleCellExperiment")
 library("HDF5Array")
@@ -59,6 +55,13 @@ levels(spe_pseudo$APOE_syn)
 
 spe_pseudo$APOE_carrier_syn <- factor(gsub("\\+", "", spe_pseudo$APOE_carrier))
 levels(spe_pseudo$APOE_carrier_syn)
+
+## add continuous APOE variable
+APOE_num <- data.frame(APOE_num = 0:3)
+rownames(APOE_num) <- c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
+
+spe_pseudo$APOE_num <- APOE_num[spe_pseudo$APOE, ] 
+table(spe_pseudo$APOE_num, spe_pseudo$APOE)
 
 #### save ####
 message(Sys.time(), " - Save")

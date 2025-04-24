@@ -1,10 +1,6 @@
 ## Louise Huuki-Myers, April 2025
 ## Pseudobulk single nuc dataset for DGE
 
-## using pseudobulkDGE_compatable pull request 
-# remotes::install_github("LieberInstitute/spatialLIBD", ref = remotes::github_pull(108))
-# spatialLIBD          * 1.19.12   2025-04-16 [1] Github (LieberInstitute/spatialLIBD@0e32c65)
-
 library("spatialLIBD")
 library("SingleCellExperiment")
 library("HDF5Array")
@@ -57,6 +53,13 @@ table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_anno)
 all_na <- sapply(colData(sce_pseudo), function(x)all(is.na(x)))
 colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
 
+## add continuous APOE variable
+APOE_num <- data.frame(APOE_num = 0:3)
+rownames(APOE_num) <- c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
+
+sce_pseudo$APOE_num <- APOE_num[sce_pseudo$APOE, ] 
+table(sce_pseudo$APOE_num, sce_pseudo$APOE)
+
 ## save
 message(Sys.time(), " - Save")
 saveRDS(sce_pseudo, file = here(data_dir, "sce_pseudo_DGE.RDS"))
@@ -86,12 +89,16 @@ table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_broad)
 all_na <- sapply(colData(sce_pseudo), function(x)all(is.na(x)))
 colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
 
+## add continuous APOE variable
+sce_pseudo$APOE_num <- APOE_num[sce_pseudo$APOE, ] 
+table(sce_pseudo$APOE_num, sce_pseudo$APOE)
+
 ## save 
 message(Sys.time(), " - Save")
 saveRDS(sce_pseudo, file = here(data_dir, "sce_pseudo_DGE_broad.RDS"))
 
 
-# sce_pseudo <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "sce_pseudo_DGE.RDS"))
+# sce_pseudo <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn","01_pseudobulk_data", "sce_pseudo_DGE.RDS"))
 
 # slurmjobs::job_single('01_pseudobulk_data', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data.R")
 
