@@ -9,6 +9,7 @@ library("scran")
 library("tidyverse")
 library("ggpubr")
 library("ggrepel")
+library("variancePartition")
 library("here")
 library("sessioninfo")
 
@@ -35,7 +36,7 @@ colnames(colData(sce_pb))
 # Extract the relevant columns from the data
 pd <- as.data.frame(colData(sce_pb)) |>
     select(sample_id, Age, Sex, Ancestry, Anc_Afr, APOE_carrier, APOE,
-           cell_type_anno, ncells, exp_round, seq_round,
+           cell_type_anno, ncells, exp_round, seq_round, Rin,
            pseudo_sum_umi, pseudo_expr_chrM, pseudo_expr_chrM_ratio) 
 
 
@@ -83,6 +84,11 @@ n_cell_t_test <- pd |>
            fdr_anno = sprintf("FDR=%.3f%s", p.adj, p.signif.fdr)) |>
     left_join(y_position)
 
+n_cell_t_test |> filter(p.adj < 0.05)
+# cell_type_anno .y.    group1 group2       p p.adj p.format p.signif method p.signif.fdr fdr_anno   y.position
+# <fct>          <chr>  <chr>  <chr>    <dbl> <dbl> <chr>    <chr>    <chr>  <chr>        <chr>           <dbl>
+#1 Oligo.2        ncells E2+    E4+    0.00244 0.049 0.0024   **       T-test *            FDR=0.049*      1070.
+
 boxplot_ncells <- pd |>
     ggplot() +
     geom_boxplot(aes(y = ncells, x = APOE_carrier, fill = APOE_carrier), outlier.shape = NA) +
@@ -95,35 +101,34 @@ boxplot_ncells <- pd |>
 ggsave(boxplot_ncells, filename = here(plot_dir, "boxplot_ncells_APOE_carrier.png"), height = 8 , width = 10)
 
 #### variance parition on Sample level data ####
-library("variancePartition")
+
 # load sample level data
-
-sce_pb_sample <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk", "sce_pseudobulk_only-sample_id.rds"))
-dim(sce_pb_sample)
-table(sce_pb_sample$APOE)
+dim(sce_pb)
+table(sce_pb$APOE)
 # E2/E2 E2/E3 E3/E4 E4/E4 
-# 6     8    10     7 
-table(sce_pb_sample$APOE_carrier)
+# 86   142   173   123
+table(sce_pb$APOE_carrier)
 # E2+ E4+ 
-# 14  17 
+# 228 296
 
-pd_sample <- as.data.frame(colData(sce_pb_sample))
+table(is.na(pd$Rin))
+# FALSE  TRUE 
+# 30     1 
 
 # Assess correlation between all pairs of variables
-colnames(pd_sample)
+colnames(pd)
 
-# form <- ~ APOE + sample_id + Sex + Age + Anc_Afr + exp_round + seq_round + ncells
+form <- ~ cell_type_anno + APOE + sample_id + Sex + Age + Anc_Afr + Rin + exp_round + seq_round + ncells + pseudo_sum_umi + pseudo_expr_chrM_ratio
 # form <- ~ APOE + sample_id + exp_round
 # form <- ~ APOE + Sex + Age + Anc_Afr + exp_round + seq_round + ncells
 
-## TODO test  + pseudo_sum_umi +pseudo_expr_chrM, pseudo_expr_chrM_ratio
-
-C <- canCorPairs(form, pd_sample)
+C <- canCorPairs(form, pd)
 # ~ APOE + sample_id + Sex + Age + Anc_Afr + exp_round + seq_round + ncells
 # APOE and sample_id
 # sample_id and Sex
 # sample_id and Age
 # sample_id and Anc_Afr
+# sample_id and Rin
 # sample_id and exp_round
 # sample_id and seq_round
 # sample_id and ncells
@@ -133,8 +138,10 @@ plotCorrMatrix(C)
 dev.off()
 
 ## test variance partition 
-form <- ~ (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round)
-varPart <- fitExtractVarPartModel(logcounts(sce_pb_sample), form, pd_sample)
+## TODO add Rin
+form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi + pseudo_expr_chrM_ratio
+form <- ~ (1 | cell_type_anno) + (1 | APOE_carrier) + (1 | APOE) + (1 | Sex) + Anc_Afr + Age + (1 | exp_round) + (1 | seq_round) + pseudo_sum_umi
+varPart <- fitExtractVarPartModel(logcounts(sce_pb), form, pd)
 vp <- sortCols(varPart)
 
 ## violin plot 
