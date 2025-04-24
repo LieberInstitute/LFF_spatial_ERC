@@ -96,7 +96,7 @@ var_t_test <- map(test_variables, function(test_var){
         scale_fill_manual(values = APOE_carrier_colors) +
         theme_bw() 
     
-    ggsave(boxplot_test_var, filename = here(plot_dir, sprintf("boxplot_broad_%s_APOE_carrier.png", test_var)))
+    ggsave(boxplot_test_var, filename = here(plot_dir, sprintf("boxplot_broad_%s_APOE_carrier.png", test_var)), width = 10)
     
     return(var_t_test)
     
