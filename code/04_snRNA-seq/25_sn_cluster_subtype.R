@@ -25,8 +25,8 @@ cell_type <- opt$cell_type
 data_dir <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-# plot_dir <- here("plots", "04_snRNA-seq", "25_sn_cluster_subtype")
-# if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
+plot_dir <- here("plots", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type)
+if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
 message(Sys.time(), " - Load HDF5 sce")

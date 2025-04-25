@@ -31,11 +31,6 @@ rownames(APOE_num) <- c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
 sce$APOE_num <- APOE_num[sce$APOE, ] 
 table(sce$APOE_num, sce$APOE)
 
-## fix missing Rin value
-# Br5832 Rin=8.4 
-
-sce$Rin[,sce$sample_id == "Br5832"] <- 8.4
-
 ## get mito genes
 mito_genes <- as.logical(seqnames(sce) == "chrM")
 table(mito_genes)

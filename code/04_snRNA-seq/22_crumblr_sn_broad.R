@@ -10,10 +10,10 @@ library("here")
 library("sessioninfo")
 
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "22_crumblr_sn")
+plot_dir <- here("plots", "04_snRNA-seq", "22_crumblr_sn_broad")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "22_crumblr_sn")
+data_dir <- here("processed-data", "04_snRNA-seq", "22_crumblr_sn_broad")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## load colors
@@ -24,17 +24,27 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 # cell_type_proportions
 load(here("processed-data", "04_snRNA-seq", "15_cluster_update_sce","cell_type_proportions.Rdata"), verbose = TRUE)
 
+## calc broad proportions 
+cell_type_proportions <- cell_type_proportions |>
+    separate(cell_type_anno, into = c("cell_type_broad"), sep ="\\.", extra = "drop") |>
+    mutate(cell_type_broad = factor(cell_type_broad, levels = c("Astro","Endo","Micro","Oligo","OPC","Excit","Inhib"))) |>
+    group_by(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, exp_round, seq_round, cell_type_broad) |>
+    summarise(n = sum(n), prop = sum(prop)) |>
+    group_by(sample_id)
+
+# cell_type_proportions_broad |> summarise(sum(prop))
+
 ## calc error formula for standard error of propotion SE = sqrt(p*(1-p)/n)
 error <- cell_type_proportions |> #already grouped by sample
     mutate(error = sqrt((prop * (1-prop))/sum(n)),
            anno = paste0(n,"/", sum(n))) |>
-    select(sample_id, cell_type_anno, prop, error, anno)
+    select(sample_id, cell_type_broad, prop, error, anno)
 
 ## create cell count matrix
 cell_counts <- cell_type_proportions |> 
     ungroup() |>
-    select(sample_id, cell_type_anno, n) |>
-    pivot_wider(names_from = cell_type_anno, values_from = n)  |>
+    select(sample_id, cell_type_broad, n) |>
+    pivot_wider(names_from = cell_type_broad, values_from = n)  |>
     column_to_rownames("sample_id")
 
 ## replace NA w/ 0
@@ -57,8 +67,8 @@ cobj <- crumblr(cell_counts)
 # E:numeric matrix of CLR transformed counts
 clr_prop_long <- cobj$E |>
     as.data.frame() |>
-    rownames_to_column("cell_type_anno") |>
-    pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR") |>
+    rownames_to_column("cell_type_broad") |>
+    pivot_longer(!cell_type_broad, names_to = "sample_id", values_to = "CLR") |>
     left_join(erc_info |> rownames_to_column("sample_id")) |>
     left_join(error) |>
     replace_na(list(prop = 0, error = 0))
@@ -71,12 +81,12 @@ vp <- fitExtractVarPartModel(cobj, form, erc_info)
 fig.vp <- plotPercentBars(vp)
 fig.vp
 
-ggsave(fig.vp, filename = here(plot_dir, "crumblr_cell_type_vp.png"))
+ggsave(fig.vp, filename = here(plot_dir, "crumblr_cell_type_broad_vp.png"))
 
 #### variable correlation ####
 C <- canCorPairs(form, erc_info)
 # APOE and APOE_carrier
-pdf("variable_CorrMatrix_sn.pdf", height = 5, width = 5)
+pdf("variable_CorrMatrix_sn_broad.pdf", height = 5, width = 5)
 plotCorrMatrix(C)
 dev.off()
 
@@ -105,39 +115,39 @@ clr_v_prop <- clr_prop_long |>
 clr_boxplot_APOE <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
     geom_boxplot() +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE, filename = "clr_boxplot_APOE.png")
+ggsave(clr_boxplot_APOE, filename = "clr_boxplot_APOE_cell_type_broad.png")
 
 clr_boxplot_APOE_jitter <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE_jitter, filename = "clr_boxplot_APOE_jitter.png")
+ggsave(clr_boxplot_APOE_jitter, filename = "clr_boxplot_APOE_jitter_cell_type_broad.png")
 
 clr_boxplot_APOE_carrier <- clr_prop_long |>
     ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
     geom_boxplot() +
     # geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE_carrier, filename = "clr_boxplot_APOE_carrier.png")
+ggsave(clr_boxplot_APOE_carrier, filename = "clr_boxplot_APOE_carrier_cell_type_broad.png")
 
 clr_boxplot_exp_round<- clr_prop_long |>
     ggplot(aes(x = exp_round, y = CLR, fill = exp_round)) +
     geom_boxplot() +
     # geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
@@ -145,7 +155,7 @@ ggsave(clr_boxplot_exp_round, filename = "clr_boxplot_exp_round.png")
 
 
 #### Hierarchical clustering ####
-sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_pseudobulk_only-cell_type_anno.rds"))
+sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_pseudobulk_only-cell_type_broad.rds"))
 dim(sce_pb)
 
 dist.clusCollapsed <- dist(t(logcounts(sce_pb)))
@@ -193,24 +203,24 @@ ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_APOE_
 
 ## clr plot of top results
 clr_boxplot_APOE_carrier_Excit.L6b <- clr_prop_long |>
-    filter(cell_type_anno == "Excit.L6b") |>
+    filter(cell_type_broad == "Excit.L6b") |>
     ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
     # geom_boxplot() +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw()
 
 ggsave(clr_boxplot_APOE_carrier_Excit.L6b, filename = "clr_boxplot_APOE_carrier_Excit.L6b.png")
 
 prop_boxplot_APOE_carrier_Excit.L6b <- clr_prop_long |>
-    filter(cell_type_anno == "Excit.L6b") |>
+    filter(cell_type_broad == "Excit.L6b") |>
     ggplot(aes(x = APOE_carrier, y = prop, fill = APOE_carrier)) +
     # geom_boxplot() +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw()
 
@@ -268,41 +278,28 @@ combined_fig <- fig.vp +
 ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_APOEE4.E4.png"))
 
 clr_boxplot_APOE_Excit.L6b <- clr_prop_long |>
-    filter(cell_type_anno == "Excit.L6b") |>
+    filter(cell_type_broad == "Excit.L6b") |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
 ggsave(clr_boxplot_APOE_Excit.L6b, filename = "clr_boxplot_APOE_Excit.L6b.png")
 
 prop_boxplot_APOE_Excit.L6b <- clr_prop_long |>
-    filter(cell_type_anno == "Excit.L6b") |>
+    filter(cell_type_broad == "Excit.L6b") |>
     ggplot(aes(x = APOE, y = prop, fill = APOE)) +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_broad) +
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
 ggsave(prop_boxplot_APOE_Excit.L6b, filename = "prop_boxplot_APOE_Excit.L6b.png")
 
-#### Broad cell type proprotions ####
-
-## calc broad proportions 
-cell_type_proportions_broad <- cell_type_proportions |>
-    separate(cell_type_anno, into = c("cell_type_broad"), sep ="\\.", extra = "drop") |>
-    mutate(cell_type_broad = factor(cell_type_broad, levels = c("Astro","Endo","Micro","Oligo","OPC","Excit","Inhib"))) |>
-    group_by(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, exp_round, seq_round, cell_type_broad) |>
-    summarise(n = sum(n), prop = sum(prop))
-
-# cell_type_proportions_broad |> summarise(sum(prop))
-
-
-
-# slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
+# slurmjobs::job_single('22_crumblr_sn_broad', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
