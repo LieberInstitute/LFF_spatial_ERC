@@ -21,10 +21,8 @@ load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose =
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### Load data ####
-load(here("processed-data", "04_snRNA-seq", "15_cluster_update_sce","cell_type_proportions.Rdata"), verbose = TRUE)
 # cell_type_proportions
-
-pd <- colData(sce_pb) |> as.data.frame()
+load(here("processed-data", "04_snRNA-seq", "15_cluster_update_sce","cell_type_proportions.Rdata"), verbose = TRUE)
 
 ## calc error formula for standard error of propotion SE = sqrt(p*(1-p)/n)
 error <- cell_type_proportions |> #already grouped by sample
@@ -291,6 +289,12 @@ prop_boxplot_APOE_Excit.L6b <- clr_prop_long |>
 
 ggsave(prop_boxplot_APOE_Excit.L6b, filename = "prop_boxplot_APOE_Excit.L6b.png")
 
+#### Broad cell type proprotions ####
+
+## calc broad proportions 
+cell_type_proportions_broad <- cell_type_proportions |>
+    separate(cell_type_anno, into = c("cell_type_broad"), sep =".", extra = "drop") |>
+    group_by(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, exp_round, seq_round, cell_type_broad)
 
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
 
