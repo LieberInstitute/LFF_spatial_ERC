@@ -289,13 +289,6 @@ prop_boxplot_APOE_Excit.L6b <- clr_prop_long |>
 
 ggsave(prop_boxplot_APOE_Excit.L6b, filename = "prop_boxplot_APOE_Excit.L6b.png")
 
-#### Broad cell type proprotions ####
-
-## calc broad proportions 
-cell_type_proportions_broad <- cell_type_proportions |>
-    separate(cell_type_anno, into = c("cell_type_broad"), sep =".", extra = "drop") |>
-    group_by(sample_id, APOE, Sex, Age, Ancestry, Anc_Afr, exp_round, seq_round, cell_type_broad)
-
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
 
 ## Reproducibility information
