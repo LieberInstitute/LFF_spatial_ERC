@@ -53,12 +53,15 @@ table(sctype$cell_type_broad)
 
 anno_table <- sctype |> 
     ungroup() |>
-    left_join(anno_notes |> select(cluster, cell_type_anno = guess)) |>
+    select(-cell_type_broad) |>
+    left_join(anno_notes |> select(cluster, cell_type_broad, cell_type_anno = guess)) |>
+    mutate(cell_type_broad = factor(cell_type_broad, levels = levels(sctype$cell_type_broad))) |>
     select(cluster, cell_type_class, cell_type_broad, cell_type_fine, cell_type_anno) |>
     column_to_rownames("cluster")
 
 cell_type_anno_levels <- anno_table |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno)
 
+anno_table$cell_type_broad <- droplevels(anno_table$cell_type_broad)
 anno_table$cell_type_anno <- factor(anno_table$cell_type_anno, levels = cell_type_anno_levels)
 
 levels(anno_table$cell_type_broad)
