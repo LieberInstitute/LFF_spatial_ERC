@@ -9,6 +9,7 @@ library("HDF5Array")
 library("getopt")
 library("scater")
 library("scran")
+library("scry")
 
 # Import command-line parameters
 scec <- matrix(
