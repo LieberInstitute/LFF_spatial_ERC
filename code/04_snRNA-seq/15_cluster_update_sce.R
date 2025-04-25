@@ -33,7 +33,7 @@ colData(sce) <- colData(sce)[,!grepl("snn|ct_", colnames(colData(sce)))]
 
 ## fix missing Rin value
 # Br5832 Rin=8.4 
-sce$Rin[,sce$sample_id == "Br5832"] <- 8.4
+sce$Rin[sce$sample_id == "Br5832"] <- 8.4
 
 #### Add optimal cluster output ####
 optimal_k = 13
@@ -275,6 +275,7 @@ sce$cell_type_anno <- droplevels(sce$cell_type_anno)
 
 levels(sce$cell_type_anno)
 pd <- as.data.frame(colData(sce))
+
 ####  Cell Type Proportions ####
 cell_class_proportions <- pd |>
     group_by(sample_id, APOE, Sex, Ancestry, cell_type_class) |>
