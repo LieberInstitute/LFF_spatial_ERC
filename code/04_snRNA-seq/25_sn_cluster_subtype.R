@@ -112,7 +112,7 @@ table(clusters)
 message(Sys.time() , " - saving data")
 save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", k, cell_type)))
 
-slurmjobs::job_loop(loops = list(cell_type = c("Oligo", "Astro", "Micro", "Endo")), create_shell = TRUE, name = "25_sn_cluster_subtype", create_script = FALSE)
+# slurmjobs::job_loop(loops = list(cell_type = c("Oligo", "Astro", "Micro", "Endo")), create_shell = TRUE, name = "25_sn_cluster_subtype", create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
