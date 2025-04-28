@@ -45,56 +45,65 @@ table(sce$sample_id)
 #### GLM PCA ####
 set.seed(425)
 
-message(Sys.time(), " - running Deviance Feat. Selection")
-sce <- scry::devianceFeatureSelection(sce,
-                                      assay = "counts", fam = "binomial", sorted = F,
-                                      batch = as.factor(sce$seq_round)
-)
+harmony_file <- here(data_dir, sprintf("subcluster_HARMONY_pca_%s.rdata", cell_type))
 
-## plot biononial deviance distribution
-pdf(here(plot_dir, sprintf("sn_reprocess_binomial_deviance_%s.pdf", cell_type)))
-plot(sort(rowData(sce)$binomial_deviance, decreasing = T),
-     type = "l", xlab = "ranked genes",
-     ylab = "binomial deviance", main = "Feature Selection with Deviance"
-)
-abline(v = 2000, lty = 2, col = "red")
-dev.off()
-
-message(Sys.time(), " - running nullResiduals")
-sce <- nullResiduals(sce,
-                     assay = "counts", 
-                     fam = "binomial", # default params
-                     type = "deviance"
-)
-
-
-hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
-
-message(Sys.time(), " - running PCA")
-sce <- runPCA(sce,
-              exprs_values = "binomial_deviance_residuals",
-              subset_row = hdgs,
-              ncomponents = 100,
-              name = "GLMPCA_approx",
-              BSPARAM = BiocSingular::IrlbaParam()
-)
-
-#### Batch Correction ####
-message(Sys.time(), " - HARMONY Correction")
-
-## Run harmony
-## needs PCA
-reducedDim(sce, "PCA") <- reducedDim(sce, "GLMPCA_approx")
-
-message("running Harmony - ", Sys.time())
-sce <- harmony::RunHarmony(sce, group.by.vars = "sample_id", verbose = TRUE)
-
-## Remove redundant PCA
-reducedDim(sce, "PCA") <- NULL
-
-## save HARMONY dims
-subtype_HARMONY <- reducedDim(sce, "HARMONY")
-save(subtype_HARMONY, file = here(data_dir, sprintf("subcluster_HARMONY_pca_%s.rdata", cell_type)))
+if(file.exists(harmony_file)){
+    message(Sys.time(), " - Load saved HARMONY PCs")
+    load(harmony_file)
+    reducedDim(sce, "HARMONY") <- subtype_HARMONY
+} else {
+    
+    message(Sys.time(), " - running Deviance Feat. Selection")
+    sce <- scry::devianceFeatureSelection(sce,
+                                          assay = "counts", fam = "binomial", sorted = F,
+                                          batch = as.factor(sce$seq_round)
+    )
+    
+    ## plot biononial deviance distribution
+    pdf(here(plot_dir, sprintf("sn_reprocess_binomial_deviance_%s.pdf", cell_type)))
+    plot(sort(rowData(sce)$binomial_deviance, decreasing = T),
+         type = "l", xlab = "ranked genes",
+         ylab = "binomial deviance", main = "Feature Selection with Deviance"
+    )
+    abline(v = 2000, lty = 2, col = "red")
+    dev.off()
+    
+    message(Sys.time(), " - running nullResiduals")
+    sce <- nullResiduals(sce,
+                         assay = "counts", 
+                         fam = "binomial", # default params
+                         type = "deviance"
+    )
+    
+    
+    hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
+    
+    message(Sys.time(), " - running PCA")
+    sce <- runPCA(sce,
+                  exprs_values = "binomial_deviance_residuals",
+                  subset_row = hdgs,
+                  ncomponents = 100,
+                  name = "GLMPCA_approx",
+                  BSPARAM = BiocSingular::IrlbaParam()
+    )
+    
+    #### Batch Correction ####
+    message(Sys.time(), " - HARMONY Correction")
+    
+    ## Run harmony
+    ## needs PCA
+    reducedDim(sce, "PCA") <- reducedDim(sce, "GLMPCA_approx")
+    
+    message("running Harmony - ", Sys.time())
+    sce <- harmony::RunHarmony(sce, group.by.vars = "sample_id", verbose = TRUE)
+    
+    ## Remove redundant PCA
+    reducedDim(sce, "PCA") <- NULL
+    
+    ## save HARMONY dims
+    subtype_HARMONY <- reducedDim(sce, "HARMONY")
+    save(subtype_HARMONY, file = harmony_file)
+}
 
 #### SNN + Walktrap cluster ####
 
