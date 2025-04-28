@@ -94,7 +94,7 @@ reducedDim(sce, "PCA") <- NULL
 
 ## save HARMONY dims
 subtype_HARMONY <- reducedDim(sce, "HARMONY")
-save(subtype_HARMONY, file = here(data_dir, sprintf("subcluster_HARMONY_pca_%.rdata", cell_type)))
+save(subtype_HARMONY, file = here(data_dir, sprintf("subcluster_HARMONY_pca_%s.rdata", cell_type)))
 
 #### SNN + Walktrap cluster ####
 
