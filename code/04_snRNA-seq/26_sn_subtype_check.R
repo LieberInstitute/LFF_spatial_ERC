@@ -115,11 +115,20 @@ anno_summary <- map2_dfr(anno, names(anno), ~.x |>
                 values_from = "layer_label") |>
     arrange(cluster)
 
-write_csv(anno_summary, file = here(data_dir, sprintf("ERCsn_subtype_registration_anno_summary-%s.csv", cell_type)))
+
+anno_summary2 <- colData(sce) |> 
+    as.data.frame() |> 
+    group_by(cluster = cell_type_fine)  |> 
+    summarise(n_cells = n(), n_donors = length(unique(sample_id))) |>
+    left_join(anno_summary)
+
+write_csv(anno_summary2, file = here(data_dir, sprintf("ERCsn_subtype_registration_anno_summary-%s.csv", cell_type)))
 
 ## save data
 spatial_registration <- list(cor_layer = cor_layer, anno = anno)
 save(spatial_registration, file = here(data_dir, sprintf("ERCsn_subtype_registration-%s.Rdata", cell_type)))
+
+# load(here(data_dir, sprintf("ERCsn_subtype_registration-%s.Rdata", cell_type)))
 
 #### create registration heatmaps ####
 ## load colors
