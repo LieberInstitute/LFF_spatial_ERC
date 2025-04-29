@@ -1,11 +1,11 @@
 **** Job starts ****
-Mon Apr 28 02:30:52 PM EDT 2025
+Tue Apr 29 04:51:56 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16397170
+Job id: 16427933
 Job name: 26_sn_subtype_check
-Node name: compute-120
-Task id: 1
+Node name: compute-161
+Task id: 7
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
@@ -156,83 +156,94 @@ Loading required package: SpatialExperiment
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: rafalib
 $ARGS
 character(0)
 
 $cell_type
-[1] "Astro"
+[1] "Oligo"
 
-2025-04-28 14:31:09.116055 - Load HDF5 sce
-2025-04-28 14:31:13.829843 - Subset to Astro, ncells = 22145
+$k
+[1] 20
+
+2025-04-29 16:52:08.233394 - Load HDF5 sce
+2025-04-29 16:52:12.649441 - Subset to Oligo, ncells = 46831
+2025-04-29 16:52:12.64987 - Load Cluster Data
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/25_sn_cluster_subtype/Oligo/walktrap_snn_k20_subclusters_Oligo.Rdata"
 Loading objects:
   clusters
+number of clusters: 11
+number clusters n<100: 0
+Concordance rand score between original cluster: 0.197681404986418
+Joining with `by = join_by(k20)`
 
-Astro.1 Astro.2 Astro.3 Astro.4 Astro.5 Astro.6 Astro.7 Astro.8 Astro.9 
-    309    5548    4219   10907      80     818      44     182      38 
-2025-04-28 14:31:15.039203 - Running Spatial Registration on: cell_type_fine-Astro
-         
-          Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974 Br5161 Br5212
-  Astro.1     24     28      2     12     14     22     24      9     17      1
-  Astro.2    246    438    155    162    351    211    285     23    358     98
-  Astro.3    213    209    291    121    167    243    140     19    180    153
-  Astro.4    306    332    903    355    385    539    186      8    259    797
-  Astro.5      1      2      4      5      5      9      1      0      5      0
-  Astro.6     41     63     17     21     38     37     55      9     45     11
-  Astro.7      0      0      0      1      0      2      0      0      9      0
-  Astro.8      5     10      9     13      6     14      3      0      4     10
-  Astro.9      2      1      1      1      2      3      1      0      1      2
-         
-          Br5276 Br5367 Br5415 Br5426 Br5460 Br5517 Br5529 Br5599 Br5634 Br5712
-  Astro.1      1      4      1     14     18     12      4     10      0      2
-  Astro.2     76    139    218     91    106    161    191    152    120     91
-  Astro.3     25    156    126    145    121    101     99    102    108    115
-  Astro.4     63    483    349    573    363    230    249    245    275    188
-  Astro.5      0      3      3      7      5      1      2      1      4      1
-  Astro.6     12     30     37     12     13     44     39     10     14     16
-  Astro.7      0      8      0      3      0      0      8      2      0      0
-  Astro.8      1      9      4      8      8      5      5      2      0      3
-  Astro.9      0      1      1      0      1      1      0      0      0      0
-         
-          Br5832 Br5854 Br5941 Br6085 Br6098 Br6161 Br6263 Br6321 Br6423 Br6476
-  Astro.1      1      0     15     14     13      1      5      3      5      8
-  Astro.2     84    149    186    101     74    120    145    191    240    434
-  Astro.3    126    121    115     90    104    105    101    120    185    198
-  Astro.4    238    264    106    317    527    585    372    286    470    435
-  Astro.5      1      0      1      1      2      3      3      2      1      7
-  Astro.6      9     21     37     18     10     12     20     37     19     49
-  Astro.7      0      1      0      0      0      0      6      4      0      0
-  Astro.8      3      4      6      2      5      9      5      9      5     10
-  Astro.9      1      2      1      2      2      3      0      3      2      2
-         
-          Br6538
-  Astro.1     25
-  Astro.2    152
-  Astro.3    120
-  Astro.4    219
-  Astro.5      0
-  Astro.6     22
-  Astro.7      0
-  Astro.8      5
-  Astro.9      2
-2025-04-28 14:31:15.075721 make pseudobulk object
-2025-04-28 14:36:40.779466 dropping 100 pseudo-bulked samples that are below 'min_ncells'.
-2025-04-28 14:36:40.882562 drop lowly expressed genes
-2025-04-28 14:36:41.193532 normalize expression
-2025-04-28 14:36:44.30597 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/26_sn_subtype_check/Astro/sce_pseudobulk_subtype-Astro.rds
-2025-04-28 14:36:46.048695 create model matrix
-2025-04-28 14:36:46.126063 run duplicateCorrelation()
-2025-04-28 14:37:21.389618 The estimated correlation is: 0.0911230146146714
-2025-04-28 14:37:21.393425 computing enrichment statistics
-2025-04-28 14:37:24.841655 extract and reformat enrichment results
-2025-04-28 14:37:24.87889 running the baseline pairwise model
-2025-04-28 14:37:25.253211 computing pairwise statistics
-2025-04-28 14:37:25.693496 computing F-statistics
-2025-04-28 14:37:26.096936 - Saving Data
+Oligo.01 Oligo.02 Oligo.03 Oligo.04 Oligo.05 Oligo.06 Oligo.07 Oligo.08 
+   15874    11874     7019     5392     4485      701      492      337 
+Oligo.09 Oligo.10 Oligo.11 
+     272      242      143 
+2025-04-29 16:52:12.816744Plot lit marker genes
+Rows: 43 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): gene_name, cell_type, studies, cell_type_broad
+dbl (1): n_studies
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Using gene_name as gene names
+$Oligo
+
+null device 
+          1 
+2025-04-29 16:52:29.2029QC check
+`summarise()` has grouped output by 'cell_type_k20', 'cell_type_class'. You can
+override using the `.groups` argument.
+Joining with `by = join_by(cell_type_class, metric)`
+Joining with `by = join_by(cell_type_k20)`
+Joining with `by = join_by(cell_type_k20)`
+2025-04-29 16:52:30.405304Sctype data
+Loading objects:
+  es.max
+[1]    24 46850
+# A tibble: 11 × 5
+# Groups:   cluster [11]
+   cluster  sctype                scores ncells confident
+   <chr>    <chr>                  <dbl>  <int> <lgl>    
+ 1 Oligo.01 Oligodendrocytes      52192.  15874 TRUE     
+ 2 Oligo.02 Oligodendrocytes      36694.  11874 TRUE     
+ 3 Oligo.03 Oligodendrocytes      19778.   7019 TRUE     
+ 4 Oligo.04 Oligodendrocytes      13440.   5392 TRUE     
+ 5 Oligo.05 Oligodendrocytes      13662.   4485 TRUE     
+ 6 Oligo.06 Oligodendrocytes       1552.    701 TRUE     
+ 7 Oligo.07 Oligodendrocytes       1324.    492 TRUE     
+ 8 Oligo.08 Oligodendrocytes        945.    337 TRUE     
+ 9 Oligo.09 Glutamatergic neurons   631.    272 TRUE     
+10 Oligo.10 Oligodendrocytes        567.    242 TRUE     
+11 Oligo.11 Oligodendrocytes        404.    143 TRUE     
+2025-04-29 16:52:30.629429 - Running Spatial Registration on: Oligo - cell_type_k20
+2025-04-29 16:52:30.672459 make pseudobulk object
+2025-04-29 16:56:21.738494 dropping 121 pseudo-bulked samples that are below 'min_ncells'.
+2025-04-29 16:56:21.794135 drop lowly expressed genes
+2025-04-29 16:56:22.022923 normalize expression
+2025-04-29 16:56:24.411093 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/26_sn_subtype_check/Oligo/sce_pseudobulk_subtype-Oligo_k20.rds
+2025-04-29 16:56:26.930966 create model matrix
+2025-04-29 16:56:26.970638 run duplicateCorrelation()
+2025-04-29 16:57:11.1051 The estimated correlation is: 0.0905539695998149
+2025-04-29 16:57:11.107171 computing enrichment statistics
+2025-04-29 16:57:16.979144 extract and reformat enrichment results
+2025-04-29 16:57:17.814927 running the baseline pairwise model
+2025-04-29 16:57:18.352106 computing pairwise statistics
+2025-04-29 16:57:19.139148 computing F-statistics
+2025-04-29 16:57:20.499245 - Saving Data
 sestan_EC
+snDLPFC_PEC
+Joining with `by = join_by(cell_type_k20)`
+Joining with `by = join_by(cell_type_k20)`
+Joining with `by = join_by(cell_type_k20)`
 [1] "Reproducibility information:"
-[1] "2025-04-28 14:37:36 EDT"
+[1] "2025-04-29 16:57:30 EDT"
    user  system elapsed 
-393.832   4.857 403.431 
+317.826   3.515 333.227 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.3 Patched (2025-02-28 r88181)
@@ -243,7 +254,7 @@ sestan_EC
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-28
+ date     2025-04-29
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -271,6 +282,7 @@ sestan_EC
  bit64                  4.6.0-1   2025-01-16 [2] CRAN (R 4.4.2)
  bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.4.1)
  blob                   1.2.4     2023-03-17 [2] CRAN (R 4.4.0)
+ bluster                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.4.2)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.4.0)
  Cairo                  1.6-2     2023-11-28 [2] CRAN (R 4.4.0)
@@ -288,11 +300,13 @@ sestan_EC
  data.table             1.17.0    2025-02-22 [2] CRAN (R 4.4.3)
  DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.4.0)
  dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.4.0)
+ DeconvoBuddies       * 0.99.10   2025-01-30 [1] Github (LieberInstitute/DeconvoBuddies@0d76b63)
  DelayedArray         * 0.32.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.4.0)
  digest                 0.6.37    2024-08-19 [2] CRAN (R 4.4.1)
  doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.4.0)
  dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.4.0)
+ dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.4.0)
  DT                     0.33      2024-04-04 [2] CRAN (R 4.4.0)
  edgeR                  4.4.2     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  ExperimentHub          2.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -301,6 +315,8 @@ sestan_EC
  filelock               1.0.3     2023-12-11 [2] CRAN (R 4.4.0)
  forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.4.0)
  foreach                1.5.2     2022-02-02 [2] CRAN (R 4.4.0)
+ fs                     1.6.6     2025-04-12 [2] CRAN (R 4.4.3)
+ gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.4.0)
  generics               0.1.3     2022-07-05 [2] CRAN (R 4.4.0)
  GenomeInfoDb         * 1.42.3    2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13    2024-10-01 [2] Bioconductor
@@ -314,6 +330,7 @@ sestan_EC
  GlobalOptions          0.1.2     2020-06-10 [2] CRAN (R 4.4.0)
  glue                   1.8.0     2024-09-30 [2] CRAN (R 4.4.1)
  golem                  0.5.1     2024-08-27 [2] CRAN (R 4.4.1)
+ googledrive            2.1.1     2023-06-11 [2] CRAN (R 4.4.0)
  gridExtra              2.3       2017-09-09 [2] CRAN (R 4.4.0)
  gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.4.2)
  HDF5Array            * 1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -323,12 +340,15 @@ sestan_EC
  htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.4.0)
  httpuv                 1.6.16    2025-04-16 [2] CRAN (R 4.4.3)
  httr                   1.4.7     2023-08-15 [2] CRAN (R 4.4.0)
+ igraph                 2.1.4     2025-01-23 [2] CRAN (R 4.4.2)
  IRanges              * 2.40.1    2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
  irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.4.0)
  iterators              1.0.14    2022-02-05 [2] CRAN (R 4.4.0)
+ jaffelab             * 0.99.34   2024-12-10 [1] Github (LieberInstitute/jaffelab@2710795)
  jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.4.0)
  jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.4.3)
  KEGGREST               1.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ labeling               0.4.3     2023-08-29 [2] CRAN (R 4.4.0)
  later                  1.4.2     2025-04-08 [2] CRAN (R 4.4.3)
  lattice                0.22-6    2024-03-20 [3] CRAN (R 4.4.3)
  lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.4.0)
@@ -338,25 +358,32 @@ sestan_EC
  lubridate            * 1.9.4     2024-12-08 [2] CRAN (R 4.4.2)
  magick                 2.8.6     2025-03-23 [2] CRAN (R 4.4.3)
  magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.4.0)
+ MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.4.3)
  Matrix               * 1.7-2     2025-01-23 [3] CRAN (R 4.4.3)
  MatrixGenerics       * 1.18.1    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
  matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.4.2)
  memoise                2.0.1     2021-11-26 [2] CRAN (R 4.4.0)
+ metapod                1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
+ nlme                   3.1-167   2025-01-27 [3] CRAN (R 4.4.3)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
  pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
  plotly                 4.10.4    2024-01-13 [2] CRAN (R 4.4.0)
+ plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.4.0)
  png                    0.1-8     2022-11-29 [2] CRAN (R 4.4.0)
  promises               1.3.2     2024-11-28 [2] CRAN (R 4.4.2)
  purrr                * 1.0.4     2025-02-05 [2] CRAN (R 4.4.2)
  R6                     2.6.1     2025-02-15 [2] CRAN (R 4.4.2)
+ rafalib              * 1.0.4     2025-04-08 [1] CRAN (R 4.4.3)
+ ragg                   1.4.0     2025-04-10 [2] CRAN (R 4.4.3)
  rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.4.0)
  RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.4.0)
  Rcpp                   1.0.14    2025-01-12 [2] CRAN (R 4.4.2)
  RCurl                  1.98-1.17 2025-03-22 [2] CRAN (R 4.4.3)
  readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.4.0)
  rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.4.0)
+ reshape2               1.4.4     2020-04-09 [2] CRAN (R 4.4.0)
  restfulr               0.0.15    2022-06-16 [2] CRAN (R 4.4.0)
  rhdf5                * 2.50.2    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
  rhdf5filters           1.18.1    2025-03-06 [2] Bioconductor 3.20 (R 4.4.3)
@@ -374,7 +401,9 @@ sestan_EC
  ScaledMatrix           1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  scales                 1.4.0     2025-04-24 [1] CRAN (R 4.4.3)
  scater                 1.34.1    2025-03-03 [2] Bioconductor 3.20 (R 4.4.3)
+ scran                  1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  scuttle                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ segmented              2.1-4     2025-02-28 [1] CRAN (R 4.4.3)
  sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.4.2)
  shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.4.0)
  shiny                  1.10.0    2024-12-14 [2] CRAN (R 4.4.2)
@@ -387,6 +416,8 @@ sestan_EC
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.4.3)
  stringr              * 1.5.1     2023-11-14 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ systemfonts            1.2.2     2025-04-04 [2] CRAN (R 4.4.3)
+ textshaping            1.0.0     2025-01-20 [2] CRAN (R 4.4.2)
  tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
  tidyr                * 1.3.1     2024-01-24 [2] CRAN (R 4.4.0)
  tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.4.0)
@@ -394,6 +425,7 @@ sestan_EC
  timechange             0.3.0     2024-01-18 [2] CRAN (R 4.4.0)
  tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.4.3)
  UCSC.utils             1.2.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ utf8                   1.2.4     2023-10-22 [2] CRAN (R 4.4.0)
  vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.4.0)
  vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.4.0)
  viridis                0.6.5     2024-01-29 [2] CRAN (R 4.4.0)
@@ -413,4 +445,4 @@ sestan_EC
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Apr 28 02:37:37 PM EDT 2025
+Tue Apr 29 04:57:31 PM EDT 2025
