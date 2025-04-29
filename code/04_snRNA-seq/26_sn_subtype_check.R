@@ -10,21 +10,24 @@ library("getopt")
 library("spatialLIBD")
 library("tidyverse")
 library("DeconvoBuddies")
-library(jaffelab)
+library("jaffelab")
 # library("scater")
 # library("scran")
 # library("scry")
 
 # Import command-line parameters
 scec <- matrix(
-    c("cell_type", "c", "1", "character", "Name of cell type to sub-cluster"),
+    c("cell_type", "c", "1", "character", "Name of cell type to sub-cluster",
+      "k", "k", "1", "integer", "k value for SNN clustering"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
 print(opt)
 
 cell_type <- opt$cell_type
+k <- opt$cell_type
 
+# k <- 10
 # cell_type = "Astro"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", cell_type)
@@ -47,7 +50,9 @@ message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", cell_type, ncol(sce)
 ## read in cluster data
 k_values <- c(k10 = 10, k20 = 20)
 
-clusters <- map_dfc(k_values, ~get(load(here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type, sprintf("walktrap_snn_k%i_subclusters_%s.Rdata", .x, cell_type)))))
+# list.files(here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type))
+cluster_fn <- map_chr(k_values, ~here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type, sprintf("walktrap_snn_k%i_subclusters_%s.Rdata", .x, cell_type)))
+clusters <- map_dfc(cluster_fn, ~get(load(.x)))
 
 message("number of clusters")
 map_int(clusters, max)
@@ -61,7 +66,6 @@ message("Concordance rand score between subset cluster: ", bluster::pairwiseRand
 message("Concordance rand score between original cluster: ")
 map_dbl(clusters, ~bluster::pairwiseRand(sce$cell_type_fine, .x, mode = "index"))
 
-
 #### Name clusters ####
 subtype_k <- paste0("cell_type_k", k_values)
 names(subtype_k) <- names(k_values)
@@ -71,7 +75,15 @@ names(subtype_k) <- names(k_values)
         count(!!sym(.x)) |> 
         arrange(-n) |> 
         mutate(rank = row_number(),
-               "cell_type_{.x}" := sprintf("%s.%i", cell_type, rank)))
+               "cell_type_{.x}" := sprintf("%s.%s", 
+                                           cell_type,
+                                           str_pad(rank, 
+                                                   width = nchar(as.character(max(clusters[[.x]]))),
+                                                   pad = "0"
+                                                   )
+                                           )
+               )
+        )
 )
 
 names(cluster_annotations) <- names(subtype_k)
@@ -102,6 +114,60 @@ walk(subtype_k, ~plot_marker_express_List(sce,
                                           gene_name_col = "gene_name"))
 
 #### QC check ####
+message(Sys.time(), "QC check")
+
+cell_class_cutoffs <- read.csv(here("processed-data", "04_snRNA-seq", "09_cluster_QC","ERC_sn_cell_class_cutoffs.csv")) |> filter(cell_type_class == "glia")
+
+pd <- as.data.frame(colData(sce)) |> select(-passALL_metricQC)
+
+cluster_metrics_long <- map(subtype_k, ~ pd |> 
+                                select(!!sym(.x), cell_type_class, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
+                                pivot_longer(!c(!!sym(.x), cell_type_class), names_to = "metric") |>
+                                group_by(!!sym(.x), cell_type_class, metric) |>
+                                summarize(median = median(value)) |>
+                                left_join(cell_class_cutoffs |> select(cell_type_class, metric, cutoff, cutoff_anno)) |>
+                                mutate(pass_metricQC = case_when(metric %in% c("scDblFinder.score", "subsets_Mito_percent") ~ median < cutoff,
+                                                                 TRUE ~ median > cutoff),
+                                       metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))
+                                )|>
+                                group_by(!!sym(.x)) |>
+                                mutate(passALL_metricQC = all(pass_metricQC))
+)
+
+cluster_metrics_pass <-  map2(cluster_metrics_long, subtype_k, ~.x |> ungroup() |> select(!!sym(.y), passALL_metricQC)  |> unique())
+
+qc_cluster_info <- map2(subtype_k, cluster_metrics_pass, ~pd |>
+                       group_by(!!sym(.x)) |>
+                       summarize(median_sum = median(sum),
+                                 median_detected = median(detected),
+                                 median_Mito_percent = median(subsets_Mito_percent),
+                                 median_scDblFinder.score = median(scDblFinder.score)
+                       ) |> left_join(.y)
+                    )
+
+walk2(subtype_k, cluster_metrics_pass, function(k, metrics_pass){
+    
+    pd_temp <- pd |> left_join(metrics_pass)
+    
+    qc_violin_plot_all <- pd_temp |> 
+        select(!!sym(k),  passALL_metricQC, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
+        pivot_longer(!c(!!sym(k),  passALL_metricQC), names_to = "metric") |>
+        mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))) |>
+        ggplot() +
+        geom_violin(aes(x = !!sym(k), y = value, fill = !!sym(k), colour = passALL_metricQC), 
+                    scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
+        # scale_fill_manual(values = cell_type_colors$fine, guide = "none") +
+        scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
+        theme_bw() +
+        geom_hline(data = cell_class_cutoffs, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
+        geom_label(data = cell_class_cutoffs, aes(y = cutoff, label = cutoff_anno), x = 3, color = "blue", vjust = -.5) +
+        facet_grid(metric~., scales = "free") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+        labs(y = "Quality Metric Value", x = sprintf("subset cell type cluster, %s", k))
+    
+    ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("ERC_sn_QCmetricViolin_subtype_%s-%s.png", cell_type, k)), width = 8, height = 12)
+})
+
 
 #### sctype ####
 
@@ -255,7 +321,11 @@ registration_anno <- map2(subtype_k, names(subtype_k), function(cluster_var, k_n
 
 #### combine cluster summaries ####
 
-cluster_annotations
+map2(cluster_annotations, names(subtype_k), 
+     ~.x |> left_join(qc_cluster_info[[.y]])
+     )
+
+
 sctype_score
 registration_anno
 
