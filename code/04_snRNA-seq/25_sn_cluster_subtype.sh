@@ -36,7 +36,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 25_sn_cluster_subtype.R --cell_type ${cell_type}
+Rscript 25_sn_cluster_subtype.R --cell_type ${cell_type} -k 10
 
 echo "**** Job ends ****"
 date
