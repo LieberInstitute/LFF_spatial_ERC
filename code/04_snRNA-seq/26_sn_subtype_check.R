@@ -24,11 +24,11 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
-test_cell_type <- opt$cell_type
+cell_type <- opt$cell_type
 test_k <- opt$cell_type
 
 # test_k <- 10
-# test_cell_type = "Astro"
+# cell_type = "Astro"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", cell_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -147,7 +147,7 @@ qc_violin_plot_all <- pd |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
     labs(y = "Quality Metric Value", x = sprintf("subset cell type cluster, %s", k))
 
-ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("ERC_sn_QCmetricViolin_subtype_%s-%s.png", test_cell_type, k_nice)), width = 8, height = 12)
+ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("ERC_sn_QCmetricViolin_subtype_%s-%s.png", cell_type, k_nice)), width = 8, height = 12)
 
 
 #### sctype ####
@@ -171,155 +171,154 @@ load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_es_max-sc
 es.max <- es.max[,cell_type_index]
 dim(es.max)
 
-sctype_score <- map2(cell_type_k, names(cell_type_k), function(cl_col, kname){
+cell_types = cluster_annotation[[cell_type_k]]
+# message("cell_types: ", paste(cell_types, collapse = ", "))
+cL_results <- purrr::map_dfr(cell_types, function(cluster){
     
-    cell_types = cluster_annotation[[kname]][[cl_col]]
-    # message("cell_types: ", paste(cell_types, collapse = ", "))
-    cL_results <- purrr::map_dfr(cell_types, function(cluster){
-        
-        cluster_index = sce[[cl_col]] == cluster
-        
-        es.max.cl = sort(rowSums(es.max[,cluster_index]), decreasing = !0)
-        cL_resutls <- head(tibble(cluster = cluster, 
-                                  type = names(es.max.cl), 
-                                  scores = es.max.cl, 
-                                  ncells = sum(cluster_index)
-        ),10)
-        return(cL_resutls)
-    })
+    cluster_index = sce[[cell_type_k]] == cluster
     
-    sctype_scores <-  cL_results |> 
-        group_by(cluster) |> 
-        slice_max(scores)  |>
-        mutate(confident = scores >= (ncells/4))
-    
-    return(sctype_scores)
+    es.max.cl = sort(rowSums(es.max[,cluster_index]), decreasing = !0)
+    cL_resutls <- head(tibble(cluster = cluster, 
+                              sctype = names(es.max.cl), 
+                              scores = es.max.cl, 
+                              ncells = sum(cluster_index)
+    ),10)
+    return(cL_resutls)
 })
 
+(sctype_score <-  cL_results |> 
+    group_by(cluster) |> 
+    slice_max(scores)  |>
+    mutate(confident = scores >= (ncells/4)) |> 
+    mutate(sctype = ifelse(!confident, paste0(sctype, "*"), sctype)))
 
 #### run cell type specific modeling ####
-## make APOE syntatic
-sce$APOE <- gsub("/", "", sce$APOE)
+modeling_fn <- here(data_dir, sprintf("modeling_results_subtype-%s_%s.rds", cell_type, k_nice))
+pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice))
 
-registration_anno <- map2(cell_type_k, names(cell_type_k), function(cluster_var, k_name){
-    # cluster_var <- "cell_type_k10"
-    message(Sys.time(), " - Running Spatial Registration on: ", cell_type, " - ", cluster_var)
-    stopifnot(cluster_var %in% colnames(colData(sce)))
+if(file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
-    table(sce[[cluster_var]], sce$sample_id)
+    message(Sys.time(), " - Load modeling data")
+    modeling_results <- readRDS(modeling_fn)
+    
+} else {
+    
+    message(Sys.time(), " - Running Spatial Registration on: ", cell_type, " - ", cell_type_k)
+    stopifnot(cell_type_k %in% colnames(colData(sce)))
+    table(sce[[cell_type_k]], sce$sample_id)
+    ## make APOE syntatic
+    sce$APOE <- gsub("/", "", sce$APOE)
     
     modeling_results <-registration_wrapper(
         sce = sce,
-        var_registration = cluster_var,
+        var_registration = cell_type_k,
         var_sample_id = "sample_id",
         covars = c("APOE", "Sex", "Age", "Anc_Afr"),
         gene_ensembl = "gene_id",
         gene_name = "gene_name",
         min_ncells = 10,
-        pseudobulk_rds_file = here(data_dir, sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_name))
+        pseudobulk_rds_file = here(data_dir, sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice))
     )
     
     message(Sys.time(), " - Saving Data")
-    saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results_subtype-%s_%s.rds", cell_type, k_name)))
+    saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results_subtype-%s_%s.rds", cell_type, k_nice)))
     
-    sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_name)))
-    
-    top_genes <- sig_genes_extract(
-        n = 10,
-        modeling_results = modeling_results,
-        model_type = "enrichment",
-        reverse = FALSE,
-        sce_layer = sce_pseudo,
-        gene_name = "gene_name"
-    )
-    
-    write.csv(top_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s_%s.csv", cell_type, k_name)))
-    
-    #### spatial registration ####
-    
-    layer_modeling_results <- list()
-    ## sestan sn enrichment
-    layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
-    
-    #### correlate layer stats ####
-    cor_layer <- map(layer_modeling_results, function(layer_mod){
-        cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
-                                    modeling_results = layer_mod,
-                                    model_type = "enrichment",
-                                    top_n = 100)
-        return(cor_layer)
-    })
-    
-    #### Annotate ####
-    anno <- map(cor_layer, ~annotate_registered_clusters(
-        cor_stats_layer = .x,
-        confidence_threshold = 0.5,
-        cutoff_merge_ratio = 0.1
+}
+
+sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice)))
+
+top_genes <- sig_genes_extract(
+    n = 10,
+    modeling_results = modeling_results,
+    model_type = "enrichment",
+    reverse = FALSE,
+    sce_layer = sce_pseudo,
+    gene_name = "gene_name"
+)
+
+write.csv(top_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s_%s.csv", cell_type, k_nice)))
+
+#### spatial registration ####
+
+layer_modeling_results <- list()
+## sestan sn enrichment
+layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
+## PsychENCODE enrichment
+layer_modeling_results$snDLPFC_PEC <- list()
+layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
+
+#### correlate layer stats ####
+cor_layer <- map(layer_modeling_results, function(layer_mod){
+    cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
+                                modeling_results = layer_mod,
+                                model_type = "enrichment",
+                                top_n = 100)
+    return(cor_layer)
+})
+
+#### Registration Annotation ####
+anno <- map(cor_layer, ~annotate_registered_clusters(
+    cor_stats_layer = .x,
+    confidence_threshold = 0.5,
+    cutoff_merge_ratio = 0.1
+))
+
+anno_summary <- map2_dfr(anno, names(anno), ~.x |> 
+                             select(cluster, layer_label) |>
+                             mutate(dataset = .y)) |>
+    pivot_wider(names_from = "dataset",
+                values_from = "layer_label") |>
+    arrange(cluster)
+
+## save data
+spatial_registration <- list(cor_layer = cor_layer, anno = anno)
+save(spatial_registration, file = here(data_dir, sprintf("ERCsn_subtype_registration-%s_%s.Rdata", cell_type, k_nice)))
+
+# load(here(data_dir, sprintf("ERCsn_subtype_registration-%s.Rdata", cell_type)))
+
+#### create registration heatmaps ####
+## load colors
+# load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+# load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+# 
+# # cell_type_colors
+# layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
+#                      spatialDLPFC = NULL, #TODO add spatial domain colors
+#                      spatialERC = SpD_colors,
+#                      snDLPFC_PEC = NULL,
+#                      sestan_EC = NULL)
+
+# map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
+
+walk(names(cor_layer), function(ref){
+    message(ref)
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_subtype-%s_%s.pdf", ref, cell_type, k_nice)), 
+        width = 6 + (ncol(cor_layer[[ref]])/7))
+    print(layer_stat_cor_plot(
+        cor_stats_layer = cor_layer[[ref]],
+        # reference_colors = layer_colors[[ref]],
+        annotation = anno[[ref]]
+        # query_colors = cell_type_colors$anno
     ))
-    
-    anno_summary <- map2_dfr(anno, names(anno), ~.x |> 
-                                 select(cluster, layer_label) |>
-                                 mutate(dataset = .y)) |>
-        pivot_wider(names_from = "dataset",
-                    values_from = "layer_label") |>
-        arrange(cluster)
-    
-    ## save data
-    spatial_registration <- list(cor_layer = cor_layer, anno = anno)
-    save(spatial_registration, file = here(data_dir, sprintf("ERCsn_subtype_registration-%s_%s.Rdata", cell_type, k_name)))
-    
-    # load(here(data_dir, sprintf("ERCsn_subtype_registration-%s.Rdata", cell_type)))
-    
-    #### create registration heatmaps ####
-    ## load colors
-    # load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
-    # load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
-    # 
-    # # cell_type_colors
-    # layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
-    #                      spatialDLPFC = NULL, #TODO add spatial domain colors
-    #                      spatialERC = SpD_colors,
-    #                      snDLPFC_PEC = NULL,
-    #                      sestan_EC = NULL)
-    
-    # map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
-    
-    walk(names(cor_layer), function(ref){
-        message(ref)
-        pdf(here(plot_dir, sprintf("layer_stat_cor_%s_subtype-%s_%s.pdf", ref, cell_type, k_name)), 
-            width = 6 + (ncol(cor_layer[[ref]])/7))
-        print(layer_stat_cor_plot(
-            cor_stats_layer = cor_layer[[ref]],
-            # reference_colors = layer_colors[[ref]],
-            annotation = anno[[ref]]
-            # query_colors = cell_type_colors$anno
-        ))
-        dev.off()
-    })
-    
-    return(anno_summary)
+    dev.off()
 })
 
 #### combine cluster summaries ####
-
-map2(cluster_annotation, names(cell_type_k), 
-     ~.x |> left_join(qc_cluster_info[[.y]])
-     )
-
-
-sctype_score
-registration_anno
-
-anno_summary2 <- colData(sce) |> 
-    as.data.frame() |> 
-    group_by(cluster = cell_type_fine)  |> 
-    summarise(n_cells = n(), n_donors = length(unique(sample_id))) |>
-    left_join(anno_summary)
-
-write_csv(anno_summary2, file = here(data_dir, sprintf("ERCsn_subtype_registration_anno_summary-%s_%s.csv", cell_type, k_name)))
+subtype_clustering_info <- 
+    cluster_annotation |> 
+    left_join(qc_cluster_info) |>
+    left_join(sctype_score  |> select(!!sym(cell_type_k) := cluster, sctype)) |>
+    left_join(anno_summary  |> rename(!!sym(cell_type_k) := cluster))
 
 
-# slurmjobs::job_loop(loops = list(cell_type = c("Oligo", "Astro", "Micro", "Endo")), create_shell = TRUE, name = "26_sn_subtype_check", create_script = FALSE)
+write_csv(subtype_clustering_info, file = here(data_dir, sprintf("ERCsn_subtype_clustering_info-%s_%s.csv", cell_type, k_nice)))
+
+
+# slurmjobs::job_loop(loops = list(cell_type = c("Astro", "Micro", "Endo", "Oligo", "OPC"),
+#                                  k = c("10", "20")), 
+#                     create_shell = TRUE, 
+#                     name = "26_sn_subtype_check", 
+#                     create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")

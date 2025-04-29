@@ -7,14 +7,17 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-4%20
+#SBATCH --array=1-10%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_cell_type=(Oligo Astro Micro Endo)
-cell_type=${all_cell_type[$(( $SLURM_ARRAY_TASK_ID / 1 % 4 ))]}
+all_cell_type=(Astro Micro Endo Oligo OPC)
+cell_type=${all_cell_type[$(( $SLURM_ARRAY_TASK_ID / 2 % 5 ))]}
+
+all_k=(10 20)
+k=${all_k[$(( $SLURM_ARRAY_TASK_ID / 1 % 2 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/26_sn_subtype_check_${cell_type}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/26_sn_subtype_check_${cell_type}_${k}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -36,7 +39,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 26_sn_subtype_check.R --cell_type ${cell_type}
+Rscript 26_sn_subtype_check.R --cell_type ${cell_type} --k ${k}
 
 echo "**** Job ends ****"
 date
