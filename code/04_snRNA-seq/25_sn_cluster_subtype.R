@@ -14,6 +14,7 @@ library("scry")
 # Import command-line parameters
 scec <- matrix(
     c("cell_type", "c", "1", "character", "Name of cell type to sub-cluster"),
+    c("k", "k", "1", "integer", "k value for SNN clustering"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -108,7 +109,7 @@ if(file.exists(harmony_file)){
 #### SNN + Walktrap cluster ####
 
 ## Build SNN graph
-k = 20
+k = opt$k
 message(Sys.time(), " - running buildSNNGraph: k =", k)
 snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY")
 
