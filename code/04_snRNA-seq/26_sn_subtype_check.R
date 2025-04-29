@@ -25,7 +25,7 @@ opt <- getopt(scec)
 print(opt)
 
 cell_type <- opt$cell_type
-k <- opt$cell_type
+k <- opt$k
 
 # k <- 10
 # cell_type = "Astro"
