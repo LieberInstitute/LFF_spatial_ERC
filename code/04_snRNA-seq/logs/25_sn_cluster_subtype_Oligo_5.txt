@@ -150,3 +150,34 @@ null device
           1 
 2025-04-28 10:31:29.492462 - running nullResiduals
 2025-04-28 10:35:23.34576 - running PCA
+There were 50 or more warnings (use warnings() to see the first 50)
+2025-04-28 13:49:18.968488 - HARMONY Correction
+running Harmony - 2025-04-28 13:49:19.00588
+Transposing data matrix
+Initializing state using k-means centroids initialization
+Harmony 1/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony 2/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony converged after 2 iterations
+Warning message:
+Quick-TRANSfer stage steps exceeded maximum (= 2341550) 
+2025-04-28 13:50:43.665825 - running buildSNNGraph: k =20
+2025-04-28 13:54:36.549492 - running walktrap
+clusters
+    1     2     3     4     5     6     7     8     9    10    11 
+15874  7019 11874   492  4485   242  5392   272   337   701   143 
+2025-04-28 22:37:27.818707 - saving data
+Error in slurmjobs::job_loop(loops = list(cell_type = c("Oligo", "Astro",  : 
+  unused argument (create_script = FALSE)
+Execution halted
