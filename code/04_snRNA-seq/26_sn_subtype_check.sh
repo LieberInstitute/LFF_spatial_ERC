@@ -17,7 +17,7 @@ all_k=(10 20)
 k=${all_k[$(( $SLURM_ARRAY_TASK_ID / 1 % 2 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/26_sn_subtype_check_${cell_type}_${k}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/26_sn_subtype_check_${cell_type}_k${k}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
