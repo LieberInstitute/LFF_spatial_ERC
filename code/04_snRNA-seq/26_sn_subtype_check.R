@@ -49,7 +49,7 @@ message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", cell_type, ncol(sce)
 
 ## read in cluster data
 # list.files(here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type))
-cluster_fn <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type, sprintf("walktrap_snn_k%i_subclusters_%s.Rdata", k, cell_type))
+cluster_fn <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type, sprintf("walktrap_snn_k%s_subclusters_%s.Rdata", k, cell_type))
 stopifnot(file.exists(cluster_fn))
 load(cluster_fn, verbose = TRUE)
 
