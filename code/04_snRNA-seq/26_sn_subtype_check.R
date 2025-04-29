@@ -25,9 +25,9 @@ opt <- getopt(scec)
 print(opt)
 
 cell_type <- opt$cell_type
-test_k <- opt$cell_type
+k <- opt$cell_type
 
-# test_k <- 10
+# k <- 10
 # cell_type = "Astro"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", cell_type)
@@ -60,8 +60,8 @@ message("number clusters n<100: ", sum(table(clusters) < 100))
 message("Concordance rand score between original cluster: ", bluster::pairwiseRand(sce$cell_type_fine, clusters, mode = "index"))
 
 #### Name clusters ####
-k_nice <- paste0("k", test_k)
-cell_type_k <- paste0("cell_type_k", test_k)
+k_nice <- paste0("k", k)
+cell_type_k <- paste0("cell_type_k", k)
 
 cluster_tab <- tibble(!!sym(k_nice) := clusters) 
 
