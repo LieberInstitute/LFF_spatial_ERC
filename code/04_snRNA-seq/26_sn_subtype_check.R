@@ -9,6 +9,8 @@ library("HDF5Array")
 library("getopt")
 library("spatialLIBD")
 library("tidyverse")
+library("DeconvoBuddies")
+library(jaffelab)
 # library("scater")
 # library("scran")
 # library("scry")
@@ -23,7 +25,7 @@ print(opt)
 
 cell_type <- opt$cell_type
 
-# cell_type = "Endo"
+# cell_type = "Astro"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", cell_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -85,6 +87,20 @@ colData(sce) <- cbind(colData(sce), clusters[, subtype_k])
 
 map(subtype_k, ~table(sce[[.x]]))
 
+#### plot marker genes ####
+message(Sys.time(), "Plot lit marker genes")
+lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
+    rename(cell_type_target = cell_type) |>
+    filter(gene_name %in% rowData(sce)$gene_name & cell_type_target == cell_type) 
+
+lit_markers_list <- map(splitit(lit_markers$cell_type_target), ~lit_markers$gene_name[.x])
+
+walk(subtype_k, ~plot_marker_express_List(sce, 
+                                          lit_markers_list, 
+                                          pdf_fn = here(plot_dir, sprintf("ERC_sn_lit_markers_subtype_%s_%s.pdf", cell_type, .x)),
+                                          cellType_col = .x,
+                                          gene_name_col = "gene_name"))
+
 #### QC check ####
 
 #### sctype ####
@@ -138,7 +154,7 @@ sctype_score <- map2(subtype_k, names(subtype_k), function(cl_col, kname){
 ## make APOE syntatic
 sce$APOE <- gsub("/", "", sce$APOE)
 
-walk2(subtype_k, names(subtype_k), function(cluster_var, k_name){
+registration_anno <- map2(subtype_k, names(subtype_k), function(cluster_var, k_name){
     # cluster_var <- "cell_type_k10"
     message(Sys.time(), " - Running Spatial Registration on: ", cell_type, " - ", cluster_var)
     stopifnot(cluster_var %in% colnames(colData(sce)))
@@ -201,15 +217,6 @@ walk2(subtype_k, names(subtype_k), function(cluster_var, k_name){
                     values_from = "layer_label") |>
         arrange(cluster)
     
-    
-    anno_summary2 <- colData(sce) |> 
-        as.data.frame() |> 
-        group_by(cluster = cell_type_fine)  |> 
-        summarise(n_cells = n(), n_donors = length(unique(sample_id))) |>
-        left_join(anno_summary)
-    
-    write_csv(anno_summary2, file = here(data_dir, sprintf("ERCsn_subtype_registration_anno_summary-%s_%s.csv", cell_type, k_name)))
-    
     ## save data
     spatial_registration <- list(cor_layer = cor_layer, anno = anno)
     save(spatial_registration, file = here(data_dir, sprintf("ERCsn_subtype_registration-%s_%s.Rdata", cell_type, k_name)))
@@ -243,7 +250,23 @@ walk2(subtype_k, names(subtype_k), function(cluster_var, k_name){
         dev.off()
     })
     
+    return(anno_summary)
 })
+
+#### combine cluster summaries ####
+
+cluster_annotations
+sctype_score
+registration_anno
+
+anno_summary2 <- colData(sce) |> 
+    as.data.frame() |> 
+    group_by(cluster = cell_type_fine)  |> 
+    summarise(n_cells = n(), n_donors = length(unique(sample_id))) |>
+    left_join(anno_summary)
+
+write_csv(anno_summary2, file = here(data_dir, sprintf("ERCsn_subtype_registration_anno_summary-%s_%s.csv", cell_type, k_name)))
+
 
 # slurmjobs::job_loop(loops = list(cell_type = c("Oligo", "Astro", "Micro", "Endo")), create_shell = TRUE, name = "26_sn_subtype_check", create_script = FALSE)
 
