@@ -38,7 +38,8 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 stopifnot(cell_type %in% levels(sce$cell_type_broad))
 
 ## subset by Broad cell type
-sce <- sce[,sce$cell_type_broad == cell_type]
+cell_type_index <- sce$cell_type_broad == cell_type
+sce <- sce[,cell_type_index]
 message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", cell_type, ncol(sce)))
 
 ## read in cluster data
@@ -58,6 +59,11 @@ message("Concordance rand score between subset cluster: ", bluster::pairwiseRand
 message("Concordance rand score between original cluster: ")
 map_dbl(clusters, ~bluster::pairwiseRand(sce$cell_type_fine, .x, mode = "index"))
 
+
+#### Name clusters ####
+subtype_k <- paste0("cell_type_k", k_values)
+names(subtype_k) <- names(k_values)
+
 # create cell type cluster names ranked on n cells
 (cluster_annotations <- map(colnames(clusters), ~clusters |> 
         count(!!sym(.x)) |> 
@@ -66,14 +72,13 @@ map_dbl(clusters, ~bluster::pairwiseRand(sce$cell_type_fine, .x, mode = "index")
                "cell_type_{.x}" := sprintf("%s.%i", cell_type, rank)))
 )
 
+names(cluster_annotations) <- names(subtype_k)
+
 walk(cluster_annotations, function(c){
     clusters <<- clusters |> left_join(c |> select(1, 4))
 })
 
 head(clusters)
-
-subtype_k <- paste0("cell_type_k", k_values)
-names(subtype_k) <- names(k_values)
 
 ## add to colData
 colData(sce) <- cbind(colData(sce), clusters[, subtype_k])
@@ -83,6 +88,51 @@ map(subtype_k, ~table(sce[[.x]]))
 #### QC check ####
 
 #### sctype ####
+
+## source sc-type functions
+message(Sys.time(), "Sctype data")
+
+# source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
+# source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
+# 
+# db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
+# 
+# message(Sys.time(), "- sctype score")
+# es.max <- sctype_score(scRNAseqData = as.matrix(logcounts(sce)), 
+#                        scaled = TRUE, 
+#                        gs = gs_list$gs_positive)
+
+## load previously computed scores
+load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_es_max-sctype.Rdata"), verbose = TRUE)
+## subset to cell type
+es.max <- es.max[,cell_type_index]
+dim(es.max)
+
+sctype_score <- map2(subtype_k, names(subtype_k), function(cl_col, kname){
+    
+    cell_types = cluster_annotations[[kname]][[cl_col]]
+    # message("cell_types: ", paste(cell_types, collapse = ", "))
+    cL_results <- purrr::map_dfr(cell_types, function(cluster){
+        
+        cluster_index = sce[[cl_col]] == cluster
+        
+        es.max.cl = sort(rowSums(es.max[,cluster_index]), decreasing = !0)
+        cL_resutls <- head(tibble(cluster = cluster, 
+                                  type = names(es.max.cl), 
+                                  scores = es.max.cl, 
+                                  ncells = sum(cluster_index)
+        ),10)
+        return(cL_resutls)
+    })
+    
+    sctype_scores <-  cL_results |> 
+        group_by(cluster) |> 
+        slice_max(scores)  |>
+        mutate(confident = scores >= (ncells/4))
+    
+    return(sctype_scores)
+})
+
 
 #### run cell type specific modeling ####
 ## make APOE syntatic
