@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=10G
+#SBATCH --mem=25G
 #SBATCH --job-name=26_sn_subtype_check
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
