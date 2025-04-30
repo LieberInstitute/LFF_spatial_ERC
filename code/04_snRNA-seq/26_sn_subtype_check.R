@@ -47,6 +47,9 @@ cell_type_index <- sce$cell_type_broad == cell_type
 sce <- sce[,cell_type_index]
 message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", cell_type, ncol(sce)))
 
+## clear QC
+sce$passALL_metricQC <- NULL
+
 ## read in cluster data
 message(Sys.time(), " - Load Cluster Data")
 # list.files(here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type))
@@ -60,32 +63,75 @@ message("number clusters n<100: ", sum(table(clusters) < 100))
 ## calc concordance
 message("Concordance rand score between original cluster: ", bluster::pairwiseRand(sce$cell_type_fine, clusters, mode = "index"))
 
-#### Name clusters ####
+#### Name clusters k ####
 k_nice <- paste0("k", k)
 cell_type_k <- paste0("cell_type_k", k)
 
-cluster_tab <- tibble(!!sym(k_nice) := clusters) 
+cluster_tab <- tibble(!!sym(k_nice) := paste0("k",clusters)) 
 
+## add k cluster to colData
+colData(sce) <- cbind(colData(sce), cluster_tab[, k_nice])
+table(sce[[k_nice]])
+
+## add to colData
+colData(sce) <- cbind(colData(sce), cluster_tab[, k_nice])
+table(sce[[k_nice]])
+
+#### QC check ####
+message(Sys.time(), "QC check")
+
+cell_class_cutoffs <- read.csv(here("processed-data", "04_snRNA-seq", "09_cluster_QC","ERC_sn_cell_class_cutoffs.csv")) |> filter(cell_type_class == "glia")
+
+pd <- as.data.frame(colData(sce))
+
+cluster_metrics_long <- pd |> 
+    select(!!sym(k_nice), cell_type_class, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
+    pivot_longer(!c(!!sym(k_nice), cell_type_class), names_to = "metric") |>
+    group_by(!!sym(k_nice), cell_type_class, metric) |>
+    summarize(median = median(value)) |>
+    left_join(cell_class_cutoffs |> select(cell_type_class, metric, cutoff, cutoff_anno)) |>
+    mutate(pass_metricQC = case_when(metric %in% c("scDblFinder.score", "subsets_Mito_percent") ~ median < cutoff,
+                                     TRUE ~ median > cutoff),
+           metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))
+    ) |>
+    group_by(!!sym(k_nice)) |>
+    mutate(passALL_metricQC = all(pass_metricQC))
+
+cluster_metrics_fails <- cluster_metrics_long |> group_by(!!sym(k_nice)) |> filter(!pass_metricQC) |> summarise(metric_fail = paste0(metric, collapse = ","))
+
+cluster_metrics_pass <- cluster_metrics_long |> 
+    ungroup() |> 
+    select(!!sym(k_nice), passALL_metricQC) |> unique() |>
+    left_join(cluster_metrics_fails)
+
+#### Name clusters - cell type + QC ####
 # create cell type cluster names ranked on n cells
 cluster_annotation <- cluster_tab |> 
-        count(!!sym(k_nice)) |> 
-        arrange(-n) |> 
-        mutate(rank = row_number(),
-               "cell_type_{k_nice}" := sprintf("%s.%s", 
+    count(!!sym(k_nice)) |> 
+    left_join(cluster_metrics_pass) |>
+    arrange(-passALL_metricQC, -n) |> 
+    mutate(rank = row_number(),
+           qc = ifelse(!passALL_metricQC,"_QC",""),
+           "cell_type_{k_nice}" := sprintf("%s.%s%s", 
                                            cell_type,
                                            str_pad(rank, 
                                                    width = nchar(as.character(max(clusters))),
                                                    pad = "0"
-                                                   )
-                                           )
-               )
-        
+                                           ),
+                                           qc
+           )
+    ) |>
+    select(-qc)
 
-cluster_tab <- cluster_tab|> left_join(cluster_annotation |> select(-n, -rank))
+## add to cluster tab
+cluster_tab <- cluster_tab |> left_join(cluster_annotation |> select(-n, -rank))
+head(cluster_tab)
 
 ## add to colData
-colData(sce) <- cbind(colData(sce), cluster_tab[, cell_type_k])
+colData(sce) <- cbind(colData(sce), cluster_tab[, c("passALL_metricQC", cell_type_k)])
 table(sce[[cell_type_k]])
+
+table(sce$passALL_metricQC, sce[[cell_type_k]])
 
 #### plot marker genes ####
 message(Sys.time(), "Plot lit marker genes")
@@ -101,35 +147,17 @@ plot_marker_express_List(sce,
                          cellType_col = cell_type_k,
                          gene_name_col = "gene_name")
 
-#### QC check ####
-message(Sys.time(), "QC check")
-
-cell_class_cutoffs <- read.csv(here("processed-data", "04_snRNA-seq", "09_cluster_QC","ERC_sn_cell_class_cutoffs.csv")) |> filter(cell_type_class == "glia")
-
-pd <- as.data.frame(colData(sce)) |> select(-passALL_metricQC)
-
-cluster_metrics_long <- pd |> 
-    select(!!sym(cell_type_k), cell_type_class, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
-    pivot_longer(!c(!!sym(cell_type_k), cell_type_class), names_to = "metric") |>
-    group_by(!!sym(cell_type_k), cell_type_class, metric) |>
-    summarize(median = median(value)) |>
-    left_join(cell_class_cutoffs |> select(cell_type_class, metric, cutoff, cutoff_anno)) |>
-    mutate(pass_metricQC = case_when(metric %in% c("scDblFinder.score", "subsets_Mito_percent") ~ median < cutoff,
-                                     TRUE ~ median > cutoff),
-           metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))
-    ) |>
-    group_by(!!sym(cell_type_k)) |>
-    mutate(passALL_metricQC = all(pass_metricQC))
-
-cluster_metrics_pass <- cluster_metrics_long |> ungroup() |> select(!!sym(cell_type_k), passALL_metricQC) |> unique()
+#### plot QC data ####
+pd <- as.data.frame(colData(sce))
 
 qc_cluster_info <- pd |>
-                       group_by(!!sym(cell_type_k)) |>
+                       group_by(!!sym(k_nice), !!sym(cell_type_k)) |>
                        summarize(median_sum = median(sum),
                                  median_detected = median(detected),
                                  median_Mito_percent = median(subsets_Mito_percent),
-                                 median_scDblFinder.score = median(scDblFinder.score)
-                       ) |> left_join(cluster_metrics_pass)
+                                 median_scDblFinder.score = median(scDblFinder.score)) |>
+    left_join(cluster_metrics_pass) |>
+    arrange(!!sym(cell_type_k))
 
 qc_violin_plot_all <- pd |> 
     left_join(cluster_metrics_pass) |>
