@@ -365,6 +365,13 @@ write_csv(subtype_clustering_info, file = here(data_dir, sprintf("ERCsn_subtype_
 #                     name = "26_sn_subtype_check", 
 #                     create_script = FALSE)
 
+## resubmit Oligo jobs with more mem
+# array_submit(
+#     "26_sn_subtype_check",
+#     task_ids = 6:7,
+#     submit = TRUE)
+
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
