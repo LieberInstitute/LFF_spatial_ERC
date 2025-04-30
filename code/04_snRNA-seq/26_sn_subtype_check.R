@@ -11,6 +11,7 @@ library("spatialLIBD")
 library("tidyverse")
 library("DeconvoBuddies")
 library("jaffelab")
+library("HGNChelper") #for sctype
 # library("scater")
 # library("scran")
 # library("scry")
@@ -18,7 +19,8 @@ library("jaffelab")
 # Import command-line parameters
 scec <- matrix(
     c("cell_type", "c", "1", "character", "Name of cell type to sub-cluster",
-      "k", "k", "1", "integer", "k value for SNN clustering"),
+      "k", "k", "1", "integer", "k value for SNN clustering",
+      "remodel", "r", "c", "logical", "Model with existing data"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -26,6 +28,10 @@ print(opt)
 
 cell_type <- opt$cell_type
 k <- opt$k
+
+remodel <- as.logical(opt$remodel)
+if(length(remodel) == 0) remodel <- TRUE
+if(is.na(remodel)) remodel <- TRUE
 
 # k <- 10
 # cell_type = "Astro"
@@ -184,22 +190,28 @@ ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("ERC_sn_QCmetricVio
 ## source sc-type functions
 message(Sys.time(), "Sctype data")
 
-# source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
-# source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
-# 
-# db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
-# 
-# message(Sys.time(), "- sctype score")
-# es.max <- sctype_score(scRNAseqData = as.matrix(logcounts(sce)), 
-#                        scaled = TRUE, 
-#                        gs = gs_list$gs_positive)
+source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
+source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
+
+db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
+
+# prepare gene sets
+gs_list <- gene_sets_prepare(db_, "Brain")
+rownames(sce) <- rowData(sce)$gene_name
+
+## calc es.max
+message(Sys.time(), "- sctype es.max")
+es.max <- sctype_score(scRNAseqData = as.matrix(logcounts(sce)),
+                       scaled = TRUE,
+                       gs = gs_list$gs_positive)
 
 ## load previously computed scores
-load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_es_max-sctype.Rdata"), verbose = TRUE)
+# load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_es_max-sctype.Rdata"), verbose = TRUE)
 ## subset to cell type
-es.max <- es.max[,cell_type_index]
+# es.max <- es.max[,cell_type_index]
 dim(es.max)
 
+message(Sys.time(), "- sctype score")
 cell_types = cluster_annotation[[cell_type_k]]
 # message("cell_types: ", paste(cell_types, collapse = ", "))
 cL_results <- purrr::map_dfr(cell_types, function(cluster){
@@ -225,7 +237,7 @@ cL_results <- purrr::map_dfr(cell_types, function(cluster){
 modeling_fn <- here(data_dir, sprintf("modeling_results_subtype-%s_%s.rds", cell_type, k_nice))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice))
 
-if(file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
+if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
     message(Sys.time(), " - Load modeling data")
     modeling_results <- readRDS(modeling_fn)

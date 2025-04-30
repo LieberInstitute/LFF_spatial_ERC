@@ -39,7 +39,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 26_sn_subtype_check.R --cell_type ${cell_type} --k ${k}
+Rscript 26_sn_subtype_check.R --cell_type ${cell_type} --k ${k} --remodel TRUE
 
 echo "**** Job ends ****"
 date
