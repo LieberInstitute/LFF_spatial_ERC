@@ -1,17 +1,16 @@
 **** Job starts ****
-Tue Apr 29 04:51:56 PM EDT 2025
+Wed Apr 30 02:07:24 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16427932
+Job id: 16439028
 Job name: 26_sn_subtype_check
-Node name: compute-161
+Node name: compute-155
 Task id: 6
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4.x
+  1) JHPCE_ROCKY9_DEFAULT_ENV   2) JHPCE_tools/3.0   3) ruby/3.2.2   4) rmate/1.5.10   5) conda/3-24.3.0   6) conda_R/4.4.x
 
  
 
@@ -157,6 +156,11 @@ Loading required package: SpatialExperiment
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Loading required package: rafalib
+Please cite our software :) 
+ 
+ Sehyun Oh et al. HGNChelper: identification and correction of invalid gene symbols for human and mouse. F1000Research 2020, 9:1493. DOI: https://doi.org/10.12688/f1000research.28033.1 
+ 
+ Type `citation('HGNChelper')` for a BibTeX entry.
 $ARGS
 character(0)
 
@@ -166,22 +170,54 @@ $cell_type
 $k
 [1] 10
 
-2025-04-29 16:52:08.233387 - Load HDF5 sce
-2025-04-29 16:52:12.682136 - Subset to Oligo, ncells = 46831
-2025-04-29 16:52:12.68252 - Load Cluster Data
+$remodel
+[1] TRUE
+
+2025-04-30 14:07:38.857363 - Load HDF5 sce
+2025-04-30 14:07:45.109346 - Subset to Oligo, ncells = 46831
+2025-04-30 14:07:45.127104 - Load Cluster Data
 [1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/25_sn_cluster_subtype/Oligo/walktrap_snn_k10_subclusters_Oligo.Rdata"
 Loading objects:
   clusters
 number of clusters: 11
 number clusters n<100: 0
 Concordance rand score between original cluster: 0.167913113246805
-Joining with `by = join_by(k10)`
 
-Oligo.01 Oligo.02 Oligo.03 Oligo.04 Oligo.05 Oligo.06 Oligo.07 Oligo.08 
-   12519    12010     8587     6911     4254      812      535      458 
-Oligo.09 Oligo.10 Oligo.11 
-     427      200      118 
-2025-04-29 16:52:12.869604Plot lit marker genes
+   k1   k10   k11    k2    k3    k4    k5    k6    k7    k8    k9 
+ 4254   200  6911   535 12010  8587   427   118   458 12519   812 
+
+   k1   k10   k11    k2    k3    k4    k5    k6    k7    k8    k9 
+ 4254   200  6911   535 12010  8587   427   118   458 12519   812 
+2025-04-30 14:07:45.368372QC check
+`summarise()` has grouped output by 'k10', 'cell_type_class'. You can override
+using the `.groups` argument.
+Joining with `by = join_by(cell_type_class, metric)`
+Joining with `by = join_by(k10)`
+Joining with `by = join_by(k10)`
+Joining with `by = join_by(k10)`
+# A tibble: 6 × 4
+  k10   passALL_metricQC metric_fail cell_type_k10
+  <chr> <lgl>            <chr>       <chr>        
+1 k1    TRUE             <NA>        Oligo.05     
+2 k1    TRUE             <NA>        Oligo.05     
+3 k4    TRUE             <NA>        Oligo.03     
+4 k4    TRUE             <NA>        Oligo.03     
+5 k1    TRUE             <NA>        Oligo.05     
+6 k11   TRUE             <NA>        Oligo.04     
+
+   Oligo.01    Oligo.02    Oligo.03    Oligo.04    Oligo.05    Oligo.06 
+      12519       12010        8587        6911        4254         535 
+   Oligo.07    Oligo.08    Oligo.09 Oligo.10_QC Oligo.11_QC 
+        458         427         200         812         118 
+       
+        Oligo.01 Oligo.02 Oligo.03 Oligo.04 Oligo.05 Oligo.06 Oligo.07 Oligo.08
+  FALSE        0        0        0        0        0        0        0        0
+  TRUE     12519    12010     8587     6911     4254      535      458      427
+       
+        Oligo.09 Oligo.10_QC Oligo.11_QC
+  FALSE        0         812         118
+  TRUE       200           0           0
+2025-04-30 14:07:45.602816Plot lit marker genes
 Rows: 43 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -195,58 +231,56 @@ $Oligo
 
 null device 
           1 
-2025-04-29 16:52:29.194181QC check
-`summarise()` has grouped output by 'cell_type_k10', 'cell_type_class'. You can
-override using the `.groups` argument.
-Joining with `by = join_by(cell_type_class, metric)`
-Joining with `by = join_by(cell_type_k10)`
-Joining with `by = join_by(cell_type_k10)`
-2025-04-29 16:52:30.369234Sctype data
-Loading objects:
-  es.max
-[1]    24 46850
+`summarise()` has grouped output by 'k10'. You can override using the `.groups`
+argument.
+Joining with `by = join_by(k10)`
+Joining with `by = join_by(k10, passALL_metricQC)`
+2025-04-30 14:08:06.134562Sctype data
+2025-04-30 14:08:06.901208- sctype es.max
+[1]    24 46831
+2025-04-30 14:12:01.387136- sctype score
 # A tibble: 11 × 5
 # Groups:   cluster [11]
-   cluster  sctype           scores ncells confident
-   <chr>    <chr>             <dbl>  <int> <lgl>    
- 1 Oligo.01 Oligodendrocytes 40558.  12519 TRUE     
- 2 Oligo.02 Oligodendrocytes 39129.  12010 TRUE     
- 3 Oligo.03 Oligodendrocytes 22417.   8587 TRUE     
- 4 Oligo.04 Oligodendrocytes 20290.   6911 TRUE     
- 5 Oligo.05 Oligodendrocytes 12523.   4254 TRUE     
- 6 Oligo.06 Oligodendrocytes  1764.    812 TRUE     
- 7 Oligo.07 Oligodendrocytes  1405.    535 TRUE     
- 8 Oligo.08 Oligodendrocytes  1144.    458 TRUE     
- 9 Oligo.09 Astrocytes         946.    427 TRUE     
-10 Oligo.10 Oligodendrocytes   492.    200 TRUE     
-11 Oligo.11 Oligodendrocytes   427.    118 TRUE     
-2025-04-29 16:52:30.590799 - Running Spatial Registration on: Oligo - cell_type_k10
-2025-04-29 16:52:30.633822 make pseudobulk object
-2025-04-29 16:56:21.771315 dropping 115 pseudo-bulked samples that are below 'min_ncells'.
-2025-04-29 16:56:21.829628 drop lowly expressed genes
-2025-04-29 16:56:22.077895 normalize expression
-2025-04-29 16:56:24.175244 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/26_sn_subtype_check/Oligo/sce_pseudobulk_subtype-Oligo_k10.rds
-2025-04-29 16:56:26.156784 create model matrix
-2025-04-29 16:56:26.196492 run duplicateCorrelation()
-2025-04-29 16:56:57.716825 The estimated correlation is: 0.0859054893507901
-2025-04-29 16:56:57.719232 computing enrichment statistics
-2025-04-29 16:57:01.969329 extract and reformat enrichment results
-2025-04-29 16:57:01.999489 running the baseline pairwise model
-2025-04-29 16:57:02.384553 computing pairwise statistics
-2025-04-29 16:57:02.858747 computing F-statistics
-2025-04-29 16:57:03.282292 - Saving Data
+   cluster     sctype                          scores ncells confident
+   <chr>       <chr>                            <dbl>  <int> <lgl>    
+ 1 Oligo.01    Oligodendrocytes                86388.  12519 TRUE     
+ 2 Oligo.02    Oligodendrocytes                85984.  12010 TRUE     
+ 3 Oligo.03    Oligodendrocytes                35239.   8587 TRUE     
+ 4 Oligo.04    Oligodendrocytes                40594.   6911 TRUE     
+ 5 Oligo.05    Oligodendrocytes                22190.   4254 TRUE     
+ 6 Oligo.06    Glutamatergic neurons            2097.    535 TRUE     
+ 7 Oligo.07    Oligodendrocyte precursor cells  3063.    458 TRUE     
+ 8 Oligo.08    Glutamatergic neurons            1779.    427 TRUE     
+ 9 Oligo.09    Endothelial cells                1132.    200 TRUE     
+10 Oligo.10_QC Oligodendrocytes                 1563.    812 TRUE     
+11 Oligo.11_QC Oligodendrocytes                  635.    118 TRUE     
+2025-04-30 14:12:01.480805 - Running Spatial Registration on: Oligo - cell_type_k10
+2025-04-30 14:12:02.07189 make pseudobulk object
+2025-04-30 14:17:03.406946 dropping 73 pseudo-bulked samples that are below 'min_ncells'.
+2025-04-30 14:17:03.488872 drop lowly expressed genes
+2025-04-30 14:17:03.798493 normalize expression
+2025-04-30 14:17:06.319314 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/26_sn_subtype_check/Oligo/sce_pseudobulk_subtype-Oligo_k10.rds
+2025-04-30 14:17:08.820237 create model matrix
+2025-04-30 14:17:08.889817 run duplicateCorrelation()
+2025-04-30 14:17:47.334991 The estimated correlation is: 0.106129827501915
+2025-04-30 14:17:47.340836 computing enrichment statistics
+2025-04-30 14:17:51.432328 extract and reformat enrichment results
+2025-04-30 14:17:51.476381 running the baseline pairwise model
+2025-04-30 14:17:51.950796 computing pairwise statistics
+2025-04-30 14:17:52.545923 computing F-statistics
+2025-04-30 14:17:53.036908 - Saving Data
 sestan_EC
 snDLPFC_PEC
-Joining with `by = join_by(cell_type_k10)`
+Joining with `by = join_by(k10, passALL_metricQC, metric_fail, cell_type_k10)`
 Joining with `by = join_by(cell_type_k10)`
 Joining with `by = join_by(cell_type_k10)`
 [1] "Reproducibility information:"
-[1] "2025-04-29 16:57:12 EDT"
+[1] "2025-04-30 14:18:02 EDT"
    user  system elapsed 
-300.183   3.332 315.282 
+534.424  16.591 636.743 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88181)
+ version  R version 4.4.3 Patched (2025-02-28 r88182)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -254,7 +288,7 @@ Joining with `by = join_by(cell_type_k10)`
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-29
+ date     2025-04-30
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -335,6 +369,7 @@ Joining with `by = join_by(cell_type_k10)`
  gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.4.2)
  HDF5Array            * 1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.4.0)
+ HGNChelper           * 0.8.15    2024-11-16 [1] CRAN (R 4.4.2)
  hms                    1.1.3     2023-03-21 [2] CRAN (R 4.4.0)
  htmltools              0.5.8.1   2024-04-04 [2] CRAN (R 4.4.0)
  htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.4.0)
@@ -366,6 +401,7 @@ Joining with `by = join_by(cell_type_k10)`
  metapod                1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
  nlme                   3.1-167   2025-01-27 [3] CRAN (R 4.4.3)
+ openxlsx               4.2.8     2025-01-25 [1] CRAN (R 4.4.2)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
  pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
@@ -412,6 +448,7 @@ Joining with `by = join_by(cell_type_k10)`
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment    * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  spatialLIBD          * 1.21.3    2025-04-24 [1] Github (LieberInstitute/spatialLIBD@3b5964f)
+ splitstackshape        1.4.8     2019-04-21 [1] CRAN (R 4.4.2)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.4.3)
  stringr              * 1.5.1     2023-11-14 [2] CRAN (R 4.4.0)
@@ -436,6 +473,7 @@ Joining with `by = join_by(cell_type_k10)`
  xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.4.0)
  XVector                0.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  yaml                   2.3.10    2024-07-26 [2] CRAN (R 4.4.1)
+ zip                    2.3.2     2025-02-01 [2] CRAN (R 4.4.2)
  zlibbioc               1.52.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
 
  [1] /users/lhuuki/R/4.4.x
@@ -445,4 +483,4 @@ Joining with `by = join_by(cell_type_k10)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Apr 29 04:57:13 PM EDT 2025
+Wed Apr 30 02:18:02 PM EDT 2025
