@@ -246,7 +246,11 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
     message(Sys.time(), " - Running Spatial Registration on: ", cell_type, " - ", cell_type_k)
     stopifnot(cell_type_k %in% colnames(colData(sce)))
+    
+    ## Filter to passALL_metricQC nuclei
+    sce <- sce[,sce$passALL_metricQC]
     table(sce[[cell_type_k]], sce$sample_id)
+    
     ## make APOE syntatic
     sce$APOE <- gsub("/", "", sce$APOE)
     
