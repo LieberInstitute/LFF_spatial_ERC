@@ -86,7 +86,7 @@ ggsave(fig.vp, filename = here(plot_dir, "crumblr_cell_type_broad_vp.png"))
 #### variable correlation ####
 C <- canCorPairs(form, erc_info)
 # APOE and APOE_carrier
-pdf("variable_CorrMatrix_sn_broad.pdf", height = 5, width = 5)
+pdf(here(plot_dir, "variable_CorrMatrix_sn_broad.pdf"), height = 5, width = 5)
 plotCorrMatrix(C)
 dev.off()
 
@@ -97,7 +97,6 @@ pca <- prcomp(t(standardize(cobj)))
 df_pca <- merge(pca$x, erc_info, by = "row.names")
 
 # Plot PCA
-#   shape by Stimulated vs unstimulated
 ggplot(df_pca, aes(PC1, PC2, color = exp_round, shape = APOE)) +
     geom_point(size = 3) +
     theme_classic() +
@@ -119,7 +118,7 @@ clr_boxplot_APOE <- clr_prop_long |>
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE, filename = "clr_boxplot_APOE_cell_type_broad.png")
+ggsave(clr_boxplot_APOE, filename = here(plot_dir, "clr_boxplot_APOE_cell_type_broad.png"))
 
 clr_boxplot_APOE_jitter <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
@@ -129,7 +128,7 @@ clr_boxplot_APOE_jitter <- clr_prop_long |>
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE_jitter, filename = "clr_boxplot_APOE_jitter_cell_type_broad.png")
+ggsave(clr_boxplot_APOE_jitter, filename = here(plot_dir, "clr_boxplot_APOE_jitter_cell_type_broad.png"))
 
 clr_boxplot_APOE_carrier <- clr_prop_long |>
     ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
@@ -140,7 +139,7 @@ clr_boxplot_APOE_carrier <- clr_prop_long |>
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE_carrier, filename = "clr_boxplot_APOE_carrier_cell_type_broad.png")
+ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, "clr_boxplot_APOE_carrier_cell_type_broad.png"))
 
 clr_boxplot_exp_round <- clr_prop_long |>
     ggplot(aes(x = exp_round, y = CLR, fill = exp_round)) +
@@ -151,21 +150,20 @@ clr_boxplot_exp_round <- clr_prop_long |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(clr_boxplot_exp_round, filename = "clr_boxplot_exp_round.png")
+ggsave(clr_boxplot_exp_round, filename = here(plot_dir, "clr_boxplot_exp_round_broad.png"))
 
 #### CLR + prop plots ####
-
-clr_prop_long2 <- clr_prop_long |>
-    pivot_longer(cols = c("CLR", "prop"), names_to = "Metric")
-
-
-clr_prop_long2 |>
-    ggplot(aes(x = APOE, y = value, fill = APOE)) +
-    geom_boxplot() +
-    facet_grid(Metric~cell_type_broad, scales = "free") +
-    # facet_wrap(cell_type_broad~Metric, scales = "free", ncol = 2) +
-    scale_fill_manual(values = APOE_genotype_colors) +
-    theme_bw()
+# 
+# clr_prop_long2 <- clr_prop_long |>
+#     pivot_longer(cols = c("CLR", "prop"), names_to = "Metric")
+# 
+# clr_prop_long2 |>
+#     ggplot(aes(x = APOE, y = value, fill = APOE)) +
+#     geom_boxplot() +
+#     facet_grid(Metric~cell_type_broad, scales = "free") +
+#     # facet_wrap(cell_type_broad~Metric, scales = "free", ncol = 2) +
+#     scale_fill_manual(values = APOE_genotype_colors) +
+#     theme_bw()
 
 
 #### Hierarchical clustering ####
