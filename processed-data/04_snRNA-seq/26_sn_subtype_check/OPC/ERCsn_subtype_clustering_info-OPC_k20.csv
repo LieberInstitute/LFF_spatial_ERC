@@ -1,4 +1,4 @@
-k20,n,rank,cell_type_k20,median_sum,median_detected,median_Mito_percent,median_scDblFinder.score,passALL_metricQC,sctype,sestan_EC,snDLPFC_PEC
-1,6843,1,OPC.1,8483,3319,0.056311590802440165,0.001105169183574617,TRUE,Oligodendrocytes,Astro.AQP4.CHRDL1*,Lamp5.Lhx6*
-3,4148,2,OPC.2,4588.5,2339,0.06615956009473313,7.89110257755965e-4,TRUE,Oligodendrocytes,aSMC.ACTA2.TAGLN*,SMC/OPC*
-2,3726,3,OPC.3,13330.5,4170.5,0.05092390944814173,0.0017470926977694035,TRUE,Oligodendrocytes,Oligo.OPALIN.SLC5A11/Oligo.OPALIN.LINC01098*,Oligo*
+k20,n,passALL_metricQC,metric_fail,rank,cell_type_k20,median_sum,median_detected,median_Mito_percent,median_scDblFinder.score,sctype,sestan_EC,snDLPFC_PEC
+k1,6843,TRUE,NA,1,OPC.1,8483,3319,0.056311590802440165,0.001105169183574617,Oligodendrocyte precursor cells,Astro.AQP4.CHRDL1*,Lamp5.Lhx6*
+k3,4148,TRUE,NA,2,OPC.2,4588.5,2339,0.06615956009473313,7.89110257755965e-4,Oligodendrocyte precursor cells,aSMC.ACTA2.TAGLN*,SMC/OPC*
+k2,3726,TRUE,NA,3,OPC.3,13330.5,4170.5,0.05092390944814173,0.0017470926977694035,Oligodendrocyte precursor cells,Oligo.OPALIN.SLC5A11/Oligo.OPALIN.LINC01098*,Oligo*
