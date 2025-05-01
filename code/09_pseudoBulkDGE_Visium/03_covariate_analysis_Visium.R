@@ -14,7 +14,7 @@ library("sessioninfo")
 library("variancePartition")
 
 #### Set up dirs ####
-plot_dir <- here("plots", "09_pseudoBulkDGE_Visium", "02_covariate_analysis_Visium")
+plot_dir <- here("plots", "09_pseudoBulkDGE_Visium", "03_covariate_analysis_Visium")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -120,7 +120,7 @@ sn_vp_violin <- plotVarPart(vp)
 ggsave(sn_vp_violin, filename = here(plot_dir, "sn_vp_violin.png"))
 
 
-# slurmjobs::job_single('01_create_pseudobulk_data', create_shell = TRUE, memory = '25G', command = "Rscript 01_create_pseudobulk_data.R")
+# slurmjobs::job_single('03_covariate_analysis_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 03_covariate_analysis_Visium.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
