@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, April 2025
-## Examine covaraites in Visium dataset for DGE
+## Run Variance Partition on each SpD over several formulas
 ## adapted from https://github.com/LieberInstitute/dlpfc_asd/blob/a250a1d7e20bd754c5f1186aa96ce0752d55e556/code/08_pseudoBulkDGE_s/02_covariate_analysis.R
 
 #### Set Up ####
@@ -15,7 +15,7 @@ library("sessioninfo")
 library("variancePartition")
 library("getopt")
 
-data_dir <- here("plots", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium")
+data_dir <- here("processed-data", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 plot_dir <- here("plots", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium")
