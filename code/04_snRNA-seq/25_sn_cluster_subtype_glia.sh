@@ -21,13 +21,13 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4
+module load conda_R/4.4.x
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 25_sn_cluster_subtype_glia --cell_type glia
+Rscript 25_sn_cluster_subtype_glia --cell_type glia --k 10
 
 echo "**** Job ends ****"
 date
