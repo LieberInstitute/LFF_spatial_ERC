@@ -13,6 +13,7 @@ library("ggrepel")
 library("here")
 library("sessioninfo")
 library("variancePartition")
+library("getopt")
 
 data_dir <- here("plots", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
