@@ -68,7 +68,8 @@ varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name)
     varPart_summary <- as.data.frame(apply(varPart, 2, summary)) |>
         rownames_to_column("metric") |>
         pivot_longer(!metric) |>
-        mutate(form = form_name)
+        mutate(form = form_name,
+               SpD = opt$spd)
     
     vp <- sortCols(varPart)
     
