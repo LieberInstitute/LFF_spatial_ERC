@@ -23,6 +23,7 @@ print(opt)
 cell_type <- opt$cell_type
 
 # cell_type = "Astro"
+# cell_type = "glia"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", cell_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -34,14 +35,19 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive =
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 
-stopifnot(cell_type %in% levels(sce$cell_type_broad))
+if(cell_type == "glia"){
+    ## subset by cell type class
+    sce <- sce[,sce$cell_type_class == cell_type]
+} else {
+    stopifnot(cell_type %in% levels(sce$cell_type_broad))
+    
+    ## subset by Broad cell type
+    sce <- sce[,sce$cell_type_broad == cell_type]
+}
 
-## subset by Broad cell type
-sce <- sce[,sce$cell_type_broad == cell_type]
 message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", cell_type, ncol(sce)))
 
 table(sce$sample_id)
-
 
 #### GLM PCA ####
 set.seed(425)
@@ -123,6 +129,7 @@ message(Sys.time() , " - saving data")
 save(clusters, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", k, cell_type)))
 
 # slurmjobs::job_loop(loops = list(cell_type = c("Oligo", "Astro", "Micro", "Endo")), create_shell = TRUE, name = "25_sn_cluster_subtype", create_script = FALSE)
+# slurmjobs::job_single(name = "25_sn_cluster_subtype_glia", memory = "50G", command = "Rscript 25_sn_cluster_subtype_glia --cell_type glia", create_shell = TRUE)
 
 ## Reproducibility information
 print("Reproducibility information:")
