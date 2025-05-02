@@ -48,9 +48,16 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 
 stopifnot(cell_type %in% levels(sce$cell_type_broad))
 
-## subset by Broad cell type
-cell_type_index <- sce$cell_type_broad == cell_type
-sce <- sce[,cell_type_index]
+if(cell_type == "glia"){
+    ## subset by cell type class
+    sce <- sce[,sce$cell_type_class == cell_type]
+} else {
+    stopifnot(cell_type %in% levels(sce$cell_type_broad))
+    
+    ## subset by Broad cell type
+    sce <- sce[,sce$cell_type_broad == cell_type]
+}
+
 message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", cell_type, ncol(sce)))
 
 ## clear QC
@@ -143,7 +150,15 @@ table(sce$passALL_metricQC, sce[[cell_type_k]])
 message(Sys.time(), "Plot lit marker genes")
 lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
     rename(cell_type_target = cell_type) |>
-    filter(gene_name %in% rowData(sce)$gene_name & cell_type_target == cell_type) 
+    filter(gene_name %in% rowData(sce)$gene_name)
+
+if(cell_type != "glia"){
+    lit_markers <- lit_markers  |> filter(cell_type_target == cell_type) 
+} else {
+    ## dont filter for now
+    # lit_markers <- lit_markers |>
+    #     filter(cell_type_target == cell_type) 
+}
 
 lit_markers_list <- map(splitit(lit_markers$cell_type_target), ~lit_markers$gene_name[.x])
 
@@ -358,6 +373,7 @@ subtype_clustering_info <-
 
 write_csv(subtype_clustering_info, file = here(data_dir, sprintf("ERCsn_subtype_clustering_info-%s_%s.csv", cell_type, k_nice)))
 
+# slurmjobs::job_single(name = "26_sn_subtype_check_glia", memory = "50G", command = "Rscript 26_sn_subtype_check.R --cell_type glia", create_shell = TRUE)
 
 # slurmjobs::job_loop(loops = list(cell_type = c("Astro", "Micro", "Endo", "Oligo", "OPC"),
 #                                  k = c("10", "20")), 
