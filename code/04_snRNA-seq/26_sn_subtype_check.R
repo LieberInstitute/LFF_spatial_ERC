@@ -46,8 +46,6 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive =
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 
-stopifnot(cell_type %in% levels(sce$cell_type_broad))
-
 if(cell_type == "glia"){
     ## subset by cell type class
     sce <- sce[,sce$cell_type_class == cell_type]
