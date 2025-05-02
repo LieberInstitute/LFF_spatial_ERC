@@ -13,6 +13,7 @@ library("here")
 library("sessioninfo")
 library("variancePartition")
 library("ComplexHeatmap")
+library("circlize")
 
 #### Set up dirs ####
 plot_dir <- here("plots", "09_pseudoBulkDGE_Visium", "03_covariate_analysis_Visium")
@@ -100,9 +101,12 @@ varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
     
     # return(varPart_summary_matrix)
     
+    col_fun = colorRamp2(c(0, max(varPart_summary_matrix)), c("white", "red"))
+    
     pdf(here(plot_dir, sprintf("Visium_varPart_summary-%s-%s.pdf", my_form, my_metric)), height = 8, width = 11)
     print(Heatmap(varPart_summary_matrix,
             name = my_metric,
+            col = col_fun,
             cluster_rows = TRUE,
             cluster_columns = TRUE,
             column_title = sprintf("Visium VarPart - %s", my_form)
@@ -137,7 +141,7 @@ colinear_pairs[[1]]
 # [11] "  sample_id and pseudo_sum_umi"         "  sample_id and pseudo_expr_chrM"      
 # [13] "  sample_id and pseudo_expr_chrM_ratio" "  Visium_slide and round"  
 
-# slurmjobs::job_single('03_covariate_analysis_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 03_covariate_analysis_Visium.R")
+# slurmjobs::job_single('03_covariate_analysis_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_covariate_analysis_Visium.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
