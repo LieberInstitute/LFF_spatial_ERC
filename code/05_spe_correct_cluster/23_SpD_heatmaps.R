@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, March 2025
-## Compare ERC spatial Domains to DLPFC layers
+## Create Heatmaps of litature and data-driven marker genes for the spatial domains
 
 library("spatialLIBD")
 library("tidyverse")
@@ -16,22 +16,23 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
 ## load psuedobulked sce data
-spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk","spe_pseudobulk-SpD.rds"))
-dim(spe_pb_sample)
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk","spe_pseudobulk_only-SpD_syn.rds"))
+dim(spe_pb)
 
-spe_pb_sample <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
+rownames(spe_pb) <- rowData(spe_pb)$gene_name
+
+spe_pb_sample <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium","spe_pseudo_DGE.RDS"))
 dim(spe_pb_sample)
 
 rownames(spe_pb_sample) <- rowData(spe_pb_sample)$gene_name
 
 spd_anno_df <- colData(spe_pb_sample) |>
     as.data.frame() |>
-    select(sample_id, APOE, Ancestry, Sex, Age, SpD, ncells) |>
-    mutate(APOE = gsub("^(E[2,3,4])(E[2,3,4])","\\1/\\2", APOE))
+    select(sample_id, APOE, Ancestry, Sex, Age, SpD, ncells)
 
 spd_levels <- levels(spe_pb_sample$SpD)
 
-rownames(spd_anno_df) <- colnames(spe_pb_sample)
+identical(rownames(spd_anno_df), colnames(spe_pb_sample))
 
 spd_anno_df <- spd_anno_df |> arrange(SpD, sample_id)
 
@@ -43,18 +44,18 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 setequal(names(APOE_genotype_colors), unique(spd_anno_df$APOE))
 
-## cell annotations simple
+#### create annotations ####
 spd_row_ha_simple <- rowAnnotation(
-    df = spd_anno_df |> select(SpD),
+    SpD = colData(spe_pb)$SpD,
     col = list(SpD = SpD_colors)
 )
 
 spd_col_ha_simple <- HeatmapAnnotation(
-    df = spd_anno_df |> select(SpD),
+    SpD = colData(spe_pb)$SpD,
     col = list(SpD = SpD_colors)
 )
 
-# cell annotaions with APOE
+# SpD + sample annotaions with APOE
 spd_row_ha_APOE <- rowAnnotation(
     df = spd_anno_df |> select(SpD, APOE),
     col = list(SpD = SpD_colors,
@@ -124,7 +125,7 @@ lit_gene_col_ha <- HeatmapAnnotation(df = lit_gene_annotation |> select(" " = La
 
 
 ## extract z-scores
-lit_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(lit_gene_annotation),]))
+lit_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(lit_gene_annotation),]))
 dim(lit_markers_zscore)
 lit_markers_zscore[1:5,1:5]
 
@@ -134,7 +135,7 @@ Heatmap(lit_markers_zscore,
                       name = "Z Score",
                       cluster_rows = FALSE,
                       cluster_columns = FALSE,
-                      show_row_names = FALSE,
+                      show_row_names = TRUE,
                       column_split = lit_gene_annotation$Layer,
                       # row_split = spd_anno_df$SpD,
                       right_annotation = spd_row_ha_simple,
@@ -146,8 +147,8 @@ pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster.pdf"), height = 8, width = 1
 Heatmap(lit_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
-        cluster_columns = TRUE,
-        show_row_names = FALSE,
+        cluster_columns = FALSE,
+        show_row_names = TRUE,
         # column_split = lit_gene_annotation$Layer,
         # row_split = spd_anno_df$SpD,
         right_annotation = spd_row_ha_simple,
@@ -160,6 +161,52 @@ Heatmap(lit_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
+        show_row_names = FALSE,
+        # column_split = lit_gene_annotation$SpD,
+        # row_split = spd_anno_df$SpD,
+        right_annotation = spd_row_ha_details,
+        bottom_annotation = lit_gene_col_ha
+)
+dev.off()
+
+#### Lit gene heatmap - SpD + sample ####
+## extract z-scores
+lit_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(lit_gene_annotation),]))
+dim(lit_markers_zscore)
+lit_markers_zscore[1:5,1:5]
+
+## plot heatmaps
+pdf(here(plot_dir, "ERC_SpD_lit_gene_heatmap_sample.pdf"), height = 8, width = 11)
+Heatmap(lit_markers_zscore,
+                      name = "Z Score",
+                      cluster_rows = FALSE,
+                      cluster_columns = FALSE,
+                      show_row_names = FALSE,
+                      # column_split = lit_gene_annotation$Layer,
+                      # row_split = spd_anno_df$SpD,
+                      right_annotation = spd_row_ha_APOE,
+                      bottom_annotation = lit_gene_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_sample.pdf"), height = 8, width = 11)
+Heatmap(lit_markers_zscore,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = FALSE,
+        show_row_names = FALSE,
+        # column_split = lit_gene_annotation$Layer,
+        # row_split = spd_anno_df$SpD,
+        right_annotation = spd_row_ha_APOE,
+        bottom_annotation = lit_gene_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_details.pdf"), height = 8, width = 11)
+Heatmap(lit_markers_zscore,
+        name = "Z Score",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
         show_row_names = FALSE,
         # column_split = lit_gene_annotation$SpD,
         # row_split = spd_anno_df$SpD,
