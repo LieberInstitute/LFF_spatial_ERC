@@ -4,12 +4,7 @@
 
 #### Set Up ####
 library("spatialLIBD")
-library("SingleCellExperiment")
-# library("scran")
-# library("BayesSpace")
 library("tidyverse")
-library("ggpubr")
-library("ggrepel")
 library("here")
 library("sessioninfo")
 library("variancePartition")
@@ -39,11 +34,18 @@ stopifnot(opt$spd %in% levels(spe_pb$SpD_syn))
 spe_pb <- spe_pb[,spe_pb$SpD_syn == opt$spd]
 message(sprintf("Subset to %s - %i spots", opt$spd, nrow(spe_pb)))
 
+## add E4/E4 variable
+spe_pb$APOE_E4E4 <- pd$APOE == "E4/E4"
+table(spe_pb$APOE_E4E4)
+
+## scale Mitocondrial ratio
+spe_pb$pseudo_expr_chrM_ratio <- scale(spe_pb$pseudo_expr_chrM_ratio)
+
 # Extract pheontype data
 pd <- as.data.frame(colData(spe_pb)) 
            
 #### Assess correlation between variables ####
-form <- ~ APOE + APOE_num + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + ncells + pseudo_sum_umi + pseudo_expr_chrM + pseudo_expr_chrM_ratio
+form <- ~ APOE + APOE_num + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + ncells + pseudo_sum_umi + pseudo_expr_chrM_ratio
 
 C <- canCorPairs(form, pd)
 
@@ -55,9 +57,10 @@ dev.off()
 #### Variance Partition ####
 
 my_forms <- list(
-    global = ~ (1 | APOE_carrier) + APOE_num + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells,
-    carrier_i = ~ (1 | APOE_carrier:Anc_Afr) + (1 | APOE_carrier:Sex) + (1 | APOE_carrier) + (1 | APOE_carrier) + Anc_Afr + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells,
-    numeric_i = ~ APOE_num:Anc_Afr + (1 | APOE_num:Sex) + APOE_num + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells
+    global = ~ (1 | APOE_carrier) + APOE_num + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
+    carrier_i = ~ (1 | APOE_carrier:Anc_Afr:Sex) + (1 | APOE_carrier:Anc_Afr) + (1 | APOE_carrier:Sex) + (1 | APOE_carrier) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
+    numeric_i = ~ (1 | APOE_num:Anc_Afr:Sex) + APOE_num:Anc_Afr + (1 | APOE_num:Sex) + APOE_num + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
+    e4e4_i = ~ (1 | APOE_E4E4:Anc_Afr:Sex) + (1 | APOE_E4E4:Anc_Afr) + (1 | APOE_E4E4:Sex) + (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio
 )
 
 varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name){
