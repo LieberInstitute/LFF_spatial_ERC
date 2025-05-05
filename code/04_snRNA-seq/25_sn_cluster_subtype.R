@@ -73,6 +73,7 @@ if(file.exists(harmony_file)){
          ylab = "binomial deviance", main = "Feature Selection with Deviance"
     )
     abline(v = 2000, lty = 2, col = "red")
+    abline(v = 5000, lty = 2, col = "blue")
     dev.off()
     
     message(Sys.time(), " - running nullResiduals")
@@ -83,7 +84,7 @@ if(file.exists(harmony_file)){
     )
     
     
-    hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:2000]
+    hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:5000]
     
     message(Sys.time(), " - running PCA")
     sce <- runPCA(sce,
@@ -117,7 +118,7 @@ if(file.exists(harmony_file)){
 ## Build SNN graph
 k = opt$k
 message(Sys.time(), " - running buildSNNGraph: k =", k)
-snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY")
+snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY", d = 100)
 
 ## Run walk trap clustering
 message(Sys.time(), " - running walktrap")
