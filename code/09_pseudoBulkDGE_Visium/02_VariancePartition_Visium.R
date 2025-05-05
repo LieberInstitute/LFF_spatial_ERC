@@ -35,16 +35,18 @@ spe_pb <- spe_pb[,spe_pb$SpD_syn == opt$spd]
 message(sprintf("Subset to %s - %i spots", opt$spd, nrow(spe_pb)))
 
 ## add E4/E4 variable
-spe_pb$APOE_E4E4 <- pd$APOE == "E4/E4"
+spe_pb$APOE_E4E4 <- spe_pb$APOE == "E4/E4"
 table(spe_pb$APOE_E4E4)
 
 ## scale Mitocondrial ratio
 spe_pb$pseudo_expr_chrM_ratio <- scale(spe_pb$pseudo_expr_chrM_ratio)
 
-# Extract pheontype data
-pd <- as.data.frame(colData(spe_pb)) 
-           
 #### Assess correlation between variables ####
+# Extract pheontype data
+message(Sys.time(), " - canCorPairs")
+
+pd <- as.data.frame(colData(spe_pb)) 
+
 form <- ~ APOE + APOE_num + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + ncells + pseudo_sum_umi + pseudo_expr_chrM_ratio
 
 C <- canCorPairs(form, pd)
