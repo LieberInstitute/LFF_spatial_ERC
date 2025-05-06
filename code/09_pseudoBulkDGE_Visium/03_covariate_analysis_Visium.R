@@ -147,7 +147,7 @@ varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
     
     varPart_summary_matrix <- varPart_summary |> 
         filter(metric == my_metric, form == my_form,  name != "Residuals") |>
-        select(SpD_syn, name, value) |>
+        select(SpD, name, value) |>
         pivot_wider(values_from = "value", names_from = "SpD") |>
         column_to_rownames("name") |>
         as.matrix()
