@@ -78,13 +78,14 @@ map(var_t_test, ~.x|> filter(p.adj < 0.05))
 
 #### Variance Partition data ####
 varPart_summary <- map_dfr(list.files(here("processed-data", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium"), full.names = TRUE),
-                              read.csv)
+                              read.csv) |>
+    rename(SpD_syn = SpD) |> 
+    left_join(spd_tab) |> 
+    filter(!is.na(SpD))  ## temp
 
-## temp
-varPart_summary$SpD_syn <- rep(gsub(".csv", "", gsub("Visium_varPart_summary_", "", list.files(here("processed-data", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium")))),
-         each = 180)
+head(varPart_summary)
 
-varPart_summary <- varPart_summary |> left_join(spd_tab)
+varPart_summary |> filter(!is.na(SpD)) |> count(SpD)
 
 varPart_summary |> filter(metric == "Median", name != "Residuals") |> group_by(SpD, form) |> slice_max(value)
 varPart_summary |> filter(metric == "Mean", name != "Residuals") |> head()
@@ -116,7 +117,7 @@ varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
 }
 
 ## plot heatmaps
-form_list <- unique(varPart_summary$form)
+(form_list <- unique(varPart_summary$form))
 
 walk(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Mean"))
 walk(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Median"))
@@ -138,8 +139,8 @@ colinear_pairs[[1]]
 # [5] "  sample_id and Age"                    "  sample_id and Anc_Afr"               
 # [7] "  sample_id and Rin"                    "  sample_id and Visium_slide"          
 # [9] "  sample_id and round"                  "  sample_id and ncells"                
-# [11] "  sample_id and pseudo_sum_umi"         "  sample_id and pseudo_expr_chrM"      
-# [13] "  sample_id and pseudo_expr_chrM_ratio" "  Visium_slide and round"  
+# [11] "  sample_id and pseudo_sum_umi"         "  sample_id and pseudo_expr_chrM_ratio"
+# [13] "  Visium_slide and round"    
 
 # slurmjobs::job_single('03_covariate_analysis_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_covariate_analysis_Visium.R")
 
