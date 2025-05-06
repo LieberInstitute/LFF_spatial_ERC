@@ -140,13 +140,13 @@ PC1_PC2_SpD <- pca_wide |>
 
 ggsave(PC1_PC2_SpD, filename = here(plot_dir , "Visium_pseudobulk_PC1_vs_PC2.png"))
 
-PC1_PC6_SpD <- pca_wide |>
-    ggplot(aes(x = PC1, y = PC6, color = SpD, shape = Sex)) +
+PC1_PC4_SpD <- pca_wide |>
+    ggplot(aes(x = PC1, y = PC4, color = SpD, shape = Sex)) +
     geom_point() +
     scale_color_manual(values = SpD_colors) +
     theme_bw()
 
-ggsave(PC1_PC6_SpD, filename = here(plot_dir , "Visium_pseudobulk_PC1_vs_PC6_sex.png"))
+ggsave(PC1_PC4_SpD, filename = here(plot_dir , "Visium_pseudobulk_PC1_vs_PC4_sex.png"))
 
 
 # slurmjobs::job_single('28_SpD_pseudobulk_pca', create_shell = TRUE, memory = '10G', command = "Rscript 28_SpD_pseudobulk_pca.R")
