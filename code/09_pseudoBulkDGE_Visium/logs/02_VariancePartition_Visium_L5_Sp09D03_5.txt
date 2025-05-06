@@ -1,12 +1,11 @@
 **** Job starts ****
-Tue May  6 11:31:33 AM EDT 2025
+Tue May  6 02:28:25 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16480577
+Job id: 16510470
 Job name: 02_VariancePartition_Visium
-Node name: compute-108
+Node name: compute-121
 Task id: 5
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -142,7 +141,7 @@ Subset to L5_Sp09D03 - 30494 spots
 
 FALSE  TRUE 
    24     7 
-2025-05-06 11:31:54.872816 - canCorPairs
+2025-05-06 14:28:44.428183 - canCorPairs
 Warning message:
 In canCorPairs(form, pd) : Regression model may be problematic.
 High colinearity between variables:
@@ -161,31 +160,31 @@ High colinearity between variables:
   Visium_slide and round
 null device 
           1 
-2025-05-06 11:31:55.144257 - VarPart: global
+2025-05-06 14:28:44.62167 - VarPart: global
 Saving 7 x 7 in image
-2025-05-06 11:48:03.554676 - VarPart: carrier_i
+2025-05-06 14:39:13.406306 - VarPart: carrier_i
 Saving 7 x 7 in image
-2025-05-06 12:18:05.975086 - VarPart: numeric_i
+2025-05-06 14:51:00.341915 - VarPart: numeric_i
 Saving 7 x 7 in image
-2025-05-06 12:32:35.577642 - VarPart: e4e4_i
+2025-05-06 15:01:39.593134 - VarPart: e4e4_i
 Saving 7 x 7 in image
 Warning messages:
 1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 3581 responses.
   See errors with attr(., 'errors')
 2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 7708 responses.
+  Model failed for 3582 responses.
   See errors with attr(., 'errors')
 3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 3581 responses.
   See errors with attr(., 'errors')
 4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 4009 responses.
+  Model failed for 3699 responses.
   See errors with attr(., 'errors')
 [1] "Reproducibility information:"
-[1] "2025-05-06 12:51:21 EDT"
+[1] "2025-05-06 15:13:42 EDT"
     user   system  elapsed 
-4741.599   17.815 4787.247 
+2675.152   14.495 2715.776 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.3 Patched (2025-02-28 r88189)
@@ -393,4 +392,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue May  6 12:51:22 PM EDT 2025
+Tue May  6 03:13:43 PM EDT 2025

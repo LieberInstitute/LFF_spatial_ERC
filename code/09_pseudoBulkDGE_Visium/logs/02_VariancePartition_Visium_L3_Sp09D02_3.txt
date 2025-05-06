@@ -1,12 +1,11 @@
 **** Job starts ****
-Tue May  6 11:31:33 AM EDT 2025
+Tue May  6 02:28:25 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16480575
+Job id: 16510468
 Job name: 02_VariancePartition_Visium
-Node name: compute-169
+Node name: compute-156
 Task id: 3
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -142,7 +141,7 @@ Subset to L3_Sp09D02 - 30494 spots
 
 FALSE  TRUE 
    24     7 
-2025-05-06 11:31:47.775161 - canCorPairs
+2025-05-06 14:28:39.850709 - canCorPairs
 Warning message:
 In canCorPairs(form, pd) : Regression model may be problematic.
 High colinearity between variables:
@@ -161,31 +160,31 @@ High colinearity between variables:
   Visium_slide and round
 null device 
           1 
-2025-05-06 11:31:47.887089 - VarPart: global
+2025-05-06 14:28:39.974208 - VarPart: global
 Saving 7 x 7 in image
-2025-05-06 11:38:51.256902 - VarPart: carrier_i
+2025-05-06 14:36:23.25948 - VarPart: carrier_i
 Saving 7 x 7 in image
-2025-05-06 11:51:17.326004 - VarPart: numeric_i
+2025-05-06 14:48:28.685517 - VarPart: numeric_i
 Saving 7 x 7 in image
-2025-05-06 11:59:07.016333 - VarPart: e4e4_i
+2025-05-06 14:56:54.737887 - VarPart: e4e4_i
 Saving 7 x 7 in image
 Warning messages:
 1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 2900 responses.
+  Model failed for 2898 responses.
   See errors with attr(., 'errors')
 2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 5534 responses.
+  Model failed for 4142 responses.
   See errors with attr(., 'errors')
 3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 2898 responses.
   See errors with attr(., 'errors')
 4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 2945 responses.
+  Model failed for 3055 responses.
   See errors with attr(., 'errors')
 [1] "Reproducibility information:"
-[1] "2025-05-06 12:07:52 EDT"
+[1] "2025-05-06 15:07:56 EDT"
     user   system  elapsed 
-2161.324    9.068 2178.296 
+2354.035    9.394 2371.223 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.3 Patched (2025-02-28 r88189)
@@ -393,4 +392,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue May  6 12:07:53 PM EDT 2025
+Tue May  6 03:07:57 PM EDT 2025
