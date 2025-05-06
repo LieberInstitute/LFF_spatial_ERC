@@ -60,9 +60,9 @@ dev.off()
 
 my_forms <- list(
     global = ~ (1 | APOE_carrier) + APOE_num + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
-    carrier_i = ~ (1 | APOE_carrier:Anc_Afr:Sex) + (1 | APOE_carrier:Anc_Afr) + (1 | APOE_carrier:Sex) + (1 | APOE_carrier) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
-    numeric_i = ~ (1 | APOE_num:Anc_Afr:Sex) + APOE_num:Anc_Afr + (1 | APOE_num:Sex) + APOE_num + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
-    e4e4_i = ~ (1 | APOE_E4E4:Anc_Afr:Sex) + (1 | APOE_E4E4:Anc_Afr) + (1 | APOE_E4E4:Sex) + (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio
+    carrier_i = ~ (1 | APOE_carrier:Anc_Afr) + (1 | APOE_carrier:Sex) + (1 | APOE_carrier) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
+    numeric_i = ~ APOE_num:Anc_Afr + (1 | APOE_num:Sex) + APOE_num + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio,
+    e4e4_i = ~ (1 | APOE_E4E4:Anc_Afr) + (1 | APOE_E4E4:Sex) + (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + ncells + pseudo_expr_chrM_ratio
 )
 
 varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name){
