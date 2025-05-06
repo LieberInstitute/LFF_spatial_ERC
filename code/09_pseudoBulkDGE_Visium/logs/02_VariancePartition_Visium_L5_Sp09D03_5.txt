@@ -1,11 +1,12 @@
 **** Job starts ****
-Thu May  1 01:32:59 PM EDT 2025
+Mon May  5 12:43:16 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16446450
+Job id: 16474089
 Job name: 02_VariancePartition_Visium
-Node name: compute-120
+Node name: compute-145
 Task id: 5
+Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -139,11 +140,9 @@ $spd
 
 Subset to L5_Sp09D03 - 30494 spots
 
-E2/E2 E2/E3 E3/E4 E4/E4 
-    6     8    10     7 
-
-E2+ E4+ 
- 14  17 
+FALSE  TRUE 
+   24     7 
+2025-05-05 12:43:33.449252 - canCorPairs
 Warning message:
 In canCorPairs(form, pd) : Regression model may be problematic.
 High colinearity between variables:
@@ -158,34 +157,38 @@ High colinearity between variables:
   sample_id and round
   sample_id and ncells
   sample_id and pseudo_sum_umi
-  sample_id and pseudo_expr_chrM
   sample_id and pseudo_expr_chrM_ratio
   Visium_slide and round
 null device 
           1 
-2025-05-01 13:33:18.187212 - VarPart: global
+2025-05-05 12:43:33.653543 - VarPart: global
 Saving 7 x 7 in image
-2025-05-01 13:44:27.279708 - VarPart: carrier_i
+2025-05-05 12:54:03.709022 - VarPart: carrier_i
 Saving 7 x 7 in image
-2025-05-01 13:56:17.768342 - VarPart: numeric_i
+2025-05-05 13:10:54.881496 - VarPart: numeric_i
+Saving 7 x 7 in image
+2025-05-05 13:25:52.917375 - VarPart: e4e4_i
 Saving 7 x 7 in image
 Warning messages:
 1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 3581 responses.
   See errors with attr(., 'errors')
 2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 3589 responses.
+  Model failed for 3702 responses.
   See errors with attr(., 'errors')
 3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 3581 responses.
+  Model failed for 4328 responses.
+  See errors with attr(., 'errors')
+4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 5108 responses.
   See errors with attr(., 'errors')
 [1] "Reproducibility information:"
-[1] "2025-05-01 14:07:31 EDT"
+[1] "2025-05-05 13:45:19 EDT"
     user   system  elapsed 
-2038.040   12.034 2070.751 
+3690.597   13.470 3721.671 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88182)
+ version  R version 4.4.3 Patched (2025-02-28 r88189)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -193,7 +196,7 @@ Warning messages:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-01
+ date     2025-05-05
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -227,8 +230,6 @@ Warning messages:
  broom                  1.0.8      2025-03-28 [2] CRAN (R 4.4.3)
  bslib                  0.9.0      2025-01-30 [2] CRAN (R 4.4.2)
  cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.4.0)
- car                    3.1-3      2024-09-27 [2] CRAN (R 4.4.1)
- carData                3.0-5      2022-01-06 [2] CRAN (R 4.4.0)
  caTools                1.18.3     2024-09-04 [2] CRAN (R 4.4.1)
  circlize               0.4.16     2024-02-20 [2] CRAN (R 4.4.0)
  cli                    3.6.5      2025-04-23 [2] CRAN (R 4.4.3)
@@ -260,7 +261,6 @@ Warning messages:
  filelock               1.0.3      2023-12-11 [2] CRAN (R 4.4.0)
  forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.4.0)
  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.4.0)
- Formula                1.2-5      2023-02-24 [2] CRAN (R 4.4.0)
  generics               0.1.3      2022-07-05 [2] CRAN (R 4.4.0)
  GenomeInfoDb         * 1.42.3     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13     2024-10-01 [2] Bioconductor
@@ -270,9 +270,7 @@ Warning messages:
  GetoptLong             1.0.5      2020-12-15 [2] CRAN (R 4.4.0)
  ggbeeswarm             0.7.2      2023-04-29 [2] CRAN (R 4.4.0)
  ggplot2              * 3.5.2      2025-04-09 [2] CRAN (R 4.4.3)
- ggpubr               * 0.6.0      2023-02-10 [2] CRAN (R 4.4.0)
- ggrepel              * 0.9.6      2024-09-07 [2] CRAN (R 4.4.1)
- ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.4.0)
+ ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.4.1)
  GlobalOptions          0.1.2      2020-06-10 [2] CRAN (R 4.4.0)
  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.4.1)
  golem                  0.5.1      2024-08-27 [2] CRAN (R 4.4.1)
@@ -344,8 +342,7 @@ Warning messages:
  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.4.3)
  rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.4.0)
  Rsamtools              2.22.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- RSQLite                2.3.9      2024-12-03 [2] CRAN (R 4.4.2)
- rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.4.0)
+ RSQLite                2.3.11     2025-05-04 [2] CRAN (R 4.4.3)
  rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.4.0)
  rtracklayer            1.66.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  S4Arrays               1.6.0      2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -396,4 +393,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu May  1 02:07:31 PM EDT 2025
+Mon May  5 01:45:20 PM EDT 2025
