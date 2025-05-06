@@ -118,7 +118,7 @@ if(file.exists(harmony_file)){
 ## Build SNN graph
 k = opt$k
 message(Sys.time(), " - running buildSNNGraph: k =", k)
-snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY", d = 100)
+snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY")
 
 ## Run walk trap clustering
 message(Sys.time(), " - running walktrap")
