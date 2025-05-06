@@ -1,181 +1,301 @@
-metric,name,value,form
-Min.,APOE_carrier,0,global
-Min.,round,0,global
-Min.,Sex,0,global
-Min.,Visium_slide,0,global
-Min.,APOE_num,5.757150524330814e-10,global
-Min.,Anc_Afr,8.670786122313857e-12,global
-Min.,Age,5.5688122557785475e-10,global
-Min.,Rin,3.620008583264392e-13,global
-Min.,ncells,2.384867721040969e-10,global
-Min.,Residuals,0.05207518514031202,global
-1st Qu.,APOE_carrier,0,global
-1st Qu.,round,0,global
-1st Qu.,Sex,0,global
-1st Qu.,Visium_slide,0,global
-1st Qu.,APOE_num,0.004640498147220841,global
-1st Qu.,Anc_Afr,0.004717460228393734,global
-1st Qu.,Age,0.0037757367655814637,global
-1st Qu.,Rin,0.004836843029722631,global
-1st Qu.,ncells,0.009977242753690106,global
-1st Qu.,Residuals,0.5605998505849759,global
-Median,APOE_carrier,0,global
-Median,round,0,global
-Median,Sex,0,global
-Median,Visium_slide,1.3168639704587417e-11,global
-Median,APOE_num,0.019904529977811253,global
-Median,Anc_Afr,0.021338017537628037,global
-Median,Age,0.016607167123570993,global
-Median,Rin,0.022460305773710564,global
-Median,ncells,0.042202945409587106,global
-Median,Residuals,0.6964854359834827,global
-Mean,APOE_carrier,0.010663754879573861,global
-Mean,round,0.010545472037472312,global
-Mean,Sex,0.01053909976018111,global
-Mean,Visium_slide,0.060448565276665776,global
-Mean,APOE_num,0.03800321927914995,global
-Mean,Anc_Afr,0.03366455684665821,global
-Mean,Age,0.03596063838473512,global
-Mean,Rin,0.04828086107510771,global
-Mean,ncells,0.0770034569936438,global
-Mean,Residuals,0.6748903754668122,global
-3rd Qu.,APOE_carrier,0,global
-3rd Qu.,round,1.6114815565874203e-11,global
-3rd Qu.,Sex,0,global
-3rd Qu.,Visium_slide,0.10134172602887814,global
-3rd Qu.,APOE_num,0.051012326150416815,global
-3rd Qu.,Anc_Afr,0.04833367811395797,global
-3rd Qu.,Age,0.049632444733650444,global
-3rd Qu.,Rin,0.06851270436669296,global
-3rd Qu.,ncells,0.11257739851231208,global
-3rd Qu.,Residuals,0.8165605680223317,global
-Max.,APOE_carrier,0.49498528065087855,global
-Max.,round,0.6181543222524346,global
-Max.,Sex,0.88957925377925,global
-Max.,Visium_slide,0.8659102066408629,global
-Max.,APOE_num,0.5330834478127084,global
-Max.,Anc_Afr,0.5196756700983153,global
-Max.,Age,0.4309466396134202,global
-Max.,Rin,0.5696118520858297,global
-Max.,ncells,0.7195599612875356,global
-Max.,Residuals,0.9930610398395258,global
-Min.,APOE_carrier,0,carrier_i
-Min.,APOE_carrier:Anc_Afr,0,carrier_i
-Min.,APOE_carrier:Sex,0,carrier_i
-Min.,round,0,carrier_i
-Min.,Visium_slide,0,carrier_i
-Min.,Anc_Afr,1.0284917997409635e-28,carrier_i
-Min.,Age,4.297661882540241e-32,carrier_i
-Min.,Rin,3.0737396442495405e-33,carrier_i
-Min.,ncells,5.51193030490679e-31,carrier_i
-Min.,Residuals,1.254434236983659e-15,carrier_i
-1st Qu.,APOE_carrier,5.6838597187424555e-14,carrier_i
-1st Qu.,APOE_carrier:Anc_Afr,0,carrier_i
-1st Qu.,APOE_carrier:Sex,0,carrier_i
-1st Qu.,round,0,carrier_i
-1st Qu.,Visium_slide,0,carrier_i
-1st Qu.,Anc_Afr,0.005149559694288813,carrier_i
-1st Qu.,Age,0.0020583608379012297,carrier_i
-1st Qu.,Rin,0.003406826762971654,carrier_i
-1st Qu.,ncells,0.006933010046776513,carrier_i
-1st Qu.,Residuals,0.3609057513871723,carrier_i
-Median,APOE_carrier,1.0167227275267444e-12,carrier_i
-Median,APOE_carrier:Anc_Afr,1.0615295721354904e-8,carrier_i
-Median,APOE_carrier:Sex,0,carrier_i
-Median,round,0,carrier_i
-Median,Visium_slide,3.115051807900725e-9,carrier_i
-Median,Anc_Afr,0.02224523161332123,carrier_i
-Median,Age,0.01411426372328273,carrier_i
-Median,Rin,0.02053972328575716,carrier_i
-Median,ncells,0.04448262230278491,carrier_i
-Median,Residuals,0.5906713007068174,carrier_i
-Mean,APOE_carrier,9.169949041180674e-5,carrier_i
-Mean,APOE_carrier:Anc_Afr,0.16502964825428174,carrier_i
-Mean,APOE_carrier:Sex,0.02440628886258813,carrier_i
-Mean,round,0.010846125728337881,carrier_i
-Mean,Visium_slide,0.05951217389700651,carrier_i
-Mean,Anc_Afr,0.03563051926628606,carrier_i
-Mean,Age,0.033586059254725145,carrier_i
-Mean,Rin,0.048752912452025475,carrier_i
-Mean,ncells,0.0818260932696322,carrier_i
-Mean,Residuals,0.540318479524705,carrier_i
-3rd Qu.,APOE_carrier,1.2026414399993036e-11,carrier_i
-3rd Qu.,APOE_carrier:Anc_Afr,0.17160107149918707,carrier_i
-3rd Qu.,APOE_carrier:Sex,0.01025286718048667,carrier_i
-3rd Qu.,round,2.828661672700971e-10,carrier_i
-3rd Qu.,Visium_slide,0.09903111030521292,carrier_i
-3rd Qu.,Anc_Afr,0.050568346970036766,carrier_i
-3rd Qu.,Age,0.04540859480203411,carrier_i
-3rd Qu.,Rin,0.06936223821552093,carrier_i
-3rd Qu.,ncells,0.124950120756984,carrier_i
-3rd Qu.,Residuals,0.7679182568860261,carrier_i
-Max.,APOE_carrier,0.1726760256842966,carrier_i
-Max.,APOE_carrier:Anc_Afr,0.9999999999999957,carrier_i
-Max.,APOE_carrier:Sex,0.7838392156696078,carrier_i
-Max.,round,0.588530174297446,carrier_i
-Max.,Visium_slide,0.8661028646896665,carrier_i
-Max.,Anc_Afr,0.5184253105451023,carrier_i
-Max.,Age,0.4216528962570671,carrier_i
-Max.,Rin,0.6175029501866478,carrier_i
-Max.,ncells,0.7218600735567451,carrier_i
-Max.,Residuals,0.9993602387551841,carrier_i
-Min.,APOE_num:Sex,0,numeric_i
-Min.,round,0,numeric_i
-Min.,Sex,0,numeric_i
-Min.,Visium_slide,0,numeric_i
-Min.,APOE_num,3.786579402328713e-12,numeric_i
-Min.,Age,1.9816124825445473e-11,numeric_i
-Min.,Rin,1.7428340899425342e-9,numeric_i
-Min.,ncells,2.042581420402764e-12,numeric_i
-Min.,APOE_num:Anc_Afr,1.4317499861304455e-11,numeric_i
-Min.,Residuals,0.0011529431750920782,numeric_i
-1st Qu.,APOE_num:Sex,0,numeric_i
-1st Qu.,round,0,numeric_i
-1st Qu.,Sex,0,numeric_i
-1st Qu.,Visium_slide,0,numeric_i
-1st Qu.,APOE_num,0.008107000362003933,numeric_i
-1st Qu.,Age,0.003285924123766256,numeric_i
-1st Qu.,Rin,0.004027979914288128,numeric_i
-1st Qu.,ncells,0.008435552265472986,numeric_i
-1st Qu.,APOE_num:Anc_Afr,0.006068363776179793,numeric_i
-1st Qu.,Residuals,0.5165404920916346,numeric_i
-Median,APOE_num:Sex,2.310268172920729e-20,numeric_i
-Median,round,0,numeric_i
-Median,Sex,0,numeric_i
-Median,Visium_slide,4.568468197225747e-11,numeric_i
-Median,APOE_num,0.029427027957333648,numeric_i
-Median,Age,0.015217522553003288,numeric_i
-Median,Rin,0.018283021872805262,numeric_i
-Median,ncells,0.03667010655721377,numeric_i
-Median,APOE_num:Anc_Afr,0.024037403006797967,numeric_i
-Median,Residuals,0.6620446531486297,numeric_i
-Mean,APOE_num:Sex,0.040576857082512456,numeric_i
-Mean,round,0.012819250158576078,numeric_i
-Mean,Sex,0.014199007725958094,numeric_i
-Mean,Visium_slide,0.060848815215638744,numeric_i
-Mean,APOE_num,0.044503108515583936,numeric_i
-Mean,Age,0.03545351483555989,numeric_i
-Mean,Rin,0.04208186376032734,numeric_i
-Mean,ncells,0.06790199072879378,numeric_i
-Mean,APOE_num:Anc_Afr,0.036565378214487146,numeric_i
-Mean,Residuals,0.6450502137625626,numeric_i
-3rd Qu.,APOE_num:Sex,0.02875295089012271,numeric_i
-3rd Qu.,round,3.7809565504042704e-11,numeric_i
-3rd Qu.,Sex,0,numeric_i
-3rd Qu.,Visium_slide,0.10234879304792462,numeric_i
-3rd Qu.,APOE_num,0.06834566280663938,numeric_i
-3rd Qu.,Age,0.046816949058535055,numeric_i
-3rd Qu.,Rin,0.059548826733327516,numeric_i
-3rd Qu.,ncells,0.095361974569756,numeric_i
-3rd Qu.,APOE_num:Anc_Afr,0.054701059028405,numeric_i
-3rd Qu.,Residuals,0.797455252630327,numeric_i
-Max.,APOE_num:Sex,0.9730706409771269,numeric_i
-Max.,round,0.6292894545240851,numeric_i
-Max.,Sex,0.8951478126929552,numeric_i
-Max.,Visium_slide,0.8694750113433997,numeric_i
-Max.,APOE_num,0.39185410016649835,numeric_i
-Max.,Age,0.4514957489244332,numeric_i
-Max.,Rin,0.5646393082584455,numeric_i
-Max.,ncells,0.7178010185733926,numeric_i
-Max.,APOE_num:Anc_Afr,0.4292925569936934,numeric_i
-Max.,Residuals,0.9960156101215266,numeric_i
+metric,name,value,form,SpD
+Min.,APOE_carrier,0,global,L2.3_Sp09D01
+Min.,round,0,global,L2.3_Sp09D01
+Min.,Sex,0,global,L2.3_Sp09D01
+Min.,Visium_slide,0,global,L2.3_Sp09D01
+Min.,APOE_num,3.442724432429552e-12,global,L2.3_Sp09D01
+Min.,Anc_Afr,3.534075619551114e-13,global,L2.3_Sp09D01
+Min.,Age,1.1431195304903443e-10,global,L2.3_Sp09D01
+Min.,Rin,8.877633368179727e-11,global,L2.3_Sp09D01
+Min.,ncells,4.267295768990489e-12,global,L2.3_Sp09D01
+Min.,pseudo_expr_chrM_ratio,5.936669848002987e-10,global,L2.3_Sp09D01
+Min.,Residuals,0.03114540466999893,global,L2.3_Sp09D01
+1st Qu.,APOE_carrier,0,global,L2.3_Sp09D01
+1st Qu.,round,0,global,L2.3_Sp09D01
+1st Qu.,Sex,0,global,L2.3_Sp09D01
+1st Qu.,Visium_slide,0,global,L2.3_Sp09D01
+1st Qu.,APOE_num,0.003599604561378597,global,L2.3_Sp09D01
+1st Qu.,Anc_Afr,0.004103084003865842,global,L2.3_Sp09D01
+1st Qu.,Age,0.0035201435640775896,global,L2.3_Sp09D01
+1st Qu.,Rin,0.004536834378462347,global,L2.3_Sp09D01
+1st Qu.,ncells,0.005524495474821741,global,L2.3_Sp09D01
+1st Qu.,pseudo_expr_chrM_ratio,0.008828792905384436,global,L2.3_Sp09D01
+1st Qu.,Residuals,0.44425205127215917,global,L2.3_Sp09D01
+Median,APOE_carrier,0,global,L2.3_Sp09D01
+Median,round,0,global,L2.3_Sp09D01
+Median,Sex,0,global,L2.3_Sp09D01
+Median,Visium_slide,9.339395419020797e-17,global,L2.3_Sp09D01
+Median,APOE_num,0.016202803278267137,global,L2.3_Sp09D01
+Median,Anc_Afr,0.017551493968496368,global,L2.3_Sp09D01
+Median,Age,0.016238524432119282,global,L2.3_Sp09D01
+Median,Rin,0.01997530934198572,global,L2.3_Sp09D01
+Median,ncells,0.023958328443153595,global,L2.3_Sp09D01
+Median,pseudo_expr_chrM_ratio,0.05253783974361616,global,L2.3_Sp09D01
+Median,Residuals,0.62033908133994,global,L2.3_Sp09D01
+Mean,APOE_carrier,0.008440304695620371,global,L2.3_Sp09D01
+Mean,round,0.009473761232227299,global,L2.3_Sp09D01
+Mean,Sex,0.010962630623707123,global,L2.3_Sp09D01
+Mean,Visium_slide,0.055483878079400084,global,L2.3_Sp09D01
+Mean,APOE_num,0.034751284670746806,global,L2.3_Sp09D01
+Mean,Anc_Afr,0.03040974890487498,global,L2.3_Sp09D01
+Mean,Age,0.0352774022504658,global,L2.3_Sp09D01
+Mean,Rin,0.040488273518344865,global,L2.3_Sp09D01
+Mean,ncells,0.051341883753510176,global,L2.3_Sp09D01
+Mean,pseudo_expr_chrM_ratio,0.12797472097349968,global,L2.3_Sp09D01
+Mean,Residuals,0.5953961112976028,global,L2.3_Sp09D01
+3rd Qu.,APOE_carrier,0,global,L2.3_Sp09D01
+3rd Qu.,round,6.493853367281676e-12,global,L2.3_Sp09D01
+3rd Qu.,Sex,0,global,L2.3_Sp09D01
+3rd Qu.,Visium_slide,0.08706227471483267,global,L2.3_Sp09D01
+3rd Qu.,APOE_num,0.046083535844113156,global,L2.3_Sp09D01
+3rd Qu.,Anc_Afr,0.042674100150554325,global,L2.3_Sp09D01
+3rd Qu.,Age,0.049350486287497775,global,L2.3_Sp09D01
+3rd Qu.,Rin,0.056797123073501564,global,L2.3_Sp09D01
+3rd Qu.,ncells,0.068323458925555,global,L2.3_Sp09D01
+3rd Qu.,pseudo_expr_chrM_ratio,0.1885672138257649,global,L2.3_Sp09D01
+3rd Qu.,Residuals,0.7650971607455901,global,L2.3_Sp09D01
+Max.,APOE_carrier,0.5019193560500923,global,L2.3_Sp09D01
+Max.,round,0.6251179805466229,global,L2.3_Sp09D01
+Max.,Sex,0.8903860107008701,global,L2.3_Sp09D01
+Max.,Visium_slide,0.8716158266815878,global,L2.3_Sp09D01
+Max.,APOE_num,0.5039516589386535,global,L2.3_Sp09D01
+Max.,Anc_Afr,0.5103393698870923,global,L2.3_Sp09D01
+Max.,Age,0.47732649001914335,global,L2.3_Sp09D01
+Max.,Rin,0.5702827937113142,global,L2.3_Sp09D01
+Max.,ncells,0.7066529780369396,global,L2.3_Sp09D01
+Max.,pseudo_expr_chrM_ratio,0.9172625155571708,global,L2.3_Sp09D01
+Max.,Residuals,0.9850392376597078,global,L2.3_Sp09D01
+Min.,APOE_carrier,0,carrier_i,L2.3_Sp09D01
+Min.,APOE_carrier:Anc_Afr,0,carrier_i,L2.3_Sp09D01
+Min.,APOE_carrier:Anc_Afr:Sex,0,carrier_i,L2.3_Sp09D01
+Min.,APOE_carrier:Sex,0,carrier_i,L2.3_Sp09D01
+Min.,round,0,carrier_i,L2.3_Sp09D01
+Min.,Sex,0,carrier_i,L2.3_Sp09D01
+Min.,Visium_slide,0,carrier_i,L2.3_Sp09D01
+Min.,Anc_Afr,4.100505523088688e-28,carrier_i,L2.3_Sp09D01
+Min.,Age,3.3084424381908454e-31,carrier_i,L2.3_Sp09D01
+Min.,Rin,1.4753217794361982e-30,carrier_i,L2.3_Sp09D01
+Min.,ncells,1.2220223038278204e-36,carrier_i,L2.3_Sp09D01
+Min.,pseudo_expr_chrM_ratio,7.691471257381903e-35,carrier_i,L2.3_Sp09D01
+Min.,Residuals,2.4347624264842715e-15,carrier_i,L2.3_Sp09D01
+1st Qu.,APOE_carrier,0,carrier_i,L2.3_Sp09D01
+1st Qu.,APOE_carrier:Anc_Afr,0,carrier_i,L2.3_Sp09D01
+1st Qu.,APOE_carrier:Anc_Afr:Sex,0,carrier_i,L2.3_Sp09D01
+1st Qu.,APOE_carrier:Sex,0,carrier_i,L2.3_Sp09D01
+1st Qu.,round,0,carrier_i,L2.3_Sp09D01
+1st Qu.,Sex,0,carrier_i,L2.3_Sp09D01
+1st Qu.,Visium_slide,0,carrier_i,L2.3_Sp09D01
+1st Qu.,Anc_Afr,0.004129430154259318,carrier_i,L2.3_Sp09D01
+1st Qu.,Age,0.0013692235452263221,carrier_i,L2.3_Sp09D01
+1st Qu.,Rin,0.002362269063559081,carrier_i,L2.3_Sp09D01
+1st Qu.,ncells,0.0022991578477677375,carrier_i,L2.3_Sp09D01
+1st Qu.,pseudo_expr_chrM_ratio,0.005499876419374793,carrier_i,L2.3_Sp09D01
+1st Qu.,Residuals,0.249515922343593,carrier_i,L2.3_Sp09D01
+Median,APOE_carrier,0,carrier_i,L2.3_Sp09D01
+Median,APOE_carrier:Anc_Afr,2.0803321410647208e-13,carrier_i,L2.3_Sp09D01
+Median,APOE_carrier:Anc_Afr:Sex,0,carrier_i,L2.3_Sp09D01
+Median,APOE_carrier:Sex,0,carrier_i,L2.3_Sp09D01
+Median,round,4.497030804722463e-22,carrier_i,L2.3_Sp09D01
+Median,Sex,0,carrier_i,L2.3_Sp09D01
+Median,Visium_slide,1.4639160782501723e-15,carrier_i,L2.3_Sp09D01
+Median,Anc_Afr,0.018232723551451033,carrier_i,L2.3_Sp09D01
+Median,Age,0.011377109258043852,carrier_i,L2.3_Sp09D01
+Median,Rin,0.016551672986488675,carrier_i,L2.3_Sp09D01
+Median,ncells,0.018244200010515733,carrier_i,L2.3_Sp09D01
+Median,pseudo_expr_chrM_ratio,0.05439083991580404,carrier_i,L2.3_Sp09D01
+Median,Residuals,0.48337218658256875,carrier_i,L2.3_Sp09D01
+Mean,APOE_carrier,0.00945641150429046,carrier_i,L2.3_Sp09D01
+Mean,APOE_carrier:Anc_Afr,0.13335840219820264,carrier_i,L2.3_Sp09D01
+Mean,APOE_carrier:Anc_Afr:Sex,0.03587014890601667,carrier_i,L2.3_Sp09D01
+Mean,APOE_carrier:Sex,0.010538291722725435,carrier_i,L2.3_Sp09D01
+Mean,round,0.009038978583171245,carrier_i,L2.3_Sp09D01
+Mean,Sex,0.008165168180518444,carrier_i,L2.3_Sp09D01
+Mean,Visium_slide,0.046370028967199745,carrier_i,L2.3_Sp09D01
+Mean,Anc_Afr,0.03213043634360551,carrier_i,L2.3_Sp09D01
+Mean,Age,0.030878663032463696,carrier_i,L2.3_Sp09D01
+Mean,Rin,0.03877287381133639,carrier_i,L2.3_Sp09D01
+Mean,ncells,0.04906257445039775,carrier_i,L2.3_Sp09D01
+Mean,pseudo_expr_chrM_ratio,0.1329967128806411,carrier_i,L2.3_Sp09D01
+Mean,Residuals,0.4633613094194309,carrier_i,L2.3_Sp09D01
+3rd Qu.,APOE_carrier,1.0952194891163737e-10,carrier_i,L2.3_Sp09D01
+3rd Qu.,APOE_carrier:Anc_Afr,0.031431283364486626,carrier_i,L2.3_Sp09D01
+3rd Qu.,APOE_carrier:Anc_Afr:Sex,8.366442142808076e-11,carrier_i,L2.3_Sp09D01
+3rd Qu.,APOE_carrier:Sex,6.310257146973074e-12,carrier_i,L2.3_Sp09D01
+3rd Qu.,round,8.499756229470162e-11,carrier_i,L2.3_Sp09D01
+3rd Qu.,Sex,1.6733851019323957e-21,carrier_i,L2.3_Sp09D01
+3rd Qu.,Visium_slide,0.06591674871778683,carrier_i,L2.3_Sp09D01
+3rd Qu.,Anc_Afr,0.0434092571007882,carrier_i,L2.3_Sp09D01
+3rd Qu.,Age,0.04107999396506963,carrier_i,L2.3_Sp09D01
+3rd Qu.,Rin,0.0536681952902988,carrier_i,L2.3_Sp09D01
+3rd Qu.,ncells,0.06366193867062614,carrier_i,L2.3_Sp09D01
+3rd Qu.,pseudo_expr_chrM_ratio,0.20350996793786605,carrier_i,L2.3_Sp09D01
+3rd Qu.,Residuals,0.6948387836128549,carrier_i,L2.3_Sp09D01
+Max.,APOE_carrier,0.6727826234968233,carrier_i,L2.3_Sp09D01
+Max.,APOE_carrier:Anc_Afr,0.9999999999560574,carrier_i,L2.3_Sp09D01
+Max.,APOE_carrier:Anc_Afr:Sex,0.9998788217665845,carrier_i,L2.3_Sp09D01
+Max.,APOE_carrier:Sex,0.510252738064692,carrier_i,L2.3_Sp09D01
+Max.,round,0.5933324551585216,carrier_i,L2.3_Sp09D01
+Max.,Sex,0.7558554949663571,carrier_i,L2.3_Sp09D01
+Max.,Visium_slide,0.8719654480035753,carrier_i,L2.3_Sp09D01
+Max.,Anc_Afr,0.5157839704573371,carrier_i,L2.3_Sp09D01
+Max.,Age,0.4922805040301511,carrier_i,L2.3_Sp09D01
+Max.,Rin,0.5609323918466943,carrier_i,L2.3_Sp09D01
+Max.,ncells,0.7147649923253512,carrier_i,L2.3_Sp09D01
+Max.,pseudo_expr_chrM_ratio,0.9197444159675334,carrier_i,L2.3_Sp09D01
+Max.,Residuals,0.9965621038458614,carrier_i,L2.3_Sp09D01
+Min.,APOE_num:Anc_Afr:Sex,0,numeric_i,L2.3_Sp09D01
+Min.,APOE_num:Sex,0,numeric_i,L2.3_Sp09D01
+Min.,round,0,numeric_i,L2.3_Sp09D01
+Min.,Sex,0,numeric_i,L2.3_Sp09D01
+Min.,Visium_slide,0,numeric_i,L2.3_Sp09D01
+Min.,APOE_num,4.2547206738801054e-10,numeric_i,L2.3_Sp09D01
+Min.,Anc_Afr,6.668657779099212e-9,numeric_i,L2.3_Sp09D01
+Min.,Age,5.0367744994699856e-33,numeric_i,L2.3_Sp09D01
+Min.,Rin,1.7278675008445053e-31,numeric_i,L2.3_Sp09D01
+Min.,ncells,5.604614251130261e-30,numeric_i,L2.3_Sp09D01
+Min.,pseudo_expr_chrM_ratio,4.109593415995173e-31,numeric_i,L2.3_Sp09D01
+Min.,APOE_num:Anc_Afr,1.6493020409308454e-9,numeric_i,L2.3_Sp09D01
+Min.,Residuals,3.0669400437945185e-15,numeric_i,L2.3_Sp09D01
+1st Qu.,APOE_num:Anc_Afr:Sex,0,numeric_i,L2.3_Sp09D01
+1st Qu.,APOE_num:Sex,0,numeric_i,L2.3_Sp09D01
+1st Qu.,round,0,numeric_i,L2.3_Sp09D01
+1st Qu.,Sex,0,numeric_i,L2.3_Sp09D01
+1st Qu.,Visium_slide,0,numeric_i,L2.3_Sp09D01
+1st Qu.,APOE_num,0.0053956093436813785,numeric_i,L2.3_Sp09D01
+1st Qu.,Anc_Afr,0.010232178482089684,numeric_i,L2.3_Sp09D01
+1st Qu.,Age,7.797961919651767e-4,numeric_i,L2.3_Sp09D01
+1st Qu.,Rin,0.00174314115025158,numeric_i,L2.3_Sp09D01
+1st Qu.,ncells,0.001365793726030388,numeric_i,L2.3_Sp09D01
+1st Qu.,pseudo_expr_chrM_ratio,0.00284458650499032,numeric_i,L2.3_Sp09D01
+1st Qu.,APOE_num:Anc_Afr,0.014083728583053864,numeric_i,L2.3_Sp09D01
+1st Qu.,Residuals,4.5021037694281625e-6,numeric_i,L2.3_Sp09D01
+Median,APOE_num:Anc_Afr:Sex,1.3101537888347996e-10,numeric_i,L2.3_Sp09D01
+Median,APOE_num:Sex,1.6489020389248573e-10,numeric_i,L2.3_Sp09D01
+Median,round,0,numeric_i,L2.3_Sp09D01
+Median,Sex,0,numeric_i,L2.3_Sp09D01
+Median,Visium_slide,5.037989304959854e-12,numeric_i,L2.3_Sp09D01
+Median,APOE_num,0.023045206121150574,numeric_i,L2.3_Sp09D01
+Median,Anc_Afr,0.036461362856559265,numeric_i,L2.3_Sp09D01
+Median,Age,0.007398554688696053,numeric_i,L2.3_Sp09D01
+Median,Rin,0.011696160236682972,numeric_i,L2.3_Sp09D01
+Median,ncells,0.011321214985458936,numeric_i,L2.3_Sp09D01
+Median,pseudo_expr_chrM_ratio,0.03296022165559056,numeric_i,L2.3_Sp09D01
+Median,APOE_num:Anc_Afr,0.04744276466715847,numeric_i,L2.3_Sp09D01
+Median,Residuals,0.2980738465852825,numeric_i,L2.3_Sp09D01
+Mean,APOE_num:Anc_Afr:Sex,0.21657480902430665,numeric_i,L2.3_Sp09D01
+Mean,APOE_num:Sex,0.03586730265812843,numeric_i,L2.3_Sp09D01
+Mean,round,0.00787532026644362,numeric_i,L2.3_Sp09D01
+Mean,Sex,0.011566838318049865,numeric_i,L2.3_Sp09D01
+Mean,Visium_slide,0.058098962598032516,numeric_i,L2.3_Sp09D01
+Mean,APOE_num,0.0388087163818115,numeric_i,L2.3_Sp09D01
+Mean,Anc_Afr,0.052918163714738314,numeric_i,L2.3_Sp09D01
+Mean,Age,0.025056605401236286,numeric_i,L2.3_Sp09D01
+Mean,Rin,0.030093762518761908,numeric_i,L2.3_Sp09D01
+Mean,ncells,0.03657087737771557,numeric_i,L2.3_Sp09D01
+Mean,pseudo_expr_chrM_ratio,0.10216922109565689,numeric_i,L2.3_Sp09D01
+Mean,APOE_num:Anc_Afr,0.06303818728623818,numeric_i,L2.3_Sp09D01
+Mean,Residuals,0.3213612333588803,numeric_i,L2.3_Sp09D01
+3rd Qu.,APOE_num:Anc_Afr:Sex,0.42427035469466706,numeric_i,L2.3_Sp09D01
+3rd Qu.,APOE_num:Sex,0.03032241052472619,numeric_i,L2.3_Sp09D01
+3rd Qu.,round,5.368846421312689e-12,numeric_i,L2.3_Sp09D01
+3rd Qu.,Sex,1.2752532398230097e-9,numeric_i,L2.3_Sp09D01
+3rd Qu.,Visium_slide,0.0960453860987529,numeric_i,L2.3_Sp09D01
+3rd Qu.,APOE_num,0.057618249486861124,numeric_i,L2.3_Sp09D01
+3rd Qu.,Anc_Afr,0.07900429130314807,numeric_i,L2.3_Sp09D01
+3rd Qu.,Age,0.030693678856376933,numeric_i,L2.3_Sp09D01
+3rd Qu.,Rin,0.03980904269070508,numeric_i,L2.3_Sp09D01
+3rd Qu.,ncells,0.043501439145986746,numeric_i,L2.3_Sp09D01
+3rd Qu.,pseudo_expr_chrM_ratio,0.13906945598995527,numeric_i,L2.3_Sp09D01
+3rd Qu.,APOE_num:Anc_Afr,0.09768142716277274,numeric_i,L2.3_Sp09D01
+3rd Qu.,Residuals,0.5565632737737348,numeric_i,L2.3_Sp09D01
+Max.,APOE_num:Anc_Afr:Sex,0.9967100348721586,numeric_i,L2.3_Sp09D01
+Max.,APOE_num:Sex,0.9642018111117577,numeric_i,L2.3_Sp09D01
+Max.,round,0.539678204378245,numeric_i,L2.3_Sp09D01
+Max.,Sex,0.7969316341926573,numeric_i,L2.3_Sp09D01
+Max.,Visium_slide,0.8400073574128701,numeric_i,L2.3_Sp09D01
+Max.,APOE_num,0.4005752563553842,numeric_i,L2.3_Sp09D01
+Max.,Anc_Afr,0.49434014473352406,numeric_i,L2.3_Sp09D01
+Max.,Age,0.45466395097813134,numeric_i,L2.3_Sp09D01
+Max.,Rin,0.48412843578236137,numeric_i,L2.3_Sp09D01
+Max.,ncells,0.6313601626154107,numeric_i,L2.3_Sp09D01
+Max.,pseudo_expr_chrM_ratio,0.9153254098275528,numeric_i,L2.3_Sp09D01
+Max.,APOE_num:Anc_Afr,0.4271405321201117,numeric_i,L2.3_Sp09D01
+Max.,Residuals,0.9753066446064858,numeric_i,L2.3_Sp09D01
+Min.,APOE_E4E4,0,e4e4_i,L2.3_Sp09D01
+Min.,APOE_E4E4:Anc_Afr,0,e4e4_i,L2.3_Sp09D01
+Min.,APOE_E4E4:Anc_Afr:Sex,0,e4e4_i,L2.3_Sp09D01
+Min.,APOE_E4E4:Sex,0,e4e4_i,L2.3_Sp09D01
+Min.,round,0,e4e4_i,L2.3_Sp09D01
+Min.,Sex,0,e4e4_i,L2.3_Sp09D01
+Min.,Visium_slide,0,e4e4_i,L2.3_Sp09D01
+Min.,Anc_Afr,2.8424600304329897e-27,e4e4_i,L2.3_Sp09D01
+Min.,Age,3.206980878408879e-32,e4e4_i,L2.3_Sp09D01
+Min.,Rin,3.3617314646950295e-33,e4e4_i,L2.3_Sp09D01
+Min.,ncells,5.332825621921606e-31,e4e4_i,L2.3_Sp09D01
+Min.,pseudo_expr_chrM_ratio,5.385644791216021e-36,e4e4_i,L2.3_Sp09D01
+Min.,Residuals,2.360038673420593e-15,e4e4_i,L2.3_Sp09D01
+1st Qu.,APOE_E4E4,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,APOE_E4E4:Anc_Afr,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,APOE_E4E4:Anc_Afr:Sex,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,APOE_E4E4:Sex,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,round,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,Sex,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,Visium_slide,0,e4e4_i,L2.3_Sp09D01
+1st Qu.,Anc_Afr,0.003867986149975553,e4e4_i,L2.3_Sp09D01
+1st Qu.,Age,0.0014853921863657322,e4e4_i,L2.3_Sp09D01
+1st Qu.,Rin,0.0023564169321677207,e4e4_i,L2.3_Sp09D01
+1st Qu.,ncells,0.0023918469686766315,e4e4_i,L2.3_Sp09D01
+1st Qu.,pseudo_expr_chrM_ratio,0.004714820103238936,e4e4_i,L2.3_Sp09D01
+1st Qu.,Residuals,0.16155475428858615,e4e4_i,L2.3_Sp09D01
+Median,APOE_E4E4,0,e4e4_i,L2.3_Sp09D01
+Median,APOE_E4E4:Anc_Afr,6.261371534103712e-11,e4e4_i,L2.3_Sp09D01
+Median,APOE_E4E4:Anc_Afr:Sex,0,e4e4_i,L2.3_Sp09D01
+Median,APOE_E4E4:Sex,0,e4e4_i,L2.3_Sp09D01
+Median,round,0,e4e4_i,L2.3_Sp09D01
+Median,Sex,0,e4e4_i,L2.3_Sp09D01
+Median,Visium_slide,1.854661278452136e-10,e4e4_i,L2.3_Sp09D01
+Median,Anc_Afr,0.01686582531784487,e4e4_i,L2.3_Sp09D01
+Median,Age,0.01085805439569328,e4e4_i,L2.3_Sp09D01
+Median,Rin,0.016276367888819553,e4e4_i,L2.3_Sp09D01
+Median,ncells,0.01858282289783288,e4e4_i,L2.3_Sp09D01
+Median,pseudo_expr_chrM_ratio,0.052400228985966794,e4e4_i,L2.3_Sp09D01
+Median,Residuals,0.43512093247465516,e4e4_i,L2.3_Sp09D01
+Mean,APOE_E4E4,0.008084924256579968,e4e4_i,L2.3_Sp09D01
+Mean,APOE_E4E4:Anc_Afr,0.16270837286386733,e4e4_i,L2.3_Sp09D01
+Mean,APOE_E4E4:Anc_Afr:Sex,0.043216675052883236,e4e4_i,L2.3_Sp09D01
+Mean,APOE_E4E4:Sex,0.009172924254005978,e4e4_i,L2.3_Sp09D01
+Mean,round,0.010614035017674429,e4e4_i,L2.3_Sp09D01
+Mean,Sex,0.00958069209421845,e4e4_i,L2.3_Sp09D01
+Mean,Visium_slide,0.0507092568794942,e4e4_i,L2.3_Sp09D01
+Mean,Anc_Afr,0.031949949236362775,e4e4_i,L2.3_Sp09D01
+Mean,Age,0.030736360903952157,e4e4_i,L2.3_Sp09D01
+Mean,Rin,0.03798251034580864,e4e4_i,L2.3_Sp09D01
+Mean,ncells,0.04888788530339322,e4e4_i,L2.3_Sp09D01
+Mean,pseudo_expr_chrM_ratio,0.12881424730178112,e4e4_i,L2.3_Sp09D01
+Mean,Residuals,0.4275421664899785,e4e4_i,L2.3_Sp09D01
+3rd Qu.,APOE_E4E4,1.1435240128864114e-10,e4e4_i,L2.3_Sp09D01
+3rd Qu.,APOE_E4E4:Anc_Afr,0.1722612550920073,e4e4_i,L2.3_Sp09D01
+3rd Qu.,APOE_E4E4:Anc_Afr:Sex,7.648516238207536e-11,e4e4_i,L2.3_Sp09D01
+3rd Qu.,APOE_E4E4:Sex,3.1796407157796675e-17,e4e4_i,L2.3_Sp09D01
+3rd Qu.,round,6.182548897014838e-11,e4e4_i,L2.3_Sp09D01
+3rd Qu.,Sex,8.436760885244671e-19,e4e4_i,L2.3_Sp09D01
+3rd Qu.,Visium_slide,0.07416057889357205,e4e4_i,L2.3_Sp09D01
+3rd Qu.,Anc_Afr,0.042839989389130875,e4e4_i,L2.3_Sp09D01
+3rd Qu.,Age,0.039490452578619994,e4e4_i,L2.3_Sp09D01
+3rd Qu.,Rin,0.0529283197629887,e4e4_i,L2.3_Sp09D01
+3rd Qu.,ncells,0.06302938716122024,e4e4_i,L2.3_Sp09D01
+3rd Qu.,pseudo_expr_chrM_ratio,0.19594506705738238,e4e4_i,L2.3_Sp09D01
+3rd Qu.,Residuals,0.6828387593894509,e4e4_i,L2.3_Sp09D01
+Max.,APOE_E4E4,0.6604958359313471,e4e4_i,L2.3_Sp09D01
+Max.,APOE_E4E4:Anc_Afr,0.999999789252586,e4e4_i,L2.3_Sp09D01
+Max.,APOE_E4E4:Anc_Afr:Sex,0.998982694333911,e4e4_i,L2.3_Sp09D01
+Max.,APOE_E4E4:Sex,0.7151342929461308,e4e4_i,L2.3_Sp09D01
+Max.,round,0.6127115688172109,e4e4_i,L2.3_Sp09D01
+Max.,Sex,0.7131284502866974,e4e4_i,L2.3_Sp09D01
+Max.,Visium_slide,0.7959221149143298,e4e4_i,L2.3_Sp09D01
+Max.,Anc_Afr,0.5335337426970461,e4e4_i,L2.3_Sp09D01
+Max.,Age,0.5125268674339533,e4e4_i,L2.3_Sp09D01
+Max.,Rin,0.5617812229822361,e4e4_i,L2.3_Sp09D01
+Max.,ncells,0.7130842436578885,e4e4_i,L2.3_Sp09D01
+Max.,pseudo_expr_chrM_ratio,0.9197444021936344,e4e4_i,L2.3_Sp09D01
+Max.,Residuals,0.9965621038458614,e4e4_i,L2.3_Sp09D01
