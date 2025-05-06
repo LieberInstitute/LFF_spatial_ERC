@@ -86,6 +86,7 @@ spd_col_ha_details <- HeatmapAnnotation(
 )
 
 #### Lit gene heatmap ####
+message("** Lit genes **")
 ## read in marker genes from lit
 lit_markers <- read_csv(here("processed-data","05_spe_correct_cluster", "00_lit_marker_genes_layer", "lit_layer_marker_summary.csv")) |>
     mutate(in_data = gene_name %in% rowData(spe_pb_sample)$gene_name) |>
@@ -156,19 +157,6 @@ Heatmap(lit_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_details.pdf"), height = 8, width = 11)
-Heatmap(lit_markers_zscore,
-        name = "Z Score",
-        cluster_rows = TRUE,
-        cluster_columns = TRUE,
-        show_row_names = FALSE,
-        # column_split = lit_gene_annotation$SpD,
-        # row_split = spd_anno_df$SpD,
-        right_annotation = spd_row_ha_details,
-        bottom_annotation = lit_gene_col_ha
-)
-dev.off()
-
 #### Lit gene heatmap - SpD + sample ####
 ## extract z-scores
 lit_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(lit_gene_annotation),]))
@@ -217,6 +205,7 @@ dev.off()
 
 
 #### MeanRatio heatmap ####
+message("** MeanRatio genes **")
 ## load marker gene data
 load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE)
 
@@ -327,6 +316,7 @@ Heatmap(MR_markers_zscore,
 dev.off()
 
 #### Enrichment heatmap ####
+message("** Enrichment genes **")
 ## load marker gene data
 modeling_results <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
@@ -337,7 +327,7 @@ enrichment_stats_top <- sig_genes_extract(
     modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
-    sce_layer = spe_pb_sample
+    sce_layer = spe_pb
 ) |>
     select(ensembl, fdr, top, logFC, SpD = test) |>
     mutate(SpD = factor(gsub("_", "~", SpD), levels = spd_levels)) |>
@@ -354,54 +344,90 @@ enrich_gene_col_ha <- HeatmapAnnotation(df = enrichment_stats_top |> select(" " 
                                      col = list(" " = SpD_colors))
 
 ## extract z-scores
+enrich_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(enrichment_stats_top),]))
+dim(enrich_markers_zscore)
+enrich_markers_zscore[1:5,1:5]
+
+## plot heatmaps
+pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap.pdf"), height = 8, width = 10)
+Heatmap(enrich_markers_zscore,
+        name = "Z Score",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        show_row_names = TRUE,
+        show_column_names = TRUE,
+        row_names_gp = grid::gpar(fontsize = 10),
+        # row_split_gp = grid::gpar(fontsize = 10),
+        # column_split = marker_stats_top$SpD,
+        right_annotation = spd_row_ha_simple,
+        bottom_annotation = enrich_gene_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster.pdf"), height = 8, width = 10)
+Heatmap(enrich_markers_zscore,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        show_row_names = TRUE,
+        show_column_names = TRUE,
+        row_names_gp = grid::gpar(fontsize = 10),
+        # row_split_gp = grid::gpar(fontsize = 10),
+        # column_split = marker_stats_top$SpD,
+        right_annotation = spd_row_ha_simple,
+        bottom_annotation = enrich_gene_col_ha
+)
+dev.off()
+
+#### Enrichment Heatmap - SpD + Sample ####
+## extract z-scores
 enrich_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(enrichment_stats_top),]))
 dim(enrich_markers_zscore)
 enrich_markers_zscore[1:5,1:5]
 
 ## plot heatmaps
-pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap.pdf"), height = 14, width = 10)
-Heatmap(t(enrich_markers_zscore),
+pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap_sample.pdf"), height = 8, width = 10)
+Heatmap(enrich_markers_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
-        show_row_names = TRUE,
-        show_column_names = FALSE,
+        show_row_names = FALSE,
+        show_column_names = TRUE,
         row_names_gp = grid::gpar(fontsize = 10),
         # row_split_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$SpD,
-        row_split = gsub("~","\n",enrichment_stats_top$SpD),
-        bottom_annotation = spd_col_ha_details,
-        right_annotation = enrich_gene_row_ha
+        right_annotation = spd_row_ha_APOE,
+        bottom_annotation = enrich_gene_col_ha
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster.pdf"), height = 12, width = 10)
-Heatmap(t(enrich_markers_zscore),
+pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster_sample.pdf"), height = 8, width = 10)
+Heatmap(enrich_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        show_row_names = TRUE,
-        show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 9),
+        show_row_names = FALSE,
+        show_column_names = TRUE,
+        row_names_gp = grid::gpar(fontsize = 10),
+        # row_split_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$SpD,
-        # row_split = spd_anno_df$SpD,
-        bottom_annotation = spd_col_ha_simple,
-        right_annotation = enrich_gene_row_ha
+        right_annotation = spd_row_ha_APOE,
+        bottom_annotation = enrich_gene_col_ha
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster_details.pdf"), height = 12, width = 10)
-Heatmap(t(enrich_markers_zscore),
+pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster_details.pdf"), height = 8, width = 10)
+Heatmap(enrich_markers_zscore,
         name = "Z Score",
-        cluster_rows = TRUE,
-        cluster_columns = TRUE,
-        show_row_names = TRUE,
-        show_column_names = FALSE,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        show_row_names = FALSE,
+        show_column_names = TRUE,
         row_names_gp = grid::gpar(fontsize = 9),
         # column_split = marker_stats_top$SpD,
         # row_split = spd_anno_df$SpD,
-        bottom_annotation = spd_col_ha_details,
-        right_annotation = enrich_gene_row_ha
+        right_annotation = spd_row_ha_details,
+        bottom_annotation = enrich_gene_col_ha
 )
 dev.off()
 
