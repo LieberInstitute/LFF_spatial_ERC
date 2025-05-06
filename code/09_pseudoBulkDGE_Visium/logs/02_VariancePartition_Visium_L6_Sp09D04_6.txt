@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon May  5 12:43:17 PM EDT 2025
+Tue May  6 11:31:33 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16474090
+Job id: 16480578
 Job name: 02_VariancePartition_Visium
-Node name: compute-116
+Node name: compute-115
 Task id: 6
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
@@ -142,7 +142,7 @@ Subset to L6_Sp09D04 - 30494 spots
 
 FALSE  TRUE 
    24     7 
-2025-05-05 12:43:41.81596 - canCorPairs
+2025-05-06 11:32:14.203675 - canCorPairs
 Warning message:
 In canCorPairs(form, pd) : Regression model may be problematic.
 High colinearity between variables:
@@ -161,31 +161,31 @@ High colinearity between variables:
   Visium_slide and round
 null device 
           1 
-2025-05-05 12:43:42.0914 - VarPart: global
+2025-05-06 11:32:14.738879 - VarPart: global
 Saving 7 x 7 in image
-2025-05-05 12:59:35.517983 - VarPart: carrier_i
+2025-05-06 11:58:50.980635 - VarPart: carrier_i
 Saving 7 x 7 in image
-2025-05-05 13:35:56.284072 - VarPart: numeric_i
+2025-05-06 12:27:02.965091 - VarPart: numeric_i
 Saving 7 x 7 in image
-2025-05-05 14:02:29.963066 - VarPart: e4e4_i
+2025-05-06 12:54:07.032406 - VarPart: e4e4_i
 Saving 7 x 7 in image
 Warning messages:
 1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 3551 responses.
   See errors with attr(., 'errors')
 2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 6984 responses.
+  Model failed for 3561 responses.
   See errors with attr(., 'errors')
 3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 4830 responses.
+  Model failed for 3551 responses.
   See errors with attr(., 'errors')
 4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 3583 responses.
+  Model failed for 4369 responses.
   See errors with attr(., 'errors')
 [1] "Reproducibility information:"
-[1] "2025-05-05 14:22:19 EDT"
+[1] "2025-05-06 13:29:55 EDT"
     user   system  elapsed 
-5864.793   32.665 5940.814 
+7013.378   42.022 7099.586 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.3 Patched (2025-02-28 r88189)
@@ -196,7 +196,7 @@ Warning messages:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-05
+ date     2025-05-06
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -393,4 +393,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon May  5 02:22:20 PM EDT 2025
+Tue May  6 01:29:56 PM EDT 2025
