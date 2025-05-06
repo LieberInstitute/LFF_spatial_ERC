@@ -9,6 +9,7 @@ library("SingleCellExperiment")
 library("tidyverse")
 library("ggpubr")
 library("ggrepel")
+library("GGally")
 library("here")
 library("sessioninfo")
 library("variancePartition")
@@ -75,17 +76,68 @@ var_t_test <- map(test_variables, function(test_var){
 
 map(var_t_test, ~.x|> filter(p.adj < 0.05))
 
+#### Explore quality metrics ####
+
+scater_umi_v_chrM <- pd |> 
+    ggplot(aes(x = pseudo_sum_umi, y = pseudo_expr_chrM, color = SpD)) +
+    geom_point() +
+    theme_bw() +
+    scale_color_manual(values = SpD_colors)
+    
+ggsave(scater_umi_v_chrM, filename = here(plot_dir, "spe_pb_scater_umi_v_chrM.png"))
+
+scater_umi_v_chrM_ratio <- pd |> 
+    ggplot(aes(x = pseudo_sum_umi, y = pseudo_expr_chrM_ratio, color = SpD)) +
+    geom_point() +
+    theme_bw() +
+    scale_color_manual(values = SpD_colors)
+    
+ggsave(scater_umi_v_chrM_ratio, filename = here(plot_dir, "spe_pb_scater_umi_v_chrM_ratio.png"))
+
+scater_ncells_v_umi <- pd |> 
+    ggplot(aes(x = ncells, y = pseudo_sum_umi, color = SpD)) +
+    geom_point() +
+    theme_bw() +
+    scale_color_manual(values = SpD_colors)
+    
+ggsave(scater_ncells_v_umi, filename = here(plot_dir, "spe_pb_scater_ncells_v_umi.png"))
+
+scater_ncells_v_chrM_ratio <- pd |> 
+    ggplot(aes(x = ncells, y = pseudo_expr_chrM_ratio, color = SpD)) +
+    geom_point() +
+    theme_bw() +
+    scale_color_manual(values = SpD_colors)
+    
+ggsave(scater_ncells_v_chrM_ratio, filename = here(plot_dir, "spe_pb_scater_ncells_v_chrM_ratio.png"))
+
+pd |> 
+    group_by(SpD) |>
+    summarise(cor_cell_umi = cor(ncells, pseudo_sum_umi),
+              cor_cell_chrM = cor(ncells, pseudo_expr_chrM_ratio),
+              cor_umi_chrM = cor(pseudo_sum_umi, pseudo_expr_chrM_ratio))
+
+ggpair_plot <- ggpairs(pd, 
+                       columns = c("ncells", "pseudo_sum_umi","pseudo_expr_chrM","pseudo_expr_chrM_ratio"), 
+                       aes(colour = SpD)) +
+    scale_color_manual(values = SpD_colors) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw()
+
+ggsave(ggpair_plot, filename = here(plot_dir, "spe_pb_ggpair_quality_metrics.png"), height = 10, width = 10)
+
+
 
 #### Variance Partition data ####
 varPart_summary <- map_dfr(list.files(here("processed-data", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium"), full.names = TRUE),
                               read.csv) |>
     rename(SpD_syn = SpD) |> 
-    left_join(spd_tab) |> 
-    filter(!is.na(SpD))  ## temp
+    left_join(spd_tab) 
+
+any(is.na(varPart_summary$SpD))
 
 head(varPart_summary)
 
-varPart_summary |> filter(!is.na(SpD)) |> count(SpD)
+varPart_summary |> count(SpD)
 
 varPart_summary |> filter(metric == "Median", name != "Residuals") |> group_by(SpD, form) |> slice_max(value)
 varPart_summary |> filter(metric == "Mean", name != "Residuals") |> head()
@@ -96,7 +148,7 @@ varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
     varPart_summary_matrix <- varPart_summary |> 
         filter(metric == my_metric, form == my_form,  name != "Residuals") |>
         select(SpD_syn, name, value) |>
-        pivot_wider(values_from = "value", names_from = "SpD_syn") |>
+        pivot_wider(values_from = "value", names_from = "SpD") |>
         column_to_rownames("name") |>
         as.matrix()
     
