@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=10G
+#SBATCH --mem=7G
 #SBATCH --job-name=02_VariancePartition_Visium
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
