@@ -3,7 +3,7 @@
 #SBATCH --mem=200G
 #SBATCH --job-name=25_sn_cluster_subtype_glia
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 2-00:00:00
 #SBATCH -o logs/25_sn_cluster_subtype_glia.txt
 #SBATCH -e logs/25_sn_cluster_subtype_glia.txt
 #SBATCH --mail-type=ALL
