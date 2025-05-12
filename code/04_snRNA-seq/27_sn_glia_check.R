@@ -160,7 +160,7 @@ if(file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     sce$APOE <- gsub("/", "", sce$APOE)
     
     modeling_results <-registration_wrapper(
-        sce = sce,
+        sce = sce[,!grepl("QC", sce$glia_subcluster)],
         var_registration = "glia_subcluster",
         var_sample_id = "sample_id",
         covars = c("APOE", "Sex", "Age", "Anc_Afr"),
