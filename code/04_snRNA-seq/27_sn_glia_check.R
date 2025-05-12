@@ -8,6 +8,8 @@ library("SingleCellExperiment")
 library("HDF5Array")
 library("spatialLIBD")
 library("tidyverse")
+library("jaffelab")
+library("DeconvoBuddies")
 
 data_dir <- here("processed-data", "04_snRNA-seq", "27_sn_gila_check")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -21,6 +23,10 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 
 sce <- sce[,sce$cell_type_class == "glia"]
 message(Sys.time(), sprintf(" - Subset to %s, ncells = %i", "glia", ncol(sce)))
+
+## load colors
+load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE) 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### Add cluster info ####
 
@@ -52,7 +58,7 @@ ct_cluster_info <- map_dfr(glia_cell_types, function(ct){
     ## load cluster info
     ct_cluster_info <- read_csv(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", ct , sprintf("ERCsn_subtype_clustering_info-%s_k10.csv", ct)),
                                 show_col_types = FALSE) |>
-        mutate(broad_cell_type = ct)
+        mutate(cell_type_broad = ct)
     
     anno_table <- ct_cluster_info |> select(k10, cell_type_k10) |> column_to_rownames("k10")
     
@@ -75,6 +81,8 @@ lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_gen
     rename(cell_type_target = cell_type) |>
     filter(gene_name %in% rowData(sce)$gene_name)
 
+rownames(sce) <- rowData(sce)$gene_name
+
 lit_markers_list <- map(splitit(lit_markers$cell_type_target), ~lit_markers$gene_name[.x])
 
 plot_marker_express_List(sce, 
@@ -83,100 +91,62 @@ plot_marker_express_List(sce,
                          cellType_col = "glia_subcluster",
                          gene_name_col = "gene_name")
 
-#### plot QC data ####
-pd <- as.data.frame(colData(sce))
+#### Jaccard matrix heatmap ####
 
-qc_cluster_info <- pd |>
-                       group_by(!!sym(k_nice), !!sym(cell_type_k)) |>
-                       summarize(median_sum = median(sum),
-                                 median_detected = median(detected),
-                                 median_Mito_percent = median(subsets_Mito_percent),
-                                 median_scDblFinder.score = median(scDblFinder.score)) |>
-    left_join(cluster_metrics_pass) |>
-    arrange(!!sym(cell_type_k))
+jacc.mat <- linkClustersMatrix(sce$glia_subcluster, sce$glia_subtype)
 
-qc_violin_plot_all <- pd |> 
-    left_join(cluster_metrics_pass) |>
-    select(!!sym(cell_type_k),  passALL_metricQC, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
-    pivot_longer(!c(!!sym(cell_type_k),  passALL_metricQC), names_to = "metric") |>
-    mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))) |>
-    ggplot() +
-    geom_violin(aes(x = !!sym(cell_type_k), y = value, fill = !!sym(cell_type_k), colour = passALL_metricQC), 
-                scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
-    # scale_fill_manual(values = cell_type_colors$fine, guide = "none") +
-    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
-    theme_bw() +
-    geom_hline(data = cell_class_cutoffs, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
-    geom_label(data = cell_class_cutoffs, aes(y = cutoff, label = cutoff_anno), x = 3, color = "blue", vjust = -.5) +
-    facet_grid(metric~., scales = "free") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-    labs(y = "Quality Metric Value", x = sprintf("subset cell type cluster, %s", k))
+## subcluster annotation
+subcluster_anno <- ct_cluster_info |>
+    select(cell_type_k10, metric_fail, cell_type_broad, n) |>
+    column_to_rownames("cell_type_k10")
 
-ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("ERC_sn_QCmetricViolin_subtype_%s-%s.png", cell_type, k_nice)), width = 8, height = 12)
+identical(rownames(jacc.mat), rownames(subcluster_anno))
 
+subcluster_ha_row <- rowAnnotation(df = subcluster_anno,
+                                   col = list(cell_type_broad = cell_type_colors$broad,
+                                              metric_fail = c(detected = "firebrick1",
+                                                              `detected,sum` = "firebrick", 
+                                                              scDblFinder.score = "sienna")))
 
-#### sctype ####
+## subtype annotation
+subtype_anno <- glia_cluster_info |>
+    mutate(cell_type_broad = ss(anno, "\\.")) |>
+    select(anno, metric_fail, cell_type_broad, n) |>
+    column_to_rownames("anno")
 
-## source sc-type functions
-message(Sys.time(), "Sctype data")
+identical(colnames(jacc.mat), rownames(subtype_anno))
 
-source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
-source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
+subtype_ha_col <- HeatmapAnnotation(df = subtype_anno,
+                                    col = list(cell_type_broad = c(cell_type_colors$broad, VLMC = "maroon"),
+                                               metric_fail = c(detected = "firebrick1",
+                                                               `detected,sum` = "firebrick",
+                                                               scDblFinder.score = "sienna")))
 
-db_ <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
+## plot heatmap
+pdf(here(plot_dir, "glia_subtype_v_subcluster_jaccard_heatmap.pdf"), width = 10, height = 10)
+Heatmap(jacc.mat,                  name = "Correspondence",
+        right_annotation = subcluster_ha_row,
+        bottom_annotation = subtype_ha_col,
+        cluster_columns = FALSE,
+        cluster_rows = FALSE,
+        col = c("black", viridisLite::plasma(100)),
+        na_col = "black")
+dev.off()
 
-# prepare gene sets
-gs_list <- gene_sets_prepare(db_, "Brain")
-rownames(sce) <- rowData(sce)$gene_name
-
-## calc es.max
-message(Sys.time(), "- sctype es.max")
-es.max <- sctype_score(scRNAseqData = as.matrix(logcounts(sce)),
-                       scaled = TRUE,
-                       gs = gs_list$gs_positive)
-
-## load previously computed scores
-# load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_es_max-sctype.Rdata"), verbose = TRUE)
-## subset to cell type
-# es.max <- es.max[,cell_type_index]
-dim(es.max)
-
-message(Sys.time(), "- sctype score")
-cell_types = cluster_annotation[[cell_type_k]]
-# message("cell_types: ", paste(cell_types, collapse = ", "))
-cL_results <- purrr::map_dfr(cell_types, function(cluster){
-    
-    cluster_index = sce[[cell_type_k]] == cluster
-    
-    es.max.cl = sort(rowSums(es.max[,cluster_index]), decreasing = !0)
-    cL_resutls <- head(tibble(cluster = cluster, 
-                              sctype = names(es.max.cl), 
-                              scores = es.max.cl, 
-                              ncells = sum(cluster_index)
-    ),10)
-    return(cL_resutls)
-})
-
-(sctype_score <-  cL_results |> 
-    group_by(cluster) |> 
-    slice_max(scores)  |>
-    mutate(confident = scores >= (ncells/4)) |> 
-    mutate(sctype = ifelse(!confident, paste0(sctype, "*"), sctype)))
 
 #### run cell type specific modeling ####
-modeling_fn <- here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("modeling_results_subtype-%s_%s.rds", cell_type, k_nice))
-pseudobulk_fn = here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice))
+modeling_fn <- here(data_dir, "modeling_results_subtype_subcluster.rds")
+pseudobulk_fn = here(data_dir, "sce_pseudobulk_subtype_subcluster.rds")
 
-if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
+if(file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
     message(Sys.time(), " - Load modeling data")
     modeling_results <- readRDS(modeling_fn)
     
 } else {
     
-    message(Sys.time(), " - Running Spatial Registration on: ", cell_type, " - ", cell_type_k)
-    stopifnot(cell_type_k %in% colnames(colData(sce)))
-    
+    message(Sys.time(), " - Running Spatial Registration on: subcluster")
+
     ## Filter to passALL_metricQC nuclei
     sce <- sce[,sce$passALL_metricQC]
     table(sce[[cell_type_k]], sce$sample_id)
@@ -186,21 +156,21 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
     modeling_results <-registration_wrapper(
         sce = sce,
-        var_registration = cell_type_k,
+        var_registration = "glia_subcluster",
         var_sample_id = "sample_id",
         covars = c("APOE", "Sex", "Age", "Anc_Afr"),
         gene_ensembl = "gene_id",
         gene_name = "gene_name",
         min_ncells = 10,
-        pseudobulk_rds_file = here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice))
+        pseudobulk_rds_file = pseudobulk_fn
     )
     
     message(Sys.time(), " - Saving Data")
-    saveRDS(modeling_results, file = here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("modeling_results_subtype-%s_%s.rds", cell_type, k_nice)))
+    saveRDS(modeling_results, file = modeling_fn)
     
 }
 
-sce_pseudo <- readRDS(here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("sce_pseudobulk_subtype-%s_%s.rds", cell_type, k_nice)))
+sce_pseudo <- readRDS(pseudobulk_fn)
 
 top_genes <- sig_genes_extract(
     n = 10,
@@ -211,7 +181,7 @@ top_genes <- sig_genes_extract(
     gene_name = "gene_name"
 )
 
-write.csv(top_genes, here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("subtype_enrichment_top10_%s_%s.csv", cell_type, k_nice)))
+write.csv(top_genes, here(data_dir, sprintf("subcluster_enrichment_top10.csv")))
 
 #### spatial registration ####
 
@@ -247,27 +217,13 @@ anno_summary <- map2_dfr(anno, names(anno), ~.x |>
 
 ## save data
 spatial_registration <- list(cor_layer = cor_layer, anno = anno)
-save(spatial_registration, file = here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("ERCsn_subtype_registration-%s_%s.Rdata", cell_type, k_nice)))
+save(spatial_registration, file = here(data_dir, sprintf("ERCsn_subcluster_registration.Rdata")))
 
 # load(here(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check"), sprintf("ERCsn_subtype_registration-%s.Rdata", cell_type)))
 
-#### create registration heatmaps ####
-## load colors
-# load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
-# load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
-# 
-# # cell_type_colors
-# layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
-#                      spatialDLPFC = NULL, #TODO add spatial domain colors
-#                      spatialERC = SpD_colors,
-#                      snDLPFC_PEC = NULL,
-#                      sestan_EC = NULL)
-
-# map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
-
 walk(names(cor_layer), function(ref){
     message(ref)
-    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_subtype-%s_%s.pdf", ref, cell_type, k_nice)), 
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_subcluster.pdf", ref)), 
         width = 6 + (ncol(cor_layer[[ref]])/7))
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
@@ -277,15 +233,6 @@ walk(names(cor_layer), function(ref){
     ))
     dev.off()
 })
-
-#### combine cluster summaries ####
-subtype_clustering_info <- 
-    cluster_annotation |> 
-    left_join(qc_cluster_info) |>
-    left_join(sctype_score  |> select(!!sym(cell_type_k) := cluster, sctype)) |>
-    left_join(anno_summary  |> rename(!!sym(cell_type_k) := cluster))
-
-
 
 # slurmjobs::job_single(name = "26_sn_subtype_check_glia", memory = "50G", command = "Rscript 26_sn_subtype_check.R --cell_type glia", create_shell = TRUE)
 
