@@ -234,19 +234,7 @@ walk(names(cor_layer), function(ref){
     dev.off()
 })
 
-# slurmjobs::job_single(name = "26_sn_subtype_check_glia", memory = "50G", command = "Rscript 26_sn_subtype_check.R --cell_type glia", create_shell = TRUE)
-
-# slurmjobs::job_loop(loops = list(cell_type = c("Astro", "Micro", "Endo", "Oligo", "OPC"),
-#                                  k = c("10", "20")), 
-#                     create_shell = TRUE, 
-#                     name = "26_sn_subtype_check", 
-#                     create_script = FALSE)
-
-## resubmit Oligo jobs with more mem
-# array_submit(
-#     "26_sn_subtype_check",
-#     task_ids = 6:7,
-#     submit = TRUE)
+# slurmjobs::job_single(name = "27_sn_glia_check", memory = "50G", command = "Rscript 27_sn_glia_check.R", create_shell = TRUE)
 
 
 ## Reproducibility information
