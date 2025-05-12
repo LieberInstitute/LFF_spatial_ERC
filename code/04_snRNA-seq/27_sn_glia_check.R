@@ -154,7 +154,6 @@ if(file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
 
     ## Filter to passALL_metricQC nuclei
     sce <- sce[,sce$passALL_metricQC]
-    table(sce[[cell_type_k]], sce$sample_id)
     
     ## make APOE syntatic
     sce$APOE <- gsub("/", "", sce$APOE)
