@@ -10,6 +10,7 @@ library("spatialLIBD")
 library("tidyverse")
 library("jaffelab")
 library("DeconvoBuddies")
+library("bluster")
 
 data_dir <- here("processed-data", "04_snRNA-seq", "27_sn_gila_check")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -29,6 +30,7 @@ load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose =
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### Add cluster info ####
+message(Sys.time(), " - Add cluster info")
 
 ## Glia clustering
 (cluster_fn <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", "glia", "walktrap_snn_k10_subclusters_glia.Rdata"))
@@ -76,7 +78,8 @@ message("Concordance rand score: ", bluster::pairwiseRand(sce$glia_subcluster, s
 # 0.48
 
 #### plot marker genes for subcluster ####
-message(Sys.time(), "Plot lit marker genes")
+message(Sys.time(), " - Plot lit marker genes")
+
 lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
     rename(cell_type_target = cell_type) |>
     filter(gene_name %in% rowData(sce)$gene_name)
@@ -85,13 +88,14 @@ rownames(sce) <- rowData(sce)$gene_name
 
 lit_markers_list <- map(splitit(lit_markers$cell_type_target), ~lit_markers$gene_name[.x])
 
-plot_marker_express_List(sce, 
+plot_marker_express_List(sce[,!grepl("QC", sce$glia_subcluster)], 
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ERC_sn_lit_markers_subtype_glia_subcluster.pdf"),
                          cellType_col = "glia_subcluster",
                          gene_name_col = "gene_name")
 
 #### Jaccard matrix heatmap ####
+message(Sys.time(), " - Jaccard matrix heatmap")
 
 jacc.mat <- linkClustersMatrix(sce$glia_subcluster, sce$glia_subtype)
 
