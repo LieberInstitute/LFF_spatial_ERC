@@ -11,6 +11,7 @@ library("tidyverse")
 library("jaffelab")
 library("DeconvoBuddies")
 library("bluster")
+library("ComplexHeatmap")
 
 data_dir <- here("processed-data", "04_snRNA-seq", "27_sn_gila_check")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
