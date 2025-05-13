@@ -78,6 +78,14 @@ table(sce$glia_subcluster, sce$glia_subtype)
 message("Concordance rand score: ", bluster::pairwiseRand(sce$glia_subcluster, sce$glia_subtype, mode = "index"))
 # 0.48
 
+#### define colors for subtypes ####
+
+subclusters <- unique(sce$glia_subcluster)
+
+subclusters <- sort(subclusters[!grepl("QC", subclusters)])
+
+subclusters_colors <- create_cell_colors(cell_types = subclusters, split = "\\.")
+
 #### plot marker genes for subcluster ####
 message(Sys.time(), " - Plot lit marker genes")
 
@@ -93,7 +101,9 @@ plot_marker_express_List(sce[,!grepl("QC", sce$glia_subcluster)],
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ERC_sn_lit_markers_subtype_glia_subcluster.pdf"),
                          cellType_col = "glia_subcluster",
-                         gene_name_col = "gene_name")
+                         gene_name_col = "gene_name",
+                         color_pal = subclusters_colors$fine
+                         )
 
 #### Jaccard matrix heatmap ####
 message(Sys.time(), " - Jaccard matrix heatmap")
@@ -232,11 +242,20 @@ walk(names(cor_layer), function(ref){
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
         # reference_colors = layer_colors[[ref]],
-        annotation = anno[[ref]]
-        # query_colors = cell_type_colors$anno
+        annotation = anno[[ref]],
+        query_colors = subclusters_colors$fine
     ))
     dev.off()
 })
+
+ct_cluster_info2 <- ct_cluster_info |> left_join(anno_summary |> rename(cell_type_k10 = cluster, sestan_EC_c = sestan_EC, snDLPFC_PEC_c = snDLPFC_PEC))
+
+write_csv(ct_cluster_info2, file = here(data_dir, "ERCsn_glia_subcluster_info.csv"))
+
+ct_cluster_info2 |> 
+    group_by(cell_type_broad) |> 
+    summarise(n_cluster = sum(passALL_metricQC),
+              n_QC = sum(!passALL_metricQC))
 
 # slurmjobs::job_single(name = "27_sn_glia_check", memory = "50G", command = "Rscript 27_sn_glia_check.R", create_shell = TRUE)
 
