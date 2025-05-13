@@ -1,11 +1,12 @@
 **** Job starts ****
-Thu May  8 09:33:23 AM EDT 2025
+Mon May 12 05:42:07 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16527053
-Job name: 26_sn_subtype_check_glia
-Node name: compute-122
+Job id: 16568488
+Job name: 27_sn_glia_check
+Node name: compute-158
 Task id: 
+Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -156,86 +157,258 @@ Loading required package: SpatialExperiment
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Loading required package: rafalib
-Please cite our software :) 
- 
- Sehyun Oh et al. HGNChelper: identification and correction of invalid gene symbols for human and mouse. F1000Research 2020, 9:1493. DOI: https://doi.org/10.12688/f1000research.28033.1 
- 
- Type `citation('HGNChelper')` for a BibTeX entry.
-$ARGS
-character(0)
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.22.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
 
-$cell_type
-[1] "glia"
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
 
-$k
-[1] 10
 
-2025-05-08 09:33:39.389662 - Load HDF5 sce
-2025-05-08 09:33:48.249621 - Subset to glia, ncells = 98669
-2025-05-08 09:33:48.294533 - Load Cluster Data
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+2025-05-12 17:42:20.73562 - Load HDF5 sce
+2025-05-12 17:42:27.664072 - Subset to glia, ncells = 98669
+Loading objects:
+  cell_type_colors
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  sample_colors
+2025-05-12 17:42:27.681934 - Add cluster info
 [1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/25_sn_cluster_subtype/glia/walktrap_snn_k10_subclusters_glia.Rdata"
 Loading objects:
   clusters
-number of clusters: 28
-number clusters n<100: 2
-Concordance rand score between original cluster: 0.491095459971392
+[1] TRUE
+Rows: 28 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (7): k10, metric_fail, cell_type_k10, sctype, sestan_EC, snDLPFC_PEC, anno
+dbl (6): n, rank, median_sum, median_detected, median_Mito_percent, median_s...
+lgl (1): passALL_metricQC
 
-   k1   k10   k11   k12   k13   k14   k15   k16   k17   k18   k19    k2   k20 
-12111   480  2249  6403   585   444   295  1743   307  3716   175  1065   220 
-  k21   k22   k23   k24   k25   k26   k27   k28    k3    k4    k5    k6    k7 
- 4576    45    29 11541 10185  2600 10192  4453   100  3321   614  6587   989 
-   k8    k9 
-  194 13450 
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+# A tibble: 6 × 2
+  sctype                              n
+  <chr>                           <int>
+1 Astrocytes                          8
+2 Endothelial cells                   2
+3 Glutamatergic neurons               5
+4 Microglial cells                    3
+5 Oligodendrocyte precursor cells     3
+6 Oligodendrocytes                    7
 
-   k1   k10   k11   k12   k13   k14   k15   k16   k17   k18   k19    k2   k20 
-12111   480  2249  6403   585   444   295  1743   307  3716   175  1065   220 
-  k21   k22   k23   k24   k25   k26   k27   k28    k3    k4    k5    k6    k7 
- 4576    45    29 11541 10185  2600 10192  4453   100  3321   614  6587   989 
-   k8    k9 
-  194 13450 
-2025-05-08 09:33:49.759533QC check
-`summarise()` has grouped output by 'k10', 'cell_type_class'. You can override
-using the `.groups` argument.
-Joining with `by = join_by(cell_type_class, metric)`
-Joining with `by = join_by(k10)`
-Joining with `by = join_by(k10)`
-Joining with `by = join_by(k10)`
-# A tibble: 6 × 4
-  k10   passALL_metricQC metric_fail cell_type_k10
-  <chr> <lgl>            <chr>       <chr>        
-1 k16   FALSE            detected    glia.21_QC   
-2 k1    TRUE             <NA>        glia.02      
-3 k24   TRUE             <NA>        glia.03      
-4 k1    TRUE             <NA>        glia.02      
-5 k24   TRUE             <NA>        glia.03      
-6 k4    TRUE             <NA>        glia.10      
+   Astro.1    Astro.2    Astro.3    Astro.5 Astro.6_QC Astro.7_QC Astro.8_QC 
+     12111       4576       3321        585        989        175        100 
+    Endo.1     Endo.2    Excit.1    Excit.2 Excit.3_QC Excit.4_QC Excit.5_QC 
+       444        295        480        220        307         45         29 
+   Micro.1    Micro.2    Micro.3    Oligo.1    Oligo.2    Oligo.3    Oligo.4 
+      6587       4453       2249      13450      10192      10185       6403 
+   Oligo.5 Oligo.6_QC Oligo.7_QC      OPC.1      OPC.2   OPC.3_QC     VLMC.1 
+       614       3716       1743      11541       2600        194       1065 
 
-   glia.01    glia.02    glia.03    glia.04    glia.05    glia.06    glia.07 
-     13450      12111      11541      10192      10185       6587       6403 
-   glia.08    glia.09    glia.10    glia.11    glia.12    glia.13    glia.14 
-      4576       4453       3321       2600       2249       1065        614 
-   glia.15    glia.16    glia.17    glia.18    glia.19 glia.20_QC glia.21_QC 
-       585        480        444        295        220       3716       1743 
-glia.22_QC glia.23_QC glia.24_QC glia.25_QC glia.26_QC glia.27_QC glia.28_QC 
-       989        307        194        175        100         45         29 
-       
-        glia.01 glia.02 glia.03 glia.04 glia.05 glia.06 glia.07 glia.08 glia.09
-  FALSE       0       0       0       0       0       0       0       0       0
-  TRUE    13450   12111   11541   10192   10185    6587    6403    4576    4453
-       
-        glia.10 glia.11 glia.12 glia.13 glia.14 glia.15 glia.16 glia.17 glia.18
-  FALSE       0       0       0       0       0       0       0       0       0
-  TRUE     3321    2600    2249    1065     614     585     480     444     295
-       
-        glia.19 glia.20_QC glia.21_QC glia.22_QC glia.23_QC glia.24_QC
-  FALSE       0       3716       1743        989        307        194
-  TRUE      220          0          0          0          0          0
-       
-        glia.25_QC glia.26_QC glia.27_QC glia.28_QC
-  FALSE        175        100         45         29
-  TRUE           0          0          0          0
-2025-05-08 09:33:50.209901Plot lit marker genes
-Rows: 43 Columns: 5
+   Astro.01    Astro.02    Astro.03    Astro.04    Astro.05 Astro.06_QC 
+      10976        5276        3087        1133         812         384 
+Astro.07_QC Astro.08_QC Astro.09_QC Astro.10_QC Astro.11_QC      Endo.1 
+        280          81          47          47          22         352 
+     Endo.2      Endo.3      Endo.4      Endo.5      Endo.6      Endo.7 
+        345         286         212         147          65          41 
+    Micro.1     Micro.2     Micro.3     Micro.4     Micro.5     Micro.6 
+       4227        3748        1876        1728         590         433 
+ Micro.7_QC  Micro.8_QC    Oligo.01    Oligo.02    Oligo.03    Oligo.04 
+        802         124       12519       12010        8587        6911 
+   Oligo.05    Oligo.06    Oligo.07    Oligo.08    Oligo.09 Oligo.10_QC 
+       4254         535         458         427         200         812 
+Oligo.11_QC       OPC.1       OPC.2       OPC.3       OPC.4 
+        118        4815        4009        3932        1961 
+             
+              Astro.1 Astro.2 Astro.3 Astro.5 Astro.6_QC Astro.7_QC Astro.8_QC
+  Astro.01       9704     647       0     569          0          0          0
+  Astro.02        146    1970    2842       0         11          0          0
+  Astro.03       1308    1654      22       1          0          0          0
+  Astro.04        836     281       4      11          0          0          0
+  Astro.05          0       0     355       0        138          5          0
+  Astro.06_QC       0       0      11       0        156        102         40
+  Astro.07_QC      92       9       0       4          0          0          0
+  Astro.08_QC       0       0       0       0          0          0          0
+  Astro.09_QC       0       0       0       0          0          9         38
+  Astro.10_QC       0       0       0       0          0          0          0
+  Astro.11_QC       0       0       0       0          3         12          7
+  Endo.1            0       0       0       0          0          0          0
+  Endo.2            0       0       0       0          0          0          0
+  Endo.3            5       0       0       0          0          0          0
+  Endo.4            0       0       0       0          0          0          0
+  Endo.5            0       0       0       0          0          0          0
+  Endo.6            0       0       0       0          0          0          0
+  Endo.7            0       0       0       0          0          0          0
+  Micro.1           0       1       0       0          0          0          0
+  Micro.2           0       0       0       0          1          0          0
+  Micro.3           1       0       0       0          0          0          0
+  Micro.4           1       0       0       0          0          0          0
+  Micro.5           0       0       0       0          0          0          0
+  Micro.6           0       0       0       0          0          0          0
+  Micro.7_QC        0       0       0       0         62          1          0
+  Micro.8_QC        1       0       0       0          0          0          0
+  Oligo.01          2       1       0       0          0          0          0
+  Oligo.02          2       1       0       0          0          0          0
+  Oligo.03          2       4      53       0        167          0          0
+  Oligo.04          4       3       6       0          0          0          0
+  Oligo.05          2       3      22       0         16          0          0
+  Oligo.06          0       0       0       0          1          0          0
+  Oligo.07          0       0       1       0          5          0          0
+  Oligo.08          0       0       0       0          0          0          0
+  Oligo.09          0       1       0       0          0          0          0
+  Oligo.10_QC       0       0       5       0        429         46         15
+  Oligo.11_QC       0       0       0       0          0          0          0
+  OPC.1             1       0       0       0          0          0          0
+  OPC.2             0       0       0       0          0          0          0
+  OPC.3             3       1       0       0          0          0          0
+  OPC.4             1       0       0       0          0          0          0
+             
+              Endo.1 Endo.2 Excit.1 Excit.2 Excit.3_QC Excit.4_QC Excit.5_QC
+  Astro.01         6      3       1       3          0          0          0
+  Astro.02         0      0       1       3          0          0          0
+  Astro.03         1      0       6       4          1          0          0
+  Astro.04         0      0       0       0          0          0          0
+  Astro.05         0      0       0       0          0          0          0
+  Astro.06_QC      0      0       0       0          0          0          0
+  Astro.07_QC      0      1       3      17         27          1          0
+  Astro.08_QC      0      0       0       5         57         16          3
+  Astro.09_QC      0      0       0       0          0          0          0
+  Astro.10_QC      0      0       0       0          6         16         25
+  Astro.11_QC      0      0       0       0          0          0          0
+  Endo.1          33      0       0       0          1          0          0
+  Endo.2          92    248       0       0          0          0          0
+  Endo.3           3      1       0       2          0          0          0
+  Endo.4           8      0       0       0          0          0          0
+  Endo.5          34     16       0       0          0          0          0
+  Endo.6          12      8       0       0          0          0          0
+  Endo.7           6      2       0       0          0          0          0
+  Micro.1          6      0       0       0          1          0          0
+  Micro.2          5      0      25       3         10          0          0
+  Micro.3          2      0       0       0          0          0          0
+  Micro.4          1      0       0       0          0          0          0
+  Micro.5          1      0       3       3          1          0          0
+  Micro.6          0      0       0       0          0          0          0
+  Micro.7_QC       0      0       1       0          0          0          0
+  Micro.8_QC       0      0      14      10         29          1          0
+  Oligo.01         8      1       1       3          0          0          0
+  Oligo.02         3      3       0       0          0          0          0
+  Oligo.03         0      0      11       9          0          0          0
+  Oligo.04        16      0       2       2          0          0          0
+  Oligo.05        58      2       5       1          0          0          0
+  Oligo.06         0      0     252      46          3          0          0
+  Oligo.07         0      0       0       3          0          0          0
+  Oligo.08         0      0     139      84        145          8          1
+  Oligo.09       147      9       0       0          0          0          0
+  Oligo.10_QC      0      0       0       0          0          0          0
+  Oligo.11_QC      0      0       0       1          0          0          0
+  OPC.1            0      0      10       9          6          0          0
+  OPC.2            0      0       4       2          0          0          0
+  OPC.3            1      0       2      10         16          3          0
+  OPC.4            1      1       0       0          4          0          0
+             
+              Micro.1 Micro.2 Micro.3 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5
+  Astro.01         19       0       0       0       0       1       0       0
+  Astro.02          0       0       0       0       1       7     110       0
+  Astro.03          4       1       0       9      27      10       0       0
+  Astro.04          0       0       0       0       0       0       0       0
+  Astro.05          0       0       0       0       0       0      62       0
+  Astro.06_QC       0       0       0       0       0       0       8       0
+  Astro.07_QC       0       0       0       0       4       0       0       0
+  Astro.08_QC       0       0       0       0       0       0       0       0
+  Astro.09_QC       0       0       0       0       0       0       0       0
+  Astro.10_QC       0       0       0       0       0       0       0       0
+  Astro.11_QC       0       0       0       0       0       0       0       0
+  Endo.1            0       0       0       0       0       0      44       0
+  Endo.2            0       0       0       0       0       0       0       0
+  Endo.3            0       0       0       0       0       0       0       0
+  Endo.4            0       0       0       0       0       0       6       0
+  Endo.5            0       0       0       0       0       0       0       0
+  Endo.6            0       0       0       0       0       0       0       0
+  Endo.7            0       0       0       0       0       0       0       0
+  Micro.1        3318     893       4       0       2       0       1       0
+  Micro.2         273    2115    1279       1       4       2      22       0
+  Micro.3        1455     405       7       0       2       1       2       0
+  Micro.4        1145     540      34       0       2       2       3       0
+  Micro.5          41     291     235       0       1       0      10       0
+  Micro.6         270     139      22       0       0       0       2       0
+  Micro.7_QC        1      10     617       0       0       0       8       0
+  Micro.8_QC       49       5       0       0       0       0       3       0
+  Oligo.01          7       1       0    3378    7215    1874       9       0
+  Oligo.02          3       0       0    9836    1499      36       2     614
+  Oligo.03          0       7      29       4      10    1142    3325       0
+  Oligo.04          0      23       4       7     446    5435     920       0
+  Oligo.05          2      21      17     143     946    1654     816       0
+  Oligo.06          0       0       0       6       2       6     186       0
+  Oligo.07          0       0       0       1       3       6     290       0
+  Oligo.08          0       0       0      23       9       2      11       0
+  Oligo.09          0       1       0       1       1       1      23       0
+  Oligo.10_QC       0       0       1       0       0       0      11       0
+  Oligo.11_QC       0       0       0      37      13       1       1       0
+  OPC.1             0       0       0       1       3       2       4       0
+  OPC.2             0       1       0       0       1       3     524       0
+  OPC.3             0       0       0       2       0       0       0       0
+  OPC.4             0       0       0       1       1       0       0       0
+             
+              Oligo.6_QC Oligo.7_QC OPC.1 OPC.2 OPC.3_QC VLMC.1
+  Astro.01             0          0     2     0        0     21
+  Astro.02           132         41     4     8        0      0
+  Astro.03             0          0    16     1        0     22
+  Astro.04             0          0     0     0        0      1
+  Astro.05           153         99     0     0        0      0
+  Astro.06_QC         28         39     0     0        0      0
+  Astro.07_QC          0          0    75     0       44      3
+  Astro.08_QC          0          0     0     0        0      0
+  Astro.09_QC          0          0     0     0        0      0
+  Astro.10_QC          0          0     0     0        0      0
+  Astro.11_QC          0          0     0     0        0      0
+  Endo.1               0          0     0     1        0    273
+  Endo.2               0          0     0     0        0      5
+  Endo.3               0          0     1     0        0    274
+  Endo.4               0          0     0     0        0    198
+  Endo.5               0          0     0     0        0     97
+  Endo.6               0          0     0     0        0     45
+  Endo.7               0          0     0     0        0     33
+  Micro.1              0          0     0     0        0      1
+  Micro.2              7          0     0     1        0      0
+  Micro.3              0          0     0     0        0      1
+  Micro.4              0          0     0     0        0      0
+  Micro.5              2          0     0     2        0      0
+  Micro.6              0          0     0     0        0      0
+  Micro.7_QC           9         93     0     0        0      0
+  Micro.8_QC           0          0    10     2        0      0
+  Oligo.01             0          0     6     1        0     12
+  Oligo.02             0          0     0     0        0     11
+  Oligo.03          2748       1066     1     7        0      2
+  Oligo.04            38          0     1     2        0      2
+  Oligo.05           395        130     3     5        0     13
+  Oligo.06            22          8     1     2        0      0
+  Oligo.07            84         37     3    25        0      0
+  Oligo.08             0          0     3     2        0      0
+  Oligo.09             0          0     1     0        0     15
+  Oligo.10_QC         76        229     0     0        0      0
+  Oligo.11_QC          0          0    47     9        0      9
+  OPC.1                0          0  4302   466        4      7
+  OPC.2               22          1  1447  2002        0      2
+  OPC.3                0          0  3704    40      137     13
+  OPC.4                0          0  1914    24        9      5
+Concordance rand score: 0.480551885576167
+2025-05-12 17:42:35.135758 - Plot lit marker genes
+Rows: 59 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
 chr (4): gene_name, cell_type, studies, cell_type_broad
@@ -243,8 +416,6 @@ dbl (1): n_studies
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-NULL
-Using gene_name as gene names
 $Astro
 
 $`choroid plexis`
@@ -273,58 +444,39 @@ $Pericytes
 
 $`T-cells`
 
+$Vascu
+
 null device 
           1 
-`summarise()` has grouped output by 'k10'. You can override using the `.groups`
-argument.
-Joining with `by = join_by(k10)`
-Joining with `by = join_by(k10, passALL_metricQC)`
-2025-05-08 09:36:44.38525Sctype data
-2025-05-08 09:36:45.268267- sctype es.max
-[1]    24 98669
-2025-05-08 09:40:17.751433- sctype score
-# A tibble: 28 × 5
-# Groups:   cluster [28]
-   cluster sctype                          scores ncells confident
-   <chr>   <chr>                            <dbl>  <int> <lgl>    
- 1 glia.01 Oligodendrocytes                96198.  13450 TRUE     
- 2 glia.02 Astrocytes                      81594.  12111 TRUE     
- 3 glia.03 Oligodendrocyte precursor cells 92489.  11541 TRUE     
- 4 glia.04 Oligodendrocytes                70166.  10192 TRUE     
- 5 glia.05 Oligodendrocytes                63703.  10185 TRUE     
- 6 glia.06 Microglial cells                32592.   6587 TRUE     
- 7 glia.07 Oligodendrocytes                20760.   6403 TRUE     
- 8 glia.08 Astrocytes                      28860.   4576 TRUE     
- 9 glia.09 Microglial cells                20259.   4453 TRUE     
-10 glia.10 Astrocytes                      19198.   3321 TRUE     
-# ℹ 18 more rows
-2025-05-08 09:40:17.887962 - Running Spatial Registration on: glia - cell_type_k10
-2025-05-08 09:40:18.08412 make pseudobulk object
-2025-05-08 09:57:02.793692 dropping 93 pseudo-bulked samples that are below 'min_ncells'.
-2025-05-08 09:57:02.915717 drop lowly expressed genes
-2025-05-08 09:57:03.446745 normalize expression
-2025-05-08 09:57:10.535894 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/26_sn_subtype_check/glia/sce_pseudobulk_subtype-glia_k10.rds
-2025-05-08 09:57:16.433545 create model matrix
-2025-05-08 09:57:16.503667 run duplicateCorrelation()
-2025-05-08 10:00:15.559225 The estimated correlation is: 0.0876798842503769
-2025-05-08 10:00:15.575252 computing enrichment statistics
-2025-05-08 10:00:57.51267 extract and reformat enrichment results
-2025-05-08 10:00:57.607052 running the baseline pairwise model
-2025-05-08 10:01:00.157614 computing pairwise statistics
-2025-05-08 10:01:03.106028 computing F-statistics
-2025-05-08 10:01:05.705323 - Saving Data
+2025-05-12 17:53:06.379311 - Jaccard matrix heatmap
+[1] TRUE
+[1] TRUE
+null device 
+          1 
+2025-05-12 17:53:07.275814 - Running Spatial Registration on: subcluster
+2025-05-12 17:53:07.731937 make pseudobulk object
+2025-05-12 18:30:44.370114 dropping 225 pseudo-bulked samples that are below 'min_ncells'.
+2025-05-12 18:30:44.550132 drop lowly expressed genes
+2025-05-12 18:30:46.278795 normalize expression
+2025-05-12 18:30:54.068486 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/27_sn_gila_check/sce_pseudobulk_subtype_subcluster.rds
+2025-05-12 18:31:02.998863 create model matrix
+2025-05-12 18:31:03.052541 run duplicateCorrelation()
+2025-05-12 18:36:36.255029 The estimated correlation is: 0.0680618578878853
+2025-05-12 18:36:36.260765 computing enrichment statistics
+2025-05-12 18:38:31.07858 extract and reformat enrichment results
+2025-05-12 18:38:31.261021 running the baseline pairwise model
+2025-05-12 18:38:35.695974 computing pairwise statistics
+2025-05-12 18:38:46.797117 computing F-statistics
+2025-05-12 18:38:51.338597 - Saving Data
 sestan_EC
 snDLPFC_PEC
-Joining with `by = join_by(k10, passALL_metricQC, metric_fail, cell_type_k10)`
-Joining with `by = join_by(cell_type_k10)`
-Joining with `by = join_by(cell_type_k10)`
 [1] "Reproducibility information:"
-[1] "2025-05-08 10:01:19 EDT"
+[1] "2025-05-12 18:39:12 EDT"
     user   system  elapsed 
-1517.241   23.595 1674.719 
+3251.270   65.483 3424.845 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88189)
+ version  R version 4.4.3 Patched (2025-02-28 r88197)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -332,7 +484,7 @@ Joining with `by = join_by(cell_type_k10)`
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-08
+ date     2025-05-12
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -360,7 +512,7 @@ Joining with `by = join_by(cell_type_k10)`
  bit64                  4.6.0-1   2025-01-16 [2] CRAN (R 4.4.2)
  bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.4.1)
  blob                   1.2.4     2023-03-17 [2] CRAN (R 4.4.0)
- bluster                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ bluster              * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.4.2)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.4.0)
  Cairo                  1.6-2     2023-11-28 [2] CRAN (R 4.4.0)
@@ -370,7 +522,7 @@ Joining with `by = join_by(cell_type_k10)`
  cluster                2.1.8     2024-12-11 [3] CRAN (R 4.4.3)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.4.3)
  colorspace             2.1-1     2024-07-26 [2] CRAN (R 4.4.1)
- ComplexHeatmap         2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ ComplexHeatmap       * 2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  config                 0.3.2     2023-08-30 [2] CRAN (R 4.4.0)
  cowplot                1.1.3     2024-01-22 [2] CRAN (R 4.4.0)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.4.1)
@@ -395,12 +547,11 @@ Joining with `by = join_by(cell_type_k10)`
  foreach                1.5.2     2022-02-02 [2] CRAN (R 4.4.0)
  fs                     1.6.6     2025-04-12 [2] CRAN (R 4.4.3)
  gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.4.0)
- generics               0.1.3     2022-07-05 [2] CRAN (R 4.4.0)
+ generics               0.1.4     2025-05-09 [2] CRAN (R 4.4.3)
  GenomeInfoDb         * 1.42.3    2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13    2024-10-01 [2] Bioconductor
  GenomicAlignments      1.42.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  GenomicRanges        * 1.58.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- getopt               * 1.20.4    2023-10-01 [1] CRAN (R 4.4.2)
  GetoptLong             1.0.5     2020-12-15 [2] CRAN (R 4.4.0)
  ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.4.0)
  ggplot2              * 3.5.2     2025-04-09 [2] CRAN (R 4.4.3)
@@ -413,7 +564,6 @@ Joining with `by = join_by(cell_type_k10)`
  gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.4.2)
  HDF5Array            * 1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.4.0)
- HGNChelper           * 0.8.15    2024-11-16 [1] CRAN (R 4.4.2)
  hms                    1.1.3     2023-03-21 [2] CRAN (R 4.4.0)
  htmltools              0.5.8.1   2024-04-04 [2] CRAN (R 4.4.0)
  htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.4.0)
@@ -445,7 +595,6 @@ Joining with `by = join_by(cell_type_k10)`
  metapod                1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
  nlme                   3.1-167   2025-01-27 [3] CRAN (R 4.4.3)
- openxlsx               4.2.8     2025-01-25 [1] CRAN (R 4.4.2)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
  pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
@@ -456,7 +605,6 @@ Joining with `by = join_by(cell_type_k10)`
  purrr                * 1.0.4     2025-02-05 [2] CRAN (R 4.4.2)
  R6                     2.6.1     2025-02-15 [2] CRAN (R 4.4.2)
  rafalib              * 1.0.4     2025-04-08 [1] CRAN (R 4.4.3)
- ragg                   1.4.0     2025-04-10 [2] CRAN (R 4.4.3)
  rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.4.0)
  RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.4.0)
  Rcpp                   1.0.14    2025-01-12 [2] CRAN (R 4.4.2)
@@ -492,13 +640,10 @@ Joining with `by = join_by(cell_type_k10)`
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment    * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  spatialLIBD          * 1.21.3    2025-04-24 [1] Github (LieberInstitute/spatialLIBD@3b5964f)
- splitstackshape        1.4.8     2019-04-21 [1] CRAN (R 4.4.2)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.4.3)
  stringr              * 1.5.1     2023-11-14 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- systemfonts            1.2.3     2025-04-30 [2] CRAN (R 4.4.3)
- textshaping            1.0.1     2025-05-01 [2] CRAN (R 4.4.3)
  tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
  tidyr                * 1.3.1     2024-01-24 [2] CRAN (R 4.4.0)
  tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.4.0)
@@ -517,7 +662,6 @@ Joining with `by = join_by(cell_type_k10)`
  xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.4.0)
  XVector                0.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  yaml                   2.3.10    2024-07-26 [2] CRAN (R 4.4.1)
- zip                    2.3.2     2025-02-01 [2] CRAN (R 4.4.2)
  zlibbioc               1.52.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
 
  [1] /users/lhuuki/R/4.4.x
@@ -527,4 +671,4 @@ Joining with `by = join_by(cell_type_k10)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu May  8 10:01:20 AM EDT 2025
+Mon May 12 06:39:13 PM EDT 2025
