@@ -253,9 +253,21 @@ ct_cluster_info2 <- ct_cluster_info |> left_join(anno_summary |> rename(cell_typ
 write_csv(ct_cluster_info2, file = here(data_dir, "ERCsn_glia_subcluster_info.csv"))
 
 ct_cluster_info2 |> 
-    group_by(cell_type_broad) |> 
-    summarise(n_cluster = sum(passALL_metricQC),
-              n_QC = sum(!passALL_metricQC))
+    # group_by(cell_type_broad, passALL_metricQC) |> 
+    # group_by(passALL_metricQC) |>
+    filter(passALL_metricQC) |>
+    group_by(cell_type_broad) |>
+    summarise(n_cluster = n(),
+              n_nuclei = sum(n))
+
+glia_cluster_info |> 
+    mutate(cell_type_broad = ss(anno,"\\.")) |>
+    # group_by(passALL_metricQC) |> 
+    # group_by(cell_type_broad, passALL_metricQC) |> 
+    filter(passALL_metricQC) |> 
+    group_by(cell_type_broad) |>
+    summarise(n_cluster = n(),
+              n_nuclei = sum(n))
 
 # slurmjobs::job_single(name = "27_sn_glia_check", memory = "50G", command = "Rscript 27_sn_glia_check.R", create_shell = TRUE)
 
