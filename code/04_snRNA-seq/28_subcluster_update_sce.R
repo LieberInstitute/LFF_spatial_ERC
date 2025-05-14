@@ -1,5 +1,5 @@
-## Louise Huuki-Myers, March 2025
-## Add cluster data to sce object, explore and annotate clusters
+## Louise Huuki-Myers, May 2025
+## Add sub-cluster data to sce object, explore and annotate clusters
 
 library("SingleCellExperiment")
 library("jaffelab")
@@ -17,64 +17,92 @@ library("readxl")
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "15_cluster_update_sce")
+plot_dir <- here("plots", "04_snRNA-seq", "28_subcluster_update_sce")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "15_cluster_update_sce")
+data_dir <- here("processed-data", "04_snRNA-seq", "28_subcluster_update_sce")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F sce
 message(Sys.time(), "- load Harmony corrected sce")
-sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_reprocess"))
+sce <- loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
 sce
 
-## clean up colData
-colData(sce) <- colData(sce)[,!grepl("snn|ct_", colnames(colData(sce)))]
+colnames(colData(sce))
 
-## fix missing Rin value
-# Br5832 Rin=8.4 
-sce$Rin[sce$sample_id == "Br5832"] <- 8.4
+#### Update Ancestry data ####
+## updated FLARE data from Feb 2025
+load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.Rdata"), verbose = TRUE)
 
-#### Add optimal cluster output ####
-optimal_k = 13
-message("Load optimal clusters from K=", optimal_k)
-load(here("processed-data", "04_snRNA-seq", "11_cluster_sn", sprintf("walktrap_snn_k%d_clusters.Rdata", optimal_k)), verbose = TRUE)
-# clusters
+samples_ancestry <- samples_ancestry |> column_to_rownames("BrNum")
 
-sce$snn_kOpt <- sprintf("k%dc%02d", optimal_k, clusters)
+sce$Anc_Afr <- samples_ancestry[sce$sample_id, "Afr"]
+sce$Anc_Eur <- samples_ancestry[sce$sample_id, "Eur"]
 
-#### load sc-type output ####
-load(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-sctype.Rdata"), verbose = TRUE)
+#### Add glia sub-clustering data ####
 
-anno_notes <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "13_sctype_final", "sctype_final-NOTES.xlsx"))
+glia_cell_types <- c("Astro", "Endo", "Micro", "Oligo", "OPC")
+names(glia_cell_types) <- glia_cell_types
 
-#sctype
-table(sctype$cell_type_broad)
+sce$glia_subcluster <- NA
 
-anno_table <- sctype |> 
-    ungroup() |>
-    select(-cell_type_broad) |>
-    left_join(anno_notes |> select(cluster, cell_type_broad, cell_type_anno = guess)) |>
-    mutate(cell_type_broad = factor(cell_type_broad, levels = levels(sctype$cell_type_broad))) |>
-    select(cluster, cell_type_class, cell_type_broad, cell_type_fine, cell_type_anno) |>
-    column_to_rownames("cluster")
+glia_subcluster_info <- map_dfr(glia_cell_types, function(ct){
+    ## load clusters
+    cluster_fn <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", ct, sprintf("walktrap_snn_k10_subclusters_%s.Rdata", ct))
+    load(cluster_fn)
+    
+    ## load cluster info
+    ct_cluster_info <- read_csv(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", ct , sprintf("ERCsn_subtype_clustering_info-%s_k10.csv", ct)),
+                                show_col_types = FALSE) |>
+        mutate(cell_type_broad = ct)
+    
+    anno_table <- ct_cluster_info |> select(k10, cell_type_k10) |> column_to_rownames("k10")
+    
+    sce[,sce$cell_type_broad == ct]$glia_subcluster <<- anno_table[paste0("k", clusters),]
+    
+    return(ct_cluster_info)
+})
 
-cell_type_anno_levels <- anno_table |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno)
+table(sce$glia_subcluster)
+table(sce$glia_subcluster, sce$cell_type_class)
 
-anno_table$cell_type_broad <- droplevels(anno_table$cell_type_broad)
-anno_table$cell_type_anno <- factor(anno_table$cell_type_anno, levels = cell_type_anno_levels)
+#### Update cell_type_anno ####
 
-levels(anno_table$cell_type_broad)
-levels(anno_table$cell_type_fine)
-levels(anno_table$cell_type_anno)
+sce$cell_type_anno_r1 <- sce$cell_type_anno
+sce$cell_type_broad_r1 <- sce$cell_type_broad
 
-anno_table <- anno_table[sce$snn_kOpt,]
+## unfactor
+sce$cell_type_anno <- as.character(sce$cell_type_anno)
+sce$cell_type_broad <- as.character(sce$cell_type_broad)
+
+## read in sub-cluster annotations
+subcluster_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27_sn_gila_check","ERCsn_glia_subcluster_info_anno.xlsx"))
+
+anno_table <- subcluster_anno |> 
+    select(cell_type_k10, cell_type_broad, cell_type_anno) |>
+    column_to_rownames("cell_type_k10")
+
+# cell_type_anno_levels <- anno_table |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno)
+# 
+# anno_table$cell_type_broad <- droplevels(anno_table$cell_type_broad)
+# anno_table$cell_type_anno <- factor(anno_table$cell_type_anno, levels = cell_type_anno_levels)
+# 
+# levels(anno_table$cell_type_broad)
+# levels(anno_table$cell_type_fine)
+# levels(anno_table$cell_type_anno)
+
+anno_table <- anno_table[sce[,sce$cell_type_class == "glia"]$glia_subcluster,]
 dim(anno_table)
 
-#### annotation notes ####
+nrow(anno_table) == ncol(sce[,sce$cell_type_class == "glia"])
 
 ## add to colData
-colData(sce) <- cbind(colData(sce), anno_table)
+sce[,sce$cell_type_class == "glia"]$cell_type_broad <- anno_table$cell_type_broad
+sce[,sce$cell_type_class == "glia"]$cell_type_anno <- anno_table$cell_type_anno
+
+table(sce$cell_type_broad, sce$cell_type_broad_r1)
+table(sce$cell_type_anno, sce$cell_type_anno_r1)
+
 
 #### Define colors for fine cell types ####
 cell_type_colors <- DeconvoBuddies::create_cell_colors(cell_types = levels(sctype$cell_type_fine),
@@ -486,7 +514,7 @@ message(Sys.time(), " - Save annotated sce")
 # save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
 saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC"), replace=TRUE)
 
-# slurmjobs::job_single('15_cluster_update_sce', create_shell = TRUE, memory = '10G', command = "15_cluster_update_sce.R")
+# slurmjobs::job_single('28_subcluster_update_sce', create_shell = TRUE, memory = '10G', command = "28_subcluster_update_sce.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

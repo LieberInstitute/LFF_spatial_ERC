@@ -17,7 +17,10 @@ cell_type_colors <- c(Excit = "#247FBC",
                       OPC = "#D2B037",
                       Astro = "#3BB273",
                       Micro = "#663894",
+                      Macro = "#79354E",
                       Endo = "#FF56AF",
+                      # PC = "#DE289E",
+                      # VLMC = "#DA5FE8",
                       Other = "#4E586A")
 
 ## plot official colors
