@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, May 2025
-## Compare gilal subtype outputs
+## Compare gilal re-clustering and glial sub-clustering results
 
 ## Required libraries
 library("here")
