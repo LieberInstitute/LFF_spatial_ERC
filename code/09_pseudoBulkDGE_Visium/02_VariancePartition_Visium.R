@@ -61,12 +61,12 @@ dev.off()
 
 my_forms <- list(
     carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    apoe = ~ APOE + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
+    apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
     e4e4_i = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
     # interaction syntax x + (x | g)
     carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    e4e4r_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
+    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
+    e4e4r_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
 )
 
 varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name){
