@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue May  6 02:28:25 PM EDT 2025
+Thu May 15 10:55:43 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16510469
+Job id: 16607491
 Job name: 02_VariancePartition_Visium
-Node name: compute-120
+Node name: compute-149
 Task id: 4
 Loading conda_R/4.4.x
 
@@ -141,7 +141,7 @@ Subset to LD_Sp09D09 - 30494 spots
 
 FALSE  TRUE 
    24     7 
-2025-05-06 14:28:42.028032 - canCorPairs
+2025-05-15 10:56:00.139414 - canCorPairs
 Warning message:
 In canCorPairs(form, pd) : Regression model may be problematic.
 High colinearity between variables:
@@ -160,34 +160,50 @@ High colinearity between variables:
   Visium_slide and round
 null device 
           1 
-2025-05-06 14:28:42.21116 - VarPart: global
+2025-05-15 10:56:00.317309 - VarPart: carrier
+filter genes:0
 Saving 7 x 7 in image
-2025-05-06 14:39:18.601125 - VarPart: carrier_i
+2025-05-15 11:05:30.399177 - VarPart: apoe
+filter genes:0
 Saving 7 x 7 in image
-2025-05-06 14:54:01.63082 - VarPart: numeric_i
+2025-05-15 11:16:17.406034 - VarPart: e4e4
+filter genes:0
 Saving 7 x 7 in image
-2025-05-06 15:04:34.631651 - VarPart: e4e4_i
+2025-05-15 11:26:42.760208 - VarPart: carrier_i
+filter genes:0
+Saving 7 x 7 in image
+2025-05-15 11:37:22.57748 - VarPart: apoe_i
+filter genes:0
+Saving 7 x 7 in image
+2025-05-15 11:49:37.870696 - VarPart: e4e4_i
+filter genes:0
 Saving 7 x 7 in image
 Warning messages:
 1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 5327 responses.
   See errors with attr(., 'errors')
 2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 6595 responses.
-  See errors with attr(., 'errors')
-3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 5327 responses.
   See errors with attr(., 'errors')
+3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 5328 responses.
+  See errors with attr(., 'errors')
 4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 5571 responses.
+  Model failed for 5327 responses.
+  See errors with attr(., 'errors')
+5: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 5367 responses.
+  See errors with attr(., 'errors')
+6: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 5396 responses.
   See errors with attr(., 'errors')
 [1] "Reproducibility information:"
-[1] "2025-05-06 15:17:56 EDT"
+[1] "2025-05-15 12:01:20 EDT"
     user   system  elapsed 
-2926.478   15.928 2970.697 
+3894.929   16.758 3936.320 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88189)
+ version  R version 4.4.3 Patched (2025-02-28 r88203)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -195,7 +211,7 @@ Warning messages:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-06
+ date     2025-05-15
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -242,7 +258,7 @@ Warning messages:
  cowplot                1.1.3      2024-01-22 [2] CRAN (R 4.4.0)
  crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.4.1)
  curl                   6.2.2      2025-03-24 [2] CRAN (R 4.4.3)
- data.table             1.17.0     2025-02-22 [2] CRAN (R 4.4.3)
+ data.table             1.17.2     2025-05-12 [2] CRAN (R 4.4.3)
  DBI                    1.2.3      2024-06-02 [2] CRAN (R 4.4.0)
  dbplyr                 2.5.0      2024-03-19 [2] CRAN (R 4.4.0)
  DelayedArray           0.32.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -260,7 +276,7 @@ Warning messages:
  filelock               1.0.3      2023-12-11 [2] CRAN (R 4.4.0)
  forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.4.0)
  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.4.0)
- generics               0.1.3      2022-07-05 [2] CRAN (R 4.4.0)
+ generics               0.1.4      2025-05-09 [2] CRAN (R 4.4.3)
  GenomeInfoDb         * 1.42.3     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13     2024-10-01 [2] Bioconductor
  GenomicAlignments      1.42.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -392,4 +408,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue May  6 03:17:57 PM EDT 2025
+Thu May 15 12:01:21 PM EDT 2025
