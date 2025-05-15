@@ -66,12 +66,17 @@ my_forms <- list(
     # interaction syntax x + (x | g)
     carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
     apoe_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    e4e4r_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
+    e4e4r_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio
 )
 
 varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name){
     
     message(Sys.time(), " - VarPart: ", form_name)
+    
+    ## filter genes?
+    gkeep <- edgeR::filterByExpr(spe_pb, design=form, group=spe_pb$APOE)
+    message("filter genes:", nrow(spe_pb) - length(gkeep))
+    
     varPart <- fitExtractVarPartModel(logcounts(spe_pb), form, pd)
     
     varPart_summary <- as.data.frame(apply(varPart, 2, summary)) |>
