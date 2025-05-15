@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon May 12 05:42:07 PM EDT 2025
+Thu May 15 09:51:30 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16568488
+Job id: 16606984
 Job name: 27_sn_glia_check
-Node name: compute-158
+Node name: compute-166
 Task id: 
 Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
@@ -177,8 +177,8 @@ This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 
-2025-05-12 17:42:20.73562 - Load HDF5 sce
-2025-05-12 17:42:27.664072 - Subset to glia, ncells = 98669
+2025-05-15 09:51:43.803705 - Load HDF5 sce
+2025-05-15 09:51:51.440338 - Subset to glia, ncells = 98669
 Loading objects:
   cell_type_colors
 Loading objects:
@@ -187,7 +187,7 @@ Loading objects:
   APOE_genotype_colors
   APOE_carrier_colors
   sample_colors
-2025-05-12 17:42:27.681934 - Add cluster info
+2025-05-15 09:51:51.445075 - Add cluster info
 [1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/25_sn_cluster_subtype/glia/walktrap_snn_k10_subclusters_glia.Rdata"
 Loading objects:
   clusters
@@ -406,8 +406,25 @@ Oligo.11_QC       OPC.1       OPC.2       OPC.3       OPC.4
   OPC.2               22          1  1447  2002        0      2
   OPC.3                0          0  3704    40      137     13
   OPC.4                0          0  1914    24        9      5
+# A tibble: 9 × 15
+  k10       n passALL_metricQC metric_fail        rank cell_type_k10 median_sum
+  <chr> <dbl> <lgl>            <chr>             <dbl> <chr>              <dbl>
+1 k7       81 FALSE            scDblFinder.score     8 Astro.08_QC       26876 
+2 k1       47 FALSE            detected,sum          9 Astro.09_QC         585 
+3 k5       47 FALSE            scDblFinder.score    10 Astro.10_QC       53380 
+4 k11      22 FALSE            detected,sum         11 Astro.11_QC         859 
+5 k2      147 TRUE             <NA>                  5 Endo.5             6357 
+6 k4       65 TRUE             <NA>                  6 Endo.6             7613 
+7 k6       41 TRUE             <NA>                  7 Endo.7             7117 
+8 k2      124 FALSE            scDblFinder.score     8 Micro.8_QC         7586.
+9 k6      118 FALSE            scDblFinder.score    11 Oligo.11_QC        8577 
+# ℹ 8 more variables: median_detected <dbl>, median_Mito_percent <dbl>,
+#   median_scDblFinder.score <dbl>, sctype <chr>, sestan_EC <chr>,
+#   snDLPFC_PEC <chr>, cell_type_broad <chr>, DGE_compat <lgl>
 Concordance rand score: 0.480551885576167
-2025-05-12 17:42:35.135758 - Plot lit marker genes
+Creating classic pallet for broad 5 cell types
+Creating fine cell type gradients for 5 cell types
+2025-05-15 09:51:58.850041 - Plot lit marker genes
 Rows: 59 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -448,35 +465,54 @@ $Vascu
 
 null device 
           1 
-2025-05-12 17:53:06.379311 - Jaccard matrix heatmap
+2025-05-15 10:02:59.013779 - Jaccard matrix heatmap
 [1] TRUE
 [1] TRUE
 null device 
           1 
-2025-05-12 17:53:07.275814 - Running Spatial Registration on: subcluster
-2025-05-12 17:53:07.731937 make pseudobulk object
-2025-05-12 18:30:44.370114 dropping 225 pseudo-bulked samples that are below 'min_ncells'.
-2025-05-12 18:30:44.550132 drop lowly expressed genes
-2025-05-12 18:30:46.278795 normalize expression
-2025-05-12 18:30:54.068486 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/27_sn_gila_check/sce_pseudobulk_subtype_subcluster.rds
-2025-05-12 18:31:02.998863 create model matrix
-2025-05-12 18:31:03.052541 run duplicateCorrelation()
-2025-05-12 18:36:36.255029 The estimated correlation is: 0.0680618578878853
-2025-05-12 18:36:36.260765 computing enrichment statistics
-2025-05-12 18:38:31.07858 extract and reformat enrichment results
-2025-05-12 18:38:31.261021 running the baseline pairwise model
-2025-05-12 18:38:35.695974 computing pairwise statistics
-2025-05-12 18:38:46.797117 computing F-statistics
-2025-05-12 18:38:51.338597 - Saving Data
+2025-05-15 10:02:59.972311 - Load modeling data
+ [1] "t_stat_L1~Sp09D05"     "t_stat_L2.3~Sp09D01"   "t_stat_L3~Sp09D02"    
+ [4] "t_stat_L5~Sp09D03"     "t_stat_L6~Sp09D04"     "t_stat_LD~Sp09D09"    
+ [7] "t_stat_Vasc~Sp09D08"   "t_stat_WM~Sp09D06"     "t_stat_WM.uf~Sp09D07" 
+[10] "p_value_L1~Sp09D05"    "p_value_L2.3~Sp09D01"  "p_value_L3~Sp09D02"   
+[13] "p_value_L5~Sp09D03"    "p_value_L6~Sp09D04"    "p_value_LD~Sp09D09"   
+[16] "p_value_Vasc~Sp09D08"  "p_value_WM~Sp09D06"    "p_value_WM.uf~Sp09D07"
+[19] "fdr_L1~Sp09D05"        "fdr_L2.3~Sp09D01"      "fdr_L3~Sp09D02"       
+[22] "fdr_L5~Sp09D03"        "fdr_L6~Sp09D04"        "fdr_LD~Sp09D09"       
+[25] "fdr_Vasc~Sp09D08"      "fdr_WM~Sp09D06"        "fdr_WM.uf~Sp09D07"    
+[28] "logFC_L1~Sp09D05"      "logFC_L2.3~Sp09D01"    "logFC_L3~Sp09D02"     
+[31] "logFC_L5~Sp09D03"      "logFC_L6~Sp09D04"      "logFC_LD~Sp09D09"     
+[34] "logFC_Vasc~Sp09D08"    "logFC_WM~Sp09D06"      "logFC_WM.uf~Sp09D07"  
+[37] "ensembl"               "gene"                 
 sestan_EC
 snDLPFC_PEC
+spatialERC
+Joining with `by = join_by(cell_type_k10)`
+# A tibble: 5 × 3
+  cell_type_broad n_cluster n_nuclei
+  <chr>               <int>    <dbl>
+1 Astro                   5    21284
+2 Endo                    7     1448
+3 Micro                   6    12602
+4 OPC                     4    14717
+5 Oligo                   9    45901
+# A tibble: 7 × 3
+  cell_type_broad n_cluster n_nuclei
+  <chr>               <int>    <dbl>
+1 Astro                   4    20593
+2 Endo                    2      739
+3 Excit                   2      700
+4 Micro                   3    13289
+5 OPC                     2    14141
+6 Oligo                   5    40844
+7 VLMC                    1     1065
 [1] "Reproducibility information:"
-[1] "2025-05-12 18:39:12 EDT"
-    user   system  elapsed 
-3251.270   65.483 3424.845 
+[1] "2025-05-15 10:03:16 EDT"
+   user  system elapsed 
+621.398   8.692 705.204 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88197)
+ version  R version 4.4.3 Patched (2025-02-28 r88203)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -484,7 +520,7 @@ snDLPFC_PEC
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-12
+ date     2025-05-15
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -527,7 +563,7 @@ snDLPFC_PEC
  cowplot                1.1.3     2024-01-22 [2] CRAN (R 4.4.0)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.4.1)
  curl                   6.2.2     2025-03-24 [2] CRAN (R 4.4.3)
- data.table             1.17.0    2025-02-22 [2] CRAN (R 4.4.3)
+ data.table             1.17.2    2025-05-12 [2] CRAN (R 4.4.3)
  DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.4.0)
  dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.4.0)
  DeconvoBuddies       * 0.99.10   2025-01-30 [1] Github (LieberInstitute/DeconvoBuddies@0d76b63)
@@ -671,4 +707,4 @@ snDLPFC_PEC
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon May 12 06:39:13 PM EDT 2025
+Thu May 15 10:03:16 AM EDT 2025
