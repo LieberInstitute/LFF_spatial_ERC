@@ -34,6 +34,16 @@ colnames(colData(spe))
 colData(spe) <- colData(spe)[,!grepl("Markers", colnames(colData(spe)))]
 colData(spe)$BayesSpace_SVGm_k09_anno <- NULL
 
+#### Update Ancestry data ####
+## updated FLARE data from Feb 2025
+load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.Rdata"), verbose = TRUE)
+
+samples_ancestry <- samples_ancestry |> column_to_rownames("BrNum")
+
+spe$Anc_Afr <- samples_ancestry[spe$sample_id, "Afr"]
+spe$Anc_Eur <- samples_ancestry[spe$sample_id, "Eur"]
+
+
 #### load SpD annotations ####
 spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_Annotations.xlsx"))
 
