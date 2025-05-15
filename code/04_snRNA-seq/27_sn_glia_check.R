@@ -53,26 +53,42 @@ names(glia_cell_types) <- glia_cell_types
 
 sce$glia_subcluster <- NA
 
-ct_cluster_info <- map_dfr(glia_cell_types, function(ct){
+subcluster_info <- map_dfr(glia_cell_types, function(ct){
     ## load clusters
     cluster_fn <- here("processed-data", "04_snRNA-seq", "25_sn_cluster_subtype", ct, sprintf("walktrap_snn_k10_subclusters_%s.Rdata", ct))
     load(cluster_fn)
     
     ## load cluster info
-    ct_cluster_info <- read_csv(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", ct , sprintf("ERCsn_subtype_clustering_info-%s_k10.csv", ct)),
+    subcluster_info <- read_csv(here("processed-data", "04_snRNA-seq", "26_sn_subtype_check", ct , sprintf("ERCsn_subtype_clustering_info-%s_k10.csv", ct)),
                                 show_col_types = FALSE) |>
         mutate(cell_type_broad = ct)
     
-    anno_table <- ct_cluster_info |> select(k10, cell_type_k10) |> column_to_rownames("k10")
+    anno_table <- subcluster_info |> select(k10, cell_type_k10) |> column_to_rownames("k10")
     
     sce[,sce$cell_type_broad == ct]$glia_subcluster <<- anno_table[paste0("k", clusters),]
 
-    return(ct_cluster_info)
+    return(subcluster_info)
 })
 
 table(sce$glia_subcluster)
 
 table(sce$glia_subcluster, sce$glia_subtype)
+
+#### DE compat check ####
+
+de_compat <- colData(sce) |>
+    as.data.frame() |>
+    count(glia_subcluster, sample_id, APOE_carrier) |>
+    filter(n >= 10) |> ## 10 or more nuc
+    count(glia_subcluster, APOE_carrier) |>
+    filter(n >=2) |> ## 2 or more donors
+    count(glia_subcluster) |>
+    filter(n >=2) |> ## in both APOE groups
+    pull(glia_subcluster)
+
+subcluster_info <- subcluster_info |> mutate(DGE_compat = cell_type_k10 %in% de_compat)
+
+subcluster_info |> filter(!DGE_compat)
 
 ## calc concordance
 message("Concordance rand score: ", bluster::pairwiseRand(sce$glia_subcluster, sce$glia_subtype, mode = "index"))
@@ -111,7 +127,7 @@ message(Sys.time(), " - Jaccard matrix heatmap")
 jacc.mat <- linkClustersMatrix(sce$glia_subcluster, sce$glia_subtype)
 
 ## subcluster annotation
-subcluster_anno <- ct_cluster_info |>
+subcluster_anno <- subcluster_info |>
     select(cell_type_k10, metric_fail, cell_type_broad, n) |>
     column_to_rownames("cell_type_k10")
 
@@ -206,6 +222,11 @@ layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq
 layer_modeling_results$snDLPFC_PEC <- list()
 layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
 
+## Spatial ERC
+layer_modeling_results$spatialERC <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+colnames(layer_modeling_results$spatialERC$enrichment) <- gsub("_Sp", "~Sp", colnames(layer_modeling_results$spatialERC$enrichment))
+colnames(layer_modeling_results$spatialERC$enrichment) 
+
 #### correlate layer stats ####
 cor_layer <- map(layer_modeling_results, function(layer_mod){
     cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
@@ -248,11 +269,11 @@ walk(names(cor_layer), function(ref){
     dev.off()
 })
 
-ct_cluster_info2 <- ct_cluster_info |> left_join(anno_summary |> rename(cell_type_k10 = cluster, sestan_EC_c = sestan_EC, snDLPFC_PEC_c = snDLPFC_PEC))
+subcluster_info2 <- subcluster_info |> left_join(anno_summary |> rename(cell_type_k10 = cluster, sestan_EC_c = sestan_EC, snDLPFC_PEC_c = snDLPFC_PEC))
 
-write_csv(ct_cluster_info2, file = here(data_dir, "ERCsn_glia_subcluster_info.csv"))
+write_csv(subcluster_info2, file = here(data_dir, "ERCsn_glia_subcluster_info.csv"))
 
-ct_cluster_info2 |> 
+subcluster_info2 |> 
     # group_by(cell_type_broad, passALL_metricQC) |> 
     # group_by(passALL_metricQC) |>
     filter(passALL_metricQC) |>
