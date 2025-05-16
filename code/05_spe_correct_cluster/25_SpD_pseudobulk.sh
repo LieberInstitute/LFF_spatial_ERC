@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 25_SpD_pseudobulk.R --cluster 'sample_id'
+Rscript 25_SpD_pseudobulk.R --cluster 'SpD'
 
 echo "**** Job ends ****"
 date
