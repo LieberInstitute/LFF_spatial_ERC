@@ -390,20 +390,7 @@ sample_proportion_bar <- sample_proportions |>
 
 ggsave(sample_proportion_bar, filename = here(plot_dir, "ERC_sn_subtype_barplot_sample_prop.png"), width = 10)
 
-## Match the genes
-all(rownames(sce) %in% gtf$gene_id)
-
-match_genes <- match(rownames(sce), gtf$gene_id)
-stopifnot(all(!is.na(match_genes)))
-
-## Keep only some columns from the gtf
-mcols(gtf) <- mcols(gtf)[, c("source", "type", "gene_id", "gene_version", "gene_name", "gene_type")]
-
-## Add the gene info to our SPE object
-rowRanges(sce) <- gtf[match_genes]
-
 #### Add colors to metadata ####
-
 cell_type_colors <- list(broad = c(Astro = "#3BB273",
                                    Macro = "#79354E",
                                    Micro = "#663894",
