@@ -78,18 +78,11 @@ sce$cell_type_broad <- as.character(sce$cell_type_broad)
 ## read in sub-cluster annotations
 subcluster_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27_sn_gila_check","ERCsn_glia_subcluster_info_anno.xlsx"))
 
+table(subcluster_anno$cell_type_anno, subcluster_anno$cell_type_broad)
+
 anno_table <- subcluster_anno |> 
     select(cell_type_k10, cell_type_broad, cell_type_anno) |>
     column_to_rownames("cell_type_k10")
-
-# cell_type_anno_levels <- anno_table |> arrange(cell_type_broad, cell_type_anno) |> pull(cell_type_anno)
-# 
-# anno_table$cell_type_broad <- droplevels(anno_table$cell_type_broad)
-# anno_table$cell_type_anno <- factor(anno_table$cell_type_anno, levels = cell_type_anno_levels)
-# 
-# levels(anno_table$cell_type_broad)
-# levels(anno_table$cell_type_fine)
-# levels(anno_table$cell_type_anno)
 
 anno_table <- anno_table[sce[,sce$cell_type_class == "glia"]$glia_subcluster,]
 dim(anno_table)
@@ -103,27 +96,29 @@ sce[,sce$cell_type_class == "glia"]$cell_type_anno <- anno_table$cell_type_anno
 table(sce$cell_type_broad, sce$cell_type_broad_r1)
 table(sce$cell_type_anno, sce$cell_type_anno_r1)
 
+## update factors
+
+cell_type_levels_broad <- colData(sce) |>
+    as.data.frame() |> 
+    count(cell_type_class, cell_type_broad) |>
+    arrange(cell_type_class, cell_type_broad) |>
+    pull(cell_type_broad)
+
+cell_type_level_tb <- colData(sce) |>
+    as.data.frame() |> 
+    count(cell_type_class, cell_type_broad, cell_type_anno) |>
+    mutate(cell_type_broad = factor(cell_type_broad, levels = cell_type_levels_broad))|>
+    filter(!grepl("QC|ambig", cell_type_anno)) |>
+    arrange(cell_type_broad) 
+
+cat(cell_type_level_tb$cell_type_anno, sep = "\n")
+
+cell_type_levels_anno <- cell_type_levels_broad
 
 #### Define colors for fine cell types ####
-cell_type_colors <- DeconvoBuddies::create_cell_colors(cell_types = levels(sctype$cell_type_fine),
-                                                pallet_name = "classic", 
-                                                split = "\\.")
-# $broad
-# Astro      Endo     Micro     Oligo       OPC     Excit     Inhib       Neu 
-# "#3BB273" "#FF56AF" "#663894" "#F57A00" "#D2B037" "#247FBC" "#E83E38" "#4E586A" 
-# 
-# $fine
-# Astro.1   Astro.2    Endo.1   Micro.1   Micro.2   Oligo.1   Oligo.2   Oligo.3     OPC.1   Excit.1   Excit.2   Excit.3 
-# "#3BB273" "#9DD8B9" "#FF56AF" "#663894" "#B29BC9" "#F57A00" "#F8A655" "#FBD2AA" "#D2B037" "#247FBC" "#3C8DC3" "#549BCA" 
-# Excit.4   Excit.5   Excit.6   Excit.7   Excit.8   Excit.9   Inhib.1   Inhib.2   Inhib.3     Neu.1     Neu.2 
-# "#6DA9D2" "#85B7D9" "#9DC6E1" "#B5D4E8" "#CEE2F0" "#E6F0F7" "#E83E38" "#EF7E7A" "#F7BEBC" "#4E586A" "#A6ABB4" 
 
-# Add annotation colors
-load(here("processed-data","00_project_prep","cell_type_colors_anno.Rdata"), verbose = TRUE)
-cell_type_colors$anno <- cell_type_colors_anno
-
-## save all color output
-save(cell_type_colors, file = here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"))
+# load colors
+load(here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"), verbose = TRUE)
 
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
@@ -131,31 +126,12 @@ message(Sys.time(), " - Plot UMAP + TSNE")
 ## plot annotated clusters
 walk(c("UMAP", "TSNE"),
      ~my_plot_reduced_dim(sce,
-                          prefix = "ERC_sn_reprocess",
-                          var_type = "cat",
-                          dimred = .x,
-                          my_var = "cell_type_broad",
-                          color_pal = cell_type_colors$broad,
-                          suffix = "sctype"))
-
-walk(c("UMAP", "TSNE"),
-     ~my_plot_reduced_dim(sce,
-                          prefix = "ERC_sn_reprocess",
-                          var_type = "cat",
-                          dimred = .x,
-                          my_var = "cell_type_fine",
-                          color_pal = cell_type_colors$fine,
-                          suffix = "sctype"))
-
-walk(c("UMAP", "TSNE"),
-     ~my_plot_reduced_dim(sce,
-                          prefix = "ERC_sn_reprocess",
+                          prefix = "ERC_sn_subcluster",
                           var_type = "cat",
                           dimred = .x,
                           my_var = "cell_type_anno",
-                          color_pal = cell_type_colors$anno,
+                          color_pal = cell_type_colors_anno,
                           suffix = "sctype"))
-
 
 #### plot marker genes ####
 message(Sys.time(), " - Plot marker genes")
