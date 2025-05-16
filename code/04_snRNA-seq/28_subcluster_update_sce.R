@@ -81,44 +81,145 @@ subcluster_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27_sn_gila
 table(subcluster_anno$cell_type_anno, subcluster_anno$cell_type_broad)
 
 anno_table <- subcluster_anno |> 
-    select(cell_type_k10, cell_type_broad, cell_type_anno) |>
+    select(cell_type_k10, cell_type_broad, cell_type_anno, passALL_metricQC) |>
     column_to_rownames("cell_type_k10")
 
 anno_table <- anno_table[sce[,sce$cell_type_class == "glia"]$glia_subcluster,]
 dim(anno_table)
+head(anno_table)
 
 nrow(anno_table) == ncol(sce[,sce$cell_type_class == "glia"])
 
-## add to colData
+## Update colData - cell colors
 sce[,sce$cell_type_class == "glia"]$cell_type_broad <- anno_table$cell_type_broad
 sce[,sce$cell_type_class == "glia"]$cell_type_anno <- anno_table$cell_type_anno
+## Update passALL_metricQC
+sce[,sce$cell_type_class == "glia"]$passALL_metricQC <- anno_table$passALL_metricQC
 
 table(sce$cell_type_broad, sce$cell_type_broad_r1)
 table(sce$cell_type_anno, sce$cell_type_anno_r1)
 
-## update factors
+table(sce$passALL_metricQC)
+# FALSE   TRUE 
+# 2717 122966
 
+## update factors
 cell_type_levels_broad <- colData(sce) |>
     as.data.frame() |> 
     count(cell_type_class, cell_type_broad) |>
     arrange(cell_type_class, cell_type_broad) |>
     pull(cell_type_broad)
 
+sce$cell_type_broad <- factor(sce$cell_type_broad, levels =  cell_type_levels_broad)
+
 cell_type_level_tb <- colData(sce) |>
     as.data.frame() |> 
     count(cell_type_class, cell_type_broad, cell_type_anno) |>
-    mutate(cell_type_broad = factor(cell_type_broad, levels = cell_type_levels_broad))|>
     filter(!grepl("QC|ambig", cell_type_anno)) |>
     arrange(cell_type_broad) 
 
-cat(cell_type_level_tb$cell_type_anno, sep = "\n")
-
-cell_type_levels_anno <- cell_type_levels_broad
+# cat(cell_type_level_tb$cell_type_anno, sep = "\n")
 
 #### Define colors for fine cell types ####
 
 # load colors
 load(here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"), verbose = TRUE)
+
+#### summary by cluster ####
+message(Sys.time(), " - Summarize clusters")
+
+pd <- as.data.frame(colData(sce))
+
+cluster_info <- pd |>
+    group_by(cell_type_class, cell_type_broad, cell_type_anno) |>
+    summarize(n = n(),
+              prop = n/ncol(sce),
+              median_sum = median(sum),
+              median_detected = median(detected),
+              median_Mito_percent = median(subsets_Mito_percent),
+              median_scDblFinder.score = median(scDblFinder.score),
+              passALL_metricQC = all(passALL_metricQC)
+    )
+
+cluster_info |> arrange(median_sum)
+cluster_info |> filter(!passALL_metricQC)
+
+cluster_info |> filter(passALL_metricQC)
+
+write.csv(cluster_info, file = here(data_dir, "ERC_sn_subcluster_info.csv"), row.names = FALSE)
+
+#### Plot Quality Metrics ####
+
+cell_class_cutoffs <- read.csv(here("processed-data", "04_snRNA-seq", "09_cluster_QC","ERC_sn_cell_class_cutoffs.csv"))
+
+qc_violin_plot_all <- pd |> 
+    select(cell_type_class, cell_type_broad, cell_type_anno, passALL_metricQC, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
+    pivot_longer(!c(cell_type_anno, cell_type_broad, cell_type_class,passALL_metricQC), names_to = "metric") |>
+    mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))) |>
+    ggplot() +
+    geom_violin(aes(x = cell_type_anno, y = value, fill = cell_type_anno, colour = passALL_metricQC), 
+                scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
+    scale_fill_manual(values = cell_type_colors_anno, guide = "none") +
+    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
+    theme_bw() +
+    geom_hline(data = cell_class_cutoffs, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
+    geom_label(data = cell_class_cutoffs, aes(y = cutoff, label = cutoff_anno), x = 3, color = "blue", vjust = -.5) +
+    facet_grid(metric~cell_type_class, scales = "free") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    labs(y = "Quality Metric Value", x = "preliminary cell type cluster, snn k=10")
+
+ggsave(qc_violin_plot_all, filename = here(plot_dir, "ERC_sn_subcluster_QCmetricViolin_ALL.png"), width = 12, height = 12)
+
+## glia only
+cell_class_cutoffs_g <- cell_class_cutoffs |> 
+    filter(cell_type_class == "glia") |> 
+    mutate(metric = ifelse(metric == "sum", "log10_sum", metric),
+           cutoff = ifelse(metric == "log10_sum", log10(cutoff), cutoff))
+
+qc_violin_plot_all_g <- pd |> 
+    filter(cell_type_class == "glia") |>
+    mutate(log10_sum = log10(sum)) |>
+    select(cell_type_class, cell_type_broad, cell_type_anno, passALL_metricQC, log10_sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
+    pivot_longer(!c(cell_type_anno, cell_type_broad, cell_type_class,passALL_metricQC), names_to = "metric") |>
+    # mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))) |>
+    ggplot() +
+    geom_violin(aes(x = cell_type_anno, y = value, fill = cell_type_anno, colour = passALL_metricQC), 
+                scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
+    scale_fill_manual(values = cell_type_colors_anno, guide = "none") +
+    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
+    theme_bw() +
+    geom_hline(data = cell_class_cutoffs_g, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
+    facet_grid(metric~cell_type_broad, scales = "free", space="free_x") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    labs(y = "Quality Metric Value", x = "Glia Subcluster Cell Types")
+
+ggsave(qc_violin_plot_all_g, filename = here(plot_dir, "ERC_sn_subcluster_QCmetricViolin_ALL_glia.png"), width = 12, height = 12)
+
+#### n cell barplot ####
+n_cell_barplot <- cluster_info |>
+    ggplot(aes(x = cell_type_anno, y = n, fill = cell_type_anno, color = passALL_metricQC)) +
+    geom_col() +
+    geom_text(aes(label = n), size = 2, vjust = -0.5) +
+    scale_fill_manual(values = cell_type_colors_anno, guide = "none") +
+    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
+    # facet_wrap(~cell_type_broad) +
+    facet_grid(.~cell_type_broad, scales = "free_x", space="free_x") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None") 
+
+ggsave(n_cell_barplot, filename = here(plot_dir, "ERC_sn_subcluster_barplot_ct_n_qc.png"), width = 10)
+
+#### Drop problamatic cluster ####
+sce <- sce[,sce$passALL_metricQC]
+sce <- sce[,!grepl("ambig", sce$cell_type_anno)]
+dim(sce)
+
+sce$cell_type_fine <- droplevels(sce$cell_type_fine)
+sce$cell_type_anno <- factor(sce$cell_type_anno, levels = cell_type_level_tb$cell_type_anno)
+
+levels(sce$cell_type_anno)
+pd <- as.data.frame(colData(sce))
 
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
@@ -161,127 +262,10 @@ plot_marker_express_List(sce,
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ERC_sn_sctype_lit_markers.pdf"),
                          cellType_col = "cell_type_anno",
-                         gene_name_col = "Symbol",
-                         color_pal = cell_type_colors$anno,
-                         )
+                         gene_name_col = "gene_name",
+                         color_pal = cell_type_colors_anno,
+)
 
-#### summary by cluster ####
-message(Sys.time(), " - Summarize cluster")
-
-pd <- as.data.frame(colData(sce))
-
-cluster_info <- pd |>
-    group_by(snn_kOpt, cell_type_class, cell_type_broad, cell_type_fine, cell_type_anno) |>
-    summarize(n = n(),
-              prop = n/ncol(sce),
-              median_sum = median(sum),
-              median_detected = median(detected),
-              median_Mito_percent = median(subsets_Mito_percent),
-              median_scDblFinder.score = median(scDblFinder.score)
-    )
-
-cluster_info |> arrange(median_sum)
-
-cell_class_cutoffs <- read.csv(here("processed-data", "04_snRNA-seq", "09_cluster_QC","ERC_sn_cell_class_cutoffs.csv"))
-
-cluster_metrics_long <- pd |> 
-    select(snn_kOpt, cell_type_class, cell_type_broad, cell_type_fine, cell_type_anno, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
-    pivot_longer(!c(snn_kOpt, cell_type_anno, cell_type_fine,cell_type_broad, cell_type_class), names_to = "metric") |>
-    group_by(snn_kOpt, cell_type_anno, cell_type_fine, cell_type_class, cell_type_broad, metric) |>
-    summarize(median = median(value)) |>
-    left_join(cell_class_cutoffs |> select(cell_type_class, metric, cutoff, cutoff_anno)) |>
-    mutate(pass_metricQC = case_when(metric %in% c("scDblFinder.score", "subsets_Mito_percent") ~ median < cutoff,
-                                     TRUE ~ median > cutoff),
-           metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))
-    )|>
-    group_by(snn_kOpt, cell_type_anno, cell_type_fine, cell_type_class, cell_type_broad) |>
-    mutate(passALL_metricQC = all(pass_metricQC))
-
-cluster_metrics_long |> ungroup() |> count(pass_metricQC, passALL_metricQC)
-
-cluster_metrics_pass <- cluster_metrics_long |> ungroup() |> select(cell_type_fine, passALL_metricQC)  |> unique()
-cluster_metrics_pass |> filter(!passALL_metricQC)
-
-## add to info
-pd <- pd |> left_join(cluster_metrics_pass)
-cluster_info <- cluster_info |> left_join(cluster_metrics_pass)
-
-write.csv(cluster_info, file = here(data_dir, "ERC_sn_cluster_info.csv"), row.names = FALSE)
-
-#### Plot Quality Metrics ####
-
-## median boxplots 
-
-qc_median_boxplot <- cluster_metrics_long |>
-    ggplot(aes(x = cell_type_broad, y = median)) +
-    geom_boxplot(outlier.shape = NA) +
-    geom_jitter(aes(fill = cell_type_anno, shape = passALL_metricQC)) +
-    geom_hline(aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
-    geom_text(aes(y = cutoff, label = cutoff_anno), x = 1.5, color = "blue", vjust = -.5) +
-    facet_grid(metric~cell_type_class, scales = "free") +
-    scale_fill_manual(values = cell_type_colors$anno, guide = "none") +
-    scale_shape_manual(values = c(`TRUE` = 21, `FALSE` = 24)) +
-    theme_bw()
-
-ggsave(qc_median_boxplot, filename = here(plot_dir, "ERC_sn_QCmedian_boxplot.png"))    
-
-qc_violin_plot_all <- pd |> 
-    select(cell_type_class, cell_type_broad, cell_type_fine, passALL_metricQC, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
-    pivot_longer(!c(cell_type_fine, cell_type_broad, cell_type_class,passALL_metricQC), names_to = "metric") |>
-    mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "scDblFinder.score"))) |>
-    ggplot() +
-    geom_violin(aes(x = cell_type_fine, y = value, fill = cell_type_fine, colour = passALL_metricQC), 
-                scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
-    scale_fill_manual(values = cell_type_colors$fine, guide = "none") +
-    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
-    theme_bw() +
-    geom_hline(data = cell_class_cutoffs, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
-    geom_label(data = cell_class_cutoffs, aes(y = cutoff, label = cutoff_anno), x = 3, color = "blue", vjust = -.5) +
-    facet_grid(metric~cell_type_class, scales = "free") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-    labs(y = "Quality Metric Value", x = "preliminary cell type cluster, snn k=10")
-
-ggsave(qc_violin_plot_all, filename = here(plot_dir, "ERC_sn_QCmetricViolin_ALL.png"), width = 12, height = 12)
-
-#### n cell barplot ####
-n_cell_barplot <- cluster_info |>
-    ggplot(aes(x = cell_type_fine, y = n, fill = cell_type_fine, color = passALL_metricQC)) +
-    geom_col() +
-    geom_text(aes(label = n), size = 2, vjust = -0.5) +
-    scale_fill_manual(values = cell_type_colors$fine, guide = "none") +
-    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
-          legend.position = "None") 
-
-ggsave(n_cell_barplot, filename = here(plot_dir, "ERC_sn_barplot_ct_n_qc.png"), width = 10)
-
-## with out QC fail clusters
-n_cell_barplot <- cluster_info |>
-    filter(passALL_metricQC) |>
-    ggplot(aes(x = cell_type_anno, y = n, fill = cell_type_anno, color = passALL_metricQC)) +
-    geom_col() +
-    geom_text(aes(label = n), size = 2, vjust = -0.5) +
-    scale_fill_manual(values = cell_type_colors$anno, guide = "none") +
-    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
-          legend.position = "None") 
-
-ggsave(n_cell_barplot, filename = here(plot_dir, "ERC_sn_barplot_ct_n.png"), width = 10)
-
-#### Drop problamatic cluster ####
-colData(sce) <- DataFrame(pd)
-table(sce$passALL_metricQC)
-
-sce <- sce[,sce$passALL_metricQC]
-dim(sce)
-
-sce$cell_type_fine <- droplevels(sce$cell_type_fine)
-sce$cell_type_anno <- droplevels(sce$cell_type_anno)
-
-levels(sce$cell_type_anno)
-pd <- as.data.frame(colData(sce))
 
 ####  Cell Type Proportions ####
 cell_class_proportions <- pd |>
@@ -311,12 +295,12 @@ cell_type_sample_n_bar <- cell_type_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = cell_type_colors$anno) +
+    scale_fill_manual(values = cell_type_colors_anno) +
     labs(y = "n Nucei")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+
     guides(fill=guide_legend(ncol=1))
 
-ggsave(cell_type_sample_n_bar, filename = here(plot_dir, "ERC_sn_barplot_ct_sample_n.png"), width = 10)
+ggsave(cell_type_sample_n_bar, filename = here(plot_dir, "ERC_sn_subtype_barplot_ct_sample_n.png"), width = 10)
 
 ## plot proprotions
 cell_type_proportion_bar <- cell_type_proportions |>
@@ -326,12 +310,12 @@ cell_type_proportion_bar <- cell_type_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = cell_type_colors$anno) +
+    scale_fill_manual(values = cell_type_colors_anno) +
     labs(y = "Cell Type Proportion")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+
     guides(fill=guide_legend(ncol=1))
 
-ggsave(cell_type_proportion_bar, filename = here(plot_dir, "ERC_sn_barplot_ct_prop.png"), width = 10)
+ggsave(cell_type_proportion_bar, filename = here(plot_dir, "ERC_sn_subtype_barplot_ct_prop.png"), width = 10)
 
 cell_type_proportion_bar_facet <- cell_type_proportions |>
     ggplot(aes(x = sample_id, y = prop, fill = cell_type_anno)) +
@@ -340,13 +324,13 @@ cell_type_proportion_bar_facet <- cell_type_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = cell_type_colors$anno) +
+    scale_fill_manual(values = cell_type_colors_anno) +
     labs(y = "Cell Type Proportion")  +
     facet_grid(.~APOE, scales = "free_x", space = "free") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+
     guides(fill=guide_legend(ncol=1)) 
 
-ggsave(cell_type_proportion_bar_facet, filename = here(plot_dir, "ERC_sn_barplot_ct_prop_facet.png"), width = 10)
+ggsave(cell_type_proportion_bar_facet, filename = here(plot_dir, "ERC_sn_subtype_barplot_ct_prop_facet.png"), width = 10)
 
 ## evaluate proportion sample by cell 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
@@ -377,12 +361,12 @@ ct_n_donor <- sample_qc |>
     ggplot(aes(y = reorder(cell_type_anno, n_samples), x = n_samples, fill = cell_type_anno)) +
     geom_col() +
     geom_text(aes(label = n_samples), hjust = 1) +
-    scale_fill_manual(values = cell_type_colors$anno) +
+    scale_fill_manual(values = cell_type_colors_anno) +
     theme_bw() +
     labs(x = "n Donors", y = "Cell Type") +
     theme(legend.position = "None")
 
-ggsave(ct_n_donor, filename = here(plot_dir, "ERC_sn_barplot_ct_n_donor.png"), width = 5, height = 6)
+ggsave(ct_n_donor, filename = here(plot_dir, "ERC_sn_subtype_barplot_ct_n_donor.png"), width = 5, height = 6)
 
 
 ## plot sample by cell type proportions bar
@@ -394,7 +378,7 @@ sample_n_bar <- sample_proportions |>
     labs(y = "Cell Type Proportion")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
-ggsave(sample_n_bar, filename = here(plot_dir, "ERC_sn_barplot_sample_n.png"), width = 10)
+ggsave(sample_n_bar, filename = here(plot_dir, "ERC_sn_subtype_barplot_sample_n.png"), width = 10)
 
 sample_proportion_bar <- sample_proportions |>
     ggplot(aes(x = cell_type_anno, y = prop, fill = sample_id)) +
@@ -404,69 +388,7 @@ sample_proportion_bar <- sample_proportions |>
     labs(y = "Cell Type Proportion")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
-ggsave(sample_proportion_bar, filename = here(plot_dir, "ERC_sn_barplot_sample_prop.png"), width = 10)
-
-    
-# #### Compare clustering w/ Jaccard Index ####
-# message(Sys.time(), " - Compare clusters")
-# 
-# walk(c("broad", "fine"), function(resolution){
-#     
-#     cluster_names <- sprintf("ct_%s_k%d", resolution, c(10, 15, 20))
-#     
-#     cluster_combos <- as.data.frame(t(combn(cluster_names, 2)))
-#     colnames(cluster_combos) <- c("c1", "c2")
-#     
-#     cluster_combos <- cluster_combos |> 
-#         mutate(name = gsub(sprintf("ct_%s_", resolution), "",paste0(c1, "_",c2))) 
-#     
-#     jacc.mat <- map2(cluster_combos$c1, cluster_combos$c2, ~linkClustersMatrix(sce[[.x]], sce[[.y]]))
-#     names(jacc.mat) <- cluster_combos$name
-#     
-#     walk2(jacc.mat, names(jacc.mat), function(j, name){
-#         pdf(here(plot_dir, sprintf("jacc_matrix_ct_%s_%s.pdf", resolution, name)), height = 12, width = 8)
-#         print(Heatmap(j,
-#                       name = "Correspondence",
-#                       col = c("black", viridisLite::plasma(100)),
-#                       na_col = "black"
-#         ))
-#         dev.off()
-#     })
-#     
-# })
-
-# ## examine hierarchical clustering ####
-# message(Sys.time(), " - Plot HC with ct names")
-# 
-# h_clus_fn <- list.files(here("processed-data", "04_snRNA-seq", "08_hierarchical_cluster"), full.names = TRUE)
-# names(h_clus_fn) <- ss(basename(h_clus_fn), "_|\\.", 3)
-# 
-# h_clus <- map(h_clus_fn, ~mget(load(.x)))
-# 
-# dend_ct <- map2(h_clus, sctype, function(hc, sct){
-#     
-#     d <- hc$dend
-#     labels(d) <- sct$ct_fine[match(labels(d), sct$cluster)]
-#     return(d)
-# })
-# 
-# labels(dend_ct$k10)
-# 
-# walk2(dend_ct, names(dend_ct), function(d, name){
-#     pdf(here(plot_dir, sprintf("dend_ct_%s.pdf", name)), height = 10, width = 12)
-#     par(cex = 0.6, font = 2)
-#     plot(d, main = sprintf("hierarchical cluster dend - %s", name), horiz = TRUE)
-#     dev.off()
-#     })
-
-#### GTF file ####
-## Read in the gene information from the annotation GTF file
-gtf <-
-    rtracklayer::import(
-        "/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2024-A/genes/genes.gtf.gz"
-    )
-gtf <- gtf[gtf$type == "gene"]
-names(gtf) <- gtf$gene_id
+ggsave(sample_proportion_bar, filename = here(plot_dir, "ERC_sn_subtype_barplot_sample_prop.png"), width = 10)
 
 ## Match the genes
 all(rownames(sce) %in% gtf$gene_id)
@@ -482,13 +404,23 @@ rowRanges(sce) <- gtf[match_genes]
 
 #### Add colors to metadata ####
 
+cell_type_colors <- list(broad = c(Astro = "#3BB273",
+                                   Macro = "#79354E",
+                                   Micro = "#663894",
+                                   Oligo = "#F57A00",
+                                   OPC = "#D2B037",
+                                   Vasc = "#FF56AF",
+                                   Excit = "#247FBC",
+                                   Inhib = "#E83E38"),
+                         anno = cell_type_colors_anno)
+
 metadata(sce)$cell_type_colors <- cell_type_colors
 
 #### Output annotations ####
 message(Sys.time(), " - Save annotated sce")
 
 # save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
-saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC"), replace=TRUE)
+saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC_subcluster"), replace=TRUE)
 
 # slurmjobs::job_single('28_subcluster_update_sce', create_shell = TRUE, memory = '10G', command = "28_subcluster_update_sce.R")
 
