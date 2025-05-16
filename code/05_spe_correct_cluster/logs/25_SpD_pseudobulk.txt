@@ -1,12 +1,11 @@
 **** Job starts ****
-Fri Apr 18 03:49:03 PM EDT 2025
+Fri May 16 01:38:06 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16139913
+Job id: 16625529
 Job name: 25_SpD_pseudobulk
-Node name: compute-156
+Node name: compute-124
 Task id: 
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -135,39 +134,37 @@ $ARGS
 character(0)
 
 $cluster
-[1] "sample_id"
+[1] "SpD"
 
-2025-04-18 15:49:16.275567 - Load HDF5 SPE
+2025-05-16 13:38:23.236851 - Load HDF5 SPE
 
-Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974 Br5161 Br5212 Br5276 
-  3906   3648   3524   4161   3699   3069   2367   2722   4682   4674   4011 
-Br5367 Br5415 Br5426 Br5460 Br5517 Br5529 Br5599 Br5634 Br5712 Br5832 Br5854 
-  2828   3858   4824   4032   3823   4570   4812   4830   3373   3546   3575 
-Br5941 Br6085 Br6098 Br6161 Br6263 Br6321 Br6423 Br6476 Br6538 
-  4869   4017   4570   4864   3226   3641   4315   3964   4202 
+ Vasc~Sp09D08    L1~Sp09D05  L2.3~Sp09D01    LD~Sp09D02 Inhib~Sp09D09 
+         6217         15363         11471         26479          6915 
+   L5~Sp09D03    L6~Sp09D04 WM.uf~Sp09D07    WM~Sp09D06 
+        11617         19464         12510         12166 
 [1] "SpatialExperiment"
 attr(,"package")
 [1] "SpatialExperiment"
-2025-04-18 15:51:08.162679 make pseudobulk object on sample_id
+2025-05-16 13:40:46.972569 make pseudobulk object on SpD_syn
 [1] "SingleCellExperiment"
 attr(,"package")
 [1] "SingleCellExperiment"
-pseudobulk dims: 30494 row, 31 col
-2025-04-18 15:57:29.334893 - normalize expression
-                    Br1039       Br1289     Br1556     Br1691     Br1706
-ENSG00000243485 -3.9985642 -3.998564232 -3.9985642 -3.9985642 -2.2245373
-ENSG00000238009 -0.1492551 -1.338855436 -0.1986863 -0.5714723 -0.2870294
-ENSG00000239945 -3.9985642 -3.998564232 -3.9985642 -3.9985642 -3.9985642
-ENSG00000241860  2.2158750  0.007792639  2.1851126  2.7767147  2.1301429
-ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
-2025-04-18 15:57:30.044477 - save data
+pseudobulk dims: 30494 row, 9 col
+2025-05-16 13:52:12.155431 - normalize expression
+                Vasc_Sp09D08 L1_Sp09D05 L2.3_Sp09D01 LD_Sp09D02 Inhib_Sp09D09
+ENSG00000243485    -5.765752  -4.422429   -3.7041874 -5.1820120    -4.5142840
+ENSG00000238009    -1.510792  -1.874707   -0.9757695 -0.8624095    -0.9983156
+ENSG00000239945    -5.765752  -5.765752   -5.7657520 -5.7657520    -4.5142840
+ENSG00000241860     1.385256   1.388420    2.0074729  1.7580743     1.5035875
+ENSG00000229905    -5.765752  -4.422429   -5.7657520 -4.7675861    -3.8543782
+2025-05-16 13:52:12.555753 - save data
 [1] "Reproducibility information:"
-[1] "2025-04-18 15:57:30 EDT"
+[1] "2025-05-16 13:52:13 EDT"
    user  system elapsed 
-487.124   4.978 506.578 
+822.329   8.923 845.157 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88154)
+ version  R version 4.4.3 Patched (2025-02-28 r88204)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -175,7 +172,7 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-18
+ date     2025-05-16
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -206,7 +203,7 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
  bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.4.2)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.4.0)
  circlize               0.4.16    2024-02-20 [2] CRAN (R 4.4.0)
- cli                    3.6.4     2025-02-13 [2] CRAN (R 4.4.2)
+ cli                    3.6.5     2025-04-23 [2] CRAN (R 4.4.3)
  clue                   0.3-66    2024-11-13 [2] CRAN (R 4.4.2)
  cluster                2.1.8     2024-12-11 [3] CRAN (R 4.4.3)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.4.3)
@@ -216,20 +213,22 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
  cowplot                1.1.3     2024-01-22 [2] CRAN (R 4.4.0)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.4.1)
  curl                   6.2.2     2025-03-24 [2] CRAN (R 4.4.3)
- data.table             1.17.0    2025-02-22 [2] CRAN (R 4.4.3)
+ data.table             1.17.2    2025-05-12 [2] CRAN (R 4.4.3)
  DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.4.0)
  dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.4.0)
  DelayedArray         * 0.32.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.4.0)
  digest                 0.6.37    2024-08-19 [2] CRAN (R 4.4.1)
  doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.4.0)
  dplyr                  1.1.4     2023-11-17 [2] CRAN (R 4.4.0)
  DT                     0.33      2024-04-04 [2] CRAN (R 4.4.0)
  edgeR                  4.4.2     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  ExperimentHub          2.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.4.0)
  fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.4.0)
  filelock               1.0.3     2023-12-11 [2] CRAN (R 4.4.0)
  foreach                1.5.2     2022-02-02 [2] CRAN (R 4.4.0)
- generics               0.1.3     2022-07-05 [2] CRAN (R 4.4.0)
+ generics               0.1.4     2025-05-09 [2] CRAN (R 4.4.3)
  GenomeInfoDb         * 1.42.3    2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13    2024-10-01 [2] Bioconductor
  GenomicAlignments      1.42.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -269,7 +268,6 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
  matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.4.2)
  memoise                2.0.1     2021-11-26 [2] CRAN (R 4.4.0)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
- munsell                0.5.1     2024-04-01 [2] CRAN (R 4.4.0)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
  pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
@@ -291,14 +289,14 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
  rlang                  1.1.6     2025-04-11 [2] CRAN (R 4.4.3)
  rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.4.0)
  Rsamtools              2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- RSQLite                2.3.9     2024-12-03 [2] CRAN (R 4.4.2)
+ RSQLite                2.3.11    2025-05-04 [2] CRAN (R 4.4.3)
  rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.4.0)
  rtracklayer            1.66.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  S4Arrays             * 1.6.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  S4Vectors            * 0.44.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  sass                   0.4.10    2025-04-11 [2] CRAN (R 4.4.3)
  ScaledMatrix           1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- scales                 1.3.0     2023-11-28 [2] CRAN (R 4.4.0)
+ scales                 1.4.0     2025-04-24 [1] CRAN (R 4.4.3)
  scater                 1.34.1    2025-03-03 [2] Bioconductor 3.20 (R 4.4.3)
  scuttle                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.4.2)
@@ -308,7 +306,7 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
  SingleCellExperiment * 1.28.1    2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment    * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- spatialLIBD          * 1.19.12   2025-04-16 [1] Github (LieberInstitute/spatialLIBD@0e32c65)
+ spatialLIBD          * 1.21.3    2025-04-24 [1] Github (LieberInstitute/spatialLIBD@3b5964f)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
@@ -332,4 +330,4 @@ ENSG00000229905 -2.9758220 -3.998564232 -3.9985642 -2.8483161 -3.9985642
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Apr 18 03:57:31 PM EDT 2025
+Fri May 16 01:52:14 PM EDT 2025
