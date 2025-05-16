@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Apr  7 06:20:03 PM EDT 2025
+Fri May 16 01:49:08 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 15859856
+Job id: 16625528
 Job name: 22_SpD_clean_plots
-Node name: compute-158
+Node name: compute-168
 Task id: 
 Loading conda_R/4.4.x
 
@@ -94,7 +94,7 @@ The following objects are masked from ‘package:matrixStats’:
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.0.4     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -176,7 +176,7 @@ The following object is masked from ‘package:cowplot’:
 
     align_plots
 
-2025-04-07 18:20:18.664986 - Load HDF5 SPE
+2025-05-16 13:49:23.371018 - Load HDF5 SPE
 class: SpatialExperiment 
 dim: 30494 122202 
 metadata(1): SpD_colors
@@ -197,8 +197,8 @@ imgData names(4): sample_id image_id data scaleFactor
   Vasc~Sp09D08     129     53    298    306     39     92     80    226    390
   L1~Sp09D05       419    298    406    710    223    616    254    199    478
   L2.3~Sp09D01     354    395    371    360    419    212    100    116    669
-  L3~Sp09D02       681    852    837    835    802    660    491    427   1358
-  LD~Sp09D09       223    310    232    188    279    165    157    159    297
+  LD~Sp09D02       681    852    837    835    802    660    491    427   1358
+  Inhib~Sp09D09    223    310    232    188    279    165    157    159    297
   L5~Sp09D03       462    419    395    265    426    187    187    207    497
   L6~Sp09D04       703    931    645    724    939    636    595    549    476
   WM.uf~Sp09D07    344    153    191    660    355    162    203    356    144
@@ -208,8 +208,8 @@ imgData names(4): sample_id image_id data scaleFactor
   Vasc~Sp09D08     108    305    324    251    472     64    141    336    240
   L1~Sp09D05       320    979    243    417    475    306    467   1267    370
   L2.3~Sp09D01     889     23    392    287    608    739    307     31    735
-  L3~Sp09D02      1237    234    764    835   1425    939    756    538   1218
-  LD~Sp09D09       331     41    187    265    250    244    250     83    399
+  LD~Sp09D02      1237    234    764    835   1425    939    756    538   1218
+  Inhib~Sp09D09    331     41    187    265    250    244    250     83    399
   L5~Sp09D03       620     12    229    631    461    756    349     25    454
   L6~Sp09D04       733    243    467    715    711    604    726    261    903
   WM.uf~Sp09D07    300   1107    106    155    112    203    430    851    238
@@ -219,8 +219,8 @@ imgData names(4): sample_id image_id data scaleFactor
   Vasc~Sp09D08      83    207     83    152    188    106    423    214    102
   L1~Sp09D05       314    801    368    320    438    321    682   1457    650
   L2.3~Sp09D01     677     27    183    185    492    571    294    244    116
-  L3~Sp09D02      1034    318    777    763   1176   1373   1223   1280    422
-  LD~Sp09D09       374     83    138    215    334    264    331    133    101
+  LD~Sp09D02      1034    318    777    763   1176   1373   1223   1280    422
+  Inhib~Sp09D09    374     83    138    215    334    264    331    133    101
   L5~Sp09D03       797     43    316    475    338    612    328    219    105
   L6~Sp09D04       785    542    666    759    794    433    611    370    291
   WM.uf~Sp09D07    159    575    452    197    613    291    355    662   1175
@@ -230,8 +230,8 @@ imgData names(4): sample_id image_id data scaleFactor
   Vasc~Sp09D08     433    116     89    167
   L1~Sp09D05       277    337    402    549
   L2.3~Sp09D01     446    249    662    318
-  L3~Sp09D02       591    951   1075    607
-  LD~Sp09D09       189    236    272    185
+  LD~Sp09D02       591    951   1075    607
+  Inhib~Sp09D09    189    236    272    185
   L5~Sp09D03       367    475    433    527
   L6~Sp09D04       359    997    758    538
   WM.uf~Sp09D07    881    126     55    899
@@ -242,8 +242,8 @@ Saving 7 x 7 in image
 Saving 7 x 7 in image
 ERC_spe_UMAP-SpD.png - Saving 7 x 7 in image
 ERC_spe_TSNE-SpD.png - Saving 7 x 7 in image
-2025-04-07 18:23:24.968968 loading file /users/lhuuki/.cache/R/BiocFileCache/6b24121203e_Human_DLPFC_Visium_modeling_results.Rdata%3Fdl%3D1
-2025-04-07 18:23:26.153051 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b166bc7ed_modeling_results_BayesSpace_k09.Rdata%3Fdl%3D1
+2025-05-16 13:52:01.97224 loading file /users/lhuuki/.cache/R/BiocFileCache/6b24121203e_Human_DLPFC_Visium_modeling_results.Rdata%3Fdl%3D1
+2025-05-16 13:52:03.099201 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b166bc7ed_modeling_results_BayesSpace_k09.Rdata%3Fdl%3D1
                 t_stat_L1~Sp09D01 t_stat_L1~Sp09D02 t_stat_L2~Sp09D03
 ENSG00000237491         -5.683249         -1.592857          2.695610
 ENSG00000228794         -8.227898         -0.336100          2.156830
@@ -307,99 +307,6 @@ ENSG00000188976      0.9525352 ENSG00000188976     NOC2L
 ENSG00000187961      0.8629717 ENSG00000187961    KLHL17
 ENSG00000188290      0.2219002 ENSG00000188290      HES4
 ENSG00000187608      0.5897717 ENSG00000187608     ISG15
-$anova
-[1] "f_stat_"  "p_value_" "fdr_"     "AveExpr_" "ensembl"  "gene"    
-
-$enrichment
- [1] "t_stat_L2.3~Sp09D01"   "t_stat_L3~Sp09D02"     "t_stat_L5~Sp09D03"    
- [4] "t_stat_L6~Sp09D04"     "t_stat_L1~Sp09D05"     "t_stat_WM~Sp09D06"    
- [7] "t_stat_WM.uf~Sp09D07"  "t_stat_Vasc~Sp09D08"   "t_stat_LD~Sp09D09"    
-[10] "p_value_L2.3~Sp09D01"  "p_value_L3~Sp09D02"    "p_value_L5~Sp09D03"   
-[13] "p_value_L6~Sp09D04"    "p_value_L1~Sp09D05"    "p_value_WM~Sp09D06"   
-[16] "p_value_WM.uf~Sp09D07" "p_value_Vasc~Sp09D08"  "p_value_LD~Sp09D09"   
-[19] "fdr_L2.3~Sp09D01"      "fdr_L3~Sp09D02"        "fdr_L5~Sp09D03"       
-[22] "fdr_L6~Sp09D04"        "fdr_L1~Sp09D05"        "fdr_WM~Sp09D06"       
-[25] "fdr_WM.uf~Sp09D07"     "fdr_Vasc~Sp09D08"      "fdr_LD~Sp09D09"       
-[28] "logFC_L2.3~Sp09D01"    "logFC_L3~Sp09D02"      "logFC_L5~Sp09D03"     
-[31] "logFC_L6~Sp09D04"      "logFC_L1~Sp09D05"      "logFC_WM~Sp09D06"     
-[34] "logFC_WM.uf~Sp09D07"   "logFC_Vasc~Sp09D08"    "logFC_LD~Sp09D09"     
-[37] "ensembl"               "gene"                 
-
-$pairwise
-  [1] "t_stat_L2.3~Sp09D01-L3~Sp09D02"     "t_stat_L2.3~Sp09D01-L5~Sp09D03"    
-  [3] "t_stat_L2.3~Sp09D01-L6~Sp09D04"     "t_stat_L2.3~Sp09D01-L1~Sp09D05"    
-  [5] "t_stat_L2.3~Sp09D01-WM~Sp09D06"     "t_stat_L2.3~Sp09D01-WM.uf~Sp09D07" 
-  [7] "t_stat_L2.3~Sp09D01-Vasc~Sp09D08"   "t_stat_L2.3~Sp09D01-LD~Sp09D09"    
-  [9] "t_stat_L3~Sp09D02-L5~Sp09D03"       "t_stat_L3~Sp09D02-L6~Sp09D04"      
- [11] "t_stat_L3~Sp09D02-L1~Sp09D05"       "t_stat_L3~Sp09D02-WM~Sp09D06"      
- [13] "t_stat_L3~Sp09D02-WM.uf~Sp09D07"    "t_stat_L3~Sp09D02-Vasc~Sp09D08"    
- [15] "t_stat_L3~Sp09D02-LD~Sp09D09"       "t_stat_L5~Sp09D03-L6~Sp09D04"      
- [17] "t_stat_L5~Sp09D03-L1~Sp09D05"       "t_stat_L5~Sp09D03-WM~Sp09D06"      
- [19] "t_stat_L5~Sp09D03-WM.uf~Sp09D07"    "t_stat_L5~Sp09D03-Vasc~Sp09D08"    
- [21] "t_stat_L5~Sp09D03-LD~Sp09D09"       "t_stat_L6~Sp09D04-L1~Sp09D05"      
- [23] "t_stat_L6~Sp09D04-WM~Sp09D06"       "t_stat_L6~Sp09D04-WM.uf~Sp09D07"   
- [25] "t_stat_L6~Sp09D04-Vasc~Sp09D08"     "t_stat_L6~Sp09D04-LD~Sp09D09"      
- [27] "t_stat_L1~Sp09D05-WM~Sp09D06"       "t_stat_L1~Sp09D05-WM.uf~Sp09D07"   
- [29] "t_stat_L1~Sp09D05-Vasc~Sp09D08"     "t_stat_L1~Sp09D05-LD~Sp09D09"      
- [31] "t_stat_WM~Sp09D06-WM.uf~Sp09D07"    "t_stat_WM~Sp09D06-Vasc~Sp09D08"    
- [33] "t_stat_WM~Sp09D06-LD~Sp09D09"       "t_stat_WM.uf~Sp09D07-Vasc~Sp09D08" 
- [35] "t_stat_WM.uf~Sp09D07-LD~Sp09D09"    "t_stat_Vasc~Sp09D08-LD~Sp09D09"    
- [37] "p_value_L2.3~Sp09D01-L3~Sp09D02"    "p_value_L2.3~Sp09D01-L5~Sp09D03"   
- [39] "p_value_L2.3~Sp09D01-L6~Sp09D04"    "p_value_L2.3~Sp09D01-L1~Sp09D05"   
- [41] "p_value_L2.3~Sp09D01-WM~Sp09D06"    "p_value_L2.3~Sp09D01-WM.uf~Sp09D07"
- [43] "p_value_L2.3~Sp09D01-Vasc~Sp09D08"  "p_value_L2.3~Sp09D01-LD~Sp09D09"   
- [45] "p_value_L3~Sp09D02-L5~Sp09D03"      "p_value_L3~Sp09D02-L6~Sp09D04"     
- [47] "p_value_L3~Sp09D02-L1~Sp09D05"      "p_value_L3~Sp09D02-WM~Sp09D06"     
- [49] "p_value_L3~Sp09D02-WM.uf~Sp09D07"   "p_value_L3~Sp09D02-Vasc~Sp09D08"   
- [51] "p_value_L3~Sp09D02-LD~Sp09D09"      "p_value_L5~Sp09D03-L6~Sp09D04"     
- [53] "p_value_L5~Sp09D03-L1~Sp09D05"      "p_value_L5~Sp09D03-WM~Sp09D06"     
- [55] "p_value_L5~Sp09D03-WM.uf~Sp09D07"   "p_value_L5~Sp09D03-Vasc~Sp09D08"   
- [57] "p_value_L5~Sp09D03-LD~Sp09D09"      "p_value_L6~Sp09D04-L1~Sp09D05"     
- [59] "p_value_L6~Sp09D04-WM~Sp09D06"      "p_value_L6~Sp09D04-WM.uf~Sp09D07"  
- [61] "p_value_L6~Sp09D04-Vasc~Sp09D08"    "p_value_L6~Sp09D04-LD~Sp09D09"     
- [63] "p_value_L1~Sp09D05-WM~Sp09D06"      "p_value_L1~Sp09D05-WM.uf~Sp09D07"  
- [65] "p_value_L1~Sp09D05-Vasc~Sp09D08"    "p_value_L1~Sp09D05-LD~Sp09D09"     
- [67] "p_value_WM~Sp09D06-WM.uf~Sp09D07"   "p_value_WM~Sp09D06-Vasc~Sp09D08"   
- [69] "p_value_WM~Sp09D06-LD~Sp09D09"      "p_value_WM.uf~Sp09D07-Vasc~Sp09D08"
- [71] "p_value_WM.uf~Sp09D07-LD~Sp09D09"   "p_value_Vasc~Sp09D08-LD~Sp09D09"   
- [73] "fdr_L2.3~Sp09D01-L3~Sp09D02"        "fdr_L2.3~Sp09D01-L5~Sp09D03"       
- [75] "fdr_L2.3~Sp09D01-L6~Sp09D04"        "fdr_L2.3~Sp09D01-L1~Sp09D05"       
- [77] "fdr_L2.3~Sp09D01-WM~Sp09D06"        "fdr_L2.3~Sp09D01-WM.uf~Sp09D07"    
- [79] "fdr_L2.3~Sp09D01-Vasc~Sp09D08"      "fdr_L2.3~Sp09D01-LD~Sp09D09"       
- [81] "fdr_L3~Sp09D02-L5~Sp09D03"          "fdr_L3~Sp09D02-L6~Sp09D04"         
- [83] "fdr_L3~Sp09D02-L1~Sp09D05"          "fdr_L3~Sp09D02-WM~Sp09D06"         
- [85] "fdr_L3~Sp09D02-WM.uf~Sp09D07"       "fdr_L3~Sp09D02-Vasc~Sp09D08"       
- [87] "fdr_L3~Sp09D02-LD~Sp09D09"          "fdr_L5~Sp09D03-L6~Sp09D04"         
- [89] "fdr_L5~Sp09D03-L1~Sp09D05"          "fdr_L5~Sp09D03-WM~Sp09D06"         
- [91] "fdr_L5~Sp09D03-WM.uf~Sp09D07"       "fdr_L5~Sp09D03-Vasc~Sp09D08"       
- [93] "fdr_L5~Sp09D03-LD~Sp09D09"          "fdr_L6~Sp09D04-L1~Sp09D05"         
- [95] "fdr_L6~Sp09D04-WM~Sp09D06"          "fdr_L6~Sp09D04-WM.uf~Sp09D07"      
- [97] "fdr_L6~Sp09D04-Vasc~Sp09D08"        "fdr_L6~Sp09D04-LD~Sp09D09"         
- [99] "fdr_L1~Sp09D05-WM~Sp09D06"          "fdr_L1~Sp09D05-WM.uf~Sp09D07"      
-[101] "fdr_L1~Sp09D05-Vasc~Sp09D08"        "fdr_L1~Sp09D05-LD~Sp09D09"         
-[103] "fdr_WM~Sp09D06-WM.uf~Sp09D07"       "fdr_WM~Sp09D06-Vasc~Sp09D08"       
-[105] "fdr_WM~Sp09D06-LD~Sp09D09"          "fdr_WM.uf~Sp09D07-Vasc~Sp09D08"    
-[107] "fdr_WM.uf~Sp09D07-LD~Sp09D09"       "fdr_Vasc~Sp09D08-LD~Sp09D09"       
-[109] "logFC_L2.3~Sp09D01-L3~Sp09D02"      "logFC_L2.3~Sp09D01-L5~Sp09D03"     
-[111] "logFC_L2.3~Sp09D01-L6~Sp09D04"      "logFC_L2.3~Sp09D01-L1~Sp09D05"     
-[113] "logFC_L2.3~Sp09D01-WM~Sp09D06"      "logFC_L2.3~Sp09D01-WM.uf~Sp09D07"  
-[115] "logFC_L2.3~Sp09D01-Vasc~Sp09D08"    "logFC_L2.3~Sp09D01-LD~Sp09D09"     
-[117] "logFC_L3~Sp09D02-L5~Sp09D03"        "logFC_L3~Sp09D02-L6~Sp09D04"       
-[119] "logFC_L3~Sp09D02-L1~Sp09D05"        "logFC_L3~Sp09D02-WM~Sp09D06"       
-[121] "logFC_L3~Sp09D02-WM.uf~Sp09D07"     "logFC_L3~Sp09D02-Vasc~Sp09D08"     
-[123] "logFC_L3~Sp09D02-LD~Sp09D09"        "logFC_L5~Sp09D03-L6~Sp09D04"       
-[125] "logFC_L5~Sp09D03-L1~Sp09D05"        "logFC_L5~Sp09D03-WM~Sp09D06"       
-[127] "logFC_L5~Sp09D03-WM.uf~Sp09D07"     "logFC_L5~Sp09D03-Vasc~Sp09D08"     
-[129] "logFC_L5~Sp09D03-LD~Sp09D09"        "logFC_L6~Sp09D04-L1~Sp09D05"       
-[131] "logFC_L6~Sp09D04-WM~Sp09D06"        "logFC_L6~Sp09D04-WM.uf~Sp09D07"    
-[133] "logFC_L6~Sp09D04-Vasc~Sp09D08"      "logFC_L6~Sp09D04-LD~Sp09D09"       
-[135] "logFC_L1~Sp09D05-WM~Sp09D06"        "logFC_L1~Sp09D05-WM.uf~Sp09D07"    
-[137] "logFC_L1~Sp09D05-Vasc~Sp09D08"      "logFC_L1~Sp09D05-LD~Sp09D09"       
-[139] "logFC_WM~Sp09D06-WM.uf~Sp09D07"     "logFC_WM~Sp09D06-Vasc~Sp09D08"     
-[141] "logFC_WM~Sp09D06-LD~Sp09D09"        "logFC_WM.uf~Sp09D07-Vasc~Sp09D08"  
-[143] "logFC_WM.uf~Sp09D07-LD~Sp09D09"     "logFC_Vasc~Sp09D08-LD~Sp09D09"     
-[145] "ensembl"                            "gene"                              
-
 [[1]]
 null device 
           1 
@@ -416,13 +323,53 @@ null device
 null device 
           1 
 
+[[1]]
+
+[[2]]
+
+[[3]]
+
+[[4]]
+
+[[5]]
+
+[[6]]
+
+[[7]]
+
+[[8]]
+
+[[9]]
+
+null device 
+          1 
+[[1]]
+
+[[2]]
+
+[[3]]
+
+[[4]]
+
+[[5]]
+
+[[6]]
+
+[[7]]
+
+[[8]]
+
+[[9]]
+
+null device 
+          1 
 [1] "Reproducibility information:"
-[1] "2025-04-07 18:23:31 EDT"
+[1] "2025-05-16 13:55:56 EDT"
    user  system elapsed 
-158.974   7.718 206.552 
+287.625  14.176 407.022 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88113)
+ version  R version 4.4.3 Patched (2025-02-28 r88204)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -430,7 +377,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-04-07
+ date     2025-05-16
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -450,7 +397,7 @@ null device
  BiocIO                 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  BiocManager            1.30.25   2024-08-28 [2] CRAN (R 4.4.1)
  BiocNeighbors          2.0.1     2024-11-28 [2] Bioconductor 3.20 (R 4.4.2)
- BiocParallel           1.40.1    2025-03-31 [2] Bioconductor 3.20 (R 4.4.3)
+ BiocParallel           1.40.2    2025-04-10 [2] Bioconductor
  BiocSingular           1.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  BiocVersion            3.20.0    2024-05-01 [2] Bioconductor 3.20 (R 4.4.0)
  Biostrings             2.74.1    2024-12-16 [2] Bioconductor 3.20 (R 4.4.2)
@@ -458,12 +405,13 @@ null device
  bit64                  4.6.0-1   2025-01-16 [2] CRAN (R 4.4.2)
  bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.4.1)
  blob                   1.2.4     2023-03-17 [2] CRAN (R 4.4.0)
+ bluster                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.4.2)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.4.0)
  Cairo                  1.6-2     2023-11-28 [2] CRAN (R 4.4.0)
  cellranger             1.1.0     2016-07-27 [2] CRAN (R 4.4.0)
  circlize               0.4.16    2024-02-20 [2] CRAN (R 4.4.0)
- cli                    3.6.4     2025-02-13 [2] CRAN (R 4.4.2)
+ cli                    3.6.5     2025-04-23 [2] CRAN (R 4.4.3)
  clue                   0.3-66    2024-11-13 [2] CRAN (R 4.4.2)
  cluster                2.1.8     2024-12-11 [3] CRAN (R 4.4.3)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.4.3)
@@ -473,13 +421,16 @@ null device
  cowplot              * 1.1.3     2024-01-22 [2] CRAN (R 4.4.0)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.4.1)
  curl                   6.2.2     2025-03-24 [2] CRAN (R 4.4.3)
- data.table             1.17.0    2025-02-22 [2] CRAN (R 4.4.3)
+ data.table             1.17.2    2025-05-12 [2] CRAN (R 4.4.3)
  DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.4.0)
  dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.4.0)
+ DeconvoBuddies       * 0.99.10   2025-01-30 [1] Github (LieberInstitute/DeconvoBuddies@0d76b63)
  DelayedArray         * 0.32.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.4.0)
  digest                 0.6.37    2024-08-19 [2] CRAN (R 4.4.1)
  doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.4.0)
  dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.4.0)
+ dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.4.0)
  DT                     0.33      2024-04-04 [2] CRAN (R 4.4.0)
  edgeR                  4.4.2     2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  ExperimentHub          2.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
@@ -488,16 +439,16 @@ null device
  filelock               1.0.3     2023-12-11 [2] CRAN (R 4.4.0)
  forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.4.0)
  foreach                1.5.2     2022-02-02 [2] CRAN (R 4.4.0)
- fs                     1.6.5     2024-10-30 [2] CRAN (R 4.4.2)
+ fs                     1.6.6     2025-04-12 [2] CRAN (R 4.4.3)
  gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.4.0)
- generics               0.1.3     2022-07-05 [2] CRAN (R 4.4.0)
+ generics               0.1.4     2025-05-09 [2] CRAN (R 4.4.3)
  GenomeInfoDb         * 1.42.3    2025-01-27 [1] Bioconductor 3.20 (R 4.4.2)
  GenomeInfoDbData       1.2.13    2024-10-01 [2] Bioconductor
  GenomicAlignments      1.42.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  GenomicRanges        * 1.58.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  GetoptLong             1.0.5     2020-12-15 [2] CRAN (R 4.4.0)
  ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.4.0)
- ggplot2              * 3.5.1     2024-04-23 [2] CRAN (R 4.4.0)
+ ggplot2              * 3.5.2     2025-04-09 [2] CRAN (R 4.4.3)
  ggrepel                0.9.6     2024-09-07 [2] CRAN (R 4.4.1)
  GlobalOptions          0.1.2     2020-06-10 [2] CRAN (R 4.4.0)
  glue                   1.8.0     2024-09-30 [2] CRAN (R 4.4.1)
@@ -510,8 +461,9 @@ null device
  hms                    1.1.3     2023-03-21 [2] CRAN (R 4.4.0)
  htmltools              0.5.8.1   2024-04-04 [2] CRAN (R 4.4.0)
  htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.4.0)
- httpuv                 1.6.15    2024-03-26 [2] CRAN (R 4.4.0)
+ httpuv                 1.6.16    2025-04-16 [2] CRAN (R 4.4.3)
  httr                   1.4.7     2023-08-15 [2] CRAN (R 4.4.0)
+ igraph                 2.1.4     2025-01-23 [2] CRAN (R 4.4.2)
  IRanges              * 2.40.1    2024-12-05 [2] Bioconductor 3.20 (R 4.4.2)
  irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.4.0)
  iterators              1.0.14    2022-02-05 [2] CRAN (R 4.4.0)
@@ -520,7 +472,7 @@ null device
  jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.4.3)
  KEGGREST               1.46.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  labeling               0.4.3     2023-08-29 [2] CRAN (R 4.4.0)
- later                  1.4.1     2024-11-27 [2] CRAN (R 4.4.2)
+ later                  1.4.2     2025-04-08 [2] CRAN (R 4.4.3)
  lattice                0.22-6    2024-03-20 [3] CRAN (R 4.4.3)
  lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.4.0)
  lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.4.0)
@@ -534,20 +486,21 @@ null device
  MatrixGenerics       * 1.18.1    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
  matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.4.2)
  memoise                2.0.1     2021-11-26 [2] CRAN (R 4.4.0)
+ metapod                1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.4.3)
- munsell                0.5.1     2024-04-01 [2] CRAN (R 4.4.0)
  nlme                   3.1-167   2025-01-27 [3] CRAN (R 4.4.3)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.4.0)
  patchwork            * 1.3.0     2024-09-16 [2] CRAN (R 4.4.1)
- pillar                 1.10.1    2025-01-07 [1] CRAN (R 4.4.2)
+ pillar                 1.10.2    2025-04-05 [1] CRAN (R 4.4.3)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.4.0)
  plotly                 4.10.4    2024-01-13 [2] CRAN (R 4.4.0)
+ plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.4.0)
  png                    0.1-8     2022-11-29 [2] CRAN (R 4.4.0)
  promises               1.3.2     2024-11-28 [2] CRAN (R 4.4.2)
  purrr                * 1.0.4     2025-02-05 [2] CRAN (R 4.4.2)
  R6                     2.6.1     2025-02-15 [2] CRAN (R 4.4.2)
- rafalib              * 1.0.0     2015-08-09 [1] CRAN (R 4.4.2)
- ragg                   1.3.3     2024-09-11 [2] CRAN (R 4.4.1)
+ rafalib              * 1.0.4     2025-04-08 [1] CRAN (R 4.4.3)
+ ragg                   1.4.0     2025-04-10 [2] CRAN (R 4.4.3)
  rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.4.0)
  RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.4.0)
  Rcpp                   1.0.14    2025-01-12 [2] CRAN (R 4.4.2)
@@ -555,23 +508,25 @@ null device
  readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.4.0)
  readxl               * 1.4.5     2025-03-07 [2] CRAN (R 4.4.3)
  rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.4.0)
+ reshape2               1.4.4     2020-04-09 [2] CRAN (R 4.4.0)
  restfulr               0.0.15    2022-06-16 [2] CRAN (R 4.4.0)
  rhdf5                * 2.50.2    2025-01-09 [2] Bioconductor 3.20 (R 4.4.2)
  rhdf5filters           1.18.1    2025-03-06 [2] Bioconductor 3.20 (R 4.4.3)
  Rhdf5lib               1.28.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.4.1)
- rlang                  1.1.5     2025-01-17 [2] CRAN (R 4.4.2)
+ rlang                  1.1.6     2025-04-11 [2] CRAN (R 4.4.3)
  rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.4.0)
  Rsamtools              2.22.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- RSQLite                2.3.9     2024-12-03 [2] CRAN (R 4.4.2)
+ RSQLite                2.3.11    2025-05-04 [2] CRAN (R 4.4.3)
  rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.4.0)
  rtracklayer            1.66.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  S4Arrays             * 1.6.0     2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  S4Vectors            * 0.44.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- sass                   0.4.9     2024-03-15 [2] CRAN (R 4.4.0)
+ sass                   0.4.10    2025-04-11 [2] CRAN (R 4.4.3)
  ScaledMatrix           1.14.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- scales                 1.3.0     2023-11-28 [2] CRAN (R 4.4.0)
+ scales                 1.4.0     2025-04-24 [1] CRAN (R 4.4.3)
  scater                 1.34.1    2025-03-03 [2] Bioconductor 3.20 (R 4.4.3)
+ scran                  1.34.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  scuttle                1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
  segmented              2.1-4     2025-02-28 [1] CRAN (R 4.4.3)
  sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.4.2)
@@ -581,13 +536,13 @@ null device
  SingleCellExperiment * 1.28.1    2024-11-10 [2] Bioconductor 3.20 (R 4.4.2)
  SparseArray          * 1.6.2     2025-02-20 [2] Bioconductor 3.20 (R 4.4.3)
  SpatialExperiment    * 1.16.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- spatialLIBD          * 1.19.11   2025-03-25 [1] Github (LieberInstitute/spatialLIBD@35fe720)
+ spatialLIBD          * 1.21.3    2025-04-24 [1] Github (LieberInstitute/spatialLIBD@3b5964f)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.4.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.4.3)
  stringr              * 1.5.1     2023-11-14 [2] CRAN (R 4.4.0)
  SummarizedExperiment * 1.36.0    2024-10-29 [2] Bioconductor 3.20 (R 4.4.2)
- systemfonts            1.2.2     2025-04-04 [2] CRAN (R 4.4.3)
- textshaping            1.0.0     2025-01-20 [2] CRAN (R 4.4.2)
+ systemfonts            1.2.3     2025-04-30 [2] CRAN (R 4.4.3)
+ textshaping            1.0.1     2025-05-01 [2] CRAN (R 4.4.3)
  tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.4.0)
  tidyr                * 1.3.1     2024-01-24 [2] CRAN (R 4.4.0)
  tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.4.0)
@@ -599,6 +554,7 @@ null device
  vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.4.0)
  viridis                0.6.5     2024-01-29 [2] CRAN (R 4.4.0)
  viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.4.0)
+ vroom                  1.6.5     2023-12-05 [2] CRAN (R 4.4.0)
  withr                  3.0.2     2024-10-28 [2] CRAN (R 4.4.2)
  XML                    3.99-0.18 2025-01-01 [2] CRAN (R 4.4.2)
  xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.4.0)
@@ -613,4 +569,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Apr  7 06:23:32 PM EDT 2025
+Fri May 16 01:55:57 PM EDT 2025
