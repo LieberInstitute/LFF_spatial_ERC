@@ -17,7 +17,7 @@ cell_type_colors <- c(Excit = "#247FBC",
                       OPC = "#D2B037",
                       Astro = "#3BB273",
                       Micro = "#663894",
-                      Macro = "#79354E",
+                      # Macro = "#79354E",
                       Endo = "#FF56AF",
                       # PC = "#DE289E",
                       # VLMC = "#DA5FE8",
@@ -144,15 +144,30 @@ list(Green_Blue = "#00B3B3",
      Cobalt_Blue = "#0040CC",
      Violet_Blue = "#2E2EFF")
 
-cell_type_colors_anno = c(Astro.1 = "#3BB273",
-                          Astro.2 = "#9DD8B9",
-                          Endo = "#FF56AF",
+cell_type_colors_anno = c(Astro.01 = "#228B22",
+                          Astro.02 = "#32CD32",
+                          Astro.03 = "#808000",
+                          Astro.04 = "#98FF98",
+                          Astro.05 = "#50C878",
+                          Macro = "#79354E",
                           Micro.1 = "#663894",
-                          Micro.2 = "#B29BC9",
-                          Oligo.1 = "#F57A00",
-                          Oligo.2 = "#F8A655",
-                          choird_plexis = "#AA7F6E",
-                          OPC = "#D2B037",
+                          Micro.2 = "#A375D1",
+                          Micro.3 = "#B96FD9",
+                          Micro.4 = "#673AB7",
+                          Micro.5 = "#BFA8ED",
+                          OPC.1 = "#D2B037",
+                          OPC.2 = "#BDB76B",
+                          OPC.3 = "#FFDB58",
+                          OPC.4 = "#A2852D",
+                          OPC.5 = "#DA9100",
+                          Oligo.01 = "#F57A00",
+                          Oligo.02 = "#F2A240",
+                          Oligo.03 = "#CC5500",
+                          Oligo.04 = "#C27153",
+                          Oligo.05 = "#FF8C00",
+                          Vasc.Endo = "#FF56AF",
+                          Vasc.PC = "#DE289E",
+                          Vasc.VLMC = "#DA5FE8", 
                           Excit.L2="#4169E1",
                           Excit.L2_5.1="#1E90FF",
                           Excit.L2_5.2="#4682B4",
@@ -172,7 +187,7 @@ pdf(here(plot_dir, "ERC_cell_type_colors_anno.pdf"), height = 15, width = 11)
 test_pallet_plots(cell_type_colors_anno, "Cell Colors Anno: ERC")
 dev.off()
 
-save(cell_type_colors_anno, file = here("processed-data","00_project_prep","cell_type_colors_anno.Rdata"))
+save(cell_type_colors_anno, file = here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"))
 
 
 #### SpD colors ####
