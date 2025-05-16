@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=10G
 #SBATCH --job-name=run_all_post_update
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
