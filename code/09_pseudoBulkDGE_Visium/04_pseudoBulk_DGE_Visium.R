@@ -23,7 +23,7 @@ de_results <- pseudoBulkDGE(
     label = spe_pb$SpD,
     design = ~APOE_carrier + Anc_Afr + Age + Sex + Rin + Visium_slide,
     coef = "APOE_carrierE4+",
-    condition = "APOE_carrier"
+    condition = "APOE_carrier",
     row.data = rowData(spe_pb),
     method = "edgeR"
 )
