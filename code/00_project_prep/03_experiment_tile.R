@@ -25,7 +25,7 @@ metadata_plan <- metadata_visium_plan |>
                   select(BrNum, APOE, complete = snRNA_complete) |>
                   mutate(assay = "snRNA-seq"))
 
-metadata_plan |> count(assay, complete)
+metadata_plan |> dplyr::count(assay, complete)
 # assay     complete     n
 # <chr>     <lgl>    <int>
 # 1 Visium    TRUE        32
@@ -67,7 +67,7 @@ summary(sample_info$Age)
 # 29.95   47.61   51.63   52.36   59.92   68.38
 
 APOE_ancestry_tile <- sample_info |> 
-    count(Ancestry, APOE) |>
+    dplyr::count(Ancestry, APOE) |>
     ggplot(aes(x = APOE, y = Ancestry, 
                fill = APOE)) +
     geom_tile(color = "white") +
@@ -78,7 +78,30 @@ APOE_ancestry_tile <- sample_info |>
     theme(legend.position = "None")
 
 ggsave(APOE_ancestry_tile, filename = here(plot_dir, "LFF_ERC_APOE_ancestry_tileplot.png"), height = 2, width = 3)
-    
+
+APOE_ancestry_sex_tile <- sample_info |> 
+    dplyr::count(Ancestry, APOE, Sex) |>
+    ggplot(aes(x = APOE, y = Ancestry, 
+               fill = APOE)) +
+    geom_tile(color = "white") +
+    geom_text(aes(label = n), color = "black") +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    facet_wrap(~Sex) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(APOE_ancestry_sex_tile, filename = here(plot_dir, "LFF_ERC_APOE_ancestry_sex_tileplot.png"), height = 2, width = 6)
+
+## sex barplot
+sex_barplot <- sample_info |>
+    ggplot(aes(x = Sex, fill = Sex)) +
+    geom_bar() +
+    geom_text(stat='count',aes(label = after_stat(count)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = sex_colors) +
+    theme_bw() +
+    theme(legend.position= "None")
+
+ggsave(sex_barplot, filename = here(plot_dir, "sex_barplot.png"), width = 2, height = 2)
 
 
 # slurmjobs::job_single('03_experiment_tile', create_shell = TRUE, memory = '5G', command = "Rscript 03_experiment_tile.R")
