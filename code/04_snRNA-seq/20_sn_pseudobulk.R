@@ -10,7 +10,8 @@ library("getopt")
 
 # Import command-line parameters
 scec <- matrix(
-    c(  "cluster", "c", "1", "character", "Name of cluster"),
+    c("cluster", "c", "1", "character", "Name of cluster",
+      "sce", "s", "1", "character", "Name of SCE"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -21,7 +22,7 @@ if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive =
 
 #### Load the data ####
 message(Sys.time(), " - Load HDF5 sce")
-sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", opt$sce))
 
 #### Run Spatial Registration Function ####
 cluster_var <- opt$cluster
@@ -65,8 +66,8 @@ if(is(sce_pseudo, "SpatialExperiment")) {
 }
 
 message(Sys.time(), " - save data")
-saveRDS(sce_pseudo, file = here(data_dir, sprintf("sce_pseudobulk_only-%s.rds", cluster_var)))
-sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_only-%s.rds", cluster_var)))
+saveRDS(sce_pseudo, file = here(data_dir, sprintf("%s_pseudobulk_only-%s.rds", opt$sce, cluster_var)))
+sce_pseudo <- readRDS(here(data_dir, sprintf("%s_pseudobulk_only-%s.rds", opt$sce, cluster_var)))
 
 # slurmjobs::job_single('20_sn_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 20_sn_pseudobulk.R -cluster 'cell_type_anno'")
 
