@@ -85,13 +85,24 @@ ggsave(sample_ancestry_bar, filename = here(plot_dir, "Ancestry_cat_APOE_bar.png
 
 #### Age ####
 
-metadata_visium_list |> 
+age_boxplot <- metadata_visium_list |> 
+    ggplot(aes(y = Age, x = "All Samples")) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter() +
+    theme_bw()
+
+ggsave(age_boxplot, filename = here(plot_dir, "age_boxplot.png"), width = 1.5, height = 6)
+
+
+age_apoe_boxplot <- metadata_visium_list |> 
     ggplot(aes(y = Age, x = APOE, fill = APOE)) +
     geom_boxplot(outlier.shape = NA) +
     geom_point(aes(color = Ancestry)) +
     scale_color_manual(values = ancestry_colors) +
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
+
+ggsave(age_apoe_boxplot, filename = here(plot_dir, "age_apoe_boxplot.png"), width = 4, height = 6)
     
 
 # slurmjobs::job_single('04_ancestry_check', create_shell = TRUE, memory = '5G', command = "Rscript 04_ancestry_check.R")
