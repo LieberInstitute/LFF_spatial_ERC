@@ -1,11 +1,12 @@
 **** Job starts ****
-Fri May 16 01:54:39 PM EDT 2025
+Tue May 20 03:34:38 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16625531
+Job id: 16668993
 Job name: 23_SpD_heatmaps
-Node name: compute-168
+Node name: compute-152
 Task id: 
+Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -298,12 +299,12 @@ Use `suppressMessages()` to turn off this message.
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2025-05-16 13:55:00 EDT"
+[1] "2025-05-20 15:34:59 EDT"
    user  system elapsed 
- 18.280   0.937  20.123 
+ 17.242   0.851  20.538 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88204)
+ version  R version 4.4.3 Patched (2025-02-28 r88216)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -311,7 +312,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-16
+ date     2025-05-20
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -477,4 +478,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri May 16 01:55:00 PM EDT 2025
+Tue May 20 03:35:00 PM EDT 2025
