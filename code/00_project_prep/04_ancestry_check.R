@@ -32,11 +32,23 @@ samples_ancestry <- metadata_visium_list |> select(BrNum, Afr, Eur)
 save(samples_ancestry, file = here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.Rdata"))
 write.csv(samples_ancestry, file = here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.csv"), row.names = FALSE)
 
+## local
+# load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ancestry.Rdata"))
+metadata_visium_list <- read_csv(file = here("processed-data", "00_project_prep", "02_get_online_metadata", "metadata_visium_list.csv")) |>
+    left_join(samples_ancestry) 
+
+metadata_visium_list <- metadata_visium_list |>
+    mutate(BrNum = fct_reorder(BrNum, Eur),
+           APOE = gsub(", ", "/", APOE),
+           Ancestry = gsub('CAUC', "EA", Ancestry))
+
+metadata_visium_list |> dplyr::count(APOE, Ancestry)
 
 #### plot ancestry fractions ####
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
-names(ancestry_colors) <- c("Eur", "Afr")
+ancestry_colors2 <- ancestry_colors
+names(ancestry_colors2) <- c("Eur", "Afr")
 
 sample_ancestry_long <- metadata_visium_list |> 
     select(BrNum, APOE, Ancestry, Afr, Eur) |>
@@ -50,7 +62,7 @@ sample_APOE_bar <- sample_ancestry_long |>
     ggplot(aes(x = BrNum, y = anc_prop, fill = anc_type)) +
     geom_col() +
     facet_wrap(~APOE_anno, scales = "free_x", ncol = 1) +
-    scale_fill_manual(values = ancestry_colors) +
+    scale_fill_manual(values = ancestry_colors2) +
     theme_bw() 
 
 ggsave(sample_APOE_bar, filename = here(plot_dir, "Ancestry_APOE_bar.png"), width = 8)
@@ -66,10 +78,21 @@ sample_ancestry_bar <- sample_ancestry_long |>
     ggplot(aes(x = BrNum, y = anc_prop, fill = anc_type)) +
     geom_col() +
     facet_wrap(~APOE_anno, scales = "free_x", ncol = 2)   +
-    scale_fill_manual(values = ancestry_colors) +
+    scale_fill_manual(values = ancestry_colors2) +
     theme_bw() 
 
-ggsave(sample_ancestry_bar, filename = here(plot_dir, "Ancestry_cat_APOE_bar.png"))
+ggsave(sample_ancestry_bar, filename = here(plot_dir, "Ancestry_cat_APOE_bar.png"), width = 8)
+
+#### Age ####
+
+metadata_visium_list |> 
+    ggplot(aes(y = Age, x = APOE, fill = APOE)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Ancestry)) +
+    scale_color_manual(values = ancestry_colors) +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    theme_bw()
+    
 
 # slurmjobs::job_single('04_ancestry_check', create_shell = TRUE, memory = '5G', command = "Rscript 04_ancestry_check.R")
 
