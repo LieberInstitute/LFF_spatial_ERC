@@ -10,7 +10,7 @@
 #SBATCH --array=1-9%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_spd=(Vasc_Sp09D08 L1_Sp09D05 L2.3_Sp09D01 L3_Sp09D02 LD_Sp09D09 L5_Sp09D03 L6_Sp09D04 WM.uf_Sp09D07 WM_Sp09D06)
+all_spd=(Vasc_Sp09D08 L1_Sp09D05 L2.3_Sp09D01 LD_Sp09D02 Inhib_Sp09D09 L5_Sp09D03 L6_Sp09D04 WM.uf_Sp09D07 WM_Sp09D06)
 spd=${all_spd[$(( $SLURM_ARRAY_TASK_ID / 1 % 9 ))]}
 
 ## Explicitly pipe script output to a log
