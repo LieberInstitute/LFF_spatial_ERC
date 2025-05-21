@@ -144,7 +144,7 @@ Heatmap(lit_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster.pdf"), height = 8, width = 11)
+pdf(here(plot_dir, "ERC_SpD_lit_gene_heatmap_cluster.pdf"), height = 8, width = 11)
 Heatmap(lit_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -177,7 +177,7 @@ Heatmap(lit_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_sample.pdf"), height = 8, width = 11)
+pdf(here(plot_dir, "ERC_SpD_lit_gene_heatmap_cluster_sample.pdf"), height = 8, width = 11)
 Heatmap(lit_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -190,7 +190,7 @@ Heatmap(lit_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_lit_gene_heatmap_cluster_details.pdf"), height = 8, width = 11)
+pdf(here(plot_dir, "ERC_SpD_lit_gene_heatmap_cluster_details.pdf"), height = 8, width = 11)
 Heatmap(lit_markers_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
@@ -203,6 +203,58 @@ Heatmap(lit_markers_zscore,
 )
 dev.off()
 
+#### AD risk gene heatmap ####
+## read in risk genes from OpenTargets data
+AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
+    filter(symbol %in% rowData(sce_pb)$gene_name) 
+
+nrow(AD_risk)
+
+## gene annotation df
+AD_risk_annotation <- AD_risk |>
+    select(symbol, eva) |>
+    column_to_rownames("symbol")
+
+AD_risk_col_ha <- HeatmapAnnotation(df = AD_risk_annotation)
+
+## extract z-scores - cell type pb
+AD_risk_zscore <- scale(t(logcounts(sce_pb)[rownames(AD_risk_annotation),]))
+dim(AD_risk_zscore)
+AD_risk_zscore[1:5,1:5]
+
+## plot heatmaps - cell type only
+pdf(here(plot_dir, "ERC_SpD_AD_risk_heatmap.pdf"), height = 8, width = 11)
+Heatmap(AD_risk_zscore,
+        name = "Z Score",
+        cluster_rows = FALSE,
+        cluster_columns = TRUE,
+        right_annotation = cell_row_ha_simple,
+        bottom_annotation = AD_risk_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_SpD_AD_risk_heatmap_split.pdf"), height = 8, width = 11)
+Heatmap(AD_risk_zscore,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        column_split = 5,
+        row_split = 4,
+        right_annotation = cell_row_ha_simple,
+        bottom_annotation = AD_risk_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_SpD_AD_risk_heatmap_cluster.pdf"), height = 8, width = 11)
+Heatmap(AD_risk_zscore,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        show_row_names = TRUE,
+        right_annotation = cell_row_ha_simple,
+        bottom_annotation = AD_risk_col_ha
+)
+dev.off()
 
 #### MeanRatio heatmap ####
 message("** MeanRatio genes **")
@@ -230,7 +282,7 @@ MR_markers_zscore <- scale(t(logcounts(spe_pb)[rownames(marker_stats_top),]))
 dim(MR_markers_zscore)
 MR_markers_zscore[1:5,1:5]
 
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_sample.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_MR_gene_heatmap_sample.pdf"), height = 8, width = 10)
 Heatmap(MR_markers_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
@@ -246,7 +298,7 @@ Heatmap(MR_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_sample.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_MR_gene_heatmap_cluster_sample.pdf"), height = 8, width = 10)
 Heatmap(MR_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -268,7 +320,7 @@ MR_markers_zscore <- scale(t(logcounts(spe_pb_sample)[rownames(marker_stats_top)
 dim(MR_markers_zscore)
 MR_markers_zscore[1:5,1:5]
 
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_sample.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_MR_gene_heatmap_sample.pdf"), height = 8, width = 10)
 Heatmap(MR_markers_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
@@ -284,7 +336,7 @@ Heatmap(MR_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_MR_gene_heatmap_cluster.pdf"), height = 8, width = 10)
 Heatmap(MR_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -300,7 +352,7 @@ Heatmap(MR_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_MR_gene_heatmap_cluster_details.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_MR_gene_heatmap_cluster_details.pdf"), height = 8, width = 10)
 Heatmap(MR_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -364,7 +416,7 @@ Heatmap(enrich_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap_cluster.pdf"), height = 8, width = 10)
 Heatmap(enrich_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -401,7 +453,7 @@ Heatmap(enrich_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster_sample.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap_cluster_sample.pdf"), height = 8, width = 10)
 Heatmap(enrich_markers_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
@@ -416,7 +468,7 @@ Heatmap(enrich_markers_zscore,
 )
 dev.off()
 
-pdf(here(plot_dir, "ERC_sn_enrich_gene_heatmap_cluster_details.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "ERC_SpD_enrich_gene_heatmap_cluster_details.pdf"), height = 8, width = 10)
 Heatmap(enrich_markers_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
