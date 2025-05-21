@@ -4,15 +4,13 @@
 
 library("spatialLIBD")
 library("SingleCellExperiment")
-# library("scran")
-# library("BayesSpace")
 library("tidyverse")
 library("ggpubr")
 library("ggrepel")
 library("GGally")
 library("here")
 library("sessioninfo")
-library("variancePartition")
+# library("variancePartition")
 library("ComplexHeatmap")
 library("circlize")
 
@@ -143,7 +141,7 @@ varPart_summary |> filter(metric == "Median", name != "Residuals") |> group_by(S
 varPart_summary |> filter(metric == "Mean", name != "Residuals") |> head()
 
 
-varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
+varPart_heatmap <- function(my_form = "carrier", my_metric = "Mean"){
     
     varPart_summary_matrix <- varPart_summary |> 
         filter(metric == my_metric, form == my_form,  name != "Residuals") |>
@@ -152,9 +150,7 @@ varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
         column_to_rownames("name") |>
         as.matrix()
     
-    # return(varPart_summary_matrix)
-    
-    col_fun = colorRamp2(c(0, max(varPart_summary_matrix)), c("white", "red"))
+        col_fun = colorRamp2(c(0, max(varPart_summary_matrix)), c("white", "red"))
     
     pdf(here(plot_dir, sprintf("Visium_varPart_summary-%s-%s.pdf", my_form, my_metric)), height = 8, width = 11)
     print(Heatmap(varPart_summary_matrix,
@@ -166,12 +162,14 @@ varPart_heatmap <- function(my_form = "global", my_metric = "Mean"){
     ))
     dev.off()
     
-}
+    return(varPart_summary_matrix)
+    }
 
 ## plot heatmaps
 (form_list <- unique(varPart_summary$form))
 
-walk(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Mean"))
+var_part_mean <- map(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Mean"))
+
 walk(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Median"))
 
 #### colinearity ####

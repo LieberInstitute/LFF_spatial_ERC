@@ -15,7 +15,7 @@ plot_dir <- here("plots", "05_spe_correct_cluster", "23_SpD_heatmaps")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
-## load psuedobulked sce data
+## load psuedobulked spe data
 spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk","spe_pseudobulk_only-SpD_syn.rds"))
 dim(spe_pb)
 
@@ -206,7 +206,7 @@ dev.off()
 #### AD risk gene heatmap ####
 ## read in risk genes from OpenTargets data
 AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
-    filter(symbol %in% rowData(sce_pb)$gene_name) 
+    filter(symbol %in% rowData(spe_pb)$gene_name) 
 
 nrow(AD_risk)
 
@@ -218,7 +218,7 @@ AD_risk_annotation <- AD_risk |>
 AD_risk_col_ha <- HeatmapAnnotation(df = AD_risk_annotation)
 
 ## extract z-scores - cell type pb
-AD_risk_zscore <- scale(t(logcounts(sce_pb)[rownames(AD_risk_annotation),]))
+AD_risk_zscore <- scale(t(logcounts(spe_pb)[rownames(AD_risk_annotation),]))
 dim(AD_risk_zscore)
 AD_risk_zscore[1:5,1:5]
 
@@ -379,7 +379,7 @@ enrichment_stats_top <- sig_genes_extract(
     modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
-    sce_layer = spe_pb
+    spe_layer = spe_pb
 ) |>
     select(ensembl, fdr, top, logFC, SpD = test) |>
     mutate(SpD = factor(gsub("_", "~", SpD), levels = spd_levels)) |>
