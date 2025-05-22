@@ -47,6 +47,10 @@ layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcollado
 ## sestan sn enrichment
 layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
 
+## spatial HPC modeling 
+layer_modeling_results$spatialHPC <- list()
+layer_modeling_results$spatialHPC$enrichment <- read.csv("/dcs04/lieber/lcolladotor/spatialHPC_LIBD4035/spatial_hpc/snRNAseq_hpc/processed-data/revision/sn_enrichment_stats_superfine.csv", row.names=1)
+
 names(layer_modeling_results)
 # [1] "HumanPilot"   "spatialDLPFC" "spatialERC"   "snDLPFC_PEC"  "sestan_EC"
 
@@ -133,7 +137,7 @@ walk(names(cor_layer), function(ref){
 })
 
 
-# slurmjobs::job_single('18_sn_spatial_registration', create_shell = TRUE, memory = '25G', command = "Rscript 18_sn_spatial_registration.R")
+# slurmjobs::job_single('30_sn_subcluster_spatial_registration', create_shell = TRUE, memory = '10G', command = "Rscript 30_sn_subcluster_spatial_registration.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

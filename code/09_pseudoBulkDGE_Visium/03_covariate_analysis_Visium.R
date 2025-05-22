@@ -176,13 +176,23 @@ var_part_mean <- map(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Mean
 ## make combined heatmap
 var_part_mean_all <- do.call("rbind", var_part_mean)
 
+covar_index <- order(rowSums(var_part_mean_all))
+
+var_part_mean_all <- var_part_mean_all[covar_index,]
+
+model_row_ha_simple <- rowAnnotation(
+    mod = jaffelab::ss(rownames(var_part_mean_all), "-"),
+    covar = jaffelab::ss(rownames(var_part_mean_all), "-",2)
+)
+
 col_fun = colorRamp2(c(0, max(var_part_mean_all)), c("white", "red"))
-pdf(here(plot_dir, "Visium_varPart_summary-ALL-Mean.pdf"), height = 8, width = 11)
+pdf(here(plot_dir, "Visium_varPart_summary-ALL-Mean.pdf"), height = 12, width = 11)
 print(Heatmap(var_part_mean_all,
               name = "Mean",
               col = col_fun,
-              cluster_rows = TRUE,
+              cluster_rows = FALSE,
               cluster_columns = TRUE,
+              right_annotation = model_row_ha_simple,
               column_title = sprintf("Visium VarPart - %s", "ALL")
 ))
 dev.off()

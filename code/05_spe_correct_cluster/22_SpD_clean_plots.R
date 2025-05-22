@@ -95,7 +95,7 @@ walk(c("UMAP", "TSNE"),
                           color_pal = SpD_colors))
 
 
-#### Spatial Registration vs. DLPFC ####
+#### Spatial Registration vs. DLPFC & HPC ####
 ## get reference layer enrichment statistics
 layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
 
@@ -109,12 +109,17 @@ pwalk(dlpfc_anno, function(...) dlpfc_colnames <<- gsub(..5, ..3, dlpfc_colnames
 colnames(layer_modeling_results$spatialDLPFC$enrichment) <- dlpfc_colnames
 head(layer_modeling_results$spatialDLPFC$enrichment)
 
+## spatial HPC modeling 
+layer_modeling_results$spatialHPC <- list()
+layer_modeling_results$spatialHPC$enrichment <- read.csv("/dcs04/lieber/lcolladotor/spatialHPC_LIBD4035/spatial_hpc/snRNAseq_hpc/processed-data/revision/sn_enrichment_stats_superfine.csv", row.names=1)
 
-## Annotate modeling results
+## ERC Annotated modeling results
 erc_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
 colnames(erc_modeling$enrichment) <- gsub("_Sp", "~Sp", colnames(erc_modeling$enrichment))
 
+
+## correlate 
 cor_layer <- map(layer_modeling_results, function(layer_mod){
     
     cor_layer <- layer_stat_cor(stats = erc_modeling$enrichment,
@@ -152,7 +157,7 @@ layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                      spatialDLPFC = NULL) #TODO add spatial domain colors)
                      
 map(names(cor_layer), function(ref){
-    pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)))
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7))
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
@@ -165,7 +170,7 @@ map(names(cor_layer), function(ref){
 })
 
 map(names(cor_layer), function(ref){
-    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_cluster.pdf", ref)))
+    pdf(here(plot_dir, sprintf("layer_stat_cor_%s_cluster.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7))
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
