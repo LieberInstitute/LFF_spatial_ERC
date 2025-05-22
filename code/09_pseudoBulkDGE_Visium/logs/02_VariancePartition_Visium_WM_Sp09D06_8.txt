@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu May 15 10:55:44 AM EDT 2025
+Wed May 21 07:31:47 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16607495
+Job id: 16676313
 Job name: 02_VariancePartition_Visium
-Node name: compute-144
+Node name: compute-168
 Task id: 8
 Loading conda_R/4.4.x
 
@@ -141,7 +141,7 @@ Subset to WM_Sp09D06 - 30494 spots
 
 FALSE  TRUE 
    24     7 
-2025-05-15 10:56:09.820803 - canCorPairs
+2025-05-21 19:32:03.521091 - canCorPairs
 Warning message:
 In canCorPairs(form, pd) : Regression model may be problematic.
 High colinearity between variables:
@@ -160,50 +160,50 @@ High colinearity between variables:
   Visium_slide and round
 null device 
           1 
-2025-05-15 10:56:10.138422 - VarPart: carrier
+2025-05-21 19:32:03.665015 - VarPart: carrier
 filter genes:0
 Saving 7 x 7 in image
-2025-05-15 11:08:30.748439 - VarPart: apoe
+2025-05-21 19:39:36.910431 - VarPart: apoe
 filter genes:0
 Saving 7 x 7 in image
-2025-05-15 11:19:07.623035 - VarPart: e4e4
+2025-05-21 19:47:39.239076 - VarPart: e4e4
 filter genes:0
 Saving 7 x 7 in image
-2025-05-15 11:29:45.950796 - VarPart: carrier_i
+2025-05-21 19:55:33.153155 - VarPart: carrier_i
 filter genes:0
 Saving 7 x 7 in image
-2025-05-15 11:45:29.86915 - VarPart: apoe_i
+2025-05-21 20:05:53.127508 - VarPart: apoe_i
 filter genes:0
 Saving 7 x 7 in image
-2025-05-15 11:56:43.004547 - VarPart: e4e4_i
+2025-05-21 20:14:38.787191 - VarPart: e4e4_i
 filter genes:0
 Saving 7 x 7 in image
 Warning messages:
 1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 5888 responses.
+  Model failed for 5899 responses.
   See errors with attr(., 'errors')
 2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 5889 responses.
+  Model failed for 5888 responses.
   See errors with attr(., 'errors')
 3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 5888 responses.
   See errors with attr(., 'errors')
 4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 5896 responses.
+  Model failed for 5888 responses.
   See errors with attr(., 'errors')
 5: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
   Model failed for 5888 responses.
   See errors with attr(., 'errors')
 6: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
-  Model failed for 5946 responses.
+  Model failed for 5947 responses.
   See errors with attr(., 'errors')
 [1] "Reproducibility information:"
-[1] "2025-05-15 12:08:00 EDT"
+[1] "2025-05-21 20:23:33 EDT"
     user   system  elapsed 
-4291.395   19.455 4335.083 
+3079.418   13.248 3104.909 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88203)
+ version  R version 4.4.3 Patched (2025-02-28 r88218)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -211,7 +211,7 @@ Warning messages:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-15
+ date     2025-05-21
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -408,4 +408,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu May 15 12:08:00 PM EDT 2025
+Wed May 21 08:23:34 PM EDT 2025
