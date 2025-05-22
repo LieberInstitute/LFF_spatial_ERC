@@ -98,7 +98,8 @@ layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
                   spatialDLPFC = NULL, #TODO add spatial domain colors
                   spatialERC = SpD_colors,
                   snDLPFC_PEC = NULL,
-                  sestan_EC = NULL)
+                  sestan_EC = NULL,
+                  spatialHPC = NULL)
 
 map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
 
