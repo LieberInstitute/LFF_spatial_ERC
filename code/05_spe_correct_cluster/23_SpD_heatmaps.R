@@ -228,7 +228,7 @@ Heatmap(AD_risk_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
         cluster_columns = TRUE,
-        right_annotation = cell_row_ha_simple,
+        right_annotation = spd_row_ha_simple,
         bottom_annotation = AD_risk_col_ha
 )
 dev.off()
@@ -238,9 +238,9 @@ Heatmap(AD_risk_zscore,
         name = "Z Score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        column_split = 5,
-        row_split = 4,
-        right_annotation = cell_row_ha_simple,
+        column_split = 2,
+        row_split = 2,
+        right_annotation = spd_row_ha_simple,
         bottom_annotation = AD_risk_col_ha
 )
 dev.off()
@@ -251,7 +251,7 @@ Heatmap(AD_risk_zscore,
         cluster_rows = TRUE,
         cluster_columns = TRUE,
         show_row_names = TRUE,
-        right_annotation = cell_row_ha_simple,
+        right_annotation = spd_row_ha_simple,
         bottom_annotation = AD_risk_col_ha
 )
 dev.off()
