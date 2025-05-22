@@ -162,14 +162,33 @@ varPart_heatmap <- function(my_form = "carrier", my_metric = "Mean"){
     ))
     dev.off()
     
+    rownames(varPart_summary_matrix) <- paste0(my_form, "-", rownames(varPart_summary_matrix))
+    
     return(varPart_summary_matrix)
     }
 
 ## plot heatmaps
 (form_list <- unique(varPart_summary$form))
+names(form_list) <- form_list
 
 var_part_mean <- map(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Mean"))
 
+## make combined heatmap
+var_part_mean_all <- do.call("rbind", var_part_mean)
+
+col_fun = colorRamp2(c(0, max(var_part_mean_all)), c("white", "red"))
+pdf(here(plot_dir, "Visium_varPart_summary-ALL-Mean.pdf"), height = 8, width = 11)
+print(Heatmap(var_part_mean_all,
+              name = "Mean",
+              col = col_fun,
+              cluster_rows = TRUE,
+              cluster_columns = TRUE,
+              column_title = sprintf("Visium VarPart - %s", "ALL")
+))
+dev.off()
+
+
+## plot medians
 walk(form_list, ~varPart_heatmap(my_form = .x, my_metric = "Median"))
 
 #### colinearity ####
