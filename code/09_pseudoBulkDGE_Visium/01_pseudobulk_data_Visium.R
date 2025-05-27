@@ -66,8 +66,8 @@ levels(spe_pseudo$APOE_carrier_syn)
 spe_pseudo$nspots <- spe_pseudo$ncells
 
 #### Add PCAs ####
-spe_pb <- scater::runPCA(spe_pb, 
-                         ncomponents = 10,
+spe_pseudo <- scater::runPCA(spe_pseudo, 
+                         ncomponents = 50,
                          name = "PCA")
 
 #### save ####
