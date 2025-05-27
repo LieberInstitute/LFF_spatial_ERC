@@ -8,6 +8,7 @@ library("dplyr")
 library("here")
 library("sessioninfo")
 library("getopt")
+library("scater")
 
 # Import command-line parameters
 scec <- matrix(
@@ -92,6 +93,12 @@ cell_type_count |>
 sce_pseudo <- sce_pseudo[, sce_pseudo$registration_variable %in% enough_samples]
 sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
 
+#### Add PCAs ####
+sce_pseudo <- scater::runPCA(sce_pseudo, 
+                             ncomponents = 50,
+                             name = "PCA")
+
+
 #### Additional edits + Save ####
 ## drop all NA cols
 all_na <- sapply(colData(sce_pseudo), function(x)all(is.na(x)))
@@ -105,10 +112,10 @@ saveRDS(sce_pseudo, file = here(data_dir, sprintf("sce_pseudo_DGE-%s.RDS", opt$c
 
 # slurmjobs::job_single('01_pseudobulk_data_sn', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data.R")
 
-slurmjobs::job_loop(loops = list(cluster = c("cell_type_anno", "cell_type_broad")),
-                    name = "01_pseudobulk_data_sn",
-                    create_shell = TRUE,
-                    create_script = FALSE)
+# slurmjobs::job_loop(loops = list(cluster = c("cell_type_anno", "cell_type_broad")),
+#                     name = "01_pseudobulk_data_sn",
+#                     create_shell = TRUE,
+#                     create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
