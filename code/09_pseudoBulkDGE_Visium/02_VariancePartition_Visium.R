@@ -48,7 +48,7 @@ message(Sys.time(), " - canCorPairs")
 
 pd <- as.data.frame(colData(spe_pb)) 
 
-form <- ~ APOE + APOE_num + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + ncells + pseudo_sum_umi + pseudo_expr_chrM_ratio
+form <- ~ APOE + APOE_num + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + nspots + pseudo_sum_umi + pseudo_expr_chrM_ratio
 
 C <- canCorPairs(form, pd)
 
@@ -58,15 +58,14 @@ title(opt$spd)
 dev.off()
 
 #### Variance Partition ####
-
 my_forms <- list(
-    carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
+    carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio + nspots,
+    apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio + nspots,
+    e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio + nspots,
     # interaction syntax x + (x | g)
-    carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio,
-    e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio
+    carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio + nspots,
+    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio + nspots,
+    e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + (1 | round) + pseudo_expr_chrM_ratio + nspots
 )
 
 varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name){
