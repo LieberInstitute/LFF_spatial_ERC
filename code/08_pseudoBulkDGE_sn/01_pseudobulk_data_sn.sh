@@ -4,10 +4,19 @@
 #SBATCH --job-name=01_pseudobulk_data_sn
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/01_pseudobulk_data_sn.txt
-#SBATCH -e logs/01_pseudobulk_data_sn.txt
+#SBATCH -o /dev/null
+#SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
+#SBATCH --array=1-2%20
 
+## Define loops and appropriately subset each variable for the array task ID
+all_cluster=(cell_type_anno cell_type_broad)
+cluster=${all_cluster[$(( $SLURM_ARRAY_TASK_ID / 1 % 2 ))]}
+
+## Explicitly pipe script output to a log
+log_path=logs/01_pseudobulk_data_sn_${cluster}_${SLURM_ARRAY_TASK_ID}.txt
+
+{
 set -e
 
 echo "**** Job starts ****"
@@ -27,11 +36,13 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R --cluster cell_type_anno
-Rscript 01_pseudobulk_data.R --cluster cell_type_broad
+Rscript 01_pseudobulk_data_sn.R --cluster ${cluster}
 
 echo "**** Job ends ****"
 date
 
+} > $log_path 2>&1
+
 ## This script was made using slurmjobs version 1.3.0
 ## available from http://research.libd.org/slurmjobs/
+

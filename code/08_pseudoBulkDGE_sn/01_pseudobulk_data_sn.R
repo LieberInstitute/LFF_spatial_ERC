@@ -103,7 +103,12 @@ saveRDS(sce_pseudo, file = here(data_dir, sprintf("sce_pseudo_DGE-%s.RDS", opt$c
 
 # sce_pseudo <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn","01_pseudobulk_data", "sce_pseudo_DGE.RDS"))
 
-# slurmjobs::job_single('01_pseudobulk_data_sn', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data.R --cluster cell_type_anno")
+# slurmjobs::job_single('01_pseudobulk_data_sn', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data.R")
+
+slurmjobs::job_loop(loops = list(cluster = c("cell_type_anno", "cell_type_broad")),
+                    name = "01_pseudobulk_data_sn",
+                    create_shell = TRUE,
+                    create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
