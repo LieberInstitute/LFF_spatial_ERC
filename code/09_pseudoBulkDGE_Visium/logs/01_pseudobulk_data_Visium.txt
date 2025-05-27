@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri May 16 01:20:30 PM EDT 2025
+Tue May 27 10:44:45 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16625310
+Job id: 16800494
 Job name: 01_pseudobulk_data_Visium
-Node name: compute-122
+Node name: compute-148
 Task id: 
 Loading conda_R/4.4.x
 
@@ -130,7 +130,7 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-05-16 13:20:48.568286 - Load HDF5 SPE
+2025-05-27 10:45:00.523736 - Load HDF5 SPE
 class: SpatialExperiment 
 dim: 30494 122202 
 metadata(1): SpD_colors
@@ -154,10 +154,10 @@ FALSE  TRUE
          6217         15363         11471         26479          6915 
    L5_Sp09D03    L6_Sp09D04 WM.uf_Sp09D07    WM_Sp09D06 
         11617         19464         12510         12166 
-2025-05-16 13:23:48.236992 make pseudobulk object
-2025-05-16 13:39:46.043118 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2025-05-16 13:39:46.244551 normalize expression
-2025-05-16 13:39:52.293866 - Done pseudobulk
+2025-05-27 10:47:08.938153 make pseudobulk object
+2025-05-27 11:01:12.620146 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2025-05-27 11:01:12.792205 normalize expression
+2025-05-27 11:01:18.105983 - Done pseudobulk
 nrow: 30494, ncol: 279
      
       Vasc~Sp09D08 L1~Sp09D05 L2.3~Sp09D01 LD~Sp09D02 Inhib~Sp09D09 L5~Sp09D03
@@ -169,20 +169,14 @@ nrow: 30494, ncol: 279
   E4+         17            17         17
 [1] "E2.E2" "E2.E3" "E3.E4" "E4.E4"
 [1] "E2" "E4"
-   
-    E2/E2 E2/E3 E3/E4 E4/E4
-  0    54     0     0     0
-  1     0    72     0     0
-  2     0     0    90     0
-  3     0     0     0    63
-2025-05-16 13:39:52.375208 - Save
+2025-05-27 11:01:18.442484 - Save
 [1] "Reproducibility information:"
-[1] "2025-05-16 13:39:58 EDT"
-    user   system  elapsed 
-1133.830   13.743 1166.524 
+[1] "2025-05-27 11:01:26 EDT"
+   user  system elapsed 
+968.534   8.814 999.917 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88204)
+ version  R version 4.4.3 Patched (2025-02-28 r88218)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -190,7 +184,7 @@ nrow: 30494, ncol: 279
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-16
+ date     2025-05-27
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -347,4 +341,4 @@ nrow: 30494, ncol: 279
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri May 16 01:39:59 PM EDT 2025
+Tue May 27 11:01:27 AM EDT 2025
