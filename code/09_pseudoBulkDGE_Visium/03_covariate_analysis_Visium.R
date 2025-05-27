@@ -136,10 +136,8 @@ any(is.na(varPart_summary$SpD))
 head(varPart_summary)
 
 varPart_summary |> count(SpD)
-
 varPart_summary |> filter(metric == "Median", name != "Residuals") |> group_by(SpD, form) |> slice_max(value)
 varPart_summary |> filter(metric == "Mean", name != "Residuals") |> head()
-
 
 varPart_heatmap <- function(my_form = "carrier", my_metric = "Mean"){
     
@@ -150,13 +148,17 @@ varPart_heatmap <- function(my_form = "carrier", my_metric = "Mean"){
         column_to_rownames("name") |>
         as.matrix()
     
-        col_fun = colorRamp2(c(0, max(varPart_summary_matrix)), c("white", "red"))
+    ## order by rowSums    
+    vp_metric_sum <- rowSums(varPart_summary_matrix)
+    varPart_summary_matrix <- varPart_summary_matrix[order(vp_metric_sum, decreasing = TRUE), ]
+    
+    col_fun = colorRamp2(c(0, max(varPart_summary_matrix)), c("white", "red"))
     
     pdf(here(plot_dir, sprintf("Visium_varPart_summary-%s-%s.pdf", my_form, my_metric)), height = 8, width = 11)
     print(Heatmap(varPart_summary_matrix,
             name = my_metric,
             col = col_fun,
-            cluster_rows = TRUE,
+            cluster_rows = FALSE,
             cluster_columns = TRUE,
             column_title = sprintf("Visium VarPart - %s", my_form)
     ))
