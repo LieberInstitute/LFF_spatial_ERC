@@ -57,11 +57,16 @@ spe_pseudo$APOE_carrier_syn <- factor(gsub("\\+", "", spe_pseudo$APOE_carrier))
 levels(spe_pseudo$APOE_carrier_syn)
 
 ## add continuous APOE variable
-APOE_num <- data.frame(APOE_num = 0:3)
-rownames(APOE_num) <- c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
+# APOE_num <- data.frame(APOE_num = 0:3)
+# rownames(APOE_num) <- c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
 
 spe_pseudo$APOE_num <- APOE_num[spe_pseudo$APOE, ] 
 table(spe_pseudo$APOE_num, spe_pseudo$APOE)
+
+#### Add PCAs ####
+spe_pb <- scater::runPCA(spe_pb, 
+                         ncomponents = 10,
+                         name = "PCA")
 
 #### save ####
 message(Sys.time(), " - Save")
