@@ -87,7 +87,7 @@ message("Too few samples in: ",
 
 cell_type_count |>
     mutate(enough_samples = registration_variable %in% enough_samples)|>
-    write_csv(here(data_dir, sprintf("sn_psuedobulk_sample_count-%s.csv", )))
+    write.csv(here(data_dir, sprintf("sn_psuedobulk_sample_count-%s.csv", opt$cluster)))
 
 ## drop too few sample cell types
 sce_pseudo <- sce_pseudo[, sce_pseudo$registration_variable %in% enough_samples]
