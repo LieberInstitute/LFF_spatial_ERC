@@ -8,6 +8,7 @@ library("GGally")
 library("here")
 library("viridis")
 library("sessioninfo")
+library("PCAtools")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "21_SpD_pseudobulk_pca")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -135,6 +136,16 @@ PC1_PC2_SpD <- pca_wide |>
     coord_equal()
 
 ggsave(PC1_PC2_SpD, filename = here(plot_dir , "SpD_peudobulk_PC1_vs_PC2.png"), width = 5, height = 4)
+
+
+#### PCA tools
+
+p <- pca(logcounts(spe_pb), metadata = colData(spe_pb), removeVar = 0.1)
+
+eigencorplot(p,
+             # metavars = c("SpD", "APOE", "Sex", "Ancestry")
+             metavars = c("Age",  "Anc_Afr",  "ncells", "pseudo_expr_chrM_ratio")
+             )
 
 # slurmjobs::job_single('21_SpD_pseudobulk_pca', create_shell = TRUE, memory = '25G', command = "Rscript 21_SpD_pseudobulk_pca.R")
 
