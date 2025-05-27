@@ -36,11 +36,15 @@ message(sprintf("Subset to %s - %i samples", opt$cell_type, ncol(sce_pb)))
 
 ## add E4/E4 variable
 sce_pb$APOE_E4E4 <- sce_pb$APOE == "E4/E4"
-table(sce_pb$APOE_E4E4)
+# table(sce_pb$APOE_E4E4)
 
-## scale sum_umi & Mitocondrial ratio
+## scale sum_umi & Mitocondrial ratio & ncells
 sce_pb$pseudo_sum_umi <- scale(sce_pb$pseudo_sum_umi)
 sce_pb$pseudo_expr_chrM_ratio <- scale(sce_pb$pseudo_expr_chrM_ratio)
+sce_pb$ncells <- scale(sce_pb$ncells)
+
+summary(sce_pb$ncells)
+summary(sce_pb$pseudo_expr_chrM_ratio)
 
 #### Assess correlation between variables ####
 # Extract pheontype data
@@ -58,6 +62,7 @@ title(opt$cell_type)
 dev.off()
 
 #### Variance Partition ####
+## need to scale ncells (Some predictor variables are on very different scales: consider rescaling)
 my_forms <- list(
     carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
     apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
@@ -67,6 +72,11 @@ my_forms <- list(
     apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
     e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells
 )
+
+## test
+# varPart <- fitExtractVarPartModel(logcounts(sce_pb), 
+#                                   ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
+#                                   pd)
 
 varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name){
     
