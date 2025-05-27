@@ -8,6 +8,7 @@ library("dplyr")
 library("here")
 library("sessioninfo")
 library("getopt")
+library("scater")
 
 # Import command-line parameters
 scec <- matrix(
@@ -86,11 +87,17 @@ message("Too few samples in: ",
 
 cell_type_count |>
     mutate(enough_samples = registration_variable %in% enough_samples)|>
-    write_csv(here(data_dir, sprintf("sn_psuedobulk_sample_count-%s.csv", )))
+    write.csv(here(data_dir, sprintf("sn_psuedobulk_sample_count-%s.csv", opt$cluster)))
 
 ## drop too few sample cell types
 sce_pseudo <- sce_pseudo[, sce_pseudo$registration_variable %in% enough_samples]
 sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
+
+#### Add PCAs ####
+sce_pseudo <- scater::runPCA(sce_pseudo, 
+                             ncomponents = 50,
+                             name = "PCA")
+
 
 #### Additional edits + Save ####
 ## drop all NA cols
@@ -105,10 +112,10 @@ saveRDS(sce_pseudo, file = here(data_dir, sprintf("sce_pseudo_DGE-%s.RDS", opt$c
 
 # slurmjobs::job_single('01_pseudobulk_data_sn', create_shell = TRUE, memory = '100G', command = "Rscript 01_pseudobulk_data.R")
 
-slurmjobs::job_loop(loops = list(cluster = c("cell_type_anno", "cell_type_broad")),
-                    name = "01_pseudobulk_data_sn",
-                    create_shell = TRUE,
-                    create_script = FALSE)
+# slurmjobs::job_loop(loops = list(cluster = c("cell_type_anno", "cell_type_broad")),
+#                     name = "01_pseudobulk_data_sn",
+#                     create_shell = TRUE,
+#                     create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
