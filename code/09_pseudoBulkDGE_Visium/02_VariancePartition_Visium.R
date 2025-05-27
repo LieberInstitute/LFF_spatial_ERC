@@ -48,7 +48,7 @@ message(Sys.time(), " - canCorPairs")
 
 pd <- as.data.frame(colData(spe_pb)) 
 
-form <- ~ APOE + APOE_num + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + nspots + pseudo_sum_umi + pseudo_expr_chrM_ratio
+form <- ~ APOE + APOE_carrier + sample_id + Sex + Age + Anc_Afr + Rin + Visium_slide + round + nspots + pseudo_sum_umi + pseudo_expr_chrM_ratio
 
 C <- canCorPairs(form, pd)
 
