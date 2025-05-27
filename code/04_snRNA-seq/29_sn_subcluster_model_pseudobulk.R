@@ -1,4 +1,4 @@
-## Louise Huuki-Myers, MAy 2025
+## Louise Huuki-Myers, May 2025
 ## Run spatialLIBD::registration_wrapper to get cell type subcluster modeling and pseudobulk data
 
 ## Required libraries
