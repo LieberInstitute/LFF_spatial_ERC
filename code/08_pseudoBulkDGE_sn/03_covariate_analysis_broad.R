@@ -156,7 +156,7 @@ varPart_heatmap <- function(my_form = "carrier", my_metric = "Mean"){
                   col = col_fun,
                   cluster_rows = FALSE,
                   cluster_columns = TRUE,
-                  column_title = sprintf("Visium VarPart - %s", my_form)
+                  column_title = sprintf("sn VarPart - %s", my_form)
     ))
     dev.off()
     
