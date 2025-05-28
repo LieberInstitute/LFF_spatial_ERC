@@ -11,7 +11,7 @@ library("sessioninfo")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "08_pseudoBulkDGE_sn", "05_pseudoBulkDGE_sn_broad")
-if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
 sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
@@ -72,7 +72,7 @@ map(de.results, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
 
 saveRDS(de.results, file = here(data_dir, "sn_pseudoBulkDGE_broad.rds"))
 
-# slurmjobs::job_single('03_covariate_analysis_broad', create_shell = TRUE, memory = '50G', command = "Rscript 03_covariate_analysis_broad.R")
+# slurmjobs::job_single('05_pseudoBulkDGE_sn_broad', create_shell = TRUE, memory = '50G', command = "Rscript 05_pseudoBulkDGE_sn_broad.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
