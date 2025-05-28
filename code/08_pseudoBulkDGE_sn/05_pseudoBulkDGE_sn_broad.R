@@ -14,29 +14,25 @@ plot_dir <- here("plots", "08_pseudoBulkDGE_sn", "03_pseudoBulkDGE_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
-sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data","sce_pseudo_DGE.RDS"))
+sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
 dim(sce_pb)
 
-sce_pb <- sce_pb[,!sce_pb$cell_type_anno %in% c("Inhib.Pax6", "Excit.L5_6_NP")]
-sce_pb$cell_type_anno <- droplevels(sce_pb$cell_type_anno)
-
-table(sce_pb$cell_type_anno)
+table(sce_pb$cell_type_broad)
 
 #### Design model + run DGE ####
-model.matrix(~APOE_carrier + Anc_Afr + Age + Sex + Rin + exp_round, colData(sce_pb))
+
+models <- list(carrier = ~APOE_carrier + Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round)
+
+model.matrix(models$carrier , colData(sce_pb))
 
 de_results <- pseudoBulkDGE(
     sce_pb,
-    label = sce_pb$cell_type_anno,
-    design = ~APOE_carrier + Anc_Afr + Age + Sex + exp_round,
+    label = sce_pb$cell_type_broad,
+    design = models$carrier,
     coef = "APOE_carrierE4+",
     row.data = rowData(sce_pb),
     method = "edgeR"
 )
-
-# error when including Rin ?
-# Error in glmFit.default(sely, design, offset = seloffset, dispersion = 0.05,  : 
-#                             nrow(design) disagrees with ncol(y)
 
 map_int(de_results, ~sum(.x$FDR<0.05, na.rm = TRUE))
 map_int(de_results, ~sum(.x$FDR<0.2, na.rm = TRUE))
