@@ -56,6 +56,10 @@ levels(spe_pseudo$APOE_syn)
 spe_pseudo$APOE_carrier_syn <- factor(gsub("\\+", "", spe_pseudo$APOE_carrier))
 levels(spe_pseudo$APOE_carrier_syn)
 
+## add E4/E4 variable
+spe_pseudo$APOE_E4E4 <- spe_pseudo$APOE == "E4/E4"
+table(spe_pseudo$APOE_E4E4)
+
 ## add continuous APOE variable
 # APOE_num <- data.frame(APOE_num = 0:3)
 # rownames(APOE_num) <- c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
@@ -66,6 +70,8 @@ levels(spe_pseudo$APOE_carrier_syn)
 spe_pseudo$nspots <- spe_pseudo$ncells
 
 #### Add PCAs ####
+reducedDims(spe_pseudo) <- NULL
+
 spe_pseudo <- scater::runPCA(spe_pseudo, 
                          ncomponents = 50,
                          name = "PCA")
