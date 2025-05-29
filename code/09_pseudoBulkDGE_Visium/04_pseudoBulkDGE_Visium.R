@@ -9,7 +9,7 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("plots", "09_pseudoBulkDGE_Visium", "03_pseudoBulkDGE_Visium")
+data_dir <- here("processed-data", "09_pseudoBulkDGE_Visium", "03_pseudoBulkDGE_Visium")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -74,6 +74,10 @@ de.results <- map2(dge_design, names(dge_design), function(design, des_name){
 
 map(de.results, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
 
+## save
+saveRDS(de.results, file = here(data_dir, "Visium_pseudoBulkDGE.rds"))
+
+
 #### pairwise ####
 
 apoe <- unique(spe_pb$APOE)
@@ -81,7 +85,7 @@ apoe_combn <- as.data.frame(combn(apoe, 2))
 
 colnames(apoe_combn) <- map_chr(apoe_combn, ~paste0(sort(.x), collapse = "-"))
 
-de.results_APOE_pairwise <- map(apoe_combn, function(apoe_pair){
+de.results.APOE_pairwise <- map(apoe_combn, function(apoe_pair){
     
     apoe_pair <- sort(apoe_pair)
     apoe_coef <- paste0("APOE", apoe_pair[[2]])
@@ -107,10 +111,13 @@ de.results_APOE_pairwise <- map(apoe_combn, function(apoe_pair){
 
 })
 
-map(de.results_APOE_pairwise, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
+map_int(de.results.APOE_pairwise, length)
 
-### save ####
-saveRDS(de.results, file = here(data_dir, "Visium_pseudoBulkDGE.rds"))
+map(de.results.APOE_pairwise, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
+
+## save
+saveRDS(de.results.APOE_pairwise, file = here(data_dir, "Visium_pseudoBulkDGE_APOE_pairwise.rds"))
+
 
 # slurmjobs::job_single('04_pseudoBulkDGE_Visium', create_shell = TRUE, memory = '50G', command = "Rscript 04_pseudoBulkDGE_Visium.R")
 
