@@ -43,7 +43,7 @@ dge_design <- list(
 
 de.results <- map2(dge_design, names(dge_design), function(design, des_name){
     
-    message(Sys.time(), " - Run pseudoBulkDGE on model:", mod_name , " coef:", coef[[mod_name]])
+    message(Sys.time(), " - Run pseudoBulkDGE on model:", des_name , " coef:", dge_design$coef)
     
     de.results <- pseudoBulkDGE(
         sce_pb,
