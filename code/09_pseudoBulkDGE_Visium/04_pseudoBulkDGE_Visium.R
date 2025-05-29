@@ -16,7 +16,7 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 spe_pb <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
 
 ## temp
-spe_pb$nspots <- spe_pb$ncells
+# spe_pb$APOE_E4E4 <- spe_pb$APOE == "E4/E4"
 
 #### Design model ####
 
@@ -34,13 +34,13 @@ models <- list(carrier_n0 = ~APOE_carrier,
                APOE_i = ~APOE*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
                APOE_ni0 = ~APOE*Anc_Afr,
                APOE_ni1 = ~APOE*Anc_Afr + nspots + pseudo_expr_chrM_ratio,
-               ## TODO add col for E4E4 T/F
-               E4E4 = ~APOE + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
-               E4E4_i = ~APOE*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide
+               ## E4E4
+               E4E4 = ~APOE_E4E4 + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               E4E4_i = ~APOE_E4E4*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide
                )
 
 # map(models, ~colnames(model.matrix(.x , colData(spe_pb))))
-# colnames(model.matrix(models$carrier , colData(spe_pb)))
+colnames(model.matrix(models$E4E4 , colData(spe_pb)))
 
 dge_design <- list(
     ## carrier
@@ -58,8 +58,8 @@ dge_design <- list(
     APOE_ni0 = list(mod = models$APOE_ni0, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     APOE_ni1 = list(mod = models$APOE_ni1, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     ## E4E4 TODO update mod
-    E4E4 = list(mod = models$APOE, coef = "APOEE4/E4"),
-    E4E4_i = list(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr"),
+    E4E4 = list(mod = models$APOE, coef = "APOE_E4E4TRUE"),
+    E4E4_i = list(mod = models$APOE_i, coef = "APOE_E4E4TRUE:Anc_Afr"),
     ## Sex
     APOE_Sex = list(mod = models$APOE, coef = "SexM"),
     ## Anc
@@ -70,8 +70,7 @@ map(dge_design, "mod")
 
 
 #### Run DGE ####
-naive_mod <- grep("_n", names(dge_design))
-de.results <- map2(dge_design[naive_mod], names(dge_design[naive_mod]), function(design, des_name){
+de.results <- map2(dge_design, names(dge_design), function(design, des_name){
     
     message(Sys.time(), " - Run pseudoBulkDGE on model: ", des_name , " coef: ", paste(design$coef, collapse = "+"))
     
