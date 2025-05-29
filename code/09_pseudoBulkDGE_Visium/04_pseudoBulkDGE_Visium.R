@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, April 2025
-## Run  pseudoBulkDGE
+## Run  pseudoBulkDGE on Visium data
 
 library("SpatialExperiment")
 library("edgeR")
@@ -37,7 +37,11 @@ dge_design <- list(
     APOE_i = list(mod = models$APOE_i, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     ## E4E4
     E4E4 = list(mod = models$APOE, coef = "APOEE4/E4"),
-    E4E4_i = list(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr")
+    E4E4_i = list(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr"),
+    ## Sex
+    Sex = list(mod = models$APOE, coef = "SexM"),
+    ## Anc
+    Anc = list(mod = models$APOE, coef = "Anc_Afr")
 )
 
 #### Run DGE ####
@@ -70,20 +74,40 @@ de.results <- map2(dge_design, names(dge_design), function(design, des_name){
 
 map(de.results, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
 
-#### pariwise ####
+#### pairwise ####
 
 apoe <- unique(spe_pb$APOE)
-apoe_combn <- combn(apoe, 2)
+apoe_combn <- as.data.frame(combn(apoe, 2))
 
-map2(apoe_combn[1,], apoe_combn[2,], function(apoe1, apoe2){
+colnames(apoe_combn) <- map_chr(apoe_combn, ~paste0(sort(.x), collapse = "-"))
+
+de.results_APOE_pairwise <- map(apoe_combn, function(apoe_pair){
     
-    message(Sys.time(), sprintf("pairwise DE: %s vs. %s", apoe1, apoe2))
-    spe_pb <- spe_pb[, spe_pb$APOE %in% c(apoe1, apoe2)]
+    apoe_pair <- sort(apoe_pair)
+    apoe_coef <- paste0("APOE", apoe_pair[[2]])
     
-    message(ncol(spe_pb))
-    return(ncol(spe_pb))
+    message(Sys.time(), sprintf(" - pairwise DE: %s vs. %s, coef = %s", apoe_pair[[1]], apoe_pair[[2]], apoe_coef))
+    spe_pb <- spe_pb[, spe_pb$APOE %in% apoe_pair]
     
+    # message(ncol(spe_pb))
+    
+    # return(colnames(model.matrix(dge_design$APOE$mod , colData(spe_pb))))
+    
+    de.results <- pseudoBulkDGE(
+        spe_pb,
+        label = spe_pb$SpD,
+        condition = spe_pb$APOE,
+        design = dge_design$APOE$mod, # APOE
+        coef = apoe_coef,
+        row.data = rowData(spe_pb),
+        method = "edgeR"
+    )
+
+    return(de.results)
+
 })
+
+map(de.results_APOE_pairwise, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
 
 ### save ####
 saveRDS(de.results, file = here(data_dir, "Visium_pseudoBulkDGE.rds"))
