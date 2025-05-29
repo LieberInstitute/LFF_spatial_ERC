@@ -66,8 +66,7 @@ dge_design <- list(
     APOE_Anc = list(mod = models$APOE, coef = "Anc_Afr")
 )
 
-map(dge_design, "mod")
-
+# map(dge_design, "mod")
 
 #### Run DGE ####
 de.results <- map2(dge_design, names(dge_design), function(design, des_name){
@@ -135,21 +134,28 @@ de.results$carrier$`L2.3~Sp09D01`
 
 apoe_combn <- as.data.frame(combn(unique(spe_pb$APOE), 2))
 
-colnames(apoe_combn) <- map_chr(apoe_combn, ~paste0(sort(.x), collapse = "-"))
+apoe_combn_sort <- map(apoe_combn, ~sort(.x))
+names(apoe_combn_sort) <- map_chr(apoe_combn_sort, ~paste0(.x, collapse = "-"))
 
-de.results.APOE_pairwise <- map(apoe_combn, function(apoe_pair){
+
+de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     
-    apoe_pair <- sort(apoe_pair)
+    # apoe_pair <- sort(apoe_pair)
     apoe_coef <- paste0("APOE", apoe_pair[[2]])
     
     spe_temp <- spe_pb[, spe_pb$APOE %in% apoe_pair]
     
-    # return(colnames(model.matrix(dge_design$APOE$mod , colData(spe_pb))))
-    stopifnot(apoe_coef == colnames(model.matrix(dge_design$APOE$mod , colData(spe_temp)))[2])
+    # check model matrix
+    mm <- model.matrix(dge_design$APOE$mod , colData(spe_temp))
+    stopifnot(apoe_coef == colnames(mm)[2])
     
-    message(Sys.time(), sprintf(" - pairwise DE: %s vs. %s (n=%i), coef = %s", apoe_pair[[1]], apoe_pair[[2]], ncol(spe_temp), apoe_coef))
+    message(Sys.time(), sprintf(" - pairwise DE: %s(%i) vs. %s(%i) (n=%i), coef = %s", 
+                                apoe_pair[[1]], sum(mm[,apoe_coef] == 0), 
+                                apoe_pair[[2]], sum(mm[,apoe_coef] == 1),
+                                ncol(spe_temp), apoe_coef))
     
-    table(spe_temp$APOE, spe_temp$SpD)
+    # table(spe_temp$APOE)
+    # table(spe_temp$APOE, spe_temp$SpD)
     
     de.results <- pseudoBulkDGE(
         spe_temp,
