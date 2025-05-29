@@ -31,26 +31,26 @@ map(models, ~colnames(model.matrix(.x , colData(sce_pb))))
 
 dge_design <- list(
     ## carrier
-    carrier = c(mod = models$carrier, coef = "APOE_carrierE4+"),
-    carrier_i = c(mod = models$carrier_i, coef = "APOE_carrierE4+:Anc_Afr"),
+    carrier = list(mod = models$carrier, coef = "APOE_carrierE4+"),
+    carrier_i = list(mod = models$carrier_i, coef = "APOE_carrierE4+:Anc_Afr"),
     ## APOE
-    APOE = c(mod = models$APOE, coef = c("APOEE2/E3","APOEE3/E4","APOEE4/E4")),
-    APOE_i = c(mod = models$APOE_i, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
+    APOE = list(mod = models$APOE, coef = c("APOEE2/E3","APOEE3/E4","APOEE4/E4")),
+    APOE_i = list(mod = models$APOE_i, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     ## E4E4
-    E4E4 = c(mod = models$APOE, coef = "APOEE4/E4"),
-    E4E4_i = c(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr")
+    E4E4 = list(mod = models$APOE, coef = "APOEE4/E4"),
+    E4E4_i = list(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr")
 )
 
 de.results <- map2(dge_design, names(dge_design), function(design, des_name){
     
-    message(Sys.time(), " - Run pseudoBulkDGE on model:", des_name , " coef:", dge_design$coef)
+    message(Sys.time(), " - Run pseudoBulkDGE on model:", des_name , " coef:", design$coef)
     
     de.results <- pseudoBulkDGE(
         sce_pb,
         label = sce_pb$cell_type_broad,
-        condition = sce_pb$carrier, # controls filtering, use consistently
+        condition = sce_pb$APOE, # controls filtering, use consistently
         design = design$mod, # map model
-        coef = dge_design$coef, #map coef
+        coef = design$coef, #map coef
         row.data = rowData(sce_pb),
         method = "edgeR"
     )
@@ -61,7 +61,7 @@ de.results <- map2(dge_design, names(dge_design), function(design, des_name){
 # de.results$test <- pseudoBulkDGE(
 #     sce_pb,
 #     label = sce_pb$cell_type_broad,
-#     condition = sce_pb$carrier, # controls filtering, use consistently
+#     condition = sce_pb$APOE, # controls filtering, use consistently
 #     design = models$APOE,
 #     coef = c("APOEE2/E3","APOEE3/E4","APOEE4/E4"),
 #     row.data = rowData(sce_pb),
