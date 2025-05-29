@@ -1,11 +1,12 @@
 **** Job starts ****
-Thu May 29 01:28:28 PM EDT 2025
+Thu May 29 05:17:15 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16863621
+Job id: 16865198
 Job name: 04_pseudoBulkDGE_Visium
-Node name: compute-144
+Node name: compute-122
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -139,83 +140,129 @@ Loading required package: scuttle
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-$carrier
- [1] "(Intercept)"            "APOE_carrierE4+"        "Anc_Afr"               
- [4] "Age"                    "SexM"                   "Rin"                   
- [7] "nspots"                 "pseudo_expr_chrM_ratio" "Visium_slideV13B23-364"
-[10] "Visium_slideV13B23-365" "Visium_slideV13B23-366" "Visium_slideV13Y24-340"
-[13] "Visium_slideV13Y24-342" "Visium_slideV13Y24-343" "Visium_slideV13Y24-344"
+2025-05-29 17:17:28.856478 - Run pseudoBulkDGE on model: carrier_n0 coef: APOE_carrierE4+
+2025-05-29 17:18:17.46681 - Run pseudoBulkDGE on model: carrier_n1 coef: APOE_carrierE4+
+2025-05-29 17:19:05.059335 - Run pseudoBulkDGE on model: carrier_n2 coef: APOE_carrierE4+
+2025-05-29 17:19:52.825396 - Run pseudoBulkDGE on model: carrier_n3 coef: APOE_carrierE4+
+2025-05-29 17:20:41.346425 - Run pseudoBulkDGE on model: carrier_n4 coef: APOE_carrierE4+
+2025-05-29 17:21:29.590208 - Run pseudoBulkDGE on model: carrier coef: APOE_carrierE4+
+2025-05-29 17:22:24.202961 - Run pseudoBulkDGE on model: carrier_i coef: APOE_carrierE4+:Anc_Afr
+2025-05-29 17:23:21.819365 - Run pseudoBulkDGE on model: APOE_n coef: APOEE2/E3+APOEE3/E4+APOEE4/E4
+2025-05-29 17:24:11.368022 - Run pseudoBulkDGE on model: APOE coef: APOEE2/E3+APOEE3/E4+APOEE4/E4
+2025-05-29 17:25:10.543723 - Run pseudoBulkDGE on model: APOE_i coef: APOEE2/E3:Anc_Afr+APOEE3/E4:Anc_Afr+APOEE4/E4:Anc_Afr
+2025-05-29 17:26:13.395802 - Run pseudoBulkDGE on model: APOE_ni0 coef: APOEE2/E3:Anc_Afr+APOEE3/E4:Anc_Afr+APOEE4/E4:Anc_Afr
+2025-05-29 17:27:05.899869 - Run pseudoBulkDGE on model: APOE_ni1 coef: APOEE2/E3:Anc_Afr+APOEE3/E4:Anc_Afr+APOEE4/E4:Anc_Afr
+2025-05-29 17:28:00.249128 - Run pseudoBulkDGE on model: E4E4 coef: APOE_E4E4TRUE
+2025-05-29 17:28:56.962986 - Run pseudoBulkDGE on model: E4E4_i coef: APOE_E4E4TRUE:Anc_Afr
+2025-05-29 17:29:54.998969 - Run pseudoBulkDGE on model: APOE_Sex coef: SexM
+2025-05-29 17:30:53.886636 - Run pseudoBulkDGE on model: APOE_Anc coef: Anc_Afr
+$carrier_n0
+              -1     0    NA
+Inhib~Sp09D09  0 11322 19172
+L1~Sp09D05     0 10830 19664
+L2.3~Sp09D01   0 12690 17804
+L5~Sp09D03     0 13076 17418
+L6~Sp09D04     0 13231 17263
+LD~Sp09D02     0 14319 16175
+Vasc~Sp09D08   0  7217 23277
+WM.uf~Sp09D07  3  2318 28173
+WM~Sp09D06     0  9249 21245
 
-$carrier_i
- [1] "(Intercept)"             "APOE_carrierE4+"        
- [3] "Anc_Afr"                 "Age"                    
- [5] "SexM"                    "Rin"                    
- [7] "nspots"                  "pseudo_expr_chrM_ratio" 
- [9] "Visium_slideV13B23-364"  "Visium_slideV13B23-365" 
-[11] "Visium_slideV13B23-366"  "Visium_slideV13Y24-340" 
-[13] "Visium_slideV13Y24-342"  "Visium_slideV13Y24-343" 
-[15] "Visium_slideV13Y24-344"  "APOE_carrierE4+:Anc_Afr"
+$carrier_n1
+                  0    NA
+Inhib~Sp09D09 11322 19172
+L1~Sp09D05    10830 19664
+L2.3~Sp09D01  12690 17804
+L5~Sp09D03    13076 17418
+L6~Sp09D04    13231 17263
+LD~Sp09D02    14319 16175
+Vasc~Sp09D08   7217 23277
+WM.uf~Sp09D07  2321 28173
+WM~Sp09D06     9249 21245
 
-$APOE
- [1] "(Intercept)"            "APOEE2/E3"              "APOEE3/E4"             
- [4] "APOEE4/E4"              "Anc_Afr"                "Age"                   
- [7] "SexM"                   "Rin"                    "nspots"                
-[10] "pseudo_expr_chrM_ratio" "Visium_slideV13B23-364" "Visium_slideV13B23-365"
-[13] "Visium_slideV13B23-366" "Visium_slideV13Y24-340" "Visium_slideV13Y24-342"
-[16] "Visium_slideV13Y24-343" "Visium_slideV13Y24-344"
+$carrier_n2
+              -1     0 1    NA
+Inhib~Sp09D09  0 11322 0 19172
+L1~Sp09D05     0 10830 0 19664
+L2.3~Sp09D01   0 12690 0 17804
+L5~Sp09D03     0 13076 0 17418
+L6~Sp09D04     0 13231 0 17263
+LD~Sp09D02     0 14319 0 16175
+Vasc~Sp09D08   0  7217 0 23277
+WM.uf~Sp09D07 12  2306 3 28173
+WM~Sp09D06     0  9249 0 21245
 
-$APOE_i
- [1] "(Intercept)"            "APOEE2/E3"              "APOEE3/E4"             
- [4] "APOEE4/E4"              "Anc_Afr"                "Age"                   
- [7] "SexM"                   "Rin"                    "nspots"                
-[10] "pseudo_expr_chrM_ratio" "Visium_slideV13B23-364" "Visium_slideV13B23-365"
-[13] "Visium_slideV13B23-366" "Visium_slideV13Y24-340" "Visium_slideV13Y24-342"
-[16] "Visium_slideV13Y24-343" "Visium_slideV13Y24-344" "APOEE2/E3:Anc_Afr"     
-[19] "APOEE3/E4:Anc_Afr"      "APOEE4/E4:Anc_Afr"     
+$carrier_n3
+              -1     0    NA
+Inhib~Sp09D09  0 11322 19172
+L1~Sp09D05     0 10830 19664
+L2.3~Sp09D01   0 12690 17804
+L5~Sp09D03     0 13076 17418
+L6~Sp09D04     0 13231 17263
+LD~Sp09D02     0 14319 16175
+Vasc~Sp09D08   0  7217 23277
+WM.uf~Sp09D07  4  2317 28173
+WM~Sp09D06     0  9249 21245
 
-2025-05-29 13:28:39.566078 - Run pseudoBulkDGE on model: carrier coef: APOE_carrierE4+
-2025-05-29 13:31:25.234303 - Run pseudoBulkDGE on model: carrier_i coef: APOE_carrierE4+:Anc_Afr
-2025-05-29 13:34:26.503647 - Run pseudoBulkDGE on model: APOE coef: APOEE2/E3APOEE3/E4APOEE4/E4
-2025-05-29 13:37:40.545237 - Run pseudoBulkDGE on model: APOE_i coef: APOEE2/E3:Anc_AfrAPOEE3/E4:Anc_AfrAPOEE4/E4:Anc_Afr
-2025-05-29 13:41:52.444772 - Run pseudoBulkDGE on model: E4E4 coef: APOEE4/E4
-2025-05-29 13:45:05.569166 - Run pseudoBulkDGE on model: E4E4_i coef: APOEE4/E4:Anc_Afr
-2025-05-29 13:49:18.519492 - Run pseudoBulkDGE on model: Sex coef: SexM
-2025-05-29 13:52:31.642239 - Run pseudoBulkDGE on model: Anc coef: Anc_Afr
+$carrier_n4
+              -1     0 1    NA
+Inhib~Sp09D09  0 11322 0 19172
+L1~Sp09D05     0 10830 0 19664
+L2.3~Sp09D01   0 12690 0 17804
+L5~Sp09D03     0 13076 0 17418
+L6~Sp09D04     0 13231 0 17263
+LD~Sp09D02     0 14319 0 16175
+Vasc~Sp09D08   0  7217 0 23277
+WM.uf~Sp09D07 10  2308 3 28173
+WM~Sp09D06     0  9249 0 21245
+
 $carrier
               -1     0 1    NA
 Inhib~Sp09D09  0 11322 0 19172
 L1~Sp09D05     0 10830 0 19664
 L2.3~Sp09D01   0 12690 0 17804
 L5~Sp09D03     0 13076 0 17418
-L6~Sp09D04     1 13230 0 17263
-LD~Sp09D02     0 14318 1 16175
-Vasc~Sp09D08   0  7217 0 23277
+L6~Sp09D04     1 13229 1 17263
+LD~Sp09D02     0 14319 0 16175
+Vasc~Sp09D08  12  7204 1 23277
 WM.uf~Sp09D07  0  2321 0 28173
-WM~Sp09D06     0  9249 0 21245
+WM~Sp09D06     0  9247 2 21245
 
 $carrier_i
-              -1     0 1    NA
-Inhib~Sp09D09  0 11322 0 19172
-L1~Sp09D05     0 10830 0 19664
-L2.3~Sp09D01   1 12689 0 17804
-L5~Sp09D03     0 13076 0 17418
-L6~Sp09D04     0 13231 0 17263
-LD~Sp09D02     0 14318 1 16175
-Vasc~Sp09D08   0  7217 0 23277
-WM.uf~Sp09D07  0  2321 0 28173
-WM~Sp09D06     0  9249 0 21245
+              -1     0    NA
+Inhib~Sp09D09  2 11320 19172
+L1~Sp09D05     0 10830 19664
+L2.3~Sp09D01   0 12690 17804
+L5~Sp09D03     0 13076 17418
+L6~Sp09D04     0 13231 17263
+LD~Sp09D02     0 14319 16175
+Vasc~Sp09D08   0  7217 23277
+WM.uf~Sp09D07  0  2321 28173
+WM~Sp09D06     0  9249 21245
+
+$APOE_n
+                  0 1    NA
+Inhib~Sp09D09 11322 0 19172
+L1~Sp09D05    10830 0 19664
+L2.3~Sp09D01  12689 1 17804
+L5~Sp09D03    13076 0 17418
+L6~Sp09D04    13231 0 17263
+LD~Sp09D02    14315 4 16175
+Vasc~Sp09D08   7217 0 23277
+WM.uf~Sp09D07  2314 7 28173
+WM~Sp09D06     9249 0 21245
 
 $APOE
                   0  1    NA
 Inhib~Sp09D09 11322  0 19172
-L1~Sp09D05    10830  0 19664
-L2.3~Sp09D01  12662 28 17804
-L5~Sp09D03    13043 33 17418
-L6~Sp09D04    13222  9 17263
-LD~Sp09D02    14299 20 16175
-Vasc~Sp09D08   7216  1 23277
+L1~Sp09D05    10823  7 19664
+L2.3~Sp09D01  12685  5 17804
+L5~Sp09D03    13076  0 17418
+L6~Sp09D04    13212 19 17263
+LD~Sp09D02    14308 11 16175
+Vasc~Sp09D08   7189 28 23277
 WM.uf~Sp09D07  2321  0 28173
-WM~Sp09D06     9249  0 21245
+WM~Sp09D06     9229 20 21245
 
 $APOE_i
                   0 1    NA
@@ -224,22 +271,46 @@ L1~Sp09D05    10830 0 19664
 L2.3~Sp09D01  12690 0 17804
 L5~Sp09D03    13076 0 17418
 L6~Sp09D04    13231 0 17263
-LD~Sp09D02    14317 2 16175
-Vasc~Sp09D08   7215 2 23277
+LD~Sp09D02    14318 1 16175
+Vasc~Sp09D08   7217 0 23277
 WM.uf~Sp09D07  2321 0 28173
-WM~Sp09D06     9248 1 21245
+WM~Sp09D06     9247 2 21245
+
+$APOE_ni0
+                  0    NA
+Inhib~Sp09D09 11322 19172
+L1~Sp09D05    10830 19664
+L2.3~Sp09D01  12690 17804
+L5~Sp09D03    13076 17418
+L6~Sp09D04    13231 17263
+LD~Sp09D02    14319 16175
+Vasc~Sp09D08   7217 23277
+WM.uf~Sp09D07  2321 28173
+WM~Sp09D06     9249 21245
+
+$APOE_ni1
+                  0    NA
+Inhib~Sp09D09 11322 19172
+L1~Sp09D05    10830 19664
+L2.3~Sp09D01  12690 17804
+L5~Sp09D03    13076 17418
+L6~Sp09D04    13231 17263
+LD~Sp09D02    14319 16175
+Vasc~Sp09D08   7217 23277
+WM.uf~Sp09D07  2321 28173
+WM~Sp09D06     9249 21245
 
 $E4E4
-              -1     0    NA
-Inhib~Sp09D09  0 11322 19172
-L1~Sp09D05     0 10830 19664
-L2.3~Sp09D01   0 12690 17804
-L5~Sp09D03     1 13075 17418
-L6~Sp09D04     0 13231 17263
-LD~Sp09D02     0 14319 16175
-Vasc~Sp09D08   0  7217 23277
-WM.uf~Sp09D07  0  2321 28173
-WM~Sp09D06     0  9249 21245
+                  0    NA
+Inhib~Sp09D09 11322 19172
+L1~Sp09D05    10830 19664
+L2.3~Sp09D01  12690 17804
+L5~Sp09D03    13076 17418
+L6~Sp09D04    13231 17263
+LD~Sp09D02    14319 16175
+Vasc~Sp09D08   7217 23277
+WM.uf~Sp09D07  2321 28173
+WM~Sp09D06     9249 21245
 
 $E4E4_i
                   0    NA
@@ -253,64 +324,247 @@ Vasc~Sp09D08   7217 23277
 WM.uf~Sp09D07  2321 28173
 WM~Sp09D06     9249 21245
 
-$Sex
+$APOE_Sex
               -1     0  1    NA
-Inhib~Sp09D09  3 11312  7 19172
-L1~Sp09D05     0 10821  9 19664
-L2.3~Sp09D01   2 12682  6 17804
-L5~Sp09D03     5 13062  9 17418
-L6~Sp09D04     0 13224  7 17263
-LD~Sp09D02     0 14308 11 16175
-Vasc~Sp09D08   0  7213  4 23277
+Inhib~Sp09D09  3 11314  5 19172
+L1~Sp09D05     2 10819  9 19664
+L2.3~Sp09D01   0 12690  0 17804
+L5~Sp09D03     2 13072  2 17418
+L6~Sp09D04     0 13222  9 17263
+LD~Sp09D02     0 14318  1 16175
+Vasc~Sp09D08   1  7212  4 23277
 WM.uf~Sp09D07  0  2320  1 28173
-WM~Sp09D06     1  9241  7 21245
+WM~Sp09D06     7  9232 10 21245
 
-$Anc
-              -1     0    NA
-Inhib~Sp09D09  0 11322 19172
-L1~Sp09D05     0 10830 19664
-L2.3~Sp09D01   1 12689 17804
-L5~Sp09D03     4 13072 17418
-L6~Sp09D04     3 13228 17263
-LD~Sp09D02     2 14317 16175
-Vasc~Sp09D08   1  7216 23277
-WM.uf~Sp09D07  0  2321 28173
-WM~Sp09D06     0  9249 21245
+$APOE_Anc
+              -1     0 1    NA
+Inhib~Sp09D09  3 11319 0 19172
+L1~Sp09D05     0 10830 0 19664
+L2.3~Sp09D01   1 12689 0 17804
+L5~Sp09D03    10 13063 3 17418
+L6~Sp09D04     3 13228 0 17263
+LD~Sp09D02     2 14317 0 16175
+Vasc~Sp09D08   1  7215 1 23277
+WM.uf~Sp09D07  0  2321 0 28173
+WM~Sp09D06     3  9242 4 21245
 
-2025-05-29 13:55:41.814058 - pairwise DE: E2/E2 vs. E4/E4, coef = APOEE4/E4
-2025-05-29 13:55:44.051882 - pairwise DE: E3/E4 vs. E4/E4, coef = APOEE4/E4
-2025-05-29 13:57:14.355199 - pairwise DE: E2/E3 vs. E4/E4, coef = APOEE4/E4
-2025-05-29 13:57:16.538515 - pairwise DE: E2/E2 vs. E3/E4, coef = APOEE3/E4
-2025-05-29 13:58:34.722402 - pairwise DE: E2/E2 vs. E2/E3, coef = APOEE2/E3
-2025-05-29 13:58:36.794422 - pairwise DE: E2/E3 vs. E3/E4, coef = APOEE3/E4
-Error in `map()`:
-ℹ In index: 1.
-ℹ With name: E2/E2-E4/E4.
-Caused by error in `normalizeDoubleBracketSubscript()`:
-! subscript is out of bounds
-Backtrace:
-     ▆
-  1. ├─purrr::map(...)
-  2. │ └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
-  3. │   ├─purrr:::with_indexed_errors(...)
-  4. │   │ └─base::withCallingHandlers(...)
-  5. │   ├─purrr:::call_with_cleanup(...)
-  6. │   └─global .f(.x[[i]], ...)
-  7. │     ├─scran::summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold = 0.1))
-  8. │     └─scran::decideTestsPerLabel(.x, threshold = 0.1)
-  9. │       ├─base::intersect(c("PValue", "P.Value", "p.value"), colnames(results[[1]]))
- 10. │       ├─base::colnames(results[[1]])
- 11. │       │ └─base::is.data.frame(x)
- 12. │       ├─results[[1]]
- 13. │       └─results[[1]]
- 14. │         ├─S4Vectors::getListElement(x, i, ...)
- 15. │         └─S4Vectors::getListElement(x, i, ...)
- 16. │           ├─S4Vectors::getListElement(x@listData, i, exact = exact)
- 17. │           └─S4Vectors::getListElement(x@listData, i, exact = exact)
- 18. │             └─S4Vectors::normalizeDoubleBracketSubscript(...)
- 19. │               └─base::stop("subscript is out of bounds")
- 20. └─base::.handleSimpleError(...)
- 21.   └─purrr (local) h(simpleError(msg, call))
- 22.     └─cli::cli_abort(...)
- 23.       └─rlang::abort(...)
-Execution halted
+# A tibble: 16 × 2
+   mod        `sum(deg_total)`
+   <chr>                 <dbl>
+ 1 APOE                     90
+ 2 APOE_Anc                 31
+ 3 APOE_Sex                 56
+ 4 APOE_i                    3
+ 5 APOE_n                   12
+ 6 APOE_ni0                  0
+ 7 APOE_ni1                  0
+ 8 E4E4                      0
+ 9 E4E4_i                    0
+10 carrier                  17
+11 carrier_i                 2
+12 carrier_n0                3
+13 carrier_n1                0
+14 carrier_n2               15
+15 carrier_n3                4
+16 carrier_n4               13
+DataFrame with 30494 rows and 12 columns
+                  source     type         gene_id gene_version   gene_name
+                <factor> <factor>     <character>  <character> <character>
+ENSG00000243485   HAVANA     gene ENSG00000243485            5 MIR1302-2HG
+ENSG00000238009   HAVANA     gene ENSG00000238009            6  AL627309.1
+ENSG00000239945   HAVANA     gene ENSG00000239945            1  AL627309.3
+ENSG00000241860   HAVANA     gene ENSG00000241860            7  AL627309.5
+ENSG00000229905   HAVANA     gene ENSG00000229905            1  AL669831.2
+...                  ...      ...             ...          ...         ...
+ENSG00000276345  ENSEMBL     gene ENSG00000276345            1  AC004556.3
+ENSG00000274792  ENSEMBL     gene ENSG00000274792            1  AC171558.1
+ENSG00000276017  ENSEMBL     gene ENSG00000276017            1  AC007325.1
+ENSG00000278817  ENSEMBL     gene ENSG00000278817            1  AC007325.4
+ENSG00000277196  ENSEMBL     gene ENSG00000277196            4  AC007325.2
+                     gene_type     logFC   AveExpr         t   P.Value
+                   <character> <numeric> <numeric> <numeric> <numeric>
+ENSG00000243485         lncRNA        NA        NA        NA        NA
+ENSG00000238009         lncRNA        NA        NA        NA        NA
+ENSG00000239945         lncRNA        NA        NA        NA        NA
+ENSG00000241860         lncRNA  0.446165   2.25062    1.9255 0.0645648
+ENSG00000229905         lncRNA        NA        NA        NA        NA
+...                        ...       ...       ...       ...       ...
+ENSG00000276345 protein_coding        NA        NA        NA        NA
+ENSG00000274792 protein_coding        NA        NA        NA        NA
+ENSG00000276017 protein_coding        NA        NA        NA        NA
+ENSG00000278817 protein_coding  0.267328   5.41992  1.552035  0.133734
+ENSG00000277196 protein_coding -0.244168   1.60305 -0.653152  0.519438
+                adj.P.Val         B
+                <numeric> <numeric>
+ENSG00000243485        NA        NA
+ENSG00000238009        NA        NA
+ENSG00000239945        NA        NA
+ENSG00000241860  0.878354  -4.17951
+ENSG00000229905        NA        NA
+...                   ...       ...
+ENSG00000276345        NA        NA
+ENSG00000274792        NA        NA
+ENSG00000276017        NA        NA
+ENSG00000278817  0.892660  -4.37338
+ENSG00000277196  0.966941  -4.70500
+2025-05-29 17:33:32.181601 - pairwise DE: E2/E2(54) vs. E4/E4(63) (n=117), coef = APOEE4/E4
+2025-05-29 17:33:35.079576 - pairwise DE: E3/E4(90) vs. E4/E4(63) (n=153), coef = APOEE4/E4
+2025-05-29 17:34:17.244674 - pairwise DE: E2/E3(72) vs. E4/E4(63) (n=135), coef = APOEE4/E4
+2025-05-29 17:34:21.050707 - pairwise DE: E2/E2(54) vs. E3/E4(90) (n=144), coef = APOEE3/E4
+2025-05-29 17:34:33.101358 - pairwise DE: E2/E2(54) vs. E2/E3(72) (n=126), coef = APOEE2/E3
+2025-05-29 17:34:35.934844 - pairwise DE: E2/E3(72) vs. E3/E4(90) (n=162), coef = APOEE3/E4
+!! models with error: E2/E2-E4/E4, E2/E3-E4/E4, E2/E2-E2/E3
+$`E3/E4-E4/E4`
+              -1     0  1    NA
+Inhib~Sp09D09  6 10527  7 19954
+L1~Sp09D05     0 10432  0 20062
+L2.3~Sp09D01  63 12111 30 18290
+L5~Sp09D03    14 12250  8 18222
+L6~Sp09D04    40 12423 21 18010
+LD~Sp09D02     6 13528  7 16953
+Vasc~Sp09D08   0  5597  0 24897
+WM.uf~Sp09D07  0  1867  0 28627
+WM~Sp09D06     2  7765  0 22727
+
+$`E2/E2-E3/E4`
+              -1     0 1    NA
+Inhib~Sp09D09  2  9266 2 21224
+L1~Sp09D05     0 10483 0 20011
+L2.3~Sp09D01   2 11026 3 19463
+L5~Sp09D03     5 11522 1 18966
+L6~Sp09D04     0 11685 0 18809
+LD~Sp09D02     0 13199 0 17295
+Vasc~Sp09D08   1  5998 1 24494
+WM.uf~Sp09D07  2  2250 2 28240
+WM~Sp09D06     0  7940 0 22554
+
+$`E2/E3-E3/E4`
+              -1     0  1    NA
+Inhib~Sp09D09  8 10596 19 19871
+L1~Sp09D05     0  9665  0 20829
+L2.3~Sp09D01   0 12173  0 18321
+L5~Sp09D03     0 12799  0 17695
+L6~Sp09D04    14 12173 49 18258
+LD~Sp09D02    19 13490 26 16959
+Vasc~Sp09D08   1  5780  0 24713
+WM.uf~Sp09D07 23  1579  3 28889
+WM~Sp09D06     0  7285  0 23209
+
+`summarise()` has grouped output by 'mod'. You can override using the `.groups`
+argument.
+# A tibble: 3 × 3
+# Groups:   mod [1]
+  mod   pair        `sum(deg_total)`
+  <chr> <chr>                  <dbl>
+1 APOE  E2/E2-E3/E4               21
+2 APOE  E2/E3-E3/E4              162
+3 APOE  E3/E4-E4/E4              204
+[1] "Reproducibility information:"
+[1] "2025-05-29 17:35:31 EDT"
+    user   system  elapsed 
+1072.695   10.736 1094.612 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-05-29
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ beachmat               2.24.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Biobase              * 2.68.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocNeighbors          2.2.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocParallel           1.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocSingular           1.24.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ bluster                1.18.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ cli                    3.6.5    2025-04-23 [2] CRAN (R 4.5.0)
+ cluster                2.1.8.1  2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
+ crayon                 1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
+ DelayedArray           0.34.1   2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
+ dichromat              2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4    2023-11-17 [2] CRAN (R 4.5.0)
+ dqrng                  0.4.1    2024-05-28 [2] CRAN (R 4.5.0)
+ edgeR                * 4.6.2    2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0    2023-01-29 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14   2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ggplot2              * 3.5.2    2025-04-09 [2] CRAN (R 4.5.0)
+ glue                   1.8.0    2024-09-30 [2] CRAN (R 4.5.0)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.1    2020-12-13 [2] CRAN (R 4.5.0)
+ hms                    1.1.3    2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7    2023-08-15 [2] CRAN (R 4.5.0)
+ igraph                 2.1.4    2025-01-23 [2] CRAN (R 4.5.0)
+ IRanges              * 2.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ irlba                  2.3.5.1  2022-10-03 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4    2023-11-07 [2] CRAN (R 4.5.0)
+ limma                * 3.64.1   2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ locfit                 1.5-9.12 2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.4    2024-12-08 [2] CRAN (R 4.5.0)
+ magick                 2.8.6    2025-03-23 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3    2022-03-30 [2] CRAN (R 4.5.0)
+ Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ metapod                1.16.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ pillar                 1.10.2   2025-04-05 [2] CRAN (R 4.5.0)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ purrr                * 1.0.4    2025-02-05 [2] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.0.14   2025-01-12 [2] CRAN (R 4.5.0)
+ readr                * 2.1.5    2024-01-10 [2] CRAN (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6    2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot              2.0.4    2023-11-05 [2] CRAN (R 4.5.0)
+ rsvd                   1.0.5    2021-04-16 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ S4Vectors            * 0.46.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ScaledMatrix           1.16.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ scran                * 1.36.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scuttle              * 1.18.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sessioninfo          * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1   2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ SpatialExperiment    * 1.18.1   2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0    2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.5.1    2023-11-14 [2] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1   2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ tibble               * 3.2.1    2023-03-20 [2] CRAN (R 4.5.0)
+ tidyr                * 1.3.1    2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0    2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ utf8                   1.2.5    2025-05-01 [2] CRAN (R 4.5.0)
+ vctrs                  0.6.5    2023-12-01 [2] CRAN (R 4.5.0)
+ withr                  3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.48.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu May 29 05:35:32 PM EDT 2025
