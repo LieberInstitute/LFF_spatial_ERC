@@ -15,8 +15,6 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 #### Load the data ####
 spe_pb <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
 
-## temp
-# spe_pb$APOE_E4E4 <- spe_pb$APOE == "E4/E4"
 
 #### Design model ####
 
@@ -40,7 +38,7 @@ models <- list(carrier_n0 = ~APOE_carrier,
                )
 
 # map(models, ~colnames(model.matrix(.x , colData(spe_pb))))
-colnames(model.matrix(models$E4E4 , colData(spe_pb)))
+# colnames(model.matrix(models$E4E4 , colData(spe_pb)))
 
 dge_design <- list(
     ## carrier
@@ -58,8 +56,8 @@ dge_design <- list(
     APOE_ni0 = list(mod = models$APOE_ni0, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     APOE_ni1 = list(mod = models$APOE_ni1, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     ## E4E4 TODO update mod
-    E4E4 = list(mod = models$APOE, coef = "APOE_E4E4TRUE"),
-    E4E4_i = list(mod = models$APOE_i, coef = "APOE_E4E4TRUE:Anc_Afr"),
+    E4E4 = list(mod = models$E4E4, coef = "APOE_E4E4TRUE"),
+    E4E4_i = list(mod = models$E4E4_i, coef = "APOE_E4E4TRUE:Anc_Afr"),
     ## Sex
     APOE_Sex = list(mod = models$APOE, coef = "SexM"),
     ## Anc
@@ -130,13 +128,12 @@ de.results$carrier$`L2.3~Sp09D01`
 # de.results$APOE$`L2.3~Sp09D01`[de.results$APOE$`L2.3~Sp09D01`$FDR < 0.1,] 
 
 
-#### pairwise ####
+#### pairwise by APOE ####
 
 apoe_combn <- as.data.frame(combn(unique(spe_pb$APOE), 2))
 
 apoe_combn_sort <- map(apoe_combn, ~sort(.x))
 names(apoe_combn_sort) <- map_chr(apoe_combn_sort, ~paste0(.x, collapse = "-"))
-
 
 de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     
@@ -184,9 +181,28 @@ if(!all(ran)) message("!! models with error: ", paste(names(ran)[!ran], collapse
 # 2025-05-29 14:54:37.68476 - pairwise DE: E2/E2 vs. E2/E3, coef = APOEE2/E3 !  "APOEE2/E3"
 # 2025-05-29 14:54:37.741843 - pairwise DE: E2/E3 vs. E3/E4, coef = APOEE3/E4   "APOEE3/E4"
 
-map_int(de.results.APOE_pairwise, length)
+(pairwise_test_summary <- map(de.results.APOE_pairwise[ran], ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1))))
 
-map(de.results.APOE_pairwise[ran], ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
+pairwise_test_summary2 <- map2_dfr(pairwise_test_summary, names(pairwise_test_summary), function(ts, name){
+    ts <- as.data.frame(ts)
+    colnames(ts) <- paste0("deg",colnames(ts))
+    
+    if(!"deg-1" %in% colnames(ts)) ts$`deg-1` <- NA
+    if(!"deg1" %in% colnames(ts)) ts$deg1 <- NA
+    
+    ts <- ts |> 
+        rownames_to_column("SpD") |> 
+        rowwise() |>
+        mutate(mod = "APOE",
+               pair = name,
+               deg_total = sum(`deg-1`, deg1, na.rm = TRUE))
+    
+    return(ts)
+})
+
+pairwise_test_summary2 |> group_by(mod, pair) |> summarise(sum(deg_total))
+
+write.csv(pairwise_test_summary2, file = here(data_dir, "Visium_pseudoBulkDGE_pairwise_summary.csv"))
 
 ## save
 saveRDS(de.results.APOE_pairwise, file = here(data_dir, "Visium_pseudoBulkDGE_APOE_pairwise.rds"))
