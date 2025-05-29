@@ -16,7 +16,7 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 spe_pb <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
 
 ## temp
-spe_pb$nspots <- spe_pb$ncells
+# spe_pb$APOE_E4E4 <- spe_pb$APOE == "E4/E4"
 
 #### Design model ####
 
@@ -34,13 +34,13 @@ models <- list(carrier_n0 = ~APOE_carrier,
                APOE_i = ~APOE*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
                APOE_ni0 = ~APOE*Anc_Afr,
                APOE_ni1 = ~APOE*Anc_Afr + nspots + pseudo_expr_chrM_ratio,
-               ## TODO add col for E4E4 T/F
-               E4E4 = ~APOE + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
-               E4E4_i = ~APOE*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide
+               ## E4E4
+               E4E4 = ~APOE_E4E4 + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               E4E4_i = ~APOE_E4E4*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide
                )
 
 # map(models, ~colnames(model.matrix(.x , colData(spe_pb))))
-# colnames(model.matrix(models$carrier , colData(spe_pb)))
+colnames(model.matrix(models$E4E4 , colData(spe_pb)))
 
 dge_design <- list(
     ## carrier
@@ -58,20 +58,18 @@ dge_design <- list(
     APOE_ni0 = list(mod = models$APOE_ni0, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     APOE_ni1 = list(mod = models$APOE_ni1, coef = c("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
     ## E4E4 TODO update mod
-    E4E4 = list(mod = models$APOE, coef = "APOEE4/E4"),
-    E4E4_i = list(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr"),
+    E4E4 = list(mod = models$APOE, coef = "APOE_E4E4TRUE"),
+    E4E4_i = list(mod = models$APOE_i, coef = "APOE_E4E4TRUE:Anc_Afr"),
     ## Sex
     APOE_Sex = list(mod = models$APOE, coef = "SexM"),
     ## Anc
     APOE_Anc = list(mod = models$APOE, coef = "Anc_Afr")
 )
 
-map(dge_design, "mod")
-
+# map(dge_design, "mod")
 
 #### Run DGE ####
-naive_mod <- grep("_n", names(dge_design))
-de.results <- map2(dge_design[naive_mod], names(dge_design[naive_mod]), function(design, des_name){
+de.results <- map2(dge_design, names(dge_design), function(design, des_name){
     
     message(Sys.time(), " - Run pseudoBulkDGE on model: ", des_name , " coef: ", paste(design$coef, collapse = "+"))
     
@@ -136,21 +134,28 @@ de.results$carrier$`L2.3~Sp09D01`
 
 apoe_combn <- as.data.frame(combn(unique(spe_pb$APOE), 2))
 
-colnames(apoe_combn) <- map_chr(apoe_combn, ~paste0(sort(.x), collapse = "-"))
+apoe_combn_sort <- map(apoe_combn, ~sort(.x))
+names(apoe_combn_sort) <- map_chr(apoe_combn_sort, ~paste0(.x, collapse = "-"))
 
-de.results.APOE_pairwise <- map(apoe_combn, function(apoe_pair){
+
+de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     
-    apoe_pair <- sort(apoe_pair)
+    # apoe_pair <- sort(apoe_pair)
     apoe_coef <- paste0("APOE", apoe_pair[[2]])
     
     spe_temp <- spe_pb[, spe_pb$APOE %in% apoe_pair]
     
-    # return(colnames(model.matrix(dge_design$APOE$mod , colData(spe_pb))))
-    stopifnot(apoe_coef == colnames(model.matrix(dge_design$APOE$mod , colData(spe_temp)))[2])
+    # check model matrix
+    mm <- model.matrix(dge_design$APOE$mod , colData(spe_temp))
+    stopifnot(apoe_coef == colnames(mm)[2])
     
-    message(Sys.time(), sprintf(" - pairwise DE: %s vs. %s (n=%i), coef = %s", apoe_pair[[1]], apoe_pair[[2]], ncol(spe_temp), apoe_coef))
+    message(Sys.time(), sprintf(" - pairwise DE: %s(%i) vs. %s(%i) (n=%i), coef = %s", 
+                                apoe_pair[[1]], sum(mm[,apoe_coef] == 0), 
+                                apoe_pair[[2]], sum(mm[,apoe_coef] == 1),
+                                ncol(spe_temp), apoe_coef))
     
-    table(spe_temp$APOE, spe_temp$SpD)
+    # table(spe_temp$APOE)
+    # table(spe_temp$APOE, spe_temp$SpD)
     
     de.results <- pseudoBulkDGE(
         spe_temp,
