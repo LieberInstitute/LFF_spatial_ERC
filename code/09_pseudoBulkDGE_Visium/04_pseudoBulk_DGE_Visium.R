@@ -1,7 +1,7 @@
 ## Louise Huuki-Myers, April 2025
 ## Run  pseudoBulkDGE
 
-library("spatialExperiment")
+library("SpatialExperiment")
 library("edgeR")
 library("scran")
 library("tidyverse")
@@ -9,62 +9,74 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-plot_dir <- here("plots", "09_pseudoBulkDGE_Visium", "03_pseudoBulk_DGE_Visium")
-if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+data_dir <- here("plots", "09_pseudoBulkDGE_Visium", "03_pseudoBulkDGE_Visium")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
 spe_pb <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
 
+## temp
+spe_pb$nspots <- spe_pb$ncells
 
-model.matrix(~APOE_carrier + Sex + Age, colData(spe_pb))
+#### Design model + run DGE ####
 
-de_results <- pseudoBulkDGE(
-    spe_pb,
-    label = spe_pb$SpD,
-    design = ~APOE_carrier + Anc_Afr + Age + Sex + Rin + Visium_slide,
-    coef = "APOE_carrierE4+",
-    condition = "APOE_carrier",
-    row.data = rowData(spe_pb),
-    method = "edgeR"
+models <- list(carrier = ~APOE_carrier + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               carrier_i = ~APOE_carrier*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               APOE = ~APOE + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               APOE_i = ~APOE*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide)
+
+map(models, ~colnames(model.matrix(.x , colData(spe_pb))))
+
+
+dge_design <- list(
+    ## carrier
+    carrier = list(mod = models$carrier, coef = "APOE_carrierE4+"),
+    carrier_i = list(mod = models$carrier_i, coef = "APOE_carrierE4+:Anc_Afr"),
+    ## APOE
+    # APOE = list(mod = models$APOE, coef = list("APOEE2/E3","APOEE3/E4","APOEE4/E4")),
+    # APOE_i = list(mod = models$APOE_i, coef = list("APOEE2/E3:Anc_Afr","APOEE3/E4:Anc_Afr","APOEE4/E4:Anc_Afr")),
+    ## E4E4
+    E4E4 = list(mod = models$APOE, coef = "APOEE4/E4"),
+    E4E4_i = list(mod = models$APOE_i, coef = "APOEE4/E4:Anc_Afr")
 )
 
-map(de_results, ~sum(.x$FDR<0.05, na.rm = TRUE))
-map(de_results, ~sum(.x$FDR<0.2, na.rm = TRUE))
-
-map(de_results, ~min(.x$FDR, na.rm = TRUE))
-
-map_int(de_results, ~sum(!is.na(.x$FDR)))
-
-de_results_tb <- map2_dfr(de_results, names(de_results), ~as.data.frame(.x) |> mutate(SpD = .y)) |>
-    mutate(DE_class = case_when(logFC > 1 & PValue < 0.05 ~ "E4+",
-                                logFC < -1 & PValue < 0.05 ~ "E2+",
-                                TRUE ~"Other")) |>
-    filter(!is.na(logFC))
-
-de_results_tb |> filter(FDR < 0.05) |> dplyr::count(SpD)
-de_results_tb |> filter(PValue < 0.05) |> dplyr::count(SpD)
-
-de_results_tb |> dplyr::count(SpD, DE_class)
-
-
-de_results_tb |> group_by(SpD) |> dplyr::arrange(FDR) |> dplyr::slice(1)
-
-load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
-
-(pval_lim <- min(de_results_tb$PValue[de_results_tb$FDR < 0.05]))
+de.results <- map2(dge_design, names(dge_design), function(design, des_name){
     
-violin_plot_SpD <- de_results_tb |>
-    ggplot(aes(x = logFC, y = -log10(PValue), color = DE_class)) +
-    geom_point(size = 1) +
-    geom_text_repel(aes(label = ifelse(PValue < 0.05 | abs(logFC) > 1, gene_name, "")), size = 2) +
-    facet_wrap(~SpD) +
-    geom_vline(xintercept = c(-1,1), linetype = "dashed") +
-    geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
-    geom_hline(yintercept = -log10(pval_lim), linetype = "dashed", color = "red") +
-    scale_color_manual(values = c(APOE_carrier_colors, Other = "grey")) +
-    theme_bw() +
-    labs(title = "Visium PseudoBulkDGE", 
-         subtitle = "~APOE_carrier + Anc_Afr + Age + Sex + Rin + Visium_slide")
-
-ggsave(violin_plot_SpD, filename = here(plot_dir, "Visium_DGE_violin_plot.png"), width = 10, height = 8)
+    message(Sys.time(), " - Run pseudoBulkDGE on model:", des_name , " coef:", design$coef)
     
+    de.results <- pseudoBulkDGE(
+        spe_pb,
+        label = spe_pb$SpD,
+        condition = spe_pb$carrier, # controls filtering, use consistently
+        design = design$mod, # map model
+        coef = design$coef, #map coef
+        row.data = rowData(spe_pb),
+        method = "edgeR"
+    )
+    
+    return(de.results)
+})
+
+# de.results$test <- pseudoBulkDGE(
+#     spe_pb,
+#     label = spe_pb$cell_type_broad,
+#     condition = spe_pb$carrier, # controls filtering, use consistently
+#     design = models$APOE,
+#     coef = c("APOEE2/E3","APOEE3/E4","APOEE4/E4"),
+#     row.data = rowData(spe_pb),
+#     method = "edgeR"
+# )
+
+map(de.results, ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1)))
+
+saveRDS(de.results, file = here(data_dir, "Visium_pseudoBulkDGE.rds"))
+
+# slurmjobs::job_single('04_pseudoBulkDGE_Visium', create_shell = TRUE, memory = '50G', command = "Rscript 04_pseudoBulkDGE_Visium.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
