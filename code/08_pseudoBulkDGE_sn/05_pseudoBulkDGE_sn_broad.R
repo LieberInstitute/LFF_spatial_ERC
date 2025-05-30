@@ -125,15 +125,9 @@ write.csv(test_summary2, file = here(data_dir, "sn_pseudoBulkDGE_summary.csv"))
 ## save
 saveRDS(de.results, file = here(data_dir, "sn_pseudoBulkDGE.rds"))
 
-
-de.results$carrier$`L2.3~Sp09D01`
-
-# de.results$APOE$`L2.3~Sp09D01`[de.results$APOE$`L2.3~Sp09D01`$FDR < 0.1,] 
-
-
 #### pairwise by APOE ####
 
-apoe_combn <- as.data.frame(combn(unique(sce_pb$APOE), 2))
+apoe_combn <- as.data.frame(combn(levels(sce_pb$APOE), 2))
 
 apoe_combn_sort <- map(apoe_combn, ~sort(.x))
 names(apoe_combn_sort) <- map_chr(apoe_combn_sort, ~paste0(.x, collapse = "-"))
@@ -144,6 +138,7 @@ de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     apoe_coef <- paste0("APOE", apoe_pair[[2]])
     
     spe_temp <- sce_pb[, sce_pb$APOE %in% apoe_pair]
+    spe_temp$APOE <- droplevels(spe_temp$APOE)
     
     # check model matrix
     mm <- model.matrix(dge_design$APOE$mod , colData(spe_temp))
@@ -172,17 +167,7 @@ de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
 ran <- map_int(de.results.APOE_pairwise, length) > 0
 if(!all(ran)) message("!! models with error: ", paste(names(ran)[!ran], collapse = ", "))
 
-# !! models with error: 
-# E2/E2-E4/E4, 
-# E2/E3-E4/E4, 
-# E2/E2-E2/E3
-
-# 2025-05-29 14:54:37.408092 - pairwise DE: E2/E2 vs. E4/E4, coef = APOEE4/E4 ! "APOEE4/E4"
-# 2025-05-29 14:54:37.492065 - pairwise DE: E3/E4 vs. E4/E4, coef = APOEE4/E4   "APOEE4/E4"
-# 2025-05-29 14:54:37.554442 - pairwise DE: E2/E3 vs. E4/E4, coef = APOEE4/E4 ! "APOEE4/E4"
-# 2025-05-29 14:54:37.622258 - pairwise DE: E2/E2 vs. E3/E4, coef = APOEE3/E4   "APOEE3/E4"
-# 2025-05-29 14:54:37.68476 - pairwise DE: E2/E2 vs. E2/E3, coef = APOEE2/E3 !  "APOEE2/E3"
-# 2025-05-29 14:54:37.741843 - pairwise DE: E2/E3 vs. E3/E4, coef = APOEE3/E4   "APOEE3/E4"
+# !! models with error: E2/E2-E2/E3, E2/E2-E4/E4, E2/E3-E4/E4
 
 (pairwise_test_summary <- map(de.results.APOE_pairwise[ran], ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1))))
 
