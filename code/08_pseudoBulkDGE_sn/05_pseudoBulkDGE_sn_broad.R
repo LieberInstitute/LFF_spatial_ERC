@@ -31,12 +31,12 @@ models <- list(carrier_n0 = ~APOE_carrier,
                ## APOE
                APOE_n0 = ~APOE,
                APOE_n1 = ~APOE + ncells + pseudo_expr_chrM_ratio,
-               APOE = ~APOE + Anc_Afr + Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round,
+               APOE = ~APOE + Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round,
                APOE_i = ~APOE*Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round,
                APOE_ni0 = ~APOE*Anc_Afr,
                APOE_ni1 = ~APOE*Anc_Afr + ncells + pseudo_expr_chrM_ratio,
                ## E4E4
-               E4E4 = ~APOE_E4E4 + Anc_Afr + Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round,
+               E4E4 = ~APOE_E4E4 + Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round,
                E4E4_i = ~APOE_E4E4*Anc_Afr + Age + Sex + Rin + ncells + pseudo_expr_chrM_ratio + exp_round
 )
 
