@@ -28,12 +28,12 @@ models <- list(carrier_n0 = ~APOE_carrier,
                ## APOE
                APOE_n0 = ~APOE,
                APOE_n1 = ~APOE + nspots + pseudo_expr_chrM_ratio,
-               APOE = ~APOE + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               APOE = ~APOE + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
                APOE_i = ~APOE*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
                APOE_ni0 = ~APOE*Anc_Afr,
                APOE_ni1 = ~APOE*Anc_Afr + nspots + pseudo_expr_chrM_ratio,
                ## E4E4
-               E4E4 = ~APOE_E4E4 + Anc_Afr + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
+               E4E4 = ~APOE_E4E4 + Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide,
                E4E4_i = ~APOE_E4E4*Anc_Afr + Age + Sex + Rin + nspots + pseudo_expr_chrM_ratio + Visium_slide
                )
 
@@ -134,6 +134,10 @@ apoe_combn <- as.data.frame(combn(unique(spe_pb$APOE), 2))
 
 apoe_combn_sort <- map(apoe_combn, ~sort(.x))
 names(apoe_combn_sort) <- map_chr(apoe_combn_sort, ~paste0(.x, collapse = "-"))
+apoe_combn_sort <- apoe_combn_sort[sort(names(apoe_combn_sort))]
+
+
+error <- c("E2/E2-E2/E3", "E2/E2-E4/E4", "E2/E3-E4/E4")
 
 de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     
@@ -141,7 +145,9 @@ de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     apoe_coef <- paste0("APOE", apoe_pair[[2]])
     
     spe_temp <- spe_pb[, spe_pb$APOE %in% apoe_pair]
-    spe_temp$APOE <- droplevels(spe_temp$APOE)
+    # spe_temp$APOE <- droplevels(spe_temp$APOE)
+    table(spe_temp$APOE)
+    
     
     # check model matrix
     mm <- model.matrix(dge_design$APOE$mod , colData(spe_temp))
@@ -167,22 +173,35 @@ de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     return(de.results)
 })
 
+map(mm, head)
+
 ran <- map_int(de.results.APOE_pairwise, length) > 0
 if(!all(ran)) message("!! models with error: ", paste(names(ran)[!ran], collapse = ", "))
 
 # !! models with error: 
-# E2/E2-E4/E4, 
-# E2/E3-E4/E4, 
-# E2/E2-E2/E3
+# E2/E2-E4/E4, *
+# E2/E3-E4/E4, *
+# E2/E2-E2/E3 *
 
 # 2025-05-29 14:54:37.408092 - pairwise DE: E2/E2 vs. E4/E4, coef = APOEE4/E4 ! "APOEE4/E4"
 # 2025-05-29 14:54:37.492065 - pairwise DE: E3/E4 vs. E4/E4, coef = APOEE4/E4   "APOEE4/E4"
 # 2025-05-29 14:54:37.554442 - pairwise DE: E2/E3 vs. E4/E4, coef = APOEE4/E4 ! "APOEE4/E4"
 # 2025-05-29 14:54:37.622258 - pairwise DE: E2/E2 vs. E3/E4, coef = APOEE3/E4   "APOEE3/E4"
-# 2025-05-29 14:54:37.68476 - pairwise DE: E2/E2 vs. E2/E3, coef = APOEE2/E3 !  "APOEE2/E3"
+# 2025-05-29 14:54:37.68476 - pairwise DE: E2/E2 vs. E2/E3, coef = APOEE2/E3 !  "APOEE2/E3" 
 # 2025-05-29 14:54:37.741843 - pairwise DE: E2/E3 vs. E3/E4, coef = APOEE3/E4   "APOEE3/E4"
 
+# 2025-05-30 11:21:58.233691 - pairwise DE: E2/E2(54) vs. E2/E3(72) (n=126), coef = APOEE2/E3 ! 
+# 2025-05-30 11:21:59.292388 - pairwise DE: E2/E2(54) vs. E3/E4(90) (n=144), coef = APOEE3/E4
+# 2025-05-30 11:22:03.705985 - pairwise DE: E2/E2(54) vs. E4/E4(63) (n=117), coef = APOEE4/E4 !
+# 2025-05-30 11:22:04.63344 - pairwise DE: E2/E3(72) vs. E3/E4(90) (n=162), coef = APOEE3/E4
+# 2025-05-30 11:22:18.318054 - pairwise DE: E2/E3(72) vs. E4/E4(63) (n=135), coef = APOEE4/E4 !
+# 2025-05-30 11:22:19.313737 - pairwise DE: E3/E4(90) vs. E4/E4(63) (n=153), coef = APOEE4/E4
+
+
 (pairwise_test_summary <- map(de.results.APOE_pairwise[ran], ~summarizeTestsPerLabel(decideTestsPerLabel(.x, threshold=0.1))))
+
+cur.results <- de.results.APOE_pairwise[["E2/E2-E3/E4"]][[1]]    
+cur.results[order(cur.results$PValue),]
 
 pairwise_test_summary2 <- map2_dfr(pairwise_test_summary, names(pairwise_test_summary), function(ts, name){
     ts <- as.data.frame(ts)
@@ -208,6 +227,15 @@ write.csv(pairwise_test_summary2, file = here(data_dir, "Visium_pseudoBulkDGE_pa
 ## save
 saveRDS(de.results.APOE_pairwise, file = here(data_dir, "Visium_pseudoBulkDGE_APOE_pairwise.rds"))
 
+
+## debug
+# gene <- counts(spe_temp)[which(rowData(spe_temp)$gene_name == "MBP"), ]
+# 
+# it <- lme4::lmer(
+#     gene ~ (1| APOE),
+#     # gene ~ (1| APOE) + Anc_Afr + Age + (1|Sex) + Rin + nspots + pseudo_expr_chrM_ratio + (1|Visium_slide),
+#     data = as.data.frame(colData(spe_temp))
+# )
 
 # slurmjobs::job_single('04_pseudoBulkDGE_Visium', create_shell = TRUE, memory = '50G', command = "Rscript 04_pseudoBulkDGE_Visium.R")
 
