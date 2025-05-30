@@ -141,6 +141,7 @@ de.results.APOE_pairwise <- map(apoe_combn_sort, function(apoe_pair){
     apoe_coef <- paste0("APOE", apoe_pair[[2]])
     
     spe_temp <- spe_pb[, spe_pb$APOE %in% apoe_pair]
+    spe_temp$APOE <- droplevels(spe_temp$APOE)
     
     # check model matrix
     mm <- model.matrix(dge_design$APOE$mod , colData(spe_temp))
