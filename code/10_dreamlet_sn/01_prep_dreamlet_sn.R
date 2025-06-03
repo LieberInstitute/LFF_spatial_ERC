@@ -60,37 +60,6 @@ pdf(here(plot_dir, "sn_dreamlet_voom.pdf"))
 plotVoom(res.proc)
 dev.off()
 
-##### run variance partitioning ####
-message(Sys.time(), ' - variance partition')
-
-# my_forms <- list(
-#     carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
-#     apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
-#     e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round)  + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
-#     # interaction syntax x + (x | g)
-#     carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
-#     apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
-#     e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells
-# )
-
-vp.lst <- fitVarPart(res.proc,~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round)) #subsets_Mito_percent + ncells
-
-saveRDS(vp.lst, file = here(data_dir, "dreamlet_fitVarPart_sn.RDS"))
-# vp.lst <- readRDS(here(data_dir, "dreamlet_fitVarPart_sn.RDS"))
-
-# Show variance fractions at the gene-level for each cell type
-# genes <- vp.lst$gene[2:4]
-
-vp.lst[order(vp.lst$APOE_carrier, decreasing = TRUE)[1:100],]
-
-top20_APOE_varPart <- vp.lst$gene[order(vp.lst$APOE_carrier, decreasing = TRUE)[1:20]]
-
-pdf(here(plot_dir, "sn_dreamlet_VarPart.pdf"), height = 11)
-plotVarPart(vp.lst, label.angle = 45)
-plotPercentBars(vp.lst[vp.lst$gene %in% AD_risk$symbol, ]) + labs(title = "Risk Genes")
-plotPercentBars(vp.lst[vp.lst$gene %in% top20_APOE_varPart, ]) + labs(title = "Top20 APOE")
-dev.off()
-
 # slurmjobs::job_single('01_prep_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 01_prep_dreamlet_sn.R")
 
 ## Reproducibility information
