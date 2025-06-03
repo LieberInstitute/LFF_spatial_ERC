@@ -26,7 +26,7 @@ plot_dir <- here("plots", "10_dreamlet_sn", "02_VarPart_dreamlet_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
-res.proc <- saveRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
+res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
 
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
     dplyr::filter(symbol %in% rowData(sce)$gene_name) 
