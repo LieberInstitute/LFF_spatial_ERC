@@ -27,7 +27,7 @@ AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
     dplyr::filter(symbol %in% rowData(sce)$gene_name) 
 
 #### Aggregate to pseudobulk ####
-message(Sts.time(), ' - Aggregate to pseudobulk')
+message(Sys.time(), ' - Aggregate to pseudobulk')
 pb <- aggregateToPseudoBulk(sce,
                             assay = "counts",
                             cluster_id = "cell_type_broad",
@@ -57,7 +57,18 @@ dev.off()
 
 ##### run variance partitioning ####
 message(Sys.time(), ' - variance partition')
-vp.lst <- fitVarPart(res.proc, ~APOE_carrier + Anc_Afr + Age + Sex + Rin + exp_round) #subsets_Mito_percent + ncells
+
+# my_forms <- list(
+#     carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
+#     apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
+#     e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round)  + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
+#     # interaction syntax x + (x | g)
+#     carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
+#     apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells,
+#     e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells
+# )
+
+vp.lst <- fitVarPart(res.proc,~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)) #subsets_Mito_percent + ncells
 
 # Show variance fractions at the gene-level for each cell type
 # genes <- vp.lst$gene[2:4]
@@ -72,7 +83,9 @@ message(Sys.time(), ' - Differential Expression')
 
 # Differential expression analysis within each assay,
 # evaluated on the voom normalized data
-res.dl <- dreamlet(res.proc, ~APOE_carrier + Anc_Afr + Age + Sex + Rin + exp_round)
+res.dl <- dreamlet(res.proc, ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round))
+
+saveRDS(res.dl, file = here(data_dir, "dreamlet_sn.RDS"))
 
 # names of estimated coefficients
 coefNames(res.dl)
