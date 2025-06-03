@@ -15,7 +15,8 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
-opt$model <- "carrier"
+# test 
+# opt$model <- "carrier"
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "10_dreamlet_sn", "03_run_dreamlet_sn")
