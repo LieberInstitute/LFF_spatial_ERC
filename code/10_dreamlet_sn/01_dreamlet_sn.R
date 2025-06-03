@@ -47,6 +47,8 @@ res.proc <- processAssays(pb, ~APOE, min.count = 5)
 # normalized data and other information
 res.proc
 
+details(res.proc)
+
 # view details of dropping samples
 details(res.proc)
 
@@ -68,7 +70,10 @@ message(Sys.time(), ' - variance partition')
 #     e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round) + pseudo_expr_chrM_ratio + ncells
 # )
 
-vp.lst <- fitVarPart(res.proc,~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)) #subsets_Mito_percent + ncells
+vp.lst <- fitVarPart(res.proc,~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round)) #subsets_Mito_percent + ncells
+
+saveRDS(vp.lst, file = here(data_dir, "dreamlet_fitVarPart_sn.RDS"))
+
 
 # Show variance fractions at the gene-level for each cell type
 # genes <- vp.lst$gene[2:4]
