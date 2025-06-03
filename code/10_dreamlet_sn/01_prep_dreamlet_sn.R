@@ -7,10 +7,10 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "10_dreamlet_sn", "01_dreamlet_sn")
+data_dir <- here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "10_dreamlet_sn", "01_dreamlet_sn")
+plot_dir <- here("plots", "10_dreamlet_sn", "01_prep_dreamlet_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -52,6 +52,9 @@ details(res.proc)
 # view details of dropping samples
 details(res.proc)
 
+## save 
+saveRDS(res.proc, file = here(data_dir, "sn_res_proc.rds"))
+
 # show voom plot for each cell clusters
 pdf(here(plot_dir, "sn_dreamlet_voom.pdf"))
 plotVoom(res.proc)
@@ -88,42 +91,7 @@ plotPercentBars(vp.lst[vp.lst$gene %in% AD_risk$symbol, ]) + labs(title = "Risk 
 plotPercentBars(vp.lst[vp.lst$gene %in% top20_APOE_varPart, ]) + labs(title = "Top20 APOE")
 dev.off()
 
-#### Differential Expression ####
-message(Sys.time(), ' - Differential Expression')
-
-# Differential expression analysis within each assay,
-# evaluated on the voom normalized data
-res.dl <- dreamlet(res.proc, ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round))
-
-saveRDS(res.dl, file = here(data_dir, "dreamlet_sn.RDS"))
-
-# names of estimated coefficients
-coefNames(res.dl)
-
-# results from full analysis
-topTable(res.dl, coef = "APOE_carrierE4+")
-
-pdf(here(plot_dir, "sn_dreamlet_VolcanoPlot.pdf"), height = 11, width = 8)
-plotVolcano(res.dl, coef = "APOE_carrierE4+")
-dev.off()
-
-#### plot genes ####
-# get data
-df <- extractData(res.proc, "Inhib", genes = "NBPF12")
-
-# expression boxplot
-expression_plot <- ggplot(df, aes(APOE_carrier, NBPF12)) +
-    geom_boxplot() +
-    ylab(bquote(Expression ~ (log[2] ~ CPM))) +
-    ggtitle("NBPF12") +
-    theme_bw()
-
-ggsave(expression_plot, filename = here(plot_dir, "sn_dreamlet_expression_boxplot.png"))
-
-## forest plot
-plotForest(res.dl, coef = "APOE_carrierE4+", gene = "NBPF12")
-
-# slurmjobs::job_single('01_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 01_dreamlet_sn.R")
+# slurmjobs::job_single('01_prep_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 01_prep_dreamlet_sn.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
