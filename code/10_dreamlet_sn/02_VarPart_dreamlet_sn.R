@@ -5,6 +5,18 @@ library("SpatialExperiment")
 library("dreamlet")
 library("here")
 library("sessioninfo")
+library("getopt")
+
+# Import command-line parameters
+scec <- matrix(
+    c("model", "m", "1", "character", "Model name"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+print(opt)
+
+# test 
+# opt$model <- "carrier"
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "10_dreamlet_sn", "02_VarPart_dreamlet_sn")
@@ -20,30 +32,40 @@ AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
     dplyr::filter(symbol %in% rowData(sce)$gene_name) 
 
 ##### run variance partitioning ####
-message(Sys.time(), ' - variance partition')
-
 source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
-names(dreamlet_models_sn)
+stopifnot(opt$model %in% names(dreamlet_models_sn))
 
-vp.lst <- fitVarPart(res.proc,~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + (1 | seq_round)) #subsets_Mito_percent + ncells
+message(Sys.time(), ' - Variance Partition, model = ', opt$model)
+mod = dreamlet_models_sn[[opt$model]]
+print(mod)
 
-saveRDS(vp.lst, file = here(data_dir, "dreamlet_fitVarPart_sn.RDS"))
-# vp.lst <- readRDS(here(data_dir, "dreamlet_fitVarPart_sn.RDS"))
+vp.lst <- fitVarPart(res.proc, mod) 
+
+saveRDS(vp.lst, file = here(data_dir, sprintf("dreamlet_fitVarPart_sn-%s.RDS", opt$model)))
+
+### VarPart plots ####
+message(Sys.time(), " - Variance Partition plots")
 
 # Show variance fractions at the gene-level for each cell type
-# genes <- vp.lst$gene[2:4]
+vp.lst[order(vp.lst[[1]], decreasing = TRUE)[1:100],]
 
-vp.lst[order(vp.lst$APOE_carrier, decreasing = TRUE)[1:100],]
+top20_APOE_varPart <- vp.lst$gene[order(vp.lst[[1]], decreasing = TRUE)[1:20]]
 
-top20_APOE_varPart <- vp.lst$gene[order(vp.lst$APOE_carrier, decreasing = TRUE)[1:20]]
-
-pdf(here(plot_dir, "sn_dreamlet_VarPart.pdf"), height = 11)
-plotVarPart(vp.lst, label.angle = 45)
-plotPercentBars(vp.lst[vp.lst$gene %in% AD_risk$symbol, ]) + labs(title = "Risk Genes")
-plotPercentBars(vp.lst[vp.lst$gene %in% top20_APOE_varPart, ]) + labs(title = "Top20 APOE")
+pdf(here(plot_dir, sprintf("sn_dreamlet_VarPart-%s.pdf")), height = 11)
+plotVarPart(vp.lst, label.angle = 45) + labs(title = "VarPart", subtitle = opt$model)
+plotPercentBars(vp.lst[vp.lst$gene %in% AD_risk$symbol, ]) + labs(title = "Risk Genes", subtitle = opt$model)
+plotPercentBars(vp.lst[vp.lst$gene %in% top20_APOE_varPart, ]) + labs(title = "Top20 ", subtitle = opt$model))
 dev.off()
 
 # slurmjobs::job_single('02_VarPart_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 02_VarPart_dreamlet_sn.R")
+
+# slurmjobs::job_loop(
+#     loops = list(model = names(dreamlet_models_sn)),
+#     name = "02_VarPart_dreamlet_sn",
+#     create_shell = TRUE,
+#     create_script = FALSE
+# )
+
 
 ## Reproducibility information
 print("Reproducibility information:")
