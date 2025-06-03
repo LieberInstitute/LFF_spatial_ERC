@@ -28,9 +28,6 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### Load data ####
 res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
 
-AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
-    dplyr::filter(symbol %in% rowData(sce)$gene_name) 
-
 ##### run variance partitioning ####
 source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
 stopifnot(opt$model %in% names(dreamlet_models_sn))
@@ -45,6 +42,9 @@ saveRDS(vp.lst, file = here(data_dir, sprintf("dreamlet_fitVarPart_sn-%s.RDS", o
 
 ### VarPart plots ####
 message(Sys.time(), " - Variance Partition plots")
+
+AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
+    dplyr::filter(symbol %in% rownames(assay(res.proc, 1))) 
 
 # Show variance fractions at the gene-level for each cell type
 vp.lst[order(vp.lst[[1]], decreasing = TRUE)[1:100],]
