@@ -7,10 +7,10 @@ library("here")
 library("sessioninfo")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "10_dreamlet_sn", "03_dreamlet_sn")
+data_dir <- here("processed-data", "10_dreamlet_sn", "01_dreamlet_sn")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "10_dreamlet_sn", "03_dreamlet_sn")
+plot_dir <- here("plots", "10_dreamlet_sn", "01_dreamlet_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -113,7 +113,7 @@ ggsave(expression_plot, filename = here(plot_dir, "sn_dreamlet_expression_boxplo
 ## forest plot
 plotForest(res.dl, coef = "APOE_carrierE4+", gene = "NBPF12")
 
-# slurmjobs::job_single('05_pseudoBulkDGE_sn_broad', create_shell = TRUE, memory = '50G', command = "Rscript 05_pseudoBulkDGE_sn_broad.R")
+# slurmjobs::job_single('01_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 01_dreamlet_sn.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
