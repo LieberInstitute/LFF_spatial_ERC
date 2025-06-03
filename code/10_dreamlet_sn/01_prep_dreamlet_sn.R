@@ -23,9 +23,6 @@ rownames(sce) <- rowData(sce)$gene_name
 ## duplicated gene_names
 sce <- sce[!duplicated(rownames(sce)),]
 
-AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
-    dplyr::filter(symbol %in% rowData(sce)$gene_name) 
-
 #### Aggregate to pseudobulk ####
 message(Sys.time(), ' - Aggregate to pseudobulk')
 pb <- aggregateToPseudoBulk(sce,
