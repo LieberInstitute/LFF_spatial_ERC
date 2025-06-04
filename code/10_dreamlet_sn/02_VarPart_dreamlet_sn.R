@@ -29,7 +29,18 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
 
 ##### run variance partitioning ####
-source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
+# source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
+
+dreamlet_models_sn <- list(
+    carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    # interaction syntax x + (x | g)
+    carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent
+)
+
 stopifnot(opt$model %in% names(dreamlet_models_sn))
 
 message(Sys.time(), ' - Variance Partition, model = ', opt$model)
