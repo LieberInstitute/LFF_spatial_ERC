@@ -28,8 +28,8 @@ sce$APOE_carrier_syn <- factor(gsub("\\+", "", sce$APOE_carrier))
 levels(sce$APOE_carrier_syn)
 
 ## add E4/E4 variable
-sce_pb$APOE_E4E4 <- sce_pb$APOE == "E4/E4"
-table(sce_pb$APOE_E4E4)
+sce$APOE_E4E4 <- sce$APOE == "E4/E4"
+table(sce$APOE_E4E4)
 
 ## duplicated gene_names
 sce <- sce[!duplicated(rownames(sce)),]
