@@ -1,0 +1,485 @@
+**** Job starts ****
+Thu May 29 08:09:40 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 16867811
+Job name: 05_pseudoBulkDGE_sn_broad
+Node name: compute-120
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: scuttle
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+[1] 38606   235
+
+Astro Macro Micro   OPC Oligo  Vasc Excit Inhib 
+   31    19    31    31    31    30    31    31 
+2025-05-29 20:09:53.508882 - Run pseudoBulkDGE on model: carrier_n0 coef: APOE_carrierE4+
+2025-05-29 20:10:57.271128 - Run pseudoBulkDGE on model: carrier_n1 coef: APOE_carrierE4+
+2025-05-29 20:11:58.767827 - Run pseudoBulkDGE on model: carrier_n2 coef: APOE_carrierE4+
+2025-05-29 20:12:59.096668 - Run pseudoBulkDGE on model: carrier_n3 coef: APOE_carrierE4+
+2025-05-29 20:14:00.042645 - Run pseudoBulkDGE on model: carrier_n4 coef: APOE_carrierE4+
+2025-05-29 20:15:01.982295 - Run pseudoBulkDGE on model: carrier coef: APOE_carrierE4+
+2025-05-29 20:16:12.953518 - Run pseudoBulkDGE on model: carrier_i coef: APOE_carrierE4+:Anc_Afr
+2025-05-29 20:17:23.844775 - Run pseudoBulkDGE on model: APOE_n coef: APOEE2/E3+APOEE3/E4+APOEE4/E4
+2025-05-29 20:18:25.059862 - Run pseudoBulkDGE on model: APOE coef: APOEE2/E3+APOEE3/E4+APOEE4/E4
+2025-05-29 20:19:37.556427 - Run pseudoBulkDGE on model: APOE_i coef: APOEE2/E3:Anc_Afr+APOEE3/E4:Anc_Afr+APOEE4/E4:Anc_Afr
+2025-05-29 20:20:51.963475 - Run pseudoBulkDGE on model: APOE_ni0 coef: APOEE2/E3:Anc_Afr+APOEE3/E4:Anc_Afr+APOEE4/E4:Anc_Afr
+2025-05-29 20:21:54.242507 - Run pseudoBulkDGE on model: APOE_ni1 coef: APOEE2/E3:Anc_Afr+APOEE3/E4:Anc_Afr+APOEE4/E4:Anc_Afr
+2025-05-29 20:22:59.725549 - Run pseudoBulkDGE on model: E4E4 coef: APOE_E4E4TRUE
+2025-05-29 20:24:11.316752 - Run pseudoBulkDGE on model: E4E4_i coef: APOE_E4E4TRUE:Anc_Afr
+2025-05-29 20:25:22.952305 - Run pseudoBulkDGE on model: APOE_Sex coef: SexM
+2025-05-29 20:26:36.255755 - Run pseudoBulkDGE on model: APOE_Anc coef: Anc_Afr
+$carrier_n0
+       -1     0    1    NA
+Astro  18 17234  149 21205
+Excit   0 24431    0 14175
+Inhib   7 19779    0 18820
+Macro   0  2074    0 36532
+Micro  18 12465  160 25963
+Oligo 138 16350 1114 21004
+OPC     0 16518    0 22088
+Vasc    0  7330    0 31276
+
+$carrier_n1
+      -1     0   1    NA
+Astro 34 17178 189 21205
+Excit  0 24431   0 14175
+Inhib  0 19786   0 18820
+Macro  0  2074   0 36532
+Micro  1 12638   4 25963
+Oligo  0 17602   0 21004
+OPC    0 16518   0 22088
+Vasc   0  7330   0 31276
+
+$carrier_n2
+       -1     0   1    NA
+Astro  20 17210 171 21205
+Excit   0 24431   0 14175
+Inhib   8 19778   0 18820
+Macro   0  2074   0 36532
+Micro   0 12643   0 25963
+Oligo 118 16810 674 21004
+OPC     0 16518   0 22088
+Vasc    0  7330   0 31276
+
+$carrier_n3
+      -1     0   1    NA
+Astro 25 17220 156 21205
+Excit  0 24431   0 14175
+Inhib  9 19777   0 18820
+Macro  0  2074   0 36532
+Micro 14 12496 133 25963
+Oligo 63 17048 491 21004
+OPC    0 16518   0 22088
+Vasc   0  7330   0 31276
+
+$carrier_n4
+      -1     0   1    NA
+Astro 28 17186 187 21205
+Excit  0 24431   0 14175
+Inhib  0 19786   0 18820
+Macro  0  2074   0 36532
+Micro  0 12643   0 25963
+Oligo  0 17602   0 21004
+OPC    0 16518   0 22088
+Vasc   0  7330   0 31276
+
+$carrier
+          0 1    NA
+Astro 17396 5 21205
+Excit 24431 0 14175
+Inhib 19786 0 18820
+Micro 12643 0 25963
+Oligo 17602 0 21004
+OPC   16518 0 22088
+Vasc   7328 2 31276
+
+$carrier_i
+          0    NA
+Astro 17401 21205
+Excit 24431 14175
+Inhib 19786 18820
+Micro 12643 25963
+Oligo 17602 21004
+OPC   16518 22088
+Vasc   7330 31276
+
+$APOE_n
+          0  1    NA
+Astro 17401  0 21205
+Excit 24431  0 14175
+Inhib 19785  1 18820
+Macro  2074  0 36532
+Micro 12643  0 25963
+Oligo 17558 44 21004
+OPC   16518  0 22088
+Vasc   7329  1 31276
+
+$APOE
+          0  1    NA
+Astro 17337 64 21205
+Excit 24427  4 14175
+Inhib 19786  0 18820
+Micro 12574 69 25963
+Oligo 17601  1 21004
+OPC   16509  9 22088
+Vasc   7317 13 31276
+
+$APOE_i
+          0    NA
+Astro 17401 21205
+Excit 24431 14175
+Inhib 19786 18820
+Micro 12643 25963
+Oligo 17602 21004
+OPC   16518 22088
+Vasc   7330 31276
+
+$APOE_ni0
+          0 1    NA
+Astro 17401 0 21205
+Excit 24431 0 14175
+Inhib 19786 0 18820
+Macro  2074 0 36532
+Micro 12642 1 25963
+Oligo 17602 0 21004
+OPC   16518 0 22088
+Vasc   7330 0 31276
+
+$APOE_ni1
+          0    NA
+Astro 17401 21205
+Excit 24431 14175
+Inhib 19786 18820
+Macro  2074 36532
+Micro 12643 25963
+Oligo 17602 21004
+OPC   16518 22088
+Vasc   7330 31276
+
+$E4E4
+      -1     0  1    NA
+Astro  0 17400  1 21205
+Excit  0 24431  0 14175
+Inhib  0 19786  0 18820
+Micro  0 12643  0 25963
+Oligo  0 17601  1 21004
+OPC    8 16460 50 22088
+Vasc   0  7327  3 31276
+
+$E4E4_i
+          0 1    NA
+Astro 17401 0 21205
+Excit 24430 1 14175
+Inhib 19786 0 18820
+Micro 12643 0 25963
+Oligo 17602 0 21004
+OPC   16518 0 22088
+Vasc   7330 0 31276
+
+$APOE_Sex
+      -1     0  1    NA
+Astro  0 17398  3 21205
+Excit  1 24426  4 14175
+Inhib  2 19775  9 18820
+Micro  0 12643  0 25963
+Oligo  1 17594  7 21004
+OPC    5 16493 20 22088
+Vasc   1  7324  5 31276
+
+$APOE_Anc
+      -1     0 1    NA
+Astro  0 17401 0 21205
+Excit  0 24431 0 14175
+Inhib  2 19784 0 18820
+Micro  0 12643 0 25963
+Oligo  1 17598 3 21004
+OPC    0 16518 0 22088
+Vasc   0  7330 0 31276
+
+# A tibble: 16 × 2
+   mod        `sum(deg_total)`
+   <chr>                 <dbl>
+ 1 APOE                    160
+ 2 APOE_Anc                  6
+ 3 APOE_Sex                 58
+ 4 APOE_i                    0
+ 5 APOE_n                   46
+ 6 APOE_ni0                  1
+ 7 APOE_ni1                  0
+ 8 E4E4                     63
+ 9 E4E4_i                    1
+10 carrier                   7
+11 carrier_i                 0
+12 carrier_n0             1604
+13 carrier_n1              228
+14 carrier_n2              991
+15 carrier_n3              891
+16 carrier_n4              215
+2025-05-29 20:29:53.924501 - pairwise DE: E2/E2(46) vs. E2/E3(62) (n=108), coef = APOEE2/E3
+2025-05-29 20:29:56.868004 - pairwise DE: E2/E2(46) vs. E3/E4(73) (n=119), coef = APOEE3/E4
+2025-05-29 20:30:11.300047 - pairwise DE: E2/E2(46) vs. E4/E4(54) (n=100), coef = APOEE4/E4
+2025-05-29 20:30:13.88135 - pairwise DE: E2/E3(62) vs. E3/E4(73) (n=135), coef = APOEE3/E4
+2025-05-29 20:31:04.132086 - pairwise DE: E2/E3(62) vs. E4/E4(54) (n=116), coef = APOEE4/E4
+2025-05-29 20:31:07.115091 - pairwise DE: E3/E4(73) vs. E4/E4(54) (n=127), coef = APOEE4/E4
+!! models with error: E2/E2-E2/E3, E2/E2-E4/E4, E2/E3-E4/E4
+$`E2/E2-E3/E4`
+       -1     0   1    NA
+Astro 304 15180 359 22763
+Excit   1 21729   1 16875
+Inhib   0 18427   1 20178
+Micro   0 11295   0 27311
+Oligo  46 15005 289 23266
+OPC     3 15183  10 23410
+
+$`E2/E3-E3/E4`
+      -1     0 1    NA
+Astro  0 15859 0 22747
+Excit  0 22066 0 16540
+Inhib  0 17929 0 20677
+Micro  0 10954 0 27652
+Oligo  1 14586 0 24019
+OPC    0 14916 1 23689
+Vasc   0  5855 0 32751
+
+$`E3/E4-E4/E4`
+      -1     0 1    NA
+Astro  0 15810 0 22796
+Excit  0 22949 0 15657
+Inhib  0 19658 0 18948
+Micro 12 11119 5 27470
+Oligo  0 14479 0 24127
+OPC    3 15185 1 23417
+Vasc   0  5573 5 33028
+
+`summarise()` has grouped output by 'mod'. You can override using the `.groups`
+argument.
+# A tibble: 3 × 3
+# Groups:   mod [1]
+  mod   pair        `sum(deg_total)`
+  <chr> <chr>                  <dbl>
+1 APOE  E2/E2-E3/E4             1014
+2 APOE  E2/E3-E3/E4                2
+3 APOE  E3/E4-E4/E4               26
+[1] "Reproducibility information:"
+[1] "2025-05-29 20:32:11 EDT"
+    user   system  elapsed 
+1322.907   12.645 1349.792 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-05-29
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ beachmat               2.24.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Biobase              * 2.68.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocNeighbors          2.2.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocParallel           1.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocSingular           1.24.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ bluster                1.18.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ cli                    3.6.5    2025-04-23 [2] CRAN (R 4.5.0)
+ cluster                2.1.8.1  2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
+ crayon                 1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
+ DelayedArray           0.34.1   2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
+ dichromat              2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4    2023-11-17 [2] CRAN (R 4.5.0)
+ dqrng                  0.4.1    2024-05-28 [2] CRAN (R 4.5.0)
+ edgeR                  4.6.2    2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0    2023-01-29 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14   2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ggplot2              * 3.5.2    2025-04-09 [2] CRAN (R 4.5.0)
+ ggrepel              * 0.9.6    2024-09-07 [2] CRAN (R 4.5.0)
+ glue                   1.8.0    2024-09-30 [2] CRAN (R 4.5.0)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.1    2020-12-13 [2] CRAN (R 4.5.0)
+ hms                    1.1.3    2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7    2023-08-15 [2] CRAN (R 4.5.0)
+ igraph                 2.1.4    2025-01-23 [2] CRAN (R 4.5.0)
+ IRanges              * 2.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ irlba                  2.3.5.1  2022-10-03 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4    2023-11-07 [2] CRAN (R 4.5.0)
+ limma                  3.64.1   2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ locfit                 1.5-9.12 2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.4    2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3    2022-03-30 [2] CRAN (R 4.5.0)
+ Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ metapod                1.16.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ pillar                 1.10.2   2025-04-05 [2] CRAN (R 4.5.0)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ purrr                * 1.0.4    2025-02-05 [2] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.0.14   2025-01-12 [2] CRAN (R 4.5.0)
+ readr                * 2.1.5    2024-01-10 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6    2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot              2.0.4    2023-11-05 [2] CRAN (R 4.5.0)
+ rsvd                   1.0.5    2021-04-16 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ S4Vectors            * 0.46.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ScaledMatrix           1.16.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ scran                * 1.36.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scuttle              * 1.18.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sessioninfo          * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1   2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0    2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.5.1    2023-11-14 [2] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1   2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ tibble               * 3.2.1    2023-03-20 [2] CRAN (R 4.5.0)
+ tidyr                * 1.3.1    2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0    2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ utf8                   1.2.5    2025-05-01 [2] CRAN (R 4.5.0)
+ vctrs                  0.6.5    2023-12-01 [2] CRAN (R 4.5.0)
+ withr                  3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.48.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu May 29 08:32:12 PM EDT 2025
