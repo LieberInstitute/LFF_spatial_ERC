@@ -32,14 +32,15 @@ res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_s
 
 # The variable to be tested must be a fixed effect
 dreamlet_models_sn <- list(
-    carrier = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
-    apoe = ~ APOE + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
-    e4e4 = ~ APOE_E4E4 + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round) ,
-    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
+    carrier_n0 = ~ APOE_carrier,
+    carrier = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)  + subsets_Mito_percent,
+    apoe = ~ APOE + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    e4e4 = ~ APOE_E4E4 + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     # interaction syntax x + (x | g)
-    carrier_i = ~ APOE_carrier*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
-    apoe_i = ~ APOE*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
-    e4e4_i = ~ APOE_E4E4*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)
+    carrier_i = ~ APOE_carrier*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    apoe_i = ~ APOE*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    e4e4_i = ~ APOE_E4E4*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent
 )
 
 # source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
@@ -53,16 +54,15 @@ print(mod)
 # evaluated on the voom normalized data
 res.dl <- dreamlet(res.proc, mod)
 
-message(Sys.time(), ' - DONE Differential Expression')
+message(Sys.time(), " - DONE Differential Expression...Save Data")
+saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_sn-%s.RDS", opt$model)))
 
 # names of estimated coefficients
 message("coef")
 coefNames(res.dl)
 
-topTable(res.dl, coef = "APOE_carrierE4+")
+# topTable(res.dl, coef = "APOE_carrierE4+")
 
-message(Sys.time(), " - Save Data")
-saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_sn-%s.RDS", opt$model)))
 
 ## Reproducibility information
 print("Reproducibility information:")
