@@ -1,12 +1,11 @@
 **** Job starts ****
-Tue May 20 01:03:47 PM EDT 2025
+Wed Jun  4 11:05:44 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16668302
+Job id: 16933848
 Job name: 20_sn_pseudobulk
-Node name: compute-093
+Node name: compute-157
 Task id: 
-Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -135,50 +134,32 @@ $ARGS
 character(0)
 
 $cluster
-[1] "cell_type_anno"
+[1] "cell_type_broad"
 
 $sce
 [1] "sce_ERC_subcluster"
 
-2025-05-20 13:04:10.916633 - Load HDF5 sce
+2025-06-04 11:05:57.093592 - Load HDF5 sce
 
-        Astro.01         Astro.02         Astro.03         Astro.04 
-           10976             5276             3087             1133 
-        Astro.05            Macro          Micro.1          Micro.2 
-             812              433             4227             3748 
-         Micro.3          Micro.4          Micro.5            OPC.1 
-            1876             1728              590             4815 
-           OPC.2            OPC.3            OPC.4            OPC.5 
-            4009             3932             1961              458 
-        Oligo.01         Oligo.02         Oligo.03         Oligo.04 
-           12519            12010             8587             6911 
-        Oligo.05        Vasc.Endo          Vasc.PC        Vasc.VLMC 
-            4254              586              147              915 
-        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
-            2209             8671              609             2235 
-      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
-             241              152              625              897 
-      Inhib.Pax6 Inhib.Chandelier Inhib.Lamp5_Lhx6      Inhib.Pvalb 
-             125              303             1234             1363 
-       Inhib.Sst        Inhib.Vip 
-             815             7535 
-2025-05-20 13:04:21.767457 make pseudobulk object
-pseudobulk dims: 38606 row, 38 col
-2025-05-20 13:28:28.432066 - normalize expression
-                 Astro.01  Astro.02  Astro.03  Astro.04  Astro.05
-ENSG00000290825 -4.862814 -5.327316 -5.327316 -5.327316 -5.327316
-ENSG00000243485 -4.862814 -5.327316 -5.327316 -5.327316 -5.327316
-ENSG00000237613 -5.327316 -5.327316 -5.327316 -5.327316 -5.327316
-ENSG00000290826 -5.327316 -5.327316 -5.327316 -5.327316 -5.327316
-ENSG00000186092 -5.327316 -5.327316 -5.327316 -5.327316 -5.327316
-2025-05-20 13:28:30.68618 - save data
+Astro Macro Micro   OPC Oligo  Vasc Excit Inhib 
+21284   433 12169 15175 44281  1648 15764 11250 
+2025-06-04 11:06:03.699676 make pseudobulk object
+pseudobulk dims: 38606 row, 8 col
+2025-06-04 11:15:30.319645 - normalize expression
+                    Astro     Macro     Micro       OPC     Oligo
+ENSG00000290825 -6.477295 -7.632006 -7.632006 -7.632006 -6.742938
+ENSG00000243485 -6.477295 -7.632006 -5.411135 -7.632006 -7.632006
+ENSG00000237613 -7.632006 -7.632006 -7.632006 -7.632006 -7.632006
+ENSG00000290826 -7.632006 -7.632006 -7.632006 -7.632006 -6.196933
+ENSG00000186092 -7.632006 -7.632006 -7.632006 -7.632006 -7.632006
+2025-06-04 11:15:30.583205 - save data
 [1] "Reproducibility information:"
-[1] "2025-05-20 13:28:33 EDT"
-    user   system  elapsed 
-1415.248   25.204 1485.308 
+[1] "2025-06-04 11:15:31 EDT"
+   user  system elapsed 
+539.227  13.998 585.617 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88216)
+ version  R version 4.4.3 Patched (2025-02-28 r88218)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -186,7 +167,7 @@ ENSG00000186092 -5.327316 -5.327316 -5.327316 -5.327316 -5.327316
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-20
+ date     2025-06-04
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -344,4 +325,4 @@ ENSG00000186092 -5.327316 -5.327316 -5.327316 -5.327316 -5.327316
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue May 20 01:28:35 PM EDT 2025
+Wed Jun  4 11:15:31 AM EDT 2025
