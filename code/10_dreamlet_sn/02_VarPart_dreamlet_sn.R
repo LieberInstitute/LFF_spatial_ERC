@@ -49,12 +49,21 @@ AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
 # Show variance fractions at the gene-level for each cell type
 vp.lst[order(vp.lst[[1]], decreasing = TRUE)[1:100],]
 
-top20_APOE_varPart <- vp.lst$gene[order(vp.lst[[1]], decreasing = TRUE)[1:20]]
+coef_list <- list(carrier = "APOE_carrier",
+                  carrier_i = "APOE_carrier.Anc_Afr",
+                  apoe = "APOE",
+                  apoe_i = "APOE.Anc_Afr",
+                  e4e4 = "APOE_E4E4",
+                  e4e4_i = "APOE_E4E4.Anc_Afr")
 
-pdf(here(plot_dir, sprintf("sn_dreamlet_VarPart-%s.pdf")), height = 11)
+coef <- coef_list[[opt$model]]
+
+top20_coef_varPart <- vp.lst$gene[order(vp.lst[[coef]], decreasing = TRUE)[1:20]]
+
+pdf(here(plot_dir, sprintf("sn_dreamlet_VarPart-%s.pdf", opt$model)), height = 11)
 plotVarPart(vp.lst, label.angle = 45) + labs(title = "VarPart", subtitle = opt$model)
 plotPercentBars(vp.lst[vp.lst$gene %in% AD_risk$symbol, ]) + labs(title = "Risk Genes", subtitle = opt$model)
-plotPercentBars(vp.lst[vp.lst$gene %in% top20_APOE_varPart, ]) + labs(title = "Top20 ", subtitle = opt$model)
+plotPercentBars(vp.lst[vp.lst$gene %in% top20_coef_varPart, ]) + labs(title = "Top20 ", subtitle = opt$model)
 dev.off()
 
 # slurmjobs::job_single('02_VarPart_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 02_VarPart_dreamlet_sn.R")
