@@ -27,7 +27,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 20_sn_pseudobulk.R --cluster 'cell_type_anno' --sce "sce_ERC_subcluster"
+Rscript 20_sn_pseudobulk.R --cluster 'cell_type_broad' --sce "sce_ERC_subcluster"
 
 echo "**** Job ends ****"
 date
