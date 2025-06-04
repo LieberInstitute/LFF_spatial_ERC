@@ -20,6 +20,17 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 colnames(sce) <- paste0(sce$sample_id, "_", sce$Barcode)
 rownames(sce) <- rowData(sce)$gene_name
 
+## add syntactic APOE vars
+sce$APOE_syn <- factor(gsub("/", ".", sce$APOE))
+levels(sce$APOE_syn)
+
+sce$APOE_carrier_syn <- factor(gsub("\\+", "", sce$APOE_carrier))
+levels(sce$APOE_carrier_syn)
+
+## add E4/E4 variable
+sce_pb$APOE_E4E4 <- sce_pb$APOE == "E4/E4"
+table(sce_pb$APOE_E4E4)
+
 ## duplicated gene_names
 sce <- sce[!duplicated(rownames(sce)),]
 
