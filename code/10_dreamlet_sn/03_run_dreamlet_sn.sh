@@ -7,10 +7,10 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-7%20
+#SBATCH --array=1-8%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_model=(carrier apoe e4e4 carrier_i apoe_i e4e4_i contrast)
+all_model=(carrier apoe e4e4 carrier_i apoe_i e4e4_i contrast carrier_n0)
 model=${all_model[$(( $SLURM_ARRAY_TASK_ID / 1 % 6 ))]}
 
 ## Explicitly pipe script output to a log
