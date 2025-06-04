@@ -21,6 +21,10 @@ dim(sce_pb)
 
 rownames(sce_pb) <- rowData(sce_pb)$gene_name
 
+# Broad cell types
+sce_pb_broad <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_ERC_subcluster_pseudobulk_only-cell_type_broad.rds"))
+rownames(sce_pb_broad) <- rowData(sce_pb_broad)$gene_name
+
 ## load psuedobulked (by cluster + sample) sce data
 sce_pb_sample <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk","sce_subcluster_pseudobulk-cell_type_anno.rds"))
 dim(sce_pb_sample)
@@ -65,6 +69,16 @@ cell_row_ha_simple <- rowAnnotation(
 cell_col_ha_simple <- HeatmapAnnotation(
     cell_type_anno = colData(sce_pb)$cell_type_anno,
     col = list(cell_type_anno = cell_type_colors$anno)
+)
+## cell + sample annotations broad
+cell_row_ha_broad <- rowAnnotation(
+    cell_type_broad = colData(sce_pb_broad)$cell_type_broad,
+    col = list(cell_type_broad = cell_type_colors$broad)
+)
+
+cell_col_ha_broad <- HeatmapAnnotation(
+    cell_type_broad = colData(sce_pb_broad)$cell_type_anno,
+    col = list(cell_type_broad = cell_type_colors$anno)
 )
 
 ## cell + sample annotations simple
@@ -236,6 +250,24 @@ AD_risk_zscore <- scale(t(logcounts(sce_pb)[rownames(AD_risk_annotation),]))
 dim(AD_risk_zscore)
 AD_risk_zscore[1:5,1:5]
 
+## save risk gene sub clusters
+write.csv(AD_risk_zscore, file = here(data_dir, "AD_risk_zscore_sn_subcluster.csv"), row.names = FALSE)
+
+risk_gene_max_cell_type <- AD_risk_zscore |>
+    as.data.frame() |>
+    rownames_to_column("cell_type") |>
+    pivot_longer(!cell_type, names_to = "gene", values_to = "zscore") |>
+    group_by(gene) |>
+    slice_max(zscore)
+
+summary(risk_gene_max_cell_type$zscore)
+
+spatialLIBD::annotate_registered_clusters(
+    t(AD_risk_zscore),
+    confidence_threshold = 1,
+    cutoff_merge_ratio = 0.1
+)
+
 ## plot heatmaps - cell type only
 pdf(here(plot_dir, "ERC_sn_subcluster_AD_risk_heatmap.pdf"), height = 8, width = 11)
 Heatmap(AD_risk_zscore,
@@ -266,6 +298,69 @@ Heatmap(AD_risk_zscore,
         cluster_columns = TRUE,
         show_row_names = TRUE,
         right_annotation = cell_row_ha_simple,
+        bottom_annotation = AD_risk_col_ha
+)
+dev.off()
+
+#### AD risk gene heatmap - broad ####
+
+sce_pb_broad
+
+## extract z-scores - cell type pb
+AD_risk_zscore_broad <- scale(t(logcounts(sce_pb_broad)[rownames(AD_risk_annotation),]))
+dim(AD_risk_zscore_broad)
+AD_risk_zscore_broad[1:5,1:5]
+
+## save risk gene sub clusters
+write.csv(AD_risk_zscore_broad, file = here(data_dir, "AD_risk_zscore_sn_broad.csv"), row.names = FALSE)
+
+risk_gene_max_cell_type <- AD_risk_zscore_broad |>
+    as.data.frame() |>
+    rownames_to_column("cell_type") |>
+    pivot_longer(!cell_type, names_to = "gene", values_to = "zscore") |>
+    group_by(gene) |>
+    slice_max(zscore)
+
+summary(risk_gene_max_cell_type$zscore)
+
+risk_gene_cell_type_association <- spatialLIBD::annotate_registered_clusters(
+    t(AD_risk_zscore_broad),
+    confidence_threshold = 1,
+    cutoff_merge_ratio = 0.1
+)
+
+write.csv(risk_gene_cell_type_association, file = here(data_dir, "risk_gene_cell_type_association.csv"))
+
+## plot heatmaps - cell type broad
+pdf(here(plot_dir, "ERC_sn_broad_AD_risk_heatmap.pdf"), height = 8, width = 11)
+Heatmap(AD_risk_zscore_broad,
+        name = "Z Score",
+        cluster_rows = FALSE,
+        cluster_columns = TRUE,
+        right_annotation = cell_row_ha_broad,
+        bottom_annotation = AD_risk_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_broad_AD_risk_heatmap_split.pdf"), height = 8, width = 11)
+Heatmap(AD_risk_zscore_broad,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        column_split = 3,
+        row_split = 3,
+        right_annotation = cell_row_ha_broad,
+        bottom_annotation = AD_risk_col_ha
+)
+dev.off()
+
+pdf(here(plot_dir, "ERC_sn_broad_AD_risk_heatmap_cluster.pdf"), height = 8, width = 11)
+Heatmap(AD_risk_zscore_broad,
+        name = "Z Score",
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        show_row_names = TRUE,
+        right_annotation = cell_row_ha_broad,
         bottom_annotation = AD_risk_col_ha
 )
 dev.off()
