@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=10G
-#SBATCH --job-name=03_run_dreamlet_r2
+#SBATCH --job-name=03_run_dreamlet_sn_r2
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
@@ -14,7 +14,7 @@ all_model=(carrier_n0 carrier_n1 carrier_n2 carrier_n3 carrier_n4 carrier_sf apo
 model=${all_model[$(( $SLURM_ARRAY_TASK_ID / 1 % 9 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/03_run_dreamlet_r2_${model}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/03_run_dreamlet_sn_r2_${model}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -36,7 +36,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 03_run_dreamlet.R --model ${model}
+Rscript 03_run_dreamlet_sn.R --model ${model}
 
 echo "**** Job ends ****"
 date
