@@ -38,19 +38,30 @@ res.dl.list <- purrr::map(res.dl.fn, readRDS)
 purrr::map(res.dl.list, coefNames)
 
 coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E4:Anc_Afr"),
+                  apoe_n0 = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   apoe = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   carrier_i = "APOE_carrierE4+:Anc_Afr",
+                  carrier_n0 = "APOE_carrierE4+",
+                  carrier_n1 = "APOE_carrierE4+",
+                  carrier_n2 = "APOE_carrierE4+",
+                  carrier_n3 = "APOE_carrierE4+",
+                  carrier_n4 = "APOE_carrierE4+",
+                  carrier_sf = "APOE_carrierE4+",
                   carrier = "APOE_carrierE4+",
+                  contrast = c("APOE_synE2.E2","APOE_synE2.E3","APOE_synE3.E4","APOE_synE4.E4"),
                   e4e4_i = "APOE_E4E4TRUE:Anc_Afr",
+                  e4e4_n0 = "APOE_E4E4TRUE",
                   e4e4 = "APOE_E4E4TRUE")
 
-details(res.dl)
-coefNames(res.dl)
+identical(names(coef_list), names(res.dl.list))
+
+details(res.dl.list[["carrier"]])
 
 # results from full analysis
 tt <- map2(res.dl.list, coef_list, ~topTable(.x, .y, number = Inf, p.value = 0.1))
 
-map(tt, ~.x |> as.data.frame() |> filter(adj.P.Val < 0.1))
+fdr_01 <- map(tt, ~.x |> as.data.frame() |> filter(adj.P.Val < 0.1))
+map_int(fdr_01, nrows)
 
 map(tt, ~.x |> as.data.frame() |> group_by(assay) |> filter(adj.P.Val < 0.2) |> count())
 
