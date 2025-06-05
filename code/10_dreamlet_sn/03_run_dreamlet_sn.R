@@ -32,11 +32,19 @@ res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_s
 
 # The variable to be tested must be a fixed effect
 dreamlet_models_sn <- list(
-    carrier_n0 = ~ APOE_carrier,
     carrier = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)  + subsets_Mito_percent,
     apoe = ~ APOE + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     e4e4 = ~ APOE_E4E4 + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    #r2
+    carrier_n0 = ~ APOE_carrier,
+    carrier_n1 = ~ APOE_carrier + Anc_Afr,
+    carrier_n2 = ~ APOE_carrier + Anc_Afr + (1 | Sex),
+    carrier_n3 = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age ,
+    carrier_n4 = ~ APOE_carrier + (1 | exp_round)  + subsets_Mito_percent,
+    carrier_sf = ~ APOE_carrier + Anc_Afr + Sex + Age + Rin + (1 | exp_round)  + subsets_Mito_percent,
     contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    apoe_n0 = ~ APOE,
+    e4e4_n0 = ~ APOE_E4E4,
     # interaction syntax x + (x | g)
     carrier_i = ~ APOE_carrier*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     apoe_i = ~ APOE*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
@@ -63,8 +71,14 @@ coefNames(res.dl)
 
 # topTable(res.dl, coef = "APOE_carrierE4+")
 
+# slurmjobs::job_loop(
+#     loops = list(model = c("carrier_n0","carrier_n1","carrier_n2","carrier_n3","carrier_n4","carrier_sf","apoe_n0","e4e4_n0", "contrast")),
+#     name = "03_run_dreamlet_r2",
+#     create_shell = TRUE,
+#     create_script = FALSE
+# )
 
-## Reproducibility information
+#### Reproducibility information ####
 print("Reproducibility information:")
 Sys.time()
 proc.time()
