@@ -8,10 +8,10 @@ library("sessioninfo")
 library("HDF5Array")
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_sn")
+data_dir <- here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "11_dreamlet_Visium", "01_prep_dreamlet_sn")
+plot_dir <- here("plots", "11_dreamlet_Visium", "01_prep_dreamlet_Visium")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -71,7 +71,7 @@ details(res.proc)
 ## save 
 saveRDS(res.proc, file = here(data_dir, "Visium_res_proc.rds"))
 
-# res.proc <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_sn", "Visium_res_proc.rds"))
+# res.proc <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_res_proc.rds"))
 
 # show voom plot for each cell clusters
 pdf(here(plot_dir, "Visium_dreamlet_voom.pdf"))
@@ -111,7 +111,7 @@ contrast_plot <- plotContrasts(L) + labs(title = "DREAM contrast",
 
 ggsave(contrast_plot, filename = here(plot_dir, "Visium_dream_contrast.png"))
 
-# slurmjobs::job_single('01_prep_dreamlet_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 01_prep_dreamlet_sn.R")
+# slurmjobs::job_single('01_prep_dreamlet_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 01_prep_dreamlet_Visium.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
