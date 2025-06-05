@@ -24,7 +24,7 @@ if(is.null(opt$ddf)) opt$ddf <- "Satterthwaite"
 
 print(opt)
 
-ddf_suffix <- ifelse(opt == "Kenward-Roger", "_kr", "")
+ddf_suffix <- ifelse(opt$ddf == "Kenward-Roger", "_kr", "")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "11_dreamlet_Visium", "03_run_dreamlet_Visium")
