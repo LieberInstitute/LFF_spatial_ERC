@@ -28,17 +28,19 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### Load data ####
 res.proc <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_res_proc.rds"))
 
+metadata(res.proc)
+
 ##### run variance partitioning ####
 # source(here("code", "11_dreamlet_Visium", "dreamlet_models_Visium.R"))
 
 dreamlet_models_Visium <- list(
-    carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + subsets_Mito_percent,
-    apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + subsets_Mito_percent,
-    e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + subsets_Mito_percent,
+    carrier = ~ (1 | APOE_carrier) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
+    apoe = ~ (1 | APOE) + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
+    e4e4 = ~ (1 | APOE_E4E4) + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
     # interaction syntax x + (x | g)
-    carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + subsets_Mito_percent,
-    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + subsets_Mito_percent,
-    e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + subsets_Mito_percent
+    carrier_i = ~ Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
+    apoe_i = ~ Anc_Afr + (Anc_Afr | APOE) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
+    e4e4_i = ~ Anc_Afr + (Anc_Afr | APOE_E4E4) + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio
 )
 
 stopifnot(opt$model %in% names(dreamlet_models_Visium))
