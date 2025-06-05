@@ -1,0 +1,206 @@
+**** Job starts ****
+Thu Jun  5 08:49:06 AM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 16942274
+Job name: 02_VarPart_dreamlet_Visium
+Node name: compute-155
+Task id: 3
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: variancePartition
+Loading required package: ggplot2
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading required package: BiocParallel
+
+Attaching package: ‘variancePartition’
+
+The following object is masked from ‘package:limma’:
+
+    topTable
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+$ARGS
+character(0)
+
+$model
+[1] "carrier_i"
+
+# A tibble: 279 × 13
+# Groups:   SpD_syn [9]
+   SpD_syn       sample_id array_row array_col sum_umi sum_gene expr_chrM
+   <fct>         <fct>         <dbl>     <dbl>   <dbl>    <dbl>     <dbl>
+ 1 Inhib_Sp09D09 Br1039         35.7      70.6   5165.    2313.     1223.
+ 2 Inhib_Sp09D09 Br1289         48.5      46.0   5861.    2364.     1437.
+ 3 Inhib_Sp09D09 Br1556         37.5      63.7   4878.    2144.     1174.
+ 4 Inhib_Sp09D09 Br1691         46.8      73.8   5135.    1976.     2033.
+ 5 Inhib_Sp09D09 Br1706         47.7      46.8   3885.    1872.      900.
+ 6 Inhib_Sp09D09 Br2305         41.5      49.4   7435.    3184.     1041.
+ 7 Inhib_Sp09D09 Br2582         43.6      58.7   4849.    2037.     1326.
+ 8 Inhib_Sp09D09 Br3974         54.8      66.9   3142.    1547.      707.
+ 9 Inhib_Sp09D09 Br5161         39.1      76.5   6273.    2519.     1691.
+10 Inhib_Sp09D09 Br5212         38.4      57.7   3798.    1958.      505.
+# ℹ 269 more rows
+# ℹ 6 more variables: expr_chrM_ratio <dbl>, Nmask_dark_blue <dbl>,
+#   Pmask_dark_blue <dbl>, CNmask_dark_blue <dbl>, edge_distance <dbl>,
+#   sizeFactor <dbl>
+2025-06-05 08:49:18.42681 - Variance Partition, model = carrier_i
+~Anc_Afr + (Anc_Afr | APOE_carrier) + (1 | Sex) + Age + Rin + 
+    (1 | Visium_slide) + expr_chrM_ratio
+  Inhib_Sp09D09...3.5 mins
+  L1_Sp09D05...3.1 mins
+  L2.3_Sp09D01...3.5 mins
+  L5_Sp09D03...3.8 mins
+  L6_Sp09D04...3.8 mins
+  LD_Sp09D02...4.1 mins
+  Vasc_Sp09D08...2.6 mins
+  WM_Sp09D06...2.9 mins
+  WM.uf_Sp09D07...52 secs
+
+
+2025-06-05 09:17:24.508841 - Variance Partition plots
+vpDF with 100 rows and 11 columns
+                          assay        gene APOE_carrier APOE_carrier.Anc_Afr
+                       <factor> <character>    <numeric>            <numeric>
+WM.uf_Sp09D07:1   WM.uf_Sp09D07        HES4     0.130125          1.60853e-45
+WM.uf_Sp09D07:2   WM.uf_Sp09D07       ISG15     0.000000          3.16541e-45
+WM.uf_Sp09D07:3   WM.uf_Sp09D07        SDF4     0.000000          2.17839e-45
+WM.uf_Sp09D07:4   WM.uf_Sp09D07       ACAP3     0.000000          2.00197e-45
+WM.uf_Sp09D07:5   WM.uf_Sp09D07        DVL1     0.000000          2.61292e-45
+...                         ...         ...          ...                  ...
+WM.uf_Sp09D07:96  WM.uf_Sp09D07      PABPC4    0.0000000          8.95500e-02
+WM.uf_Sp09D07:97  WM.uf_Sp09D07      HPCAL4    0.0882402          2.62892e-45
+WM.uf_Sp09D07:98  WM.uf_Sp09D07        CAP1    0.0000000          2.77509e-45
+WM.uf_Sp09D07:99  WM.uf_Sp09D07        PPT1    0.0000000          2.66081e-45
+WM.uf_Sp09D07:100 WM.uf_Sp09D07       SMAP2    0.0000000          3.01385e-45
+                        Sex Visium_slide    Anc_Afr         Age        Rin
+                  <numeric>    <numeric>  <numeric>   <numeric>  <numeric>
+WM.uf_Sp09D07:1    0.000000    0.0000000  0.0271800 2.63433e-03 0.01240536
+WM.uf_Sp09D07:2    0.000000    0.0386489  0.0202878 1.48604e-05 0.00969048
+WM.uf_Sp09D07:3    0.105862    0.0124869  0.0659572 2.89192e-05 0.00190758
+WM.uf_Sp09D07:4    0.000000    0.0134082  0.1104559 5.96155e-02 0.04741363
+WM.uf_Sp09D07:5    0.000000    0.0517185  0.0227650 7.29516e-02 0.05941393
+...                     ...          ...        ...         ...        ...
+WM.uf_Sp09D07:96          0   0.15948467 0.01189329  0.01576294 0.00188543
+WM.uf_Sp09D07:97          0   0.00203452 0.06919487  0.05268367 0.00438897
+WM.uf_Sp09D07:98          0   0.00000000 0.02799309  0.01544541 0.02525077
+WM.uf_Sp09D07:99          0   0.04673432 0.00497033  0.08289384 0.07962380
+WM.uf_Sp09D07:100         0   0.06477276 0.00814003  0.00833889 0.03218058
+                  expr_chrM_ratio Residuals
+                        <numeric> <numeric>
+WM.uf_Sp09D07:1       0.354829928  0.472826
+WM.uf_Sp09D07:2       0.000888521  0.930469
+WM.uf_Sp09D07:3       0.173420194  0.640337
+WM.uf_Sp09D07:4       0.180628935  0.588478
+WM.uf_Sp09D07:5       0.025083122  0.768068
+...                           ...       ...
+WM.uf_Sp09D07:96       0.05020035  0.671223
+WM.uf_Sp09D07:97       0.01068778  0.772770
+WM.uf_Sp09D07:98       0.11557555  0.815735
+WM.uf_Sp09D07:99       0.00363475  0.782143
+WM.uf_Sp09D07:100      0.00064859  0.885919
+null device 
+          1 
+Error in parse_file_or_name(name, should_exist = FALSE, r_ok = TRUE) : 
+  02_VarPart_dreamlet_Visium.sh already exists
+Calls: <Anonymous> -> parse_file_or_name
+Execution halted
