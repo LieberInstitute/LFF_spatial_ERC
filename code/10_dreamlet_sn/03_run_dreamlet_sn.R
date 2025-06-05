@@ -68,8 +68,9 @@ print(mod)
 
 # Differential expression analysis within each assay,
 # evaluated on the voom normalized data
-# param <- SnowParam(4, "SOCK", progressbar = TRUE)
-res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf)
+
+param <- SnowParam(4, "SOCK", progressbar = TRUE)
+res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf, BPPARAM = param)
 
 message(Sys.time(), " - DONE Differential Expression...Save Data")
 saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_sn-%s%s.RDS", opt$model, ddf_suffix)))
