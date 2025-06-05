@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 01_prep_dreamlet_sn.R
+Rscript 01_prep_dreamlet_Visium.R
 
 echo "**** Job ends ****"
 date
