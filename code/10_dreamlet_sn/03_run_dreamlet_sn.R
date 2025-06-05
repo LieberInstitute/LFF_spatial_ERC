@@ -9,14 +9,22 @@ library("getopt")
 
 # Import command-line parameters
 scec <- matrix(
-    c("model", "m", "1", "character", "Model name"),
+    c("model", "m", "1", "character", "Model name",
+      "ddf", "d", "1", "character", "degress of freedom method"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
-print(opt)
 
 # test 
 # opt$model <- "carrier"
+# opt$ddf <- "Kenward-Roger"
+
+## use default "Satterthwaite" for df approximation
+if(is.null(opt$ddf)) opt$ddf <- "Satterthwaite"
+
+print(opt)
+
+ddf_suffix <- ifelse(opt == "Kenward-Roger", "_kr", "")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "10_dreamlet_sn", "03_run_dreamlet_sn")
@@ -54,16 +62,17 @@ dreamlet_models_sn <- list(
 # source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
 stopifnot(opt$model %in% names(dreamlet_models_sn))
 
-message(Sys.time(), ' - Differential Expression, model = ', opt$model)
+message(Sys.time(), ' - Differential Expression, model = ', opt$model, ", ddf = ", opt$ddf)
 mod = dreamlet_models_sn[[opt$model]]
 print(mod)
 
 # Differential expression analysis within each assay,
 # evaluated on the voom normalized data
-res.dl <- dreamlet(res.proc, mod)
+# param <- SnowParam(4, "SOCK", progressbar = TRUE)
+res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf)
 
 message(Sys.time(), " - DONE Differential Expression...Save Data")
-saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_sn-%s.RDS", opt$model)))
+saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_sn-%s%s.RDS", opt$model, ddf_suffix)))
 
 # names of estimated coefficients
 message("coef")
@@ -71,9 +80,11 @@ coefNames(res.dl)
 
 # topTable(res.dl, coef = "APOE_carrierE4+")
 
+slurmjobs::job_single('03_run_dreamlet_sn_kr', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'")
+
 # slurmjobs::job_loop(
 #     loops = list(model = c("carrier_n0","carrier_n1","carrier_n2","carrier_n3","carrier_n4","carrier_sf","apoe_n0","e4e4_n0", "contrast")),
-#     name = "03_run_dreamlet_r2",
+#     name = "03_run_dreamlet_sn_r2",
 #     create_shell = TRUE,
 #     create_script = FALSE
 # )
