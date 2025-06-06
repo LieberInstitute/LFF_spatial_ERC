@@ -43,65 +43,11 @@ pb <- aggregateToPseudoBulk(sce,
                             verbose = FALSE
 )
 
-## one assay per cell type
-assayNames(pb)
-
-dim(pb)
-
-# Normalize and apply voom/voomWithDreamWeights
-res.proc <- processAssays(pb, ~APOE, min.count = 5)
-
-# the resulting object of class dreamletProcessedData stores
-# normalized data and other information
-res.proc
-
-details(res.proc)
-
-# view details of dropping samples
-details(res.proc)
 
 ## save 
-saveRDS(res.proc, file = here(data_dir, "sn_res_proc.rds"))
+saveRDS(pb, file = here(data_dir, "sn_dreamlet_pb.rds"))
 
-# res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
-
-# show voom plot for each cell clusters
-pdf(here(plot_dir, "sn_dreamlet_voom.pdf"))
-plotVoom(res.proc)
-dev.off()
-
-
-metadata(res.proc)
-
-form <- ~ APOE + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)
-
-model.matrix(~0+APOE_syn, colData(res.proc))
-
-# L <- makeContrastsDream(~0+APOE, colData(res.proc),
-#                         contrasts = c(
-#                             `E2/E2-E4/E4` = "APOEE2/E2 - APOEE4/E4",
-#                             `E3/E4-E4/E4` = "APOEE3/E4 - APOEE4/E4",
-#                             `E2/E3-E4/E4` = "APOEE2/E3 - APOEE4/E4",
-#                             `E2/E2-E3/E4` = "APOEE2/E2 - APOEE3/E4",
-#                             `E2/E2-E2/E3` = "APOEE2/E2 - APOEE2/E3",
-#                             `E2/E3-E3/E4` = "APOEE2/E3 - APOEE3/E4")
-# )
-
-L <- makeContrastsDream(~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round), colData(res.proc),
-                        contrasts = c(
-                            `E2E2_E4E4` = "APOE_synE2.E2 - APOE_synE4.E4",
-                            `E3E4_E4E4` = "APOE_synE3.E4 - APOE_synE4.E4",
-                            `E2E3_E4E4` = "APOE_synE2.E3 - APOE_synE4.E4",
-                            `E2E2_E3E4` = "APOE_synE2.E2 - APOE_synE3.E4",
-                            `E2E2_E2E3` = "APOE_synE2.E2 - APOE_synE2.E3",
-                            `E2E3_E3E4` = "APOE_synE2.E3 - APOE_synE3.E4")
-)
-
-# Visualize contrast matrix
-contrast_plot <- plotContrasts(L) + labs(title = "DREAM contrast",
-                                         subtitle = "~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)")
-
-ggsave(contrast_plot, filename = here(plot_dir, "sn_dream_contrast.png"))
+# pb <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_dreamlet_pb.rds"))
 
 # slurmjobs::job_single('01_prep_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 01_prep_dreamlet_sn.R")
 
