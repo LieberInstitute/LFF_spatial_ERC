@@ -34,7 +34,7 @@ plot_dir <- here("plots", "10_dreamlet_sn", "03_run_dreamlet_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
-res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
+pb <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_dreamlet_pb.rds"))
 
 #### Differential Expression ####
 
@@ -43,14 +43,13 @@ dreamlet_models_sn <- list(
     carrier = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)  + subsets_Mito_percent,
     apoe = ~ APOE + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     e4e4 = ~ APOE_E4E4 + Anc_Afr  + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
-    #r2
+    ## explore model versions
     carrier_n0 = ~ APOE_carrier,
     carrier_n1 = ~ APOE_carrier + Anc_Afr,
     carrier_n2 = ~ APOE_carrier + Anc_Afr + (1 | Sex),
     carrier_n3 = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age ,
     carrier_n4 = ~ APOE_carrier + (1 | exp_round)  + subsets_Mito_percent,
     carrier_sf = ~ APOE_carrier + Anc_Afr + Sex + Age + Rin + (1 | exp_round)  + subsets_Mito_percent,
-    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     apoe_n0 = ~ APOE,
     e4e4_n0 = ~ APOE_E4E4,
     # interaction syntax x + (x | g)
@@ -62,15 +61,24 @@ dreamlet_models_sn <- list(
 # source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
 stopifnot(opt$model %in% names(dreamlet_models_sn))
 
-message(Sys.time(), ' - Differential Expression, model = ', opt$model, ", ddf = ", opt$ddf)
+message('model = ', opt$model, ", ddf = ", opt$ddf)
 mod = dreamlet_models_sn[[opt$model]]
 print(mod)
 
+message(Sys.time(), " - Apply Voom")
+# Normalize and apply voom/voomWithDreamWeights
+res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
+
+# show voom plot for each cell clusters
+pdf(here(plot_dir, sprintf("sn_dreamlet_voom-%s.pdf", opt$model)))
+plotVoom(res.proc)
+dev.off()
+
 # Differential expression analysis within each assay,
 # evaluated on the voom normalized data
-
-param <- SnowParam(4, "SOCK", progressbar = TRUE)
-res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf, BPPARAM = param)
+message(Sys.time(), ' - dreamlet')
+# param <- SnowParam(4, "SOCK", progressbar = TRUE)
+res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf)
 
 message(Sys.time(), " - DONE Differential Expression...Save Data")
 saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_sn-%s%s.RDS", opt$model, ddf_suffix)))
@@ -81,7 +89,7 @@ coefNames(res.dl)
 
 # topTable(res.dl, coef = "APOE_carrierE4+")
 
-slurmjobs::job_single('03_run_dreamlet_sn_kr', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'")
+# slurmjobs::job_single('03_run_dreamlet_sn_kr', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'")
 
 # slurmjobs::job_loop(
 #     loops = list(model = c("carrier_n0","carrier_n1","carrier_n2","carrier_n3","carrier_n4","carrier_sf","apoe_n0","e4e4_n0", "contrast")),

@@ -50,7 +50,6 @@ dreamlet_models_Visium <- list(
     carrier_n3 = ~ APOE_carrier + Anc_Afr + (1 | Sex) + Age ,
     carrier_n4 = ~ APOE_carrier + (1 | Visium_slide)  + expr_chrM_ratio,
     carrier_sf = ~ APOE_carrier + Anc_Afr + Sex + Age + Rin + (1 | Visium_slide)  + expr_chrM_ratio,
-    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
     apoe_n0 = ~ APOE,
     e4e4_n0 = ~ APOE_E4E4,
     # interaction syntax x + (x | g)
@@ -62,12 +61,22 @@ dreamlet_models_Visium <- list(
 # source(here("code", "11_dreamlet_Visium", "dreamlet_models_Visium.R"))
 stopifnot(opt$model %in% names(dreamlet_models_Visium))
 
-message(Sys.time(), ' - Differential Expression, model = ', opt$model, ", ddf = ", opt$ddf)
-mod = dreamlet_models_Visium[[opt$model]]
+message('model = ', opt$model, ", ddf = ", opt$ddf)
+mod = dreamlet_models_sn[[opt$model]]
 print(mod)
+
+message(Sys.time(), " - Apply Voom")
+# Normalize and apply voom/voomWithDreamWeights
+res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
+
+# show voom plot for each cell clusters
+pdf(here(plot_dir, sprintf("Visium_dreamlet_voom-%s.pdf", opt$model)))
+plotVoom(res.proc)
+dev.off()
 
 # Differential expression analysis within each assay,
 # evaluated on the voom normalized data
+message(Sys.time(), ' - dreamlet')
 # param <- SnowParam(4, "SOCK", progressbar = TRUE)
 res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf)
 
