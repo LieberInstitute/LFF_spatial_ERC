@@ -98,7 +98,7 @@ coefNames(res.dl)
 
 # topTable(res.dl, coef = "APOE_carrierE4+")
 
-# slurmjobs::job_single('04_run_dreamlet_contrast_sn', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'")
+# slurmjobs::job_single('04_run_dreamlet_contrast_sn', create_shell = TRUE, memory = '10G', command = "Rscript 04_run_dreamlet_contrast_sn.R --model contrast")
 
 # slurmjobs::job_loop(
 #     loops = list(model = c("carrier_n0","carrier_n1","carrier_n2","carrier_n3","carrier_n4","carrier_sf","apoe_n0","e4e4_n0", "contrast")),
