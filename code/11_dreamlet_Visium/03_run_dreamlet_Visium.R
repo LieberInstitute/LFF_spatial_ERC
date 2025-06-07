@@ -34,7 +34,7 @@ plot_dir <- here("plots", "11_dreamlet_Visium", "03_run_dreamlet_Visium")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
-res.proc <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_res_proc.rds"))
+pb <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_dreamlet_pb.rds"))
 
 #### Differential Expression ####
 
