@@ -92,8 +92,9 @@ coefNames(res.dl)
 # slurmjobs::job_single('03_run_dreamlet_sn_kr', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'")
 
 # slurmjobs::job_loop(
-#     loops = list(model = c("carrier_n0","carrier_n1","carrier_n2","carrier_n3","carrier_n4","carrier_sf","apoe_n0","e4e4_n0", "contrast")),
-#     name = "03_run_dreamlet_sn_r2",
+#     loops = list(model = names(dreamlet_models_sn)),
+#     # loops = list(model = c("carrier_n0","carrier_n1","carrier_n2","carrier_n3","carrier_n4","carrier_sf","apoe_n0","e4e4_n0", "contrast")),
+#     name = "03_run_dreamlet_sn",
 #     create_shell = TRUE,
 #     create_script = FALSE
 # )
