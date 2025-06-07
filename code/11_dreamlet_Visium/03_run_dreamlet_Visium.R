@@ -62,7 +62,7 @@ dreamlet_models_Visium <- list(
 stopifnot(opt$model %in% names(dreamlet_models_Visium))
 
 message('model = ', opt$model, ", ddf = ", opt$ddf)
-mod = dreamlet_models_sn[[opt$model]]
+mod = dreamlet_models_Visium[[opt$model]]
 print(mod)
 
 message(Sys.time(), " - Apply Voom")
