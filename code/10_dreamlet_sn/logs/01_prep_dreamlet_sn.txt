@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Jun  4 05:42:05 AM EDT 2025
+Fri Jun  6 12:34:31 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16932315
+Job id: 16959069
 Job name: 01_prep_dreamlet_sn
-Node name: compute-122
+Node name: compute-163
 Task id: 
 Loading conda_R/4.5
 
@@ -118,59 +118,17 @@ The following object is masked from ‘package:limma’:
     topTable
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-06-04 05:42:20.887431 - Load HDF5 sce
+2025-06-06 12:34:42.490344 - Load HDF5 sce
 [1] "E2.E2" "E2.E3" "E3.E4" "E4.E4"
 [1] "E2" "E4"
 
 FALSE  TRUE 
 91483 30521 
-2025-06-04 05:42:25.8772 - Aggregate to pseudobulk
-[1] "Astro" "Macro" "Micro" "OPC"   "Oligo" "Vasc"  "Excit" "Inhib"
-[1] 38584    31
-  Astro...15 secs
-  Macro...0.85 secs
-  Micro...9.2 secs
-  OPC...15 secs
-  Oligo...13 secs
-  Vasc...4.1 secs
-  Excit...27 secs
-  Inhib...17 secs
-class: dreamletProcessedData 
-assays(8): Astro Macro ... Excit Inhib
-colData(24): chromium_id BrNum ... APOE_carrier_syn APOE_E4E4
-metadata(12): cell_type_broad sample_id ... scDblFinder.cxds_score
-  sizeFactor
-Samples:
- min: 25 
- max: 31
-Genes:
- min: 1876 
- max: 23742 
-details(7): assay n_retain ... n_errors error_initial
-  assay n_retain formula formDropsTerms n_genes n_errors error_initial
-1 Astro       31   ~APOE          FALSE   17133        0         FALSE
-2 Macro       25   ~APOE          FALSE    1876        0         FALSE
-3 Micro       31   ~APOE          FALSE   12356        0         FALSE
-4   OPC       31   ~APOE          FALSE   16279        0         FALSE
-5 Oligo       31   ~APOE          FALSE   17091        0         FALSE
-6  Vasc       31   ~APOE          FALSE    7365        0         FALSE
-7 Excit       31   ~APOE          FALSE   23742        0         FALSE
-8 Inhib       31   ~APOE          FALSE   19540        0         FALSE
-  assay n_retain formula formDropsTerms n_genes n_errors error_initial
-1 Astro       31   ~APOE          FALSE   17133        0         FALSE
-2 Macro       25   ~APOE          FALSE    1876        0         FALSE
-3 Micro       31   ~APOE          FALSE   12356        0         FALSE
-4   OPC       31   ~APOE          FALSE   16279        0         FALSE
-5 Oligo       31   ~APOE          FALSE   17091        0         FALSE
-6  Vasc       31   ~APOE          FALSE    7365        0         FALSE
-7 Excit       31   ~APOE          FALSE   23742        0         FALSE
-8 Inhib       31   ~APOE          FALSE   19540        0         FALSE
-null device 
-          1 
+2025-06-06 12:34:52.823562 - Aggregate to pseudobulk
 [1] "Reproducibility information:"
-[1] "2025-06-04 05:48:33 EDT"
+[1] "2025-06-06 12:37:50 EDT"
    user  system elapsed 
-353.222  21.587 387.056 
+166.906  15.458 198.055 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -181,7 +139,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-04
+ date     2025-06-06
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -253,7 +211,6 @@ null device
  KEGGgraph              1.68.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
  KEGGREST               1.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  KernSmooth             2.23-26    2025-01-01 [3] CRAN (R 4.5.0)
- labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
  lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
  limma                * 3.64.1     2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
@@ -343,4 +300,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jun  4 05:48:34 AM EDT 2025
+Fri Jun  6 12:37:51 PM EDT 2025

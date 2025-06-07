@@ -131,4 +131,30 @@ $ddf
 2025-06-05 09:11:10.018781 - Differential Expression, model = carrier, ddf = Kenward-Roger
 ~APOE_carrier + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + 
     subsets_Mito_percent
-  Astro...iteration: 
+  Astro...iteration: 1234
+58 mins
+  Macro...iteration: 1234
+4.8 mins
+  Micro...iteration: 1234
+31 mins
+  OPC...iteration: 1234
+1 hours
+  Oligo...iteration: 1234
+53 mins
+  Vasc...iteration: 1234
+28 mins
+  Excit...iteration: 1234
+1.4 hours
+  Inhib...iteration: 1234
+1.1 hours
+
+Of 115,382 models fit across all assays, 0.211% failed
+
+2025-06-05 15:36:51.310513 - DONE Differential Expression...Save Data
+coef
+[1] "(Intercept)"          "APOE_carrierE4+"      "Anc_Afr"             
+[4] "Age"                  "Rin"                  "subsets_Mito_percent"
+Error in parse_file_or_name(name, should_exist = FALSE, r_ok = FALSE) : 
+  03_run_dreamlet_sn_kr.sh already exists
+Calls: <Anonymous> -> parse_file_or_name
+Execution halted
