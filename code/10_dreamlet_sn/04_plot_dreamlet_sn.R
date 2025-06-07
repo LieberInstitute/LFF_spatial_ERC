@@ -7,14 +7,15 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("getopt")
+library("DFplyr")
 
 # Import command-line parameters
-scec <- matrix(
-    c("model", "m", "1", "character", "Model name"),
-    ncol = 5, byrow = TRUE
-)
-opt <- getopt(scec)
-print(opt)
+# scec <- matrix(
+#     c("model", "m", "1", "character", "Model name"),
+#     ncol = 5, byrow = TRUE
+# )
+# opt <- getopt(scec)
+# print(opt)
 
 # test 
 # opt$model <- "carrier"
@@ -57,13 +58,33 @@ identical(names(coef_list), names(res.dl.list))
 
 details(res.dl.list[["carrier"]])
 
+topTable(res.dl.list[["carrier"]], "APOE_carrierE4+")
+
+topTable(res.dl.list[["contrast"]], c("APOE_synE2.E2", "APOE_synE4.E4"))
+
 # results from full analysis
-tt <- map2(res.dl.list, coef_list, ~topTable(.x, .y, number = Inf, p.value = 0.1))
+tt <- map2(res.dl.list, coef_list, 
+           ~topTable(.x, .y, number = Inf, p.value = 0.1) |> 
+               group_by(assay) |>
+               mutate(adj.P.Val.cell_type = p.adjust(P.Value))
+)
 
 fdr_01 <- map(tt, ~.x |> as.data.frame() |> filter(adj.P.Val < 0.1))
 map_int(fdr_01, nrows)
 
 map(tt, ~.x |> as.data.frame() |> group_by(assay) |> filter(adj.P.Val < 0.2) |> count())
+
+map(tt, ~.x |> summarise(global_signigf = sum(adj.P.Val < 0.2),
+                         cell_type_signif = sum(adj.P.Val.cell_type < 0.2)))
+
+map2_dfr(tt, names(tt), ~.x |> 
+        ungroup() |>
+        summarise(global_signigf = sum(adj.P.Val < 0.1),
+                  cell_type_signif = sum(adj.P.Val.cell_type < 0.1)) |>
+         mutate(model = .y) |>
+            as.data.frame())
+
+
 
 ## check VarPart genes
 tt[["carrier"]] |>
