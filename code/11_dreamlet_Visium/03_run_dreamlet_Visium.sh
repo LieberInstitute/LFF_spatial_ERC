@@ -7,11 +7,11 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-15%20
+#SBATCH --array=1-14%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_model=(carrier apoe e4e4 carrier_n0 carrier_n1 carrier_n2 carrier_n3 carrier_n4 carrier_sf contrast apoe_n0 e4e4_n0 carrier_i apoe_i e4e4_i)
-model=${all_model[$(( $SLURM_ARRAY_TASK_ID / 1 % 15 ))]}
+all_model=(carrier apoe e4e4 carrier_n0 carrier_n1 carrier_n2 carrier_n3 carrier_n4 carrier_sf apoe_n0 e4e4_n0 carrier_i apoe_i e4e4_i)
+model=${all_model[$(( $SLURM_ARRAY_TASK_ID / 1 % 14 ))]}
 
 ## Explicitly pipe script output to a log
 log_path=logs/03_run_dreamlet_Visium_${model}_${SLURM_ARRAY_TASK_ID}.txt
