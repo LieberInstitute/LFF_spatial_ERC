@@ -2,10 +2,10 @@
 Sat Jun  7 05:38:11 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17048218
+Job id: 17048219
 Job name: 03_run_dreamlet_sn
 Node name: compute-154
-Task id: 2
+Task id: 3
 Unloading conda_R/4.5
 Loading conda_R/4.5
 
@@ -123,45 +123,40 @@ $ARGS
 character(0)
 
 $model
-[1] "e4e4"
+[1] "carrier_n0"
 
 $ddf
 [1] "Satterthwaite"
 
-model = e4e4, ddf = Satterthwaite
-~APOE_E4E4 + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + 
-    subsets_Mito_percent
-2025-06-07 05:38:22.325762 - Apply Voom
-  Astro...4.5 mins
-  Macro...32 secs
-  Micro...3.3 mins
-  OPC...4.2 mins
-  Oligo...4.4 mins
-  Vasc...2.1 mins
-  Excit...6.4 mins
-  Inhib...5.3 mins
+model = carrier_n0, ddf = Satterthwaite
+~APOE_carrier
+2025-06-07 05:38:22.325871 - Apply Voom
+  Astro...11 secs
+  Macro...1.4 secs
+  Micro...5.8 secs
+  OPC...10 secs
+  Oligo...8.1 secs
+  Vasc...2.6 secs
+  Excit...15 secs
+  Inhib...11 secs
 null device 
           1 
-2025-06-07 06:09:08.7385 - dreamlet
-  Astro...14 mins
-  Macro...1.7 mins
-  Micro...9.7 mins
-  OPC...13 mins
-  Oligo...14 mins
-  Vasc...6 mins
-  Excit...19 mins
-  Inhib...15 mins
-
-Of 115,992 models fit across all assays, 0.216% failed
-
-2025-06-07 07:41:24.954997 - DONE Differential Expression...Save Data
+2025-06-07 05:39:31.633932 - dreamlet
+  Astro...1.7 secs
+  Macro...0.21 secs
+  Micro...1.2 secs
+  OPC...1.6 secs
+  Oligo...1.7 secs
+  Vasc...0.75 secs
+  Excit...2.5 secs
+  Inhib...2.8 secs
+2025-06-07 05:39:44.020052 - DONE Differential Expression...Save Data
 coef
-[1] "(Intercept)"          "APOE_E4E4TRUE"        "Anc_Afr"             
-[4] "Age"                  "Rin"                  "subsets_Mito_percent"
+[1] "(Intercept)"     "APOE_carrierE4+"
 [1] "Reproducibility information:"
-[1] "2025-06-07 07:41:33 EDT"
-    user   system  elapsed 
-7360.432   13.939 7400.644 
+[1] "2025-06-07 05:39:48 EDT"
+   user  system elapsed 
+ 94.041   1.654  96.480 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -330,4 +325,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Sat Jun  7 07:41:33 AM EDT 2025
+Sat Jun  7 05:39:49 AM EDT 2025

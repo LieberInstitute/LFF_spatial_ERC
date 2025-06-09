@@ -1,11 +1,11 @@
 **** Job starts ****
-Sat Jun  7 05:38:11 AM EDT 2025
+Sat Jun  7 05:38:12 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17048218
+Job id: 17048228
 Job name: 03_run_dreamlet_sn
-Node name: compute-154
-Task id: 2
+Node name: compute-153
+Task id: 12
 Unloading conda_R/4.5
 Loading conda_R/4.5
 
@@ -123,45 +123,47 @@ $ARGS
 character(0)
 
 $model
-[1] "e4e4"
+[1] "carrier_i"
 
 $ddf
 [1] "Satterthwaite"
 
-model = e4e4, ddf = Satterthwaite
-~APOE_E4E4 + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + 
+model = carrier_i, ddf = Satterthwaite
+~APOE_carrier * Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + 
     subsets_Mito_percent
-2025-06-07 05:38:22.325762 - Apply Voom
-  Astro...4.5 mins
-  Macro...32 secs
-  Micro...3.3 mins
-  OPC...4.2 mins
-  Oligo...4.4 mins
-  Vasc...2.1 mins
-  Excit...6.4 mins
-  Inhib...5.3 mins
+2025-06-07 05:38:27.365374 - Apply Voom
+  Astro...6.7 mins
+  Macro...48 secs
+  Micro...4.7 mins
+  OPC...6.5 mins
+  Oligo...6.8 mins
+  Vasc...3 mins
+  Excit...9.4 mins
+  Inhib...7.8 mins
 null device 
           1 
-2025-06-07 06:09:08.7385 - dreamlet
-  Astro...14 mins
-  Macro...1.7 mins
-  Micro...9.7 mins
-  OPC...13 mins
-  Oligo...14 mins
-  Vasc...6 mins
-  Excit...19 mins
-  Inhib...15 mins
+2025-06-07 06:24:03.662703 - dreamlet
+  Astro...20 mins
+  Macro...2.4 mins
+  Micro...15 mins
+  OPC...20 mins
+  Oligo...21 mins
+  Vasc...9.2 mins
+  Excit...29 mins
+  Inhib...24 mins
 
-Of 115,992 models fit across all assays, 0.216% failed
+Of 115,992 models fit across all assays, 0.227% failed
 
-2025-06-07 07:41:24.954997 - DONE Differential Expression...Save Data
+2025-06-07 08:45:00.183639 - DONE Differential Expression...Save Data
 coef
-[1] "(Intercept)"          "APOE_E4E4TRUE"        "Anc_Afr"             
-[4] "Age"                  "Rin"                  "subsets_Mito_percent"
+[1] "(Intercept)"             "APOE_carrierE4+"        
+[3] "Anc_Afr"                 "Age"                    
+[5] "Rin"                     "subsets_Mito_percent"   
+[7] "APOE_carrierE4+:Anc_Afr"
 [1] "Reproducibility information:"
-[1] "2025-06-07 07:41:33 EDT"
-    user   system  elapsed 
-7360.432   13.939 7400.644 
+[1] "2025-06-07 08:45:12 EDT"
+     user    system   elapsed 
+11116.092    44.593 11219.089 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -330,4 +332,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Sat Jun  7 07:41:33 AM EDT 2025
+Sat Jun  7 08:45:12 AM EDT 2025
