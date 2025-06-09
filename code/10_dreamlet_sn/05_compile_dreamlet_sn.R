@@ -21,10 +21,10 @@ library("DFplyr")
 # opt$model <- "carrier"
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "10_dreamlet_sn", "04_plot_dreamlet_sn")
+data_dir <- here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "10_dreamlet_sn", "04_plot_dreamlet_sn")
+plot_dir <- here("plots", "10_dreamlet_sn", "05_compile_dreamlet_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
@@ -36,12 +36,16 @@ res.dl.fn <- list.files(here("processed-data", "10_dreamlet_sn", "03_run_dreamle
 names(res.dl.fn) <- gsub(".RDS", "", gsub("dreamlet_sn-", "", basename(res.dl.fn)))
 
 res.dl.list <- purrr::map(res.dl.fn, readRDS)
+res.dl.list[["contrast"]] <- NULL
+
 purrr::map(res.dl.list, coefNames)
 
+## match coef
 coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E4:Anc_Afr"),
                   apoe_n0 = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   apoe = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   carrier_i = "APOE_carrierE4+:Anc_Afr",
+                  carrier_kr = "APOE_carrierE4+",
                   carrier_n0 = "APOE_carrierE4+",
                   carrier_n1 = "APOE_carrierE4+",
                   carrier_n2 = "APOE_carrierE4+",
@@ -49,7 +53,7 @@ coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E
                   carrier_n4 = "APOE_carrierE4+",
                   carrier_sf = "APOE_carrierE4+",
                   carrier = "APOE_carrierE4+",
-                  contrast = c("APOE_synE2.E2","APOE_synE2.E3","APOE_synE3.E4","APOE_synE4.E4"),
+                  # contrast = c("APOE_synE2.E2","APOE_synE2.E3","APOE_synE3.E4","APOE_synE4.E4"),
                   e4e4_i = "APOE_E4E4TRUE:Anc_Afr",
                   e4e4_n0 = "APOE_E4E4TRUE",
                   e4e4 = "APOE_E4E4TRUE")
@@ -60,7 +64,23 @@ details(res.dl.list[["carrier"]])
 
 topTable(res.dl.list[["carrier"]], "APOE_carrierE4+")
 
-topTable(res.dl.list[["contrast"]], c("APOE_synE2.E2", "APOE_synE4.E4"))
+topTable(res.dl.list[["carrier_sf"]], "SexM", number = Inf) |>
+    group_by(assay) |>
+    mutate(adj.P.Val.cell_type = p.adjust(P.Value)) |>
+    summarise(global_signigf = sum(adj.P.Val < 0.1),
+              cell_type_signif = sum(adj.P.Val.cell_type < 0.1))
+
+# groups[xx, -ncol(groups)] global_signigf cell_type_signif
+# <character>      <integer>        <integer>
+# 1                     Astro             25               10
+# 2                     Excit             18               10
+# 3                     Inhib             13                5
+# 4                     Macro              1                1
+# 5                     Micro              7                3
+# 6                     Oligo             16                6
+# 7                       OPC             12                4
+# 8                      Vasc              7                5
+
 
 # results from full analysis
 tt <- map2(res.dl.list, coef_list, 
@@ -84,7 +104,31 @@ map2_dfr(tt, names(tt), ~.x |>
          mutate(model = .y) |>
             as.data.frame())
 
+#### contrast DEGs ####
+res.dl.contrast <- readRDS(here("processed-data", "10_dreamlet_sn", "04_run_dreamlet_contrast_sn", "dreamlet_contrast_sn-contrast.RDS"))
+coefNames(res.dl.contrast)
 
+contrast_coef <- c("E2E2_E4E4", 
+                   "E3E4_E4E4", 
+                   "E2E3_E4E4",
+                   "E2E2_E3E4",
+                   "E2E2_E2E3",
+                   "E2E3_E3E4",
+                   "E4E4_anyE2",
+                   "anyE4_anyE2",
+                   "E2E2_anyE4",
+                   "E2E3_anyE4")
+
+names(contrast_coef) <- contrast_coef
+
+tt_contrast <- map(contrast_coef, 
+           ~topTable(res.dl.contrast, coef = .x, number = Inf) 
+           # |> 
+           #     group_by(assay) |>
+           #     mutate(adj.P.Val.cell_type = p.adjust(P.Value))
+)
+
+topTable(res.dl.contrast, coef = "E2E2_E4E4")
 
 ## check VarPart genes
 tt[["carrier"]] |>
@@ -124,11 +168,11 @@ ggsave(expression_plot, filename = here(plot_dir, "sn_dreamlet_expression_boxplo
 ## forest plot
 plotForest(res.dl, coef = "APOE_carrierE4+", gene = "NBPF12")
 
-# slurmjobs::job_single('04_plot_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 04_plot_dreamlet_sn.R")
+# slurmjobs::job_single('05_compile_dreamlet_sn', create_shell = TRUE, memory = '50G', command = "Rscript 05_compile_dreamlet_sn.R")
 
 # slurmjobs::job_loop(
 #     loops = list(model = names(dreamlet_models_sn)),
-#     name = "04_plot_dreamlet_sn",
+#     name = "05_compile_dreamlet_sn",
 #     create_shell = TRUE,
 #     create_script = FALSE
 # )
