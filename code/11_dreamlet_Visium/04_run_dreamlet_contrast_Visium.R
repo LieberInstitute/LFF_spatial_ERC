@@ -79,7 +79,7 @@ L <- makeContrastsDream(~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | 
                         contrasts = contrasts
 )
 
-contrast_plot <- plotContrasts(L) + labs(title = "sn dreamlet contrast",
+contrast_plot <- plotContrasts(L) + labs(title = "Visium dreamlet contrast",
                                          subtitle = mod)
 
 ggsave(contrast_plot, filename = here(plot_dir, "Visium_dreamlet_contrast.png"))
@@ -92,7 +92,7 @@ message(Sys.time(), " - dreamlet")
 # param <- SnowParam(4, "SOCK", progressbar = TRUE)
 
 res.dl <- dreamlet(res.proc, 
-                   formula = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round), 
+                   formula = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide), 
                    contrasts = contrasts)
 
 ## how to add mito rate to colData?
