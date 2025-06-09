@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Jun  5 09:09:55 AM EDT 2025
+Sat Jun  7 06:05:14 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16942307
+Job id: 17048266
 Job name: 03_run_dreamlet_Visium
-Node name: compute-162
+Node name: compute-158
 Task id: 5
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -128,27 +127,40 @@ $model
 $ddf
 [1] "Satterthwaite"
 
-2025-06-05 09:10:06.917497 - Differential Expression, model = carrier_n2, ddf = Satterthwaite
+model = carrier_n2, ddf = Satterthwaite
 ~APOE_carrier + Anc_Afr + (1 | Sex)
-  Inhib_Sp09D09...8 mins
-  L1_Sp09D05...7.6 mins
-  L2.3_Sp09D01...8.5 mins
+2025-06-07 06:05:26.648468 - Apply Voom
+  Inhib_Sp09D09...3.2 mins
+  L1_Sp09D05...3.2 mins
+  L2.3_Sp09D01...3.6 mins
+  L5_Sp09D03...3.7 mins
+  L6_Sp09D04...3.8 mins
+  LD_Sp09D02...4.1 mins
+  Vasc_Sp09D08...2.2 mins
+  WM_Sp09D06...2.4 mins
+  WM.uf_Sp09D07...49 secs
+null device 
+          1 
+2025-06-07 06:32:39.275125 - dreamlet
+  Inhib_Sp09D09...8.5 mins
+  L1_Sp09D05...8.4 mins
+  L2.3_Sp09D01...9.1 mins
   L5_Sp09D03...9 mins
-  L6_Sp09D04...9.2 mins
-  LD_Sp09D02...9.9 mins
-  Vasc_Sp09D08...5.5 mins
-  WM_Sp09D06...6.4 mins
-  WM.uf_Sp09D07...2.2 mins
+  L6_Sp09D04...9.1 mins
+  LD_Sp09D02...10 mins
+  Vasc_Sp09D08...6.1 mins
+  WM_Sp09D06...7 mins
+  WM.uf_Sp09D07...2.3 mins
 
 Of 96,804 models fit across all assays, 0.0031% failed
 
-2025-06-05 10:16:21.458586 - DONE Differential Expression...Save Data
+2025-06-07 07:42:40.570113 - DONE Differential Expression...Save Data
 coef
 [1] "(Intercept)"     "APOE_carrierE4+" "Anc_Afr"        
 [1] "Reproducibility information:"
-[1] "2025-06-05 10:16:27 EDT"
+[1] "2025-06-07 07:42:47 EDT"
     user   system  elapsed 
-3955.773   18.801 3991.148 
+5808.256   21.239 5851.870 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -159,7 +171,7 @@ coef
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-05
+ date     2025-06-07
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -230,6 +242,7 @@ coef
  KEGGgraph              1.68.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
  KEGGREST               1.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  KernSmooth             2.23-26    2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
  lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
  limma                * 3.64.1     2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
@@ -316,4 +329,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jun  5 10:16:27 AM EDT 2025
+Sat Jun  7 07:42:47 AM EDT 2025

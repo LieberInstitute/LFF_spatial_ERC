@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Jun  5 09:09:55 AM EDT 2025
+Sat Jun  7 06:05:14 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16942311
+Job id: 17048274
 Job name: 03_run_dreamlet_Visium
-Node name: compute-163
-Task id: 9
-Unloading conda_R/4.5
+Node name: compute-156
+Task id: 13
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -123,34 +122,48 @@ $ARGS
 character(0)
 
 $model
-[1] "contrast"
+[1] "e4e4_i"
 
 $ddf
 [1] "Satterthwaite"
 
-2025-06-05 09:10:07.831255 - Differential Expression, model = contrast, ddf = Satterthwaite
-~0 + APOE_syn + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + 
+model = e4e4_i, ddf = Satterthwaite
+~APOE_E4E4 * Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + 
     expr_chrM_ratio
+2025-06-07 06:05:25.971667 - Apply Voom
+  Inhib_Sp09D09...3.1 mins
+  L1_Sp09D05...3.1 mins
+  L2.3_Sp09D01...3.6 mins
+  L5_Sp09D03...3.7 mins
+  L6_Sp09D04...3.8 mins
+  LD_Sp09D02...4.2 mins
+  Vasc_Sp09D08...2.2 mins
+  WM_Sp09D06...2.7 mins
+  WM.uf_Sp09D07...52 secs
+null device 
+          1 
+2025-06-07 06:32:56.218531 - dreamlet
   Inhib_Sp09D09...11 mins
-  L1_Sp09D05...11 mins
+  L1_Sp09D05...10 mins
   L2.3_Sp09D01...12 mins
-  L5_Sp09D03...12 mins
+  L5_Sp09D03...13 mins
   L6_Sp09D04...13 mins
-  LD_Sp09D02...13 mins
-  Vasc_Sp09D08...7.4 mins
-  WM_Sp09D06...8.7 mins
-  WM.uf_Sp09D07...3 mins
+  LD_Sp09D02...14 mins
+  Vasc_Sp09D08...7.5 mins
+  WM_Sp09D06...8.5 mins
+  WM.uf_Sp09D07...2.9 mins
 
-Of 96,804 models fit across all assays, 0.259% failed
+Of 96,804 models fit across all assays, 0.239% failed
 
-2025-06-05 10:40:58.551315 - DONE Differential Expression...Save Data
+2025-06-07 08:04:23.56243 - DONE Differential Expression...Save Data
 coef
-[1] "APOE_synE2.E2"   "APOE_synE2.E3"   "APOE_synE3.E4"   "APOE_synE4.E4"  
-[5] "Anc_Afr"         "Age"             "Rin"             "expr_chrM_ratio"
+[1] "(Intercept)"           "APOE_E4E4TRUE"         "Anc_Afr"              
+[4] "Age"                   "Rin"                   "expr_chrM_ratio"      
+[7] "APOE_E4E4TRUE:Anc_Afr"
 [1] "Reproducibility information:"
-[1] "2025-06-05 10:41:07 EDT"
+[1] "2025-06-07 08:04:32 EDT"
     user   system  elapsed 
-5427.999   22.773 5470.860 
+7105.654   23.916 7157.170 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -161,7 +174,7 @@ coef
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-05
+ date     2025-06-07
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -232,6 +245,7 @@ coef
  KEGGgraph              1.68.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
  KEGGREST               1.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  KernSmooth             2.23-26    2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
  lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
  limma                * 3.64.1     2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
@@ -318,4 +332,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jun  5 10:41:07 AM EDT 2025
+Sat Jun  7 08:04:32 AM EDT 2025
