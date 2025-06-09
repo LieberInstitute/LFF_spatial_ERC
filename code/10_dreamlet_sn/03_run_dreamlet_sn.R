@@ -56,6 +56,8 @@ dreamlet_models_sn <- list(
     carrier_i = ~ APOE_carrier*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     apoe_i = ~ APOE*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     e4e4_i = ~ APOE_E4E4*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent
+    # test 
+    sex_n0 = ~ Sex
 )
 
 # source(here("code", "10_dreamlet_sn", "dreamlet_models_sn.R"))
@@ -90,6 +92,7 @@ coefNames(res.dl)
 # topTable(res.dl, coef = "APOE_carrierE4+")
 
 # slurmjobs::job_single('03_run_dreamlet_sn_kr', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'")
+# slurmjobs::job_single('03_run_dreamlet_sn_sex', create_shell = TRUE, memory = '10G', command = "Rscript 03_run_dreamlet_sn.R --model sex_n0")
 
 # slurmjobs::job_loop(
 #     loops = list(model = names(dreamlet_models_sn)),
