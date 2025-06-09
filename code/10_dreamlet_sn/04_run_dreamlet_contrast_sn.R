@@ -43,6 +43,8 @@ dreamlet_contrast_models_sn <- list(
     contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent
 )
 
+stopifnot(opt$model %in% names(dreamlet_contrast_models_sn))
+
 contrasts <-  c(
     E2E2_E4E4 = "APOE_synE2.E2 - APOE_synE4.E4",
     E3E4_E4E4 = "APOE_synE3.E4 - APOE_synE4.E4",
@@ -55,9 +57,6 @@ contrasts <-  c(
     E2E2_anyE4 = "APOE_synE2.E2 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)",
     E2E3_anyE4 = "APOE_synE2.E3 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)")
 
-
-stopifnot(opt$model %in% names(dreamlet_contrast_models_sn))
-
 message('model = ', opt$model, ", ddf = ", opt$ddf)
 mod = dreamlet_contrast_models_sn[[opt$model]]
 print(mod)
@@ -66,14 +65,18 @@ message(Sys.time(), " - Apply Voom")
 # Normalize and apply voom/voomWithDreamWeights
 res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 
+saveRDS(rse.proc, file = here(data_dir, "rse.proc.contrast.Rds"))
+
 # show voom plot for each cell clusters
 pdf(here(plot_dir, sprintf("sn_dreamlet_voom-%s.pdf", opt$model)))
 plotVoom(res.proc)
 dev.off()
 
-model.matrix(~0+APOE_syn, colData(res.proc))
+# model.matrix(~0+APOE_syn, colData(res.proc))
 
 #### Visualize contrast matrix ####
+## cant add subsets_Mito_percent as a variable 
+
 L <- makeContrastsDream(~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round), 
                         colData(res.proc),
                         contrasts = contrasts
@@ -92,7 +95,7 @@ message(Sys.time(), " - dreamlet")
 # param <- SnowParam(4, "SOCK", progressbar = TRUE)
 
 res.dl <- dreamlet(res.proc, 
-                   formula = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round), 
+                   formula = mod, 
                    contrasts = contrasts)
 
 ## how to add mito rate to colData?

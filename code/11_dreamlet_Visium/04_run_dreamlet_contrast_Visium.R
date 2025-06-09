@@ -43,6 +43,8 @@ dreamlet_contrast_models_Visium <- list(
     contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio
 )
 
+stopifnot(opt$model %in% names(dreamlet_contrast_models_Visium))
+
 contrasts <-  c(
     E2E2_E4E4 = "APOE_synE2.E2 - APOE_synE4.E4",
     E3E4_E4E4 = "APOE_synE3.E4 - APOE_synE4.E4",
@@ -54,9 +56,6 @@ contrasts <-  c(
     anyE4_anyE2 = "APOE_synE3.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2)",
     E2E2_anyE4 = "APOE_synE2.E2 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)",
     E2E3_anyE4 = "APOE_synE2.E3 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)")
-
-
-stopifnot(opt$model %in% names(dreamlet_contrast_models_Visium))
 
 message('model = ', opt$model, ", ddf = ", opt$ddf)
 mod = dreamlet_contrast_models_Visium[[opt$model]]
@@ -74,6 +73,7 @@ dev.off()
 model.matrix(~0+APOE_syn, colData(res.proc))
 
 #### Visualize contrast matrix ####
+## cannot include metadata expr_chrM_ratio col
 L <- makeContrastsDream(~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide), 
                         colData(res.proc),
                         contrasts = contrasts
@@ -92,7 +92,7 @@ message(Sys.time(), " - dreamlet")
 # param <- SnowParam(4, "SOCK", progressbar = TRUE)
 
 res.dl <- dreamlet(res.proc, 
-                   formula = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide), 
+                   formula = mod, 
                    contrasts = contrasts)
 
 ## how to add mito rate to colData?
