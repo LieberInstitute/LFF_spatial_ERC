@@ -91,7 +91,11 @@ message(Sys.time(), " - dreamlet")
 
 # param <- SnowParam(4, "SOCK", progressbar = TRUE)
 
-res.dl <- dreamlet(res.proc, mod, ddf = opt$ddf, contrast)
+res.dl <- dreamlet(res.proc, 
+                   formula = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round), 
+                   contrasts = contrasts)
+
+## how to add mito rate to colData?
 
 message(Sys.time(), " - DONE Differential Expression...Save Data")
 saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_contrast_sn-%s%s.RDS", opt$model, ddf_suffix)))
