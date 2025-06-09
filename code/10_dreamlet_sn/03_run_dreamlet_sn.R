@@ -55,8 +55,8 @@ dreamlet_models_sn <- list(
     # interaction syntax x + (x | g)
     carrier_i = ~ APOE_carrier*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
     apoe_i = ~ APOE*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
-    e4e4_i = ~ APOE_E4E4*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent
-    # test 
+    e4e4_i = ~ APOE_E4E4*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + subsets_Mito_percent,
+    # Sex DEGs naive model
     sex_n0 = ~ Sex
 )
 
