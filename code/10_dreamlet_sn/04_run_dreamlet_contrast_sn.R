@@ -74,7 +74,11 @@ dev.off()
 model.matrix(~0+APOE_syn, colData(res.proc))
 
 #### Visualize contrast matrix ####
-L <- makeContrastsDream(mod, contrasts)
+L <- makeContrastsDream(~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round), 
+                        colData(res.proc),
+                        contrasts = contrasts
+)
+
 contrast_plot <- plotContrasts(L) + labs(title = "sn dreamlet contrast",
                                          subtitle = mod)
 
