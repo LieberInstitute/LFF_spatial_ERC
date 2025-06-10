@@ -4,10 +4,19 @@
 #SBATCH --job-name=03_run_dreamlet_sn_kr
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/03_run_dreamlet_sn_kr.txt
-#SBATCH -e logs/03_run_dreamlet_sn_kr.txt
+#SBATCH -o /dev/null
+#SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
+#SBATCH --array=1-4%20
 
+## Define loops and appropriately subset each variable for the array task ID
+all_model=(carrier carrier_sf apoe e4e4)
+model=${all_model[$(( $SLURM_ARRAY_TASK_ID / 1 % 4 ))]}
+
+## Explicitly pipe script output to a log
+log_path=logs/03_run_dreamlet_sn_kr_${model}_${SLURM_ARRAY_TASK_ID}.txt
+
+{
 set -e
 
 echo "**** Job starts ****"
@@ -27,10 +36,13 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 03_run_dreamlet_sn.R --model carrier --ddf 'Kenward-Roger'
+Rscript 03_run_dreamlet_sn.R --model ${model} --ddf 'Kenward-Roger'
 
 echo "**** Job ends ****"
 date
 
+} > $log_path 2>&1
+
 ## This script was made using slurmjobs version 1.3.0
 ## available from http://research.libd.org/slurmjobs/
+
