@@ -65,7 +65,7 @@ message(Sys.time(), " - Apply Voom")
 # Normalize and apply voom/voomWithDreamWeights
 res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 
-saveRDS(rse.proc, file = here(data_dir, "rse.proc.contrast.Rds"))
+saveRDS(res.proc, file = here(data_dir, "rse.proc.contrast.Rds"))
 
 # show voom plot for each cell clusters
 pdf(here(plot_dir, sprintf("sn_dreamlet_voom-%s.pdf", opt$model)))
