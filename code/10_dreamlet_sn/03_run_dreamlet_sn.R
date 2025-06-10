@@ -102,6 +102,15 @@ coefNames(res.dl)
 #     create_script = FALSE
 # )
 
+## loop kr
+slurmjobs::job_loop(
+    loops = list(model = names(dreamlet_models_sn)),
+    # loops = list(model = c("carrier","carrier_sf","apoe","e4e4")),
+    name = "03_run_dreamlet_sn_kr",
+    create_shell = TRUE,
+    create_script = FALSE
+)
+
 #### Reproducibility information ####
 print("Reproducibility information:")
 Sys.time()
