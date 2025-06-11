@@ -15,14 +15,14 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "10_dreamlet_sn", "05_compile_dreamlet_sn")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-load(here("processed-data", "project_colors.Rdata"))
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
 
 #### Load data ####
+## processed dreamlet input
 res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
-# 
-# res.dl <- readRDS(here("processed-data", "10_dreamlet_sn", "03_run_dreamlet_sn", sprintf("dreamlet_sn-%s.RDS", opt$model)))
 
+## dreamlet results
 res.dl.fn <- list.files(here("processed-data", "10_dreamlet_sn", "03_run_dreamlet_sn"), full.names = TRUE)
 names(res.dl.fn) <- gsub(".RDS", "", gsub("dreamlet_sn-", "", basename(res.dl.fn)))
 
@@ -64,16 +64,22 @@ tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
 
 
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-                         cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1)))
+                         global_FDR20 = sum(adj.P.Val < 0.2),
+                         cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
+                         cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)
+                         )
+    )
 
 fdr_model_count <- map2_dfr(tt, names(tt), ~.x |> 
-        ungroup() |>
-        summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-                  cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1)) |>
-         mutate(model = .y) |>
-            as.data.frame()) 
+                                ungroup() |>
+                                summarise(global_FDR10 = sum(adj.P.Val < 0.1),
+                                          global_FDR20 = sum(adj.P.Val < 0.2),
+                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
+                                          cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)) |>
+                                mutate(model = .y) |>
+                                as.data.frame()) 
 
-write.csv(fdr_model_count, file = here(data_dir, "dreamlet_sn_FDR10_model_count.csv"), row.names = FALSE)
+write.csv(fdr_model_count, file = here(data_dir, "dreamlet_sn_FDR_model_count.csv"), row.names = FALSE)
 
 ## filter and export key results
 main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
@@ -83,6 +89,8 @@ tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.c
 write.csv(tt_signif, file = here(data_dir, "dreamlet_sn_topTable_FDR20.csv"), row.names = FALSE)
 
 save(tt[main_mods], file = here(data_dir, "dreamlet_sn_TopTables.Rdata"))
+
+# load(here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"))
 
 #### check ddr models ####
 fdr_model_count |>
@@ -127,7 +135,7 @@ walk(names(tt), function(mod){
     
     pval_histo <- tt[[mod]] |>
         ggplot(aes(x = P.Value)) +
-        geom_histogram(binwidth = 0.1) +
+        geom_histogram(binwidth = 0.01) +
         facet_wrap(~assay) +
         theme_bw() +
         labs(title = mod)
@@ -171,13 +179,36 @@ tt[["e4e4"]] |>
     as.data.frame() |>
     filter(ID %in% c("SRGAP2C", "NAALADL2", "APP"))
 
-#### Volvano Plots ####
+#### Volcano Plots ####
 pdf(here(plot_dir, "sn_dreamlet_VolcanoPlot.pdf"), height = 11, width = 8)
 # plotVolcano(res.dl, coef = "APOE_carrierE4+")
 
-map(c("carrier","e4e4","carrier_i","e4e4_i"), ~plotVolcano(res.dl.list[[.x]], coef_list[[.x]]) + labs(title = .x))
+map(c("carrier","e4e4","carrier_i","e4e4_i"), ~plotVolcano(res.dl.list[[.x]], coef_list[[.x]], cutoff = 0.2) + labs(title = .x))
 
 dev.off()
+
+# p_limit <- tt[["carrier"]] |>
+#     as.data.frame() |>
+#     filter(adj.P.Val.cell_type < 0.2) |>
+#     group_by(assay) |>
+#     summarise(p_limit = max(P.Value))
+# 
+# 
+# tt[["carrier"]] |>
+#         mutate(DE_class = case_when(adj.P.Val.cell_type < 0.2 ~ "E4+",
+#                                     adj.P.Val.cell_type < 0.2 ~ "E2+",
+#                                     TRUE ~"Other")) |>
+#         ggplot(aes(x = logFC, y = -log10(P.Value), color = DE_class)) +
+#         geom_point(alpha = 0.5, size = 0.5) +
+#         geom_text_repel(aes(label = ifelse(DE_class != "Other", Symbol, NA)), size = 2, show.legend=FALSE) +
+#         scale_color_manual(values = c(, "Other" = "darkgray")) +
+#         theme_bw() +
+#         geom_vline(xintercept = c(1,0,-1), linetype = c("dashed", "solid","dashed")) +
+#         geom_hline(yintercept = -log10(pval_lim), linetype = "dashed") +
+#         labs(title = title, subtitle = subtitle)
+# 
+# 
+# ggsave(custom_volcano, filename = here(plot_dir, "custom_volcano_carrier_model.png"), width = 12, height =4)
 
 #### plot genes by carrier ####
 plot_DE_express_carrier <- function(gene, cluster){
@@ -248,21 +279,24 @@ tt_contrast <- map2(tt_contrast, names(tt_contrast),
 fdr_contrast_count <- map2_dfr(tt_contrast, names(tt_contrast), ~.x |> 
                                 ungroup() |>
                                 summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1)) |>
+                                          global_FDR20 = sum(adj.P.Val < 0.2),
+                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
+                                          cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)
+                                          ) |>
                                 mutate(model = .y) |>
                                 as.data.frame()) 
 
-write.csv(fdr_contrast_count, file = here(data_dir, "dreamlet_sn_FDR10_contrast_count.csv"), row.names = FALSE)
+write.csv(fdr_contrast_count, file = here(data_dir, "dreamlet_sn_FDR_contrast_count.csv"), row.names = FALSE)
 
 ## filter and export key results
-tt_contrast_signif <- map_dfr(tt_contrast, ~.x |> as.data.frame() |> filter(adj.P.Val.cell_type < 0.1))
+tt_contrast_signif <- map_dfr(tt_contrast, ~.x |> as.data.frame() |> filter(adj.P.Val.cell_type < 0.2))
 
-write.csv(tt_contrast_signif, file = here(data_dir, "dreamlet_sn_topTable_contrast_FDR10.csv"), row.names = FALSE)
+write.csv(tt_contrast_signif, file = here(data_dir, "dreamlet_sn_topTable_contrast_FDR20.csv"), row.names = FALSE)
 
 #### Contrast volcano plot ####
 pdf(here(plot_dir, "sn_dreamlet_VolcanoPlot_contrast.pdf"), height = 11, width = 8)
 
-map(contrast_coef, ~plotVolcano(res.dl.contrast, .x) + labs(title = .x))
+map(contrast_coef, ~plotVolcano(res.dl.contrast, .x, cutoff = 0.2) + labs(title = .x))
 
 dev.off()
 
@@ -357,6 +391,10 @@ plot_DE_express_apoe_anc <- function(gene, cluster, subtitle = NULL){
 }
 
 pmap(tt_signif |> filter(model == "apoe_i"), function(...) plot_DE_express_apoe_anc(cluster = ..1, gene = ..2, subtitle = "apoe_i"))
+
+#### Bernie DE ####
+
+# readRDS("/dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC/processed-data/12_DEanalyses_removedsampsAndFinalNMseg/02c-Clusterwise_DETopTabs_Sex_APO_predomAncest.RDS")
 
 
 # slurmjobs::job_single('05_compile_dreamlet_sn', create_shell = TRUE, memory = '10G', command = "Rscript 05_compile_dreamlet_sn.R")
