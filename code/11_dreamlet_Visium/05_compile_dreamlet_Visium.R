@@ -6,19 +6,7 @@ library("dreamlet")
 library("tidyverse")
 library("here")
 library("sessioninfo")
-library("getopt")
 library("DFplyr")
-
-# Import command-line parameters
-# scec <- matrix(
-#     c("model", "m", "1", "character", "Model name"),
-#     ncol = 5, byrow = TRUE
-# )
-# opt <- getopt(scec)
-# print(opt)
-
-# test 
-# opt$model <- "carrier"
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium")
@@ -27,8 +15,11 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "11_dreamlet_Visium", "05_compile_dreamlet_Visium")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+load(here("processed-data", "project_colors.Rdata"))
+AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
+
 #### Load data ####
-res.proc <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_res_proc.rds"))
+q <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_res_proc.rds"))
 # 
 # res.dl <- readRDS(here("processed-data", "11_dreamlet_Visium", "03_run_dreamlet_Visium", sprintf("dreamlet_Visium-%s.RDS", opt$model)))
 
@@ -43,7 +34,6 @@ coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E
                   apoe_n0 = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   apoe = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   carrier_i = "APOE_carrierE4+:Anc_Afr",
-                  carrier_kr = "APOE_carrierE4+",
                   carrier_n0 = "APOE_carrierE4+",
                   carrier_n1 = "APOE_carrierE4+",
                   carrier_n2 = "APOE_carrierE4+",
@@ -51,25 +41,109 @@ coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E
                   carrier_n4 = "APOE_carrierE4+",
                   carrier_sf = "APOE_carrierE4+",
                   carrier = "APOE_carrierE4+",
-                  # contrast = c("APOE_synE2.E2","APOE_synE2.E3","APOE_synE3.E4","APOE_synE4.E4"),
                   e4e4_i = "APOE_E4E4TRUE:Anc_Afr",
                   e4e4_n0 = "APOE_E4E4TRUE",
                   e4e4 = "APOE_E4E4TRUE")
 
-identical(names(coef_list), names(res.dl.list))
+coef_list_kr <- coef_list
+names(coef_list_kr) <- paste0(names(coef_list_kr), "_kr")
 
-details(res.dl.list[["carrier"]])
+coef_list <- c(coef_list, coef_list_kr)
 
-topTable(res.dl.list[["carrier"]], "APOE_carrierE4+")
+## check all coef are present, order correctly
+all(names(res.dl.list) %in% names(coef_list))
+coef_list <- coef_list[names(res.dl.list)]
 
-## sex DGE
-topTable(res.dl.list[["carrier_sf"]], "SexM")
+#### TopTable ####
+tt <- map2(res.dl.list, coef_list, 
+           ~topTable(.x, .y, number = Inf) |> 
+               group_by(assay) |>
+               mutate(adj.P.Val.SpD = p.adjust(P.Value))
+)
 
-topTable(res.dl.list[["carrier_sf"]], "SexM", number = Inf) |>
+tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
+
+
+map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
+                         SpD_FDR10 = sum(adj.P.Val.SpD < 0.1)))
+
+fdr_model_count <- map2_dfr(tt, names(tt), ~.x |> 
+        ungroup() |>
+        summarise(global_FDR10 = sum(adj.P.Val < 0.1),
+                  SpD_FDR10 = sum(adj.P.Val.SpD < 0.1)) |>
+         mutate(model = .y) |>
+            as.data.frame()) 
+
+write.csv(fdr_model_count, file = here(data_dir, "dreamlet_Visium_FDR10_model_count.csv"), row.names = FALSE)
+
+## filter and export key results
+main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
+
+tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.SpD < 0.2))
+
+write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
+
+#### check ddr models ####
+fdr_model_count |>
+    mutate(ddr = ifelse(grepl("kr", model), "kr", "s"),
+           model = gsub("_kr", "", model)) |>
+    arrange(model) |>
+    group_by(model) |>
+    filter("kr" %in% ddr)
+
+# global_FDR10 SpD_FDR10 model      ddr  
+# <int>     <int> <chr>      <chr>
+# 1            1         5 apoe       kr   
+# 2            0         7 apoe       s    
+# 3            0         0 carrier    kr   
+# 4            0         2 carrier    s    
+# 5            0         1 carrier_sf kr   
+# 6            0         2 carrier_sf s    
+# 7            0         0 e4e4       kr   
+# 8            0         0 e4e4       s 
+
+tt_kr_comapre <- tt[["carrier"]] |>
+    as.data.frame() |>
+    bind_rows(as.data.frame(tt[["carrier_kr"]])) |>
+    select(assay, ID, t, model) |>
+    pivot_wider(values_from = t, names_from = model) |>
+    mutate(diff = carrier - carrier_kr)
+
+summary(tt_kr_comapre$carrier - tt_kr_comapre$carrier_kr)
+
+tt_kr_comapre_scatter <- tt_kr_comapre |>
+    ggplot(aes(carrier, carrier_kr, color = assay)) +
+    geom_point(size = 1, alpha = .5) +
+    geom_abline() +
+    theme_bw() +
+    labs(title = "carrier model t-stats")
+
+ggsave(tt_kr_comapre_scatter, filename = here(plot_dir, "tt_kr_comapre_scatter.png"))
+
+
+#### pval distribution ####
+walk(names(tt), function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = P.Value)) +
+        geom_histogram(binwidth = 0.1) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Vsium_pval_histo-%s.png", mod)), width = 10)
+    
+})
+
+
+#### check sex DGE ####
+tt_sex <- topTable(res.dl.list[["carrier_sf"]], "SexM", number = Inf)
+
+tt_sex |>
     group_by(assay) |>
     mutate(adj.P.Val.cell_type = p.adjust(P.Value)) |>
-    summarise(global_signigf = sum(adj.P.Val < 0.1),
-              cell_type_signif = sum(adj.P.Val.cell_type < 0.1))
+    summarise(global_FDR10 = sum(adj.P.Val < 0.1),
+              SpD_FDR10 = sum(adj.P.Val.cell_type < 0.1))
 
 # groups[xx, -ncol(groups)] global_signigf cell_type_signif
 # <character>      <integer>        <integer>
@@ -84,44 +158,20 @@ topTable(res.dl.list[["carrier_sf"]], "SexM", number = Inf) |>
 # 9             WM.uf_Sp09D07              0                0
 
 
-# results from full analysis
-tt <- map2(res.dl.list, coef_list, 
-           ~topTable(.x, .y, number = Inf, p.value = 0.1) |> 
-               group_by(assay) |>
-               mutate(adj.P.Val.SpD = p.adjust(P.Value))
-)
-
-fdr10 <- map(tt, ~.x |> filter(adj.P.Val < 0.1))
-
-map(tt, ~.x |> filter(adj.P.Val.SpD < 0.1))
-map_int(fdr10, nrow)
-
-map(tt, ~.x |> as.data.frame() |> group_by(assay) |> filter(adj.P.Val < 0.2) |> count())
-
-map(tt, ~.x |> summarise(global_signigf = sum(adj.P.Val < 0.1),
-                         SpD_signif = sum(adj.P.Val.SpD < 0.1)))
-
-map2_dfr(tt, names(tt), ~.x |> 
-        ungroup() |>
-        summarise(global_signigf = sum(adj.P.Val < 0.1),
-                  SpD_signif = sum(adj.P.Val.SpD < 0.1)) |>
-         mutate(model = .y) |>
-            as.data.frame())
-
 
 
 ## check VarPart genes
 tt[["carrier"]] |>
     as.data.frame() |>
-    filter(ID %in% c("CLOCK", "ABCC4"))
+    filter(ID %in% c("MAPT", "SOWAHA"))
 
 tt[["apoe"]] |>
     as.data.frame() |>
-    filter(ID %in% c("ADAM10", "ADAM17"))
+    filter(ID %in% c("SORCS1", "OLFM3"))
 
 tt[["e4e4"]] |>
     as.data.frame() |>
-    filter(ID %in% c("SRGAP2C", "NAALADL2", "APP"))
+    filter(ID %in% c("PSEN1", "ACKR3"))
 
 
 
@@ -134,19 +184,134 @@ dev.off()
 
 #### plot genes ####
 # get data
-df <- extractData(res.proc, "Vasc", genes = "TAFA1")
+plot_DE_express <- function(gene, cluster){
+    
+    df <- extractData(res.proc, assay = cluster, genes = gene)
+    
+    # expression boxplot
+    expression_plot <- ggplot(df, aes(APOE_carrier, !!sym(gene))) +
+        geom_boxplot() +
+        ylab(bquote(Expression ~ (log[2] ~ CPM))) +
+        ggtitle(sprintf("%s - %s", cluster, gene)) +
+        theme_bw()
+    
+    ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_dreamlet_expression_boxplot-%s-%s.png", cluster, gene)))
+    
+}
 
-# expression boxplot
-expression_plot <- ggplot(df, aes(APOE_carrier, TAFA1)) +
-    geom_boxplot() +
-    ylab(bquote(Expression ~ (log[2] ~ CPM))) +
-    ggtitle("NBPF12") +
-    theme_bw()
-
-ggsave(expression_plot, filename = here(plot_dir, "Visium_dreamlet_expression_boxplot.png"))
+plot_DE_express(cluster = "WM.uf_Sp09D07",gene = c("CNTNAP4"))
+plot_DE_express(cluster = "WM.uf_Sp09D07",gene = c("GPR37"))
 
 ## forest plot
 plotForest(res.dl, coef = "APOE_carrierE4+", gene = "NBPF12")
+
+
+#### contrast DEGs ####
+res.dl.contrast <- readRDS(here("processed-data", "11_dreamlet_Visium", "04_run_dreamlet_contrast_Visium", "dreamlet_contrast_Visium-contrast.RDS"))
+coefNames(res.dl.contrast)
+
+contrast_coef <- c("E2E2_E4E4", 
+                   "E3E4_E4E4", 
+                   "E2E3_E4E4",
+                   "E2E2_E3E4",
+                   "E2E2_E2E3",
+                   "E2E3_E3E4",
+                   "E4E4_anyE2",
+                   "anyE4_anyE2",
+                   "E2E2_anyE4",
+                   "E2E3_anyE4")
+
+names(contrast_coef) <- contrast_coef
+
+tt_contrast <- map(contrast_coef, 
+                   ~topTable(res.dl.contrast, coef = .x, number = Inf) 
+                   # |>
+                   #     group_by(assay) |>
+                   #     mutate(adj.P.Val.cell_type = p.adjust(P.Value))
+)
+
+tt_contrast <- map2(tt_contrast, names(tt_contrast), 
+                    ~.x  |>
+                            group_by(assay) |>
+                            mutate(adj.P.Val.SpD = p.adjust(P.Value),
+                                   contrast = .y)
+                    )
+
+fdr_contrast_count <- map2_dfr(tt_contrast, names(tt_contrast), ~.x |> 
+                                ungroup() |>
+                                summarise(global_FDR10 = sum(adj.P.Val < 0.1),
+                                          SpD_FDR10 = sum(adj.P.Val.SpD < 0.1)) |>
+                                mutate(model = .y) |>
+                                as.data.frame()) 
+
+write.csv(fdr_contrast_count, file = here(data_dir, "dreamlet_Visium_FDR10_contrast_count.csv"), row.names = FALSE)
+
+## filter and export key results
+tt_contrast_signif <- map_dfr(tt_contrast, ~.x |> as.data.frame() |> filter(adj.P.Val.SpD < 0.1))
+
+write.csv(tt_contrast_signif, file = here(data_dir, "dreamlet_Visium_topTable_contrast_FDR10.csv"), row.names = FALSE)
+
+pdf(here(plot_dir, "Visium_dreamlet_VolcanoPlot_contrast.pdf"), height = 11, width = 8)
+
+map(contrast_coef, ~plotVolcano(res.dl.contrast, .x) + labs(title = .x))
+
+dev.off()
+
+tt_contrast_signif |> 
+    group_by(assay, ID) |>
+    summarise(contrasts = paste0(contrast, collapse = ", "))
+
+plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
+    
+    df <- extractData(res.proc, assay = cluster, genes = gene)
+    
+    # expression boxplot
+    expression_plot <- ggplot(df, aes(APOE, !!sym(gene), fill = APOE)) +
+        geom_boxplot(outlier.shape = NA) +
+        geom_jitter(width = .1) +
+        ylab(bquote(Expression ~ (log[2] ~ CPM))) +
+        labs(title = sprintf("%s - %s", cluster, gene), subtitle = subtitle) +
+        scale_fill_manual(values = APOE_genotype_colors) +
+        theme_bw() 
+    
+    ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_apoe_expression_boxplot-%s-%s.png", cluster, gene)))
+    
+}
+
+plot_DE_express_apoe(cluster = "WM.uf_Sp09D07",gene = c("GPR37"))
+
+tt_contrast_signif_summary <- tt_contrast_signif |> 
+    group_by(assay, ID) |>
+    summarise(contrasts = paste0(contrast, collapse = ", ")) |>
+    arrange(ID) |>
+    mutate(model = "contrast")
+
+tt_contrast_signif_summary |>
+    
+allDE_summary <- tt_signif |>
+    group_by(assay, ID) |>
+    summarise(model = paste0(model, collapse = ", ")) |>
+    bind_rows(tt_contrast_signif_summary)
+
+allDE_summary2 <- allDE_summary |>
+    group_by(assay, ID) |>
+    summarise(n_models = n(),
+              models = paste0(unique(model), collapse = ", "),
+              contrasts = paste0(contrasts[!is.na(contrasts)], collapse = ", ")) |>
+    mutate(risk = ID %in% AD_risk$symbol)
+
+allDE_summary2 |> filter(risk)
+
+allDE_summary2 |> print(n= 30)
+
+write.csv(allDE_summary2, file = here(data_dir, "dreamlet_Visium_modelcontrast_summary.csv"), row.names = FALSE)
+
+
+tt_contrast_signif |>
+    dplyr::count(assay)
+
+## plot genes
+ pmap(tt_contrast_signif_summary, function(...) plot_DE_express_apoe(cluster = ..1, gene = ..2, subtitle = ..3))
 
 # slurmjobs::job_single('05_compile_dreamlet_Visium', create_shell = TRUE, memory = '50G', command = "Rscript 05_compile_dreamlet_Visium.R")
 
