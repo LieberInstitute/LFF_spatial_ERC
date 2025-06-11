@@ -34,6 +34,7 @@ coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E
                   apoe = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
                   carrier_i = "APOE_carrierE4+:Anc_Afr",
                   carrier_n0 = "APOE_carrierE4+",
+                  carrier_kr = "APOE_carrierE4+",
                   carrier_n1 = "APOE_carrierE4+",
                   carrier_n2 = "APOE_carrierE4+",
                   carrier_n3 = "APOE_carrierE4+",
@@ -62,13 +63,14 @@ tt <- map2(res.dl.list, coef_list,
 
 tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
 
-
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                          global_FDR20 = sum(adj.P.Val < 0.2),
                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
                          cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)
                          )
     )
+
+main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
 fdr_model_count <- map2_dfr(tt, names(tt), ~.x |> 
                                 ungroup() |>
@@ -77,7 +79,9 @@ fdr_model_count <- map2_dfr(tt, names(tt), ~.x |>
                                           cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
                                           cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)) |>
                                 mutate(model = .y) |>
-                                as.data.frame()) 
+                                as.data.frame())  |>
+    mutate(main_mod = model %in% main_mods) |>
+    arrange(-main_mod)
 
 write.csv(fdr_model_count, file = here(data_dir, "dreamlet_sn_FDR_model_count.csv"), row.names = FALSE)
 
