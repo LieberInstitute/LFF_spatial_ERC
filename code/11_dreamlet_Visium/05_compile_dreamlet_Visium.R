@@ -19,10 +19,10 @@ load(here("processed-data", "project_colors.Rdata"))
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
 
 #### Load data ####
+## processed dreamlet input
 res.proc <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_res_proc.rds"))
-# 
-# res.dl <- readRDS(here("processed-data", "11_dreamlet_Visium", "03_run_dreamlet_Visium", sprintf("dreamlet_Visium-%s.RDS", opt$model)))
 
+## dreamlet results
 res.dl.fn <- list.files(here("processed-data", "11_dreamlet_Visium", "03_run_dreamlet_Visium"), full.names = TRUE)
 names(res.dl.fn) <- gsub(".RDS", "", gsub("dreamlet_Visium-", "", basename(res.dl.fn)))
 
