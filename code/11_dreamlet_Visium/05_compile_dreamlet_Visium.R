@@ -83,6 +83,8 @@ tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.S
 
 write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
 
+save(tt[main_mods], file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
+
 #### check ddr models ####
 fdr_model_count |>
     mutate(ddr = ifelse(grepl("kr", model), "kr", "s"),
@@ -120,7 +122,6 @@ tt_kr_comapre_scatter <- tt_kr_comapre |>
 
 ggsave(tt_kr_comapre_scatter, filename = here(plot_dir, "tt_kr_comapre_scatter.png"))
 
-
 #### pval distribution ####
 walk(names(tt), function(mod){
     
@@ -157,9 +158,6 @@ tt_sex |>
 # 8                WM_Sp09D06              7                3
 # 9             WM.uf_Sp09D07              0                0
 
-
-
-
 ## check VarPart genes
 tt[["carrier"]] |>
     as.data.frame() |>
@@ -173,8 +171,7 @@ tt[["e4e4"]] |>
     as.data.frame() |>
     filter(ID %in% c("PSEN1", "ACKR3"))
 
-
-
+#### Volcano Plots #####
 pdf(here(plot_dir, "Visium_dreamlet_VolcanoPlot.pdf"), height = 11, width = 8)
 # plotVolcano(res.dl, coef = "APOE_carrierE4+")
 
@@ -182,29 +179,40 @@ map(c("carrier","e4e4","carrier_i","e4e4_i"), ~plotVolcano(res.dl.list[[.x]], co
 
 dev.off()
 
-#### plot genes ####
-# get data
-plot_DE_express <- function(gene, cluster){
+#### plot genes by carrier ####
+plot_DE_express_carrier <- function(gene, cluster){
     
     df <- extractData(res.proc, assay = cluster, genes = gene)
     
     # expression boxplot
-    expression_plot <- ggplot(df, aes(APOE_carrier, !!sym(gene))) +
-        geom_boxplot() +
+    expression_plot <- ggplot(df, aes(APOE_carrier, !!sym(gene), fill = APOE_carrier)) +
+        geom_boxplot(outlier.shape = NA) +
+        geom_jitter(width = .1) +
         ylab(bquote(Expression ~ (log[2] ~ CPM))) +
-        ggtitle(sprintf("%s - %s", cluster, gene)) +
+        labs(title = sprintf("%s - %s", cluster, gene)) +
+        scale_fill_manual(values = APOE_carrier_colors) +
         theme_bw()
     
-    ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_dreamlet_expression_boxplot-%s-%s.png", cluster, gene)))
+    ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_carrier_expression_boxplot-%s-%s.png", cluster, gene)))
     
 }
 
-plot_DE_express(cluster = "WM.uf_Sp09D07",gene = c("CNTNAP4"))
-plot_DE_express(cluster = "WM.uf_Sp09D07",gene = c("GPR37"))
+## boxplot all signif carrier DEGs
+tt_signif |> 
+    filter(model == "carrier") |>
+    pmap(~plot_DE_express(cluster = ..1, gene = ..2))
 
-## forest plot
-plotForest(res.dl, coef = "APOE_carrierE4+", gene = "NBPF12")
 
+#### forest plot ####
+my_plot_forest <- function(gene, mod_name){
+    forest_test <- plotForest(res.dl.list[[mod_name]], coef = coef_list[[mod_name]], gene = gene) + labs(subtitle = sprintf("mod=%s, coef=%s", mod_name, coef_list[[mod_name]]))
+    ggsave(forest_test, filename = here(plot_dir, sprintf("dreamlet_Visium_forest-%s-%s.png", mod_name, gene)))
+}
+
+## forest plot all signif carrier DEGs
+tt_signif |> 
+    filter(model == "carrier") |>
+    pmap(~my_plot_forest(mod_name = "carrier", gene = ..2))
 
 #### contrast DEGs ####
 res.dl.contrast <- readRDS(here("processed-data", "11_dreamlet_Visium", "04_run_dreamlet_contrast_Visium", "dreamlet_contrast_Visium-contrast.RDS"))
@@ -230,6 +238,9 @@ tt_contrast <- map(contrast_coef,
                    #     mutate(adj.P.Val.cell_type = p.adjust(P.Value))
 )
 
+## save
+save(tt_contrast, file = here(data_dir, "dreamlet_Visium_contrast_TopTables.Rdata"))
+
 tt_contrast <- map2(tt_contrast, names(tt_contrast), 
                     ~.x  |>
                             group_by(assay) |>
@@ -251,34 +262,17 @@ tt_contrast_signif <- map_dfr(tt_contrast, ~.x |> as.data.frame() |> filter(adj.
 
 write.csv(tt_contrast_signif, file = here(data_dir, "dreamlet_Visium_topTable_contrast_FDR10.csv"), row.names = FALSE)
 
+#### Contrast volcano plot ####
 pdf(here(plot_dir, "Visium_dreamlet_VolcanoPlot_contrast.pdf"), height = 11, width = 8)
 
 map(contrast_coef, ~plotVolcano(res.dl.contrast, .x) + labs(title = .x))
 
 dev.off()
 
+#### summarize contrast DEGs ####
 tt_contrast_signif |> 
     group_by(assay, ID) |>
     summarise(contrasts = paste0(contrast, collapse = ", "))
-
-plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
-    
-    df <- extractData(res.proc, assay = cluster, genes = gene)
-    
-    # expression boxplot
-    expression_plot <- ggplot(df, aes(APOE, !!sym(gene), fill = APOE)) +
-        geom_boxplot(outlier.shape = NA) +
-        geom_jitter(width = .1) +
-        ylab(bquote(Expression ~ (log[2] ~ CPM))) +
-        labs(title = sprintf("%s - %s", cluster, gene), subtitle = subtitle) +
-        scale_fill_manual(values = APOE_genotype_colors) +
-        theme_bw() 
-    
-    ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_apoe_expression_boxplot-%s-%s.png", cluster, gene)))
-    
-}
-
-plot_DE_express_apoe(cluster = "WM.uf_Sp09D07",gene = c("GPR37"))
 
 tt_contrast_signif_summary <- tt_contrast_signif |> 
     group_by(assay, ID) |>
@@ -306,19 +300,59 @@ allDE_summary2 |> print(n= 30)
 
 write.csv(allDE_summary2, file = here(data_dir, "dreamlet_Visium_modelcontrast_summary.csv"), row.names = FALSE)
 
-
 tt_contrast_signif |>
     dplyr::count(assay)
 
+#### plot expression by apoe ####
+plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
+    
+    df <- extractData(res.proc, assay = cluster, genes = gene)
+    
+    # expression boxplot
+    expression_plot <- ggplot(df, aes(APOE, !!sym(gene), fill = APOE)) +
+        geom_boxplot(outlier.shape = NA) +
+        geom_jitter(width = .1) +
+        ylab(bquote(Expression ~ (log[2] ~ CPM))) +
+        labs(title = sprintf("%s - %s", cluster, gene), subtitle = subtitle) +
+        scale_fill_manual(values = APOE_genotype_colors) +
+        theme_bw() 
+    
+    ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_apoe_expression_boxplot-%s-%s.png", cluster, gene)))
+    
+}
+
 ## plot genes
  pmap(tt_contrast_signif_summary, function(...) plot_DE_express_apoe(cluster = ..1, gene = ..2, subtitle = ..3))
+ 
+ #### plot expression by apoe + ancestry ####
+ plot_DE_express_apoe_anc <- function(gene, cluster, subtitle = NULL){
+     
+     df <- extractData(res.proc, assay = cluster, genes = gene)
+     
+     # expression boxplot
+     expression_plot <- ggplot(df, aes(APOE, !!sym(gene), fill = APOE, color = Ancestry)) +
+         geom_boxplot() +
+         # geom_jitter(width = .1) +
+         ylab(bquote(Expression ~ (log[2] ~ CPM))) +
+         labs(title = sprintf("%s - %s", cluster, gene), subtitle = subtitle) +
+         scale_fill_manual(values = APOE_genotype_colors) +
+         scale_color_manual(values = ancestry_colors) +
+         theme_bw() 
+     
+     ggsave(expression_plot, filename = here(plot_dir, sprintf("Visium_apoe_anc_expression_boxplot-%s-%s.png", cluster, gene)))
+     
+ }
+ 
+ pmap(tt_signif |> filter(model == "apoe_i"), function(...) plot_DE_express_apoe_anc(cluster = ..1, gene = ..2, subtitle = "apoe_i"))
+ 
 
-# slurmjobs::job_single('05_compile_dreamlet_Visium', create_shell = TRUE, memory = '50G', command = "Rscript 05_compile_dreamlet_Visium.R")
-
-# slurmjobs::job_loop(
-#     loops = list(model = names(dreamlet_models_Visium)),
-#     name = "05_compile_dreamlet_Visium",
-#     create_shell = TRUE,
-#     create_script = FALSE
-# )
+ # slurmjobs::job_single('05_compile_dreamlet_Visum', create_shell = TRUE, memory = '10G', command = "Rscript 05_compile_dreamlet_Visium.R")
+ 
+ #### Reproducibility information ####
+ print("Reproducibility information:")
+ Sys.time()
+ proc.time()
+ options(width = 120)
+ session_info()
+ 
 
