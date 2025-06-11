@@ -63,28 +63,27 @@ tt <- map2(res.dl.list, coef_list,
 
 tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
 
-
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                          global_FDR20 = sum(adj.P.Val < 0.2),
-                         cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
-                         cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)
-)
-)
+                         cell_type_FDR10 = sum(adj.P.Val.SpD < 0.1),
+                         cell_type_FDR20 = sum(adj.P.Val.SpD < 0.2)))
+
+main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
 fdr_model_count <- map2_dfr(tt, names(tt), ~.x |> 
                                 ungroup() |>
                                 summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                                           global_FDR20 = sum(adj.P.Val < 0.2),
-                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
-                                          cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)) |>
+                                          cell_type_FDR10 = sum(adj.P.Val.SpD < 0.1),
+                                          cell_type_FDR20 = sum(adj.P.Val.SpD < 0.2)) |>
                                               mutate(model = .y) |>
-                                              as.data.frame()) 
+                                              as.data.frame()) |>
+    mutate(main_mod = model %in% main_mods) |>
+    arrange(-main_mod)
 
 write.csv(fdr_model_count, file = here(data_dir, "dreamlet_Visium_FDR_model_count.csv"), row.names = FALSE)
 
 ## filter and export key results
-main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
-
 tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.SpD < 0.2))
 
 write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
@@ -141,7 +140,6 @@ walk(names(tt), function(mod){
     ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Vsium_pval_histo-%s.png", mod)), width = 10)
     
 })
-
 
 #### check sex DGE ####
 tt_sex <- topTable(res.dl.list[["carrier_sf"]], "SexM", number = Inf)
