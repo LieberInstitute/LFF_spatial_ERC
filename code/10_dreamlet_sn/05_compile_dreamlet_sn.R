@@ -19,7 +19,7 @@ load(here("processed-data", "project_colors.Rdata"))
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
 
 #### Load data ####
-res.dl <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
+res.proc <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_res_proc.rds"))
 # 
 # res.dl <- readRDS(here("processed-data", "10_dreamlet_sn", "03_run_dreamlet_sn", sprintf("dreamlet_sn-%s.RDS", opt$model)))
 
@@ -27,7 +27,6 @@ res.dl.fn <- list.files(here("processed-data", "10_dreamlet_sn", "03_run_dreamle
 names(res.dl.fn) <- gsub(".RDS", "", gsub("dreamlet_sn-", "", basename(res.dl.fn)))
 
 res.dl.list <- purrr::map(res.dl.fn, readRDS)
-res.dl.list[["contrast"]] <- NULL
 purrr::map(res.dl.list, coefNames)
 
 coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E4:Anc_Afr"),
@@ -92,15 +91,15 @@ fdr_model_count |>
     filter("kr" %in% ddr)
 
 # global_FDR10 cell_type_FDR10 model      ddr  
-# <int>     <int> <chr>      <chr>
-# 1            1         5 apoe       kr   
-# 2            0         7 apoe       s    
-# 3            0         0 carrier    kr   
-# 4            0         2 carrier    s    
-# 5            0         1 carrier_sf kr   
-# 6            0         2 carrier_sf s    
-# 7            0         0 e4e4       kr   
-# 8            0         0 e4e4       s 
+# <int>           <int> <chr>      <chr>
+# 1            0               1 apoe       kr   
+# 2            0               4 apoe       s    
+# 3            0               0 carrier    kr   
+# 4            0               1 carrier    s    
+# 5            0               0 carrier_sf kr   
+# 6            0               1 carrier_sf s    
+# 7            0               0 e4e4       kr   
+# 8            0               1 e4e4       s  
 
 tt_kr_comapre <- tt[["carrier"]] |>
     as.data.frame() |>
@@ -145,33 +144,31 @@ tt_sex |>
     summarise(global_FDR10 = sum(adj.P.Val < 0.1),
               cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1))
 
-# groups[xx, -ncol(groups)] global_signigf cell_type_signif
-# <character>      <integer>        <integer>
-# 1             Inhib_Sp09D09              6                2
-# 2                L1_Sp09D05              4                3
-# 3              L2.3_Sp09D01              6                2
-# 4                L5_Sp09D03              7                5
-# 5                L6_Sp09D04             10                8
-# 6                LD_Sp09D02              4                2
-# 7              Vasc_Sp09D08              6                5
-# 8                WM_Sp09D06              7                3
-# 9             WM.uf_Sp09D07              0                0
-
-
+# DataFrame with 8 rows and 3 columns
+# groups[xx, -ncol(groups)] global_FDR10 cell_type_FDR10
+# <character>    <integer>       <integer>
+# 1                     Astro           25              10
+# 2                     Excit           18              10
+# 3                     Inhib           13               5
+# 4                     Macro            1               1
+# 5                     Micro            7               3
+# 6                     Oligo           16               6
+# 7                       OPC           12               4
+# 8                      Vasc            7               5
 
 
 ## check VarPart genes
 tt[["carrier"]] |>
     as.data.frame() |>
-    filter(ID %in% c("MAPT", "SOWAHA"))
+    filter(ID %in% c("CLOCK", "ABCC4"))
 
 tt[["apoe"]] |>
     as.data.frame() |>
-    filter(ID %in% c("SORCS1", "OLFM3"))
+    filter(ID %in% c("ADAM10", "ADAM17"))
 
 tt[["e4e4"]] |>
     as.data.frame() |>
-    filter(ID %in% c("PSEN1", "ACKR3"))
+    filter(ID %in% c("SRGAP2C", "NAALADL2", "APP"))
 
 
 
@@ -184,6 +181,9 @@ dev.off()
 
 #### plot genes ####
 # get data
+
+tt_signif |> dplyr::count(ID)
+
 plot_DE_express <- function(gene, cluster){
     
     df <- extractData(res.proc, assay = cluster, genes = gene)
@@ -199,12 +199,20 @@ plot_DE_express <- function(gene, cluster){
     
 }
 
-plot_DE_express(cluster = "WM.uf_Sp09D07",gene = c("CNTNAP4"))
-plot_DE_express(cluster = "WM.uf_Sp09D07",gene = c("GPR37"))
+tt_signif
+
+plot_DE_express(cluster = "Vasc",gene = "C17orf67")
+plot_DE_express(cluster = "Astro",gene = "RAB27B")
 
 ## forest plot
-plotForest(res.dl, coef = "APOE_carrierE4+", gene = "NBPF12")
+my_plot_forest <- function(gene, mod_name){
+    forest_test <- plotForest(res.dl.list[[mod_name]], coef = coef_list[[mod_name]], gene = gene) + labs(subtitle = sprintf("mod=%s, coef=%s", mod_name, coef_list[[mod_name]]))
+    ggsave(forest_test, filename = here(plot_dir, sprintf("dreamlet_sn_forest-%s-%s.png", mod_name, gene)))
+}
 
+my_plot_forest(mod_name = "carrier", gene = "C17orf67")
+my_plot_forest(mod_name = "carrier", gene = "RAB27B")
+my_plot_forest(mod_name = "carrier", gene = "OPCML")
 
 #### contrast DEGs ####
 res.dl.contrast <- readRDS(here("processed-data", "10_dreamlet_sn", "04_run_dreamlet_contrast_sn", "dreamlet_contrast_sn-contrast.RDS"))
@@ -278,7 +286,7 @@ plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
     
 }
 
-plot_DE_express_apoe(cluster = "WM.uf_Sp09D07",gene = c("GPR37"))
+plot_DE_express_apoe(cluster = "Vasc", gene = "C17orf67")
 
 tt_contrast_signif_summary <- tt_contrast_signif |> 
     group_by(assay, ID) |>
@@ -286,29 +294,44 @@ tt_contrast_signif_summary <- tt_contrast_signif |>
     arrange(ID) |>
     mutate(model = "contrast")
 
-tt_contrast_signif_summary |>
     
 allDE_summary <- tt_signif |>
     group_by(assay, ID) |>
     summarise(model = paste0(model, collapse = ", ")) |>
     bind_rows(tt_contrast_signif_summary)
 
+visium_de_summary <- read.csv(here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visium_modelcontrast_summary.csv")) 
+    # select(visium_de = assay, ID)
+
+
 allDE_summary2 <- allDE_summary |>
     group_by(assay, ID) |>
     summarise(n_models = n(),
               models = paste0(unique(model), collapse = ", "),
               contrasts = paste0(contrasts[!is.na(contrasts)], collapse = ", ")) |>
-    mutate(risk = ID %in% AD_risk$symbol)
+    mutate(risk = ID %in% AD_risk$symbol) 
 
 allDE_summary2 |> filter(risk)
 
-allDE_summary2 |> print(n= 30)
+allDE_summary2 |> print(n= 29)
+
+## no overlap w/ visium genes :(
+intersect(visium_de_summary$ID, allDE_summary2$ID)
 
 write.csv(allDE_summary2, file = here(data_dir, "dreamlet_sn_modelcontrast_summary.csv"), row.names = FALSE)
 
 
 tt_contrast_signif |>
     dplyr::count(assay)
+
+#   assay n
+# 1 Astro 5
+# 2 Excit 4
+# 3 Inhib 2
+# 4 Macro 2
+# 5   OPC 3
+# 6 Oligo 2
+# 7  Vasc 4
 
 ## plot genes
  pmap(tt_contrast_signif_summary, function(...) plot_DE_express_apoe(cluster = ..1, gene = ..2, subtitle = ..3))
