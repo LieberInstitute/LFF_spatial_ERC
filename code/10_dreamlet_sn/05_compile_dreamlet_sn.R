@@ -64,16 +64,22 @@ tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
 
 
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-                         cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1)))
+                         global_FDR20 = sum(adj.P.Val < 0.2),
+                         cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
+                         cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)
+                         )
+    )
 
 fdr_model_count <- map2_dfr(tt, names(tt), ~.x |> 
-        ungroup() |>
-        summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-                  cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1)) |>
-         mutate(model = .y) |>
-            as.data.frame()) 
+                                ungroup() |>
+                                summarise(global_FDR10 = sum(adj.P.Val < 0.1),
+                                          global_FDR20 = sum(adj.P.Val < 0.2),
+                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
+                                          cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)) |>
+                                mutate(model = .y) |>
+                                as.data.frame()) 
 
-write.csv(fdr_model_count, file = here(data_dir, "dreamlet_sn_FDR10_model_count.csv"), row.names = FALSE)
+write.csv(fdr_model_count, file = here(data_dir, "dreamlet_sn_FDR_model_count.csv"), row.names = FALSE)
 
 ## filter and export key results
 main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
@@ -129,7 +135,7 @@ walk(names(tt), function(mod){
     
     pval_histo <- tt[[mod]] |>
         ggplot(aes(x = P.Value)) +
-        geom_histogram(binwidth = 0.1) +
+        geom_histogram(binwidth = 0.01) +
         facet_wrap(~assay) +
         theme_bw() +
         labs(title = mod)
@@ -173,11 +179,11 @@ tt[["e4e4"]] |>
     as.data.frame() |>
     filter(ID %in% c("SRGAP2C", "NAALADL2", "APP"))
 
-#### Volvano Plots ####
+#### Volcano Plots ####
 pdf(here(plot_dir, "sn_dreamlet_VolcanoPlot.pdf"), height = 11, width = 8)
 # plotVolcano(res.dl, coef = "APOE_carrierE4+")
 
-map(c("carrier","e4e4","carrier_i","e4e4_i"), ~plotVolcano(res.dl.list[[.x]], coef_list[[.x]]) + labs(title = .x))
+map(c("carrier","e4e4","carrier_i","e4e4_i"), ~plotVolcano(res.dl.list[[.x]], coef_list[[.x]], cutoff = 0.2) + labs(title = .x))
 
 dev.off()
 
@@ -273,21 +279,24 @@ tt_contrast <- map2(tt_contrast, names(tt_contrast),
 fdr_contrast_count <- map2_dfr(tt_contrast, names(tt_contrast), ~.x |> 
                                 ungroup() |>
                                 summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1)) |>
+                                          global_FDR20 = sum(adj.P.Val < 0.2),
+                                          cell_type_FDR10 = sum(adj.P.Val.cell_type < 0.1),
+                                          cell_type_FDR20 = sum(adj.P.Val.cell_type < 0.2)
+                                          ) |>
                                 mutate(model = .y) |>
                                 as.data.frame()) 
 
-write.csv(fdr_contrast_count, file = here(data_dir, "dreamlet_sn_FDR10_contrast_count.csv"), row.names = FALSE)
+write.csv(fdr_contrast_count, file = here(data_dir, "dreamlet_sn_FDR_contrast_count.csv"), row.names = FALSE)
 
 ## filter and export key results
-tt_contrast_signif <- map_dfr(tt_contrast, ~.x |> as.data.frame() |> filter(adj.P.Val.cell_type < 0.1))
+tt_contrast_signif <- map_dfr(tt_contrast, ~.x |> as.data.frame() |> filter(adj.P.Val.cell_type < 0.2))
 
-write.csv(tt_contrast_signif, file = here(data_dir, "dreamlet_sn_topTable_contrast_FDR10.csv"), row.names = FALSE)
+write.csv(tt_contrast_signif, file = here(data_dir, "dreamlet_sn_topTable_contrast_FDR20.csv"), row.names = FALSE)
 
 #### Contrast volcano plot ####
 pdf(here(plot_dir, "sn_dreamlet_VolcanoPlot_contrast.pdf"), height = 11, width = 8)
 
-map(contrast_coef, ~plotVolcano(res.dl.contrast, .x) + labs(title = .x))
+map(contrast_coef, ~plotVolcano(res.dl.contrast, .x, cutoff = 0.2) + labs(title = .x))
 
 dev.off()
 
