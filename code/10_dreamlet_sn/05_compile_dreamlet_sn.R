@@ -27,7 +27,7 @@ res.dl.fn <- list.files(here("processed-data", "10_dreamlet_sn", "03_run_dreamle
 names(res.dl.fn) <- gsub(".RDS", "", gsub("dreamlet_sn-", "", basename(res.dl.fn)))
 
 res.dl.list <- purrr::map(res.dl.fn, readRDS)
-purrr::map(res.dl.list, coefNames)
+# purrr::map(res.dl.list, coefNames)
 
 coef_list <- list(apoe_i = c("APOEE2/E3:Anc_Afr", "APOEE3/E4:Anc_Afr", "APOEE4/E4:Anc_Afr"),
                   apoe_n0 = c("APOEE2/E3", "APOEE3/E4","APOEE4/E4"),
@@ -55,13 +55,16 @@ all(names(res.dl.list) %in% names(coef_list))
 coef_list <- coef_list[names(res.dl.list)]
 
 #### TopTable ####
-tt <- map2(res.dl.list, coef_list, 
-           ~topTable(.x, .y, number = Inf) |> 
-               group_by(assay) |>
-               mutate(adj.P.Val.cell_type = p.adjust(P.Value))
-)
+## get top table
+tt <- map2(res.dl.list, coef_list, ~topTable(.x, .y, number = Inf))
 
-tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
+map_int(tt, nrow)
+
+## correct pvalue by cluster, add model
+tt <- map2(tt, names(tt), ~.x |> 
+               group_by(assay) |>
+               mutate(adj.P.Val.cell_type = p.adjust(P.Value),
+                      model = .y))
 
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                          global_FDR20 = sum(adj.P.Val < 0.2),

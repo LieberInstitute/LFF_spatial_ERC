@@ -55,13 +55,16 @@ all(names(res.dl.list) %in% names(coef_list))
 coef_list <- coef_list[names(res.dl.list)]
 
 #### TopTable ####
-tt <- map2(res.dl.list, coef_list, 
-           ~topTable(.x, .y, number = Inf) |> 
-               group_by(assay) |>
-               mutate(adj.P.Val.SpD = p.adjust(P.Value))
-)
+## get top table
+tt <- map2(res.dl.list, coef_list, ~topTable(.x, .y, number = Inf))
 
-tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
+map_int(tt, nrow)
+
+## correct pvalue by cluster, add model
+tt <- map2(tt, names(tt), ~.x |> 
+               group_by(assay) |>
+               mutate(adj.P.Val.SpD = p.adjust(P.Value),
+                      model = .y))
 
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                          global_FDR20 = sum(adj.P.Val < 0.2),
@@ -89,6 +92,8 @@ tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.S
 write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
 
 tt_Visium <- tt[main_mods]
+save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
+
 save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
 
 #### check ddr models ####
