@@ -243,7 +243,7 @@ plot_DE_express_carrier <- function(gene, cluster){
 ## boxplot all signif carrier DEGs
 tt_signif |> 
     filter(model == "carrier") |>
-    pmap(~plot_DE_express(cluster = ..1, gene = ..2))
+    pmap(~plot_DE_express_carrier(cluster = ..1, gene = ..2))
 
 
 #### forest plot ####
