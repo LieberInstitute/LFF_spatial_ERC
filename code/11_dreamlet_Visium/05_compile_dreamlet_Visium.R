@@ -88,7 +88,8 @@ tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.S
 
 write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
 
-save(tt[main_mods], file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
+tt_Visium <- tt[main_mods]
+save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
 
 #### check ddr models ####
 fdr_model_count |>
