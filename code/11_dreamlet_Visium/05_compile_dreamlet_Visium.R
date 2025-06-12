@@ -274,23 +274,22 @@ contrast_coef <- c("E2E2_E4E4",
 
 names(contrast_coef) <- contrast_coef
 
+## get contrast top tables
 tt_contrast <- map(contrast_coef, 
                    ~topTable(res.dl.contrast, coef = .x, number = Inf) 
-                   # |>
-                   #     group_by(assay) |>
-                   #     mutate(adj.P.Val.cell_type = p.adjust(P.Value))
 )
 
-## save
-save(tt_contrast, file = here(data_dir, "dreamlet_Visium_contrast_TopTables.Rdata"))
-
+## adjust pval
 tt_contrast <- map2(tt_contrast, names(tt_contrast), 
                     ~.x  |>
                             group_by(assay) |>
                             mutate(adj.P.Val.SpD = p.adjust(P.Value),
                                    contrast = .y)
                     )
+## save
+save(tt_contrast, file = here(data_dir, "dreamlet_Visium_contrast_TopTables.Rdata"))
 
+## summarize n signif
 fdr_contrast_count <- map2_dfr(tt_contrast, names(tt_contrast), ~.x |> 
                                 ungroup() |>
                                 summarise(global_FDR10 = sum(adj.P.Val < 0.1),
@@ -332,12 +331,21 @@ allDE_summary <- tt_signif |>
     summarise(model = paste0(model, collapse = ", ")) |>
     bind_rows(tt_contrast_signif_summary)
 
+## Overlap w/ visium gene
+sn_de_summary <- read.csv(here("processed-data", "10_sn_Visium", "05_compile_dreamlet_sn", "dreamlet_sn_modelcontrast_summary.csv")) |>
+    mutate(sn_DE = paste0(assay, ": ", models)) |>
+    select(sn_DE, ID)
+
+intersect(sn_de_summary$ID, allDE_summary$ID)
+
+
 allDE_summary2 <- allDE_summary |>
     group_by(assay, ID) |>
     summarise(n_models = n(),
               models = paste0(unique(model), collapse = ", "),
               contrasts = paste0(contrasts[!is.na(contrasts)], collapse = ", ")) |>
-    mutate(risk = ID %in% AD_risk$symbol)
+    mutate(risk = ID %in% AD_risk$symbol) |>
+    left_join(sn_de_summary)
 
 allDE_summary2 |> filter(risk)
 
@@ -389,6 +397,43 @@ plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
  }
  
  pmap(tt_signif |> filter(model == "apoe_i"), function(...) plot_DE_express_apoe_anc(cluster = ..1, gene = ..2, subtitle = "apoe_i"))
+ 
+ #### contrast vs. regular model ####
+ compare_contrast_scatter <- function(mod, contrast){
+     
+     contrast_compare <- tt[[mod]] |>
+         as.data.frame() |>
+         select(assay, ID, mod_logFC = logFC, mod_t = t, mod_pval = adj.P.Val.cell_type) |>
+         full_join(tt_contrast[[contrast]] |>
+                       as.data.frame() |>
+                       select(assay, ID, contrast_logFC = logFC, contrast_t = t, contrast_pval = adj.P.Val.cell_type)) |>
+         mutate(DE_class = case_when(mod_pval < 0.2 & contrast_pval < 0.2 ~ "signif_both",
+                                     mod_pval < 0.2 ~ "signif_mod",
+                                     contrast_pval < 0.2 ~ "signif_contrast",
+                                     TRUE ~"None"
+         ))
+     
+     # contrast_compare |> count(DE_class)
+     # summary(contrast_compare)
+     
+     contrast_compare_scatter <- contrast_compare |>
+         ggplot(aes(x = mod_t, y = contrast_t, color = DE_class)) +
+         geom_point(size = 0.5, alpha = 0.5) +
+         geom_text_repel(aes(label = ifelse(DE_class != "None", ID, "")), size = 1.5) +
+         geom_abline(linetype = "dashed") +
+         scale_color_manual(values = c(signif_both = "purple", signif_mod = "blue", signif_contrast = "red")) +
+         theme_bw() +
+         facet_wrap(~assay) +
+         labs(title = sprintf("%s vs. %s", mod, contrast))
+     
+     ggsave(contrast_compare_scatter, filename = here(plot_dir, sprintf("Visium_contrast_compare_scatter_%s-v-%s.png", mod, contrast)), height = 10, width = 10)
+     
+ }
+ 
+ compare_contrast_scatter("carrier", "anyE4_anyE2")
+ compare_contrast_scatter("carrier", "E4E4_anyE2")
+ compare_contrast_scatter("e4e4", "E2E2_E4E4")
+ compare_contrast_scatter("e4e4", "E4E4_anyE2")
  
 
  # slurmjobs::job_single('05_compile_dreamlet_Visum', create_shell = TRUE, memory = '10G', command = "Rscript 05_compile_dreamlet_Visium.R")
