@@ -7,6 +7,7 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("DFplyr")
+library("ggrepel")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn")
@@ -89,17 +90,27 @@ fdr_model_count <- map2_dfr(tt, names(tt), ~.x |>
 write.csv(fdr_model_count, file = here(data_dir, "dreamlet_sn_FDR_model_count.csv"), row.names = FALSE)
 
 ## filter and export key results
-main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
-
 tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.cell_type < 0.2))
+
+tt_signif |> select(assay, ID, model) |> group_by(model, assay) |> summarise(n = n(), DEGs = paste(ID, collapse = ", "))
 
 write.csv(tt_signif, file = here(data_dir, "dreamlet_sn_topTable_FDR20.csv"), row.names = FALSE)
 
 ## save main mods
 tt_sn <- tt[main_mods]
-save(tt_sn, file = here(data_dir, "dreamlet_sn_TopTables.Rdata"))
 
+map_int(tt_sn, ~.x |> filter(adj.P.Val.cell_type < 0.2))
+
+save(tt_sn, file = here(data_dir, "dreamlet_sn_TopTables.Rdata"))
 # load(here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"))
+
+#### bar plots ###
+# pval_bar <- tt_sn[["apoe"]] |>
+#     mutate(adj.P.Val.bin = cut(adj.P.Val.cell_type, breaks = 0:10/10)) |>
+#     ggplot(aes(x = assay, fill = adj.P.Val.bin)) +
+#     geom_bar()
+# 
+# ggsave(pval_bar, filename = here(plot_dir, "pval_bar_test.png"))
 
 #### check ddr models ####
 fdr_model_count |>
@@ -149,7 +160,36 @@ walk(names(tt), function(mod){
         theme_bw() +
         labs(title = mod)
     
-    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Vsium_pval_histo-%s.png", mod)), width = 10)
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_sn_pval_histo-%s.png", mod)), width = 10)
+    
+})
+
+walk(main_mods, function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = adj.P.Val)) +
+        geom_histogram(binwidth = 0.01) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_sn_pval_histo_adj-%s.png", mod)), width = 10)
+    
+})
+
+walk(main_mods, function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = adj.P.Val, y = adj.P.Val.cell_type)) +
+        geom_point(size = 0.5, alpha = 0.5) +
+        geom_text_repel(aes(label = ifelse(adj.P.Val < 0.3 | adj.P.Val.cell_type < 0.3, ID, "")), size = 1.5) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        geom_hline(yintercept = 0.2, linetype ="dashed", color = "blue") +
+        geom_vline(xintercept = 0.2, linetype ="dashed", color = "red") +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_sn_pval_adj_scatter-%s.png", mod)), width = 10)
     
 })
 

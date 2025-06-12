@@ -7,6 +7,7 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("DFplyr")
+library("ggrepel")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium")
@@ -89,12 +90,15 @@ write.csv(fdr_model_count, file = here(data_dir, "dreamlet_Visium_FDR_model_coun
 ## filter and export key results
 tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.SpD < 0.2))
 
+tt_signif |> select(assay, ID, model) |> group_by(model, assay) |> summarise(n = n(), DEGs = paste(ID, collapse = ", "))
+
 write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
 
+## save main mods
 tt_Visium <- tt[main_mods]
-save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
 
 save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
+# load(here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visum_TopTables.Rdata"))
 
 #### check ddr models ####
 fdr_model_count |>
@@ -144,6 +148,35 @@ walk(names(tt), function(mod){
         labs(title = mod)
     
     ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Vsium_pval_histo-%s.png", mod)), width = 10)
+    
+})
+
+walk(main_mods, function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = adj.P.Val)) +
+        geom_histogram(binwidth = 0.01) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Visium_pval_histo_adj-%s.png", mod)), width = 10)
+    
+})
+
+walk(main_mods, function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = adj.P.Val, y = adj.P.Val.SpD)) +
+        geom_point(size = 0.5, alpha = 0.5) +
+        geom_text_repel(aes(label = ifelse(adj.P.Val < 0.3 | adj.P.Val.SpD < 0.3, ID, "")), size = 1.5) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        geom_hline(yintercept = 0.2, linetype ="dashed", color = "blue") +
+        geom_vline(xintercept = 0.2, linetype ="dashed", color = "red") +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Visium_pval_adj_scatter-%s.png", mod)), width = 10)
     
 })
 
