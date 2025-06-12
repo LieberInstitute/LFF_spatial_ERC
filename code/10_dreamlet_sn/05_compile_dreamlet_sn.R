@@ -92,7 +92,9 @@ tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.c
 
 write.csv(tt_signif, file = here(data_dir, "dreamlet_sn_topTable_FDR20.csv"), row.names = FALSE)
 
-save(tt[main_mods], file = here(data_dir, "dreamlet_sn_TopTables.Rdata"))
+## save main mods
+tt_sn <- tt[main_mods]
+save(tt_sn, file = here(data_dir, "dreamlet_sn_TopTables.Rdata"))
 
 # load(here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"))
 
