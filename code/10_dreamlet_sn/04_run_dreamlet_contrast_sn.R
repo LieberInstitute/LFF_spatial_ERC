@@ -80,20 +80,19 @@ my_contrasts <- list(
         E2E2_anyE4 = "APOE_synE2.E2 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)",
         E2E3_anyE4 = "APOE_synE2.E3 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)"),
     contrast_i =  c(
-        # E2E2_E4E4 = "APOE_synE2.E2:Anc_Afr - APOE_synE4.E4:Anc_Afr",
+        E2E2_E4E4 = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr",
         E3E4_E4E4 = "APOE_synE3.E4:Anc_Afr - APOE_synE4.E4:Anc_Afr",
         E2E3_E4E4 = "APOE_synE2.E3:Anc_Afr - APOE_synE4.E4:Anc_Afr",
-        # E2E2_E3E4 = "APOE_synE2.E2:Anc_Afr - APOE_synE3.E4:Anc_Afr",
-        # E2E2_E2E3 = "APOE_synE2.E2:Anc_Afr - APOE_synE2.E3:Anc_Afr",
+        E2E2_E3E4 = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE3.E4:Anc_Afr",
+        E2E2_E2E3 = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE2.E3:Anc_Afr",
         E2E3_E3E4 = "APOE_synE2.E3:Anc_Afr - APOE_synE3.E4:Anc_Afr",
-        # E4E4_anyE2 = "APOE_synE4.E4:Anc_Afr - (0.5*APOE_synE2.E3:Anc_Afr + 0.5*APOE_synE2.E2:Anc_Afr)",
-        # anyE4_anyE2 = "APOE_synE3.E4:Anc_Afr - (0.5*APOE_synE2.E3:Anc_Afr + 0.5*APOE_synE2.E2:Anc_Afr)",
-        # E2E2_anyE4 = "APOE_synE2.E:Anc_Afr2 - (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)",
+        E4E4_anyE2 = "APOE_synE4.E4:Anc_Afr - (0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr))",
+        anyE4_anyE2 = "APOE_synE3.E4:Anc_Afr - (0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr))",
+        E2E2_anyE4 = "0.5*(APOE_synE2.E2 + Anc_Afr) - (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)",
         E2E3_anyE4 = "APOE_synE2.E3:Anc_Afr - (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)")
 )
 
 my_contrasts <- my_contrasts[[opt$model]]
-
 
 #### Visualize contrast matrix ####
 ## cant add subsets_Mito_percent as a variable  - exclude metadata vars here
@@ -105,15 +104,15 @@ dreamlet_contrast_models_noMeta <- list(
 
 L <- makeContrastsDream(dreamlet_contrast_models_noMeta[[opt$model]], 
                         colData(res.proc),
-                        # contrasts = my_contrasts
-                        contrasts = list(test = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr")
+                        contrasts = my_contrasts
+                        # contrasts = list(test = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr")
 )
 
 
 contrast_plot <- plotContrasts(L) + labs(title = "sn dreamlet contrast",
                                          subtitle = mod)
 
-ggsave(contrast_plot, filename = here(plot_dir, spritf("sn_dreamlet_%s.png", opt$model)))
+ggsave(contrast_plot, filename = here(plot_dir, sprintf("sn_dreamlet_%s.png", opt$model)))
 
 message(Sys.time(), " - dreamlet")
 

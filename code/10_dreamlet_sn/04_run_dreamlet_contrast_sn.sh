@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 04_run_dreamlet_contrast_sn.R --model contrast
+Rscript 04_run_dreamlet_contrast_sn.R --model contrast_i
 
 echo "**** Job ends ****"
 date
