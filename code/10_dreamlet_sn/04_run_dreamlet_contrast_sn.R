@@ -56,6 +56,8 @@ res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 
 saveRDS(res.proc, file = here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
 
+# res.proc <- readRDS(here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
+
 # show voom plot for each cell clusters
 pdf(here(plot_dir, sprintf("sn_dreamlet_voom-%s.pdf", opt$model)))
 plotVoom(res.proc)
@@ -65,7 +67,6 @@ dev.off()
 
 # model.matrix(~0+APOE_syn, colData(res.proc))
 # model.matrix(~0+APOE_syn*Anc_Afr, colData(res.proc))
-# model.matrix(~0+(APOE_syn*Anc_Afr), colData(res.proc))
 
 my_contrasts <- list(
     contrast =  c(
@@ -123,7 +124,7 @@ message(Sys.time(), " - dreamlet")
 
 res.dl <- dreamlet(res.proc, 
                    formula = mod, 
-                   contrasts = contrasts)
+                   contrasts = my_contrasts)
 
 ## how to add mito rate to colData?
 
