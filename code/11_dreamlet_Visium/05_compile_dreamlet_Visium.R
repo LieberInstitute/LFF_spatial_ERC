@@ -7,6 +7,7 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("DFplyr")
+library("ggrepel")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium")
@@ -55,13 +56,16 @@ all(names(res.dl.list) %in% names(coef_list))
 coef_list <- coef_list[names(res.dl.list)]
 
 #### TopTable ####
-tt <- map2(res.dl.list, coef_list, 
-           ~topTable(.x, .y, number = Inf) |> 
-               group_by(assay) |>
-               mutate(adj.P.Val.SpD = p.adjust(P.Value))
-)
+## get top table
+tt <- map2(res.dl.list, coef_list, ~topTable(.x, .y, number = Inf))
 
-tt <- map2(tt, names(tt), ~.x |> mutate(model = .y))
+map_int(tt, nrow)
+
+## correct pvalue by cluster, add model
+tt <- map2(tt, names(tt), ~.x |> 
+               group_by(assay) |>
+               mutate(adj.P.Val.SpD = p.adjust(P.Value),
+                      model = .y))
 
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                          global_FDR20 = sum(adj.P.Val < 0.2),
@@ -86,10 +90,15 @@ write.csv(fdr_model_count, file = here(data_dir, "dreamlet_Visium_FDR_model_coun
 ## filter and export key results
 tt_signif <- map_dfr(tt[main_mods], ~.x |> as.data.frame() |> filter(adj.P.Val.SpD < 0.2))
 
+tt_signif |> select(assay, ID, model) |> group_by(model, assay) |> summarise(n = n(), DEGs = paste(ID, collapse = ", "))
+
 write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv"), row.names = FALSE)
 
+## save main mods
 tt_Visium <- tt[main_mods]
+
 save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
+# load(here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visum_TopTables.Rdata"))
 
 #### check ddr models ####
 fdr_model_count |>
@@ -139,6 +148,35 @@ walk(names(tt), function(mod){
         labs(title = mod)
     
     ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Vsium_pval_histo-%s.png", mod)), width = 10)
+    
+})
+
+walk(main_mods, function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = adj.P.Val)) +
+        geom_histogram(binwidth = 0.01) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Visium_pval_histo_adj-%s.png", mod)), width = 10)
+    
+})
+
+walk(main_mods, function(mod){
+    
+    pval_histo <- tt[[mod]] |>
+        ggplot(aes(x = adj.P.Val, y = adj.P.Val.SpD)) +
+        geom_point(size = 0.5, alpha = 0.5) +
+        geom_text_repel(aes(label = ifelse(adj.P.Val < 0.3 | adj.P.Val.SpD < 0.3, ID, "")), size = 1.5) +
+        facet_wrap(~assay) +
+        theme_bw() +
+        geom_hline(yintercept = 0.2, linetype ="dashed", color = "blue") +
+        geom_vline(xintercept = 0.2, linetype ="dashed", color = "red") +
+        labs(title = mod)
+    
+    ggsave(pval_histo, filename = here(plot_dir, sprintf("dreamlet_Visium_pval_adj_scatter-%s.png", mod)), width = 10)
     
 })
 
@@ -236,23 +274,22 @@ contrast_coef <- c("E2E2_E4E4",
 
 names(contrast_coef) <- contrast_coef
 
+## get contrast top tables
 tt_contrast <- map(contrast_coef, 
                    ~topTable(res.dl.contrast, coef = .x, number = Inf) 
-                   # |>
-                   #     group_by(assay) |>
-                   #     mutate(adj.P.Val.cell_type = p.adjust(P.Value))
 )
 
-## save
-save(tt_contrast, file = here(data_dir, "dreamlet_Visium_contrast_TopTables.Rdata"))
-
+## adjust pval
 tt_contrast <- map2(tt_contrast, names(tt_contrast), 
                     ~.x  |>
                             group_by(assay) |>
                             mutate(adj.P.Val.SpD = p.adjust(P.Value),
                                    contrast = .y)
                     )
+## save
+save(tt_contrast, file = here(data_dir, "dreamlet_Visium_contrast_TopTables.Rdata"))
 
+## summarize n signif
 fdr_contrast_count <- map2_dfr(tt_contrast, names(tt_contrast), ~.x |> 
                                 ungroup() |>
                                 summarise(global_FDR10 = sum(adj.P.Val < 0.1),
@@ -294,12 +331,21 @@ allDE_summary <- tt_signif |>
     summarise(model = paste0(model, collapse = ", ")) |>
     bind_rows(tt_contrast_signif_summary)
 
+## Overlap w/ visium gene
+sn_de_summary <- read.csv(here("processed-data", "10_sn_Visium", "05_compile_dreamlet_sn", "dreamlet_sn_modelcontrast_summary.csv")) |>
+    mutate(sn_DE = paste0(assay, ": ", models)) |>
+    select(sn_DE, ID)
+
+intersect(sn_de_summary$ID, allDE_summary$ID)
+
+
 allDE_summary2 <- allDE_summary |>
     group_by(assay, ID) |>
     summarise(n_models = n(),
               models = paste0(unique(model), collapse = ", "),
               contrasts = paste0(contrasts[!is.na(contrasts)], collapse = ", ")) |>
-    mutate(risk = ID %in% AD_risk$symbol)
+    mutate(risk = ID %in% AD_risk$symbol) |>
+    left_join(sn_de_summary)
 
 allDE_summary2 |> filter(risk)
 
@@ -351,6 +397,43 @@ plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
  }
  
  pmap(tt_signif |> filter(model == "apoe_i"), function(...) plot_DE_express_apoe_anc(cluster = ..1, gene = ..2, subtitle = "apoe_i"))
+ 
+ #### contrast vs. regular model ####
+ compare_contrast_scatter <- function(mod, contrast){
+     
+     contrast_compare <- tt[[mod]] |>
+         as.data.frame() |>
+         select(assay, ID, mod_logFC = logFC, mod_t = t, mod_pval = adj.P.Val.cell_type) |>
+         full_join(tt_contrast[[contrast]] |>
+                       as.data.frame() |>
+                       select(assay, ID, contrast_logFC = logFC, contrast_t = t, contrast_pval = adj.P.Val.cell_type)) |>
+         mutate(DE_class = case_when(mod_pval < 0.2 & contrast_pval < 0.2 ~ "signif_both",
+                                     mod_pval < 0.2 ~ "signif_mod",
+                                     contrast_pval < 0.2 ~ "signif_contrast",
+                                     TRUE ~"None"
+         ))
+     
+     # contrast_compare |> count(DE_class)
+     # summary(contrast_compare)
+     
+     contrast_compare_scatter <- contrast_compare |>
+         ggplot(aes(x = mod_t, y = contrast_t, color = DE_class)) +
+         geom_point(size = 0.5, alpha = 0.5) +
+         geom_text_repel(aes(label = ifelse(DE_class != "None", ID, "")), size = 1.5) +
+         geom_abline(linetype = "dashed") +
+         scale_color_manual(values = c(signif_both = "purple", signif_mod = "blue", signif_contrast = "red")) +
+         theme_bw() +
+         facet_wrap(~assay) +
+         labs(title = sprintf("%s vs. %s", mod, contrast))
+     
+     ggsave(contrast_compare_scatter, filename = here(plot_dir, sprintf("Visium_contrast_compare_scatter_%s-v-%s.png", mod, contrast)), height = 10, width = 10)
+     
+ }
+ 
+ compare_contrast_scatter("carrier", "anyE4_anyE2")
+ compare_contrast_scatter("carrier", "E4E4_anyE2")
+ compare_contrast_scatter("e4e4", "E2E2_E4E4")
+ compare_contrast_scatter("e4e4", "E4E4_anyE2")
  
 
  # slurmjobs::job_single('05_compile_dreamlet_Visum', create_shell = TRUE, memory = '10G', command = "Rscript 05_compile_dreamlet_Visium.R")
