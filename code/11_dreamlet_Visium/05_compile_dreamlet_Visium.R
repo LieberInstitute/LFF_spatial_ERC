@@ -69,8 +69,8 @@ tt <- map2(tt, names(tt), ~.x |>
 
 map(tt, ~.x |> summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                          global_FDR20 = sum(adj.P.Val < 0.2),
-                         cell_type_FDR10 = sum(adj.P.Val.SpD < 0.1),
-                         cell_type_FDR20 = sum(adj.P.Val.SpD < 0.2)))
+                         SpD_FDR10 = sum(adj.P.Val.SpD < 0.1),
+                         SpD_FDR20 = sum(adj.P.Val.SpD < 0.2)))
 
 main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
@@ -78,8 +78,8 @@ fdr_model_count <- map2_dfr(tt, names(tt), ~.x |>
                                 ungroup() |>
                                 summarise(global_FDR10 = sum(adj.P.Val < 0.1),
                                           global_FDR20 = sum(adj.P.Val < 0.2),
-                                          cell_type_FDR10 = sum(adj.P.Val.SpD < 0.1),
-                                          cell_type_FDR20 = sum(adj.P.Val.SpD < 0.2)) |>
+                                          SpD_FDR10 = sum(adj.P.Val.SpD < 0.1),
+                                          SpD_FDR20 = sum(adj.P.Val.SpD < 0.2)) |>
                                               mutate(model = .y) |>
                                               as.data.frame()) |>
     mutate(main_mod = model %in% main_mods) |>
@@ -97,7 +97,7 @@ write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv")
 ## save main mods
 tt_Visium <- tt[main_mods]
 
-map_int(tt_Visium, ~.x |> as.data.frame() |> dplyr::filter(adj.P.Val.cell_type < 0.2) |> nrow())
+map_int(tt_Visium, ~.x |> as.data.frame() |> dplyr::filter(adj.P.Val.SpD < 0.2) |> nrow())
 
 save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
 # load(here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visum_TopTables.Rdata"))
@@ -187,11 +187,11 @@ tt_sex <- topTable(res.dl.list[["carrier_sf"]], "SexM", number = Inf)
 
 tt_sex |>
     group_by(assay) |>
-    mutate(adj.P.Val.cell_type = p.adjust(P.Value)) |>
+    mutate(adj.P.Val.SpD = p.adjust(P.Value)) |>
     summarise(global_FDR10 = sum(adj.P.Val < 0.1),
-              SpD_FDR10 = sum(adj.P.Val.cell_type < 0.1))
+              SpD_FDR10 = sum(adj.P.Val.SpD < 0.1))
 
-# groups[xx, -ncol(groups)] global_signigf cell_type_signif
+# groups[xx, -ncol(groups)] global_signigf SpD_signif
 # <character>      <integer>        <integer>
 # 1             Inhib_Sp09D09              6                2
 # 2                L1_Sp09D05              4                3
@@ -405,10 +405,10 @@ plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
      
      contrast_compare <- tt[[mod]] |>
          as.data.frame() |>
-         select(assay, ID, mod_logFC = logFC, mod_t = t, mod_pval = adj.P.Val.cell_type) |>
+         select(assay, ID, mod_logFC = logFC, mod_t = t, mod_pval = adj.P.Val.SpD) |>
          full_join(tt_contrast[[contrast]] |>
                        as.data.frame() |>
-                       select(assay, ID, contrast_logFC = logFC, contrast_t = t, contrast_pval = adj.P.Val.cell_type)) |>
+                       select(assay, ID, contrast_logFC = logFC, contrast_t = t, contrast_pval = adj.P.Val.SpD)) |>
          mutate(DE_class = case_when(mod_pval < 0.2 & contrast_pval < 0.2 ~ "signif_both",
                                      mod_pval < 0.2 ~ "signif_mod",
                                      contrast_pval < 0.2 ~ "signif_contrast",
