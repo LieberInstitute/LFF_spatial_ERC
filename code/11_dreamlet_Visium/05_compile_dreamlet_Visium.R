@@ -97,7 +97,7 @@ write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv")
 ## save main mods
 tt_Visium <- tt[main_mods]
 
-map_int(tt_sn, ~.x |> as.data.frame() |> dplyr::filter(adj.P.Val.cell_type < 0.2) |> nrow())
+map_int(tt_Visium, ~.x |> as.data.frame() |> dplyr::filter(adj.P.Val.cell_type < 0.2) |> nrow())
 
 save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
 # load(here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visum_TopTables.Rdata"))
