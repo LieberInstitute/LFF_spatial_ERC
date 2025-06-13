@@ -97,6 +97,8 @@ write.csv(tt_signif, file = here(data_dir, "dreamlet_Visium_topTable_FDR20.csv")
 ## save main mods
 tt_Visium <- tt[main_mods]
 
+map_int(tt_sn, ~.x |> as.data.frame() |> dplyr::filter(adj.P.Val.cell_type < 0.2) |> nrow())
+
 save(tt_Visium, file = here(data_dir, "dreamlet_Visium_TopTables.Rdata"))
 # load(here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visum_TopTables.Rdata"))
 
@@ -267,8 +269,8 @@ contrast_coef <- c("E2E2_E4E4",
                    "E2E2_E3E4",
                    "E2E2_E2E3",
                    "E2E3_E3E4",
-                   "E4E4_anyE2",
-                   "anyE4_anyE2",
+                   "anyE2_E4E4",
+                   "anyE2_anyE4",
                    "E2E2_anyE4",
                    "E2E3_anyE4")
 

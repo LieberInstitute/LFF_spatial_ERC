@@ -99,7 +99,7 @@ write.csv(tt_signif, file = here(data_dir, "dreamlet_sn_topTable_FDR20.csv"), ro
 ## save main mods
 tt_sn <- tt[main_mods]
 
-map_int(tt_sn, ~.x |> filter(adj.P.Val.cell_type < 0.2))
+map_int(tt_sn, ~.x |> as.data.frame() |> dplyr::filter(adj.P.Val.cell_type < 0.2) |> nrow())
 
 save(tt_sn, file = here(data_dir, "dreamlet_sn_TopTables.Rdata"))
 # load(here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"))
@@ -304,8 +304,8 @@ contrast_coef <- c("E2E2_E4E4",
                    "E2E2_E3E4",
                    "E2E2_E2E3",
                    "E2E3_E3E4",
-                   "E4E4_anyE2",
-                   "anyE4_anyE2",
+                   "anyE2_E4E4",
+                   "anyE2_anyE4",
                    "E2E2_anyE4",
                    "E2E3_anyE4")
 
@@ -397,13 +397,13 @@ tt_contrast_signif |>
     dplyr::count(assay)
 # assay  n
 # 1 Astro 13
-# 2 Excit 10
+# 2 Excit  7
 # 3 Inhib  5
-# 4 Macro  9
+# 4 Macro  7
 # 5 Micro  1
-# 6   OPC  6
-# 7 Oligo  6
-# 8  Vasc  7
+# 6   OPC  4
+# 7 Oligo  2
+# 8  Vasc  8
 
 #### plot expression by apoe ####
 plot_DE_express_apoe <- function(gene, cluster, subtitle = NULL){
@@ -478,10 +478,10 @@ compare_contrast_scatter <- function(mod, contrast){
     
 }
 
-compare_contrast_scatter("carrier", "anyE4_anyE2")
-compare_contrast_scatter("carrier", "E4E4_anyE2")
+compare_contrast_scatter("carrier", "anyE2_anyE4")
+compare_contrast_scatter("carrier", "anyE2_E4E4")
 compare_contrast_scatter("e4e4", "E2E2_E4E4")
-compare_contrast_scatter("e4e4", "E4E4_anyE2")
+compare_contrast_scatter("e4e4", "anyE2_E4E4")
 
 #### Bernie DE ####
 
