@@ -16,7 +16,7 @@ scec <- matrix(
 opt <- getopt(scec)
 
 # test 
-# opt$model <- "contrast_i"
+# opt$model <- "contrast"
 # opt$ddf <- "Kenward-Roger"
 
 ## use default "Satterthwaite" for df approximation
@@ -55,7 +55,6 @@ message(Sys.time(), " - Apply Voom")
 res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 
 saveRDS(res.proc, file = here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
-
 # res.proc <- readRDS(here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
 
 # show voom plot for each cell clusters
@@ -70,27 +69,29 @@ dev.off()
 
 my_contrasts <- list(
     contrast =  c(
-        E2E2_E4E4 = "APOE_synE2.E2 - APOE_synE4.E4",
-        E3E4_E4E4 = "APOE_synE3.E4 - APOE_synE4.E4",
-        E2E3_E4E4 = "APOE_synE2.E3 - APOE_synE4.E4",
-        E2E2_E3E4 = "APOE_synE2.E2 - APOE_synE3.E4",
-        E2E2_E2E3 = "APOE_synE2.E2 - APOE_synE2.E3",
-        E2E3_E3E4 = "APOE_synE2.E3 - APOE_synE3.E4",
-        E4E4_anyE2 = "APOE_synE4.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2)",
-        anyE4_anyE2 = "APOE_synE3.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2)",
-        E2E2_anyE4 = "APOE_synE2.E2 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)",
-        E2E3_anyE4 = "APOE_synE2.E3 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)"),
+        E2E2_E4E4 = "-APOE_synE2.E2 + APOE_synE4.E4",
+        E3E4_E4E4 = "-APOE_synE3.E4 + APOE_synE4.E4",
+        E2E3_E4E4 = "-APOE_synE2.E3 + APOE_synE4.E4",
+        E2E2_E3E4 = "-APOE_synE2.E2 + APOE_synE3.E4",
+        E2E2_E2E3 = "-APOE_synE2.E2 + APOE_synE2.E3",
+        E2E3_E3E4 = "-APOE_synE2.E3 + APOE_synE3.E4",
+        anyE2_E4E4 = "- 0.5*(APOE_synE2.E3 + APOE_synE2.E2) + APOE_synE4.E4",
+        anyE2_anyE4 = "-0.5*(APOE_synE2.E2 + APOE_synE2.E3) + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)",
+        E2E2_anyE4 = "-APOE_synE2.E2 + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)",
+        E2E3_anyE4 = "-APOE_synE2.E3 + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)"
+        ),
     contrast_i =  c(
-        E2E2_E4E4 = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr",
-        E3E4_E4E4 = "APOE_synE3.E4:Anc_Afr - APOE_synE4.E4:Anc_Afr",
-        E2E3_E4E4 = "APOE_synE2.E3:Anc_Afr - APOE_synE4.E4:Anc_Afr",
-        E2E2_E3E4 = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE3.E4:Anc_Afr",
-        E2E2_E2E3 = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE2.E3:Anc_Afr",
-        E2E3_E3E4 = "APOE_synE2.E3:Anc_Afr - APOE_synE3.E4:Anc_Afr",
-        E4E4_anyE2 = "APOE_synE4.E4:Anc_Afr - (0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr))",
-        anyE4_anyE2 = "APOE_synE3.E4:Anc_Afr - (0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr))",
-        E2E2_anyE4 = "0.5*(APOE_synE2.E2 + Anc_Afr) - (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)",
-        E2E3_anyE4 = "APOE_synE2.E3:Anc_Afr - (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)")
+        E2E2_E4E4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE4.E4:Anc_Afr",
+        E3E4_E4E4 = "-APOE_synE3.E4:Anc_Afr + APOE_synE4.E4:Anc_Afr",
+        E2E3_E4E4 = "-APOE_synE2.E3:Anc_Afr + APOE_synE4.E4:Anc_Afr",
+        E2E2_E3E4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE3.E4:Anc_Afr",
+        E2E2_E2E3 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE2.E3:Anc_Afr",
+        E2E3_E3E4 = "-APOE_synE2.E3:Anc_Afr + APOE_synE3.E4:Anc_Afr",
+        anyE2_E4E4 = "-(0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr)) + APOE_synE4.E4:Anc_Afr",
+        anyE2_anyE4 = "-0.5*(0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE2.E3:Anc_Afr) + 0.5*(APOE_synE3.E4:Anc_Afr + APOE_synE4.E4:Anc_Afr)",
+        E2E2_anyE4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + 0.5*(APOE_synE4.E4:Anc_Afr + APOE_synE3.E4:Anc_Afr)",
+        E2E3_anyE4 = "-APOE_synE2.E3:Anc_Afr + (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)"
+        )
 )
 
 my_contrasts <- my_contrasts[[opt$model]]
@@ -106,6 +107,7 @@ dreamlet_contrast_models_noMeta <- list(
 L <- makeContrastsDream(dreamlet_contrast_models_noMeta[[opt$model]], 
                         colData(res.proc),
                         contrasts = my_contrasts
+                        # contrasts = list(test = "APOE_synE4.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2"))
                         # contrasts = list(test = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr")
 )
 
@@ -115,6 +117,7 @@ contrast_plot <- plotContrasts(L) + labs(title = "sn dreamlet contrast",
 
 ggsave(contrast_plot, filename = here(plot_dir, sprintf("sn_dreamlet_%s.png", opt$model)))
 
+#### Run Dreamlet ####
 message(Sys.time(), " - dreamlet")
 
 # Differential expression analysis within each assay,

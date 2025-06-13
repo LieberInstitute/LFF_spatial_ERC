@@ -40,22 +40,11 @@ pb <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Vis
 
 # The variable to be tested must be a fixed effect
 dreamlet_contrast_models_Visium <- list(
-    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio
+    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
+    contrast_i = ~0 + APOE_syn*Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio
 )
 
 stopifnot(opt$model %in% names(dreamlet_contrast_models_Visium))
-
-contrasts <-  c(
-    E2E2_E4E4 = "APOE_synE2.E2 - APOE_synE4.E4",
-    E3E4_E4E4 = "APOE_synE3.E4 - APOE_synE4.E4",
-    E2E3_E4E4 = "APOE_synE2.E3 - APOE_synE4.E4",
-    E2E2_E3E4 = "APOE_synE2.E2 - APOE_synE3.E4",
-    E2E2_E2E3 = "APOE_synE2.E2 - APOE_synE2.E3",
-    E2E3_E3E4 = "APOE_synE2.E3 - APOE_synE3.E4",
-    E4E4_anyE2 = "APOE_synE4.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2)",
-    anyE4_anyE2 = "APOE_synE3.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2)",
-    E2E2_anyE4 = "APOE_synE2.E2 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)",
-    E2E3_anyE4 = "APOE_synE2.E3 - (0.5*APOE_synE4.E4 + 0.5*APOE_synE3.E4)")
 
 message('model = ', opt$model, ", ddf = ", opt$ddf)
 mod = dreamlet_contrast_models_Visium[[opt$model]]
@@ -65,25 +54,70 @@ message(Sys.time(), " - Apply Voom")
 # Normalize and apply voom/voomWithDreamWeights
 res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 
+saveRDS(res.proc, file = here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
+# res.proc <- readRDS(here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
+
 # show voom plot for each cell clusters
 pdf(here(plot_dir, sprintf("Visium_dreamlet_voom-%s.pdf", opt$model)))
 plotVoom(res.proc)
 dev.off()
 
-model.matrix(~0+APOE_syn, colData(res.proc))
+#### Design Contrasts ####
+
+# model.matrix(~0+APOE_syn, colData(res.proc))
+# model.matrix(~0+APOE_syn*Anc_Afr, colData(res.proc))
+
+my_contrasts <- list(
+    contrast =  c(
+        E2E2_E4E4 = "-APOE_synE2.E2 + APOE_synE4.E4",
+        E3E4_E4E4 = "-APOE_synE3.E4 + APOE_synE4.E4",
+        E2E3_E4E4 = "-APOE_synE2.E3 + APOE_synE4.E4",
+        E2E2_E3E4 = "-APOE_synE2.E2 + APOE_synE3.E4",
+        E2E2_E2E3 = "-APOE_synE2.E2 + APOE_synE2.E3",
+        E2E3_E3E4 = "-APOE_synE2.E3 + APOE_synE3.E4",
+        anyE2_E4E4 = "- 0.5*(APOE_synE2.E3 + APOE_synE2.E2) + APOE_synE4.E4",
+        anyE2_anyE4 = "-0.5*(APOE_synE2.E2 + APOE_synE2.E3) + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)",
+        E2E2_anyE4 = "-APOE_synE2.E2 + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)",
+        E2E3_anyE4 = "-APOE_synE2.E3 + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)"
+    ),
+    contrast_i =  c(
+        E2E2_E4E4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE4.E4:Anc_Afr",
+        E3E4_E4E4 = "-APOE_synE3.E4:Anc_Afr + APOE_synE4.E4:Anc_Afr",
+        E2E3_E4E4 = "-APOE_synE2.E3:Anc_Afr + APOE_synE4.E4:Anc_Afr",
+        E2E2_E3E4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE3.E4:Anc_Afr",
+        E2E2_E2E3 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE2.E3:Anc_Afr",
+        E2E3_E3E4 = "-APOE_synE2.E3:Anc_Afr + APOE_synE3.E4:Anc_Afr",
+        anyE2_E4E4 = "-(0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr)) + APOE_synE4.E4:Anc_Afr",
+        anyE2_anyE4 = "-0.5*(0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE2.E3:Anc_Afr) + 0.5*(APOE_synE3.E4:Anc_Afr + APOE_synE4.E4:Anc_Afr)",
+        E2E2_anyE4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + 0.5*(APOE_synE4.E4:Anc_Afr + APOE_synE3.E4:Anc_Afr)",
+        E2E3_anyE4 = "-APOE_synE2.E3:Anc_Afr + (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)"
+    )
+)
+
+my_contrasts <- my_contrasts[[opt$model]]
 
 #### Visualize contrast matrix ####
-## cannot include metadata expr_chrM_ratio col
-L <- makeContrastsDream(~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide), 
-                        colData(res.proc),
-                        contrasts = contrasts
+## cant add expr_chrM_ratio as a variable  - exclude metadata vars here
+
+dreamlet_contrast_models_noMeta <- list(
+    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
+    contrast_i = ~0 + APOE_syn*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)
 )
+
+L <- makeContrastsDream(dreamlet_contrast_models_noMeta[[opt$model]], 
+                        colData(res.proc),
+                        contrasts = my_contrasts
+                        # contrasts = list(test = "APOE_synE4.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2"))
+                        # contrasts = list(test = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr")
+)
+
 
 contrast_plot <- plotContrasts(L) + labs(title = "Visium dreamlet contrast",
                                          subtitle = mod)
 
-ggsave(contrast_plot, filename = here(plot_dir, "Visium_dreamlet_contrast.png"))
+ggsave(contrast_plot, filename = here(plot_dir, sprintf("Visium_dreamlet_%s.png", opt$model)))
 
+#### Run Dreamlet ####
 message(Sys.time(), " - dreamlet")
 
 # Differential expression analysis within each assay,
@@ -93,9 +127,8 @@ message(Sys.time(), " - dreamlet")
 
 res.dl <- dreamlet(res.proc, 
                    formula = mod, 
-                   contrasts = contrasts)
+                   contrasts = my_contrasts)
 
-## how to add mito rate to colData?
 
 message(Sys.time(), " - DONE Differential Expression...Save Data")
 saveRDS(res.dl, file = here(data_dir, sprintf("dreamlet_contrast_Visium-%s%s.RDS", opt$model, ddf_suffix)))
