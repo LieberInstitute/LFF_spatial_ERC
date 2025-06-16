@@ -13,7 +13,7 @@ library("tidyverse")
 
 # Import command-line parameters
 scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type")
+    c("datatype", "d", "1", "character", "Data type"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
