@@ -106,13 +106,13 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     message("Done - Save data")
     saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_%s_%s.rds", opt$datatype, clus)))
-    return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.2)))
+    return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.1)))
 })
 
 lmf_summary <- lmf_summary |>
     add_column(cluster = clusters, .before=1)
 
-write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_summary-%s.csv", opt$datatype)), row.names = FALSE)
+write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR10_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
 # slurmjobs::job_single('01_Clusterwise_voomLmFit_sn_broad', create_shell = TRUE, memory = '25G', command = "Rscript 01_Clusterwise_voomLmFit.R --datatype sn_broad")
 # slurmjobs::job_single('01_Clusterwise_voomLmFit_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 01_Clusterwise_voomLmFit.R --datatype sn_fine")
