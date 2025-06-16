@@ -10,6 +10,7 @@ library("here")
 library("data.table")
 library("getopt")
 library("tidyverse")
+library("sessioninfo")
 
 # Import command-line parameters
 scec <- matrix(
