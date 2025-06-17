@@ -144,8 +144,78 @@ vlmf_data_tb <- map_depth(vlmf_data, 2,
 map_depth(vlmf_data_tb, 2, ~.x |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster))
 map_depth(vlmf_data_tb, 2, ~.x |> filter(vlmf_adj.P.Val < 0.05))
 
+vlmf_model_summary <- map(vlmf_data_tb, function(vdt){
+    map2_dfr(vdt, names(vdt), ~.x |> 
+                 filter(vlmf_adj.P.Val < 0.05) |>
+                 mutate(reg = ifelse(vlmf_logFC > 0, "up_reg", "down_reg"),
+                        mod = .y) |>
+                 count(cluster, mod))
+})
 
-#### Add other data to vlmc data ####
+vlmf_model_summary_bar <- walk2(vlmf_model_summary, names(vlmf_model_summary), function(summary, name){
+    vlmf_model_summary_bar <- summary |>
+        filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
+        ggplot(aes(x = cluster, y = n)) +
+        geom_col() +
+        geom_text(aes(label = n), vjust=-.5) +
+        facet_wrap(~mod, ncol = 1) +
+        theme_bw() +
+        labs(title = sprintf("voomLmFit - %s", name), subtitle = "FDR < 0.05") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+    
+    ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("vlmf_model_summary_bar_%s.png", name)))
+})
+
+map2(vlmf_data_tb$sn, names(vlmf_data_tb$sn), ~.x |> 
+         filter(vlmf_adj.P.Val < 0.05) |>
+         mutate(mod = .y) |>
+         group_by(cluster, mod) |> 
+         count(reg))
+
+#### vlmf volcano plots ####
+
+custom_volcano <- function(data, FDR_cut = 0.05, model_name){
+    
+    # define colors
+    signif_colors <- c("purple", "blue", "red")
+    names(signif_colors) <- c("both", paste("FDR<", FDR_cut) , "abs(logFC)>1" )
+    
+    volcano <- data |>
+        mutate(DE_class = case_when(vlmf_adj.P.Val < FDR_cut & abs(vlmf_logFC) > 1  ~ "both",
+                         vlmf_adj.P.Val < FDR_cut ~ paste("FDR<", FDR_cut),
+                         abs(vlmf_logFC) > 1 ~ "abs(logFC)>1",
+                         TRUE ~ "None")) |>
+        ggplot(aes(x = vlmf_logFC, y = -log10(vlmf_P.Value), color = DE_class)) +
+        geom_point(alpha = 0.5, size = 0.5) +
+        scale_color_manual(values = signif_colors) +
+        facet_wrap(~cluster) +
+        theme_bw() +
+        labs(title = model_name)
+    
+    if(nrow(data) > 1000){
+        volcano <- volcano + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) 
+    } else {
+        volcano <- volcano + geom_text_repel(aes(label = gene_name), size = 1.5)
+    }
+    ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_plot_%s.png", model_name)), height = 10, width = 10)
+}
+
+## sn
+custom_volcano(data = vlmf_data_tb$sn$carrier, model_name = "sn_carrier")
+custom_volcano(data = vlmf_data_tb$sn$carrier |> filter(gene_name %in% AD_risk$symbol), model_name = "sn_carrier-risk")
+custom_volcano(data = vlmf_data_tb$sn$E4E4, model_name = "sn_E4E4")
+custom_volcano(data = vlmf_data_tb$sn$apoe_E2E2_E3E4, model_name = "sn_apoe_E2E2_E3E4")
+
+# Visium
+custom_volcano(data = vlmf_data_tb$Visium$carrier, model_name = "Visium_carrier")
+custom_volcano(data = vlmf_data_tb$Visium$carrier |> filter(gene_name %in% AD_risk$symbol), model_name = "Visium_carrier-risk")
+
+custom_volcano(data = vlmf_data_tb$Visium$E4E4, model_name = "Visium_E4E4")
+custom_volcano(data = vlmf_data_tb$Visium$apoe_E2E2_E3E4, model_name = "Visium_apoe_E2E2_E3E4")
+
+
+
+#### Add other data to vlmf data ####
 
 test <- vlmf_data_tb$sn$carrier |>
     left_join(pseudobulkDGE_data_tb$sn$carrier)|>
@@ -153,6 +223,7 @@ test <- vlmf_data_tb$sn$carrier |>
 
 colnames(test)
 
+#### compare t-stats ####
 comapre_t_scatter <- function(dge_tb, mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
     
     ## define vars
