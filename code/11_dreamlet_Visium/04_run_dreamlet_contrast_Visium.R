@@ -36,6 +36,9 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### Load data ####
 pb <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Visium", "Visium_dreamlet_pb.rds"))
 
+## simplify colnames
+colData(pb)$APOE_ <- colData(pb)$APOE_syn 
+
 #### Differential Expression ####
 
 # The variable to be tested must be a fixed effect
@@ -57,8 +60,6 @@ res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 saveRDS(res.proc, file = here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
 # res.proc <- readRDS(here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
 
-## simplify colnames
-colData(res.proc)$APOE_ <- colData(res.proc)$APOE_syn 
 
 # show voom plot for each cell clusters
 pdf(here(plot_dir, sprintf("Visium_dreamlet_voom-%s.pdf", opt$model)))
