@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Jun 13 06:43:08 AM EDT 2025
+Tue Jun 17 05:57:53 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17321629
+Job id: 17408783
 Job name: 04_run_dreamlet_contrast_sn
-Node name: compute-163
+Node name: compute-168
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -129,47 +129,44 @@ $ddf
 [1] "Satterthwaite"
 
 model = contrast, ddf = Satterthwaite
-~0 + APOE_syn + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + 
-    subsets_Mito_percent
-2025-06-13 06:43:19.868554 - Apply Voom
-  Astro...4.4 mins
-  Macro...32 secs
-  Micro...3.2 mins
-  OPC...4.2 mins
-  Oligo...4.7 mins
-  Vasc...2.2 mins
-  Excit...6.3 mins
-  Inhib...5.1 mins
-
-Of 115,991 models fit across all assays, 0.000862% failed
-
+~0 + APOE_ + Anc_Afr + Sex + Age + Rin + (1 | exp_round) + subsets_Mito_percent
+2025-06-17 05:58:06.962765 - Apply Voom
+  Astro...5.1 mins
+  Macro...36 secs
+  Micro...3.6 mins
+  OPC...4.9 mins
+  Oligo...5.1 mins
+  Vasc...2.3 mins
+  Excit...7.1 mins
+  Inhib...5.6 mins
 null device 
           1 
 Saving 7 x 7 in image
-2025-06-13 07:14:00.730355 - dreamlet
+2025-06-17 06:32:30.434166 - dreamlet
   Astro...15 mins
-  Macro...8.2 mins
-  Micro...10 mins
-  OPC...13 mins
-  Oligo...14 mins
-  Vasc...6.2 mins
-  Excit...20 mins
-  Inhib...18 mins
+  Macro...3.4 mins
+  Micro...11 mins
+  OPC...14 mins
+  Oligo...15 mins
+  Vasc...6.9 mins
+  Excit...21 mins
+  Inhib...17 mins
 
-Of 115,991 models fit across all assays, 0.219% failed
+Of 115,992 models fit across all assays, 0.00776% failed
 
-2025-06-13 08:58:07.135968 - DONE Differential Expression...Save Data
+2025-06-17 08:16:38.981544 - DONE Differential Expression...Save Data
 coef
- [1] "E2E2_E4E4"            "E3E4_E4E4"            "E2E3_E4E4"           
- [4] "E2E2_E3E4"            "E2E2_E2E3"            "E2E3_E3E4"           
- [7] "anyE2_E4E4"           "anyE2_anyE4"          "E2E2_anyE4"          
-[10] "E2E3_anyE4"           "APOE_synE2.E2"        "APOE_synE2.E3"       
-[13] "APOE_synE3.E4"        "APOE_synE4.E4"        "Anc_Afr"             
-[16] "Age"                  "Rin"                  "subsets_Mito_percent"
+ [1] "carrier"              "E4E4"                 "apoe_E2E2_E4E4"      
+ [4] "apoe_E3E4_E4E4"       "apoe_E2E3_E4E4"       "apoe_E2E2_E3E4"      
+ [7] "apoe_E2E2_E2E3"       "apoe_E2E3_E3E4"       "anyE2_E4E4"          
+[10] "E2E2_anyE4"           "E2E3_anyE4"           "APOE_E2.E2"          
+[13] "APOE_E2.E3"           "APOE_E3.E4"           "APOE_E4.E4"          
+[16] "Anc_Afr"              "SexM"                 "Age"                 
+[19] "Rin"                  "subsets_Mito_percent"
 [1] "Reproducibility information:"
-[1] "2025-06-13 08:58:26 EDT"
+[1] "2025-06-17 08:17:02 EDT"
     user   system  elapsed 
-8072.738   16.982 8117.398 
+8276.130   38.159 8349.054 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -180,7 +177,7 @@ coef
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-13
+ date     2025-06-17
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -341,4 +338,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Jun 13 08:58:27 AM EDT 2025
+Tue Jun 17 08:17:03 AM EDT 2025
