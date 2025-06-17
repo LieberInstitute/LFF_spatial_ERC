@@ -40,8 +40,8 @@ pb <- readRDS(here("processed-data", "11_dreamlet_Visium", "01_prep_dreamlet_Vis
 
 # The variable to be tested must be a fixed effect
 dreamlet_contrast_models_Visium <- list(
-    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
-    contrast_i = ~0 + APOE_syn*Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio
+    contrast = ~0 + APOE_  + Anc_Afr + Sex + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio,
+    contrast_i = ~0 + APOE_*Anc_Afr + Sex + Age + Rin + (1 | Visium_slide) + expr_chrM_ratio
 )
 
 stopifnot(opt$model %in% names(dreamlet_contrast_models_Visium))
@@ -57,6 +57,9 @@ res.proc <- processAssays(pb, mod, min.count = 5, min.cells = 10)
 saveRDS(res.proc, file = here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
 # res.proc <- readRDS(here(data_dir, sprintf("rse.proc.%s.Rds", opt$model)))
 
+## simplify colnames
+colData(res.proc)$APOE_ <- colData(res.proc)$APOE_syn 
+
 # show voom plot for each cell clusters
 pdf(here(plot_dir, sprintf("Visium_dreamlet_voom-%s.pdf", opt$model)))
 plotVoom(res.proc)
@@ -64,33 +67,40 @@ dev.off()
 
 #### Design Contrasts ####
 
-# model.matrix(~0+APOE_syn, colData(res.proc))
-# model.matrix(~0+APOE_syn*Anc_Afr, colData(res.proc))
+# model.matrix(~0+APOE_, colData(res.proc))
+# model.matrix(~0+APOE_*Anc_Afr, colData(res.proc))
 
 my_contrasts <- list(
     contrast =  c(
-        E2E2_E4E4 = "-APOE_synE2.E2 + APOE_synE4.E4",
-        E3E4_E4E4 = "-APOE_synE3.E4 + APOE_synE4.E4",
-        E2E3_E4E4 = "-APOE_synE2.E3 + APOE_synE4.E4",
-        E2E2_E3E4 = "-APOE_synE2.E2 + APOE_synE3.E4",
-        E2E2_E2E3 = "-APOE_synE2.E2 + APOE_synE2.E3",
-        E2E3_E3E4 = "-APOE_synE2.E3 + APOE_synE3.E4",
-        anyE2_E4E4 = "- 0.5*(APOE_synE2.E3 + APOE_synE2.E2) + APOE_synE4.E4",
-        anyE2_anyE4 = "-0.5*(APOE_synE2.E2 + APOE_synE2.E3) + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)",
-        E2E2_anyE4 = "-APOE_synE2.E2 + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)",
-        E2E3_anyE4 = "-APOE_synE2.E3 + 0.5*(APOE_synE3.E4 + APOE_synE4.E4)"
+        ## main
+        carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+        E4E4 = "APOE_E4.E4 - (APOE_E2.E2 + APOE_E2.E3 + APOE_E3.E4)/3",
+        ## apoe pairwise
+        apoe_E2E2_E4E4 = "-APOE_E2.E2 + APOE_E4.E4",
+        apoe_E3E4_E4E4 = "-APOE_E3.E4 + APOE_E4.E4",
+        apoe_E2E3_E4E4 = "-APOE_E2.E3 + APOE_E4.E4",
+        apoe_E2E2_E3E4 = "-APOE_E2.E2 + APOE_E3.E4",
+        apoe_E2E2_E2E3 = "-APOE_E2.E2 + APOE_E2.E3",
+        apoe_E2E3_E3E4 = "-APOE_E2.E3 + APOE_E3.E4",
+        # heterozygous vs. homozygous
+        anyE2_E4E4 = "- 0.5*(APOE_E2.E3 + APOE_E2.E2) + APOE_E4.E4",
+        E2E2_anyE4 = "-APOE_E2.E2 + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+        E2E3_anyE4 = "-APOE_E2.E3 + 0.5*(APOE_E3.E4 + APOE_E4.E4)"
+        # ## other
+        # Sex="SexM",
+        # Anc="Anc_Afr"
     ),
     contrast_i =  c(
-        E2E2_E4E4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE4.E4:Anc_Afr",
-        E3E4_E4E4 = "-APOE_synE3.E4:Anc_Afr + APOE_synE4.E4:Anc_Afr",
-        E2E3_E4E4 = "-APOE_synE2.E3:Anc_Afr + APOE_synE4.E4:Anc_Afr",
-        E2E2_E3E4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE3.E4:Anc_Afr",
-        E2E2_E2E3 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE2.E3:Anc_Afr",
-        E2E3_E3E4 = "-APOE_synE2.E3:Anc_Afr + APOE_synE3.E4:Anc_Afr",
-        anyE2_E4E4 = "-(0.5*APOE_synE2.E3:Anc_Afr + 0.25*(APOE_synE2.E2 + Anc_Afr)) + APOE_synE4.E4:Anc_Afr",
-        anyE2_anyE4 = "-0.5*(0.5*(APOE_synE2.E2 + Anc_Afr) + APOE_synE2.E3:Anc_Afr) + 0.5*(APOE_synE3.E4:Anc_Afr + APOE_synE4.E4:Anc_Afr)",
-        E2E2_anyE4 = "-0.5*(APOE_synE2.E2 + Anc_Afr) + 0.5*(APOE_synE4.E4:Anc_Afr + APOE_synE3.E4:Anc_Afr)",
-        E2E3_anyE4 = "-APOE_synE2.E3:Anc_Afr + (0.5*APOE_synE4.E4:Anc_Afr + 0.5*APOE_synE3.E4:Anc_Afr)"
+        E2E2_E4E4 = "-0.5*(APOE_E2.E2 + Anc_Afr) + APOE_E4.E4:Anc_Afr",
+        E3E4_E4E4 = "-APOE_E3.E4:Anc_Afr + APOE_E4.E4:Anc_Afr",
+        E2E3_E4E4 = "-APOE_E2.E3:Anc_Afr + APOE_E4.E4:Anc_Afr",
+        E2E2_E3E4 = "-0.5*(APOE_E2.E2 + Anc_Afr) + APOE_E3.E4:Anc_Afr",
+        E2E2_E2E3 = "-0.5*(APOE_E2.E2 + Anc_Afr) + APOE_E2.E3:Anc_Afr",
+        E2E3_E3E4 = "-APOE_E2.E3:Anc_Afr + APOE_E3.E4:Anc_Afr",
+        anyE2_E4E4 = "-(0.5*APOE_E2.E3:Anc_Afr + 0.25*(APOE_E2.E2 + Anc_Afr)) + APOE_E4.E4:Anc_Afr",
+        anyE2_anyE4 = "-0.5*(0.5*(APOE_E2.E2 + Anc_Afr) + APOE_E2.E3:Anc_Afr) + 0.5*(APOE_E3.E4:Anc_Afr + APOE_E4.E4:Anc_Afr)",
+        E2E2_anyE4 = "-0.5*(APOE_E2.E2 + Anc_Afr) + 0.5*(APOE_E4.E4:Anc_Afr + APOE_E3.E4:Anc_Afr)",
+        E2E3_anyE4 = "-APOE_E2.E3:Anc_Afr + (0.5*APOE_E4.E4:Anc_Afr + 0.5*APOE_E3.E4:Anc_Afr)"
     )
 )
 
@@ -100,15 +110,15 @@ my_contrasts <- my_contrasts[[opt$model]]
 ## cant add expr_chrM_ratio as a variable  - exclude metadata vars here
 
 dreamlet_contrast_models_noMeta <- list(
-    contrast = ~0 + APOE_syn  + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round),
-    contrast_i = ~0 + APOE_syn*Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round)
+    contrast = ~0 + APOE_  + Anc_Afr + Sex + Age + Rin + (1 | exp_round),
+    contrast_i = ~0 + APOE_*Anc_Afr + Sex + Age + Rin + (1 | exp_round)
 )
 
 L <- makeContrastsDream(dreamlet_contrast_models_noMeta[[opt$model]], 
                         colData(res.proc),
                         contrasts = my_contrasts
-                        # contrasts = list(test = "APOE_synE4.E4 - (0.5*APOE_synE2.E3 + 0.5*APOE_synE2.E2"))
-                        # contrasts = list(test = "0.5*(APOE_synE2.E2 + Anc_Afr) - APOE_synE4.E4:Anc_Afr")
+                        # contrasts = list(test = "APOE_E4.E4 - (0.5*APOE_E2.E3 + 0.5*APOE_E2.E2"))
+                        # contrasts = list(test = "0.5*(APOE_E2.E2 + Anc_Afr) - APOE_E4.E4:Anc_Afr")
 )
 
 
