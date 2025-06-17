@@ -1,11 +1,12 @@
 **** Job starts ****
-Mon Jun  9 04:24:41 PM EDT 2025
+Tue Jun 17 05:51:52 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17138388
+Job id: 17408779
 Job name: 04_run_dreamlet_contrast_Visium
-Node name: compute-169
+Node name: compute-129
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -128,83 +129,45 @@ $ddf
 [1] "Satterthwaite"
 
 model = contrast, ddf = Satterthwaite
-~0 + APOE_syn + Anc_Afr + (1 | Sex) + Age + Rin + (1 | Visium_slide) + 
+~0 + APOE_ + Anc_Afr + Sex + Age + Rin + (1 | Visium_slide) + 
     expr_chrM_ratio
-2025-06-09 16:24:52.9602 - Apply Voom
-  Inhib_Sp09D09...3.6 mins
-  L1_Sp09D05...3.2 mins
-  L2.3_Sp09D01...3.4 mins
-  L5_Sp09D03...3.5 mins
-  L6_Sp09D04...3.6 mins
-  LD_Sp09D02...4.2 mins
+2025-06-17 05:52:04.535777 - Apply Voom
+  Inhib_Sp09D09...3.5 mins
+  L1_Sp09D05...3.5 mins
+  L2.3_Sp09D01...4 mins
+  L5_Sp09D03...4.1 mins
+  L6_Sp09D04...4.2 mins
+  LD_Sp09D02...4.5 mins
   Vasc_Sp09D08...2.5 mins
   WM_Sp09D06...2.9 mins
-  WM.uf_Sp09D07...58 secs
+  WM.uf_Sp09D07...57 secs
 null device 
           1 
-       APOE_synE2.E2 APOE_synE2.E3 APOE_synE3.E4 APOE_synE4.E4
-Br1039             0             0             0             1
-Br1289             0             0             0             1
-Br1556             1             0             0             0
-Br1691             0             0             0             1
-Br1706             0             0             0             1
-Br2305             0             0             0             1
-Br2582             1             0             0             0
-Br3974             0             0             1             0
-Br5161             0             0             0             1
-Br5212             0             1             0             0
-Br5276             0             0             1             0
-Br5367             0             1             0             0
-Br5415             0             1             0             0
-Br5426             0             1             0             0
-Br5460             0             0             1             0
-Br5517             0             0             1             0
-Br5529             1             0             0             0
-Br5599             0             0             1             0
-Br5634             0             1             0             0
-Br5712             1             0             0             0
-Br5832             1             0             0             0
-Br5854             0             1             0             0
-Br5941             0             0             0             1
-Br6085             0             0             1             0
-Br6098             0             0             1             0
-Br6161             1             0             0             0
-Br6263             0             0             1             0
-Br6321             0             0             1             0
-Br6423             0             1             0             0
-Br6476             0             0             1             0
-Br6538             0             1             0             0
-attr(,"assign")
-[1] 1 1 1 1
-attr(,"contrasts")
-attr(,"contrasts")$APOE_syn
-[1] "contr.treatment"
-
 Saving 7 x 7 in image
-2025-06-09 16:52:44.394543 - dreamlet
-  Inhib_Sp09D09...12 mins
-  L1_Sp09D05...12 mins
-  L2.3_Sp09D01...13 mins
-  L5_Sp09D03...13 mins
-  L6_Sp09D04...13 mins
-  LD_Sp09D02...15 mins
-  Vasc_Sp09D08...8.4 mins
-  WM_Sp09D06...9.9 mins
-  WM.uf_Sp09D07...3.3 mins
+2025-06-17 06:22:13.545512 - dreamlet
+  Inhib_Sp09D09...11 mins
+  L1_Sp09D05...10 mins
+  L2.3_Sp09D01...12 mins
+  L5_Sp09D03...12 mins
+  L6_Sp09D04...12 mins
+  LD_Sp09D02...13 mins
+  Vasc_Sp09D08...7.3 mins
+  WM_Sp09D06...8.4 mins
+  WM.uf_Sp09D07...2.8 mins
 
-Of 96,804 models fit across all assays, 0.267% failed
+Of 96,804 models fit across all assays, 0.00103% failed
 
-2025-06-09 18:31:42.958021 - DONE Differential Expression...Save Data
+2025-06-17 07:50:31.179818 - DONE Differential Expression...Save Data
 coef
- [1] "E2E2_E4E4"       "E3E4_E4E4"       "E2E3_E4E4"       "E2E2_E3E4"      
- [5] "E2E2_E2E3"       "E2E3_E3E4"       "E4E4_anyE2"      "anyE4_anyE2"    
- [9] "E2E2_anyE4"      "E2E3_anyE4"      "APOE_synE2.E2"   "APOE_synE2.E3"  
-[13] "APOE_synE3.E4"   "APOE_synE4.E4"   "Anc_Afr"         "Age"            
-[17] "Rin"             "expr_chrM_ratio"
+ [1] "carrier"         "E4E4"            "apoe_E2E2_E4E4"  "apoe_E3E4_E4E4" 
+ [5] "apoe_E2E3_E4E4"  "apoe_E2E2_E3E4"  "apoe_E2E2_E2E3"  "apoe_E2E3_E3E4" 
+ [9] "anyE2_E4E4"      "E2E2_anyE4"      "E2E3_anyE4"      "APOE_E2.E2"     
+[13] "APOE_E2.E3"      "APOE_E3.E4"      "APOE_E4.E4"      "Anc_Afr"        
+[17] "SexM"            "Age"             "Rin"             "expr_chrM_ratio"
 [1] "Reproducibility information:"
-[1] "2025-06-09 18:32:01 EDT"
+[1] "2025-06-17 07:50:49 EDT"
     user   system  elapsed 
-7577.248   32.712 7639.169 
+7079.964   27.579 7136.418 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -215,7 +178,7 @@ coef
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-09
+ date     2025-06-17
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -376,4 +339,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Jun  9 06:32:01 PM EDT 2025
+Tue Jun 17 07:50:50 AM EDT 2025
