@@ -151,6 +151,8 @@ test <- vlmf_data_tb$sn$carrier |>
     left_join(pseudobulkDGE_data_tb$sn$carrier)|>
     left_join(dreamlet_data_tb$sn$carrier)
 
+colnames(test)
+
 comapre_t_scatter <- function(dge_tb, mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
     
     ## define vars
@@ -161,14 +163,14 @@ comapre_t_scatter <- function(dge_tb, mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2
 
     # define colors
     signif_colors <- c("purple", "blue", "red")
-    names(signif_colors) <- c("sig_both", paste(mX, "<", FDR_cut_mX) , paste(mY, "<", FDR_cut_mY) )
+    names(signif_colors) <- c("sig_both", paste(mX, "FDR<", FDR_cut_mX) , paste(mY, "FDR<", FDR_cut_mY) )
     
     # make scatter plot
     t_stat_scatter <- dge_tb |>
         mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
-                                    !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "<", FDR_cut_mX),
-                                    !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "<", FDR_cut_mY),
-                                    TRUE ~ "Other")) |>
+                                    !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "FDR<", FDR_cut_mX),
+                                    !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "FDR<", FDR_cut_mY),
+                                    TRUE ~ "None")) |>
         ggplot(aes(x = !!sym(tX), y = !!sym(tY), color = DE_class)) +
         geom_point(alpha = 0.5, size = 0.5) +
         geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
@@ -178,20 +180,12 @@ comapre_t_scatter <- function(dge_tb, mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2
         facet_wrap(~cluster) +
         theme_bw()
     
-    ggsave(t_stat_scatter, filename = here(plot_dir, sprintf("t_stat_scatter_%s_%s-v-%s.png", model_name, mX, mY)))
+    ggsave(t_stat_scatter, filename = here(plot_dir, sprintf("t_stat_scatter_%s_%s-v-%s.png", model_name, mX, mY)), height = 10, width = 10)
     
-    return(t_stat_scatter)
+    # return(t_stat_scatter)
 }
 
-test_plot <- comapre_t_scatter(test, mX= "dream", mY="pbDGE", model_name = "carrier")
+comapre_t_scatter(test, mX= "dream", mY="pbDGE", model_name = "carrier")
+comapre_t_scatter(test, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+comapre_t_scatter(test, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
-vlmf_dreamlet_scatter <- test |>
-    ggplot(aes(x = vlmf_t, y = dream_t, color = DE_class)) +
-    geom_point(alpha = 0.5, size = 0.5) +
-    geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
-    geom_abline(linetype = "dashed") +
-    scale_color_manual(values = c(signif_both = "purple", signif_vlmf = "blue", signif_dreamlet = "red")) +
-    facet_wrap(~cluster) +
-    theme_bw()
-
-ggsave(vlmf_dreamlet_scatter, filename = here(plot_dir, "vlmf_dreamlet_scatter_carrier.png"))
