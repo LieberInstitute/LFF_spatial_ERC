@@ -1,11 +1,12 @@
 **** Job starts ****
-Tue Jun 10 04:25:55 AM EDT 2025
+Fri Jun 13 06:43:08 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17187066
+Job id: 17321629
 Job name: 04_run_dreamlet_contrast_sn
-Node name: compute-145
+Node name: compute-163
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -130,45 +131,45 @@ $ddf
 model = contrast, ddf = Satterthwaite
 ~0 + APOE_syn + Anc_Afr + (1 | Sex) + Age + Rin + (1 | exp_round) + 
     subsets_Mito_percent
-2025-06-10 04:26:10.588815 - Apply Voom
-  Astro...7.2 mins
-  Macro...52 secs
-  Micro...5.1 mins
-  OPC...6.6 mins
-  Oligo...6.8 mins
-  Vasc...2.9 mins
-  Excit...9.3 mins
-  Inhib...7.7 mins
+2025-06-13 06:43:19.868554 - Apply Voom
+  Astro...4.4 mins
+  Macro...32 secs
+  Micro...3.2 mins
+  OPC...4.2 mins
+  Oligo...4.7 mins
+  Vasc...2.2 mins
+  Excit...6.3 mins
+  Inhib...5.1 mins
 
 Of 115,991 models fit across all assays, 0.000862% failed
 
 null device 
           1 
 Saving 7 x 7 in image
-2025-06-10 05:12:51.263839 - dreamlet
-  Astro...21 mins
-  Macro...12 mins
-  Micro...12 mins
-  OPC...16 mins
-  Oligo...16 mins
-  Vasc...7.4 mins
-  Excit...23 mins
-  Inhib...19 mins
+2025-06-13 07:14:00.730355 - dreamlet
+  Astro...15 mins
+  Macro...8.2 mins
+  Micro...10 mins
+  OPC...13 mins
+  Oligo...14 mins
+  Vasc...6.2 mins
+  Excit...20 mins
+  Inhib...18 mins
 
 Of 115,991 models fit across all assays, 0.219% failed
 
-2025-06-10 07:19:59.267102 - DONE Differential Expression...Save Data
+2025-06-13 08:58:07.135968 - DONE Differential Expression...Save Data
 coef
  [1] "E2E2_E4E4"            "E3E4_E4E4"            "E2E3_E4E4"           
  [4] "E2E2_E3E4"            "E2E2_E2E3"            "E2E3_E3E4"           
- [7] "E4E4_anyE2"           "anyE4_anyE2"          "E2E2_anyE4"          
+ [7] "anyE2_E4E4"           "anyE2_anyE4"          "E2E2_anyE4"          
 [10] "E2E3_anyE4"           "APOE_synE2.E2"        "APOE_synE2.E3"       
 [13] "APOE_synE3.E4"        "APOE_synE4.E4"        "Anc_Afr"             
 [16] "Age"                  "Rin"                  "subsets_Mito_percent"
 [1] "Reproducibility information:"
-[1] "2025-06-10 07:20:19 EDT"
-     user    system   elapsed 
-10400.638    12.126 10462.735 
+[1] "2025-06-13 08:58:26 EDT"
+    user   system  elapsed 
+8072.738   16.982 8117.398 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -179,7 +180,7 @@ coef
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-10
+ date     2025-06-13
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -340,4 +341,4 @@ coef
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jun 10 07:20:19 AM EDT 2025
+Fri Jun 13 08:58:27 AM EDT 2025

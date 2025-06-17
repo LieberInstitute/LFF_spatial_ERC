@@ -1,0 +1,1341 @@
+**** Job starts ****
+Fri Jun 13 09:44:38 AM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 17321797
+Job name: 05_compile_dreamlet_sn
+Node name: compute-154
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: variancePartition
+Loading required package: ggplot2
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading required package: BiocParallel
+
+Attaching package: ‘variancePartition’
+
+The following object is masked from ‘package:limma’:
+
+    topTable
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ lubridate 1.9.4     ✔ tibble    3.2.1
+✔ purrr     1.0.4     ✔ tidyr     1.3.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+
+Attaching package: ‘DFplyr’
+
+The following object is masked from ‘package:dplyr’:
+
+    desc
+
+The following object is masked from ‘package:IRanges’:
+
+    desc
+
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  sample_colors
+[1] TRUE
+       apoe_i       apoe_kr       apoe_n0          apoe     carrier_i 
+       115673        115727        115992        115727        115729 
+   carrier_kr    carrier_n0    carrier_n1    carrier_n2    carrier_n3 
+       115755        115992        115992        115988        115987 
+   carrier_n4 carrier_sf_kr    carrier_sf       carrier        e4e4_i 
+       115991        115982        115982        115755        115759 
+      e4e4_kr       e4e4_n0          e4e4 
+       115741        115992        115741 
+$apoe_i
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            1               0
+2                     Excit            0            4               0
+3                     Inhib            3            6               5
+4                     Macro            0            1               0
+5                     Micro            1            1               1
+6                     Oligo            0            2               0
+7                       OPC            0            1               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               5
+4               0
+5               1
+6               1
+7               0
+8               0
+
+$apoe_kr
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               1
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               4
+2               0
+3               1
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$apoe_n0
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$apoe
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0           32               3
+2                     Excit            0            8               0
+3                     Inhib            0            6               0
+4                     Macro            0            0               0
+5                     Micro            0            3               0
+6                     Oligo            0            9               0
+7                       OPC            0            5               0
+8                      Vasc            0            3               1
+  cell_type_FDR20
+        <integer>
+1               4
+2               0
+3               0
+4               0
+5               0
+6               0
+7               1
+8               1
+
+$carrier_i
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$carrier_kr
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               1
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$carrier_n0
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            1               1
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               1
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               1
+2               0
+3               0
+4               0
+5               0
+6               0
+7               1
+8               0
+
+$carrier_n1
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               1
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               1
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               1
+2               0
+3               0
+4               0
+5               0
+6               0
+7               1
+8               0
+
+$carrier_n2
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               1
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               1
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               1
+3               1
+4               0
+5               0
+6               1
+7               0
+8               0
+
+$carrier_n3
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               1
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$carrier_n4
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               1
+2                     Excit            0            0               0
+3                     Inhib            0            0               1
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               2
+2               0
+3               2
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$carrier_sf_kr
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               1
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$carrier_sf
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               1
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               1
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$carrier
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               1
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               1
+2               0
+3               1
+4               0
+5               0
+6               0
+7               0
+8               1
+
+$e4e4_i
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               1
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               0
+4               0
+5               0
+6               1
+7               0
+8               1
+
+$e4e4_kr
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$e4e4_n0
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               0
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               0
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+$e4e4
+DataFrame with 8 rows and 5 columns
+  groups[xx, -ncol(groups)] global_FDR10 global_FDR20 cell_type_FDR10
+                <character>    <integer>    <integer>       <integer>
+1                     Astro            0            0               1
+2                     Excit            0            0               0
+3                     Inhib            0            0               0
+4                     Macro            0            0               0
+5                     Micro            0            0               0
+6                     Oligo            0            0               0
+7                       OPC            0            0               0
+8                      Vasc            0            0               0
+  cell_type_FDR20
+        <integer>
+1               1
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+
+`summarise()` has grouped output by 'model'. You can override using the
+`.groups` argument.
+# A tibble: 13 × 4
+# Groups:   model [5]
+   model   assay     n DEGs                                       
+   <chr>   <chr> <int> <chr>                                      
+ 1 apoe    Astro     4 EDIL3, TRIM59, ST18, SPOCK3                
+ 2 apoe    Inhib     1 ENSG00000289204                            
+ 3 apoe    Vasc      1 C17orf67                                   
+ 4 apoe_i  Astro     1 ATP23                                      
+ 5 apoe_i  Excit     3 LINC02224, ENSG00000285656, ENSG00000289285
+ 6 apoe_i  Micro     1 LAMTOR4                                    
+ 7 apoe_i  OPC       1 ARHGAP25                                   
+ 8 apoe_i  Vasc      1 CHD1                                       
+ 9 carrier Astro     2 OPCML, RAB27B                              
+10 carrier Vasc      1 C17orf67                                   
+11 e4e4    Astro     1 ENSG00000259048                            
+12 e4e4_i  Excit     1 ENSG00000289285                            
+13 e4e4_i  Vasc      1 SIGIRR                                     
+  carrier      apoe      e4e4 carrier_i    apoe_i    e4e4_i 
+        3         6         1         0         7         2 
+# A tibble: 8 × 7
+# Groups:   model [4]
+  global_FDR10 global_FDR20 cell_type_FDR10 cell_type_FDR20 model main_mod ddr  
+         <int>        <int>           <int>           <int> <chr> <lgl>    <chr>
+1            0           66               4               6 apoe  TRUE     s    
+2            0            0               1               5 apoe  FALSE    kr   
+3            0            0               1               3 carr… TRUE     s    
+4            0            0               0               1 carr… FALSE    kr   
+5            0            0               0               1 carr… FALSE    kr   
+6            0            0               1               1 carr… FALSE    s    
+7            0            0               1               1 e4e4  TRUE     s    
+8            0            0               0               0 e4e4  FALSE    kr   
+     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+-0.983176 -0.017271  0.000000 -0.002628  0.013940  0.586007 
+Saving 7 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Warning messages:
+1: ggrepel: 74 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+2: ggrepel: 29 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+3: ggrepel: 116 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 28 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+5: ggrepel: 25 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+6: ggrepel: 27 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+7: ggrepel: 42 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+8: ggrepel: 8 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+9: ggrepel: 1 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+10: ggrepel: 2 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+DataFrame with 8 rows and 3 columns
+  groups[xx, -ncol(groups)] global_FDR10 cell_type_FDR10
+                <character>    <integer>       <integer>
+1                     Astro           25              10
+2                     Excit           18              10
+3                     Inhib           13               5
+4                     Macro            1               1
+5                     Micro            7               3
+6                     Oligo           16               6
+7                       OPC           12               4
+8                      Vasc            7               5
+   assay    ID       logFC   AveExpr           t     P.Value adj.P.Val
+1  Astro ABCC4 -0.30552932  5.286699 -1.14819075 0.260755397 0.7650416
+2  Astro CLOCK -0.09469067  6.209128 -0.95311574 0.350168165 0.8103839
+3  Excit ABCC4 -0.07043861  4.400199 -0.63751049 0.529566478 0.8842146
+4  Excit CLOCK -0.12743631  6.896551 -1.52346497 0.143808344 0.6841824
+5  Inhib ABCC4  0.04127582  4.281105  0.40223539 0.691133561 0.9345151
+6  Inhib CLOCK  0.03704634  7.263714  0.43998568 0.663770350 0.9263145
+7  Macro CLOCK -0.84376037  7.461062 -3.44580455 0.002870135 0.4012763
+8  Macro ABCC4  0.64168185  8.318262  2.43769881 0.028627555 0.5201890
+9  Micro CLOCK -0.01828765  7.025623 -0.21116724 0.834294111 0.9681427
+10 Micro ABCC4  0.00880744 10.082738  0.05810899 0.954157969 0.9911005
+11 Oligo ABCC4  1.28950093  2.620553  2.81124985 0.009685181 0.4554893
+12 Oligo CLOCK -0.12121851  6.619850 -1.94718811 0.064743701 0.5930312
+13   OPC ABCC4  0.37468164  5.415059  3.09739226 0.004655207 0.4171659
+14   OPC CLOCK -0.04776615  6.795978 -0.56099431 0.580225589 0.9011589
+15  Vasc ABCC4  0.51481256  6.460613  1.43104126 0.165801420 0.7034031
+16  Vasc CLOCK  0.09797906  7.006931  0.48243630 0.633225737 0.9173389
+           B       z.std adj.P.Val.cell_type   model
+1  -5.127562 -1.12460749                   1 carrier
+2  -5.264811 -0.93426316                   1 carrier
+3  -5.536879 -0.62866793                   1 carrier
+4  -4.667242 -1.46175506                   1 carrier
+5  -4.961896  0.39731721                   1 carrier
+6  -4.991165  0.43471357                   1 carrier
+7  -2.068421 -2.98131490                   1 carrier
+8  -3.531505  2.18857761                   1 carrier
+9  -4.785692 -0.20919744                   1 carrier
+10 -4.776971  0.05748611                   1 carrier
+11 -2.600419  2.58687113                   1 carrier
+12 -4.087097 -1.84702373                   1 carrier
+13 -2.646580  2.82997203                   1 carrier
+14 -4.945475 -0.55305523                   1 carrier
+15 -4.608112  1.38582149                   1 carrier
+16 -5.376927  0.47719154                   1 carrier
+   assay     ID   APOEE2.E3    APOEE3.E4   APOEE4.E4  AveExpr         F
+1  Astro ADAM17 -0.23453090 -0.073655408 -0.18261105 5.966076 0.9601244
+2  Astro ADAM10 -0.08763252  0.137888576 -0.12615562 6.912867 2.0689184
+3  Excit ADAM10  0.02508392  0.004800638 -0.18121001 6.952919 0.8755079
+4  Excit ADAM17  0.19857289  0.511501641  0.18211934 6.177566 9.2184970
+5  Inhib ADAM10 -0.06506802 -0.022598349 -0.20190404 6.766879 1.4147321
+6  Inhib ADAM17 -0.02412616  0.066658695  0.10835058 6.062254 0.8131935
+7  Macro ADAM17 -0.38819903 -0.364348641 -0.85226421 7.332054 1.0559475
+8  Macro ADAM10  0.11246621 -0.629007677 -0.63854711 8.236480 2.7204292
+9  Micro ADAM17 -0.04631848  0.131576649 -0.06004489 7.364860 0.6721719
+10 Micro ADAM10 -0.11199882 -0.290997206  0.01981329 8.917679 2.8225770
+11 Oligo ADAM10 -0.15684993 -0.288269060 -0.04355076 8.381706 2.0215820
+12 Oligo ADAM17 -0.20028190 -0.243538845 -0.21593173 6.310373 1.2187745
+13   OPC ADAM17 -0.24102938 -0.107227558 -0.03495666 5.805625 1.3463423
+14   OPC ADAM10 -0.08658409 -0.053694097 -0.07974786 6.851316 0.1208522
+15  Vasc ADAM10 -0.14289052 -0.223574809 -0.50317633 7.900954 1.1334212
+16  Vasc ADAM17 -0.10932749  0.385583393  0.07165231 6.912282 1.8683032
+        P.Value adj.P.Val     F.std adj.P.Val.cell_type model
+1  0.4265638226 0.8301325 0.9271477                   1  apoe
+2  0.1292747197 0.6992771 1.8872693                   1  apoe
+3  0.4677238058 0.8421058 0.8473795                   1  apoe
+4  0.0003176266 0.2304085 6.2283105                   1  apoe
+5  0.2635989439 0.7678329 1.3267676                   1  apoe
+6  0.4994847872 0.8528790 0.7895718                   1  apoe
+7  0.4076544571 0.8232847 0.9659288                   1  apoe
+8  0.0966096350 0.6727474 2.1100301                   1  apoe
+9  0.5768912051 0.8764355 0.6594838                   1  apoe
+10 0.0585793981 0.6347000 2.4868679                   1  apoe
+11 0.1365370685 0.7049263 1.8451305                   1  apoe
+12 0.3234929053 0.7929696 1.1596745                   1  apoe
+13 0.2811810167 0.7747680 1.2744522                   1  apoe
+14 0.9469947786 0.9849539 0.1222954                   1  apoe
+15 0.3539490085 0.8031505 1.0850143                   1  apoe
+16 0.1598349817 0.7204842 1.7229867                   1  apoe
+   assay       ID       logFC   AveExpr          t      P.Value adj.P.Val
+1  Astro NAALADL2 -0.29072151  8.997758 -3.4421205 0.0022140564 0.9811935
+2  Astro  SRGAP2C -0.04653809  3.181824 -0.2580179 0.7986940158 0.9955012
+3  Astro      APP  0.03572570  7.145310  0.2701622 0.7892392635 0.9949797
+4  Excit NAALADL2 -0.05026200  7.121769 -0.3608693 0.7210053014 0.9923674
+5  Excit  SRGAP2C -0.30359168  5.619195 -1.6972351 0.1011518066 0.9811935
+6  Excit      APP -0.15886826  9.159642 -1.5911953 0.1273721953 0.9811935
+7  Inhib  SRGAP2C -0.44455010  5.881392 -3.4204583 0.0023107280 0.9811935
+8  Inhib NAALADL2 -0.27092903  7.589692 -2.7651892 0.0114896810 0.9811935
+9  Inhib      APP -0.10950733  9.415515 -1.3846368 0.1818553111 0.9811935
+10 Macro NAALADL2 -0.95707004  8.727701 -2.4710479 0.0234667517 0.9811935
+11 Macro  SRGAP2C -0.68135780  8.242517 -1.8625117 0.0867234986 0.9811935
+12 Micro  SRGAP2C -0.35892912  9.226962 -2.1579328 0.0423288829 0.9811935
+13 Micro NAALADL2 -0.11185791  8.700920 -0.5824955 0.5661400677 0.9874384
+14 Micro      APP -0.34318202  7.074803 -1.0742538 0.2929551195 0.9811935
+15 Oligo      APP -0.09631714 10.028749 -1.1074363 0.2778497077 0.9811935
+16 Oligo  SRGAP2C -0.23159334  5.236078 -1.1639307 0.2562970142 0.9811935
+17 Oligo NAALADL2 -0.17978109  9.385422 -1.5693746 0.1307123651 0.9811935
+18   OPC      APP -0.08733396  9.038983 -0.5636202 0.5775982471 0.9878254
+19   OPC  SRGAP2C -0.50700564  5.430805 -4.2166515 0.0003527129 0.9811935
+20   OPC NAALADL2 -0.12004238  9.103366 -1.0015427 0.3262199653 0.9811935
+21  Vasc  SRGAP2C -0.15341728  6.687955 -0.6124630 0.5459766451 0.9869507
+22  Vasc      APP  0.02550198  9.224753  0.1223879 0.9034634077 0.9975432
+23  Vasc NAALADL2  0.06380432  8.521370  0.2680943 0.7905860101 0.9951361
+           B      z.std adj.P.Val.cell_type model
+1  -3.537598 -3.0599071                   1  e4e4
+2  -4.752633 -0.2550377                   1  e4e4
+3  -4.765705  0.2672986                   1  e4e4
+4  -4.726061 -0.3571156                   1  e4e4
+5  -4.390320 -1.6392951                   1  e4e4
+6  -4.448049 -1.5245467                   1  e4e4
+7  -2.347550 -3.0470844                   1  e4e4
+8  -3.212046 -2.5274420                   1  e4e4
+9  -4.477849 -1.3350643                   1  e4e4
+10 -3.242625 -2.2657491                   1  e4e4
+11 -4.095776 -1.7129404                   1  e4e4
+12 -4.218075 -2.0302722                   1  e4e4
+13 -4.701325 -0.5737454                   1  e4e4
+14 -4.596767 -1.0516610                   1  e4e4
+15 -4.589533 -1.0851625                   1  e4e4
+16 -4.571214 -1.1351869                   1  e4e4
+17 -4.429271 -1.5112987                   1  e4e4
+18 -5.035457 -0.5568964                   1  e4e4
+19 -1.143836 -3.5731497                   1  e4e4
+20 -4.801917 -0.9817562                   1  e4e4
+21 -4.653094 -0.6038000                   1  e4e4
+22 -4.686708  0.1212874                   1  e4e4
+23 -4.681897  0.2655497                   1  e4e4
+[[1]]
+
+[[2]]
+
+[[3]]
+
+[[4]]
+
+Warning messages:
+1: Removed 6 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+2: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+3: Removed 2 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+4: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+null device 
+          1 
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_carrier_expression_boxplot-Astro-OPCML.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_carrier_expression_boxplot-Astro-RAB27B.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_carrier_expression_boxplot-Vasc-C17orf67.png"
+
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/dreamlet_sn_forest-carrier-OPCML.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/dreamlet_sn_forest-carrier-RAB27B.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/dreamlet_sn_forest-carrier-C17orf67.png"
+
+ [1] "E2E2_E4E4"            "E3E4_E4E4"            "E2E3_E4E4"           
+ [4] "E2E2_E3E4"            "E2E2_E2E3"            "E2E3_E3E4"           
+ [7] "anyE2_E4E4"           "anyE2_anyE4"          "E2E2_anyE4"          
+[10] "E2E3_anyE4"           "APOE_synE2.E2"        "APOE_synE2.E3"       
+[13] "APOE_synE3.E4"        "APOE_synE4.E4"        "Anc_Afr"             
+[16] "Age"                  "Rin"                  "subsets_Mito_percent"
+$E2E2_E4E4
+
+$E3E4_E4E4
+
+$E2E3_E4E4
+
+$E2E2_E3E4
+
+$E2E2_E2E3
+
+$E2E3_E3E4
+
+$anyE2_E4E4
+
+$anyE2_anyE4
+
+$E2E2_anyE4
+
+$E2E3_anyE4
+
+Warning messages:
+1: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+2: Removed 3 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+3: Removed 2 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+4: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+5: Removed 2 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+6: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+7: Removed 2 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+8: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+9: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+10: Removed 1 row containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+null device 
+          1 
+`summarise()` has grouped output by 'assay'. You can override using the
+`.groups` argument.
+# A tibble: 35 × 3
+# Groups:   assay [8]
+   assay ID              contrasts                         
+   <chr> <chr>           <chr>                             
+ 1 Astro CACNG8          anyE2_anyE4, E2E2_anyE4           
+ 2 Astro CNTNAP4         E3E4_E4E4                         
+ 3 Astro EDIL3           E3E4_E4E4                         
+ 4 Astro ENSG00000259048 anyE2_E4E4                        
+ 5 Astro IL1RAPL1        E3E4_E4E4                         
+ 6 Astro NXPH1           E2E2_E4E4, anyE2_E4E4, anyE2_anyE4
+ 7 Astro PLPPR4          E2E2_anyE4                        
+ 8 Astro SPOCK3          E3E4_E4E4                         
+ 9 Astro ST18            E3E4_E4E4                         
+10 Astro TRIM59          E3E4_E4E4                         
+# ℹ 25 more rows
+`summarise()` has grouped output by 'assay'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'assay'. You can override using the
+`.groups` argument.
+[1] "CNTNAP4"
+`summarise()` has grouped output by 'assay'. You can override using the
+`.groups` argument.
+Joining with `by = join_by(ID)`
+# A tibble: 0 × 7
+# Groups:   assay [0]
+# ℹ 7 variables: assay <chr>, ID <chr>, n_models <int>, models <chr>,
+#   contrasts <chr>, risk <lgl>, visium_DE <chr>
+# A tibble: 45 × 7
+# Groups:   assay [8]
+   assay ID              n_models models               contrasts risk  visium_DE
+   <chr> <chr>              <int> <chr>                <chr>     <lgl> <chr>    
+ 1 Astro ATP23                  1 apoe_i               ""        FALSE <NA>     
+ 2 Astro CACNG8                 1 contrast             "anyE2_a… FALSE <NA>     
+ 3 Astro CNTNAP4                1 contrast             "E3E4_E4… FALSE WM.uf_Sp…
+ 4 Astro EDIL3                  2 apoe, contrast       "E3E4_E4… FALSE <NA>     
+ 5 Astro ENSG00000259048        2 e4e4, contrast       "anyE2_E… FALSE <NA>     
+ 6 Astro IL1RAPL1               1 contrast             "E3E4_E4… FALSE <NA>     
+ 7 Astro NXPH1                  1 contrast             "E2E2_E4… FALSE <NA>     
+ 8 Astro OPCML                  1 carrier              ""        FALSE <NA>     
+ 9 Astro PLPPR4                 1 contrast             "E2E2_an… FALSE <NA>     
+10 Astro RAB27B                 1 carrier              ""        FALSE <NA>     
+11 Astro SPOCK3                 2 apoe, contrast       "E3E4_E4… FALSE <NA>     
+12 Astro ST18                   2 apoe, contrast       "E3E4_E4… FALSE <NA>     
+13 Astro TRIM59                 2 apoe, contrast       "E3E4_E4… FALSE <NA>     
+14 Excit ENSG00000285656        1 apoe_i               ""        FALSE <NA>     
+15 Excit ENSG00000287352        1 contrast             "anyE2_E… FALSE <NA>     
+16 Excit ENSG00000289285        1 apoe_i, e4e4_i       ""        FALSE <NA>     
+17 Excit LINC02125              1 contrast             "E2E2_E3… FALSE <NA>     
+18 Excit LINC02224              1 apoe_i               ""        FALSE <NA>     
+19 Excit SMIM20                 1 contrast             "E2E2_E3… FALSE <NA>     
+20 Excit SOCS2-AS1              1 contrast             "E2E2_E3… FALSE <NA>     
+21 Excit SSTR1                  1 contrast             "E2E2_E3… FALSE <NA>     
+22 Excit STEAP2                 1 contrast             "E2E2_E3… FALSE <NA>     
+23 Inhib ENSG00000289204        2 apoe, contrast       "E2E2_E4… FALSE <NA>     
+24 Inhib MCM8-AS1               1 contrast             "E2E3_E4… FALSE <NA>     
+25 Macro ATP13A3                1 contrast             "E2E3_E3… FALSE <NA>     
+26 Macro ELL2                   1 contrast             "E2E2_E3… FALSE <NA>     
+27 Macro MAP3K8                 1 contrast             "E3E4_E4… FALSE <NA>     
+28 Macro P2RY12                 1 contrast             "E2E3_E3… FALSE <NA>     
+29 Macro RASSF2                 1 contrast             "E2E3_E3… FALSE <NA>     
+30 Macro UST                    1 contrast             "E3E4_E4… FALSE <NA>     
+31 Macro ZHX2                   1 contrast             "E2E2_E3… FALSE <NA>     
+32 Micro LAMTOR4                1 apoe_i               ""        FALSE <NA>     
+33 Micro NPHP1                  1 contrast             "E3E4_E4… FALSE <NA>     
+34 OPC   APOO                   1 contrast             "E2E2_E3… FALSE <NA>     
+35 OPC   ARHGAP25               1 apoe_i               ""        FALSE <NA>     
+36 OPC   ENSG00000273507        1 contrast             "E2E2_E3… FALSE <NA>     
+37 OPC   KRT10-AS1              1 contrast             "E2E2_E3… FALSE <NA>     
+38 OPC   LDB3                   1 contrast             "E2E3_E3… FALSE <NA>     
+39 Oligo COL11A1                1 contrast             "E2E2_E3… FALSE <NA>     
+40 Oligo ENSG00000227388        1 contrast             "E2E2_E3… FALSE <NA>     
+41 Vasc  C17orf67               2 carrier, apoe, cont… "E2E3_E3… FALSE <NA>     
+42 Vasc  CHD1                   1 apoe_i               ""        FALSE <NA>     
+43 Vasc  GPC4                   1 contrast             "E2E2_E4… FALSE <NA>     
+44 Vasc  PIK3R3                 1 contrast             "E3E4_E4… FALSE <NA>     
+45 Vasc  SIGIRR                 1 e4e4_i               ""        FALSE <NA>     
+  assay  n
+1 Astro 13
+2 Excit  7
+3 Inhib  5
+4 Macro  7
+5 Micro  1
+6   OPC  4
+7 Oligo  2
+8  Vasc  8
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-OPC-APOO.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-ATP13A3.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Vasc-C17orf67.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-CACNG8.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-CNTNAP4.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Oligo-COL11A1.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-EDIL3.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-ELL2.png"
+
+[[9]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Oligo-ENSG00000227388.png"
+
+[[10]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-ENSG00000259048.png"
+
+[[11]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-OPC-ENSG00000273507.png"
+
+[[12]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Excit-ENSG00000287352.png"
+
+[[13]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Inhib-ENSG00000289204.png"
+
+[[14]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Vasc-GPC4.png"
+
+[[15]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-IL1RAPL1.png"
+
+[[16]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-OPC-KRT10-AS1.png"
+
+[[17]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-OPC-LDB3.png"
+
+[[18]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Excit-LINC02125.png"
+
+[[19]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-MAP3K8.png"
+
+[[20]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Inhib-MCM8-AS1.png"
+
+[[21]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Micro-NPHP1.png"
+
+[[22]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-NXPH1.png"
+
+[[23]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-P2RY12.png"
+
+[[24]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Vasc-PIK3R3.png"
+
+[[25]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-PLPPR4.png"
+
+[[26]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-RASSF2.png"
+
+[[27]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Excit-SMIM20.png"
+
+[[28]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Excit-SOCS2-AS1.png"
+
+[[29]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-SPOCK3.png"
+
+[[30]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Excit-SSTR1.png"
+
+[[31]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-ST18.png"
+
+[[32]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Excit-STEAP2.png"
+
+[[33]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Astro-TRIM59.png"
+
+[[34]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-UST.png"
+
+[[35]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_expression_boxplot-Macro-ZHX2.png"
+
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-Astro-ATP23.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-Excit-LINC02224.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-Excit-ENSG00000285656.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-Excit-ENSG00000289285.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-Micro-LAMTOR4.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-OPC-ARHGAP25.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/10_dreamlet_sn/05_compile_dreamlet_sn/sn_apoe_anc_expression_boxplot-Vasc-CHD1.png"
+
+Joining with `by = join_by(assay, ID)`
+Warning messages:
+1: Removed 418 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 418 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Joining with `by = join_by(assay, ID)`
+Warning messages:
+1: Removed 418 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 418 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Joining with `by = join_by(assay, ID)`
+Warning messages:
+1: Removed 414 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 414 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Joining with `by = join_by(assay, ID)`
+Warning messages:
+1: Removed 414 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 414 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+[1] "Reproducibility information:"
+[1] "2025-06-13 09:47:50 EDT"
+   user  system elapsed 
+177.109   7.494 191.091 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-06-13
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+ annotate               1.86.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ AnnotationDbi          1.70.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ aod                    1.3.3      2023-12-13 [1] CRAN (R 4.5.0)
+ ashr                   2.2-63     2023-08-21 [2] CRAN (R 4.5.0)
+ assertthat             0.2.1      2019-03-21 [2] CRAN (R 4.5.0)
+ babelgene              22.9       2022-09-29 [1] CRAN (R 4.5.0)
+ backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.0)
+ beeswarm               0.4.0      2021-06-01 [2] CRAN (R 4.5.0)
+ Biobase              * 2.68.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocParallel         * 1.42.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Biostrings             2.76.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.0)
+ bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+ blob                   1.2.4      2023-03-17 [2] CRAN (R 4.5.0)
+ boot                   1.3-31     2024-08-28 [3] CRAN (R 4.5.0)
+ broom                  1.0.8      2025-03-28 [2] CRAN (R 4.5.0)
+ cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+ caTools                1.18.3     2024-09-04 [2] CRAN (R 4.5.0)
+ cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+ codetools              0.2-20     2024-03-31 [3] CRAN (R 4.5.0)
+ corpcor                1.6.10     2021-09-16 [2] CRAN (R 4.5.0)
+ crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+ curl                   6.2.3      2025-05-24 [1] CRAN (R 4.5.0)
+ data.table             1.17.4     2025-05-26 [1] CRAN (R 4.5.0)
+ DBI                    1.2.3      2024-06-02 [2] CRAN (R 4.5.0)
+ DelayedArray           0.34.1     2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
+ DelayedMatrixStats     1.30.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ DFplyr               * 1.2.0      2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ dichromat              2.0-0.1    2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+ dreamlet             * 1.7.1      2025-05-30 [1] Github (DiseaseNeurogenomics/dreamlet@445c5bf)
+ edgeR                  4.6.2      2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ EnrichmentBrowser      2.38.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ EnvStats               3.1.0      2025-04-24 [1] CRAN (R 4.5.0)
+ fANCOVA                0.6-1      2020-11-13 [1] CRAN (R 4.5.0)
+ farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14     2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ggbeeswarm             0.7.2      2023-04-29 [2] CRAN (R 4.5.0)
+ ggplot2              * 3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+ ggrepel              * 0.9.6      2024-09-07 [2] CRAN (R 4.5.0)
+ glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+ gplots                 3.2.0      2024-10-05 [2] CRAN (R 4.5.0)
+ graph                  1.86.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GSEABase               1.70.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+ gtools                 3.9.5      2023-11-20 [2] CRAN (R 4.5.0)
+ here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.5.0)
+ hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+ invgamma               1.1        2017-05-07 [2] CRAN (R 4.5.0)
+ IRanges              * 2.42.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ irlba                  2.3.5.1    2022-10-03 [2] CRAN (R 4.5.0)
+ iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGgraph              1.68.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ KEGGREST               1.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ KernSmooth             2.23-26    2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
+ lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+ limma                * 3.64.1     2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ lme4                   1.1-37     2025-03-26 [2] CRAN (R 4.5.0)
+ lmerTest               3.1-3      2020-10-23 [1] CRAN (R 4.5.0)
+ locfit                 1.5-9.12   2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
+ magick                 2.8.6      2025-03-23 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+ mashr                  0.2.79     2023-10-18 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65     2025-02-28 [3] CRAN (R 4.5.0)
+ mathjaxr               1.8-0      2025-04-30 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3      2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ matrixStats          * 1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+ memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+ metadat                1.4-0      2025-02-04 [1] CRAN (R 4.5.0)
+ metafor                4.8-0      2025-01-28 [1] CRAN (R 4.5.0)
+ minqa                  1.2.8      2024-08-17 [2] CRAN (R 4.5.0)
+ mixsqp                 0.3-54     2023-12-20 [2] CRAN (R 4.5.0)
+ msigdbr                24.1.0     2025-05-13 [1] CRAN (R 4.5.0)
+ mvtnorm                1.3-3      2025-01-10 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168    2025-03-31 [3] CRAN (R 4.5.0)
+ nloptr                 2.2.1      2025-03-17 [2] CRAN (R 4.5.0)
+ numDeriv               2016.8-1.1 2019-06-06 [2] CRAN (R 4.5.0)
+ pbkrtest               0.5.4      2025-04-28 [2] CRAN (R 4.5.0)
+ pillar                 1.10.2     2025-04-05 [2] CRAN (R 4.5.0)
+ pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-8      2022-11-29 [2] CRAN (R 4.5.0)
+ prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
+ progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
+ purrr                * 1.0.4      2025-02-05 [2] CRAN (R 4.5.0)
+ R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+ ragg                   1.4.0      2025-04-10 [2] CRAN (R 4.5.0)
+ rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.0.14     2025-01-12 [2] CRAN (R 4.5.0)
+ RcppParallel           5.1.10     2025-01-24 [2] CRAN (R 4.5.0)
+ RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
+ Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+ readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.5.0)
+ reformulas             0.4.1      2025-04-30 [2] CRAN (R 4.5.0)
+ remaCor                0.0.18     2024-02-08 [1] CRAN (R 4.5.0)
+ reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.5.0)
+ Rfast                  2.1.5.1    2025-03-14 [1] CRAN (R 4.5.0)
+ Rgraphviz              2.52.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ RhpcBLASctl            0.23-42    2023-02-11 [2] CRAN (R 4.5.0)
+ rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+ rmeta                  3.0        2018-03-20 [1] CRAN (R 4.5.0)
+ rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.5.0)
+ RSQLite                2.3.11     2025-05-04 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ S4Vectors            * 0.46.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+ scattermore            1.2        2023-06-12 [2] CRAN (R 4.5.0)
+ sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1     2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sparseMatrixStats      1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ SpatialExperiment    * 1.18.1     2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ SQUAREM                2021.1     2021-01-13 [2] CRAN (R 4.5.0)
+ statmod                1.5.0      2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)
+ textshaping            1.0.1      2025-05-01 [2] CRAN (R 4.5.0)
+ tibble               * 3.2.1      2023-03-20 [2] CRAN (R 4.5.0)
+ tidyr                * 1.3.1      2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.0)
+ truncnorm              1.0-9      2023-03-20 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ utf8                   1.2.5      2025-05-01 [2] CRAN (R 4.5.0)
+ variancePartition    * 1.38.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+ vipor                  0.4.7      2023-12-18 [2] CRAN (R 4.5.0)
+ withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+ XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
+ xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
+ XVector                0.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ zenith                 1.10.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ zigg                   0.0.2      2025-02-07 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Jun 13 09:47:51 AM EDT 2025
