@@ -33,17 +33,37 @@ names(pseudobulkDGE_data$Visium) <- main_mods
 
 pseudobulkDGE_data$sn$carrier$Astro
 
-edit_pseudobulkDEG_data <- function(df, cluster){
+edit_pseudobulkDEG_data <- function(df_list){
     
-    df2 <- df |>
-        as.data.frame() |>
-        mutate(cluster = cluster) |>
-        select(gene_id, gene_name, logFC, t, P.Value, adj.P.Val)
+    cluster_names <- names(df_list)
     
-    names_keep <- c()
-    
+    df_combined <- map2_dfr(df_list, cluster_names, function(df, cluster){
+        df2 <- df |>
+            as.data.frame() |>
+            dplyr::select(gene_name,
+                          gene_id,
+                          pbDGE_logFC = logFC,
+                          pbDGE_AveExpr = AveExpr,
+                          pbDGE_t = t,
+                          pbDGE_P.Value = P.Value,
+                          pbDGE_adj.P.Val = adj.P.Val,
+                          pbDGE_B = B) |>
+            mutate(cluster = cluster) |>
+            as_tibble()
+        return(df2)
+    })
+    return(df_combined)
 }
-    
+
+pseudobulkDGE_data_select <- map(pseudobulkDGE_data, ~.x[c("carrier", "e4e4")])
+
+pseudobulkDGE_data_tb <- map_depth(pseudobulkDGE_data_select,2, edit_pseudobulkDEG_data)
+
+map_depth(pseudobulkDGE_data_tb, 2, ~.x |> filter(pbDGE_adj.P.Val < 0.2) |> count(cluster))
+map_depth(pseudobulkDGE_data_tb, 2, ~.x |> filter(pbDGE_adj.P.Val < 0.2))
+
+## datatype - mod
+pseudobulkDGE_data_tb$sn$carrier
     
 #### dreamlet data ####
 dreamlet_fn <- list(sn = here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"),
@@ -56,6 +76,38 @@ dreamlet_data <- map(dreamlet_fn, ~get(load(.x)))
 names(dreamlet_data$sn)
 
 head(dreamlet_data$sn$carrier)
+
+dreamlet_data_tb <- list()
+dreamlet_data_tb$sn <- map(dreamlet_data$sn[c("carrier", "e4e4")],
+                              ~.x |>
+                                  as.data.frame() |>
+                                  as_tibble() |>
+                                  dplyr::select(gene_name = ID,
+                                         cluster = assay,
+                                         dream_logFC = logFC,
+                                         dream_AveExpr = AveExpr,
+                                         dream_t = t,
+                                         dream_P.Value = P.Value,
+                                         dream_adj.P.Val = adj.P.Val.cell_type,
+                                         dream_B = B)) 
+
+dreamlet_data_tb$Visium <- map(dreamlet_data$Visium[c("carrier", "e4e4")],
+                              ~.x |>
+                                  as.data.frame() |>
+                                  as_tibble() |>
+                                  dplyr::select(gene_name = ID,
+                                         cluster = assay,
+                                         dream_logFC = logFC,
+                                         dream_AveExpr = AveExpr,
+                                         dream_t = t,
+                                         dream_P.Value = P.Value,
+                                         dream_adj.P.Val = adj.P.Val.SpD,
+                                         dream_B = B)) 
+
+map_depth(dreamlet_data_tb,2, colnames)
+
+map_depth(dreamlet_data_tb, 2, ~.x |> filter(dream_adj.P.Val < 0.2) |> count(cluster))
+map_depth(dreamlet_data_tb, 2, ~.x |> filter(dream_adj.P.Val < 0.2))
 
 #### voomLmFit data ####
 
@@ -89,26 +141,49 @@ vlmf_data_tb <- map_depth(vlmf_data, 2,
                           )
 
 
+map_depth(vlmf_data_tb, 2, ~.x |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster))
+map_depth(vlmf_data_tb, 2, ~.x |> filter(vlmf_adj.P.Val < 0.05))
+
+
 #### Add other data to vlmc data ####
 
-test <- vlmf_data_tb$sn$anyE2_anyE4 |>
-    left_join(dreamlet_data$sn$carrier |>
-                  as.data.frame() |> 
-                  select(gene_name = ID,
-                         cluster = assay,
-                         dream_logFC = logFC,
-                         dream_AveExpr = AveExpr,
-                         dream_t = t,
-                         dream_P.Value = P.Value,
-                         dream_adj.P.Val = adj.P.Val.cell_type,
-                         dream_B = B)) |>
-    mutate(DE_class = case_when(vlmf_adj.P.Val < 0.05 & dream_adj.P.Val < 0.2 ~ "signif_both",
-                                vlmf_adj.P.Val < 0.05  ~ "signif_vlmf",
-                                dream_adj.P.Val < 0.2 ~ "signif_dreamlet",
-                                TRUE ~"None"
-    ))
+test <- vlmf_data_tb$sn$carrier |>
+    left_join(pseudobulkDGE_data_tb$sn$carrier)|>
+    left_join(dreamlet_data_tb$sn$carrier)
 
-test |> count(DE_class)
+comapre_t_scatter <- function(dge_tb, mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
+    
+    ## define vars
+    tX <- paste0(mX, "_t")
+    tY <- paste0(mY, "_t")
+    fdrX <- paste0(mX, "_adj.P.Val")
+    fdrY <- paste0(mY, "_adj.P.Val")
+
+    # define colors
+    signif_colors <- c("purple", "blue", "red")
+    names(signif_colors) <- c("sig_both", paste(mX, "<", FDR_cut_mX) , paste(mY, "<", FDR_cut_mY) )
+    
+    # make scatter plot
+    t_stat_scatter <- dge_tb |>
+        mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
+                                    !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "<", FDR_cut_mX),
+                                    !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "<", FDR_cut_mY),
+                                    TRUE ~ "Other")) |>
+        ggplot(aes(x = !!sym(tX), y = !!sym(tY), color = DE_class)) +
+        geom_point(alpha = 0.5, size = 0.5) +
+        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
+        geom_abline(linetype = "dashed") +
+        scale_color_manual(values = signif_colors) +
+        labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
+        facet_wrap(~cluster) +
+        theme_bw()
+    
+    ggsave(t_stat_scatter, filename = here(plot_dir, sprintf("t_stat_scatter_%s_%s-v-%s.png", model_name, mX, mY)))
+    
+    return(t_stat_scatter)
+}
+
+test_plot <- comapre_t_scatter(test, mX= "dream", mY="pbDGE", model_name = "carrier")
 
 vlmf_dreamlet_scatter <- test |>
     ggplot(aes(x = vlmf_t, y = dream_t, color = DE_class)) +
