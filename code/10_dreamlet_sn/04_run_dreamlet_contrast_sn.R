@@ -37,7 +37,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 pb <- readRDS(here("processed-data", "10_dreamlet_sn", "01_prep_dreamlet_sn", "sn_dreamlet_pb.rds"))
 
 ## simplify colnames
-colData(res.proc)$APOE_ <- colData(res.proc)$APOE_syn
+colData(pb)$APOE_ <- colData(pb)$APOE_syn
 
 #### Differential Expression ####
 
