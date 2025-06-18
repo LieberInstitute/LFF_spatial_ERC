@@ -25,6 +25,8 @@ main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 cluster_colors <- cell_type_colors$anno
 cluster_levels <- names(cell_type_colors$anno)
+cell_type_broad_levels <- names(cell_type_colors$broad)
+cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Other"]
 
 
 #### voomLmFit data ####
@@ -50,7 +52,7 @@ vlmf_data_tb <- map(vlmf_data,
                                       vlmf_adj.P.Val = adj.P.Val,
                                       vlmf_B = B
                         )  |>
-                        mutate(cell_type_broad = factor(jaffelab::ss(cluster,"\\."), names(cell_type_colors$broad)),
+                        mutate(cell_type_broad = factor(jaffelab::ss(cluster,"\\."), cell_type_broad_levels),
                                cluster = factor(cluster, levels = cluster_levels)
                                )
 )
@@ -89,7 +91,7 @@ ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_FDR05, -n_genes) |>
     mutate(nDown = -1*nDown) |>
-    pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
+    pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
     filter(mod == "carrier") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
@@ -133,80 +135,100 @@ custom_volcano <- function(data, FDR_cut = 0.05, model_name){
     ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_plot_%s.png", model_name)), height = 10, width = 10)
 }
 
-custom_volcano_ct <- function(data){
+custom_volcano_ct <- function(data, mod_name){
+    
+    map(cell_type_broad_levels, ~data |> 
+            filter(cell_type_broad == .x) |>
+            custom_volcano(, model_name = paste0(mod_name,"-", .x)) )
     
 }
 
 ## plot volcanos
-walk(c("E4E4", "carrier"), ~custom_volcano(data = vlmf_data_tb[[.x]], model_name = paste0(opt$datatype, "-", .x)))
+walk(c("E4E4", "carrier"), ~custom_volcano_ct(data = vlmf_data_tb[[.x]], mod_name = paste0(opt$datatype, "-", .x)))
 ## filter to risk genes
-walk(c("E4E4", "carrier"), ~custom_volcano(data = vlmf_data_tb[[.x]] |> filter(gene_name %in% AD_risk$symbol), 
-                                           model_name = paste0(opt$datatype, "-", .x, "-risk")))
+walk(c("E4E4", "carrier"), ~custom_volcano_ct(data = vlmf_data_tb[[.x]] |> filter(gene_name %in% AD_risk$symbol), 
+                                           mod_name = paste0(opt$datatype, "-", .x, "-risk")))
 
-#### Add other data to vlmf data ####
+#### Save vlmf data ####
 
-carrier_data <- vlmf_data_tb$carrier |>
-    left_join(pseudobulkDGE_data_tb$carrier)|>
-    left_join(dreamlet_data_tb$carrier)
-
-colnames(carrier_data)
-
-dim(carrier_data)
+# carrier_data <- vlmf_data_tb$carrier |>
+#     left_join(pseudobulkDGE_data_tb$carrier)|>
+#     left_join(dreamlet_data_tb$carrier)
+# 
+# colnames(carrier_data)
+# 
+# dim(carrier_data)
 
 ## save data
-saveRDS(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
-write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.csv", opt$datatype)), row.names = FALSE)
+saveRDS(vlmf_data_tb$carrier, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
+write.csv(vlmf_data_tb$carrier, file = here(data_dir, sprintf("DGE_results_carrier_%s.csv", opt$datatype)), row.names = FALSE)
 
 #### compare t-stats ####
-comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
+# comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
+#     
+#     ## define vars
+#     statX <- paste0(mX, "_", stat)
+#     statY <- paste0(mY, "_", stat)
+#     fdrX <- paste0(mX, "_adj.P.Val")
+#     fdrY <- paste0(mY, "_adj.P.Val")
+# 
+#     # define colors
+#     signif_colors <- c("purple", "blue", "red")
+#     names(signif_colors) <- c("sig_both", paste(mX, "FDR<", FDR_cut_mX) , paste(mY, "FDR<", FDR_cut_mY))
+#     
+#     # make scatter plot
+#     stat_scatter <- dge_tb |>
+#         mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
+#                                     !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "FDR<", FDR_cut_mX),
+#                                     !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "FDR<", FDR_cut_mY),
+#                                     TRUE ~ "None")) |>
+#         ggplot(aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
+#         geom_point(alpha = 0.5, size = 0.5) +
+#         geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
+#         geom_abline(linetype = "dashed") +
+#         scale_color_manual(values = signif_colors) +
+#         labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
+#         facet_wrap(~cluster) +
+#         theme_bw()
+#     
+#     plot_fn = sprintf("%s_%s_stat_scatter_%s_%s-v-%s.png", opt$datatype, stat, model_name, mX, mY)
+#     ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+#     
+#     # return(t_stat_scatter)
+# }
+# 
+# ## compare t-stats
+# comapre_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
+# comapre_stats_scatter(carrier_data, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# comapre_stats_scatter(carrier_data, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# 
+# ## compare logFC
+# comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", model_name = "carrier")
+# comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# comapre_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+
+
+#### compare stats cluster vs. cluster 
+
+carrier_data_wide_t <- vlmf_data_tb$carrier |>
+    select(gene_id, gene_id, cluster, vlmf_t) |>
+    # count(cluster)
+    pivot_wider(values_from = "vlmf_t", names_from = "cluster")
+
+library(GGally)
+
+ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t))
+
+# ggsave(ggpair_t_stats, filename = "sn_fine_t_stat_ggpairs.png", height = 15, width = 15)    
+
+map(cell_type_broad_levels, function(ctb){
+    message(ctb)
+    ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = grep(ctb, colnames(carrier_data_wide_t)), size = 0.5, alpha = 0.5)
+    ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("sn_fine_t_stat_ggpairs-%s.png", ctb)))
     
-    ## define vars
-    statX <- paste0(mX, "_", stat)
-    statY <- paste0(mY, "_", stat)
-    fdrX <- paste0(mX, "_adj.P.Val")
-    fdrY <- paste0(mY, "_adj.P.Val")
+})
 
-    # define colors
-    signif_colors <- c("purple", "blue", "red")
-    names(signif_colors) <- c("sig_both", paste(mX, "FDR<", FDR_cut_mX) , paste(mY, "FDR<", FDR_cut_mY))
-    
-    # make scatter plot
-    stat_scatter <- dge_tb |>
-        mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
-                                    !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "FDR<", FDR_cut_mX),
-                                    !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "FDR<", FDR_cut_mY),
-                                    TRUE ~ "None")) |>
-        ggplot(aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
-        geom_point(alpha = 0.5, size = 0.5) +
-        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
-        geom_abline(linetype = "dashed") +
-        scale_color_manual(values = signif_colors) +
-        labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
-        facet_wrap(~cluster) +
-        theme_bw()
-    
-    plot_fn = sprintf("%s_%s_stat_scatter_%s_%s-v-%s.png", opt$datatype, stat, model_name, mX, mY)
-    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
-    
-    # return(t_stat_scatter)
-}
-
-## compare t-stats
-comapre_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
-comapre_stats_scatter(carrier_data, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-comapre_stats_scatter(carrier_data, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-
-## compare logFC
-comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", model_name = "carrier")
-comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-comapre_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-
-
-#### compare stats cluster vs. clsuter 
-
-
-# slurmjobs::job_single('01_compile_DGE_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype sn_broad")
-# slurmjobs::job_single('01_compile_DGE_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype Visium")
+# slurmjobs::job_single('01.1_compile_DGE_sn_fine', create_shell = TRUE, memory = '5G', command = "Rscript 01.1_compile_DGE_sn_fine.R")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
