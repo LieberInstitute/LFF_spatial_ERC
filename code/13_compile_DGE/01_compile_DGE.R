@@ -119,7 +119,7 @@ if(opt$datatype == "sn_broad"){
                                               dream_adj.P.Val = adj.P.Val.cell_type,
                                               dream_B = B))
 } else if(opt$datatype == "Visium"){
-    dreamlet_data_tb$Visium <- map(dreamlet_data[c("carrier", "e4e4")],
+    dreamlet_data_tb <- map(dreamlet_data[c("carrier", "e4e4")],
                                    ~.x |>
                                        as.data.frame() |>
                                        as_tibble() |>
