@@ -7,6 +7,7 @@ library("here")
 library("sessioninfo")
 library("ggrepel")
 library("getopt")
+library("GGally")
 
 # Import command-line parameters
 scec <- matrix(
@@ -265,6 +266,8 @@ dim(carrier_data)
 saveRDS(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.csv", opt$datatype)), row.names = FALSE)
 
+carrier_data <- readRDS(here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
+
 #### compare t-stats ####
 comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
     
@@ -309,6 +312,28 @@ comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", mod
 comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 comapre_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
+
+#### compare stats cluster vs. cluster 
+
+# t-stat
+carrier_data_wide_t <- carrier_data |>
+    select(gene_id, gene_id, cluster, vlmf_t) |>
+    # count(cluster)
+    pivot_wider(values_from = "vlmf_t", names_from = "cluster")
+
+ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t), aes(alpha = 0.2))
+ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_t_stat_ggpairs.png", opt$datatype)), height = 10, width = 10)   
+
+## log FC
+carrier_data_wide_logFC <- carrier_data |>
+    select(gene_id, gene_id, cluster, vlmf_logFC) |>
+    pivot_wider(values_from = "vlmf_logFC", names_from = "cluster")
+
+ggpair_logFC <- ggpairs(carrier_data_wide_logFC, columns = 2:ncol(carrier_data_wide_logFC), aes(alpha = 0.2))
+ggsave(ggpair_logFC, filename = here(plot_dir, sprintf("%s_logFC_ggpairs.png", opt$datatype)), height = 10, width = 10)    
+
+
+# carrier_data |> filter(gene_name == "TBC1D3D") |> select(gene_name, cluster, vlmf_logFC,vlmf_adj.P.Val)
 
 # slurmjobs::job_single('01_compile_DGE_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype sn_broad")
 # slurmjobs::job_single('01_compile_DGE_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype Visium")
