@@ -17,6 +17,7 @@ opt <- getopt(scec)
 
 ## test
 # opt$datatype = "sn_broad"
+# opt$datatype = "Visium"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -133,10 +134,7 @@ if(opt$datatype == "sn_broad"){
                                                      dream_B = B))
 }
 
-levels(dreamlet_data_tb[[1]]$cluster)
-
 map(dreamlet_data_tb, colnames)
-
 
 map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2) |> count(cluster))
 map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2))
@@ -158,8 +156,8 @@ vlmf_data <- map(vlmf_fn, readRDS)
 vlmf_data <- list_transpose(vlmf_data)
 
 names(vlmf_data)
+head(vlmf_data[[1]][[1]])
 
-head(vlmf_data$carrier$Astro)
 
 vlmf_data_tb <- map(vlmf_data,
                     ~as_tibble(do.call("rbind", .x)) |>
@@ -169,8 +167,8 @@ vlmf_data_tb <- map(vlmf_data,
                                       vlmf_P.Value = P.Value,
                                       vlmf_adj.P.Val = adj.P.Val,
                                       vlmf_B = B
-                        ) |>
-                        mutate(cluster = factor(cluster, cluster_levels))
+                        )  |>
+                        mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels))
 )
 
 
@@ -217,7 +215,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
 ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_reg.png", opt$datatype)))
 
 ## save summary
-write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary%s.csv", opt$datatype)))
+write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_%s.csv", opt$datatype)))
 
 #### vlmf volcano plots ####
 
