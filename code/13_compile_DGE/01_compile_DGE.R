@@ -312,8 +312,7 @@ comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", mode
 comapre_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
 
-
-# slurmjobs::job_single('01_compile_DGE_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype sn_broad")\
+# slurmjobs::job_single('01_compile_DGE_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype sn_broad")
 # slurmjobs::job_single('01_compile_DGE_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype Visium")
 
 #### Reproducibility information ####
