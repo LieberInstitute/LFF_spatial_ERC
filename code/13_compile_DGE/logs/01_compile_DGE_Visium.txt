@@ -1,0 +1,664 @@
+**** Job starts ****
+Wed Jun 18 07:07:17 AM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 17426941
+Job name: 01_compile_DGE_Visium
+Node name: compute-169
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading objects:
+  SpD_colors
+Loading required namespace: S4Vectors
+NULL
+$carrier
+# A tibble: 6 × 2
+  cluster           n
+  <chr>         <int>
+1 L1~Sp09D05        7
+2 L5~Sp09D03        4
+3 L6~Sp09D04      117
+4 Vasc~Sp09D08     74
+5 WM.uf~Sp09D07     2
+6 WM~Sp09D06        7
+
+$e4e4
+# A tibble: 0 × 2
+# ℹ 2 variables: cluster <chr>, n <int>
+
+$carrier
+# A tibble: 211 × 9
+   gene_name gene_id         pbDGE_logFC pbDGE_AveExpr pbDGE_t pbDGE_P.Value
+   <chr>     <chr>                 <dbl>         <dbl>   <dbl>         <dbl>
+ 1 LINC02217 ENSG00000248455      -0.833          3.85   -4.51     0.0000749
+ 2 SOBP      ENSG00000112320       0.546          6.32    4.68     0.0000462
+ 3 CYB5R2    ENSG00000166394      -1.24           2.60   -4.54     0.0000702
+ 4 NRXN2     ENSG00000110076       0.453          7.28    4.53     0.0000723
+ 5 JAM3      ENSG00000166086      -0.697          5.02   -4.90     0.0000242
+ 6 LZTS3     ENSG00000088899       0.501          6.31    4.52     0.0000736
+ 7 PCDH19    ENSG00000165194       0.833          4.42    4.70     0.0000432
+ 8 FAM153CP  ENSG00000204677       0.767          4.89    4.90     0.0000436
+ 9 C1QL1     ENSG00000131094       0.650          4.79    4.84     0.0000520
+10 CA4       ENSG00000167434       1.10           3.41    5.00     0.0000364
+# ℹ 201 more rows
+# ℹ 3 more variables: pbDGE_adj.P.Val <dbl>, pbDGE_B <dbl>, cluster <chr>
+
+$e4e4
+# A tibble: 0 × 9
+# ℹ 9 variables: gene_name <chr>, gene_id <chr>, pbDGE_logFC <dbl>,
+#   pbDGE_AveExpr <dbl>, pbDGE_t <dbl>, pbDGE_P.Value <dbl>,
+#   pbDGE_adj.P.Val <dbl>, pbDGE_B <dbl>, cluster <chr>
+
+# A tibble: 274,446 × 9
+   gene_name   gene_id         pbDGE_logFC pbDGE_AveExpr pbDGE_t pbDGE_P.Value
+   <chr>       <chr>                 <dbl>         <dbl>   <dbl>         <dbl>
+ 1 MIR1302-2HG ENSG00000243485     NA              NA    NA             NA    
+ 2 AL627309.1  ENSG00000238009     NA              NA    NA             NA    
+ 3 AL627309.3  ENSG00000239945     NA              NA    NA             NA    
+ 4 AL627309.5  ENSG00000241860     NA              NA    NA             NA    
+ 5 AL669831.2  ENSG00000229905     NA              NA    NA             NA    
+ 6 LINC01409   ENSG00000237491     -0.227           2.65 -0.923          0.362
+ 7 FAM87B      ENSG00000177757     NA              NA    NA             NA    
+ 8 LINC01128   ENSG00000228794      0.0118          4.43  0.0718         0.943
+ 9 LINC00115   ENSG00000225880     NA              NA    NA             NA    
+10 FAM41C      ENSG00000230368     NA              NA    NA             NA    
+# ℹ 274,436 more rows
+# ℹ 3 more variables: pbDGE_adj.P.Val <dbl>, pbDGE_B <dbl>, cluster <chr>
+[1] "carrier"   "apoe"      "e4e4"      "carrier_i" "apoe_i"    "e4e4_i"   
+DataFrame with 6 rows and 11 columns
+          assay          ID      logFC   AveExpr         t   P.Value adj.P.Val
+    <character> <character>  <numeric> <numeric> <numeric> <numeric> <numeric>
+1 Inhib_Sp09D09        CRY2  0.0585828   6.13806  0.516193  0.609751  0.941664
+2 Inhib_Sp09D09        ORC5 -0.2169244   3.68338 -0.947067  0.351661  0.871531
+3 Inhib_Sp09D09        SBF2 -0.0699478   4.24767 -0.431298  0.669537  0.952573
+4 Inhib_Sp09D09   MTRNR2L12 -0.0801430  12.11202 -0.482725  0.634673  0.946816
+5 Inhib_Sp09D09      RBFOX2  0.0351810   7.16759  0.395540  0.695423  0.956635
+6 Inhib_Sp09D09      SLC9B2 -0.1634152   4.04044 -1.450271  0.158034  0.781608
+          B     z.std adj.P.Val.SpD       model
+  <numeric> <numeric>     <numeric> <character>
+1  -5.00937  0.510429             1     carrier
+2  -4.81148 -0.931372             1     carrier
+3  -5.03644 -0.426783             1     carrier
+4  -5.00445 -0.475160             1     carrier
+5  -5.04319  0.391507             1     carrier
+6  -4.44083 -1.411714             1     carrier
+$carrier
+[1] "gene_name"       "cluster"         "dream_logFC"     "dream_AveExpr"  
+[5] "dream_t"         "dream_P.Value"   "dream_adj.P.Val" "dream_B"        
+
+$e4e4
+[1] "gene_name"       "cluster"         "dream_logFC"     "dream_AveExpr"  
+[5] "dream_t"         "dream_P.Value"   "dream_adj.P.Val" "dream_B"        
+
+$carrier
+# A tibble: 2 × 2
+  cluster           n
+  <chr>         <int>
+1 L6_Sp09D04        1
+2 WM.uf_Sp09D07     2
+
+$e4e4
+# A tibble: 0 × 2
+# ℹ 2 variables: cluster <chr>, n <int>
+
+$carrier
+# A tibble: 3 × 8
+  gene_name  cluster       dream_logFC dream_AveExpr dream_t dream_P.Value
+  <chr>      <chr>               <dbl>         <dbl>   <dbl>         <dbl>
+1 AC006538.1 L6_Sp09D04          0.764          1.84    5.52    0.0000127 
+2 GPR37      WM.uf_Sp09D07      -1.64           5.86   -5.92    0.00000159
+3 CNTNAP4    WM.uf_Sp09D07      -1.01           5.78   -5.00    0.0000237 
+# ℹ 2 more variables: dream_adj.P.Val <dbl>, dream_B <dbl>
+
+$e4e4
+# A tibble: 0 × 8
+# ℹ 8 variables: gene_name <chr>, cluster <chr>, dream_logFC <dbl>,
+#   dream_AveExpr <dbl>, dream_t <dbl>, dream_P.Value <dbl>,
+#   dream_adj.P.Val <dbl>, dream_B <dbl>
+
+ [1] "carrier"        "E4E4"           "apoe_E2E2_E4E4" "apoe_E3E4_E4E4"
+ [5] "apoe_E2E3_E4E4" "apoe_E2E2_E3E4" "apoe_E2E2_E2E3" "apoe_E2E3_E3E4"
+ [9] "anyE2_E4E4"     "E2E2_anyE4"     "E2E3_anyE4"     "Sex"           
+[13] "Anc"           
+                data_type       cluster contrast seqnames     start       end
+ENSG00000198901    Visium Inhib_Sp09D09  carrier    chr15  90966040  90995629
+ENSG00000242808    Visium Inhib_Sp09D09  carrier     chr3 180989762 181836880
+ENSG00000151689    Visium Inhib_Sp09D09  carrier     chr2 190343570 190371665
+ENSG00000106236    Visium Inhib_Sp09D09  carrier     chr7  98617285  98629869
+ENSG00000260941    Visium Inhib_Sp09D09  carrier     chr1 119597702 119599271
+ENSG00000163520    Visium Inhib_Sp09D09  carrier     chr3  13549125  13638422
+                 width strand source type         gene_id gene_version
+ENSG00000198901  29590      - HAVANA gene ENSG00000198901           14
+ENSG00000242808 847119      + HAVANA gene ENSG00000242808            9
+ENSG00000151689  28096      + HAVANA gene ENSG00000151689           13
+ENSG00000106236  12585      + HAVANA gene ENSG00000106236            4
+ENSG00000260941   1570      - HAVANA gene ENSG00000260941            1
+ENSG00000163520  89298      + HAVANA gene ENSG00000163520           14
+                gene_name      gene_type      logFC  AveExpr         t
+ENSG00000198901      PRC1 protein_coding -1.1728990 2.197929 -5.633061
+ENSG00000242808   SOX2-OT         lncRNA -0.5474203 6.502748 -4.685227
+ENSG00000151689     INPP1 protein_coding -0.5915324 4.795655 -4.739032
+ENSG00000106236     NPTX2 protein_coding  1.2134479 5.720333  4.727266
+ENSG00000260941 LINC00622         lncRNA  1.0054703 3.174475  4.539860
+ENSG00000163520     FBLN2 protein_coding  1.3412274 3.477462  4.399360
+                     P.Value  adj.P.Val         B
+ENSG00000198901 2.178468e-06 0.02774715 2.4885671
+ENSG00000242808 3.946361e-05 0.12566201 2.1485294
+ENSG00000151689 3.353472e-05 0.12566201 2.1461289
+ENSG00000106236 3.475096e-05 0.12566201 2.1414925
+ENSG00000260941 6.116621e-05 0.15581481 0.8596412
+ENSG00000163520 9.318323e-05 0.19781246 0.8285923
+$carrier
+# A tibble: 6 × 2
+  cluster           n
+  <fct>         <int>
+1 Vasc~Sp09D08     35
+2 L1~Sp09D05        1
+3 Inhib~Sp09D09     1
+4 L5~Sp09D03        8
+5 L6~Sp09D04       10
+6 WM.uf~Sp09D07    15
+
+$E4E4
+# A tibble: 1 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08     2
+
+$apoe_E2E2_E4E4
+# A tibble: 3 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08    59
+2 L2.3~Sp09D01     5
+3 L5~Sp09D03       1
+
+$apoe_E3E4_E4E4
+# A tibble: 3 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08    25
+2 L1~Sp09D05       2
+3 LD~Sp09D02       7
+
+$apoe_E2E3_E4E4
+# A tibble: 1 × 2
+  cluster           n
+  <fct>         <int>
+1 WM.uf~Sp09D07     1
+
+$apoe_E2E2_E3E4
+# A tibble: 6 × 2
+  cluster           n
+  <fct>         <int>
+1 Vasc~Sp09D08    651
+2 L2.3~Sp09D01    381
+3 LD~Sp09D02       98
+4 Inhib~Sp09D09    23
+5 L5~Sp09D03      382
+6 L6~Sp09D04      180
+
+$apoe_E2E2_E2E3
+# A tibble: 5 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08   322
+2 L2.3~Sp09D01     4
+3 LD~Sp09D02       6
+4 L5~Sp09D03      79
+5 L6~Sp09D04       1
+
+$apoe_E2E3_E3E4
+# A tibble: 7 × 2
+  cluster           n
+  <fct>         <int>
+1 Vasc~Sp09D08     15
+2 L1~Sp09D05        2
+3 LD~Sp09D02      731
+4 Inhib~Sp09D09     3
+5 L5~Sp09D03       57
+6 WM.uf~Sp09D07    76
+7 WM~Sp09D06        2
+
+$anyE2_E4E4
+# A tibble: 1 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08     1
+
+$E2E2_anyE4
+# A tibble: 5 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08   379
+2 L2.3~Sp09D01   101
+3 LD~Sp09D02       1
+4 L5~Sp09D03     160
+5 L6~Sp09D04      20
+
+$E2E3_anyE4
+# A tibble: 5 × 2
+  cluster           n
+  <fct>         <int>
+1 Vasc~Sp09D08      2
+2 L1~Sp09D05        1
+3 LD~Sp09D02        2
+4 L5~Sp09D03        1
+5 WM.uf~Sp09D07    32
+
+$Sex
+# A tibble: 9 × 2
+  cluster           n
+  <fct>         <int>
+1 Vasc~Sp09D08      7
+2 L1~Sp09D05       12
+3 L2.3~Sp09D01     70
+4 LD~Sp09D02      350
+5 Inhib~Sp09D09     1
+6 L5~Sp09D03        3
+7 L6~Sp09D04        2
+8 WM.uf~Sp09D07     2
+9 WM~Sp09D06       17
+
+$Anc
+# A tibble: 6 × 2
+  cluster           n
+  <fct>         <int>
+1 L2.3~Sp09D01     14
+2 LD~Sp09D02       12
+3 Inhib~Sp09D09     3
+4 L5~Sp09D03        2
+5 L6~Sp09D04        2
+6 WM~Sp09D06        2
+
+$carrier
+# A tibble: 70 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    Inhib~S… carrier  chr15    9.10e7 9.10e7  29590 -      HAVANA gene 
+ 2 Visium    L1~Sp09… carrier  chr21    4.41e7 4.42e7  76505 +      HAVANA gene 
+ 3 Visium    L5~Sp09… carrier  chr16    8.06e7 8.08e7 206692 -      HAVANA gene 
+ 4 Visium    L5~Sp09… carrier  chr7     9.86e7 9.86e7  12585 +      HAVANA gene 
+ 5 Visium    L5~Sp09… carrier  chr6     3.13e7 3.13e7   3382 -      HAVANA gene 
+ 6 Visium    L5~Sp09… carrier  chr12    1.02e8 1.02e8 117676 +      HAVANA gene 
+ 7 Visium    L5~Sp09… carrier  chr5     1.78e8 1.78e8  80182 +      HAVANA gene 
+ 8 Visium    L5~Sp09… carrier  chr4     2.57e7 2.59e7 116328 -      HAVANA gene 
+ 9 Visium    L5~Sp09… carrier  chr19    4.48e7 4.48e7  12363 +      HAVANA gene 
+10 Visium    L5~Sp09… carrier  chr21    1.54e7 1.56e7 258377 -      HAVANA gene 
+# ℹ 60 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$E4E4
+# A tibble: 2 × 20
+  data_type cluster    contrast seqnames  start    end width strand source type 
+  <chr>     <fct>      <chr>    <fct>     <int>  <int> <int> <fct>  <fct>  <fct>
+1 Visium    Vasc~Sp09… E4E4     chr20    6.26e7 6.27e7 43283 +      HAVANA gene 
+2 Visium    Vasc~Sp09… E4E4     chr2     1.28e8 1.28e8  6776 +      HAVANA gene 
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$apoe_E2E2_E4E4
+# A tibble: 65 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    L2.3~Sp… apoe_E2… chr1     1.15e8 1.15e8  87575 -      HAVANA gene 
+ 2 Visium    L2.3~Sp… apoe_E2… chr14    3.82e7 3.82e7   5164 +      HAVANA gene 
+ 3 Visium    L2.3~Sp… apoe_E2… chr15    6.86e7 6.87e7 148838 +      HAVANA gene 
+ 4 Visium    L2.3~Sp… apoe_E2… chr6     3.19e7 3.19e7   5164 -      HAVANA gene 
+ 5 Visium    L2.3~Sp… apoe_E2… chr5     1.46e8 1.46e8  21265 -      HAVANA gene 
+ 6 Visium    L5~Sp09… apoe_E2… chr16    8.06e7 8.08e7 206692 -      HAVANA gene 
+ 7 Visium    Vasc~Sp… apoe_E2… chr7     4.59e7 4.59e7   9630 -      HAVANA gene 
+ 8 Visium    Vasc~Sp… apoe_E2… chr2     1.28e8 1.28e8   6776 +      HAVANA gene 
+ 9 Visium    Vasc~Sp… apoe_E2… chr5     7.46e7 7.46e7  14019 -      HAVANA gene 
+10 Visium    Vasc~Sp… apoe_E2… chr7     2.78e7 2.82e7 350223 -      HAVANA gene 
+# ℹ 55 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$apoe_E3E4_E4E4
+# A tibble: 34 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    L1~Sp09… apoe_E3… chr12    1.27e7 1.28e7 104059 +      HAVANA gene 
+ 2 Visium    L1~Sp09… apoe_E3… chr20    6.26e7 6.27e7  43283 +      HAVANA gene 
+ 3 Visium    LD~Sp09… apoe_E3… chr12    1.27e7 1.28e7 104059 +      HAVANA gene 
+ 4 Visium    LD~Sp09… apoe_E3… chr6     3.15e6 3.16e6   3879 -      HAVANA gene 
+ 5 Visium    LD~Sp09… apoe_E3… chr1     2.15e8 2.15e8 231319 +      HAVANA gene 
+ 6 Visium    LD~Sp09… apoe_E3… chr22    3.06e7 3.06e7  20031 -      HAVANA gene 
+ 7 Visium    LD~Sp09… apoe_E3… chr6     4.27e7 4.27e7  26000 -      HAVANA gene 
+ 8 Visium    LD~Sp09… apoe_E3… chr19    3.50e7 3.51e7  63406 -      HAVANA gene 
+ 9 Visium    LD~Sp09… apoe_E3… chr1     2.12e8 2.12e8  50971 -      HAVANA gene 
+10 Visium    Vasc~Sp… apoe_E3… chr1     4.60e7 4.61e7  92897 -      HAVANA gene 
+# ℹ 24 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$apoe_E2E3_E4E4
+# A tibble: 1 × 20
+  data_type cluster   contrast seqnames  start    end  width strand source type 
+  <chr>     <fct>     <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+1 Visium    WM.uf~Sp… apoe_E2… chr3     1.24e8 1.24e8 274283 -      HAVANA gene 
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$apoe_E2E2_E3E4
+# A tibble: 1,715 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    Inhib~S… apoe_E2… chr6     1.32e8 1.32e8   3197 -      HAVANA gene 
+ 2 Visium    Inhib~S… apoe_E2… chr22    3.11e7 3.11e7  40653 +      HAVANA gene 
+ 3 Visium    Inhib~S… apoe_E2… chr10    1.15e8 1.16e8 855635 +      HAVANA gene 
+ 4 Visium    Inhib~S… apoe_E2… chr3     1.81e8 1.82e8 847119 +      HAVANA gene 
+ 5 Visium    Inhib~S… apoe_E2… chr2     5.62e7 5.64e7 202183 +      HAVANA gene 
+ 6 Visium    Inhib~S… apoe_E2… chr1     1.43e6 1.44e6   8022 +      HAVANA gene 
+ 7 Visium    Inhib~S… apoe_E2… chrX     1.53e8 1.53e8  19648 +      HAVANA gene 
+ 8 Visium    Inhib~S… apoe_E2… chr7     9.86e7 9.86e7  12585 +      HAVANA gene 
+ 9 Visium    Inhib~S… apoe_E2… chr11    6.74e7 6.74e7  10640 +      HAVANA gene 
+10 Visium    Inhib~S… apoe_E2… chr14    6.47e7 6.48e7  46148 +      HAVANA gene 
+# ℹ 1,705 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$apoe_E2E2_E2E3
+# A tibble: 412 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    L2.3~Sp… apoe_E2… chr14    5.53e7 5.54e7  90498 +      HAVANA gene 
+ 2 Visium    L2.3~Sp… apoe_E2… chr2     1.10e8 1.10e8   4627 +      HAVANA gene 
+ 3 Visium    L2.3~Sp… apoe_E2… chr11    1.25e8 1.25e8  17208 -      HAVANA gene 
+ 4 Visium    L2.3~Sp… apoe_E2… chr8     1.19e8 1.19e8  80640 +      HAVANA gene 
+ 5 Visium    L5~Sp09… apoe_E2… chr4     4.75e7 4.75e7  12916 -      HAVANA gene 
+ 6 Visium    L5~Sp09… apoe_E2… chr1     2.06e8 2.06e8  34034 +      HAVANA gene 
+ 7 Visium    L5~Sp09… apoe_E2… chr14    5.05e7 5.06e7 100560 +      HAVANA gene 
+ 8 Visium    L5~Sp09… apoe_E2… chr5     6.95e7 6.96e7  65813 +      HAVANA gene 
+ 9 Visium    L5~Sp09… apoe_E2… chr15    7.48e7 7.48e7   5176 +      HAVANA gene 
+10 Visium    L5~Sp09… apoe_E2… chr11    2.77e7 2.77e7  67166 -      HAVANA gene 
+# ℹ 402 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$apoe_E2E3_E3E4
+# A tibble: 886 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    Inhib~S… apoe_E2… chr14    2.28e7 2.28e7   6521 +      HAVANA gene 
+ 2 Visium    Inhib~S… apoe_E2… chr11    6.46e7 6.47e7 117015 -      HAVANA gene 
+ 3 Visium    Inhib~S… apoe_E2… chr1     1.20e8 1.20e8   1570 -      HAVANA gene 
+ 4 Visium    L1~Sp09… apoe_E2… chr21    4.41e7 4.42e7  76505 +      HAVANA gene 
+ 5 Visium    L1~Sp09… apoe_E2… chr19    3.73e7 3.73e7  13651 +      HAVANA gene 
+ 6 Visium    L5~Sp09… apoe_E2… chr5     1.78e8 1.78e8  80182 +      HAVANA gene 
+ 7 Visium    L5~Sp09… apoe_E2… chr2     7.32e7 7.33e7  19602 +      HAVANA gene 
+ 8 Visium    L5~Sp09… apoe_E2… chr19    3.73e7 3.73e7  13651 +      HAVANA gene 
+ 9 Visium    L5~Sp09… apoe_E2… chr11    6.46e7 6.47e7 117015 -      HAVANA gene 
+10 Visium    L5~Sp09… apoe_E2… chr10    9.94e7 9.94e7  33755 -      HAVANA gene 
+# ℹ 876 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$anyE2_E4E4
+# A tibble: 1 × 20
+  data_type cluster    contrast seqnames  start    end width strand source type 
+  <chr>     <fct>      <chr>    <fct>     <int>  <int> <int> <fct>  <fct>  <fct>
+1 Visium    Vasc~Sp09… anyE2_E… chr2     1.28e8 1.28e8  6776 +      HAVANA gene 
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$E2E2_anyE4
+# A tibble: 661 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    L2.3~Sp… E2E2_an… chr8     1.10e8 1.10e8  12136 -      HAVANA gene 
+ 2 Visium    L2.3~Sp… E2E2_an… chr7     1.40e8 1.40e8 110741 -      HAVANA gene 
+ 3 Visium    L2.3~Sp… E2E2_an… chr15    9.19e7 9.22e7 318728 +      HAVANA gene 
+ 4 Visium    L2.3~Sp… E2E2_an… chr14    5.53e7 5.54e7  90498 +      HAVANA gene 
+ 5 Visium    L2.3~Sp… E2E2_an… chr15    6.86e7 6.87e7 148838 +      HAVANA gene 
+ 6 Visium    L2.3~Sp… E2E2_an… chr16    2.57e7 2.61e7 445727 +      HAVANA gene 
+ 7 Visium    L2.3~Sp… E2E2_an… chr10    1.14e8 1.14e8   3039 +      HAVANA gene 
+ 8 Visium    L2.3~Sp… E2E2_an… chr6     4.67e7 4.67e7  31493 -      HAVANA gene 
+ 9 Visium    L2.3~Sp… E2E2_an… chr14    3.82e7 3.82e7   5164 +      HAVANA gene 
+10 Visium    L2.3~Sp… E2E2_an… chr6     2.75e7 2.75e7  22376 -      HAVANA gene 
+# ℹ 651 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$E2E3_anyE4
+# A tibble: 38 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    L1~Sp09… E2E3_an… chr21    4.41e7 4.42e7  76505 +      HAVANA gene 
+ 2 Visium    L5~Sp09… E2E3_an… chr19    3.73e7 3.73e7  13651 +      HAVANA gene 
+ 3 Visium    LD~Sp09… E2E3_an… chr11    6.46e7 6.47e7 117015 -      HAVANA gene 
+ 4 Visium    LD~Sp09… E2E3_an… chr1     1.60e8 1.60e8  10040 +      HAVANA gene 
+ 5 Visium    Vasc~Sp… E2E3_an… chr21    4.41e7 4.42e7  76505 +      HAVANA gene 
+ 6 Visium    Vasc~Sp… E2E3_an… chr3     5.25e7 5.25e7  29158 +      HAVANA gene 
+ 7 Visium    WM.uf~S… E2E3_an… chr17    7.19e6 7.22e6  32673 -      HAVANA gene 
+ 8 Visium    WM.uf~S… E2E3_an… chr16    8.76e7 8.77e7  96322 +      HAVANA gene 
+ 9 Visium    WM.uf~S… E2E3_an… chr14    7.13e7 7.17e7 420781 +      HAVANA gene 
+10 Visium    WM.uf~S… E2E3_an… chr3     1.24e8 1.24e8 274283 -      HAVANA gene 
+# ℹ 28 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$Sex
+# A tibble: 464 × 20
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 Visium    Inhib~S… Sex      chrX     7.38e7 7.39e7  32075 -      HAVANA gene 
+ 2 Visium    L1~Sp09… Sex      chrX     7.38e7 7.39e7  32075 -      HAVANA gene 
+ 3 Visium    L1~Sp09… Sex      chrY     1.45e7 1.48e7 323078 +      HAVANA gene 
+ 4 Visium    L1~Sp09… Sex      chrY     5.00e6 5.74e6 741999 +      HAVANA gene 
+ 5 Visium    L1~Sp09… Sex      chrY     2.06e7 2.06e7  17379 +      HAVANA gene 
+ 6 Visium    L1~Sp09… Sex      chrY     1.88e7 1.91e7 304858 -      HAVANA gene 
+ 7 Visium    L1~Sp09… Sex      chr19    5.44e7 5.45e7  13151 +      HAVANA gene 
+ 8 Visium    L1~Sp09… Sex      chrY     1.29e7 1.29e7  16371 +      HAVANA gene 
+ 9 Visium    L1~Sp09… Sex      chrY     1.97e7 1.97e7  41075 -      HAVANA gene 
+10 Visium    L1~Sp09… Sex      chrY     1.25e7 1.29e7 323190 +      HAVANA gene 
+# ℹ 454 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+$Anc
+# A tibble: 35 × 20
+   data_type cluster   contrast seqnames  start    end width strand source type 
+   <chr>     <fct>     <chr>    <fct>     <int>  <int> <int> <fct>  <fct>  <fct>
+ 1 Visium    Inhib~Sp… Anc      chr22    2.52e7 2.52e7 19307 +      HAVANA gene 
+ 2 Visium    Inhib~Sp… Anc      chr7     2.32e7 2.33e7 39142 +      HAVANA gene 
+ 3 Visium    Inhib~Sp… Anc      chr11    7.14e7 7.15e7  3484 +      HAVANA gene 
+ 4 Visium    L2.3~Sp0… Anc      chr11    7.14e7 7.15e7  3484 +      HAVANA gene 
+ 5 Visium    L2.3~Sp0… Anc      chr22    2.52e7 2.52e7 19307 +      HAVANA gene 
+ 6 Visium    L2.3~Sp0… Anc      chr2     2.19e8 2.19e8  5771 -      HAVANA gene 
+ 7 Visium    L2.3~Sp0… Anc      chr5     3.40e7 3.40e7 21940 -      HAVANA gene 
+ 8 Visium    L2.3~Sp0… Anc      chr7     2.32e7 2.33e7 39142 +      HAVANA gene 
+ 9 Visium    L2.3~Sp0… Anc      chr20    2.10e6 2.18e6 75212 +      HAVANA gene 
+10 Visium    L2.3~Sp0… Anc      chr12    1.17e8 1.17e8 28502 +      HAVANA gene 
+# ℹ 25 more rows
+# ℹ 10 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+There were 18 warnings (use warnings() to see them)
+There were 15 warnings (use warnings() to see them)
+Joining with `by = join_by(cluster, gene_id, gene_name)`
+Joining with `by = join_by(cluster, gene_name)`
+ [1] "data_type"       "cluster"         "contrast"        "seqnames"       
+ [5] "start"           "end"             "width"           "strand"         
+ [9] "source"          "type"            "gene_id"         "gene_version"   
+[13] "gene_name"       "gene_type"       "vlmf_logFC"      "vlmf_AveExpr"   
+[17] "vlmf_t"          "vlmf_P.Value"    "vlmf_adj.P.Val"  "vlmf_B"         
+[21] "pbDGE_logFC"     "pbDGE_AveExpr"   "pbDGE_t"         "pbDGE_P.Value"  
+[25] "pbDGE_adj.P.Val" "pbDGE_B"         "dream_logFC"     "dream_AveExpr"  
+[29] "dream_t"         "dream_P.Value"   "dream_adj.P.Val" "dream_B"        
+[1] 106099     32
+Warning messages:
+1: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Warning messages:
+1: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Warning messages:
+1: Removed 11851 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 11851 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+3: ggrepel: 76 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 3 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+5: ggrepel: 116 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+6: ggrepel: 4 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+Warning messages:
+1: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Warning messages:
+1: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 106099 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Warning messages:
+1: Removed 11851 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 11851 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+3: ggrepel: 10 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 77 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+5: ggrepel: 7 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+6: ggrepel: 119 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+7: ggrepel: 7 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+8: ggrepel: 6 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+[1] "Reproducibility information:"
+[1] "2025-06-18 07:08:14 EDT"
+   user  system elapsed 
+ 52.522   1.305  56.249 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-06-18
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package      * version date (UTC) lib source
+ BiocGenerics   0.54.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ cli            3.6.5   2025-04-23 [2] CRAN (R 4.5.0)
+ dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr        * 1.1.4   2023-11-17 [2] CRAN (R 4.5.0)
+ farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
+ generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ ggplot2      * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
+ ggrepel      * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here         * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
+ hms            1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
+ labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle      1.0.4   2023-11-07 [2] CRAN (R 4.5.0)
+ lubridate    * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr       2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
+ pillar         1.10.2  2025-04-05 [2] CRAN (R 4.5.0)
+ pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ purrr        * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
+ R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg           1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
+ RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp           1.0.14  2025-01-12 [2] CRAN (R 4.5.0)
+ readr        * 2.1.5   2024-01-10 [2] CRAN (R 4.5.0)
+ rlang          1.1.6   2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot      2.0.4   2023-11-05 [2] CRAN (R 4.5.0)
+ S4Vectors      0.46.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr      * 1.5.1   2023-11-14 [2] CRAN (R 4.5.0)
+ systemfonts    1.2.3   2025-04-30 [2] CRAN (R 4.5.0)
+ textshaping    1.0.1   2025-05-01 [2] CRAN (R 4.5.0)
+ tibble       * 3.2.1   2023-03-20 [2] CRAN (R 4.5.0)
+ tidyr        * 1.3.1   2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange     0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.5   2025-05-01 [2] CRAN (R 4.5.0)
+ vctrs          0.6.5   2023-12-01 [2] CRAN (R 4.5.0)
+ withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Jun 18 07:08:14 AM EDT 2025
