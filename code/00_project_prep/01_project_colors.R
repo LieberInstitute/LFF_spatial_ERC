@@ -33,6 +33,7 @@ save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type
 ## load colors
 load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
 
+
 ## APOE colors
 # APOE_genotype_colors <- c(`E2/E2`="#114B5F", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
 APOE_genotype_colors <- c(`E2/E2`="#186E8B", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
@@ -115,7 +116,7 @@ save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors, sam
 #     dev.off()
 # })
 
-#### more cell colors ####
+#### Cell Type Colors V2 ####
 list(Crimson = "#DC143C",
      Firebrick = "#B22222",
      Indian_Red = "#CD5C5C",
@@ -143,6 +144,24 @@ list(Green_Blue = "#00B3B3",
      Azure_Blue = "#005FCC",
      Cobalt_Blue = "#0040CC",
      Violet_Blue = "#2E2EFF")
+
+cell_type_colors_broad.V2 <- c(Astro = "#3BB273",
+                               Oligo = "#F57A00",
+                               OPC = "#D2B037",
+                               Macro = "#79354E",
+                               Micro = "#663894",
+                               Vasc = "#FF56AF",
+                               Excit = "#247FBC",
+                               Inhib = "#E83E38",
+                               Other = "#4E586A")
+
+## plot official colors
+pdf(here(plot_dir, "ERC_cell_type_colors_broad.V2.pdf"))
+test_pallet_plots(cell_type_colors, "ERC Broad Cell Type Colors V2")
+dev.off()
+
+save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
+
 
 cell_type_colors_anno = c(Astro.01 = "#228B22",
                           Astro.02 = "#32CD32",
