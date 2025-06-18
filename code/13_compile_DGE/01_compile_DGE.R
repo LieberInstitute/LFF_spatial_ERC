@@ -15,7 +15,8 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
-opt$datatype = "sn_broad"
+## test
+# opt$datatype = "sn_broad"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -36,6 +37,10 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
+}else if(opt$datatype == "Visium"){
+    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+    cluster_colors <- SpD_colors
+    cluster_levels <- names(SpD_colors)
 }
 
 
@@ -112,9 +117,7 @@ if(opt$datatype == "sn_broad"){
                                               dream_t = t,
                                               dream_P.Value = P.Value,
                                               dream_adj.P.Val = adj.P.Val.cell_type,
-                                              dream_B = B)|>
-                                mutate(cluster = factor(cluster, cluster_levels))
-                            ) 
+                                              dream_B = B))
 } else if(opt$datatype == "Visium"){
     dreamlet_data_tb$Visium <- map(dreamlet_data[c("carrier", "e4e4")],
                                    ~.x |>
@@ -127,9 +130,7 @@ if(opt$datatype == "sn_broad"){
                                                      dream_t = t,
                                                      dream_P.Value = P.Value,
                                                      dream_adj.P.Val = adj.P.Val.SpD,
-                                                     dream_B = B) |>
-                                       mutate(cluster = factor(cluster, cluster_levels))
-                                       ) 
+                                                     dream_B = B))
 }
 
 levels(dreamlet_data_tb[[1]]$cluster)
@@ -260,6 +261,12 @@ carrier_data <- vlmf_data_tb$carrier |>
 
 colnames(carrier_data)
 
+dim(carrier_data)
+
+## save data
+saveRDS(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
+write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.csv", opt$datatype)), row.names = FALSE)
+
 #### compare t-stats ####
 comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
     
@@ -304,3 +311,14 @@ comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", mod
 comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 comapre_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
+
+
+# slurmjobs::job_single('01_compile_DGE_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype sn_broad")\
+# slurmjobs::job_single('01_compile_DGE_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 01_compile_DGE --datatype Visium")
+
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
