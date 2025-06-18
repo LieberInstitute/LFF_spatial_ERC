@@ -64,7 +64,7 @@ map(vlmf_data_tb, ~.x |> filter(vlmf_adj.P.Val < 0.05))
 vlmf_model_summary <- map2_dfr(vlmf_data_tb, names(vlmf_data_tb), 
                                ~.x |> 
                                    mutate(mod = .y) |>
-                                   group_by(cluster, mod) |>
+                                   group_by(cell_type_broad, cluster, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
                                              nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
@@ -78,13 +78,13 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     geom_col() +
     geom_text(aes(label = n_FDR05), vjust=-.5) +
     scale_fill_manual(values = cluster_colors) +
-    facet_wrap(~mod, ncol = 1) +
+    facet_grid(mod~cell_type_broad, scales = "free_x", space = "free") +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None")
 
-ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12)
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 10)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_FDR05, -n_genes) |>
