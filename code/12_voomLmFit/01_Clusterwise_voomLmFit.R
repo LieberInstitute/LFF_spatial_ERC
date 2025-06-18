@@ -57,7 +57,7 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     dge <- sce_pb[,sce_pb$registration_variable ==clus]
 
-    des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio + ncells, data = colData(dge))
+    des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(dge))
     des <- as.data.frame(des)
     
     # filter low expression genes
