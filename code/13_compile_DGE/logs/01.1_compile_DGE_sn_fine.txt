@@ -1,0 +1,747 @@
+**** Job starts ****
+Wed Jun 18 09:46:50 AM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 17427055
+Job name: 01.1_compile_DGE_sn_fine
+Node name: compute-168
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  cell_type_colors
+ [1] "carrier"        "E4E4"           "apoe_E2E2_E4E4" "apoe_E3E4_E4E4"
+ [5] "apoe_E2E3_E4E4" "apoe_E2E2_E3E4" "apoe_E2E2_E2E3" "apoe_E2E3_E3E4"
+ [9] "anyE2_E4E4"     "E2E2_anyE4"     "E2E3_anyE4"     "Sex"           
+[13] "Anc"           
+                data_type  cluster contrast seqnames    start      end  width
+ENSG00000278662   sn_fine Astro.01  carrier    chr15 82339993 82349475   9483
+ENSG00000221890   sn_fine Astro.01  carrier    chr22 38818452 38844028  25577
+ENSG00000117600   sn_fine Astro.01  carrier     chr1 99264292 99309590  45299
+ENSG00000226070   sn_fine Astro.01  carrier     chr6 40344346 40387194  42849
+ENSG00000136928   sn_fine Astro.01  carrier     chr9 98288109 98708935 420827
+ENSG00000142408   sn_fine Astro.01  carrier    chr19 53962937 53990215  27279
+                strand source type         gene_id gene_version gene_name
+ENSG00000278662      - HAVANA gene ENSG00000278662            6 GOLGA6L10
+ENSG00000221890      - HAVANA gene ENSG00000221890            6     NPTXR
+ENSG00000117600      + HAVANA gene ENSG00000117600           14    PLPPR4
+ENSG00000226070      - HAVANA gene ENSG00000226070            2 LINC00951
+ENSG00000136928      - HAVANA gene ENSG00000136928            7    GABBR2
+ENSG00000142408      + HAVANA gene ENSG00000142408            7    CACNG8
+                     gene_type      logFC  AveExpr         t      P.Value
+ENSG00000278662 protein_coding -1.4854481 1.829732 -6.289819 8.788488e-07
+ENSG00000221890 protein_coding  0.7445026 4.287732  5.711298 4.129916e-06
+ENSG00000117600 protein_coding  1.5224581 2.309251  5.766158 3.562471e-06
+ENSG00000226070         lncRNA  1.1968601 1.801405  5.561114 6.195397e-06
+ENSG00000136928 protein_coding  1.2327476 2.926572  5.289756 1.292797e-05
+ENSG00000142408 protein_coding  1.3940225 1.319235  5.125743 2.019101e-05
+                 adj.P.Val        B
+ENSG00000278662 0.01478487 5.408793
+ENSG00000221890 0.02315919 4.319191
+ENSG00000117600 0.02315919 4.152576
+ENSG00000226070 0.02605629 3.520023
+ENSG00000136928 0.04349746 3.208932
+ENSG00000142408 0.05661223 2.288405
+ [1] "Astro.01"         "Astro.02"         "Astro.03"         "Astro.04"        
+ [5] "Astro.05"         "Macro"            "Micro.1"          "Micro.2"         
+ [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
+[13] "OPC.2"            "OPC.3"            "OPC.4"            "OPC.5"           
+[17] "Oligo.01"         "Oligo.02"         "Oligo.03"         "Oligo.04"        
+[21] "Oligo.05"         "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
+[25] "Excit.L2"         "Excit.L2_5.1"     "Excit.L2_5.2"     "Excit.L5.1"      
+[29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
+[33] "Inhib.Pax6"       "Inhib.Lamp5_Lhx6" "Inhib.Pvalb"      "Inhib.Vip"       
+[37] "Inhib.Chandelier" "Inhib.Sst"       
+[1] "Astro" "Oligo" "OPC"   "Macro" "Micro" "Vasc"  "Excit" "Inhib"
+$carrier
+# A tibble: 15 × 2
+   cluster          n
+   <fct>        <int>
+ 1 Astro.01         5
+ 2 Astro.02        88
+ 3 Astro.03        33
+ 4 Astro.04         1
+ 5 Macro           14
+ 6 Micro.1          3
+ 7 Micro.3          5
+ 8 Micro.4         17
+ 9 OPC.5            9
+10 Oligo.03       933
+11 Oligo.05        54
+12 Vasc.Endo        5
+13 Vasc.VLMC        2
+14 Excit.L2_5.1    29
+15 Inhib.Vip       18
+
+$E4E4
+# A tibble: 5 × 2
+  cluster        n
+  <fct>      <int>
+1 Astro.01       2
+2 Vasc.Endo     12
+3 Excit.L5.2     3
+4 Inhib.Vip      1
+5 Inhib.Sst      1
+
+$apoe_E2E2_E4E4
+# A tibble: 11 × 2
+   cluster          n
+   <fct>        <int>
+ 1 Astro.01         5
+ 2 Astro.02        11
+ 3 Micro.1          2
+ 4 Micro.2          1
+ 5 OPC.5            3
+ 6 Oligo.03         1
+ 7 Vasc.Endo        4
+ 8 Vasc.VLMC        3
+ 9 Excit.L2_5.2     4
+10 Excit.L5.2       1
+11 Inhib.Vip        3
+
+$apoe_E3E4_E4E4
+# A tibble: 13 × 2
+   cluster          n
+   <fct>        <int>
+ 1 Astro.01         3
+ 2 Astro.03         3
+ 3 Macro           34
+ 4 Micro.2          1
+ 5 OPC.1            1
+ 6 OPC.3            1
+ 7 OPC.5            3
+ 8 Oligo.02         3
+ 9 Vasc.Endo       15
+10 Vasc.VLMC        3
+11 Excit.L2_5.2     1
+12 Excit.L5.2       2
+13 Excit.L6_CT      2
+
+$apoe_E2E3_E4E4
+# A tibble: 7 × 2
+  cluster              n
+  <fct>            <int>
+1 Astro.01             2
+2 Micro.4              1
+3 OPC.5                3
+4 Oligo.03             1
+5 Vasc.Endo            3
+6 Excit.L5.2           9
+7 Inhib.Lamp5_Lhx6     1
+
+$apoe_E2E2_E3E4
+# A tibble: 17 × 2
+   cluster          n
+   <fct>        <int>
+ 1 Astro.01        13
+ 2 Astro.02        58
+ 3 Astro.03       134
+ 4 Macro           18
+ 5 Micro.1          9
+ 6 Micro.2         11
+ 7 Micro.3          2
+ 8 Micro.4          2
+ 9 OPC.5            8
+10 Oligo.02         4
+11 Oligo.03       620
+12 Oligo.05       190
+13 Vasc.Endo        4
+14 Vasc.VLMC        8
+15 Excit.L2_5.1   230
+16 Inhib.Pvalb      7
+17 Inhib.Vip       58
+
+$apoe_E2E2_E2E3
+# A tibble: 8 × 2
+  cluster              n
+  <fct>            <int>
+1 Astro.01             1
+2 OPC.5                3
+3 Oligo.02             2
+4 Oligo.04             1
+5 Vasc.VLMC            3
+6 Excit.L2_5.2         1
+7 Inhib.Lamp5_Lhx6     1
+8 Inhib.Vip            3
+
+$apoe_E2E3_E3E4
+# A tibble: 16 × 2
+   cluster       n
+   <fct>     <int>
+ 1 Astro.03     27
+ 2 Astro.04      7
+ 3 Astro.05      1
+ 4 Macro       121
+ 5 Micro.2       1
+ 6 Micro.4       2
+ 7 Micro.5       1
+ 8 OPC.1         2
+ 9 OPC.3         5
+10 OPC.4         2
+11 OPC.5        16
+12 Oligo.02      7
+13 Oligo.03    726
+14 Oligo.04      2
+15 Vasc.Endo    85
+16 Vasc.VLMC     3
+
+$anyE2_E4E4
+# A tibble: 7 × 2
+  cluster        n
+  <fct>      <int>
+1 Astro.01       1
+2 OPC.5          2
+3 Oligo.03       1
+4 Vasc.Endo     10
+5 Excit.L5.2     3
+6 Inhib.Vip      1
+7 Inhib.Sst      2
+
+$E2E2_anyE4
+# A tibble: 15 × 2
+   cluster          n
+   <fct>        <int>
+ 1 Astro.01         8
+ 2 Astro.02        88
+ 3 Astro.03        28
+ 4 Micro.1          6
+ 5 Micro.2          3
+ 6 Micro.3          1
+ 7 Micro.4          5
+ 8 OPC.5            6
+ 9 Oligo.03       301
+10 Oligo.05        21
+11 Vasc.Endo        5
+12 Vasc.VLMC        4
+13 Excit.L2_5.1    61
+14 Excit.L2_5.2     2
+15 Inhib.Vip       23
+
+$E2E3_anyE4
+# A tibble: 8 × 2
+  cluster       n
+  <fct>     <int>
+1 Astro.04      3
+2 Astro.05      3
+3 Macro        11
+4 OPC.5        13
+5 Oligo.02      1
+6 Oligo.03    103
+7 Vasc.Endo     9
+8 Vasc.VLMC     1
+
+$Sex
+# A tibble: 32 × 2
+   cluster      n
+   <fct>    <int>
+ 1 Astro.01    10
+ 2 Astro.02     1
+ 3 Astro.03     2
+ 4 Astro.04     6
+ 5 Astro.05     1
+ 6 Macro        1
+ 7 Micro.1      1
+ 8 Micro.2      3
+ 9 Micro.3      1
+10 Micro.4      3
+# ℹ 22 more rows
+
+$Anc
+# A tibble: 9 × 2
+  cluster      n
+  <fct>    <int>
+1 Micro.1      1
+2 Micro.3      4
+3 OPC.1        1
+4 OPC.2        1
+5 OPC.3        4
+6 OPC.4        2
+7 Oligo.01     7
+8 Oligo.02     7
+9 Oligo.05     2
+
+$carrier
+# A tibble: 1,216 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 carrier  chr15    8.23e7 8.23e7   9483 -      HAVANA gene 
+ 2 sn_fine   Astro.01 carrier  chr22    3.88e7 3.88e7  25577 -      HAVANA gene 
+ 3 sn_fine   Astro.01 carrier  chr1     9.93e7 9.93e7  45299 +      HAVANA gene 
+ 4 sn_fine   Astro.01 carrier  chr6     4.03e7 4.04e7  42849 -      HAVANA gene 
+ 5 sn_fine   Astro.01 carrier  chr9     9.83e7 9.87e7 420827 -      HAVANA gene 
+ 6 sn_fine   Astro.02 carrier  chr8     5.21e7 5.25e7 350122 -      HAVANA gene 
+ 7 sn_fine   Astro.02 carrier  chr6     2.97e7 2.97e7  15371 +      HAVANA gene 
+ 8 sn_fine   Astro.02 carrier  chr1     9.24e5 9.45e5  20653 +      HAVANA gene 
+ 9 sn_fine   Astro.02 carrier  chr8     1.20e8 1.20e8 116368 -      HAVANA gene 
+10 sn_fine   Astro.02 carrier  chr2     2.41e8 2.41e8  96951 +      HAVANA gene 
+# ℹ 1,206 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$E4E4
+# A tibble: 19 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 E4E4     chr15    8.23e7 8.23e7   9483 -      HAVANA gene 
+ 2 sn_fine   Astro.01 E4E4     chr5     3.91e7 3.93e7 169277 -      HAVANA gene 
+ 3 sn_fine   Excit.L… E4E4     chr5     7.96e5 8.59e5  63369 -      HAVANA gene 
+ 4 sn_fine   Excit.L… E4E4     chrM     1.08e4 1.21e4   1378 +      ENSEM… gene 
+ 5 sn_fine   Excit.L… E4E4     chrM     1.47e4 1.59e4   1141 +      ENSEM… gene 
+ 6 sn_fine   Inhib.S… E4E4     chr2     8.70e7 8.70e7  19294 -      HAVANA gene 
+ 7 sn_fine   Inhib.V… E4E4     chr4     7.75e7 7.76e7 100082 +      HAVANA gene 
+ 8 sn_fine   Vasc.En… E4E4     chr22    1.76e7 1.77e7 102001 +      HAVANA gene 
+ 9 sn_fine   Vasc.En… E4E4     chr1     4.60e7 4.61e7  92897 -      HAVANA gene 
+10 sn_fine   Vasc.En… E4E4     chr12    5.44e7 5.44e7  24006 -      HAVANA gene 
+11 sn_fine   Vasc.En… E4E4     chr10    4.31e7 4.32e7  46858 +      HAVANA gene 
+12 sn_fine   Vasc.En… E4E4     chr21    2.34e7 2.34e7  70850 -      HAVANA gene 
+13 sn_fine   Vasc.En… E4E4     chr9     6.93e7 6.94e7  67992 +      HAVANA gene 
+14 sn_fine   Vasc.En… E4E4     chr21    4.14e7 4.14e7  47395 +      HAVANA gene 
+15 sn_fine   Vasc.En… E4E4     chr1     1.17e8 1.17e8  56506 -      HAVANA gene 
+16 sn_fine   Vasc.En… E4E4     chr16    6.70e7 6.71e7  72075 +      HAVANA gene 
+17 sn_fine   Vasc.En… E4E4     chr12    1.32e7 1.32e7  23219 +      HAVANA gene 
+18 sn_fine   Vasc.En… E4E4     chr2     2.24e8 2.24e8  89642 -      HAVANA gene 
+19 sn_fine   Vasc.En… E4E4     chr5     1.80e8 1.80e8  31681 +      HAVANA gene 
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$apoe_E2E2_E4E4
+# A tibble: 38 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 apoe_E2… chr20    1.27e6 1.31e6  43049 +      HAVANA gene 
+ 2 sn_fine   Astro.01 apoe_E2… chr15    8.23e7 8.23e7   9483 -      HAVANA gene 
+ 3 sn_fine   Astro.01 apoe_E2… chr11    1.19e8 1.19e8   9510 -      HAVANA gene 
+ 4 sn_fine   Astro.01 apoe_E2… chr1     9.93e7 9.93e7  45299 +      HAVANA gene 
+ 5 sn_fine   Astro.01 apoe_E2… chr1     9.24e5 9.45e5  20653 +      HAVANA gene 
+ 6 sn_fine   Astro.02 apoe_E2… chr1     2.53e6 2.53e6   1519 -      HAVANA gene 
+ 7 sn_fine   Astro.02 apoe_E2… chrX     2.83e6 2.88e6  53997 +      HAVANA gene 
+ 8 sn_fine   Astro.02 apoe_E2… chr3     5.67e7 5.71e7 351912 -      HAVANA gene 
+ 9 sn_fine   Astro.02 apoe_E2… chr1     2.44e8 2.44e8   8930 +      HAVANA gene 
+10 sn_fine   Astro.02 apoe_E2… chr6     1.64e8 1.64e8  83089 +      HAVANA gene 
+# ℹ 28 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$apoe_E3E4_E4E4
+# A tibble: 72 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 apoe_E3… chr16    7.63e7 7.66e7 283480 +      HAVANA gene 
+ 2 sn_fine   Astro.01 apoe_E3… chr14    8.05e7 8.10e7 482535 -      HAVANA gene 
+ 3 sn_fine   Astro.01 apoe_E3… chr8     5.21e7 5.25e7 350122 -      HAVANA gene 
+ 4 sn_fine   Astro.03 apoe_E3… chr10    9.63e7 9.64e7  16145 -      HAVANA gene 
+ 5 sn_fine   Astro.03 apoe_E3… chr15    5.13e7 5.14e7  66351 +      HAVANA gene 
+ 6 sn_fine   Astro.03 apoe_E3… chr13    3.91e7 3.92e7 170220 +      HAVANA gene 
+ 7 sn_fine   Excit.L… apoe_E3… chrM     1.08e4 1.21e4   1378 +      ENSEM… gene 
+ 8 sn_fine   Excit.L… apoe_E3… chr5     7.96e5 8.59e5  63369 -      HAVANA gene 
+ 9 sn_fine   Excit.L… apoe_E3… chrM     1.08e4 1.21e4   1378 +      ENSEM… gene 
+10 sn_fine   Excit.L… apoe_E3… chr1     4.60e7 4.61e7  92897 -      HAVANA gene 
+# ℹ 62 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$apoe_E2E3_E4E4
+# A tibble: 20 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 apoe_E2… chr15    8.23e7 8.23e7 9.48e3 -      HAVANA gene 
+ 2 sn_fine   Astro.01 apoe_E2… chr5     1.70e8 1.70e8 4.46e5 +      HAVANA gene 
+ 3 sn_fine   Excit.L… apoe_E2… chr13    3.76e7 3.76e7 3.63e4 -      HAVANA gene 
+ 4 sn_fine   Excit.L… apoe_E2… chr5     1.67e8 1.68e8 1.29e6 +      HAVANA gene 
+ 5 sn_fine   Excit.L… apoe_E2… chr11    1.01e8 1.01e8 3.07e5 +      HAVANA gene 
+ 6 sn_fine   Excit.L… apoe_E2… chr4     7.64e7 7.68e7 3.48e5 +      HAVANA gene 
+ 7 sn_fine   Excit.L… apoe_E2… chr10    3.32e7 3.33e7 1.59e5 -      HAVANA gene 
+ 8 sn_fine   Excit.L… apoe_E2… chr18    1.47e7 1.49e7 1.26e5 +      HAVANA gene 
+ 9 sn_fine   Excit.L… apoe_E2… chr2     1.88e8 1.89e8 3.04e5 +      HAVANA gene 
+10 sn_fine   Excit.L… apoe_E2… chr3     2.14e7 2.24e7 9.61e5 -      HAVANA gene 
+11 sn_fine   Excit.L… apoe_E2… chr4     1.88e8 1.89e8 2.80e5 +      HAVANA gene 
+12 sn_fine   Inhib.L… apoe_E2… chr6     1.30e8 1.30e8 2.21e5 -      HAVANA gene 
+13 sn_fine   Micro.4  apoe_E2… chr11    1.30e7 1.30e7 2.81e4 -      HAVANA gene 
+14 sn_fine   Oligo.03 apoe_E2… chr14    7.53e7 7.53e7 3.40e3 +      HAVANA gene 
+15 sn_fine   OPC.5    apoe_E2… chr11    6.55e7 6.55e7 8.12e3 -      HAVANA gene 
+16 sn_fine   OPC.5    apoe_E2… chr13    6.68e7 6.69e7 8.99e4 +      HAVANA gene 
+17 sn_fine   OPC.5    apoe_E2… chr7     1.05e8 1.05e8 6.55e4 -      HAVANA gene 
+18 sn_fine   Vasc.En… apoe_E2… chr22    1.76e7 1.77e7 1.02e5 +      HAVANA gene 
+19 sn_fine   Vasc.En… apoe_E2… chr1     1.17e8 1.17e8 5.65e4 -      HAVANA gene 
+20 sn_fine   Vasc.En… apoe_E2… chr21    4.14e7 4.14e7 4.74e4 +      HAVANA gene 
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$apoe_E2E2_E3E4
+# A tibble: 1,376 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 apoe_E2… chr22    3.88e7 3.88e7  25577 -      HAVANA gene 
+ 2 sn_fine   Astro.01 apoe_E2… chr20    1.27e6 1.31e6  43049 +      HAVANA gene 
+ 3 sn_fine   Astro.01 apoe_E2… chr5     1.42e8 1.43e8 346793 +      HAVANA gene 
+ 4 sn_fine   Astro.01 apoe_E2… chr8     1.42e8 1.43e8  95580 +      HAVANA gene 
+ 5 sn_fine   Astro.01 apoe_E2… chr11    1.19e8 1.19e8   9510 -      HAVANA gene 
+ 6 sn_fine   Astro.01 apoe_E2… chr1     9.93e7 9.93e7  45299 +      HAVANA gene 
+ 7 sn_fine   Astro.01 apoe_E2… chr1     1.42e7 1.43e7  82559 -      HAVANA gene 
+ 8 sn_fine   Astro.01 apoe_E2… chr19    5.40e7 5.40e7  27279 +      HAVANA gene 
+ 9 sn_fine   Astro.01 apoe_E2… chr2     9.83e7 9.84e7  52414 +      HAVANA gene 
+10 sn_fine   Astro.01 apoe_E2… chr8     1.20e8 1.20e8 116368 -      HAVANA gene 
+# ℹ 1,366 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$apoe_E2E2_E2E3
+# A tibble: 15 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 apoe_E2… chr20    1.27e6 1.31e6 4.30e4 +      HAVANA gene 
+ 2 sn_fine   Excit.L… apoe_E2… chr8     2.85e7 2.86e7 8.01e4 +      HAVANA gene 
+ 3 sn_fine   Inhib.L… apoe_E2… chr10    8.70e7 8.70e7 4.66e3 +      HAVANA gene 
+ 4 sn_fine   Inhib.V… apoe_E2… chr15    5.74e7 5.76e7 1.75e5 +      HAVANA gene 
+ 5 sn_fine   Inhib.V… apoe_E2… chr3     4.82e7 4.83e7 5.82e4 +      HAVANA gene 
+ 6 sn_fine   Inhib.V… apoe_E2… chr3     9.39e7 9.40e7 1.07e5 -      HAVANA gene 
+ 7 sn_fine   Oligo.02 apoe_E2… chr2     1.65e8 1.65e8 1.90e5 -      HAVANA gene 
+ 8 sn_fine   Oligo.02 apoe_E2… chr21    1.42e7 1.42e7 1.22e4 +      HAVANA gene 
+ 9 sn_fine   Oligo.04 apoe_E2… chr7     4.73e7 4.76e7 3.07e5 -      HAVANA gene 
+10 sn_fine   OPC.5    apoe_E2… chr16    8.18e7 8.20e7 1.83e5 +      HAVANA gene 
+11 sn_fine   OPC.5    apoe_E2… chr18    3.50e7 3.51e7 1.67e5 +      HAVANA gene 
+12 sn_fine   OPC.5    apoe_E2… chr13    6.68e7 6.69e7 8.99e4 +      HAVANA gene 
+13 sn_fine   Vasc.VL… apoe_E2… chr11    8.93e7 8.95e7 1.74e5 -      HAVANA gene 
+14 sn_fine   Vasc.VL… apoe_E2… chr2     6.92e6 7.07e6 1.51e5 +      HAVANA gene 
+15 sn_fine   Vasc.VL… apoe_E2… chr5     1.67e8 1.68e8 1.29e6 +      HAVANA gene 
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$apoe_E2E3_E3E4
+# A tibble: 1,008 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.03 apoe_E2… chr10    9.63e7 9.64e7  16145 -      HAVANA gene 
+ 2 sn_fine   Astro.03 apoe_E2… chr13    3.91e7 3.92e7 170220 +      HAVANA gene 
+ 3 sn_fine   Astro.03 apoe_E2… chr3     1.34e8 1.34e8  50602 +      HAVANA gene 
+ 4 sn_fine   Astro.03 apoe_E2… chr12    2.13e7 2.14e7 154995 -      HAVANA gene 
+ 5 sn_fine   Astro.03 apoe_E2… chr16    8.37e7 8.38e7  52573 -      HAVANA gene 
+ 6 sn_fine   Astro.03 apoe_E2… chr17    5.93e7 5.94e7  70075 +      HAVANA gene 
+ 7 sn_fine   Astro.03 apoe_E2… chr19    3.53e7 3.53e7  28101 +      HAVANA gene 
+ 8 sn_fine   Astro.03 apoe_E2… chr16    5.72e7 5.73e7  36126 -      HAVANA gene 
+ 9 sn_fine   Astro.03 apoe_E2… chrX     1.04e8 1.04e8  18902 +      HAVANA gene 
+10 sn_fine   Astro.03 apoe_E2… chr5     5.59e7 5.60e7  59928 -      HAVANA gene 
+# ℹ 998 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$anyE2_E4E4
+# A tibble: 20 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 anyE2_E… chr15    8.23e7 8.23e7   9483 -      HAVANA gene 
+ 2 sn_fine   Excit.L… anyE2_E… chrM     1.08e4 1.21e4   1378 +      ENSEM… gene 
+ 3 sn_fine   Excit.L… anyE2_E… chr5     7.96e5 8.59e5  63369 -      HAVANA gene 
+ 4 sn_fine   Excit.L… anyE2_E… chrM     1.47e4 1.59e4   1141 +      ENSEM… gene 
+ 5 sn_fine   Inhib.S… anyE2_E… chr2     8.70e7 8.70e7  19294 -      HAVANA gene 
+ 6 sn_fine   Inhib.S… anyE2_E… chr17    3.92e7 3.92e7   4558 +      HAVANA gene 
+ 7 sn_fine   Inhib.V… anyE2_E… chr4     7.75e7 7.76e7 100082 +      HAVANA gene 
+ 8 sn_fine   Oligo.03 anyE2_E… chr14    7.53e7 7.53e7   3405 +      HAVANA gene 
+ 9 sn_fine   OPC.5    anyE2_E… chr11    6.55e7 6.55e7   8121 -      HAVANA gene 
+10 sn_fine   OPC.5    anyE2_E… chr13    6.68e7 6.69e7  89863 +      HAVANA gene 
+11 sn_fine   Vasc.En… anyE2_E… chr22    1.76e7 1.77e7 102001 +      HAVANA gene 
+12 sn_fine   Vasc.En… anyE2_E… chr9     6.93e7 6.94e7  67992 +      HAVANA gene 
+13 sn_fine   Vasc.En… anyE2_E… chr10    4.31e7 4.32e7  46858 +      HAVANA gene 
+14 sn_fine   Vasc.En… anyE2_E… chr21    4.14e7 4.14e7  47395 +      HAVANA gene 
+15 sn_fine   Vasc.En… anyE2_E… chr18    2.15e5 2.68e5  53531 -      HAVANA gene 
+16 sn_fine   Vasc.En… anyE2_E… chr8     2.24e7 2.25e7 100324 +      HAVANA gene 
+17 sn_fine   Vasc.En… anyE2_E… chr1     1.17e8 1.17e8  56506 -      HAVANA gene 
+18 sn_fine   Vasc.En… anyE2_E… chr3     1.23e8 1.23e8  10866 +      HAVANA gene 
+19 sn_fine   Vasc.En… anyE2_E… chr15    8.28e7 8.30e7 149208 -      HAVANA gene 
+20 sn_fine   Vasc.En… anyE2_E… chr6     1.48e8 1.48e8 228858 +      HAVANA gene 
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$E2E2_anyE4
+# A tibble: 562 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 E2E2_an… chr20    1.27e6 1.31e6  43049 +      HAVANA gene 
+ 2 sn_fine   Astro.01 E2E2_an… chr22    3.88e7 3.88e7  25577 -      HAVANA gene 
+ 3 sn_fine   Astro.01 E2E2_an… chr11    1.19e8 1.19e8   9510 -      HAVANA gene 
+ 4 sn_fine   Astro.01 E2E2_an… chr1     9.93e7 9.93e7  45299 +      HAVANA gene 
+ 5 sn_fine   Astro.01 E2E2_an… chr8     1.42e8 1.43e8  95580 +      HAVANA gene 
+ 6 sn_fine   Astro.01 E2E2_an… chr19    4.20e7 4.20e7  30916 -      HAVANA gene 
+ 7 sn_fine   Astro.01 E2E2_an… chr19    5.40e7 5.40e7  27279 +      HAVANA gene 
+ 8 sn_fine   Astro.01 E2E2_an… chr18    5.74e7 5.74e7  19175 +      HAVANA gene 
+ 9 sn_fine   Astro.02 E2E2_an… chr1     2.53e6 2.53e6   1519 -      HAVANA gene 
+10 sn_fine   Astro.02 E2E2_an… chr8     5.21e7 5.25e7 350122 -      HAVANA gene 
+# ℹ 552 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$E2E3_anyE4
+# A tibble: 144 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.04 E2E3_an… chr8     9.10e7 9.10e7  47071 -      HAVANA gene 
+ 2 sn_fine   Astro.04 E2E3_an… chr5     1.78e8 1.79e8 352918 -      HAVANA gene 
+ 3 sn_fine   Astro.04 E2E3_an… chr15    8.23e7 8.23e7  22121 +      HAVANA gene 
+ 4 sn_fine   Astro.05 E2E3_an… chr8     1.32e8 1.32e8 360235 -      HAVANA gene 
+ 5 sn_fine   Astro.05 E2E3_an… chr6     1.52e8 1.53e8 516115 -      HAVANA gene 
+ 6 sn_fine   Astro.05 E2E3_an… chr3     1.24e8 1.24e8  64104 -      HAVANA gene 
+ 7 sn_fine   Macro    E2E3_an… chr14    6.17e7 6.17e7  52747 +      HAVANA gene 
+ 8 sn_fine   Macro    E2E3_an… chr3     1.51e8 1.51e8  47911 -      HAVANA gene 
+ 9 sn_fine   Macro    E2E3_an… chr1     1.09e8 1.09e8  84812 +      HAVANA gene 
+10 sn_fine   Macro    E2E3_an… chr10    6.14e6 6.25e6 109711 +      HAVANA gene 
+# ℹ 134 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$Sex
+# A tibble: 561 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Astro.01 Sex      chrX     7.38e7 7.39e7  32075 -      HAVANA gene 
+ 2 sn_fine   Astro.01 Sex      chrX     7.38e7 7.38e7  37027 +      HAVANA gene 
+ 3 sn_fine   Astro.01 Sex      chrX     7.39e7 7.41e7 126227 +      HAVANA gene 
+ 4 sn_fine   Astro.01 Sex      chrY     1.95e7 1.96e7 111662 -      HAVANA gene 
+ 5 sn_fine   Astro.01 Sex      chrX     5.32e7 5.32e7  49140 -      HAVANA gene 
+ 6 sn_fine   Astro.01 Sex      chr1     1.99e8 1.99e8 119020 +      HAVANA gene 
+ 7 sn_fine   Astro.01 Sex      chr5     3.91e7 3.93e7 169277 -      HAVANA gene 
+ 8 sn_fine   Astro.01 Sex      chr6     1.07e8 1.07e8   5797 -      HAVANA gene 
+ 9 sn_fine   Astro.01 Sex      chrY     2.94e6 2.98e6  47226 +      HAVANA gene 
+10 sn_fine   Astro.01 Sex      chrY     1.97e7 1.98e7  15223 +      HAVANA gene 
+# ℹ 551 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+$Anc
+# A tibble: 29 × 21
+   data_type cluster  contrast seqnames  start    end  width strand source type 
+   <chr>     <fct>    <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+ 1 sn_fine   Micro.1  Anc      chr22    2.54e7 2.55e7 7.28e4 +      HAVANA gene 
+ 2 sn_fine   Micro.3  Anc      chr22    4.18e7 4.19e7 7.42e4 +      HAVANA gene 
+ 3 sn_fine   Micro.3  Anc      chr22    2.54e7 2.55e7 7.28e4 +      HAVANA gene 
+ 4 sn_fine   Micro.3  Anc      chr4     8.33e7 8.33e7 4.27e4 -      HAVANA gene 
+ 5 sn_fine   Micro.3  Anc      chr9     2.27e7 2.34e7 7.35e5 -      HAVANA gene 
+ 6 sn_fine   Oligo.01 Anc      chr6     6.37e7 6.57e7 1.99e6 -      HAVANA gene 
+ 7 sn_fine   Oligo.01 Anc      chr22    2.54e7 2.55e7 7.28e4 +      HAVANA gene 
+ 8 sn_fine   Oligo.01 Anc      chr7     2.47e7 2.48e7 5.96e4 -      HAVANA gene 
+ 9 sn_fine   Oligo.01 Anc      chr4     8.83e7 8.83e7 5.72e4 +      HAVANA gene 
+10 sn_fine   Oligo.01 Anc      chr22    2.56e7 2.57e7 1.65e5 +      HAVANA gene 
+# ℹ 19 more rows
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   cell_type_broad <fct>
+
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+`summarise()` has grouped output by 'cell_type_broad', 'cluster'. You can
+override using the `.groups` argument.
+Saving 7 x 7 in image
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 38 warnings (use warnings() to see them)
+Astro
+Saving 7 x 7 in image
+Oligo
+Saving 7 x 7 in image
+OPC
+Saving 7 x 7 in image
+Macro
+Saving 7 x 7 in image
+Micro
+Saving 7 x 7 in image
+Vasc
+Saving 7 x 7 in image
+Excit
+Saving 7 x 7 in image
+Inhib
+Saving 7 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Astro.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Oligo.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-OPC.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Macro.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Micro.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Vasc.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Excit.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/sn_fine/sn_fine_t_stat_ggpairs-Inhib.png"
+
+There were 50 or more warnings (use warnings() to see the first 50)
+[1] "Reproducibility information:"
+[1] "2025-06-18 09:49:54 EDT"
+   user  system elapsed 
+176.495   2.808 183.471 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-06-18
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version date (UTC) lib source
+ abind                  1.4-8   2024-09-12 [2] CRAN (R 4.5.0)
+ Biobase                2.68.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics           0.54.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ cli                    3.6.5   2025-04-23 [2] CRAN (R 4.5.0)
+ crayon                 1.5.3   2024-06-20 [2] CRAN (R 4.5.0)
+ DelayedArray           0.34.1  2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
+ dichromat              2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4   2023-11-17 [2] CRAN (R 4.5.0)
+ farver                 2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
+ fs                     1.6.6   2025-04-12 [2] CRAN (R 4.5.0)
+ gargle                 1.5.2   2023-07-20 [2] CRAN (R 4.5.0)
+ generics               0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb           1.44.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14  2025-05-21 [2] Bioconductor
+ GenomicRanges          1.60.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GGally               * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2              * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
+ ggrepel              * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ ggstats                0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
+ glue                   1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ googledrive            2.1.1   2023-06-11 [2] CRAN (R 4.5.0)
+ gtable                 0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
+ hms                    1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7   2023-08-15 [2] CRAN (R 4.5.0)
+ IRanges                2.42.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ jaffelab               0.99.34 2025-05-27 [1] Github (LieberInstitute/jaffelab@e7a26ca)
+ jsonlite               2.0.0   2025-03-27 [2] CRAN (R 4.5.0)
+ labeling               0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lattice                0.22-7  2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4   2023-11-07 [2] CRAN (R 4.5.0)
+ limma                  3.64.1  2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ lubridate            * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
+ MASS                   7.3-65  2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3   2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics         1.20.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ matrixStats            1.5.0   2025-01-07 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168 2025-03-31 [3] CRAN (R 4.5.0)
+ pillar                 1.10.2  2025-04-05 [2] CRAN (R 4.5.0)
+ pkgconfig              2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr                   1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
+ purrr                * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
+ R6                     2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ rafalib                1.0.4   2025-04-08 [1] CRAN (R 4.5.0)
+ ragg                   1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.0.14  2025-01-12 [2] CRAN (R 4.5.0)
+ readr                * 2.1.5   2024-01-10 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6   2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot              2.0.4   2023-11-05 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ S4Vectors              0.46.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales                 1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ segmented              2.1-4   2025-02-28 [1] CRAN (R 4.5.0)
+ sessioninfo          * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ SparseArray            1.8.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0   2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.5.1   2023-11-14 [2] CRAN (R 4.5.0)
+ SummarizedExperiment   1.38.1  2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ systemfonts            1.2.3   2025-04-30 [2] CRAN (R 4.5.0)
+ textshaping            1.0.1   2025-05-01 [2] CRAN (R 4.5.0)
+ tibble               * 3.2.1   2023-03-20 [2] CRAN (R 4.5.0)
+ tidyr                * 1.3.1   2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect             1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ utf8                   1.2.5   2025-05-01 [2] CRAN (R 4.5.0)
+ vctrs                  0.6.5   2023-12-01 [2] CRAN (R 4.5.0)
+ withr                  3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.48.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Jun 18 09:49:54 AM EDT 2025

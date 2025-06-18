@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Jun 18 06:47:42 AM EDT 2025
+Wed Jun 18 09:46:57 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17426758
+Job id: 17427056
 Job name: 01_compile_DGE_sn_broad
-Node name: compute-154
+Node name: compute-168
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -26,6 +26,9 @@ Currently Loaded Modules:
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
 Loading objects:
   cell_type_colors
 Loading required namespace: S4Vectors
@@ -153,7 +156,6 @@ DataFrame with 6 rows and 11 columns
 4  0.689327  -4.72172 -1.4398406                   1     carrier
 5  0.953464  -5.64140  0.2965968                   1     carrier
 6  0.996862  -5.69430 -0.0214168                   1     carrier
-NULL
 $carrier
 [1] "gene_name"       "cluster"         "dream_logFC"     "dream_AveExpr"  
 [5] "dream_t"         "dream_P.Value"   "dream_adj.P.Val" "dream_B"        
@@ -644,10 +646,12 @@ Warning messages:
 6: ggrepel: 8 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
 7: ggrepel: 30 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
 8: ggrepel: 264 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)
 [1] "Reproducibility information:"
-[1] "2025-06-18 06:49:06 EDT"
+[1] "2025-06-18 09:48:56 EDT"
    user  system elapsed 
- 80.261   1.857  83.814 
+113.754   2.144 117.919 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -672,8 +676,10 @@ Warning messages:
  forcats      * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
  generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
  getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
  ggplot2      * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
  ggrepel      * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
  glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
  gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
  here         * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
@@ -684,6 +690,7 @@ Warning messages:
  magrittr       2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
  pillar         1.10.2  2025-04-05 [2] CRAN (R 4.5.0)
  pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
  purrr        * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
  R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
  ragg           1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
@@ -716,4 +723,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jun 18 06:49:07 AM EDT 2025
+Wed Jun 18 09:48:56 AM EDT 2025
