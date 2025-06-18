@@ -50,13 +50,13 @@ vlmf_data_tb <- map(vlmf_data,
                                       vlmf_adj.P.Val = adj.P.Val,
                                       vlmf_B = B
                         )  |>
-                        mutate(cell_type_broad = jaffelab::ss(cluster,"\\."),
+                        mutate(cell_type_broad = factor(jaffelab::ss(cluster,"\\."), names(cell_type_colors$broad)),
                                cluster = factor(cluster, levels = cluster_levels)
                                )
 )
 
 levels(vlmf_data_tb$carrier$cluster)
-unique(vlmf_data_tb$carrier$cell_type_broad)
+levels(vlmf_data_tb$carrier$cell_type_broad)
 
 map(vlmf_data_tb, ~.x |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster))
 map(vlmf_data_tb, ~.x |> filter(vlmf_adj.P.Val < 0.05))
@@ -95,7 +95,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
     geom_text(aes(label = abs(n_genes))) +
-    facet_wrap(~mod, ncol = 1) +
+    facet_grid(mod~cell_type_broad, scales = "free_x", space = "free") +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
