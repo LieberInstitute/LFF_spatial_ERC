@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 01_compile_DGE --datatype Visium
+Rscript 01_compile_DGE.R --datatype Visium
 
 echo "**** Job ends ****"
 date
