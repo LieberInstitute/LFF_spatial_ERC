@@ -178,21 +178,20 @@ map(vlmf_data_tb, ~.x |> filter(vlmf_adj.P.Val < 0.05))
 
 vlmf_model_summary <- map2_dfr(vlmf_data_tb, names(vlmf_data_tb), 
                                ~.x |> 
-                                   filter(vlmf_adj.P.Val < 0.05) |>
                                    mutate(mod = .y) |>
                                    group_by(cluster, mod) |>
-                                   summarize(n_FDR05 = n(),
-                                             nUP = sum(vlmf_logFC > 0),
-                                             nDown = sum(vlmf_logFC < 0))
+                                   summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+                                             nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
+                                             nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
                                )
 
 ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
     filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
-    ggplot(aes(x = cluster, y = n_FDR05)) +
+    ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
     geom_col() +
     geom_text(aes(label = n_FDR05), vjust=-.5) +
-    scale_color_manual(values = cluster_colors) +
+    scale_fill_manual(values = cluster_colors) +
     facet_wrap(~mod, ncol = 1) +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
