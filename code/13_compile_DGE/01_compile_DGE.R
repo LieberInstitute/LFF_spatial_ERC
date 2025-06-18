@@ -6,32 +6,54 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("ggrepel")
+library("getopt")
 
-data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE")
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
+opt$datatype = "sn_broad"
+
+data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "13_compile_DGE", "01_compile_DGE")
+plot_dir <- here("plots", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
 main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
+#### colors and factors ####
+
+cluster_colors <- c()
+cluster_levels <- c()
+
+if(opt$datatype == "sn_broad"){
+    load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$broad
+    cluster_levels <- names(cell_type_colors$broad)
+}
+
+
 #### pseudobulkDGE data ####
 
-pseudobulkDGE_fn <- list(sn = here("processed-data", "08_pseudoBulkDGE_sn", "05_pseudoBulkDGE_sn_broad", "sn_pseudoBulkDGE.rds"),
+pseudobulkDGE_fn <- list(sn_broad = here("processed-data", "08_pseudoBulkDGE_sn", "05_pseudoBulkDGE_sn_broad", "sn_pseudoBulkDGE.rds"),
                           Visium = here("processed-data", "09_pseudoBulkDGE_Visium", "03_pseudoBulkDGE_Visium", "Visium_pseudoBulkDGE.rds"))
 
-map_lgl(pseudobulkDGE_fn, file.exists)
+pseudobulkDGE_fn <- pseudobulkDGE_fn[[opt$datatype]]
+
+stopifnot(file.exists(pseudobulkDGE_fn))
 
 ## load main mod data
-pseudobulkDGE_data <- map(pseudobulkDGE_fn, ~readRDS(.x)[c("carrier", "APOE", "E4E4", "carrier_i", "APOE_i", "E4E4_i")])
+pseudobulkDGE_data <- readRDS(pseudobulkDGE_fn)[c("carrier", "APOE", "E4E4", "carrier_i", "APOE_i", "E4E4_i")]
 ## fix names
-names(pseudobulkDGE_data$sn) <- main_mods
-names(pseudobulkDGE_data$Visium) <- main_mods
+names(pseudobulkDGE_data) <- main_mods
 
-
-pseudobulkDGE_data$sn$carrier$Astro
+pseudobulkDGE_data$carrier$Astro
 
 edit_pseudobulkDEG_data <- function(df_list){
     
@@ -55,116 +77,146 @@ edit_pseudobulkDEG_data <- function(df_list){
     return(df_combined)
 }
 
-pseudobulkDGE_data_select <- map(pseudobulkDGE_data, ~.x[c("carrier", "e4e4")])
+## edit select data
+pseudobulkDGE_data_select <- pseudobulkDGE_data[c("carrier", "e4e4")]
+pseudobulkDGE_data_tb <- map(pseudobulkDGE_data_select, edit_pseudobulkDEG_data)
 
-pseudobulkDGE_data_tb <- map_depth(pseudobulkDGE_data_select,2, edit_pseudobulkDEG_data)
-
-map_depth(pseudobulkDGE_data_tb, 2, ~.x |> filter(pbDGE_adj.P.Val < 0.2) |> count(cluster))
-map_depth(pseudobulkDGE_data_tb, 2, ~.x |> filter(pbDGE_adj.P.Val < 0.2))
+map(pseudobulkDGE_data_tb, ~.x |> filter(pbDGE_adj.P.Val < 0.2) |> count(cluster))
+map(pseudobulkDGE_data_tb, ~.x |> filter(pbDGE_adj.P.Val < 0.2))
 
 ## datatype - mod
-pseudobulkDGE_data_tb$sn$carrier
+pseudobulkDGE_data_tb$carrier
     
 #### dreamlet data ####
-dreamlet_fn <- list(sn = here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"),
+dreamlet_fn <- list(sn_broad = here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"),
                          Visium = here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visium_TopTables.Rdata"))
 
-map_lgl(dreamlet_fn, file.exists)
+dreamlet_fn <- dreamlet_fn[[opt$datatype]]
+stopifnot(file.exists(dreamlet_fn))
 
-dreamlet_data <- map(dreamlet_fn, ~get(load(.x)))
+dreamlet_data <- get(load(dreamlet_fn))
 
-names(dreamlet_data$sn)
+names(dreamlet_data)
 
-head(dreamlet_data$sn$carrier)
+head(dreamlet_data$carrier)
 
-dreamlet_data_tb <- list()
-dreamlet_data_tb$sn <- map(dreamlet_data$sn[c("carrier", "e4e4")],
-                              ~.x |>
-                                  as.data.frame() |>
-                                  as_tibble() |>
-                                  dplyr::select(gene_name = ID,
-                                         cluster = assay,
-                                         dream_logFC = logFC,
-                                         dream_AveExpr = AveExpr,
-                                         dream_t = t,
-                                         dream_P.Value = P.Value,
-                                         dream_adj.P.Val = adj.P.Val.cell_type,
-                                         dream_B = B)) 
+if(opt$datatype == "sn_broad"){
+    dreamlet_data_tb <- map(dreamlet_data[c("carrier", "e4e4")],
+                            ~.x |>
+                                as.data.frame() |>
+                                as_tibble() |>
+                                dplyr::select(gene_name = ID,
+                                              cluster = assay,
+                                              dream_logFC = logFC,
+                                              dream_AveExpr = AveExpr,
+                                              dream_t = t,
+                                              dream_P.Value = P.Value,
+                                              dream_adj.P.Val = adj.P.Val.cell_type,
+                                              dream_B = B)|>
+                                mutate(cluster = factor(cluster, cluster_levels))
+                            ) 
+} else if(opt$datatype == "Visium"){
+    dreamlet_data_tb$Visium <- map(dreamlet_data[c("carrier", "e4e4")],
+                                   ~.x |>
+                                       as.data.frame() |>
+                                       as_tibble() |>
+                                       dplyr::select(gene_name = ID,
+                                                     cluster = assay,
+                                                     dream_logFC = logFC,
+                                                     dream_AveExpr = AveExpr,
+                                                     dream_t = t,
+                                                     dream_P.Value = P.Value,
+                                                     dream_adj.P.Val = adj.P.Val.SpD,
+                                                     dream_B = B) |>
+                                       mutate(cluster = factor(cluster, cluster_levels))
+                                       ) 
+}
 
-dreamlet_data_tb$Visium <- map(dreamlet_data$Visium[c("carrier", "e4e4")],
-                              ~.x |>
-                                  as.data.frame() |>
-                                  as_tibble() |>
-                                  dplyr::select(gene_name = ID,
-                                         cluster = assay,
-                                         dream_logFC = logFC,
-                                         dream_AveExpr = AveExpr,
-                                         dream_t = t,
-                                         dream_P.Value = P.Value,
-                                         dream_adj.P.Val = adj.P.Val.SpD,
-                                         dream_B = B)) 
+levels(dreamlet_data_tb[[1]]$cluster)
 
-map_depth(dreamlet_data_tb,2, colnames)
+map(dreamlet_data_tb, colnames)
 
-map_depth(dreamlet_data_tb, 2, ~.x |> filter(dream_adj.P.Val < 0.2) |> count(cluster))
-map_depth(dreamlet_data_tb, 2, ~.x |> filter(dream_adj.P.Val < 0.2))
+
+map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2) |> count(cluster))
+map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2))
 
 #### voomLmFit data ####
 
-vlmf_fn <- map(list(sn = here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", "vlmf_sn_broad"),
-                Visium = here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", "vlmf_Visium")),
-               ~list.files(.x, full.names = TRUE, pattern = ".rds"))
-names <- map_depth(vlmf_fn, 1, ~gsub("voomLmFit_sn_broad_|voomLmFit_Visium_|.rds", "", basename(.x)))
+vlmf_dir <-list(sn_broad = "vlmf_sn_broad",
+                Visium = "vlmf_Visium")
+vlmf_dir <- vlmf_dir[[opt$datatype]]
 
-vlmf_fn <- map2(vlmf_fn, names, ~setNames(.x, .y))
+vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", vlmf_dir),
+                      full.names = TRUE, pattern = ".rds")
 
-##bug ?
-# vlmf_data <- map_depth(vlmf_fn, 1, readRDS)
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_sn_broad_|voomLmFit_Visium_|.rds", "", basename(.x)))
 
-vlmf_data <- list()
-vlmf_data$sn <- map(vlmf_fn[["sn"]], readRDS)
-vlmf_data$Visium <- map(vlmf_fn[["Visium"]], readRDS)
+## read data
+vlmf_data <- map(vlmf_fn, readRDS)
 
-vlmf_data <- map_depth(vlmf_data, 1, list_transpose)
-names(vlmf_data[["sn"]])
-head(vlmf_data$sn$"E2E2_E4E4"$Astro)
+vlmf_data <- list_transpose(vlmf_data)
 
-vlmf_data_tb <- map_depth(vlmf_data, 2, 
-                          ~as_tibble(do.call("rbind", .x)) |>
-                              dplyr::rename(vlmf_logFC = logFC,
-                                            vlmf_AveExpr = AveExpr,
-                                            vlmf_t = t,
-                                            vlmf_P.Value = P.Value,
-                                            vlmf_adj.P.Val = adj.P.Val,
-                                            vlmf_B = B
-                                            )
-                          )
+names(vlmf_data)
+
+head(vlmf_data$carrier$Astro)
+
+vlmf_data_tb <- map(vlmf_data,
+                    ~as_tibble(do.call("rbind", .x)) |>
+                        dplyr::rename(vlmf_logFC = logFC,
+                                      vlmf_AveExpr = AveExpr,
+                                      vlmf_t = t,
+                                      vlmf_P.Value = P.Value,
+                                      vlmf_adj.P.Val = adj.P.Val,
+                                      vlmf_B = B
+                        ) |>
+                        mutate(cluster = factor(cluster, cluster_levels))
+)
 
 
-map_depth(vlmf_data_tb, 2, ~.x |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster))
-map_depth(vlmf_data_tb, 2, ~.x |> filter(vlmf_adj.P.Val < 0.05))
+map(vlmf_data_tb, ~.x |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster))
+map(vlmf_data_tb, ~.x |> filter(vlmf_adj.P.Val < 0.05))
 
-vlmf_model_summary <- map(vlmf_data_tb, function(vdt){
-    map2_dfr(vdt, names(vdt), ~.x |> 
-                 filter(vlmf_adj.P.Val < 0.05) |>
-                 mutate(reg = ifelse(vlmf_logFC > 0, "up_reg", "down_reg"),
-                        mod = .y) |>
-                 count(cluster, mod))
-})
+vlmf_model_summary <- map2_dfr(vlmf_data_tb, names(vlmf_data_tb), 
+                               ~.x |> 
+                                   filter(vlmf_adj.P.Val < 0.05) |>
+                                   mutate(mod = .y) |>
+                                   group_by(cluster, mod) |>
+                                   summarize(n_FDR05 = n(),
+                                             nUP = sum(vlmf_logFC > 0),
+                                             nDown = sum(vlmf_logFC < 0))
+                               )
 
-vlmf_model_summary_bar <- walk2(vlmf_model_summary, names(vlmf_model_summary), function(summary, name){
-    vlmf_model_summary_bar <- summary |>
-        filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
-        ggplot(aes(x = cluster, y = n)) +
-        geom_col() +
-        geom_text(aes(label = n), vjust=-.5) +
-        facet_wrap(~mod, ncol = 1) +
-        theme_bw() +
-        labs(title = sprintf("voomLmFit - %s", name), subtitle = "FDR < 0.05") +
-        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-    
-    ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("vlmf_model_summary_bar_%s.png", name)))
-})
+## n signif bar plots
+vlmf_model_summary_bar <- vlmf_model_summary |>
+    filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
+    ggplot(aes(x = cluster, y = n_FDR05)) +
+    geom_col() +
+    geom_text(aes(label = n_FDR05), vjust=-.5) +
+    scale_color_manual(values = cluster_colors) +
+    facet_wrap(~mod, ncol = 1) +
+    theme_bw() +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)))
+
+vlmf_model_summary_bar_reg <- vlmf_model_summary |>
+    select(-n_FDR05) |>
+    mutate(nDown = -1*nDown) |>
+    pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
+    # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
+    filter(mod == "carrier") |>
+    ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
+    geom_col() +
+    geom_text(aes(label = abs(n_genes))) +
+    facet_wrap(~mod, ncol = 1) +
+    theme_bw() +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_reg.png", opt$datatype)))
+
+
 
 map2(vlmf_data_tb$sn, names(vlmf_data_tb$sn), ~.x |> 
          filter(vlmf_adj.P.Val < 0.05) |>
