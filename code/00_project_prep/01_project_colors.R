@@ -160,9 +160,6 @@ pdf(here(plot_dir, "ERC_cell_type_colors_broad.V2.pdf"))
 test_pallet_plots(cell_type_colors, "ERC Broad Cell Type Colors V2")
 dev.off()
 
-save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.Rdata"))
-
-
 cell_type_colors_anno = c(Astro.01 = "#228B22",
                           Astro.02 = "#32CD32",
                           Astro.03 = "#808000",
@@ -207,6 +204,11 @@ test_pallet_plots(cell_type_colors_anno, "Cell Colors Anno: ERC")
 dev.off()
 
 save(cell_type_colors_anno, file = here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"))
+
+cell_type_colors <- list(broad = cell_type_colors_broad.V2,
+                         anno = cell_type_colors_anno)
+
+save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"))
 
 
 #### SpD colors ####
