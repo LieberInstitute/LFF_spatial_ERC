@@ -6,6 +6,7 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("ggrepel")
+library("GGally")
 # library("getopt")
 
 opt <- list()
@@ -215,7 +216,7 @@ carrier_data_wide_t <- vlmf_data_tb$carrier |>
     # count(cluster)
     pivot_wider(values_from = "vlmf_t", names_from = "cluster")
 
-library(GGally)
+
 
 ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t))
 
