@@ -255,6 +255,20 @@ dev.off()
 # "Phthalo blue"="#021380",
 # "Black bean"="#500802")
 
+#### Spatial DLPFC k9 colors ####
+spatialDLPFC_SpD_colors <- c(`L1~Sp09D01` = "#5A5156",
+                             `L1~Sp09D02` =   "#E4E1E3",
+                             `L2~Sp09D03` =  "#F6222E",
+                             `L3~Sp09D05` =  "#16FF32",
+                             `L4~Sp09D08` = "#B00068",
+                             `L5~Sp09D04` = "#FE00FA",
+                             `L6~Sp09D07` =  "#FEAF16",
+                             `WM~Sp09D06`  = "#3283FE", 
+                             `WM~Sp09D09` = "#1CFFCE")
+         
+save(spatialDLPFC_SpD_colors, file = here("processed-data","00_project_prep", "spatialDLPFC_Data","SpD_colors2.Rdata"))
+
+
 
 
 ## Reproducibility information
