@@ -28,6 +28,8 @@ if(!dir.exists(data_dir)) dir.create(data_dir)
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 
+dim(sce)
+
 pd <- as.data.frame(colData(sce))
 
 table(sce$cell_type_anno)
@@ -35,22 +37,46 @@ table(sce$cell_type_anno)
 ## load colors
 # load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
-
 cell_type_colors <- metadata(sce)$cell_type_colors
 
 #### enrichment data ####
-erc_sn_modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
+enrichment_stats_top <- read.csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv"))
 
-enrichment_top5 <- erc_sn_modeling_results$enrichment
+enrichment_stats_top_list <- enrichment_stats_top |>
+    group_by(cell_type_anno) |>
+    summarise(top_enrichment_genes = paste(ensembl, collapse = ", "))
 
 #### Cell Type Summary ####
-
 cell_type_summary <- pd |>
     group_by(cell_type_class, cell_type_broad, cell_type_anno) |>
     summarise(n_nuclei = n(),
-              n_donors = length(unique(sample_id)))
+              prop = n_nuclei/ncol(sce),
+              n_donors = length(unique(sample_id)),
+              median_sum = median(sum),
+              median_detected = median(detected),
+              median_Mito_percent = median(subsets_Mito_percent),
+              median_scDblFinder.score = median(scDblFinder.score)) |>
+    left_join(enrichment_stats_top_list)
 
+cell_type_summary |> filter(cell_type_anno == "Inhib.Pax6")
+# cell_type_summary |> filter(cell_type_anno == "Oligo.03")
+# cell_type_summary |> filter(cell_type_anno == "Astro.02")
 
+write.csv(cell_type_summary, file = here(data_dir, "ERC_sn_subcluster_summary_cell_type.csv"))
+
+#### Donor Summary ####
+
+sample_summary <- pd |>
+    group_by(sample_id, exp_round, seq_round) |>
+    summarise(n_nuclei = n(),
+              median_sum = median(sum),
+              median_detected = median(detected),
+              median_Mito_percent = median(subsets_Mito_percent),
+              median_scDblFinder.score = median(scDblFinder.score)) 
+
+summary(sample_summary)
+
+write.csv(sample_summary, file = here(data_dir, "ERC_sn_subcluster_summary_sample.csv"))
 
 #### Quality Metrics ####
 
@@ -59,13 +85,25 @@ sum_umi_violin <- ggplot(pd, aes(x = cell_type_anno, y = sum, fill = cell_type_a
     scale_fill_manual(values = cell_type_colors$anno) +
     scale_y_continuous(trans='log10') +
     theme_bw() +
+    facet_grid(.~cell_type_broad, scales = "free_x", space = "free") +
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(sum_umi_violin, filename = here(plot_dir, "ERC_sn_sum_umi_violin.png"), width = 10)
+ggsave(sum_umi_violin, filename = here(plot_dir, "ERC_sn_subcluster_sum_umi_violin.png"), width = 10)
 
 #### violin plots of select genes ####
 rownames(sce) <- rowData(sce)$gene_name
+
+plot_one_gene <- function(gene){
+    
+    apoe_plot <- plot_gene_express(sce, genes = gene, 
+                                   category = "cell_type_anno", 
+                                   color_pal = cell_type_colors$anno) +
+        labs(x = "Cell Type") 
+    
+    ggsave(apoe_plot, filename = here(plot_dir, sprintf("ERC_sn_gene_expres_%s.png", gene), height = 4))
+    
+}
 
 apoe_plot <- plot_gene_express(sce, genes = "APOE", 
                                category = "cell_type_anno", 
