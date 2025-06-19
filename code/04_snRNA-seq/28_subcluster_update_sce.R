@@ -103,6 +103,11 @@ table(sce$passALL_metricQC)
 # FALSE   TRUE 
 # 2717 122966
 
+## Fix Pax6 broad cell type 
+sce$cell_type_broad[sce$cell_type_anno == "Inhib.Pax6"] <- "Inhib"
+
+table(sce$cell_type_anno, sce$cell_type_broad)
+
 ## update factors
 cell_type_levels_broad <- colData(sce) |>
     as.data.frame() |> 
@@ -123,7 +128,9 @@ cell_type_level_tb <- colData(sce) |>
 #### Define colors for fine cell types ####
 
 # load colors
-load(here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"), verbose = TRUE)
+load(here("processed-data","00_project_prep","cell_type_colors$anno_subtype.Rdata"), verbose = TRUE)
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
+
 
 #### summary by cluster ####
 message(Sys.time(), " - Summarize clusters")
@@ -159,7 +166,7 @@ qc_violin_plot_all <- pd |>
     ggplot() +
     geom_violin(aes(x = cell_type_anno, y = value, fill = cell_type_anno, colour = passALL_metricQC), 
                 scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
-    scale_fill_manual(values = cell_type_colors_anno, guide = "none") +
+    scale_fill_manual(values = cell_type_colors$anno, guide = "none") +
     scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
     theme_bw() +
     geom_hline(data = cell_class_cutoffs, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
@@ -185,7 +192,7 @@ qc_violin_plot_all_g <- pd |>
     ggplot() +
     geom_violin(aes(x = cell_type_anno, y = value, fill = cell_type_anno, colour = passALL_metricQC), 
                 scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
-    scale_fill_manual(values = cell_type_colors_anno, guide = "none") +
+    scale_fill_manual(values = cell_type_colors$anno, guide = "none") +
     scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
     theme_bw() +
     geom_hline(data = cell_class_cutoffs_g, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
@@ -200,7 +207,7 @@ n_cell_barplot <- cluster_info |>
     ggplot(aes(x = cell_type_anno, y = n, fill = cell_type_anno, color = passALL_metricQC)) +
     geom_col() +
     geom_text(aes(label = n), size = 2, vjust = -0.5) +
-    scale_fill_manual(values = cell_type_colors_anno, guide = "none") +
+    scale_fill_manual(values = cell_type_colors$anno, guide = "none") +
     scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
     # facet_wrap(~cell_type_broad) +
     facet_grid(.~cell_type_broad, scales = "free_x", space="free_x") +
@@ -231,7 +238,7 @@ walk(c("UMAP", "TSNE"),
                           var_type = "cat",
                           dimred = .x,
                           my_var = "cell_type_anno",
-                          color_pal = cell_type_colors_anno,
+                          color_pal = cell_type_colors$anno,
                           suffix = "sctype"))
 
 #### plot marker genes ####
@@ -263,7 +270,7 @@ plot_marker_express_List(sce,
                          pdf_fn = here(plot_dir, "ERC_sn_sctype_lit_markers.pdf"),
                          cellType_col = "cell_type_anno",
                          gene_name_col = "gene_name",
-                         color_pal = cell_type_colors_anno,
+                         color_pal = cell_type_colors$anno,
 )
 
 
@@ -295,7 +302,7 @@ cell_type_sample_n_bar <- cell_type_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = cell_type_colors_anno) +
+    scale_fill_manual(values = cell_type_colors$anno) +
     labs(y = "n Nucei")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+
     guides(fill=guide_legend(ncol=1))
@@ -310,7 +317,7 @@ cell_type_proportion_bar <- cell_type_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = cell_type_colors_anno) +
+    scale_fill_manual(values = cell_type_colors$anno) +
     labs(y = "Cell Type Proportion")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+
     guides(fill=guide_legend(ncol=1))
@@ -324,7 +331,7 @@ cell_type_proportion_bar_facet <- cell_type_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = cell_type_colors_anno) +
+    scale_fill_manual(values = cell_type_colors$anno) +
     labs(y = "Cell Type Proportion")  +
     facet_grid(.~APOE, scales = "free_x", space = "free") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+
@@ -361,7 +368,7 @@ ct_n_donor <- sample_qc |>
     ggplot(aes(y = reorder(cell_type_anno, n_samples), x = n_samples, fill = cell_type_anno)) +
     geom_col() +
     geom_text(aes(label = n_samples), hjust = 1) +
-    scale_fill_manual(values = cell_type_colors_anno) +
+    scale_fill_manual(values = cell_type_colors$anno) +
     theme_bw() +
     labs(x = "n Donors", y = "Cell Type") +
     theme(legend.position = "None")
@@ -391,15 +398,8 @@ sample_proportion_bar <- sample_proportions |>
 ggsave(sample_proportion_bar, filename = here(plot_dir, "ERC_sn_subtype_barplot_sample_prop.png"), width = 10)
 
 #### Add colors to metadata ####
-cell_type_colors <- list(broad = c(Astro = "#3BB273",
-                                   Macro = "#79354E",
-                                   Micro = "#663894",
-                                   Oligo = "#F57A00",
-                                   OPC = "#D2B037",
-                                   Vasc = "#FF56AF",
-                                   Excit = "#247FBC",
-                                   Inhib = "#E83E38"),
-                         anno = cell_type_colors_anno)
+cell_type_colors <- list(broad = cell_type_colors$broad[levels(sce$cell_type_broad)],
+                         anno = cell_type_colors$anno[levels(sce$cell_type_anno)])
 
 metadata(sce)$cell_type_colors <- cell_type_colors
 
