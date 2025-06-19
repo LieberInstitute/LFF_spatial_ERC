@@ -40,7 +40,7 @@ load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 single_vis_clus <- vis_clus(
     spe = spe,
-    point_size = 1.8,
+    point_size = 1.7,
     colors = SpD_colors,
     sampleid = "Br5517",
     clustervar = "SpD",
