@@ -8,6 +8,7 @@ library("HDF5Array")
 library("here")
 library("sessioninfo")
 library("DeconvoBuddies")
+library("spatialLIBD")
 # library("ComplexHeatmap")
 # library("bluster")
 # library("dendextend")
@@ -17,10 +18,10 @@ library("DeconvoBuddies")
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 ## Prep directories
-plot_dir <- here("plots", "04_snRNA-seq", "33_sn_subcluster_plots")
+plot_dir <- here("plots", "04_snRNA-seq", "33_sn_subcluster_summary")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "04_snRNA-seq", "33_sn_subcluster_plots")
+data_dir <- here("processed-data", "04_snRNA-seq", "33_sn_subcluster_summary")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## Load HD5F sce
@@ -32,10 +33,24 @@ pd <- as.data.frame(colData(sce))
 table(sce$cell_type_anno)
 
 ## load colors
-# load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE) 
+# load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 cell_type_colors <- metadata(sce)$cell_type_colors
+
+#### enrichment data ####
+erc_sn_modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
+
+enrichment_top5 <- erc_sn_modeling_results$enrichment
+
+#### Cell Type Summary ####
+
+cell_type_summary <- pd |>
+    group_by(cell_type_class, cell_type_broad, cell_type_anno) |>
+    summarise(n_nuclei = n(),
+              n_donors = length(unique(sample_id)))
+
+
 
 #### Quality Metrics ####
 
