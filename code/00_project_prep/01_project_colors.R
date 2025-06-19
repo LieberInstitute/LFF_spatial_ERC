@@ -266,7 +266,7 @@ spatialDLPFC_SpD_colors <- c(`L1~Sp09D01` = "#5A5156",
                              `WM~Sp09D06`  = "#3283FE", 
                              `WM~Sp09D09` = "#1CFFCE")
          
-save(spatialDLPFC_SpD_colors, file = here("processed-data","00_project_prep", "spatialDLPFC_Data","SpD_colors2.Rdata"))
+save(spatialDLPFC_SpD_colors, file = here("processed-data","00_project_prep", "spatialDLPFC_Data","spatialDLPFC_SpD_colors.Rdata"))
 
 
 
