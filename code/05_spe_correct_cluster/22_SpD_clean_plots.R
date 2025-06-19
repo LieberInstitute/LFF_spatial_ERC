@@ -40,7 +40,7 @@ load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 single_vis_clus <- vis_clus(
     spe = spe,
-    point_size = 1.7,
+    point_size = 1.8,
     colors = SpD_colors,
     sampleid = "Br5517",
     clustervar = "SpD",
@@ -153,8 +153,10 @@ write_csv(anno_summary, file = here(data_dir, "ERC_SpD_spatial_registration_anno
 save(cor_layer, anno, file = here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"))
 
 ## reference colors
+load(here("processed-data","00_project_prep", "spatialDLPFC_Data","spatialDLPFC_SpD_colors.Rdata"), verbose = TRUE)
+
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
-                     spatialDLPFC = NULL) #TODO add spatial domain colors)
+                     spatialDLPFC = spatialDLPFC_SpD_colors)
                      
 map(names(cor_layer), function(ref){
     pdf(here(plot_dir, sprintf("layer_stat_cor_%s.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7))

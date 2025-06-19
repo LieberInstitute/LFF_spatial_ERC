@@ -92,10 +92,11 @@ load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose =
 load(here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"), verbose = TRUE)
 
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+load(here("processed-data","00_project_prep", "spatialDLPFC_Data","spatialDLPFC_SpD_colors.Rdata"), verbose = TRUE)
 
 # cell_type_colors
 layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
-                  spatialDLPFC = NULL, #TODO add spatial domain colors
+                  spatialDLPFC = spatialDLPFC_SpD_colors,
                   spatialERC = SpD_colors,
                   snDLPFC_PEC = NULL,
                   sestan_EC = NULL,
