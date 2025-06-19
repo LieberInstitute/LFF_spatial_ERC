@@ -128,7 +128,6 @@ cell_type_level_tb <- colData(sce) |>
 #### Define colors for fine cell types ####
 
 # load colors
-load(here("processed-data","00_project_prep","cell_type_colors$anno_subtype.Rdata"), verbose = TRUE)
 load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
 
