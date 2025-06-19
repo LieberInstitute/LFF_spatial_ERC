@@ -6,6 +6,7 @@ library("tidyverse")
 library("ComplexHeatmap")
 library("here")
 library("sessioninfo")
+library("circlize")
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap")
@@ -152,6 +153,8 @@ lit_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(lit_gene_annotation),])
 dim(lit_markers_zscore)
 lit_markers_zscore[1:5,1:5]
 
+summary(lit_markers_zscore[,2])
+
 ## plot heatmaps - cell type only
 pdf(here(plot_dir, "ERC_sn_subcluster_lit_gene_heatmap.pdf"), height = 8, width = 11)
 Heatmap(lit_markers_zscore,
@@ -243,7 +246,8 @@ AD_risk_annotation <- AD_risk |>
     select(symbol, eva) |>
     column_to_rownames("symbol")
 
-AD_risk_col_ha <- HeatmapAnnotation(df = AD_risk_annotation)
+eva_colors = colorRamp2(c(0, 1), c("white", "darkcyan"))
+AD_risk_col_ha <- HeatmapAnnotation(df = AD_risk_annotation, col = list(eva = eva_colors))
 
 ## extract z-scores - cell type pb
 AD_risk_zscore <- scale(t(logcounts(sce_pb)[rownames(AD_risk_annotation),]))
@@ -264,7 +268,7 @@ summary(risk_gene_max_cell_type$zscore)
 
 spatialLIBD::annotate_registered_clusters(
     t(AD_risk_zscore),
-    confidence_threshold = 1,
+    confidence_threshold = 2,
     cutoff_merge_ratio = 0.1
 )
 
@@ -539,7 +543,7 @@ dev.off()
 
 #### Enrichment heatmap ####
 ## load marker gene data
-modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "17_sn_model_pseudobulk", "modeling_results-cell_type_anno.rds"))
+modeling_results <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
 
 enrichment_stats_top <- sig_genes_extract(
     n = 5,
@@ -549,35 +553,55 @@ enrichment_stats_top <- sig_genes_extract(
     sce_layer = sce_pb
 ) |>
     select(ensembl, fdr, top, logFC, cell_type_anno = test) |>
-    arrange(cell_type_anno) |>
-    column_to_rownames("ensembl")
+    arrange(cell_type_anno) 
 
 enrichment_stats_top |> count(cell_type_anno) |> arrange(n)
 
-## gene annotations
-enrich_gene_row_ha <- rowAnnotation(df = enrichment_stats_top |> select(" " = cell_type_anno),
-                                     col = list(" " = cell_type_colors$anno))
+## write out top genes
+write.csv(enrichment_stats_top, file = here(data_dir, "sce_subcluster_enrichment_top5.csv"), row.names = FALSE)
 
-enrich_gene_col_ha <- HeatmapAnnotation(df = enrichment_stats_top |> select(" " = cell_type_anno),
-                                     col = list(" " = cell_type_colors$anno))
+## some genes have multiple cell types - simplify
+enrichment_stats_top_unique <- enrichment_stats_top |>
+    group_by(ensembl) |>
+    mutate(cell_type_broad = jaffelab::ss(cell_type_anno, "\\.")) |>
+    summarise(n = n(),
+              ct = list(cell_type_anno),
+              n_ctb = length(unique(cell_type_broad)), 
+              ctb = paste(unique(cell_type_broad), collapse = "-")
+              ) |>
+    mutate(cell_type_anno = ifelse(n == 1, unlist(ct), ctb)) |>
+    ungroup() |>
+    arrange(cell_type_anno) |>
+    column_to_rownames("ensembl")
+
+enrichment_stats_top_unique |> count(cell_type_anno) |> arrange(n)
+
+cell_type_colors_enrich <- c(cell_type_colors$broad, cell_type_colors$anno)[unique(enrichment_stats_top_unique$cell_type_anno)]
+
+## gene annotations
+enrich_gene_row_ha <- rowAnnotation(df = enrichment_stats_top_unique |> select(" " = cell_type_anno),
+                                     col = list(" " = cell_type_colors_enrich))
+
+enrich_gene_col_ha <- HeatmapAnnotation(df = enrichment_stats_top_unique |> select(" " = cell_type_anno),
+                                     col = list(" " = cell_type_colors_enrich))
 
 ## extract z-scores
-enrich_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(enrichment_stats_top),]))
+enrich_markers_zscore <- scale(t(logcounts(sce_pb)[rownames(enrichment_stats_top_unique),]))
 dim(enrich_markers_zscore)
 enrich_markers_zscore[1:5,1:5]
 
 ## plot heatmaps
-pdf(here(plot_dir, "ERC_sn_subcluster_enrich_gene_heatmap.pdf"), height = 14, width = 10)
+pdf(here(plot_dir, "ERC_sn_subcluster_enrich_gene_heatmap.pdf"), height = 16, width = 10)
 Heatmap(t(enrich_markers_zscore),
         name = "Z Score",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
         show_row_names = TRUE,
         show_column_names = FALSE,
-        row_names_gp = grid::gpar(fontsize = 10),
+        row_names_gp = grid::gpar(fontsize = 8),
         # row_split_gp = grid::gpar(fontsize = 10),
         # column_split = marker_stats_top$cell_type_anno,
-        row_split = gsub("\\.","\n",enrichment_stats_top$cell_type_anno),
+        # row_split = gsub("\\.","\n",enrichment_stats_top_unique$cell_type_anno),
         bottom_annotation = cell_col_ha_simple,
         right_annotation = enrich_gene_row_ha
 )
