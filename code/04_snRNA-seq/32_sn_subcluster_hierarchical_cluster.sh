@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=10G
-#SBATCH --job-name=30_sn_subcluster_spatial_registration
+#SBATCH --mem=5G
+#SBATCH --job-name=32_sn_subcluster_hierarchical_cluster
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/30_sn_subcluster_spatial_registration.txt
-#SBATCH -e logs/30_sn_subcluster_spatial_registration.txt
+#SBATCH -o logs/32_sn_subcluster_hierarchical_cluster.txt
+#SBATCH -e logs/32_sn_subcluster_hierarchical_cluster.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 30_sn_subcluster_spatial_registration.R
+Rscript 32_sn_subcluster_hierarchical_cluster.R
 
 echo "**** Job ends ****"
 date
