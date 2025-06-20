@@ -13,33 +13,35 @@
 #'
 #' @examples
 #' 
-
-library(SpatialExperiment)
-library(ggplot2)
-library(here)
-
-plot_dir <- here("plots", "05_spe_correct_cluster", "vis_RGB_test")
-if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
-
-
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe_objects", "spe_ERC_annotated"))
-rownames(spe) <- rowData(spe)$gene_names
-
-test2 <- vis_RGB(spe, spatial = FALSE, point_size = 2.5)
-ggsave(test2, filename = here(plot_dir, "test2.png"))
-
-test_Br5517 <- vis_RGB(spe, sampleid = "Br5517", spatial = TRUE, point_size = 2.5)
-ggsave(test_Br5517, filename = here(plot_dir, "test_Br5517.png"))
+#' 
+#' library(SpatialExperiment)
+#' library(ggplot2)
+#' library(here)
+#' 
+#' plot_dir <- here("plots", "05_spe_correct_cluster", "vis_RGB_test")
+#' if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+#' 
+#' spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe_objects", "spe_ERC_annotated"))
+#' rownames(spe) <- rowData(spe)$gene_name
+#' 
+#' test2 <- vis_RGB(spe, spatial = FALSE, point_size = 2.5)
+#' ggsave(test2, filename = here(plot_dir, "test2.png"))
+#' 
+#' test_Br5517 <- vis_RGB(spe, sampleid = "Br5517", spatial = TRUE, point_size = 2.5)
+#' ggsave(test_Br5517, filename = here(plot_dir, "test_Br5517.png"))
 
 vis_RGB <- function(spe,
-                     sampleid = unique(spe$sample_id)[1],
-                     spatial = TRUE,
-                     assayname = "logcounts",
-                     image_id = "lowres",
-                     minCount = 0,
-                     alpha = NA,
-                     auto_crop = TRUE,
-                     point_size = 2){
+                    sampleid = unique(spe$sample_id)[1],
+                    gene_red = "MBP",
+                    gene_green = "PCP4",
+                    gene_blue = "SNAP25",
+                    spatial = TRUE,
+                    assayname = "logcounts",
+                    image_id = "lowres",
+                    minCount = 0,
+                    alpha = NA,
+                    auto_crop = TRUE,
+                    point_size = 2){
     
     ## Some variables
     pxl_row_in_fullres <- pxl_col_in_fullres <- key <- COUNT <- NULL
@@ -65,33 +67,22 @@ vis_RGB <- function(spe,
     
     d <- as.data.frame(cbind(colData(spe), SpatialExperiment::spatialCoords(spe)), optional = TRUE)
     
-    ## scale and get corresponding color values for selected genes
-    RBG_norm_MBP <- scales::rescale(
-        logcounts(spe)[which(rowData(spe)$gene_name == "MBP"), ] |>
+    ## get normalized gene values
+    geneid <- c(red = gene_red, green = gene_green, blue = gene_blue)
+    stopifnot(all(geneid %in% rowData(spe)$gene_name))
+    
+    RBG_norm <- purrr::map(geneid, ~scales::rescale(
+        logcounts(spe)[which(rowData(spe)$gene_name == .x), ] |>
             scale(center = TRUE, scale = FALSE) |>
             sapply(max, 0), # ignore small counts
         to = c(0, 1)
-    )
+    ))
     
-    RBG_norm_PCP4 <- scales::rescale(
-        logcounts(spe)[which(rowData(spe)$gene_name == "PCP4"), ] |>
-            scale(center = TRUE, scale = FALSE) |>
-            sapply(max, 0), # ignore small counts
-        to = c(0, 1)
-    )
-    
-    RBG_norm_SNAP25 <- scales::rescale(
-        logcounts(spe)[which(rowData(spe)$gene_name == "SNAP25"), ] |>
-            scale(center = TRUE, scale = FALSE) |>
-            sapply(max, 0), # ignore small counts
-        to = c(0, 1)
-    )
-    
-    
+    ## get RGB values
     rgb_values <- rgb(
-        red = RBG_norm_MBP,
-        green = RBG_norm_PCP4,
-        blue = RBG_norm_SNAP25
+        red = RBG_norm$red,
+        green = RBG_norm$green,
+        blue = RBG_norm$blue
     )
     
     #   Determine plot and legend titles
