@@ -1,13 +1,17 @@
 **** Job starts ****
-Fri May 16 04:47:12 PM EDT 2025
+Thu Jun 19 10:24:13 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16633398
+Job id: 17458594
 Job name: 28_subcluster_update_sce
-Node name: compute-122
+Node name: compute-169
 Task id: 
-Unloading conda_R/4.4.x
+Unloading conda_R/4.5
 Loading conda_R/4.4.x
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5 => conda_R/4.4.x
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -203,7 +207,7 @@ The following object is masked from ‘package:stats’:
 
     cutree
 
-2025-05-16 16:47:30.984278- load Harmony corrected sce
+2025-06-19 10:24:25.742349- load Harmony corrected sce
 class: SingleCellExperiment 
 dim: 38606 125683 
 metadata(33): Samples Samples ... scDblFinder.threshold
@@ -294,17 +298,17 @@ Oligo.11_QC       OPC.1       OPC.2       OPC.3       OPC.4
   OPC.4        1961      0
              
               Astro Macro Micro Oligo OPC Vasc
-  Astro.01        1     0     0     0   0    0
-  Astro.02        1     0     0     0   0    0
-  Astro.03        1     0     0     0   0    0
-  Astro.04        1     0     0     0   0    0
-  Astro.05        1     0     0     0   0    0
   Astro.06_QC     1     0     0     0   0    0
   Astro.07_QC     1     0     0     0   0    0
   Astro.08_QC     1     0     0     0   0    0
   Astro.09_QC     1     0     0     0   0    0
+  Astro.1         1     0     0     0   0    0
   Astro.10_QC     1     0     0     0   0    0
   Astro.11_QC     1     0     0     0   0    0
+  Astro.2         1     0     0     0   0    0
+  Astro.3         1     0     0     0   0    0
+  Astro.4         1     0     0     0   0    0
+  Astro.5         1     0     0     0   0    0
   Macro           0     1     0     0   0    0
   Micro.1         0     0     1     0   0    0
   Micro.2         0     0     1     0   0    0
@@ -313,13 +317,13 @@ Oligo.11_QC       OPC.1       OPC.2       OPC.3       OPC.4
   Micro.5         0     0     1     0   0    0
   Micro.7_QC      0     0     1     0   0    0
   Micro.8_QC      0     0     1     0   0    0
-  Oligo.01        0     0     0     1   0    0
-  Oligo.02        0     0     0     1   0    0
-  Oligo.03        0     0     0     1   0    0
-  Oligo.04        0     0     0     1   0    0
-  Oligo.05        0     0     0     1   0    0
+  Oligo.1         0     0     0     1   0    0
   Oligo.10_QC     0     0     0     1   0    0
   Oligo.11_QC     0     0     0     1   0    0
+  Oligo.2         0     0     0     1   0    0
+  Oligo.3         0     0     0     1   0    0
+  Oligo.4         0     0     0     1   0    0
+  Oligo.5         0     0     0     1   0    0
   Oligo.ambig     0     0     0     2   0    0
   OPC.1           0     0     0     0   1    0
   OPC.2           0     0     0     0   1    0
@@ -331,12 +335,12 @@ Oligo.11_QC       OPC.1       OPC.2       OPC.3       OPC.4
   Vasc.VLMC       0     0     0     0   0    4
 [1] 98669     3
            cell_type_broad cell_type_anno passALL_metricQC
-Oligo.05             Oligo       Oligo.05             TRUE
-Astro.01             Astro       Astro.01             TRUE
+Oligo.05             Oligo        Oligo.5             TRUE
+Astro.01             Astro        Astro.1             TRUE
 OPC.1                  OPC          OPC.1             TRUE
-Astro.02             Astro       Astro.02             TRUE
+Astro.02             Astro        Astro.2             TRUE
 OPC.2                  OPC          OPC.2             TRUE
-Astro.02.1           Astro       Astro.02             TRUE
+Astro.02.1           Astro        Astro.2             TRUE
 [1] TRUE
        
         Astro  Endo Micro Oligo   OPC Excit Inhib
@@ -350,17 +354,17 @@ Astro.02.1           Astro       Astro.02             TRUE
   Vasc      0  1448     0   200     0     0     0
                   
                    Astro.1 Astro.2  Endo Micro.1 Micro.2 Oligo.1 Oligo.2   OPC
-  Astro.01           10539     437     0       0       0       0       0     0
-  Astro.02             449    4827     0       0       0       0       0     0
-  Astro.03            1792    1295     0       0       0       0       0     0
-  Astro.04            1022     111     0       0       0       0       0     0
-  Astro.05               0     812     0       0       0       0       0     0
   Astro.06_QC            0     384     0       0       0       0       0     0
   Astro.07_QC          277       3     0       0       0       0       0     0
   Astro.08_QC           81       0     0       0       0       0       0     0
   Astro.09_QC            0      47     0       0       0       0       0     0
+  Astro.1            10539     437     0       0       0       0       0     0
   Astro.10_QC           47       0     0       0       0       0       0     0
   Astro.11_QC            0      22     0       0       0       0       0     0
+  Astro.2              449    4827     0       0       0       0       0     0
+  Astro.3             1792    1295     0       0       0       0       0     0
+  Astro.4             1022     111     0       0       0       0       0     0
+  Astro.5                0     812     0       0       0       0       0     0
   Excit.L2               0       0     0       0       0       0       0     0
   Excit.L2_5.1           0       0     0       0       0       0       0     0
   Excit.L2_5.2           0       0     0       0       0       0       0     0
@@ -383,13 +387,13 @@ Astro.02.1           Astro       Astro.02             TRUE
   Micro.5                0       0     0     278     312       0       0     0
   Micro.7_QC             0       0     0       6     796       0       0     0
   Micro.8_QC             0       0     0     123       1       0       0     0
-  Oligo.01               0       0     0       0       0    7842    4677     0
-  Oligo.02               0       0     0       0       0    1145   10865     0
-  Oligo.03               0       0     0       0       0    8582       5     0
-  Oligo.04               0       0     0       0       0    6767     144     0
-  Oligo.05               0       0     0       0       0    3923     331     0
+  Oligo.1                0       0     0       0       0    7842    4677     0
   Oligo.10_QC            0       0     0       0       0     812       0     0
   Oligo.11_QC            0       0     0       0       0      32      86     0
+  Oligo.2                0       0     0       0       0    1145   10865     0
+  Oligo.3                0       0     0       0       0    8582       5     0
+  Oligo.4                0       0     0       0       0    6767     144     0
+  Oligo.5                0       0     0       0       0    3923     331     0
   Oligo.ambig            0       0     0       0       0     843     119     0
   OPC.1                  0       0     0       0       0       0       0  4815
   OPC.2                  0       0     0       0       0       0       0  4009
@@ -401,17 +405,17 @@ Astro.02.1           Astro       Astro.02             TRUE
   Vasc.VLMC              0       0   915       0       0       0       0     0
                   
                    Excit.L2 Excit.L2_5.1 Excit.L2_5.2 Excit.L5.1 Excit.L5.2
-  Astro.01                0            0            0          0          0
-  Astro.02                0            0            0          0          0
-  Astro.03                0            0            0          0          0
-  Astro.04                0            0            0          0          0
-  Astro.05                0            0            0          0          0
   Astro.06_QC             0            0            0          0          0
   Astro.07_QC             0            0            0          0          0
   Astro.08_QC             0            0            0          0          0
   Astro.09_QC             0            0            0          0          0
+  Astro.1                 0            0            0          0          0
   Astro.10_QC             0            0            0          0          0
   Astro.11_QC             0            0            0          0          0
+  Astro.2                 0            0            0          0          0
+  Astro.3                 0            0            0          0          0
+  Astro.4                 0            0            0          0          0
+  Astro.5                 0            0            0          0          0
   Excit.L2             2209            0            0          0          0
   Excit.L2_5.1            0         8671            0          0          0
   Excit.L2_5.2            0            0          609          0          0
@@ -434,13 +438,13 @@ Astro.02.1           Astro       Astro.02             TRUE
   Micro.5                 0            0            0          0          0
   Micro.7_QC              0            0            0          0          0
   Micro.8_QC              0            0            0          0          0
-  Oligo.01                0            0            0          0          0
-  Oligo.02                0            0            0          0          0
-  Oligo.03                0            0            0          0          0
-  Oligo.04                0            0            0          0          0
-  Oligo.05                0            0            0          0          0
+  Oligo.1                 0            0            0          0          0
   Oligo.10_QC             0            0            0          0          0
   Oligo.11_QC             0            0            0          0          0
+  Oligo.2                 0            0            0          0          0
+  Oligo.3                 0            0            0          0          0
+  Oligo.4                 0            0            0          0          0
+  Oligo.5                 0            0            0          0          0
   Oligo.ambig             0            0            0          0          0
   OPC.1                   0            0            0          0          0
   OPC.2                   0            0            0          0          0
@@ -452,17 +456,17 @@ Astro.02.1           Astro       Astro.02             TRUE
   Vasc.VLMC               0            0            0          0          0
                   
                    Excit.L5_6_NP Excit.L6_CT Excit.L6b Inhib.Pax6
-  Astro.01                     0           0         0          0
-  Astro.02                     0           0         0          0
-  Astro.03                     0           0         0          0
-  Astro.04                     0           0         0          0
-  Astro.05                     0           0         0          0
   Astro.06_QC                  0           0         0          0
   Astro.07_QC                  0           0         0          0
   Astro.08_QC                  0           0         0          0
   Astro.09_QC                  0           0         0          0
+  Astro.1                      0           0         0          0
   Astro.10_QC                  0           0         0          0
   Astro.11_QC                  0           0         0          0
+  Astro.2                      0           0         0          0
+  Astro.3                      0           0         0          0
+  Astro.4                      0           0         0          0
+  Astro.5                      0           0         0          0
   Excit.L2                     0           0         0          0
   Excit.L2_5.1                 0           0         0          0
   Excit.L2_5.2                 0           0         0          0
@@ -485,13 +489,13 @@ Astro.02.1           Astro       Astro.02             TRUE
   Micro.5                      0           0         0          0
   Micro.7_QC                   0           0         0          0
   Micro.8_QC                   0           0         0          0
-  Oligo.01                     0           0         0          0
-  Oligo.02                     0           0         0          0
-  Oligo.03                     0           0         0          0
-  Oligo.04                     0           0         0          0
-  Oligo.05                     0           0         0          0
+  Oligo.1                      0           0         0          0
   Oligo.10_QC                  0           0         0          0
   Oligo.11_QC                  0           0         0          0
+  Oligo.2                      0           0         0          0
+  Oligo.3                      0           0         0          0
+  Oligo.4                      0           0         0          0
+  Oligo.5                      0           0         0          0
   Oligo.ambig                  0           0         0          0
   OPC.1                        0           0         0          0
   OPC.2                        0           0         0          0
@@ -503,17 +507,17 @@ Astro.02.1           Astro       Astro.02             TRUE
   Vasc.VLMC                    0           0         0          0
                   
                    Inhib.Chandelier Inhib.Lamp5_Lhx6 Inhib.Pvalb Inhib.Sst
-  Astro.01                        0                0           0         0
-  Astro.02                        0                0           0         0
-  Astro.03                        0                0           0         0
-  Astro.04                        0                0           0         0
-  Astro.05                        0                0           0         0
   Astro.06_QC                     0                0           0         0
   Astro.07_QC                     0                0           0         0
   Astro.08_QC                     0                0           0         0
   Astro.09_QC                     0                0           0         0
+  Astro.1                         0                0           0         0
   Astro.10_QC                     0                0           0         0
   Astro.11_QC                     0                0           0         0
+  Astro.2                         0                0           0         0
+  Astro.3                         0                0           0         0
+  Astro.4                         0                0           0         0
+  Astro.5                         0                0           0         0
   Excit.L2                        0                0           0         0
   Excit.L2_5.1                    0                0           0         0
   Excit.L2_5.2                    0                0           0         0
@@ -536,13 +540,13 @@ Astro.02.1           Astro       Astro.02             TRUE
   Micro.5                         0                0           0         0
   Micro.7_QC                      0                0           0         0
   Micro.8_QC                      0                0           0         0
-  Oligo.01                        0                0           0         0
-  Oligo.02                        0                0           0         0
-  Oligo.03                        0                0           0         0
-  Oligo.04                        0                0           0         0
-  Oligo.05                        0                0           0         0
+  Oligo.1                         0                0           0         0
   Oligo.10_QC                     0                0           0         0
   Oligo.11_QC                     0                0           0         0
+  Oligo.2                         0                0           0         0
+  Oligo.3                         0                0           0         0
+  Oligo.4                         0                0           0         0
+  Oligo.5                         0                0           0         0
   Oligo.ambig                     0                0           0         0
   OPC.1                           0                0           0         0
   OPC.2                           0                0           0         0
@@ -554,17 +558,17 @@ Astro.02.1           Astro       Astro.02             TRUE
   Vasc.VLMC                       0                0           0         0
                   
                    Inhib.Vip
-  Astro.01                 0
-  Astro.02                 0
-  Astro.03                 0
-  Astro.04                 0
-  Astro.05                 0
   Astro.06_QC              0
   Astro.07_QC              0
   Astro.08_QC              0
   Astro.09_QC              0
+  Astro.1                  0
   Astro.10_QC              0
   Astro.11_QC              0
+  Astro.2                  0
+  Astro.3                  0
+  Astro.4                  0
+  Astro.5                  0
   Excit.L2                 0
   Excit.L2_5.1             0
   Excit.L2_5.2             0
@@ -587,13 +591,13 @@ Astro.02.1           Astro       Astro.02             TRUE
   Micro.5                  0
   Micro.7_QC               0
   Micro.8_QC               0
-  Oligo.01                 0
-  Oligo.02                 0
-  Oligo.03                 0
-  Oligo.04                 0
-  Oligo.05                 0
+  Oligo.1                  0
   Oligo.10_QC              0
   Oligo.11_QC              0
+  Oligo.2                  0
+  Oligo.3                  0
+  Oligo.4                  0
+  Oligo.5                  0
   Oligo.ambig              0
   OPC.1                    0
   OPC.2                    0
@@ -606,9 +610,60 @@ Astro.02.1           Astro       Astro.02             TRUE
 
  FALSE   TRUE 
   2717 122966 
+                  
+                   Astro Excit Inhib Macro Micro Oligo   OPC  Vasc
+  Astro.06_QC        384     0     0     0     0     0     0     0
+  Astro.07_QC        280     0     0     0     0     0     0     0
+  Astro.08_QC         81     0     0     0     0     0     0     0
+  Astro.09_QC         47     0     0     0     0     0     0     0
+  Astro.1          10976     0     0     0     0     0     0     0
+  Astro.10_QC         47     0     0     0     0     0     0     0
+  Astro.11_QC         22     0     0     0     0     0     0     0
+  Astro.2           5276     0     0     0     0     0     0     0
+  Astro.3           3087     0     0     0     0     0     0     0
+  Astro.4           1133     0     0     0     0     0     0     0
+  Astro.5            812     0     0     0     0     0     0     0
+  Excit.L2             0  2209     0     0     0     0     0     0
+  Excit.L2_5.1         0  8671     0     0     0     0     0     0
+  Excit.L2_5.2         0   609     0     0     0     0     0     0
+  Excit.L5_6_NP        0   152     0     0     0     0     0     0
+  Excit.L5.1           0  2235     0     0     0     0     0     0
+  Excit.L5.2           0   241     0     0     0     0     0     0
+  Excit.L6_CT          0   625     0     0     0     0     0     0
+  Excit.L6b            0   897     0     0     0     0     0     0
+  Inhib.Chandelier     0     0   303     0     0     0     0     0
+  Inhib.Lamp5_Lhx6     0     0  1234     0     0     0     0     0
+  Inhib.Pax6           0     0   125     0     0     0     0     0
+  Inhib.Pvalb          0     0  1363     0     0     0     0     0
+  Inhib.Sst            0     0   815     0     0     0     0     0
+  Inhib.Vip            0     0  7535     0     0     0     0     0
+  Macro                0     0     0   433     0     0     0     0
+  Micro.1              0     0     0     0  4227     0     0     0
+  Micro.2              0     0     0     0  3748     0     0     0
+  Micro.3              0     0     0     0  1876     0     0     0
+  Micro.4              0     0     0     0  1728     0     0     0
+  Micro.5              0     0     0     0   590     0     0     0
+  Micro.7_QC           0     0     0     0   802     0     0     0
+  Micro.8_QC           0     0     0     0   124     0     0     0
+  Oligo.1              0     0     0     0     0 12519     0     0
+  Oligo.10_QC          0     0     0     0     0   812     0     0
+  Oligo.11_QC          0     0     0     0     0   118     0     0
+  Oligo.2              0     0     0     0     0 12010     0     0
+  Oligo.3              0     0     0     0     0  8587     0     0
+  Oligo.4              0     0     0     0     0  6911     0     0
+  Oligo.5              0     0     0     0     0  4254     0     0
+  Oligo.ambig          0     0     0     0     0   962     0     0
+  OPC.1                0     0     0     0     0     0  4815     0
+  OPC.2                0     0     0     0     0     0  4009     0
+  OPC.3                0     0     0     0     0     0  3932     0
+  OPC.4                0     0     0     0     0     0  1961     0
+  OPC.5                0     0     0     0     0     0   458     0
+  Vasc.Endo            0     0     0     0     0     0     0   586
+  Vasc.PC              0     0     0     0     0     0     0   147
+  Vasc.VLMC            0     0     0     0     0     0     0   915
 Loading objects:
-  cell_type_colors_anno
-2025-05-16 16:47:51.272448 - Summarize clusters
+  cell_type_colors
+2025-06-19 10:24:40.986467 - Summarize clusters
 `summarise()` has grouped output by 'cell_type_class', 'cell_type_broad'. You
 can override using the `.groups` argument.
 # A tibble: 49 × 10
@@ -620,8 +675,8 @@ can override using the `.groups` argument.
  3 glia            Oligo           Oligo.10_QC      812 0.00646       1111 
  4 glia            Astro           Astro.06_QC      384 0.00306       1165 
  5 glia            Micro           Micro.7_QC       802 0.00638       1498.
- 6 glia            Astro           Astro.05         812 0.00646       1848.
- 7 glia            Oligo           Oligo.03        8587 0.0683        2161 
+ 6 glia            Astro           Astro.5          812 0.00646       1848.
+ 7 glia            Oligo           Oligo.3         8587 0.0683        2161 
  8 glia            OPC             OPC.5            458 0.00364       2204 
  9 glia            Micro           Micro.5          590 0.00469       2510 
 10 glia            Micro           Micro.2         3748 0.0298        2558.
@@ -648,11 +703,11 @@ can override using the `.groups` argument.
 # Groups:   cell_type_class, cell_type_broad [8]
    cell_type_class cell_type_broad cell_type_anno     n    prop median_sum
    <chr>           <fct>           <chr>          <int>   <dbl>      <dbl>
- 1 glia            Astro           Astro.01       10976 0.0873       9395 
- 2 glia            Astro           Astro.02        5276 0.0420       3337 
- 3 glia            Astro           Astro.03        3087 0.0246       5406 
- 4 glia            Astro           Astro.04        1133 0.00901      7658 
- 5 glia            Astro           Astro.05         812 0.00646      1848.
+ 1 glia            Astro           Astro.1        10976 0.0873       9395 
+ 2 glia            Astro           Astro.2         5276 0.0420       3337 
+ 3 glia            Astro           Astro.3         3087 0.0246       5406 
+ 4 glia            Astro           Astro.4         1133 0.00901      7658 
+ 5 glia            Astro           Astro.5          812 0.00646      1848.
  6 glia            Macro           Macro            433 0.00345      4066 
  7 glia            Micro           Micro.1         4227 0.0336       4598 
  8 glia            Micro           Micro.2         3748 0.0298       2558.
@@ -663,20 +718,20 @@ can override using the `.groups` argument.
 #   median_scDblFinder.score <dbl>, passALL_metricQC <lgl>
 Saving 10 x 7 in image
 [1]  38606 122004
- [1] "Astro.01"         "Astro.02"         "Astro.03"         "Astro.04"        
- [5] "Astro.05"         "Macro"            "Micro.1"          "Micro.2"         
+ [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
+ [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
  [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
 [13] "OPC.2"            "OPC.3"            "OPC.4"            "OPC.5"           
-[17] "Oligo.01"         "Oligo.02"         "Oligo.03"         "Oligo.04"        
-[21] "Oligo.05"         "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
+[17] "Oligo.1"          "Oligo.2"          "Oligo.3"          "Oligo.4"         
+[21] "Oligo.5"          "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
 [25] "Excit.L2"         "Excit.L2_5.1"     "Excit.L2_5.2"     "Excit.L5.1"      
 [29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
-[33] "Inhib.Pax6"       "Inhib.Chandelier" "Inhib.Lamp5_Lhx6" "Inhib.Pvalb"     
+[33] "Inhib.Chandelier" "Inhib.Lamp5_Lhx6" "Inhib.Pax6"       "Inhib.Pvalb"     
 [37] "Inhib.Sst"        "Inhib.Vip"       
-2025-05-16 16:48:10.598267 - Plot UMAP + TSNE
+2025-06-19 10:24:53.217818 - Plot UMAP + TSNE
 ERC_sn_subcluster_UMAP-cell_type_anno-sctype.png - Saving 7 x 7 in image
 ERC_sn_subcluster_TSNE-cell_type_anno-sctype.png - Saving 7 x 7 in image
-2025-05-16 16:48:16.363522 - Plot marker genes
+2025-06-19 10:24:56.479747 - Plot marker genes
 Rows: 65 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -760,18 +815,18 @@ Loading objects:
  7 Excit.L5.1            29    0.141 TRUE         
  8 Macro                 31    0.141 TRUE         
  9 Excit.L6b             30    0.127 TRUE         
-10 Oligo.03              31    0.123 TRUE         
+10 Oligo.3               31    0.123 TRUE         
 # ℹ 28 more rows
 Saving 10 x 7 in image
 Saving 10 x 7 in image
-2025-05-16 16:48:20.705836 - Save annotated sce
+2025-06-19 10:24:59.069666 - Save annotated sce
 [1] "Reproducibility information:"
-[1] "2025-05-17 02:24:19 EDT"
+[1] "2025-06-19 17:14:11 EDT"
      user    system   elapsed 
-32815.666  1059.349 34625.796 
+23249.577   741.519 24597.488 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.4.3 Patched (2025-02-28 r88204)
+ version  R version 4.4.3 Patched (2025-02-28 r88218)
  os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
@@ -779,7 +834,7 @@ Saving 10 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-05-17
+ date     2025-06-19
  pandoc   3.2 @ /jhpce/shared/community/core/conda_R/4.4.x/bin/pandoc
  quarto   NA
 
@@ -969,4 +1024,4 @@ Saving 10 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Sat May 17 02:24:20 AM EDT 2025
+Thu Jun 19 05:14:12 PM EDT 2025
