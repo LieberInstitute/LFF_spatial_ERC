@@ -33,9 +33,7 @@ save(dend, tree.clusCollapsed, dist.clusCollapsed, file = here(data_dir, "sn_sub
 
 #### plot ####
 message(Sys.time(), " - Plot")
-
-load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
-load(here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"), verbose = TRUE)
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
 
 broad_clus = cutree(dend, 7)
@@ -46,7 +44,7 @@ par(cex = 0.6, font = 2)
 
 ## cell type colors on leaves & branches
 dend |> 
-    set("leaves_col", cell_type_colors_anno[labels(dend)]) |> 
+    set("leaves_col", cell_type_colors$anno[labels(dend)]) |> 
     set("leaves_cex", 2) |> 
     set("leaves_pch", 19) |> 
     set("branches_k_color", k = 7,
@@ -62,7 +60,7 @@ par(cex = 0.6, font = 2)
 
 
 dend |> 
-    set("leaves_col", cell_type_colors_anno[labels(dend)]) |> 
+    set("leaves_col", cell_type_colors$anno[labels(dend)]) |> 
     set("leaves_cex", 2) |> 
     set("leaves_pch", 19) |> 
     set("branches_k_color", k = 7,
