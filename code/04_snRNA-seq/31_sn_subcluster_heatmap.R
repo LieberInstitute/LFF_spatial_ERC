@@ -244,7 +244,8 @@ nrow(AD_risk)
 ## gene annotation df
 AD_risk_annotation <- AD_risk |>
     select(symbol, eva) |>
-    column_to_rownames("symbol")
+    column_to_rownames("symbol") |>
+    filter(eva > 0.5)
 
 eva_colors = colorRamp2(c(0, 1), c("white", "darkcyan"))
 AD_risk_col_ha <- HeatmapAnnotation(df = AD_risk_annotation, col = list(eva = eva_colors))
