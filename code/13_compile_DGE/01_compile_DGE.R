@@ -198,6 +198,8 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)))
+## poster version
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_poster.png", opt$datatype)), height = 5, width = 10)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_FDR05) |>
