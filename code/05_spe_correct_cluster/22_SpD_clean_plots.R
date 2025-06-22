@@ -25,18 +25,50 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 spe
+# dim: 30494 122202 
 
-table(spe$SpD, spe$sample_id)
+pd <- as.data.frame(colData(spe))
 
-rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
-    filter(rep_section)
 
-#### load SpD annotations ####
+#### SpD Summary ####
+SpD_summary <- pd |>
+    group_by(SpD) |>
+    summarise(n_spots = n(),
+              prop = n_spots/ncol(spe),
+              n_donors = length(unique(sample_id)),
+              median_sum_umi = median(sum_umi),
+              median_sum_gene = median(sum_gene),
+              median_expr_chrM_ratio = median(expr_chrM_ratio))
+# |>
+#     left_join(enrichment_stats_top_list)
+
+
+write.csv(SpD_summary, file = here(data_dir, "ERC_Visium_summary_SpD.csv"))
+
+#### Donor Summary ####
+
+sample_summary <- pd |>
+    group_by(sample_id, round, Visium_slide)  |>
+    summarise(n_spots = n(),
+              prop = n_spots/ncol(spe),
+              n_donors = length(unique(sample_id)),
+              median_sum_umi = median(sum_umi),
+              median_sum_gene = median(sum_gene),
+              median_expr_chrM_ratio = median(expr_chrM_ratio))
+
+summary(sample_summary)
+
+write.csv(sample_summary, file = here(data_dir, "ERC_Visium_summary_sample.csv"))
 
 #### Define colors for SpD ####
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 #### Spot plots for representative sections ####
+
+table(spe$SpD, spe$sample_id)
+
+rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
+    filter(rep_section)
 
 single_vis_clus <- vis_clus(
     spe = spe,
