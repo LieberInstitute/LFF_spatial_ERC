@@ -6,6 +6,7 @@ library("tidyverse")
 library("ComplexHeatmap")
 library("here")
 library("sessioninfo")
+library("circlize")
 
 #### Set up dirs ####
 # data_dir <- here("processed-data", "05_spe_correct_cluster", "23_SpD_heatmaps")
