@@ -1,10 +1,10 @@
 **** Job starts ****
-Sun Jun 22 12:46:36 PM EDT 2025
+Sun Jun 22 12:58:50 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17714132
+Job id: 17714160
 Job name: 01_compile_DGE_sn_broad
-Node name: compute-156
+Node name: compute-158
 Task id: 
 Loading conda_R/4.5
 
@@ -566,7 +566,6 @@ $Anc
 `summarise()` has grouped output by 'cluster'. You can override using the
 `.groups` argument.
 Saving 7 x 7 in image
-Saving 7 x 7 in image
 There were 16 warnings (use warnings() to see them)
 Warning messages:
 1: ggrepel: 9 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
@@ -648,9 +647,9 @@ Warning messages:
 There were 50 or more warnings (use warnings() to see the first 50)
 There were 50 or more warnings (use warnings() to see the first 50)
 [1] "Reproducibility information:"
-[1] "2025-06-22 12:48:22 EDT"
+[1] "2025-06-22 13:00:34 EDT"
    user  system elapsed 
- 99.109   2.129 104.731 
+ 99.262   1.935 102.798 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -722,4 +721,4 @@ There were 50 or more warnings (use warnings() to see the first 50)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Sun Jun 22 12:48:22 PM EDT 2025
+Sun Jun 22 01:00:34 PM EDT 2025
