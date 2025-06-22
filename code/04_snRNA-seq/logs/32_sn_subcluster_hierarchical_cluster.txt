@@ -1,0 +1,153 @@
+**** Job starts ****
+Sun Jun 22 12:18:16 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 17714071
+Job name: 32_sn_subcluster_hierarchical_cluster
+Node name: compute-155
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+---------------------
+Welcome to dendextend version 1.19.0
+Type citation('dendextend') for how to cite the package.
+
+Type browseVignettes(package = 'dendextend') for the package vignette.
+The github page is: https://github.com/talgalili/dendextend/
+
+Suggestions and bug-reports can be submitted at: https://github.com/talgalili/dendextend/issues
+You may ask questions at stackoverflow, use the r and dendextend tags: 
+	 https://stackoverflow.com/questions/tagged/dendextend
+
+	To suppress this message use:  suppressPackageStartupMessages(library(dendextend))
+---------------------
+
+
+Attaching package: ‘dendextend’
+
+The following object is masked from ‘package:generics’:
+
+    prune
+
+The following object is masked from ‘package:stats’:
+
+    cutree
+
+Loading required package: ggplot2
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+ [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
+ [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
+ [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
+[13] "OPC.2"            "OPC.3"            "OPC.4"            "OPC.5"           
+[17] "Oligo.1"          "Oligo.2"          "Oligo.3"          "Oligo.4"         
+[21] "Oligo.5"          "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
+[25] "Excit.L2"         "Excit.L2_5.1"     "Excit.L2_5.2"     "Excit.L5.1"      
+[29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
+[33] "Inhib.Chandelier" "Inhib.Lamp5_Lhx6" "Inhib.Pax6"       "Inhib.Pvalb"     
+[37] "Inhib.Sst"        "Inhib.Vip"       
+2025-06-22 12:18:38.627854 - Cluster Again
+2025-06-22 12:18:39.435997 - Save
+2025-06-22 12:18:41.129661 - Plot
+Loading objects:
+  cell_type_colors
+null device 
+          1 
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2025-06-22 12:18:45 EDT"
+   user  system elapsed 
+  5.362   6.319  26.348 
+Error in session_info() : could not find function "session_info"
+Execution halted
