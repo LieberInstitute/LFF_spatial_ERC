@@ -225,7 +225,7 @@ dim(AD_risk_zscore)
 AD_risk_zscore[1:5,1:5]
 
 ## plot heatmaps - cell type only
-pdf(here(plot_dir, "ERC_SpD_AD_risk_heatmap.pdf"), height = 8, width = 11)
+pdf(here(plot_dir, "ERC_SpD_AD_risk_heatmap.pdf"), height = 8, width = 7)
 Heatmap(AD_risk_zscore,
         name = "Z Score",
         cluster_rows = FALSE,
