@@ -88,8 +88,7 @@ save(spatial_registration, file = here(data_dir, "ERCsn_subcluster_spatial_regis
 
 #### create registration heatmaps ####
 ## load colors
-load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose = TRUE)
-load(here("processed-data","00_project_prep","cell_type_colors_anno_subtype.Rdata"), verbose = TRUE)
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 load(here("processed-data","00_project_prep", "spatialDLPFC_Data","spatialDLPFC_SpD_colors.Rdata"), verbose = TRUE)
@@ -111,13 +110,13 @@ walk(names(cor_layer), function(ref){
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
-        query_colors = cell_type_colors_anno
+        query_colors = cell_type_colors$anno
     ))
     dev.off()
 })
 
 ## dont cluster cols - order by layer
-cell_type_colors_anno <- cell_type_colors_anno[names(cell_type_colors_anno) %in% rownames(cor_layer$spatialERC)]
+cell_type_colors$anno <- cell_type_colors$anno[names(cell_type_colors$anno) %in% rownames(cor_layer$spatialERC)]
 cor_layer$spatialERC <- cor_layer$spatialERC[names(cell_type_colors$anno),names(SpD_colors)]
  
 cor_layer$spatialERC[,names(SpD_colors)]
@@ -131,7 +130,7 @@ walk(names(cor_layer), function(ref){
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
         annotation = anno[[ref]],
-        query_colors = cell_type_colors_anno,
+        query_colors = cell_type_colors$anno,
         cluster_rows = FALSE,
         cluster_columns = FALSE,
     ))
