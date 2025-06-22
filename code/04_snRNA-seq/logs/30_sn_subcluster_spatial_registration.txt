@@ -1,17 +1,16 @@
 **** Job starts ****
-Thu May 22 08:30:47 AM EDT 2025
+Sun Jun 22 08:01:37 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16676714
+Job id: 17713466
 Job name: 30_sn_subcluster_spatial_registration
-Node name: compute-163
+Node name: compute-158
 Task id: 
-Unloading conda_R/4.4.x
-Loading conda_R/4.4.x
+Loading conda_R/4.5
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4.x
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
 
  
 
@@ -44,6 +43,15 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: GenomicRanges
 Loading required package: stats4
 Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
 
 Attaching package: ‘BiocGenerics’
 
@@ -55,10 +63,10 @@ The following objects are masked from ‘package:base’:
 
     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
-    table, tapply, union, unique, unsplit, which.max, which.min
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
 
 Loading required package: S4Vectors
 
@@ -127,7 +135,7 @@ The following object is masked from ‘package:IRanges’:
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.22.0
+ComplexHeatmap version 2.24.0
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -146,8 +154,8 @@ This message can be suppressed by:
 ========================================
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2025-05-22 08:31:15.328595 loading file /users/lhuuki/.cache/R/BiocFileCache/6b24121203e_Human_DLPFC_Visium_modeling_results.Rdata%3Fdl%3D1
-2025-05-22 08:31:17.260492 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b166bc7ed_modeling_results_BayesSpace_k09.Rdata%3Fdl%3D1
+2025-06-22 08:02:01.738232 loading file /users/lhuuki/.cache/R/BiocFileCache/6b24121203e_Human_DLPFC_Visium_modeling_results.Rdata%3Fdl%3D1
+2025-06-22 08:02:02.438131 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b166bc7ed_modeling_results_BayesSpace_k09.Rdata%3Fdl%3D1
  [1] "t_stat_Inhib~Sp09D09"  "t_stat_L1~Sp09D05"     "t_stat_L2.3~Sp09D01"  
  [4] "t_stat_L5~Sp09D03"     "t_stat_L6~Sp09D04"     "t_stat_LD~Sp09D02"    
  [7] "t_stat_Vasc~Sp09D08"   "t_stat_WM~Sp09D06"     "t_stat_WM.uf~Sp09D07" 
@@ -169,11 +177,13 @@ Loading objects:
   cell_type_colors_anno
 Loading objects:
   SpD_colors
+Loading objects:
+  spatialDLPFC_SpD_colors
 $HumanPilot
 [1] TRUE
 
 $spatialDLPFC
-[1] FALSE
+[1] TRUE
 
 $spatialERC
 [1] TRUE
