@@ -1,17 +1,16 @@
 **** Job starts ****
-Wed Jun 18 09:46:57 AM EDT 2025
+Sun Jun 22 12:46:36 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17427056
+Job id: 17714132
 Job name: 01_compile_DGE_sn_broad
-Node name: compute-168
+Node name: compute-156
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
 
  
 
@@ -649,9 +648,9 @@ Warning messages:
 There were 50 or more warnings (use warnings() to see the first 50)
 There were 50 or more warnings (use warnings() to see the first 50)
 [1] "Reproducibility information:"
-[1] "2025-06-18 09:48:56 EDT"
+[1] "2025-06-22 12:48:22 EDT"
    user  system elapsed 
-113.754   2.144 117.919 
+ 99.109   2.129 104.731 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -662,7 +661,7 @@ There were 50 or more warnings (use warnings() to see the first 50)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-18
+ date     2025-06-22
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -723,4 +722,4 @@ There were 50 or more warnings (use warnings() to see the first 50)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jun 18 09:48:56 AM EDT 2025
+Sun Jun 22 12:48:22 PM EDT 2025
