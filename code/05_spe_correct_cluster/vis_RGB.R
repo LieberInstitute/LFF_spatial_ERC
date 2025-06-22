@@ -71,18 +71,18 @@ vis_RGB <- function(spe,
     geneid <- c(red = gene_red, green = gene_green, blue = gene_blue)
     stopifnot(all(geneid %in% rowData(spe)$gene_name))
     
-    RBG_norm <- purrr::map(geneid, ~scales::rescale(
+    RGB_norm <- purrr::map(geneid, ~scales::rescale(
         logcounts(spe)[which(rowData(spe)$gene_name == .x), ] |>
             scale(center = TRUE, scale = FALSE) |>
-            sapply(max, 0), # ignore small counts
+            sapply(max, minCount), # ignore small counts - check this is correct
         to = c(0, 1)
     ))
     
     ## get RGB values
     rgb_values <- rgb(
-        red = RBG_norm$red,
-        green = RBG_norm$green,
-        blue = RBG_norm$blue
+        red = RGB_norm$red,
+        green = RGB_norm$green,
+        blue = RGB_norm$blue
     )
     
     #   Determine plot and legend titles
@@ -151,33 +151,93 @@ vis_RGB <- function(spe,
     
 }
 
-# # Create a custom legend ----
-# # create random plots to get the legend
-# legend_plot <- data.frame(
-#     x = 1, y = 1,
-#     Gene = c("MBP", "PCP4", "SNAP25")
-# ) |>
-#     ggplot() +
-#     geom_point(aes(x, y, color = Gene)) + # Increase the size of the points
-#     scale_color_manual(
-#         name = "Gene",
-#         values = c(
-#             "MBP" = "red",
-#             "PCP4" = "green",
-#             "SNAP25" = "blue"
-#         ),
-#         guide = guide_legend(
-#             override.aes = list(size = 7) # Increase the size of the legend keys
-#         )
-#     ) +
-#     theme_void() +
-#     theme(
-#         legend.position = "bottom",
-#         legend.direction = "horizontal",
-#         legend.title = element_text(size = 15),
-#         legend.text = element_text(size = 15)
-#     )
-# 
-# ggsave(legend_plot, filename = here(plot_dir, "legend_test.png"))
+
+vis_RGB_legend <- function(spe,
+                           sampleid = unique(spe$sample_id)[1],
+                           gene_red = "MBP",
+                           gene_green = "PCP4",
+                           gene_blue = "SNAP25",
+                           assayname = "logcounts",
+                           minCount = 0){
+    
+    spe <- spe[, spe$sample_id == sampleid]
+    
+    ## get normalized gene values
+    geneid <- c(red = gene_red, green = gene_green, blue = gene_blue)
+    stopifnot(all(geneid %in% rowData(spe)$gene_name))
+    
+    
+    RGB_norm <- purrr::map2_dfr(geneid, names(geneid), function(gene, color){
+        
+        gene_tb <- tibble(gene = gene,
+                          logcount = logcounts(spe)[which(rowData(spe)$gene_name == gene), ])
+        
+        gene_tb$scale_count <-  scales::rescale(gene_tb$logcount |>
+                                                    scale(center = TRUE, scale = FALSE) |>
+                                                    sapply(max, minCount), # ignore small counts
+                                                to = c(0, 1)
+        ) 
+        
+        ## get percentile     
+        gene_tb_p <- gene_tb |> mutate(lc_percentile = cume_dist(logcount),
+                          lc_p_round = round(lc_percentile, 1)) |>
+            group_by(lc_p_round) |>
+            slice_max(logcount) |>
+            unique()
+        
+        gene_tb_p$rgb <- if(color == "red"){
+            rgb(red = gene_tb_p$scale_count, green = 0, blue = 0)
+        } else if(color == "green"){
+            rgb(red = 0, green = gene_tb_p$scale_count, blue = 0)
+        } else if(color == "blue"){
+            rgb(red = 0, green = 0, blue =  gene_tb_p$scale_count)
+        }
+    
+        return(gene_tb_p)
+    })
+    
+    RGB_norm |> ungroup() |> count(gene)
+    
+    ggplot(RGB_norm, aes(x = gene, y = lc_p_round, fill = rgb)) +
+        geom_tile() +
+        geom_text(aes(label = round(logcount, 1)), color = "white") +
+        scale_fill_identity() +
+        theme_classic()
+    
+}
+
+vis_RGB_legend_simple <- function(){
+    
+    # Create a custom legend ----
+    # create random plots to get the legend
+    legend_plot <- data.frame(
+        x = 1, y = 1,
+        Gene = c("MBP", "PCP4", "SNAP25")
+    ) |>
+        ggplot() +
+        geom_point(aes(x, y, color = Gene)) + # Increase the size of the points
+        scale_color_manual(
+            name = "Gene",
+            values = c(
+                "MBP" = "red",
+                "PCP4" = "green",
+                "SNAP25" = "blue"
+            ),
+            guide = guide_legend(
+                override.aes = list(size = 7) # Increase the size of the legend keys
+            )
+        ) +
+        theme_void() +
+        theme(
+            # legend.position = "bottom",
+            # legend.direction = "horizontal",
+            legend.title = element_text(size = 15),
+            legend.text = element_text(size = 15)
+        )
+
+    return(legend_plot)
+    
+}
+
 
 
