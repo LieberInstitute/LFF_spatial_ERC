@@ -1,17 +1,17 @@
 **** Job starts ****
-Wed May 21 08:24:23 PM EDT 2025
+Sun Jun 22 08:24:58 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 16676329
+Job id: 17713484
 Job name: 23_SpD_heatmaps
-Node name: compute-121
+Node name: compute-155
 Task id: 
-Unloading conda_R/4.4.x
-Loading conda_R/4.4.x
+Unloading conda_R/4.5
+Loading conda_R/4.5
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.4.x
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
 
  
 
@@ -44,6 +44,15 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: GenomicRanges
 Loading required package: stats4
 Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
 
 Attaching package: ‘BiocGenerics’
 
@@ -55,10 +64,10 @@ The following objects are masked from ‘package:base’:
 
     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
-    table, tapply, union, unique, unsplit, which.max, which.min
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
 
 Loading required package: S4Vectors
 
@@ -117,7 +126,7 @@ The following objects are masked from ‘package:matrixStats’:
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.22.0
+ComplexHeatmap version 2.24.0
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -136,6 +145,20 @@ This message can be suppressed by:
 ========================================
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+========================================
+circlize version 0.4.16
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
 [1] 30494     9
 [1] 30494   279
 [1] TRUE
@@ -199,7 +222,7 @@ dbl (1): eva
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 [1] 23
-[1]  9 23
+[1] 9 9
                     PSEN1        APP        PSEN2       APOE        ABCA7
 Vasc_Sp09D08  -0.10912874 -0.8809884 -0.001079105  0.2362029  0.320887108
 L1_Sp09D05    -0.02123767 -1.5020789 -0.340928537  1.8692120 -0.422258841
