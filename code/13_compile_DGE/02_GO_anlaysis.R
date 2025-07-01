@@ -48,72 +48,56 @@ DE_entrez <- DE_data |>
     filter(!is.na(ENTREZID)) |>
     mutate(DE_class = case_when(vlmf_logFC > 0 & vlmf_adj.P.Val < 0.05 ~ "up",
                                 vlmf_logFC < 0 & vlmf_adj.P.Val < 0.05 ~ "down",
-                                TRUE ~ "None")) 
+                                TRUE ~ "None"),
+           DE_class_cluster = paste0(cluster, "_",DE_class))
     
 DE_entrez |> count(cluster)
-DE_entrez |> count(cluster, DE_class)
+DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
 
-DE_clusters <- DE_entrez |> filter(DE_class != "None") |> pull(cluster) |> unique()
-names(DE_clusters) <- DE_clusters
+# DE_clusters <- DE_entrez |> filter(DE_class != "None") |> pull(cluster) |> unique()
+# names(DE_clusters) <- DE_clusters
 
-go_result <- map(clusters, function(c){
-    
-    message(Sys.time(), " - GO ", c)
-    DE_entrez <- DE_entrez |> filter(cluster == c)
-    universe <- DE_entrez$ENTREZID
-    
-    go_result <- compareCluster(ENTREZID ~ DE_class,
-                         data = DE_entrez |> filter(DE_class != "None"), 
-                         OrgDb = org.Hs.eg.db,
-                         fun = enrichGO,
-                         universe = universe,
-                         ont = "ALL", ##ALL,CC,BP,MF
-                         pAdjustMethod = "BH",
-                         pvalueCutoff = 1,#0.5,
-                         qvalueCutoff = 1,
-                         readable = TRUE)
-    
-    return(go_result)
-})
+universe <- unique(DE_entrez$ENTREZID)
+length(universe)
+
+ont <- c("CC","BP","MF")
+names(ont) <- ont
+
+go_result <- map(ont, ~compareCluster(ENTREZID ~ DE_class_cluster,
+                                      data = DE_entrez |> filter(DE_class != "None"), 
+                                      OrgDb = org.Hs.eg.db,
+                                      fun = enrichGO,
+                                      universe = universe,
+                                      ont = .x, ##ALL,CC,BP,MF
+                                      pAdjustMethod = "BH",
+                                      # pvalueCutoff = 1,#0.5,
+                                      qvalueCutoff = 0.05,
+                                      readable = TRUE))
 
 
+pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), 
+      ~print(
+          dotplot(.x, 
+                  x = "DE_class_cluster", 
+                  showCategory = 5, 
+                  label_format = 60)  +
+              ggtitle(paste("GO Enrichment:", .y)) +
+              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+      )
+      )
+dev.off()
 
-save_go_dotplot <- function(go_result, ontology_type, plot_dir, filename_prefix = "filtered_model6_k12_GO", showCategory = 10) {
-    # Extract underlying result data
-    go_df <- go_result@compareClusterResult
-    
-    # Filter data frame for ontology and qvalue < 0.05
-    go_subset <- subset(go_df, ONTOLOGY == ontology_type & qvalue < 0.05) ## how is qval differnt from p.adjust?
-    # go_subset <- subset(go_df, ONTOLOGY == ontology_type & p.adjust < 0.05)
-    
-    # Skip if no significant terms
-    if (nrow(go_subset) == 0) {
-        message(paste("No significant terms for", ontology_type))
-        return(NULL)
-    }
-    
-    # Create a temporary compareClusterResult object with filtered data
-    go_result@compareClusterResult <- go_subset
-    
-    # File path
-    pdf_file <- here::here(plot_dir, paste0(filename_prefix, "_", ontology_type, ".pdf"))
-    
-    # Save to PDF
-    pdf(file = pdf_file, width = 7, height = 7)
-    print(
-        dotplot(go_result, x = "DE_class", showCategory = showCategory, label_format = 60) +
-            ggtitle(paste("GO Enrichment:", ontology_type)) +
-            theme(
-                plot.title = element_text(size = 12),
-                axis.text.x = element_text(angle = 70, size = 12, vjust = 0.5, hjust = 0.5),
-                axis.text.y = element_text(size = 12),
-                legend.text = element_text(size = 12),
-                legend.title = element_text(size = 12)
-            )
-    )
-    dev.off()
-    message(paste("Saved:", pdf_file))
-}
+compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 
+write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
 
-save_go_dotplot(go_result = go_result$Astro, ontology_type = "BP", filename_prefix = "Astro")
+# slurmjobs::job_single('02_GO_analysis', create_shell = TRUE, memory = '5G', command = "Rscript 02_GO_analysis.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
