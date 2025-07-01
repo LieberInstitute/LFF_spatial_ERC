@@ -18,6 +18,7 @@ opt <- getopt(scec)
 
 ## test
 # opt$datatype = "sn_broad"
+# opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
 
 data_dir <- here("processed-data", "13_compile_DGE", "02_GO_analysis")
@@ -49,7 +50,7 @@ DE_entrez <- DE_data |>
     mutate(DE_class = case_when(vlmf_logFC > 0 & vlmf_adj.P.Val < 0.05 ~ "up",
                                 vlmf_logFC < 0 & vlmf_adj.P.Val < 0.05 ~ "down",
                                 TRUE ~ "None"),
-           DE_class_cluster = paste0(cluster, "_",DE_class))
+           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class)) ## doesn't like .  in cluster names
     
 DE_entrez |> count(cluster)
 DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
@@ -89,6 +90,9 @@ walk2(go_result, names(go_result),
 dev.off()
 
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
+
+compare_clus |> count(DE_class_cluster)
+
 
 write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
 
