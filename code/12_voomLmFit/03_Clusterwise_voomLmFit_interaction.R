@@ -56,7 +56,8 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     dge <- sce_pb[,sce_pb$registration_variable == clus]
 
-    des <- model.matrix(~APOE_carrier_syn*Anc_Afr + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+    # des <- model.matrix(~APOE_carrier_syn*Anc_Afr + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+    des <- model.matrix(~APOE_carrier_syn*Ancestry + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
     des <- as.data.frame(des)
     
     # filter low expression genes
@@ -84,7 +85,8 @@ lmf_summary <- map_dfr(clusters, function(clus){
     # v.swt.fit.e <- eBayes(v.swt.fit)
     
     v.swt.e.tt <- topTable(v.swt.fit.e, 
-                           coef = "APOE_carrier_E4:Anc_Afr",
+                           # coef = "APOE_carrier_E4:Anc_Afr",
+                           coef = c("AncestryEA", "AncestryEA","APOE_carrier_E4:AncestryEA"),
                            number=Inf, 
                            adjust.method = "BH") |>
         mutate(data_type = opt$datatype, 
