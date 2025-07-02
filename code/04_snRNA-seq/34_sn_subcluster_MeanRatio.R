@@ -51,32 +51,6 @@ save(marker_stats_MeanRatio, file = here(data_dir, sprintf("marker_stats_MeanRat
 
 ## Run 1vALL 
 
-## make APOE syntatic
-## only ~sample_ID is full rank
-# sce$APOE <- gsub("/", "", sce$APOE)
-# c("sample_id", "APOE" ,"Sex", "Age","Anc_Afr") %in% colnames(colData(sce))
-# mod <- model.matrix(~sample_id + Sex , colData(sce))
-# limma::is.fullrank(mod)
-
-message(Sys.time(), " - Run 1vALL on ", cluster)
-marker_stats_1vAll <- findMarkers_1vAll(
-    sce = sce,
-    assay_name = "counts",
-    cellType_col = cluster,
-    mod = "~sample_id"
-)
-
-#### Join and save data ####
-message(Sys.time(), " - Done - Join data & save")
-## join the two marker_stats tables
-marker_stats <- marker_stats_MeanRatio |>
-    dplyr::left_join(marker_stats_1vAll, by = join_by(gene, cellType.target))
-
-save(marker_stats, file = here(data_dir, sprintf("MarkerStats_%s.Rdata", cluster)))
-
-# Fix '.' add to cell type names
-# marker_stats <- marker_stats |> mutate(cellType.target = gsub("(\\d+)", ".\\1", cellType.target),
-#                        cellType.2nd = gsub("(\\d+)", ".\\1", cellType.2nd))
 
 #### plot hockey stick plots & top markers ####
 message(Sys.time(), " - Plots")
@@ -99,39 +73,6 @@ plot_marker_express_ALL(
     plot_points = FALSE
 )
 
-## MR vs. 1vALL
-hockey_plot <- marker_stats |>
-    ggplot(aes(MeanRatio, std.logFC)) +
-    geom_point() +
-    facet_wrap(~cellType.target) +
-    theme_bw() +
-    geom_hline(yintercept = 1, color = "red", linetype = "dashed") +
-    geom_vline(xintercept = 1, color = "blue", linetype = "dashed") 
-
-ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s.pdf", cluster)), width = 10, height = 10)
-
-## add limit
-hockey_plot <- marker_stats |>
-    ggplot(aes(MeanRatio, std.logFC)) +
-    geom_point() +
-    facet_wrap(~cellType.target) +
-    theme_bw() +
-    xlim(0, 30)+
-    geom_hline(yintercept = 1, color = "red", linetype = "dashed") +
-    geom_vline(xintercept = 1, color = "blue", linetype = "dashed") 
-
-ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s_xlim.pdf", cluster)), width = 10, height = 10)
-
-## free scales
-hockey_plot <- marker_stats |>
-    ggplot(aes(MeanRatio, std.logFC)) +
-    geom_point() +
-    facet_wrap(~cellType.target, scales = "free") +
-    theme_bw() +
-    geom_hline(yintercept = 1, color = "red", linetype = "dashed") +
-    geom_vline(xintercept = 1, color = "blue", linetype = "dashed") 
-
-ggsave(hockey_plot, filename = here(plot_dir, sprintf("sn_MRvslogFC-%s_free.pdf", cluster)), width = 10, height = 10)
 
 # slurmjobs::job_single('16_sn_MeanRatio', create_shell = TRUE, memory = '100G', command = "Rscript 16_sn_MeanRatio.R -cluster 'ct_broad_k20'")
 
