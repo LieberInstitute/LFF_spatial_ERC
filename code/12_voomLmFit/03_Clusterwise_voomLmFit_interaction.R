@@ -72,11 +72,16 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     ## run voomLmFit for the pseudobulked data, referring donor to duplicateCorrelation; 
     ## using an adaptive span (number of genes, based on the number of genes in the dge) for smoothing the mean-variance trend
-    v.swt <- voomLmFit(dge,design = des,block = as.factor(dge$samples[[batch]]),adaptive.span = T,sample.weights = T)
+    v.swt <- voomLmFit(dge,design = des, 
+                       block = as.factor(dge$samples[[batch]]),
+                       adaptive.span = T,
+                       sample.weights = T)
     
     v.swt.fit.e <- eBayes(v.swt)
     
-    "APOE_carrier_E4:Anc_Afr"
+    # compute estimated coefficients
+    # v.swt.fit <- contrasts.fit(v.swt, coef = "APOE_carrier_E4:Anc_Afr")
+    # v.swt.fit.e <- eBayes(v.swt.fit)
     
     v.swt.e.tt <- topTable(v.swt.fit.e, 
                            coef = "APOE_carrier_E4:Anc_Afr",
@@ -87,19 +92,25 @@ lmf_summary <- map_dfr(clusters, function(clus){
                .before = 1) |>
         arrange(adj.P.Val)
     
+    head(v.swt.e.tt)
+    
     message("Done - Save data")
-    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_%s_%s.rds", opt$datatype, clus)))
-    return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.05)))
+    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_interaction_%s_%s.rds", opt$datatype, clus)))
+    
+    
+    return(tibble(cluster = clus, 
+                  n_gene = nrow(v.swt.e.tt),
+                  n_FDR05 = sum(v.swt.e.tt$adj.P.Val < 0.05),
+                  min_adj.P.Val = min(v.swt.e.tt$adj.P.Val)
+                  )
+           )
 })
 
-lmf_summary <- lmf_summary |>
-    add_column(cluster = clusters, .before=1)
+write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_interacton_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
-
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_broad', create_shell = TRUE, memory = '25G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad")
 # slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_fine")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype Visium")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype Visium")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
