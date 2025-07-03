@@ -29,7 +29,7 @@
 #' ## Download the processed study data from
 #'
 #' ## load DE data
-#' sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cluster_broad.RDS"))
+#' sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
 #' DE_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_broad", "DGE_results_carrier_sn_broad.Rds"))
 #'
 #' ## Plot the top markers for Astrocytes
@@ -48,12 +48,14 @@ plot_marker_express <- function(sce,
                                 n_genes = 10,
                                 pval_col = "vlmf_adj.P.Val",
                                 fc_col = "vlmf_logFC",
-                                gene_col = "gene",
+                                gene_col = "gene_name",
                                 cluster_col = "cluster_broad",
+                                category_col = "APOE_carrier",
                                 mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
                                 color_pal = NULL,
                                 plot_points = FALSE,
-                                ncol = 2) {
+                                ncol = 2,
+                                cleanY_P = 2) {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(cluster %in% sce[[cluster_col]])
@@ -73,7 +75,7 @@ plot_marker_express <- function(sce,
     ## filter to cluster
     
     lookup <- c(
-        pval_col = rank_col,
+        pval_col = pval_col,
         fc_col = fc_col,
         gene_col = gene_col
     )
@@ -92,8 +94,9 @@ plot_marker_express <- function(sce,
                               stringr::str_pad(rank_col, max_digits, "left"), 
                               gene_col),
             Var1 = Feature,
-            anno_str = sprintf("FDR=%.2e\nlogFC=%.2f", pval_col, fc_col)
-        )
+            anno_str = sprintf("\n FDR=%.2e\n logFC=%.2f", pval_col, fc_col)
+        ) |>
+        filter(rank_col <= n_genes)
     
     # return(stats_filter)
     
@@ -103,19 +106,26 @@ plot_marker_express <- function(sce,
     
     #### clean Y ####
     sce <- sce[,sce[[cluster_col]] == cluster]
+    assays(sce)$cleanY <- jaffelab::cleaningY(logcounts(sce),
+                                              mod = model.matrix(mod, colData(sce)),
+                                              P = cleanY_P)
     
-    marker_sce <- sce[stats_filter$gene_col, ]
-    rownames(marker_sce) <- stats_filter$Feature
+    rownames(sce) <- rowData(sce)[[gene_col]]
+    
+    sce <- sce[stats_filter$gene_col, ]
+    rownames(sce) <- stats_filter$Feature
     
     
     pe <- plot_gene_express(
-        sce = marker_sce,
+        sce = sce,
         genes = stats_filter$Feature,
-        category = cluster_col,
+        assay_name = "cleanY",
+        category = category_col,
         color_pal = color_pal,
         title = title,
         plot_points = plot_points,
-        ncol = ncol
+        ncol = ncol,
+        plot_type = "boxplot"
     ) +
         ggplot2::geom_text(
             data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str),
