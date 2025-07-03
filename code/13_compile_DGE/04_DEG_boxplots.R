@@ -31,13 +31,10 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### Load the data ####
 if(opt$datatype == "Visium"){
     pb_fn <- here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS")
-    batch <- "Visium_slide"
 } else if(opt$datatype == "sn_broad"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS")
-    batch <- "exp_round"
 }else if(opt$datatype == "sn_fine"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS")
-    batch <- "exp_round"
 } else {
     stop("non-valid datatype")
 }
@@ -66,18 +63,41 @@ DEGs_signif <- DE_data |>
            DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class),
            rank = row_number())
 
-DEGs_signif |> filter(rank <= 5)
+DEGs_signif |> filter(rank <= 6)
 
+all(DEGs_signif$gene_name %in% rownames(sce_pb))
+all(DEGs_signif$gene_name %in% rowData(sce_pb)$gene_name)
 
-"COL4A5" %in% rownames(sce_pb)
+#### cleaning Y ####
 
-test <- plot_gene_express(sce = sce_pb[sce_pb$registration_variable == "Inhib",],
-                          genes = "ST18",
-                          # genes = "CAMTA1",
-                          category = "APOE",
-                          plot_points = TRUE)
+des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(sce_pb))
+head(des)
 
-ggsave(test, filename = here(plot_dir, "test.png"))
+assays(sce_pb)$cleanY <- jaffelab::cleaningY(y = logcounts(sce_pb)[1:2,sce_pb$registration_variable == "Inhib"], 
+                                     mod = model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(sce_pb[,sce_pb$registration_variable == "Inhib"])), 
+                                     P = 4)
 
+stopifnot("Input matrix is not full rank" = qr(mod)$rank == ncol(mod))
 
+clusters <- unique(DEGs_signif$cluster)
+
+assay <- "logcounts"
+
+pdf(here(plot_dir, sprintf("DEG_%s_%s.pdf", opt$datatype, assay)))
+walk(clusters, function(clus){
+    
+    DEGs_signif_clus <- DEGs_signif |> filter(rank <= 6, cluster == clus)
+
+    print(plot_gene_express(sce = sce_pb[,sce_pb$registration_variable == clus],
+                      genes = DEGs_signif_clus$gene_name,
+                      assay_name = assay,
+                      category = "APOE_carrier",
+                      plot_points = TRUE,
+                      color_pal = APOE_carrier_colors,
+                      plot_type = "boxplot",
+                      title = paste(clus, "-", assay)
+                      )
+    )
+})
+dev.off()
 
