@@ -56,7 +56,7 @@ rownames(sce_pb) <- rowData(sce_pb)$gene_name
 
 load(here("processed-data", "project_colors.Rdata"))
 
-## load DE data ##
+#### Carrier DE data ####
 
 DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
 DE_data <- readRDS(DE_data_fn)
@@ -75,6 +75,11 @@ DEGs_signif |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(cluster)
 head(model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, colData(sce_pb)))
 
 cluster_levels <- levels(sce_pb[[cluster_var]])
+cluster_levels2 <- as.character(unique(DE_data$cluster))
+
+cluster_levels <- intersect(cluster_levels, cluster_levels2)
+
+all(cluster_levels %in% sce_pb[[cluster_var]])
 
 # plot_DEG_express(sce = sce_pb,
 #                     stats = DE_data,
@@ -91,6 +96,7 @@ cluster_levels <- levels(sce_pb[[cluster_var]])
 #                     ncol = 2,
 #                     cleanY_P = 4)
 
+table(sce_pb[[cluster_var]])
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
 map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
@@ -145,4 +151,46 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
                                          cleanY_P = 4)
 )
 dev.off()
+
+#### Carrier DE data ####
+
+DE_interaction_data_fn <- here("processed-data", "13_compile_DGE",  "05_compile_DGE_interaction", opt$datatype, sprintf("DGE_results_interaction_%s.Rds", opt$datatype))
+DE_interaction_data <- readRDS(DE_interaction_data_fn)
+
+DE_interaction_data |> filter(vlmf_adj.P.Val < 0.2) |> dplyr::count(cluster)
+
+sce_pb$carrier_anc <- paste(sce_pb$APOE_carrier, sce_pb$Ancestry)
+
+table(sce_pb$carrier_anc)
+
+interaction_mod <- model.matrix(~APOE_carrier_syn*Ancestry + Sex + Age + pseudo_expr_chrM_ratio, colData(sce_pb))
+interaction_mod <-interaction_mod[,c("(Intercept)", "APOE_carrier_synE4:AncestryEA", "APOE_carrier_synE4","AncestryEA", "SexM","Age","pseudo_expr_chrM_ratio")]
+head(interaction_mod)
+
+pdf(here(plot_dir, sprintf("DEG_boxplots_interaction_%s.pdf", opt$datatype)))
+map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+                                      stats = DE_interaction_data,
+                                      clus = .x,
+                                      n_genes = 10,
+                                      pval_col = "vlmf_adj.P.Val",
+                                      fc_col = "vlmf_logFC",
+                                      gene_col = "gene_name",
+                                      cluster_col = cluster_var,
+                                      category_col = "carrier_anc",
+                                      mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                                      color_pal = carrier_tau_colors,
+                                      plot_points = TRUE,
+                                      ncol = 2,
+                                      cleanY_P = 4)
+)
+dev.off()
+
+# slurmjobs::job_single('04_DEG_boxplots', create_shell = TRUE, memory = '5G', command = "Rscript 04_DEG_boxplots.R --datatype sn_broad")
+
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
