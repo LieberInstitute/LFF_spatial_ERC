@@ -44,7 +44,7 @@
 #' @importFrom ggplot2 ggplot geom_violin geom_text facet_wrap stat_summary
 plot_marker_express <- function(sce,
                                 stats,
-                                cluster,
+                                clus,
                                 n_genes = 10,
                                 pval_col = "vlmf_adj.P.Val",
                                 fc_col = "vlmf_logFC",
@@ -58,13 +58,13 @@ plot_marker_express <- function(sce,
                                 cleanY_P = 2) {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
-    stopifnot(cluster %in% sce[[cluster_col]])
-    stopifnot(cluster %in% stats$cluster)
+    stopifnot(clus %in% sce[[cluster_col]])
+    stopifnot(clus %in% stats$cluster)
     
     # RCMD fix
     rank_int <- Symbol <- anno_str <- Feature <- NULL
     
-    title <- paste(cluster, "Top", n_genes, "DEGs")
+    title <- paste(clus, "Top", n_genes, "DEGs")
     # message(title)
     
     max_digits <- nchar(n_genes)
@@ -84,8 +84,7 @@ plot_marker_express <- function(sce,
         dplyr::rename(dplyr::all_of(lookup)) |>
         dplyr::select(cluster, gene_col, pval_col, fc_col) |>
         dplyr::filter(
-            cluster == cluster,
-            pval_col <= 0.05
+            cluster == clus
         ) |>
         arrange(pval_col) |>
         mutate(
@@ -94,7 +93,12 @@ plot_marker_express <- function(sce,
                               stringr::str_pad(rank_col, max_digits, "left"), 
                               gene_col),
             Var1 = Feature,
-            anno_str = sprintf("\n FDR=%.2e\n logFC=%.2f", pval_col, fc_col)
+            signif = case_when(pval_col < 0.001 ~"***",
+                               pval_col < 0.01 ~"**",
+                               pval_col < 0.05 ~"*",
+                               TRUE ~ "",
+                               ),
+            anno_str = sprintf("FDR=%.2e%s\nlogFC=%.2f", pval_col, signif, fc_col)
         ) |>
         filter(rank_col <= n_genes)
     
@@ -105,7 +109,7 @@ plot_marker_express <- function(sce,
     }
     
     #### clean Y ####
-    sce <- sce[,sce[[cluster_col]] == cluster]
+    sce <- sce[,sce[[cluster_col]] == clus]
     assays(sce)$cleanY <- jaffelab::cleaningY(logcounts(sce),
                                               mod = model.matrix(mod, colData(sce)),
                                               P = cleanY_P)
@@ -128,9 +132,12 @@ plot_marker_express <- function(sce,
         plot_type = "boxplot",
         free_y = TRUE
     ) +
-        ggplot2::geom_text(
-            data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str),
-            vjust = "inward", hjust = "inward", size = 2.5
+        ggplot2::geom_label(
+            data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
+            alpha = 0.5,
+            vjust = "inward", 
+            hjust = "inward", 
+            size = 2.5
         )
     
     
