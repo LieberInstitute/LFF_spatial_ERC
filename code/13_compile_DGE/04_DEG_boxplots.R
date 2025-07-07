@@ -20,6 +20,7 @@ scec <- matrix(
 opt <- getopt(scec)
 
 ## test
+# opt$datatype <- "sn_fine"
 # opt$datatype <- "sn_broad"
 # opt$datatype <- "Visium"
 
@@ -77,7 +78,7 @@ cluster_levels <- levels(sce_pb[[cluster_var]])
 
 # plot_DEG_express(sce = sce_pb,
 #                     stats = DE_data,
-#                     clus = "L1~Sp09D05",
+#                     clus = "Astro",
 #                     n_genes = 10,
 #                     pval_col = "vlmf_adj.P.Val",
 #                     fc_col = "vlmf_logFC",
@@ -107,26 +108,6 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
                                           ncol = 2,
                                           cleanY_P = 4)
          )
-
-dev.off()
-
-pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
-                                          stats = DE_data,
-                                          clus = .x,
-                                          n_genes = 10,
-                                          pval_col = "vlmf_adj.P.Val",
-                                          fc_col = "vlmf_logFC",
-                                          gene_col = "gene_name",
-                                          cluster_col = cluster_var,
-                                          category_col = "APOE_carrier",
-                                          mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
-                                          color_pal = APOE_carrier_colors,
-                                          plot_points = TRUE,
-                                          ncol = 2,
-                                          cleanY_P = 4)
-         )
-
 dev.off()
 
 #### plot taupath data ####
@@ -139,7 +120,8 @@ sce_pb$taupathy <- ifelse(tau_tb[sce_pb$BrNum,]$taupathy, "t+", "t-")
 table(sce_pb$taupathy)
 
 sce_pb$carrier_tau <- paste(sce_pb$APOE_carrier, sce_pb$taupathy)
-table(sce_pb$carrier_tau)
+
+table(sce_pb$registration_variable, sce_pb$carrier_tau)
 
 carrier_tau_colors <- c(`E2+ t-` = "#398A84",
                         `E2+ t+` = "#60BEB8",
