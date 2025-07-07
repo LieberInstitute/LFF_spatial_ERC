@@ -9,6 +9,9 @@ library("getopt")
 library("DeconvoBuddies")
 library("SingleCellExperiment")
 
+source(here("code","utils","plot_DEG_express.R"))
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 # Import command-line parameters
 scec <- matrix(
     c("datatype", "d", "1", "character", "Data type"),
@@ -18,6 +21,7 @@ opt <- getopt(scec)
 
 ## test
 # opt$datatype <- "sn_broad"
+# opt$datatype <- "Visium"
 
 print(opt)
 
@@ -31,10 +35,13 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### Load the data ####
 if(opt$datatype == "Visium"){
     pb_fn <- here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS")
+    cluster_var <- "SpD"
 } else if(opt$datatype == "sn_broad"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS")
+    cluster_var <- "cell_type_broad"
 }else if(opt$datatype == "sn_fine"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS")
+    cluster_var <- "cell_type_anno"
 } else {
     stop("non-valid datatype")
 }
@@ -54,7 +61,6 @@ DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$dat
 DE_data <- readRDS(DE_data_fn)
 
 DEGs_signif <- DE_data |> 
-    filter(vlmf_adj.P.Val < 0.05) |>
     group_by(cluster) |>
     arrange(vlmf_adj.P.Val) |>
     mutate(DE_class = case_when(vlmf_logFC > 0 ~ "up",
@@ -63,41 +69,98 @@ DEGs_signif <- DE_data |>
            DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class),
            rank = row_number())
 
-DEGs_signif |> filter(rank <= 6)
+DEGs_signif |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(cluster)
 
-all(DEGs_signif$gene_name %in% rownames(sce_pb))
-all(DEGs_signif$gene_name %in% rowData(sce_pb)$gene_name)
+head(model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, colData(sce_pb)))
 
-#### cleaning Y ####
+cluster_levels <- levels(sce_pb[[cluster_var]])
 
-des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(sce_pb))
-head(des)
+# plot_DEG_express(sce = sce_pb,
+#                     stats = DE_data,
+#                     clus = "L1~Sp09D05",
+#                     n_genes = 10,
+#                     pval_col = "vlmf_adj.P.Val",
+#                     fc_col = "vlmf_logFC",
+#                     gene_col = "gene_name",
+#                     cluster_col = cluster_var,
+#                     category_col = "APOE_carrier",
+#                     mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+#                     color_pal = APOE_carrier_colors,
+#                     plot_points = FALSE,
+#                     ncol = 2,
+#                     cleanY_P = 4)
 
-assays(sce_pb)$cleanY <- jaffelab::cleaningY(y = logcounts(sce_pb)[1:2,sce_pb$registration_variable == "Inhib"], 
-                                     mod = model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(sce_pb[,sce_pb$registration_variable == "Inhib"])), 
-                                     P = 4)
 
-stopifnot("Input matrix is not full rank" = qr(mod)$rank == ncol(mod))
+pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
+map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+                                          stats = DE_data,
+                                          clus = .x,
+                                          n_genes = 10,
+                                          pval_col = "vlmf_adj.P.Val",
+                                          fc_col = "vlmf_logFC",
+                                          gene_col = "gene_name",
+                                          cluster_col = cluster_var,
+                                          category_col = "APOE_carrier",
+                                          mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                                          color_pal = APOE_carrier_colors,
+                                          plot_points = TRUE,
+                                          ncol = 2,
+                                          cleanY_P = 4)
+         )
 
-clusters <- unique(DEGs_signif$cluster)
+dev.off()
 
-assay <- "logcounts"
+pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
+map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+                                          stats = DE_data,
+                                          clus = .x,
+                                          n_genes = 10,
+                                          pval_col = "vlmf_adj.P.Val",
+                                          fc_col = "vlmf_logFC",
+                                          gene_col = "gene_name",
+                                          cluster_col = cluster_var,
+                                          category_col = "APOE_carrier",
+                                          mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                                          color_pal = APOE_carrier_colors,
+                                          plot_points = TRUE,
+                                          ncol = 2,
+                                          cleanY_P = 4)
+         )
 
-pdf(here(plot_dir, sprintf("DEG_%s_%s.pdf", opt$datatype, assay)))
-walk(clusters, function(clus){
-    
-    DEGs_signif_clus <- DEGs_signif |> filter(rank <= 6, cluster == clus)
+dev.off()
 
-    print(plot_gene_express(sce = sce_pb[,sce_pb$registration_variable == clus],
-                      genes = DEGs_signif_clus$gene_name,
-                      assay_name = assay,
-                      category = "APOE_carrier",
-                      plot_points = TRUE,
-                      color_pal = APOE_carrier_colors,
-                      plot_type = "boxplot",
-                      title = paste(clus, "-", assay)
-                      )
-    )
-})
+#### plot taupath data ####
+
+## load tau pathology data
+tau_tb <- read.csv(here("processed-data", "00_project_prep","05_pathology","sample_taupathy.csv")) |>
+    column_to_rownames("BrNum")
+
+sce_pb$taupathy <- ifelse(tau_tb[sce_pb$BrNum,]$taupathy, "t+", "t-")
+table(sce_pb$taupathy)
+
+sce_pb$carrier_tau <- paste(sce_pb$APOE_carrier, sce_pb$taupathy)
+table(sce_pb$carrier_tau)
+
+carrier_tau_colors <- c(`E2+ t-` = "#398A84",
+                        `E2+ t+` = "#60BEB8",
+                        `E4+ t-` = "#D46B43",
+                        `E4+ t+` = "#DD8A69")
+
+pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_taupathy_%s.pdf", opt$datatype)))
+map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+                                         stats = DE_data,
+                                         clus = .x,
+                                         n_genes = 10,
+                                         pval_col = "vlmf_adj.P.Val",
+                                         fc_col = "vlmf_logFC",
+                                         gene_col = "gene_name",
+                                         cluster_col = cluster_var,
+                                         category_col = "carrier_tau",
+                                         mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                                         color_pal = carrier_tau_colors,
+                                         plot_points = TRUE,
+                                         ncol = 2,
+                                         cleanY_P = 4)
+)
 dev.off()
 

@@ -33,7 +33,7 @@
 #' DE_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_broad", "DGE_results_carrier_sn_broad.Rds"))
 #'
 #' ## Plot the top markers for Astrocytes
-#' plot_marker_express(
+#' plot_DEG_express(
 #'     sce = sce_pb,
 #'     stats = DE_data,
 #'     cluster_col = "cell_type_broad",
@@ -42,7 +42,7 @@
 #' )
 #' @family expression plotting functions
 #' @importFrom ggplot2 ggplot geom_violin geom_text facet_wrap stat_summary
-plot_marker_express <- function(sce,
+plot_DEG_express <- function(sce,
                                 stats,
                                 clus,
                                 n_genes = 10,
