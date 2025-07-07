@@ -125,7 +125,8 @@ plot_marker_express <- function(sce,
         title = title,
         plot_points = plot_points,
         ncol = ncol,
-        plot_type = "boxplot"
+        plot_type = "boxplot",
+        free_y = TRUE
     ) +
         ggplot2::geom_text(
             data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str),
