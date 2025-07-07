@@ -43,6 +43,7 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
+    cell_type_broad_levels<- names(cell_type_colors$broad)
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
@@ -65,6 +66,9 @@ names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_interaction_sn_broad_|voomLm
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
 
+## check levels are present
+all(names(vlmf_data) %in% cluster_levels)
+
 vlmf_data_tb <- map_dfr(vlmf_data, ~.x |>
                              dplyr::rename(vlmf_logFC = logFC,
                                            vlmf_AveExpr = AveExpr,
@@ -77,7 +81,8 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~.x |>
            mod = "interaction") |>
     as_tibble()
 
-vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.2) |> count(cluster)
+vlmf_data_tb|> count(cluster)
+vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.1) |> count(cluster)
 vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC)
 
 
@@ -147,18 +152,32 @@ custom_volcano <- function(data, FDR_cut = 0.2, model_name){
     ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_plot_%s.png", model_name)), height = 10, width = 10)
 }
 
-## plot volcanos
-custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction"))
+if(opt$datatype == "sn_fine"){
+    
+    # map(cell_type_broad_levels, ~vlmf_data_tb |> 
+    #         filter(grepl(.x, cluster)) |>
+    #         custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction")))
+    
+    map(cell_type_broad_levels, ~vlmf_data_tb |> 
+            filter(grepl(.x, cluster),
+                   gene_name %in% AD_risk$symbol) |>
+            custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction-risk")))
+    
+} else {
+    ## plot volcanos
+    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction"))
+    
+    ## filter to risk genes
+    custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction-risk"))
+}
 
-## filter to risk genes
-custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction-risk"))
 
 #### save data ####
 
 saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
 write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s.csv", opt$datatype)), row.names = FALSE)
 
-vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
+# vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
 
 # #### compare t-stats ####
 # comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
