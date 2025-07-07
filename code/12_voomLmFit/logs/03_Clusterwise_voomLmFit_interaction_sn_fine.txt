@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Jul  7 09:48:46 AM EDT 2025
+Mon Jul  7 02:10:12 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 19701586
+Job id: 19703549
 Job name: 03_Clusterwise_voomLmFit_interaction_sn_fine
-Node name: compute-168
+Node name: compute-156
 Task id: 
 Loading conda_R/4.5
 
@@ -164,20 +164,20 @@ character(0)
 $datatype
 [1] "sn_fine"
 
-2025-07-07 09:48:52.381571 - Datatype = sn_fine, loading 'sce_pseudo_DGE-cell_type_anno.RDS'
+2025-07-07 14:10:19.813225 - Datatype = sn_fine, loading 'sce_pseudo_DGE-cell_type_anno.RDS'
 [1] 38606   918
 
-        Astro.01         Astro.02         Astro.03         Astro.04 
+         Astro.1          Astro.2          Astro.3          Astro.4 
               30               31               31               26 
-        Astro.05            Macro          Micro.1          Micro.2 
+         Astro.5            Macro          Micro.1          Micro.2 
               28               19               29               31 
          Micro.3          Micro.4          Micro.5            OPC.1 
               27               28               26               31 
            OPC.2            OPC.3            OPC.4            OPC.5 
               31               31               31               14 
-        Oligo.01         Oligo.02         Oligo.03         Oligo.04 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
               31               30               31               31 
-        Oligo.05        Vasc.Endo        Vasc.VLMC         Excit.L2 
+         Oligo.5        Vasc.Endo        Vasc.VLMC         Excit.L2 
               31               28               23               25 
     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1       Excit.L5.2 
               31               15               25               10 
@@ -185,221 +185,221 @@ $datatype
               17               19               15               27 
      Inhib.Pvalb        Inhib.Sst        Inhib.Vip 
               27               27               31 
-2025-07-07 09:48:55.2892 - Loop voomlmFit by cluster
-2025-07-07 09:48:56.999953 - voomLmFit - cluster: Astro.01, block= 'exp_round', ncol: 30, ngene: 16823
+2025-07-07 14:10:22.947423 - Loop voomlmFit by cluster
+2025-07-07 14:10:24.798834 - voomLmFit - cluster: Astro.1, block= 'exp_round', ncol: 30, ngene: 16823
 First sample weights (min/max) 0.3604256/1.8466477
 First intra-block correlation  0.0032884
 Final sample weights (min/max) 0.3683947/1.8257202
 Final intra-block correlation  0.003486081
 Done - Save data
-2025-07-07 09:49:32.000663 - voomLmFit - cluster: Astro.02, block= 'exp_round', ncol: 31, ngene: 10206
+2025-07-07 14:11:05.288927 - voomLmFit - cluster: Astro.2, block= 'exp_round', ncol: 31, ngene: 10206
 First sample weights (min/max) 0.4150136/1.4463454
 First intra-block correlation  0.01060843
 Final sample weights (min/max) 0.4136827/1.4535911
 Final intra-block correlation  0.01049842
 Done - Save data
-2025-07-07 09:49:52.480024 - voomLmFit - cluster: Astro.03, block= 'exp_round', ncol: 31, ngene: 10708
+2025-07-07 14:11:29.431155 - voomLmFit - cluster: Astro.3, block= 'exp_round', ncol: 31, ngene: 10708
 First sample weights (min/max) 0.4627749/1.4857349
 First intra-block correlation  0.0007150372
 Final sample weights (min/max) 0.4642568/1.4874457
 Final intra-block correlation  0.0007739416
 Done - Save data
-2025-07-07 09:50:14.056878 - voomLmFit - cluster: Astro.04, block= 'exp_round', ncol: 26, ngene: 8305
+2025-07-07 14:11:54.952835 - voomLmFit - cluster: Astro.4, block= 'exp_round', ncol: 26, ngene: 8305
 First sample weights (min/max) 0.5330787/1.5498380
 First intra-block correlation  -0.04241628
 Final sample weights (min/max) 0.525950/1.538796
 Final intra-block correlation  -0.04227997
 Done - Save data
-2025-07-07 09:50:31.62826 - voomLmFit - cluster: Astro.05, block= 'exp_round', ncol: 28, ngene: 1845
+2025-07-07 14:12:15.781975 - voomLmFit - cluster: Astro.5, block= 'exp_round', ncol: 28, ngene: 1845
 First sample weights (min/max) 0.5213473/1.4566659
 First intra-block correlation  -0.01680007
 Final sample weights (min/max) 0.5164528/1.4464900
 Final intra-block correlation  -0.01629934
 Done - Save data
-2025-07-07 09:50:35.601849 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 19, ngene: 2747
+2025-07-07 14:12:20.396804 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 19, ngene: 2747
 First sample weights (min/max) 0.4004724/1.5451607
 First intra-block correlation  -0.06555743
 Final sample weights (min/max) 0.3907324/1.5506435
 Final intra-block correlation  -0.06510231
 Done - Save data
-2025-07-07 09:50:42.255442 - voomLmFit - cluster: Micro.1, block= 'exp_round', ncol: 29, ngene: 10423
+2025-07-07 14:12:27.936593 - voomLmFit - cluster: Micro.1, block= 'exp_round', ncol: 29, ngene: 10423
 First sample weights (min/max) 0.2117977/1.5158617
 First intra-block correlation  0.002464092
 Final sample weights (min/max) 0.2047483/1.6219664
 Final intra-block correlation  0.003209972
 Done - Save data
-2025-07-07 09:51:03.751874 - voomLmFit - cluster: Micro.2, block= 'exp_round', ncol: 31, ngene: 9019
+2025-07-07 14:12:53.395357 - voomLmFit - cluster: Micro.2, block= 'exp_round', ncol: 31, ngene: 9019
 First sample weights (min/max) 0.2652158/1.4663450
 First intra-block correlation  -0.006961941
 Final sample weights (min/max) 0.2572744/1.4726600
 Final intra-block correlation  -0.006516296
 Done - Save data
-2025-07-07 09:51:21.621166 - voomLmFit - cluster: Micro.3, block= 'exp_round', ncol: 27, ngene: 8412
+2025-07-07 14:13:14.487971 - voomLmFit - cluster: Micro.3, block= 'exp_round', ncol: 27, ngene: 8412
 First sample weights (min/max) 0.5815244/1.3382918
 First intra-block correlation  0.01167802
 Final sample weights (min/max) 0.5758883/1.3321686
 Final intra-block correlation  0.01193827
 Done - Save data
-2025-07-07 09:51:38.976149 - voomLmFit - cluster: Micro.4, block= 'exp_round', ncol: 28, ngene: 6884
+2025-07-07 14:13:34.665573 - voomLmFit - cluster: Micro.4, block= 'exp_round', ncol: 28, ngene: 6884
 First sample weights (min/max) 0.4677026/1.3861081
 First intra-block correlation  -0.008344662
 Final sample weights (min/max) 0.4490902/1.3886869
 Final intra-block correlation  -0.007955607
 Done - Save data
-2025-07-07 09:51:53.088932 - voomLmFit - cluster: Micro.5, block= 'exp_round', ncol: 26, ngene: 2351
+2025-07-07 14:13:51.475097 - voomLmFit - cluster: Micro.5, block= 'exp_round', ncol: 26, ngene: 2351
 First sample weights (min/max) 0.5234535/1.2961625
 First intra-block correlation  -0.02667072
 Final sample weights (min/max) 0.518240/1.297177
 Final intra-block correlation  -0.02595623
 Done - Save data
-2025-07-07 09:51:58.841641 - voomLmFit - cluster: OPC.1, block= 'exp_round', ncol: 31, ngene: 13016
+2025-07-07 14:13:58.28788 - voomLmFit - cluster: OPC.1, block= 'exp_round', ncol: 31, ngene: 13016
 First sample weights (min/max) 0.3812608/1.5708113
 First intra-block correlation  0.01803296
 Final sample weights (min/max) 0.3820725/1.5821161
 Final intra-block correlation  0.01766973
 Done - Save data
-2025-07-07 09:52:24.671138 - voomLmFit - cluster: OPC.2, block= 'exp_round', ncol: 31, ngene: 10736
+2025-07-07 14:14:28.588117 - voomLmFit - cluster: OPC.2, block= 'exp_round', ncol: 31, ngene: 10736
 First sample weights (min/max) 0.4635265/1.4164465
 First intra-block correlation  0.0143447
 Final sample weights (min/max) 0.4687288/1.4092712
 Final intra-block correlation  0.01425668
 Done - Save data
-2025-07-07 09:52:46.356401 - voomLmFit - cluster: OPC.3, block= 'exp_round', ncol: 31, ngene: 14258
+2025-07-07 14:14:53.259472 - voomLmFit - cluster: OPC.3, block= 'exp_round', ncol: 31, ngene: 14258
 First sample weights (min/max) 0.3619358/1.6899220
 First intra-block correlation  0.01407061
 Final sample weights (min/max) 0.3624249/1.7192320
 Final intra-block correlation  0.01405575
 Done - Save data
-2025-07-07 09:53:13.472716 - voomLmFit - cluster: OPC.4, block= 'exp_round', ncol: 31, ngene: 11799
+2025-07-07 14:15:18.785079 - voomLmFit - cluster: OPC.4, block= 'exp_round', ncol: 31, ngene: 11799
 First sample weights (min/max) 0.5397739/1.4386029
 First intra-block correlation  -0.005956263
 Final sample weights (min/max) 0.5373324/1.4427821
 Final intra-block correlation  -0.0063151
 Done - Save data
-2025-07-07 09:53:36.104213 - voomLmFit - cluster: OPC.5, block= 'exp_round', ncol: 14, ngene: 1925
+2025-07-07 14:15:39.71665 - voomLmFit - cluster: OPC.5, block= 'exp_round', ncol: 14, ngene: 1925
 First sample weights (min/max) 0.6007408/1.3701549
 First intra-block correlation  0.03689935
 Final sample weights (min/max) 0.5927812/1.3781927
 Final intra-block correlation  0.03036501
 Done - Save data
-2025-07-07 09:53:41.191418 - voomLmFit - cluster: Oligo.01, block= 'exp_round', ncol: 31, ngene: 13323
+2025-07-07 14:15:44.370717 - voomLmFit - cluster: Oligo.1, block= 'exp_round', ncol: 31, ngene: 13323
 First sample weights (min/max) 0.4959522/1.3927264
 First intra-block correlation  0.02413175
 Final sample weights (min/max) 0.502563/1.401981
 Final intra-block correlation  0.0241882
 Done - Save data
-2025-07-07 09:54:07.324792 - voomLmFit - cluster: Oligo.02, block= 'exp_round', ncol: 30, ngene: 14288
+2025-07-07 14:16:07.85758 - voomLmFit - cluster: Oligo.2, block= 'exp_round', ncol: 30, ngene: 14288
 First sample weights (min/max) 0.496283/1.542908
 First intra-block correlation  0.02557613
 Final sample weights (min/max) 0.5001006/1.5572125
 Final intra-block correlation  0.02519065
 Done - Save data
-2025-07-07 09:54:34.878125 - voomLmFit - cluster: Oligo.03, block= 'exp_round', ncol: 31, ngene: 11322
+2025-07-07 14:16:32.521333 - voomLmFit - cluster: Oligo.3, block= 'exp_round', ncol: 31, ngene: 11322
 First sample weights (min/max) 0.2545986/1.6838220
 First intra-block correlation  0.008411511
 Final sample weights (min/max) 0.2847228/1.6874193
 Final intra-block correlation  0.008374414
 Done - Save data
-2025-07-07 09:54:57.237809 - voomLmFit - cluster: Oligo.04, block= 'exp_round', ncol: 31, ngene: 12125
+2025-07-07 14:16:52.386597 - voomLmFit - cluster: Oligo.4, block= 'exp_round', ncol: 31, ngene: 12125
 First sample weights (min/max) 0.5389253/1.4432521
 First intra-block correlation  0.009374688
 Final sample weights (min/max) 0.5359668/1.4566812
 Final intra-block correlation  0.009559194
 Done - Save data
-2025-07-07 09:55:21.297926 - voomLmFit - cluster: Oligo.05, block= 'exp_round', ncol: 31, ngene: 9879
+2025-07-07 14:17:13.210239 - voomLmFit - cluster: Oligo.5, block= 'exp_round', ncol: 31, ngene: 9879
 First sample weights (min/max) 0.474969/1.439387
 First intra-block correlation  -0.009855861
 Final sample weights (min/max) 0.4719486/1.4726564
 Final intra-block correlation  -0.00898506
 Done - Save data
-2025-07-07 09:55:40.717045 - voomLmFit - cluster: Vasc.Endo, block= 'exp_round', ncol: 28, ngene: 4998
+2025-07-07 14:17:30.021664 - voomLmFit - cluster: Vasc.Endo, block= 'exp_round', ncol: 28, ngene: 4998
 First sample weights (min/max) 0.4688942/1.7515410
 First intra-block correlation  -0.02558678
 Final sample weights (min/max) 0.4577749/1.7511994
 Final intra-block correlation  -0.0254074
 Done - Save data
-2025-07-07 09:55:51.067433 - voomLmFit - cluster: Vasc.VLMC, block= 'exp_round', ncol: 23, ngene: 6458
+2025-07-07 14:17:39.055424 - voomLmFit - cluster: Vasc.VLMC, block= 'exp_round', ncol: 23, ngene: 6458
 First sample weights (min/max) 0.3906285/1.7173607
 First intra-block correlation  0.006305114
 Final sample weights (min/max) 0.3812915/1.7492256
 Final intra-block correlation  0.006895036
 Done - Save data
-2025-07-07 09:56:06.236796 - voomLmFit - cluster: Excit.L2, block= 'exp_round', ncol: 25, ngene: 20284
+2025-07-07 14:17:52.350444 - voomLmFit - cluster: Excit.L2, block= 'exp_round', ncol: 25, ngene: 20284
 First sample weights (min/max) 0.4676766/1.8212839
 First intra-block correlation  -0.009853548
 Final sample weights (min/max) 0.4698356/1.8206210
 Final intra-block correlation  -0.008950485
 Done - Save data
-2025-07-07 09:56:48.43877 - voomLmFit - cluster: Excit.L2_5.1, block= 'exp_round', ncol: 31, ngene: 22497
+2025-07-07 14:18:29.383523 - voomLmFit - cluster: Excit.L2_5.1, block= 'exp_round', ncol: 31, ngene: 22497
 First sample weights (min/max) 0.3544747/1.9729161
 First intra-block correlation  0.05416159
 Final sample weights (min/max) 0.3472749/2.0393581
 Final intra-block correlation  0.05485075
 Done - Save data
-2025-07-07 09:57:32.314903 - voomLmFit - cluster: Excit.L2_5.2, block= 'exp_round', ncol: 15, ngene: 14841
+2025-07-07 14:19:07.77939 - voomLmFit - cluster: Excit.L2_5.2, block= 'exp_round', ncol: 15, ngene: 14841
 First sample weights (min/max) 0.5930366/1.5258704
 First intra-block correlation  0.0652086
 Final sample weights (min/max) 0.6023743/1.5499124
 Final intra-block correlation  0.06625733
 Done - Save data
-2025-07-07 09:58:06.10495 - voomLmFit - cluster: Excit.L5.1, block= 'exp_round', ncol: 25, ngene: 17891
+2025-07-07 14:19:37.077173 - voomLmFit - cluster: Excit.L5.1, block= 'exp_round', ncol: 25, ngene: 17891
 First sample weights (min/max) 0.5308485/1.8513597
 First intra-block correlation  -0.007041251
 Final sample weights (min/max) 0.5193918/1.8541844
 Final intra-block correlation  -0.005441601
 Done - Save data
-2025-07-07 09:58:42.13463 - voomLmFit - cluster: Excit.L5.2, block= 'exp_round', ncol: 10, ngene: 12494
+2025-07-07 14:20:14.828994 - voomLmFit - cluster: Excit.L5.2, block= 'exp_round', ncol: 10, ngene: 12494
 First sample weights (min/max) 0.3589525/1.6988687
 First intra-block correlation  0.232332
 Final sample weights (min/max) 0.3033116/1.6652278
 Final intra-block correlation  0.2520568
 Done - Save data
-2025-07-07 09:59:08.744805 - voomLmFit - cluster: Excit.L6_CT, block= 'exp_round', ncol: 17, ngene: 13811
+2025-07-07 14:20:46.995378 - voomLmFit - cluster: Excit.L6_CT, block= 'exp_round', ncol: 17, ngene: 13811
 First sample weights (min/max) 0.3495082/2.2968292
 First intra-block correlation  -0.01743556
 Final sample weights (min/max) 0.3655805/2.3041221
 Final intra-block correlation  -0.01663263
 Done - Save data
-2025-07-07 09:59:41.236167 - voomLmFit - cluster: Excit.L6b, block= 'exp_round', ncol: 19, ngene: 16428
+2025-07-07 14:21:26.208159 - voomLmFit - cluster: Excit.L6b, block= 'exp_round', ncol: 19, ngene: 16428
 First sample weights (min/max) 0.356735/1.475948
 First intra-block correlation  -0.01006008
 Final sample weights (min/max) 0.3685123/1.4812081
 Final intra-block correlation  -0.009882692
 Done - Save data
-2025-07-07 10:00:14.741834 - voomLmFit - cluster: Inhib.Chandelier, block= 'exp_round', ncol: 15, ngene: 10461
+2025-07-07 14:22:08.17061 - voomLmFit - cluster: Inhib.Chandelier, block= 'exp_round', ncol: 15, ngene: 10461
 First sample weights (min/max) 0.7491275/1.3557799
 First intra-block correlation  0.003510706
 Final sample weights (min/max) 0.7513081/1.3260394
 Final intra-block correlation  0.004547699
 Done - Save data
-2025-07-07 10:00:37.78999 - voomLmFit - cluster: Inhib.Lamp5_Lhx6, block= 'exp_round', ncol: 27, ngene: 13545
+2025-07-07 14:22:37.467594 - voomLmFit - cluster: Inhib.Lamp5_Lhx6, block= 'exp_round', ncol: 27, ngene: 13545
 First sample weights (min/max) 0.5323586/1.6685577
 First intra-block correlation  0.01023869
 Final sample weights (min/max) 0.5265787/1.7070138
 Final intra-block correlation  0.01102283
 Done - Save data
-2025-07-07 10:01:04.381908 - voomLmFit - cluster: Inhib.Pvalb, block= 'exp_round', ncol: 27, ngene: 15484
+2025-07-07 14:23:09.900967 - voomLmFit - cluster: Inhib.Pvalb, block= 'exp_round', ncol: 27, ngene: 15484
 First sample weights (min/max) 0.5513595/1.6797750
 First intra-block correlation  0.02908251
 Final sample weights (min/max) 0.557614/1.677389
 Final intra-block correlation  0.0297044
 Done - Save data
-2025-07-07 10:01:35.821209 - voomLmFit - cluster: Inhib.Sst, block= 'exp_round', ncol: 27, ngene: 12409
+2025-07-07 14:23:49.326265 - voomLmFit - cluster: Inhib.Sst, block= 'exp_round', ncol: 27, ngene: 12409
 First sample weights (min/max) 0.5006285/1.5988377
 First intra-block correlation  0.002926966
 Final sample weights (min/max) 0.5055902/1.6320363
 Final intra-block correlation  0.003152235
 Done - Save data
-2025-07-07 10:02:01.440112 - voomLmFit - cluster: Inhib.Vip, block= 'exp_round', ncol: 31, ngene: 19715
+2025-07-07 14:24:21.94683 - voomLmFit - cluster: Inhib.Vip, block= 'exp_round', ncol: 31, ngene: 19715
 First sample weights (min/max) 0.3799991/1.6654196
 First intra-block correlation  0.0520721
 Final sample weights (min/max) 0.3885247/1.6563947
 Final intra-block correlation  0.05241438
 Done - Save data
 [1] "Reproducibility information:"
-[1] "2025-07-07 10:02:37 EDT"
+[1] "2025-07-07 14:25:08 EDT"
    user  system elapsed 
-823.119   3.419 830.791 
+886.939   4.178 895.341 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -486,4 +486,4 @@ Done - Save data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Jul  7 10:02:38 AM EDT 2025
+Mon Jul  7 02:25:08 PM EDT 2025
