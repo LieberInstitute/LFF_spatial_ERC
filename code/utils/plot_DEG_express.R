@@ -113,7 +113,7 @@ plot_DEG_express <- function(sce,
     sce <- sce[,cluster_index]
     
     if(is.matrix(mod)) {
-        my_mod <- model.matrix[cluster_index,]
+        my_mod <- mod[cluster_index,]
     } else if(class(mod) == "formula"){
         my_mod <- model.matrix(mod, colData(sce))
     }
