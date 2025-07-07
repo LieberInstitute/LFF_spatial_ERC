@@ -112,14 +112,14 @@ plot_DEG_express <- function(sce,
     cluster_index <- sce[[cluster_col]] == clus
     sce <- sce[,cluster_index]
     
-    if(class(mod) == "formula"){
-        my_mod <- model.matrix(mod, colData(sce))
-    } else if(is.matrix(mod)) {
+    if(is.matrix(mod)) {
         my_mod <- model.matrix[cluster_index,]
+    } else if(class(mod) == "formula"){
+        my_mod <- model.matrix(mod, colData(sce))
     }
     
     assays(sce)$cleanY <- jaffelab::cleaningY(logcounts(sce),
-                                              mod = model.matrix(mod, colData(sce)),
+                                              mod = my_mod,
                                               P = cleanY_P)
     
     rownames(sce) <- rowData(sce)[[gene_col]]
