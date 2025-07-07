@@ -86,7 +86,7 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     v.swt.e.tt <- topTable(v.swt.fit.e, 
                            # coef = "APOE_carrier_E4:Anc_Afr",
-                           coef = c("AncestryEA", "AncestryEA","APOE_carrier_E4:AncestryEA"),
+                           coef = c("APOE_carrier_E4:AncestryEA"),
                            number=Inf, 
                            adjust.method = "BH") |>
         mutate(data_type = opt$datatype, 
