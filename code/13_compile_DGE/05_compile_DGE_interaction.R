@@ -18,6 +18,7 @@ opt <- getopt(scec)
 
 ## test
 # opt$datatype = "sn_broad"
+# opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
 
 data_dir <- here("processed-data", "13_compile_DGE", "05_compile_DGE_interaction", opt$datatype)
@@ -28,7 +29,6 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
-main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
 #### colors and factors ####
 
@@ -39,16 +39,20 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
+}else if(opt$datatype == "sn_fine"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
     cluster_levels <- names(SpD_colors)
 }
 
-
 #### voomLmFit data ####
 
 vlmf_dir <-list(sn_broad = "vlmf_sn_broad",
+                sn_fine = "vlmf_sn_fine",
                 Visium = "vlmf_Visium")
 
 vlmf_dir <- vlmf_dir[[opt$datatype]]
@@ -56,7 +60,7 @@ vlmf_dir <- vlmf_dir[[opt$datatype]]
 vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction", vlmf_dir),
                       full.names = TRUE, pattern = ".rds")
 
-names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_interaction_sn_broad_|voomLmFit_Visium_|.rds", "", basename(.x)))
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_interaction_sn_broad_|voomLmFit_interaction_sn_fine_|voomLmFit_interaction_Visium_|.rds", "", basename(.x)))
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -69,21 +73,20 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~.x |>
                                            vlmf_adj.P.Val = adj.P.Val,
                                            vlmf_B = B
                              ))  |>
-    mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels)) |>
+    mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels),
+           mod = "interaction") |>
     as_tibble()
 
 vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.2) |> count(cluster)
 vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC)
 
 
-vlmf_model_summary <- map2_dfr(vlmf_data_tb, names(vlmf_data_tb), 
-                               ~.x |> 
-                                   mutate(mod = .y) |>
-                                   group_by(cluster, mod) |>
-                                   summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
-                                             nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
-                                             nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
-                               )
+vlmf_model_summary <- vlmf_data_tb |> 
+    group_by(mod, cluster) |>
+    summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+              n_FDR10 = sum(vlmf_adj.P.Val < 0.1),
+              n_FDR20 = sum(vlmf_adj.P.Val < 0.2))
+                               
 
 # ## n signif bar plots
 # vlmf_model_summary_bar <- vlmf_model_summary |>
@@ -146,11 +149,9 @@ custom_volcano <- function(data, FDR_cut = 0.2, model_name){
 
 ## plot volcanos
 custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction"))
-custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction-risk"))
 
 ## filter to risk genes
-walk(c("E4E4", "carrier"), ~custom_volcano(data = vlmf_data_tb[[.x]] |> filter(gene_name %in% AD_risk$symbol), 
-                                           model_name = paste0(opt$datatype, "-", .x, "-risk")))
+custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction-risk"))
 
 #### save data ####
 
