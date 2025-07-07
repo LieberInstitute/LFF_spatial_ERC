@@ -118,7 +118,7 @@ vlmf_model_summary <- map2_dfr(vlmf_data_tb, names(vlmf_data_tb),
 
 #### vlmf volcano plots ####
 
-custom_volcano <- function(data, FDR_cut = 0.05, model_name){
+custom_volcano <- function(data, FDR_cut = 0.2, model_name){
     
     # define colors
     signif_colors <- c("purple", "blue", "red")
