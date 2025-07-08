@@ -1,10 +1,10 @@
 **** Job starts ****
-Sun Jun 22 08:24:58 AM EDT 2025
+Tue Jul  8 04:38:34 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17713484
+Job id: 19791838
 Job name: 23_SpD_heatmaps
-Node name: compute-155
+Node name: compute-168
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -104,7 +104,7 @@ The following objects are masked from ‘package:matrixStats’:
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.0.4     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -126,7 +126,7 @@ The following objects are masked from ‘package:matrixStats’:
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.0
+ComplexHeatmap version 2.24.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -222,7 +222,7 @@ dbl (1): eva
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 [1] 23
-[1] 9 9
+[1]  9 13
                     PSEN1        APP        PSEN2       APOE        ABCA7
 Vasc_Sp09D08  -0.10912874 -0.8809884 -0.001079105  0.2362029  0.320887108
 L1_Sp09D05    -0.02123767 -1.5020789 -0.340928537  1.8692120 -0.422258841
