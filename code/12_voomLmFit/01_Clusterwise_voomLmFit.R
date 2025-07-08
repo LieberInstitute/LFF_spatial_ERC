@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers & Bernie Mulvey, June 2025
-## Compile and plot dreamlet sn data
+## Run voomLmFit on data - loop by data type
 ## Adapted from https://github.com/LieberInstitute/LFF_spatial_LC/blob/0347daa995d7b4d035b3d2ad2efdd4f381a1387f/code/12_DEanalyses_removedsampsAndFinalNMseg/02c-Clusterwise_DEanalysis.Rmd
 
 library("data.table")
