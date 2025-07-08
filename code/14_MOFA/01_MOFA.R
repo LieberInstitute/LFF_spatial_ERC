@@ -10,14 +10,20 @@ library("tidyverse")
 library("GGally")
 library("here")
 library("sessioninfo")
+library("getopt")
 
-# out_path = here('processed-data', '01_main_analysis', 'model.hdf5')
-# plot_dir = here('plots', '01_main_analysis', 'MOFA')
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
 
-data_dir <- here("processed-data", "14_MOFA", "01_MOFA")
+
+data_dir <- here("processed-data", "14_MOFA", "01_MOFA", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "14_MOFA", "01_MOFA")
+plot_dir <- here("plots", "14_MOFA", "01_MOFA", opt$datatype)
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## colors
@@ -25,18 +31,18 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
-
-set.seed(1)
-
 #### Load & Combine Data ####
-
-# erc_cluster_var = 'BayesSpace_PCA_Harmony_k09'
-# lc_cluster_var = 'cluster_HARMONYlmbna_hvg20k10'
 
 #   Load SPE objects
 visium_spe <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
-# sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS"))
-sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
+
+if(opt$datatype == "sn_fine"){
+    message("sn FINE")
+    sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS"))
+} else if(opt$datatype == "sn_broad"){
+    message("sn BROAD")
+    sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
+    }
 
 #   Subset to shared genes
 shared_genes <- intersect(rownames(sn_sce), rownames(visium_spe))
@@ -91,11 +97,6 @@ rowRanges(sn_sce) <- rowRanges(visium_spe)
 
 assayNames(sn_sce)
 assayNames(visium_spe)
-
-## convert spe to sce
-# visium_spe <- as(visium_spe, "SingleCellExperiment")
-# class(sn_sce)
-# class(visium_spe)
 
 # spe = cbind(visium_spe, sn_sce)
 # Error in value[[3L]](cond) : 
@@ -265,7 +266,7 @@ factor_boxplot <- function(var, fill_colors = NULL, text45 = TRUE, assoc_tb = NU
     
 }
 
-factor_boxplot(var = "APOE", fill_colors = APOE_genotype_colors, assoc_tb = assoc_list$APOE)
+# factor_boxplot(var = "APOE", fill_colors = APOE_genotype_colors, assoc_tb = assoc_list$APOE)
 ## TODO fix annotation bug
 # Error in `ggplot2::geom_label()`:
 #     ! Problem while computing aesthetics.
@@ -313,6 +314,9 @@ plot_MOFA_hmap(
     )
 )
 dev.off()
+
+# slurmjobs::job_single('01_MOFA_broad', create_shell = TRUE, memory = '10G', command = "Rscript 04_DEG_boxplots.R --datatype sn_broad")
+# slurmjobs::job_single('01_MOFA_fine', create_shell = TRUE, memory = '10G', command = "Rscript 04_DEG_boxplots.R --datatype sn_fine")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
