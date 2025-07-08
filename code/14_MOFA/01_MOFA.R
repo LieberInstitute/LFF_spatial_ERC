@@ -21,7 +21,7 @@ plot_dir <- here("plots", "14_MOFA", "01_MOFA")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## colors
-load(here("processed-data", "project_colors.Rdata"))
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
@@ -35,7 +35,8 @@ set.seed(1)
 
 #   Load SPE objects
 visium_spe <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
-sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS"))
+# sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS"))
+sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
 
 #   Subset to shared genes
 shared_genes <- intersect(rownames(sn_sce), rownames(visium_spe))
@@ -92,9 +93,9 @@ assayNames(sn_sce)
 assayNames(visium_spe)
 
 ## convert spe to sce
-visium_spe <- as(visium_spe, "SingleCellExperiment")
-class(sn_sce)
-class(visium_spe)
+# visium_spe <- as(visium_spe, "SingleCellExperiment")
+# class(sn_sce)
+# class(visium_spe)
 
 # spe = cbind(visium_spe, sn_sce)
 # Error in value[[3L]](cond) : 
@@ -111,10 +112,18 @@ spe <- SingleCellExperiment(colData = rbind(colData(visium_spe), colData(sn_sce)
 
 spe$cluster <- spe$registration_variable
 
+table(spe$cluster)
+
+## load tau pathology data
+tau_tb <- read.csv(here("processed-data", "00_project_prep","05_pathology","sample_taupathy.csv")) |>
+    column_to_rownames("BrNum")
+
+spe$taupathy <- ifelse(tau_tb[spe$BrNum,]$taupathy, "t+", "t-")
+
 ## get donor data
 pd <- colData(spe) |>
     as_tibble() |>
-    select(BrNum, Age, Sex, APOE, Ancestry, APOE_carrier) |>
+    select(BrNum, Age, Sex, Ancestry, Anc_Afr, APOE, APOE_carrier, taupathy) |>
     unique()
 
 #### Preprocess expression and create a MOFA object ####
@@ -170,18 +179,28 @@ mofa <- prepare_mofa(
     training_options = train_opts
 )
 
-model <- run_mofa(mofa, data_dir, use_basilisk = TRUE)
+out_path = here(data_dir, 'model.hdf5')
 
+model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
 
 ####  Exploratory plots ####
-#   Weights to each factor grouped by APOE genotype
-p = plot_factor(
-    model, factors = "all", color_by = 'APOE_geno', dodge = TRUE,
-    add_violin = TRUE
-)
-pdf(file.path(plot_dir, 'weights_by_APOE.pdf'), width = 10, height = 5)
-print(p)
-dev.off()
+
+# #   Weights to each factor grouped by APOE genotype
+# p = plot_factor(
+#     model, factors = "all", color_by = 'APOE', dodge = TRUE,
+#     add_violin = TRUE
+# )
+# pdf(file.path(plot_dir, 'weights_by_APOE.pdf'), width = 10, height = 5)
+# print(p)
+# dev.off()
+# 
+# ## by APOE carrier
+# pdf(file.path(plot_dir, 'weights_by_APOE_carrier.pdf'), width = 10, height = 5)
+# print(plot_factor(
+#     model, factors = "all", color_by = 'APOE_carrier', dodge = TRUE,
+#     add_violin = TRUE
+# ))
+# dev.off()
 
 #   Get factor weights for each donor
 factor_df = get_tidy_factors(
@@ -191,103 +210,118 @@ factor_df = get_tidy_factors(
     sample_id_column = "sample"
 )
 
-#   For each factor, compute p-value of the coefficients in linear regression
-#   of weight value against APOE numeric genotype
-p_val_df_list = list()
-for (this_factor in paste0("Factor", 1:5)) {
-    this_factor_df = factor_df |>
-        filter(Factor == this_factor)
+#   Test association of APOE genotype with each factor
+
+test_vars <- c('APOE_carrier', 'APOE', 'Ancestry', "taupathy")
+names(test_vars) <- test_vars
     
-    this_lm = lm(value ~ APOE, data = this_factor_df)
-    p_val_df_list[[this_factor]] = tibble(
-        Factor = this_factor,
-        p_value = signif(
-            summary(this_lm)$coefficients["APOE", 4], 2
+assoc_list <- map(test_vars, ~get_associations( model = model,
+                                                metadata = samples_metadata(model),
+                                                sample_id_column = "sample",
+                                                test_variable = .x,
+                                                test_type = "categorical",
+                                                group = FALSE)
+                  )
+
+print(assoc_list)
+
+#   Show unadjusted p-value for consistency with other plots ??
+# assoc_list[['APOE']]$adj_pvalue = assoc_list[['APOE']]$p.value
+
+
+factor_boxplot <- function(var, fill_colors = NULL, text45 = TRUE, assoc_tb = NULL){
+    
+    weights_boxplot <- ggplot(factor_df, aes(x = !!sym(var), y = value, fill = !!sym(var))) +
+        geom_boxplot(outlier.shape = NA) +
+        geom_jitter(width = 0.1) +
+        facet_wrap(~Factor, nrow = 1, scales = "free") +
+        labs(y = "Weight") +
+        theme_bw() +
+        theme(legend.position = "None") 
+    
+    if(!is.null(assoc_tb)) {
+        weights_boxplot <- weights_boxplot + ggplot2::geom_label(
+            data = assoc_tb, 
+            ggplot2::aes(x = -Inf, y = -Inf, label = sprintf("pval=%.2e", adj_pvalue)),
+            alpha = 0.5,
+            vjust = "inward", 
+            hjust = "inward", 
+            size = 2.5
         )
-    )
+    }
+    if(!is.null(fill_colors)) weights_boxplot <- weights_boxplot + scale_fill_manual(values = fill_colors)
+    if(text45) weights_boxplot <- weights_boxplot + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    
+    ggsave(weights_boxplot, filename = here(plot_dir, sprintf("factor_weights_boxplot_%s.png", var)), height = 5, width = 10)
+    
 }
-p_val_df = do.call(rbind, p_val_df_list)
 
-#   Manually determine where to place p-value labels vertically
-p_val_df$y = c(Inf, -Inf, Inf, -Inf, -Inf)
-p_val_df$vjust = c(1, 0, 1, 0, 0)
+factor_boxplot(var = "APOE", fill_colors = APOE_genotype_colors, assoc_tb = assoc_list$APOE)
+## TODO fix annotation bug
+# Error in `ggplot2::geom_label()`:
+#     ! Problem while computing aesthetics.
+# ℹ Error occurred in the 3rd layer.
+# Caused by error:
+#     ! object 'APOE' not found
 
-#   Weights to each factor grouped by APOE genotype (figure-ready version)
-p = ggplot(factor_df, mapping = aes(x = APOE_geno, y = value)) +
+factor_boxplot(var = "APOE_carrier", fill_colors = APOE_carrier_colors)
+factor_boxplot(var = "Ancestry", fill_colors = ancestry_colors)
+factor_boxplot(var = "taupathy")
+
+
+#   Weights to each factor grouped by tau
+weights_by_taupathy_boxplot <- ggplot(factor_df, mapping = aes(x = taupathy, y = value, fill = taupathy)) +
     geom_boxplot(outlier.shape = NA) +
-    geom_smooth(mapping = aes(group = 1), method = "lm", se = FALSE) +
-    geom_jitter(size = 3, width = 0.1) +
-    geom_text(
-        data = p_val_df,
-        mapping = aes(
-            x = Inf, y = y, label = sprintf("\np = %s  \n", p_value),
-            vjust = vjust
-        ),
-        hjust = 1, size = 10
-    ) +
+    geom_jitter(width = 0.1) +
     facet_wrap(~Factor, nrow = 1, scales = "free") +
-    theme_bw(base_size = 30) +
-    theme(
-        axis.text.x = element_text(
-            angle = 90, vjust = 0.5, hjust = 1
-        )
-    ) +
-    labs(x = "APOE Genotype", y = "Weight")
-pdf(file.path(plot_dir, 'weights_by_APOE_boxplot.pdf'), width = 28, height = 7)
-print(p)
-dev.off()
+    # scale_fill_manual(values = APOE_carrier_colors) +
+    labs(x = "APOE", y = "Weight") +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(weights_by_taupathy_boxplot, filename = here(plot_dir, "weights_by_taupathy_boxplot.png"), height = 5, width = 10)
+
 
 #   Convert to wide format
 factor_df = factor_df |>
     pivot_wider(names_from = "Factor", values_from = "value") |>
     relocate(matches('^Factor'))
 
-#   Relationship between factors colored by presence of E4 allele
-p = ggpairs(factor_df, columns = 1:5, aes(color = factor(APOE_E4_pos)))
-pdf(file.path(plot_dir, 'ggpairs_APOE_E4_pos.pdf'))
+#   Relationship between factors and APOE carrier
+p = ggpairs(factor_df, columns = 1:5, aes(color = APOE_carrier))
+
+pdf(file.path(plot_dir, 'ggpairs_APOE_carrier.pdf'))
 print(p)
 dev.off()
 
 #   Relationship between factors colored by APOE genotype
-p = ggpairs(factor_df, columns = 1:5, aes(color = factor(APOE_geno)))
+p = ggpairs(factor_df, columns = 1:5, aes(color = factor(APOE)))
 pdf(file.path(plot_dir, 'ggpairs_APOE_geno.pdf'))
 print(p)
 dev.off()
 
-#   Test association of APOE genotype with each factor
-assoc_list = list()
-assoc_list[['APOE']] = get_associations(
-    model = model,
-    metadata = samples_metadata(model),
-    sample_id_column = "sample",
-    test_variable = "APOE",
-    test_type = "continuous",
-    group = FALSE
-)
-print(assoc_list)
-
-#   Show unadjusted p-value for consistency with other plots
-assoc_list[['APOE']]$adj_pvalue = assoc_list[['APOE']]$p.value
 
 #   Plot a heatmap of summary results, labeling with covariates of interest
-p = plot_MOFA_hmap(
+pdf(file.path(plot_dir, 'MOFA_heatmap.pdf'))
+plot_MOFA_hmap(
     model = model,
     group = FALSE,
     metadata = samples_metadata(model),
     sample_id_column = "sample",
-    sample_anns = c("APOE_geno", "Ancestry", "Age", "Sex"),
-    assoc_list = assoc_list,
+    sample_anns = c("APOE", "Ancestry", "Age", "Sex"),
+    # assoc_list = assoc_list,
     col_rows = list(
-        'APOE_geno' = APOE_geno_colors,
+        'APOE' = APOE_genotype_colors,
         'Ancestry' = ancestry_colors,
         'Sex' = sex_colors
     )
 )
-pdf(file.path(plot_dir, 'heatmap.pdf'))
-print(p)
 dev.off()
 
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
 session_info()
-
-## This script was made using slurmjobs version 1.2.4
-## available from http://research.libd.org/slurmjobs/
