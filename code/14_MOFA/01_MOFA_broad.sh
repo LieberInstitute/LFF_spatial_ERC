@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 04_DEG_boxplots.R --datatype sn_broad
+Rscript 01_MOFA.R --datatype sn_broad
 
 echo "**** Job ends ****"
 date
