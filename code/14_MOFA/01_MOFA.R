@@ -1,92 +1,124 @@
-library(SpatialExperiment)
-library(sessioninfo)
-library(MOFAcellulaR)
-library(MOFA2)
-library(here)
-library(tidyverse)
-library(GGally)
+## Louise Huuki-Myers, July 2025
+## Multicellular factor analysis
+## adapted from https://github.com/LieberInstitute/MFA_LC-ERC_pilot/blob/a99c526d6dfa1f97b274b4d3f65de7da75f0c299/code/01_main_analysis/01_mofa.R
 
-out_path = here('processed-data', '01_main_analysis', 'model.hdf5')
-plot_dir = here('plots', '01_main_analysis', 'MOFA')
+#### set up ####
+library("SpatialExperiment")
+library("MOFAcellulaR")
+library("MOFA2")
+library("tidyverse")
+library("GGally")
+library("here")
+library("sessioninfo")
 
-erc_spe_path = here(
-    'processed-data', '00_project_prep', '01_spe_model_pseudobulk',
-    'pseudobulk', 'spe_ERC_pseudobulk-spatial_cluster.rds'
-)
-erc_cluster_var = 'BayesSpace_PCA_Harmony_k09'
-lc_spe_path = here(
-    'processed-data', '00_project_prep', '01_spe_model_pseudobulk',
-    'pseudobulk', 'spe_LC_pseudobulk-spatial_cluster.rds'
-)
-lc_cluster_var = 'cluster_HARMONYlmbna_hvg20k10'
+# out_path = here('processed-data', '01_main_analysis', 'model.hdf5')
+# plot_dir = here('plots', '01_main_analysis', 'MOFA')
 
-#   Custom colors for donor-level metadata
-APOE_geno_colors <- c(
-    `E2/E2`="#114B5F", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46"
-)
-ancestry_colors <- c(EA = "#1B3174", AA = "#698F3F")
-sex_colors <- c(M = "#5C80BC", F = "#D58BCC")
+data_dir <- here("processed-data", "14_MOFA", "01_MOFA")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-dir.create(plot_dir, showWarnings = FALSE)
+plot_dir <- here("plots", "14_MOFA", "01_MOFA")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+## colors
+load(here("processed-data", "project_colors.Rdata"))
+load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+
+
 set.seed(1)
 
-################################################################################
-#   Combine LC and ERC SPE objects
-################################################################################
+#### Load & Combine Data ####
+
+# erc_cluster_var = 'BayesSpace_PCA_Harmony_k09'
+# lc_cluster_var = 'cluster_HARMONYlmbna_hvg20k10'
 
 #   Load SPE objects
-lc_spe = readRDS(lc_spe_path)
-erc_spe = readRDS(erc_spe_path)
+visium_spe <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
+sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS"))
 
 #   Subset to shared genes
-shared_genes = intersect(rownames(erc_spe), rownames(lc_spe))
-lc_spe = lc_spe[shared_genes, ]
-erc_spe = erc_spe[shared_genes, ]
+shared_genes <- intersect(rownames(sn_sce), rownames(visium_spe))
+visium_spe <- visium_spe[shared_genes, ]
+sn_sce <- sn_sce[shared_genes, ]
 
-#   Gather some donor-level info for later
-pd = erc_spe[, match(unique(erc_spe$BrNum), erc_spe$BrNum)] |>
-    colData() |>
+nrow(visium_spe) == nrow(sn_sce)
+
+# Add data type
+visium_spe$data_type <- "Visium"
+sn_sce$data_type <- "snRNA-seq"
+
+## create new sample ID cols
+visium_spe$sample_cluster <- paste0(visium_spe$BrNum, "_", visium_spe$registration_variable)
+sn_sce$sample_cluster <- paste0(sn_sce$BrNum, "_", sn_sce$registration_variable)
+
+## update colnames
+colnames(visium_spe) <- visium_spe$sample_cluster 
+colnames(sn_sce) <- sn_sce$sample_cluster 
+
+visium_spe$sample_id <- paste0(visium_spe$sample_id, "_Visium")
+sn_sce$sample_id <- paste0(sn_sce$sample_id, "_snRNA-seq")
+
+common_col_data <- intersect(colnames(colData(sn_sce)),colnames(colData(visium_spe)))
+
+colData(sn_sce) <- colData(sn_sce)[,common_col_data]
+colData(visium_spe) <- colData(visium_spe)[,common_col_data]
+
+## drop reduced dims and metadata
+reducedDims(sn_sce) = list()
+reducedDims(visium_spe) = list()
+
+metadata(sn_sce) = list()
+metadata(visium_spe) = list()
+
+## check colData
+identical(colnames(colData(sn_sce)),colnames(colData(visium_spe)))
+## match factors
+colData(visium_spe)$APOE <- factor(colData(visium_spe)$APOE, levels = levels(colData(sn_sce)$APOE))
+colData(visium_spe)$APOE_carrier <- factor(colData(visium_spe)$APOE_carrier, levels = levels(colData(sn_sce)$APOE_carrier))
+colData(visium_spe)$Ancestry <- factor(colData(visium_spe)$Ancestry, levels = levels(colData(sn_sce)$Ancestry))
+colData(visium_spe)$Sex <- factor(colData(visium_spe)$Sex, levels = levels(colData(sn_sce)$Sex))
+
+v_class <- map_chr(colData(visium_spe), class)
+s_class <- map_chr(colData(sn_sce), class)
+
+all(v_class == s_class)
+
+## sync rowData
+rowData(sn_sce) <- rowData(visium_spe)
+rowRanges(sn_sce) <- rowRanges(visium_spe)
+
+assayNames(sn_sce)
+assayNames(visium_spe)
+
+## convert spe to sce
+visium_spe <- as(visium_spe, "SingleCellExperiment")
+class(sn_sce)
+class(visium_spe)
+
+# spe = cbind(visium_spe, sn_sce)
+# Error in value[[3L]](cond) : 
+#     failed to combine 'int_colData' in 'cbind(<SingleCellExperiment>)':
+#     the DFrame objects to combine must have the same column names
+
+spe <- SingleCellExperiment(colData = rbind(colData(visium_spe), colData(sn_sce)),
+                            rowData = rowData(visium_spe),
+                            assays = list(logcounts = cbind(logcounts(visium_spe),
+                                                            logcounts(sn_sce)),
+                                          counts = cbind(counts(visium_spe),
+                                                            counts(sn_sce)))
+                            )
+
+spe$cluster <- spe$registration_variable
+
+## get donor data
+pd <- colData(spe) |>
     as_tibble() |>
-    select(BrNum, Age, Sex, APOE, Ancestry) |>
-    rename(APOE_geno = APOE) |>
-    mutate(
-        APOE_geno = factor(
-            sub('\\.', '/', APOE_geno),
-            levels = c("E2/E2", "E2/E3", "E3/E4", "E4/E4")
-        ),
-        APOE = as.integer(APOE_geno),
-        APOE_E4_pos = grepl('E4', APOE_geno)
-    )
+    select(BrNum, Age, Sex, APOE, Ancestry, APOE_carrier) |>
+    unique()
 
-#   Simplify ERC SPE object in preparation for combining with LC
-erc_spe$cluster = sub('Sp09D0', 'ERC_D', erc_spe[[erc_cluster_var]])
-erc_spe$brain_region = 'ERC'
-colData(erc_spe) = colData(erc_spe) |>
-    as_tibble() |>
-    select(sample_id, BrNum, brain_region, cluster, APOE, ncells) |>
-    mutate(sample_id_better = paste(BrNum, cluster, sep = '_')) |>
-    DataFrame()
-colnames(erc_spe) = erc_spe$sample_id_better
-reducedDims(erc_spe) = list()
-
-#   Simplify LC SPE object in preparation for combining with ERC
-lc_spe$cluster = paste0('LC_D', lc_spe[[lc_cluster_var]])
-lc_spe$brain_region = 'LC'
-colData(lc_spe) = colData(lc_spe) |>
-    as_tibble() |>
-    select(sample_id, BrNum, brain_region, cluster, APOE, ncells) |>
-    mutate(sample_id_better = paste(BrNum, cluster, sep = '_')) |>
-    DataFrame()
-colnames(lc_spe) = lc_spe$sample_id_better
-reducedDims(lc_spe) = list()
-
-#   Merge regions, with the 'cluster' variable now including info about region
-#   and spatial domain
-spe = cbind(lc_spe, erc_spe)
-
-################################################################################
-#   Preprocess expression and create a MOFA object
-################################################################################
+#### Preprocess expression and create a MOFA object ####
+set.seed(708)
 
 mofa = create_init_exp(
     counts = assays(spe)$counts, coldata = as.data.frame(colData(spe))
@@ -120,9 +152,7 @@ samples_metadata(mofa) = left_join(
     samples_metadata(mofa), pd, by = c("sample" = "BrNum")
 )
 
-################################################################################
-#   Fit the MOFA model
-################################################################################
+####   Fit the MOFA model ####
 
 #   Use mostly default options except where overriden in
 #   https://saezlab.github.io/MOFAcellulaR/articles/get-started.html#fitting-a-mofa-model.
@@ -133,19 +163,17 @@ model_opts = get_default_model_options(mofa)
 model_opts$spikeslab_weights = FALSE 
 model_opts$num_factors = 5
 
-mofa = prepare_mofa(
+mofa <- prepare_mofa(
     object = mofa,
     data_options = data_opts,
     model_options = model_opts,
     training_options = train_opts
 )
 
-model = run_mofa(mofa, out_path, use_basilisk = TRUE)
+model <- run_mofa(mofa, data_dir, use_basilisk = TRUE)
 
-################################################################################
-#    Exploratory plots
-################################################################################
 
+####  Exploratory plots ####
 #   Weights to each factor grouped by APOE genotype
 p = plot_factor(
     model, factors = "all", color_by = 'APOE_geno', dodge = TRUE,
