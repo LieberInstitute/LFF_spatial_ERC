@@ -212,7 +212,7 @@ factor_df = get_tidy_factors(
 
 #   Test association of APOE genotype with each factor
 
-test_vars <- c('APOE_carrier', 'APOE', 'Ancestry', "taupathy")
+test_vars <- c('APOE_carrier', 'APOE', 'Ancestry', "taupathy", "Sex")
 names(test_vars) <- test_vars
     
 assoc_list <- map(test_vars, ~get_associations( model = model,
@@ -221,7 +221,16 @@ assoc_list <- map(test_vars, ~get_associations( model = model,
                                                 test_variable = .x,
                                                 test_type = "categorical",
                                                 group = FALSE)
-                  )
+)
+
+# ERROR ! Can't join `x$Age` with `y$Age` due to incompatible types.
+# get_associations( model = model,
+#                   metadata = samples_metadata(model),
+#                   sample_id_column = "Age",
+#                   test_variable = .x,
+#                   test_type = "continuous",
+#                   group = FALSE)
+
 
 print(assoc_list)
 
@@ -269,20 +278,6 @@ factor_boxplot(var = "Ancestry", fill_colors = ancestry_colors)
 factor_boxplot(var = "taupathy")
 
 
-#   Weights to each factor grouped by tau
-weights_by_taupathy_boxplot <- ggplot(factor_df, mapping = aes(x = taupathy, y = value, fill = taupathy)) +
-    geom_boxplot(outlier.shape = NA) +
-    geom_jitter(width = 0.1) +
-    facet_wrap(~Factor, nrow = 1, scales = "free") +
-    # scale_fill_manual(values = APOE_carrier_colors) +
-    labs(x = "APOE", y = "Weight") +
-    theme_bw() +
-    theme(legend.position = "None",
-          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
-
-ggsave(weights_by_taupathy_boxplot, filename = here(plot_dir, "weights_by_taupathy_boxplot.png"), height = 5, width = 10)
-
-
 #   Convert to wide format
 factor_df = factor_df |>
     pivot_wider(names_from = "Factor", values_from = "value") |>
@@ -310,7 +305,7 @@ plot_MOFA_hmap(
     metadata = samples_metadata(model),
     sample_id_column = "sample",
     sample_anns = c("APOE", "Ancestry", "Age", "Sex"),
-    # assoc_list = assoc_list,
+    assoc_list = assoc_list,
     col_rows = list(
         'APOE' = APOE_genotype_colors,
         'Ancestry' = ancestry_colors,
