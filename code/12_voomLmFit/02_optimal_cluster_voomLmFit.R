@@ -2,7 +2,6 @@
 ## Detirmine optimal resolution for DE
 
 #### set-up ####
-library("data.table")
 library("edgeR")
 library("limma")
 library("SingleCellExperiment")
