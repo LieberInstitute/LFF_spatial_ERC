@@ -11,7 +11,7 @@ library("data.table")
 library("getopt")
 library("tidyverse")
 library("sessioninfo")
-
+library("spatialLIBD")
 library("dendextend")
 library("dynamicTreeCut")
 
@@ -72,24 +72,40 @@ hc_ct_long <- hc_ct |>
     mutate(hc.ct = paste0("cell_type_hc", hc.n),
            cell_type_hc = paste0(c(opt$celltype, hc.n, subgroup), collapse = ".")
            )
-
+## create new labels
 hc_ct_wide <- hc_ct_long |> 
     select(cell_type_anno, cell_type_hc, hc.ct) |>
     pivot_wider(names_from = "hc.ct", values_from = "cell_type_hc")
 
+## add to sce object
 hc_ct_wide_sce <- hc_ct_wide |>
-    column_to_rownames("cell_type_anno")
+    column_to_rownames("cell_type_anno") |>
+    mutate_all(factor)
 
 hc_ct_wide_sce <- hc_ct_wide_sce[sce$cell_type_anno, ]
 
-nrow(hc_ct_wide_sce) == ncol(sce)
+stopifnot(nrow(hc_ct_wide_sce) == ncol(sce))
 
 colData(sce) <- cbind(colData(sce), hc_ct_wide_sce)
 
-hc_levels <- colnames(hc_ct_wide_sce)
-
 ## check tables
+hc_levels <- colnames(hc_ct_wide_sce)
+names(hc_levels) <- hc_levels
 map(hc_levels, ~table(sce$cell_type_anno, sce[[.x]]))
 
+#### pseudobulk + run DGE ####
+
+source(here("code", "utils", "sce_pseudobulk.R"))
+source(here("code", "utils", "clusterwise_voomLmFit.R"))
+
+map(hc_levels, function(hc_level){
+    
+    ## pseudobulk
+    sce_pb <- sce_pseudobulk(sce, hc_level)
+    
+    ## run DGE by subtype
+    hc_cell_types <- levels(sce_pb$registration_variable)
+    
+})
 
 
