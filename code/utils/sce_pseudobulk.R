@@ -20,7 +20,7 @@ sce_pseudobulk <- function(sce, cluster){
     table(sce[[cluster]])
     
     #### run pseudobulk - cell_type_anno ####
-    message(Sys.time(), "pseudobulk ", cluster)
+    message(Sys.time(), " PSEUDOBULK: ", cluster)
     sce_pseudo <- registration_pseudobulk(
         sce,
         var_registration = cluster,
