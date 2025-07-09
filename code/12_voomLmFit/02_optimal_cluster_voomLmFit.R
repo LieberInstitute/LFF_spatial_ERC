@@ -98,14 +98,20 @@ map(hc_levels, ~table(sce$cell_type_anno, sce[[.x]]))
 source(here("code", "utils", "sce_pseudobulk.R"))
 source(here("code", "utils", "clusterwise_voomLmFit.R"))
 
-map(hc_levels, function(hc_level){
+FDR_summary <- map(hc_levels, function(hc_level){
     
     ## pseudobulk
     sce_pb <- sce_pseudobulk(sce, hc_level)
     
     ## run DGE by subtype
     hc_cell_types <- levels(sce_pb$registration_variable)
+    names(hc_cell_types) <- hc_cell_types
     
+    vlmf_tt <- map(hc_cell_types, ~clusterwise_voomLmFit(sce_pb, clus = .x))
+    
+    saveRDS(vlmf_tt, file = here(data_dir, sprintf("voomLmFit_%s.rds", hc_level)))
+    
+    return(map_int(vlmf_tt, ~sum(.x$adj.P.Val < 0.05)))
 })
 
 
