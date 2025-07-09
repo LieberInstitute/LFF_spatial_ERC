@@ -54,6 +54,6 @@ clusterwise_voomLmFit <- function(sce_pb, clus, batch = "exp_round"){
         
         message("Done - Save data")
         saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_%s.rds", clus)))
-        return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.05)))
+        return(v.swt.e.tt$)
 
 }
