@@ -114,4 +114,25 @@ FDR_summary <- map(hc_levels, function(hc_level){
     return(map_int(vlmf_tt, ~sum(.x$adj.P.Val < 0.05)))
 })
 
+FDR_summary_tb <- tibble(cell_type_hc = names(unlist(FDR_summary)),
+                      n_FDR05 = unlist(FDR_summary)) |>
+    separate(cell_type_hc, sep = "\\.", into = c("hc", "cell_type_hc"), extra = "merge") |>
+    mutate(cell_type_broad = opt$celltype, .before = 1)
+
+write_csv(FDR_summary_tb, file = here("processed-data", "12_voomLmFit", "02_optimal_cluster_voomLmFit", 
+                                   sprintf("optimal_cluster_FDR05_summary-%s.csv", opt$celltype)))
+
+# slurmjobs::job_loop(loops = list(celltype = c("Astro", "Micro", "OPC", "Oligo", "Vasc",  "Excit", "Inhib")),
+#                     name = "02_optimal_cluster_voomLmFit",
+#                     create_shell = TRUE,
+#                     memory = "25G",
+#                     create_script = FALSE)
+
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
 
