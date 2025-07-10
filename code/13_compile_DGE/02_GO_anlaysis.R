@@ -8,6 +8,7 @@ library("sessioninfo")
 library("getopt")
 library("org.Hs.eg.db")
 library("clusterProfiler")
+library("rrvgo")
 
 # Import command-line parameters
 scec <- matrix(
@@ -58,6 +59,7 @@ DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
 # DE_clusters <- DE_entrez |> filter(DE_class != "None") |> pull(cluster) |> unique()
 # names(DE_clusters) <- DE_clusters
 
+#### Run GO ####
 universe <- unique(DE_entrez$ENTREZID)
 length(universe)
 
@@ -71,30 +73,105 @@ go_result <- map(ont, ~compareCluster(ENTREZID ~ DE_class_cluster,
                                       universe = universe,
                                       ont = .x, ##ALL,CC,BP,MF
                                       pAdjustMethod = "BH",
-                                      # pvalueCutoff = 1,#0.5,
-                                      qvalueCutoff = 0.05,
+                                      pvalueCutoff = 0.05,
+                                      # qvalueCutoff = 0.05,
                                       readable = TRUE))
 
-
-pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
-walk2(go_result, names(go_result), 
-      ~print(
-          dotplot(.x, 
-                  x = "DE_class_cluster", 
-                  showCategory = 5, 
-                  label_format = 60)  +
-              ggtitle(paste("GO Enrichment:", .y)) +
-              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-      )
-      )
-dev.off()
-
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
-
-compare_clus |> count(DE_class_cluster)
-
+compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
 write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
+
+#### dot plots ####
+
+if(opt$datatype == "sn_fine"){
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+    walk2(go_result, names(go_result), function(gr){
+        
+        
+        
+    }
+          ~print(
+              dotplot(.x, 
+                      x = "DE_class_cluster", 
+                      showCategory = 5, 
+                      label_format = 60)  +
+                  ggtitle(paste("GO Enrichment:", .y)) +
+                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+          )
+    )
+    dev.off()
+    
+} else {
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+    walk2(go_result, names(go_result), 
+          ~print(
+              dotplot(.x, 
+                      x = "DE_class_cluster", 
+                      showCategory = 3, 
+                      label_format = 60)  +
+                  ggtitle(paste("GO Enrichment:", .y)) +
+                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+          )
+    )
+    dev.off()
+}
+
+
+#### rrvgo ####
+
+# DE_entrez |> filter(cluster == "Oligo")
+# test_go <- compareCluster(ENTREZID ~ DE_class_cluster,
+#                                     data = DE_entrez |> filter(DE_class != "None", cluster == "Oligo"), 
+#                                     OrgDb = org.Hs.eg.db,
+#                                     fun = enrichGO,
+#                                     universe = universe,
+#                                     ont = 'BP', ##ALL,CC,BP,MF
+#                                     pAdjustMethod = "BH",
+#                                     pvalueCutoff = 0.05,
+#                                     # qvalueCutoff = 0.05,
+#                                     readable = TRUE)
+
+
+reducedTerms_list <- map(ont, function(o){
+    ## loop ontologies
+    go_analysis <- go_result[[o]]@compareClusterResult
+    clusters <- levels(go_analysis$Cluster)
+    names(clusters) <- clusters
+    
+    message(Sys.time(), " - ", o)
+
+    ont_reducedTerms <- map(clusters, function(clus){
+        ## calc similarity scores
+        go_analysis_c <- go_analysis |> filter(Cluster == clus)
+        message(sprintf("--%s (%i)--", clus, nrow(go_analysis_c)))
+        
+        simMatrix <- calculateSimMatrix(go_analysis$ID,
+                                        orgdb="org.Hs.eg.db",
+                                        ont=o,
+                                        method="Rel")
+
+        ## group terms based on similarity
+        scores <- setNames(-log10(go_analysis$qvalue), go_analysis$ID)
+        reducedTerms <- NULL
+        try(reducedTerms <- reduceSimMatrix(simMatrix,
+                                            scores,
+                                            threshold=0.7,
+                                            orgdb="org.Hs.eg.db"))
+
+        return(reducedTerms)
+    }
+    )
+
+    return(ont_reducedTerms)
+})
+
+
+## plot treemap
+pdf(here(plot_dir, "treemap_test.pdf"))
+treemapPlot(reducedTerms, title = "Oligo")
+dev.off()
 
 # slurmjobs::job_single('02_GO_analysis', create_shell = TRUE, memory = '5G', command = "Rscript 02_GO_analysis.R")
 
