@@ -152,7 +152,7 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
 )
 dev.off()
 
-#### Carrier DE data ####
+#### Interaction DE data ####
 
 DE_interaction_data_fn <- here("processed-data", "13_compile_DGE",  "05_compile_DGE_interaction", opt$datatype, sprintf("DGE_results_interaction_%s.Rds", opt$datatype))
 DE_interaction_data <- readRDS(DE_interaction_data_fn)
