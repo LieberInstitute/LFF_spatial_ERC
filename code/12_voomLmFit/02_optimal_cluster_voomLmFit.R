@@ -23,6 +23,7 @@ opt <- getopt(scec)
 
 ## test
 # opt$celltype <- "Astro"
+# opt$celltype <- "Vasc"
 
 ## set up output dirs
 data_dir <- here("processed-data", "12_voomLmFit", "02_optimal_cluster_voomLmFit", opt$celltype)
@@ -76,12 +77,16 @@ hc_ct_wide <- hc_ct_long |>
     select(cell_type_anno, cell_type_hc, hc.ct) |>
     pivot_wider(names_from = "hc.ct", values_from = "cell_type_hc")
 
+## save hc breakdown
+write.csv(hc_ct_wide, here(data_dir, sprintf("cell_type_hc_%s.csv", opt$celltype)))
+
 ## add to sce object
 hc_ct_wide_sce <- hc_ct_wide |>
     column_to_rownames("cell_type_anno") |>
     mutate_all(factor)
 
-hc_ct_wide_sce <- hc_ct_wide_sce[sce$cell_type_anno, ]
+hc_ct_wide_sce <- hc_ct_wide_sce[sce$cell_type_anno, ,drop=FALSE]
+head(hc_ct_wide_sce)
 
 stopifnot(nrow(hc_ct_wide_sce) == ncol(sce))
 
@@ -97,7 +102,7 @@ map(hc_levels, ~table(sce$cell_type_anno, sce[[.x]]))
 source(here("code", "utils", "sce_pseudobulk.R"))
 source(here("code", "utils", "clusterwise_voomLmFit.R"))
 
-FDR_summary <- map(hc_levels, function(hc_level){
+FDR_summary <- map_dfr(hc_levels, function(hc_level){
     
     ## pseudobulk
     sce_pb <- sce_pseudobulk(sce, hc_level)
@@ -108,17 +113,20 @@ FDR_summary <- map(hc_levels, function(hc_level){
     
     vlmf_tt <- map(hc_cell_types, ~clusterwise_voomLmFit(sce_pb, clus = .x))
     
-    saveRDS(vlmf_tt, file = here(data_dir, sprintf("voomLmFit_%s.rds", hc_level)))
+    saveRDS(vlmf_tt, file = here(data_dir, sprintf("voomLmFit_%s.rds", gsub("cell_type", opt$celltype, hc_level))))
     
-    return(map_int(vlmf_tt, ~sum(.x$adj.P.Val < 0.05)))
+    summary <- tibble(
+        cell_type_broad = opt$celltype,
+        hc = hc_level,
+        cell_type_hc = names(vlmf_tt),
+        n_pval05  = map_int(vlmf_tt, ~sum(.x$P.Value < 0.05)),
+        n_FDR05  = map_int(vlmf_tt, ~sum(.x$adj.P.Val < 0.05))
+    )
+    
+    return(summary)
 })
 
-FDR_summary_tb <- tibble(cell_type_hc = names(unlist(FDR_summary)),
-                      n_FDR05 = unlist(FDR_summary)) |>
-    separate(cell_type_hc, sep = "\\.", into = c("hc", "cell_type_hc"), extra = "merge") |>
-    mutate(cell_type_broad = opt$celltype, .before = 1)
-
-write_csv(FDR_summary_tb, file = here("processed-data", "12_voomLmFit", "02_optimal_cluster_voomLmFit", 
+write_csv(FDR_summary, file = here("processed-data", "12_voomLmFit", "02_optimal_cluster_voomLmFit", 
                                    sprintf("optimal_cluster_FDR05_summary-%s.csv", opt$celltype)))
 
 # slurmjobs::job_loop(loops = list(celltype = c("Astro", "Micro", "OPC", "Oligo", "Vasc",  "Excit", "Inhib")),
