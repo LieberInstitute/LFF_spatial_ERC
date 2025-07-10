@@ -33,20 +33,44 @@ DEGs_signif <- map(DE_data, ~.x |>
 
 map(DEGs_signif, ~.x |> count(DE_class_cluster))
 
-get_gene_list <- function(DEG_tb){
+## with direction
+get_gene_list_dir <- function(DEG_tb){
     map(rafalib::splitit(DEG_tb$DE_class_cluster), ~DEG_tb$gene_id[.x])
 }
 
-get_gene_list(DEGs_signif$sn_broad)
+## w/o direction
+get_gene_list <- function(DEG_tb){
+    map(rafalib::splitit(DEG_tb$cluster), ~DEG_tb$gene_id[.x])
+}
+
+# get_gene_list(DEGs_signif$sn_broad)
 
 DEGs_signif_list <- map(DEGs_signif, get_gene_list)
+DEGs_signif_list_dir <- map(DEGs_signif, get_gene_list_dir)
 
-map2(DEGs_signif_list, names(DEGs_signif_list), function(de_list, data_type){
+map2(DEGs_signif_list, names(DEGs_signif_list_dir), function(de_list, data_type){
     pdf(here(plot_dir, sprintf("DEG_Upset_%s.pdf", data_type)))
     print(upset(fromList(de_list), nsets = length(de_list)))
     dev.off()
 })
 
+
+## visium vs. single cell broad
+
+pdf(here(plot_dir, "DEG_Upset_Visium-sn_broad.pdf"))
+print(upset(fromList(c(DEGs_signif_list$sn_broad, DEGs_signif_list$Visium)),
+            nsets = 10))
+dev.off()
+
+## single cell broad vd. fine
+
+pdf(here(plot_dir, "DEG_Upset_sn_broad_v_fine.pdf"))
+print(upset(fromList(c(DEGs_signif_list$sn_broad, DEGs_signif_list$sn_fine)),
+            nsets = 10))
+dev.off()
+
+
+## All gene sets
 DEGs_signif_list_all <- do.call("c", DEGs_signif_list)
 
 pdf(here(plot_dir, "DEG_Upset_ALL.pdf"))
