@@ -75,7 +75,7 @@ plot_marker_express_ALL(
 )
 
 
-# slurmjobs::job_single('34_sn_subcluster_MeanRatio', create_shell = TRUE, memory = '100G', command = "Rscript 34_sn_subcluster_MeanRatio.R -cluster 'ct_broad_k20'")
+# slurmjobs::job_single('34_sn_subcluster_MeanRatio', create_shell = TRUE, memory = '100G', command = "Rscript 34_sn_subcluster_MeanRatio.R -cluster 'cell_type_anno'")
 
 ## Reproducibility information
 print("Reproducibility information:")
