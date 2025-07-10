@@ -118,6 +118,21 @@ qc_violin_mito <- ggplot(pd, aes(x = cell_type_anno, y = subsets_Mito_percent, f
 
 ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_sn_subcluster_QC_violin_Mito_percent.png"), width = 7, height =4)
 
+#### n cell barplot ####
+n_cell_barplot <- cell_type_summary |>
+    ggplot(aes(x = cell_type_anno, y = n_nuclei, fill = cell_type_anno)) +
+    geom_col() +
+    geom_text(aes(label = n_nuclei), size = 2, vjust = -0.5) +
+    scale_fill_manual(values = cell_type_colors$anno, guide = "none") +
+    facet_grid(.~cell_type_broad, scales = "free_x", space="free_x") +
+    labs(x = "Cell Type", y = "n Nuclei") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None") 
+
+ggsave(n_cell_barplot, filename = here(plot_dir, "ERC_sn_subcluster_n_nuclei_barplot.png"), width = 9, height = 5)
+
+
 #### violin plots of select genes ####
 rownames(sce) <- rowData(sce)$gene_name
 
