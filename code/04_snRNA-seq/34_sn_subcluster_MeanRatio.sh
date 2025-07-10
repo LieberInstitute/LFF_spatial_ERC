@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 34_sn_subcluster_MeanRatio.R -cluster 'cell_type_anno'
+Rscript 34_sn_subcluster_MeanRatio.R --cluster 'cell_type_anno'
 
 echo "**** Job ends ****"
 date
