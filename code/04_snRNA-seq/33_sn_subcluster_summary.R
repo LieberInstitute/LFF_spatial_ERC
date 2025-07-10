@@ -2,7 +2,7 @@
 ## create various plots for the ERC sn data
 
 library("SingleCellExperiment")
-# library("jaffelab")
+library("jaffelab")
 library("tidyverse")
 library("HDF5Array")
 library("here")
@@ -40,11 +40,12 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 cell_type_colors <- metadata(sce)$cell_type_colors
 
 #### enrichment data ####
+## global
 enrichment_stats_top <- read.csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv"))
 
 enrichment_stats_top_list <- enrichment_stats_top |>
     group_by(cell_type_anno) |>
-    summarise(top_enrichment_genes = paste(ensembl, collapse = ", "))
+    summarise(top_enrichment_genes_global = paste(ensembl, collapse = ", "))
 
 #### Cell Type Summary ####
 cell_type_summary <- pd |>
@@ -59,8 +60,8 @@ cell_type_summary <- pd |>
     left_join(enrichment_stats_top_list)
 
 cell_type_summary |> filter(cell_type_anno == "Inhib.Pax6")
-# cell_type_summary |> filter(cell_type_anno == "Oligo.03")
-# cell_type_summary |> filter(cell_type_anno == "Astro.02")
+# cell_type_summary |> filter(cell_type_anno == "Oligo.3")
+# cell_type_summary |> filter(cell_type_anno == "Astro.2")
 
 write.csv(cell_type_summary, file = here(data_dir, "ERC_sn_subcluster_summary_cell_type.csv"))
 
@@ -80,16 +81,42 @@ write.csv(sample_summary, file = here(data_dir, "ERC_sn_subcluster_summary_sampl
 
 #### Quality Metrics ####
 
-sum_umi_violin <- ggplot(pd, aes(x = cell_type_anno, y = sum, fill = cell_type_anno)) +
+qc_violin_sum_umi <- ggplot(pd, aes(x = cell_type_anno, y = sum, fill = cell_type_anno)) +
     geom_violin(draw_quantiles = c(.5)) +
     scale_fill_manual(values = cell_type_colors$anno) +
     scale_y_continuous(trans='log10') +
     theme_bw() +
     facet_grid(.~cell_type_broad, scales = "free_x", space = "free") +
+    labs(x = "Cell Type", y = "log10(Sum UMI)") +
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(sum_umi_violin, filename = here(plot_dir, "ERC_sn_subcluster_sum_umi_violin.png"), width = 10)
+ggsave(qc_violin_sum_umi, filename = here(plot_dir, "ERC_sn_subcluster_QC_violin_sum_umi.png"), width = 7, height =4)
+
+qc_violin_detected <- ggplot(pd, aes(x = cell_type_anno, y = detected, fill = cell_type_anno)) +
+    geom_violin(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    # scale_y_continuous(trans='log10') +
+    theme_bw() +
+    facet_grid(.~cell_type_broad, scales = "free_x", space = "free") +
+    labs(x = "Cell Type", y = "Detected Genes") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(qc_violin_detected, filename = here(plot_dir, "ERC_sn_subcluster_QC_violin_detected.png"), width = 7, height =4)
+
+
+qc_violin_mito <- ggplot(pd, aes(x = cell_type_anno, y = subsets_Mito_percent, fill = cell_type_anno)) +
+    geom_violin(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    # scale_y_continuous(trans='log10') +
+    theme_bw() +
+    facet_grid(.~cell_type_broad, scales = "free_x", space = "free") +
+    labs(x = "Cell Type", y = "Precent Mito") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_sn_subcluster_QC_violin_Mito_percent.png"), width = 7, height =4)
 
 #### violin plots of select genes ####
 rownames(sce) <- rowData(sce)$gene_name
@@ -113,5 +140,28 @@ apoe_plot <- plot_gene_express(sce, genes = "APOE",
 
 ggsave(apoe_plot, filename = here(plot_dir, "ERC_sn_gene_expres_APOE.png"), width = 4)
 
+#### plot marker genes ####
+message(Sys.time(), " - Plot marker genes")
+
+## read in marker genes from lit
+lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
+    mutate(in_data = gene_name %in% rowData(sce)$gene_name,
+           cell_type_broad = factor(cell_type_broad, levels = levels(sce$cell_type_broad))) |>
+    arrange(cell_type_broad)
+
+lit_markers <- lit_markers |> filter(in_data)
+
+lit_markers_list <- map(splitit(lit_markers$cell_type), ~lit_markers$gene_name[.x])
+
+lit_marker_order <- lit_markers |> count(cell_type_broad, cell_type) |> pull(cell_type)
+lit_markers_list <- lit_markers_list[lit_marker_order]
+
+plot_marker_express_List(sce, 
+                         lit_markers_list, 
+                         pdf_fn = here(plot_dir, "ERC_sn_subtype_lit_markers.pdf"),
+                         cellType_col = "cell_type_anno",
+                         gene_name_col = "gene_name",
+                         color_pal = cell_type_colors$anno,
+)
 
 
