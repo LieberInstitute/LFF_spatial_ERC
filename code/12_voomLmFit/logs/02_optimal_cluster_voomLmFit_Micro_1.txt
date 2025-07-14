@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Jul  8 09:29:25 PM EDT 2025
+Thu Jul 10 03:24:53 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 19794207
+Job id: 19858318
 Job name: 02_optimal_cluster_voomLmFit
-Node name: compute-154
+Node name: compute-158
 Task id: 1
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -76,10 +76,6 @@ Loading required package: S4Vectors
 
 Attaching package: ‘S4Vectors’
 
-The following objects are masked from ‘package:data.table’:
-
-    first, second
-
 The following object is masked from ‘package:utils’:
 
     findMatches
@@ -89,13 +85,6 @@ The following objects are masked from ‘package:base’:
     expand.grid, I, unname
 
 Loading required package: IRanges
-
-Attaching package: ‘IRanges’
-
-The following object is masked from ‘package:data.table’:
-
-    shift
-
 Loading required package: GenomeInfoDb
 Loading required package: Biobase
 Welcome to Bioconductor
@@ -123,6 +112,25 @@ The following object is masked from ‘package:edgeR’:
     cpm
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+
+Attaching package: ‘data.table’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    shift
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    shift
+
+The following object is masked from ‘package:IRanges’:
+
+    shift
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, second
+
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
@@ -138,7 +146,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ dplyr::desc()         masks IRanges::desc()
 ✖ tidyr::expand()       masks S4Vectors::expand()
 ✖ dplyr::filter()       masks stats::filter()
-✖ dplyr::first()        masks S4Vectors::first(), data.table::first()
+✖ dplyr::first()        masks data.table::first(), S4Vectors::first()
 ✖ lubridate::hour()     masks data.table::hour()
 ✖ lubridate::isoweek()  masks data.table::isoweek()
 ✖ dplyr::lag()          masks stats::lag()
@@ -150,7 +158,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::quarter()  masks data.table::quarter()
 ✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
 ✖ dplyr::rename()       masks S4Vectors::rename()
-✖ lubridate::second()   masks S4Vectors::second(), data.table::second()
+✖ lubridate::second()   masks data.table::second(), S4Vectors::second()
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ purrr::transpose()    masks data.table::transpose()
@@ -178,19 +186,19 @@ You may ask questions at stackoverflow, use the r and dendextend tags:
 
 Attaching package: ‘dendextend’
 
-The following object is masked from ‘package:generics’:
-
-    prune
-
 The following object is masked from ‘package:data.table’:
 
     set
+
+The following object is masked from ‘package:generics’:
+
+    prune
 
 The following object is masked from ‘package:stats’:
 
     cutree
 
-2025-07-08 21:29:38.669429 - Load HDF5 sce
+2025-07-10 15:25:07.996426 - Load HDF5 sce
 
 Micro.1 Micro.2 Micro.3 Micro.4 Micro.5 
    4227    3748    1876    1728     590 
@@ -209,6 +217,13 @@ Loading objects:
            `--leaf "Micro.3" 
 null device 
           1 
+          cell_type_hc4 cell_type_hc3 cell_type_hc2
+Micro.2       Micro.4.2     Micro.3.2     Micro.2.1
+Micro.2.1     Micro.4.2     Micro.3.2     Micro.2.1
+Micro.4       Micro.4.3     Micro.3.1     Micro.2.1
+Micro.2.2     Micro.4.2     Micro.3.2     Micro.2.1
+Micro.4.1     Micro.4.3     Micro.3.1     Micro.2.1
+Micro.1       Micro.4.1     Micro.3.1     Micro.2.1
 $cell_type_hc4
          
           Micro.4.1 Micro.4.2 Micro.4.3 Micro.4.4
@@ -236,85 +251,85 @@ $cell_type_hc2
   Micro.4      1728         0
   Micro.5         0       590
 
-2025-07-08 21:29:44.179041 PSEUDOBULK: cell_type_hc4
-2025-07-08 21:29:44.185657 make pseudobulk object
-2025-07-08 21:32:00.42332 dropping 10 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:32:00.491531 normalize expression
-2025-07-08 21:32:02.526191 - Done pseudobulk
+2025-07-10 15:25:15.426462 PSEUDOBULK: cell_type_hc4
+2025-07-10 15:25:15.434772 make pseudobulk object
+2025-07-10 15:27:58.550566 dropping 10 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:27:58.644067 normalize expression
+2025-07-10 15:28:02.472485 - Done pseudobulk
 nrow: 38606, ncol: 114
 Too few samples in: 
-2025-07-08 21:32:04.581984 - voomLmFit - cluster: Micro.4.1, block= 'exp_round', ncol: 29, ngene: 11699
+2025-07-10 15:28:03.792422 - voomLmFit - cluster: Micro.4.1, block= 'exp_round', ncol: 29, ngene: 11699
 First sample weights (min/max) 0.2568516/1.5146814
 First intra-block correlation  0.01767219
 Final sample weights (min/max) 0.2473309/1.5720979
 Final intra-block correlation  0.01812923
 Done - Return data
-2025-07-08 21:32:32.792937 - voomLmFit - cluster: Micro.4.2, block= 'exp_round', ncol: 31, ngene: 9019
+2025-07-10 15:28:39.045012 - voomLmFit - cluster: Micro.4.2, block= 'exp_round', ncol: 31, ngene: 9019
 First sample weights (min/max) 0.2874027/1.5625573
 First intra-block correlation  -0.006167469
 Final sample weights (min/max) 0.2801377/1.5505338
 Final intra-block correlation  -0.005883662
 Done - Return data
-2025-07-08 21:32:54.295323 - voomLmFit - cluster: Micro.4.3, block= 'exp_round', ncol: 28, ngene: 7497
+2025-07-10 15:29:04.734118 - voomLmFit - cluster: Micro.4.3, block= 'exp_round', ncol: 28, ngene: 7497
 First sample weights (min/max) 0.5309827/1.3376750
 First intra-block correlation  -0.004713809
 Final sample weights (min/max) 0.5141486/1.3263514
 Final intra-block correlation  -0.004598361
 Done - Return data
-2025-07-08 21:33:13.315029 - voomLmFit - cluster: Micro.4.4, block= 'exp_round', ncol: 26, ngene: 2351
+2025-07-10 15:29:27.838038 - voomLmFit - cluster: Micro.4.4, block= 'exp_round', ncol: 26, ngene: 2351
 First sample weights (min/max) 0.5512891/1.3827846
 First intra-block correlation  -0.0318935
 Final sample weights (min/max) 0.5449875/1.3681230
 Final intra-block correlation  -0.0313466
 Done - Return data
-2025-07-08 21:33:19.493663 PSEUDOBULK: cell_type_hc3
-2025-07-08 21:33:19.500039 make pseudobulk object
-2025-07-08 21:35:22.301221 dropping 6 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:35:22.366285 normalize expression
-2025-07-08 21:35:24.033406 - Done pseudobulk
+2025-07-10 15:29:36.515057 PSEUDOBULK: cell_type_hc3
+2025-07-10 15:29:36.52362 make pseudobulk object
+2025-07-10 15:32:11.566674 dropping 6 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:32:11.640783 normalize expression
+2025-07-10 15:32:13.706615 - Done pseudobulk
 nrow: 38606, ncol: 87
 Too few samples in: 
-2025-07-08 21:35:26.149332 - voomLmFit - cluster: Micro.3.1, block= 'exp_round', ncol: 30, ngene: 13345
+2025-07-10 15:32:16.464501 - voomLmFit - cluster: Micro.3.1, block= 'exp_round', ncol: 30, ngene: 13345
 First sample weights (min/max) 0.279133/1.555211
 First intra-block correlation  0.02273842
 Final sample weights (min/max) 0.2725034/1.5487645
 Final intra-block correlation  0.02294877
 Done - Return data
-2025-07-08 21:35:57.798822 - voomLmFit - cluster: Micro.3.2, block= 'exp_round', ncol: 31, ngene: 9019
+2025-07-10 15:32:56.090286 - voomLmFit - cluster: Micro.3.2, block= 'exp_round', ncol: 31, ngene: 9019
 First sample weights (min/max) 0.2874027/1.5625573
 First intra-block correlation  -0.006167469
 Final sample weights (min/max) 0.2801377/1.5505338
 Final intra-block correlation  -0.005883662
 Done - Return data
-2025-07-08 21:36:19.013617 - voomLmFit - cluster: Micro.3.3, block= 'exp_round', ncol: 26, ngene: 2351
+2025-07-10 15:33:22.318597 - voomLmFit - cluster: Micro.3.3, block= 'exp_round', ncol: 26, ngene: 2351
 First sample weights (min/max) 0.5512891/1.3827846
 First intra-block correlation  -0.0318935
 Final sample weights (min/max) 0.5449875/1.3681230
 Final intra-block correlation  -0.0313466
 Done - Return data
-2025-07-08 21:36:25.074904 PSEUDOBULK: cell_type_hc2
-2025-07-08 21:36:25.081347 make pseudobulk object
-2025-07-08 21:38:27.573207 dropping 5 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:38:27.623575 normalize expression
-2025-07-08 21:38:28.496444 - Done pseudobulk
+2025-07-10 15:33:31.097998 PSEUDOBULK: cell_type_hc2
+2025-07-10 15:33:31.105481 make pseudobulk object
+2025-07-10 15:36:10.076918 dropping 5 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:36:10.146545 normalize expression
+2025-07-10 15:36:11.223595 - Done pseudobulk
 nrow: 38606, ncol: 57
 Too few samples in: 
-2025-07-08 21:38:30.684272 - voomLmFit - cluster: Micro.2.1, block= 'exp_round', ncol: 31, ngene: 14146
+2025-07-10 15:36:12.745748 - voomLmFit - cluster: Micro.2.1, block= 'exp_round', ncol: 31, ngene: 14146
 First sample weights (min/max) 0.2536702/1.7008665
 First intra-block correlation  0.01841343
 Final sample weights (min/max) 0.2504689/1.6861640
 Final intra-block correlation  0.01859674
 Done - Return data
-2025-07-08 21:39:04.120484 - voomLmFit - cluster: Micro.2.2, block= 'exp_round', ncol: 26, ngene: 2351
+2025-07-10 15:36:52.896089 - voomLmFit - cluster: Micro.2.2, block= 'exp_round', ncol: 26, ngene: 2351
 First sample weights (min/max) 0.5512891/1.3827846
 First intra-block correlation  -0.0318935
 Final sample weights (min/max) 0.5449875/1.3681230
 Final intra-block correlation  -0.0313466
 Done - Return data
 [1] "Reproducibility information:"
-[1] "2025-07-08 21:39:10 EDT"
+[1] "2025-07-10 15:37:00 EDT"
    user  system elapsed 
-561.826   6.440 584.347 
+702.607  13.577 726.349 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -325,7 +340,7 @@ Done - Return data
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-07-08
+ date     2025-07-10
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -496,4 +511,4 @@ Done - Return data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jul  8 09:39:11 PM EDT 2025
+Thu Jul 10 03:37:00 PM EDT 2025

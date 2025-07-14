@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Jul  8 09:29:25 PM EDT 2025
+Thu Jul 10 03:24:52 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 19794212
+Job id: 19858323
 Job name: 02_optimal_cluster_voomLmFit
-Node name: compute-162
+Node name: compute-159
 Task id: 6
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -76,10 +76,6 @@ Loading required package: S4Vectors
 
 Attaching package: ‘S4Vectors’
 
-The following objects are masked from ‘package:data.table’:
-
-    first, second
-
 The following object is masked from ‘package:utils’:
 
     findMatches
@@ -89,13 +85,6 @@ The following objects are masked from ‘package:base’:
     expand.grid, I, unname
 
 Loading required package: IRanges
-
-Attaching package: ‘IRanges’
-
-The following object is masked from ‘package:data.table’:
-
-    shift
-
 Loading required package: GenomeInfoDb
 Loading required package: Biobase
 Welcome to Bioconductor
@@ -123,6 +112,25 @@ The following object is masked from ‘package:edgeR’:
     cpm
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+
+Attaching package: ‘data.table’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    shift
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    shift
+
+The following object is masked from ‘package:IRanges’:
+
+    shift
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, second
+
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
@@ -138,7 +146,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ dplyr::desc()         masks IRanges::desc()
 ✖ tidyr::expand()       masks S4Vectors::expand()
 ✖ dplyr::filter()       masks stats::filter()
-✖ dplyr::first()        masks S4Vectors::first(), data.table::first()
+✖ dplyr::first()        masks data.table::first(), S4Vectors::first()
 ✖ lubridate::hour()     masks data.table::hour()
 ✖ lubridate::isoweek()  masks data.table::isoweek()
 ✖ dplyr::lag()          masks stats::lag()
@@ -150,7 +158,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::quarter()  masks data.table::quarter()
 ✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
 ✖ dplyr::rename()       masks S4Vectors::rename()
-✖ lubridate::second()   masks S4Vectors::second(), data.table::second()
+✖ lubridate::second()   masks data.table::second(), S4Vectors::second()
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ purrr::transpose()    masks data.table::transpose()
@@ -178,19 +186,19 @@ You may ask questions at stackoverflow, use the r and dendextend tags:
 
 Attaching package: ‘dendextend’
 
-The following object is masked from ‘package:generics’:
-
-    prune
-
 The following object is masked from ‘package:data.table’:
 
     set
+
+The following object is masked from ‘package:generics’:
+
+    prune
 
 The following object is masked from ‘package:stats’:
 
     cutree
 
-2025-07-08 21:29:39.015742 - Load HDF5 sce
+2025-07-10 15:25:07.436147 - Load HDF5 sce
 
 Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
              303             1234              125             1363 
@@ -213,6 +221,13 @@ Loading objects:
            `--leaf "Inhib.Vip" 
 null device 
           1 
+                 cell_type_hc5 cell_type_hc4 cell_type_hc3 cell_type_hc2
+Inhib.Pvalb          Inhib.5.4     Inhib.4.4     Inhib.3.2     Inhib.2.1
+Inhib.Lamp5_Lhx6     Inhib.5.2     Inhib.4.2     Inhib.3.2     Inhib.2.1
+Inhib.Sst            Inhib.5.4     Inhib.4.4     Inhib.3.2     Inhib.2.1
+Inhib.Vip            Inhib.5.5     Inhib.4.2     Inhib.3.2     Inhib.2.1
+Inhib.Vip.1          Inhib.5.5     Inhib.4.2     Inhib.3.2     Inhib.2.1
+Inhib.Vip.2          Inhib.5.5     Inhib.4.2     Inhib.3.2     Inhib.2.1
 $cell_type_hc5
                   
                    Inhib.5.1 Inhib.5.2 Inhib.5.3 Inhib.5.4 Inhib.5.5
@@ -253,98 +268,98 @@ $cell_type_hc2
   Inhib.Sst              815         0
   Inhib.Vip             7535         0
 
-2025-07-08 21:29:44.165422 PSEUDOBULK: cell_type_hc5
-2025-07-08 21:29:44.171835 make pseudobulk object
-2025-07-08 21:31:59.457596 dropping 46 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:32:00.66933 normalize expression
-2025-07-08 21:32:03.457814 - Done pseudobulk
+2025-07-10 15:25:14.63619 PSEUDOBULK: cell_type_hc5
+2025-07-10 15:25:14.645432 make pseudobulk object
+2025-07-10 15:27:41.335407 dropping 46 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:27:41.429111 normalize expression
+2025-07-10 15:27:45.71714 - Done pseudobulk
 nrow: 38606, ncol: 104
 Too few samples in: Inhib.5.3
-2025-07-08 21:32:04.150715 - voomLmFit - cluster: Inhib.5.1, block= 'exp_round', ncol: 15, ngene: 9154
+2025-07-10 15:27:46.441867 - voomLmFit - cluster: Inhib.5.1, block= 'exp_round', ncol: 15, ngene: 9154
 First sample weights (min/max) 0.6780786/1.4517985
 First intra-block correlation  7.443403e-05
 Final sample weights (min/max) 0.678272/1.448485
 Final intra-block correlation  0.001962905
 Done - Return data
-2025-07-08 21:32:32.926054 - voomLmFit - cluster: Inhib.5.2, block= 'exp_round', ncol: 27, ngene: 13545
+2025-07-10 15:28:16.753461 - voomLmFit - cluster: Inhib.5.2, block= 'exp_round', ncol: 27, ngene: 13545
 First sample weights (min/max) 0.4980714/1.8777177
 First intra-block correlation  0.01826613
 Final sample weights (min/max) 0.4865241/1.8542487
 Final intra-block correlation  0.01941567
 Done - Return data
-2025-07-08 21:33:10.474582 - voomLmFit - cluster: Inhib.5.4, block= 'exp_round', ncol: 29, ngene: 16952
+2025-07-10 15:28:54.485532 - voomLmFit - cluster: Inhib.5.4, block= 'exp_round', ncol: 29, ngene: 16952
 First sample weights (min/max) 0.4717835/2.1306320
 First intra-block correlation  0.03031883
 Final sample weights (min/max) 0.4735814/2.1353981
 Final intra-block correlation  0.03052324
 Done - Return data
-2025-07-08 21:33:55.368146 - voomLmFit - cluster: Inhib.5.5, block= 'exp_round', ncol: 31, ngene: 19715
+2025-07-10 15:29:41.223862 - voomLmFit - cluster: Inhib.5.5, block= 'exp_round', ncol: 31, ngene: 19715
 First sample weights (min/max) 0.4122197/2.2465184
 First intra-block correlation  0.05108922
 Final sample weights (min/max) 0.415357/2.312213
 Final intra-block correlation  0.05198294
 Done - Return data
-2025-07-08 21:34:44.771931 PSEUDOBULK: cell_type_hc4
-2025-07-08 21:34:44.77817 make pseudobulk object
-2025-07-08 21:36:52.181144 dropping 43 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:36:52.235444 normalize expression
-2025-07-08 21:36:54.359638 - Done pseudobulk
+2025-07-10 15:30:32.199067 PSEUDOBULK: cell_type_hc4
+2025-07-10 15:30:32.207707 make pseudobulk object
+2025-07-10 15:32:52.142085 dropping 43 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:32:52.207445 normalize expression
+2025-07-10 15:32:55.695219 - Done pseudobulk
 nrow: 38606, ncol: 77
 Too few samples in: Inhib.4.3
-2025-07-08 21:36:54.970281 - voomLmFit - cluster: Inhib.4.1, block= 'exp_round', ncol: 15, ngene: 9154
+2025-07-10 15:32:56.338389 - voomLmFit - cluster: Inhib.4.1, block= 'exp_round', ncol: 15, ngene: 9154
 First sample weights (min/max) 0.6780786/1.4517985
 First intra-block correlation  7.443403e-05
 Final sample weights (min/max) 0.678272/1.448485
 Final intra-block correlation  0.001962905
 Done - Return data
-2025-07-08 21:37:24.888966 - voomLmFit - cluster: Inhib.4.2, block= 'exp_round', ncol: 31, ngene: 20660
+2025-07-10 15:33:24.793938 - voomLmFit - cluster: Inhib.4.2, block= 'exp_round', ncol: 31, ngene: 20660
 First sample weights (min/max) 0.4264181/2.2691824
 First intra-block correlation  0.05411022
 Final sample weights (min/max) 0.4277952/2.3438978
 Final intra-block correlation  0.0550006
 Done - Return data
-2025-07-08 21:38:17.368561 - voomLmFit - cluster: Inhib.4.4, block= 'exp_round', ncol: 29, ngene: 16952
+2025-07-10 15:34:16.805894 - voomLmFit - cluster: Inhib.4.4, block= 'exp_round', ncol: 29, ngene: 16952
 First sample weights (min/max) 0.4717835/2.1306320
 First intra-block correlation  0.03031883
 Final sample weights (min/max) 0.4735814/2.1353981
 Final intra-block correlation  0.03052324
 Done - Return data
-2025-07-08 21:39:00.795969 PSEUDOBULK: cell_type_hc3
-2025-07-08 21:39:00.802707 make pseudobulk object
-2025-07-08 21:40:59.938612 dropping 41 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:40:59.982229 normalize expression
-2025-07-08 21:41:02.445194 - Done pseudobulk
+2025-07-10 15:35:00.101212 PSEUDOBULK: cell_type_hc3
+2025-07-10 15:35:00.108592 make pseudobulk object
+2025-07-10 15:37:10.965873 dropping 41 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:37:11.016317 normalize expression
+2025-07-10 15:37:12.346442 - Done pseudobulk
 nrow: 38606, ncol: 48
 Too few samples in: Inhib.3.3
-2025-07-08 21:41:03.010896 - voomLmFit - cluster: Inhib.3.1, block= 'exp_round', ncol: 15, ngene: 9154
+2025-07-10 15:37:12.962288 - voomLmFit - cluster: Inhib.3.1, block= 'exp_round', ncol: 15, ngene: 9154
 First sample weights (min/max) 0.6780786/1.4517985
 First intra-block correlation  7.443403e-05
 Final sample weights (min/max) 0.678272/1.448485
 Final intra-block correlation  0.001962905
 Done - Return data
-2025-07-08 21:41:32.158184 - voomLmFit - cluster: Inhib.3.2, block= 'exp_round', ncol: 31, ngene: 21870
+2025-07-10 15:37:42.791533 - voomLmFit - cluster: Inhib.3.2, block= 'exp_round', ncol: 31, ngene: 21870
 First sample weights (min/max) 0.4183271/2.4409427
 First intra-block correlation  0.06853808
 Final sample weights (min/max) 0.4181745/2.4301682
 Final intra-block correlation  0.06950871
 Done - Return data
-2025-07-08 21:42:26.860369 PSEUDOBULK: cell_type_hc2
-2025-07-08 21:42:26.86725 make pseudobulk object
-2025-07-08 21:44:25.349564 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
-2025-07-08 21:44:25.396639 normalize expression
-2025-07-08 21:44:27.633854 - Done pseudobulk
+2025-07-10 15:38:36.379531 PSEUDOBULK: cell_type_hc2
+2025-07-10 15:38:36.386794 make pseudobulk object
+2025-07-10 15:40:47.008869 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
+2025-07-10 15:40:47.064293 normalize expression
+2025-07-10 15:40:49.353897 - Done pseudobulk
 nrow: 38606, ncol: 33
 Too few samples in: Inhib.2.2
-2025-07-08 21:44:29.359077 - voomLmFit - cluster: Inhib.2.1, block= 'exp_round', ncol: 31, ngene: 21876
+2025-07-10 15:40:51.155684 - voomLmFit - cluster: Inhib.2.1, block= 'exp_round', ncol: 31, ngene: 21876
 First sample weights (min/max) 0.4147792/2.3808654
 First intra-block correlation  0.06563827
 Final sample weights (min/max) 0.4147972/2.3686327
 Final intra-block correlation  0.06661407
 Done - Return data
 [1] "Reproducibility information:"
-[1] "2025-07-08 21:45:21 EDT"
-   user  system elapsed 
-933.076  10.236 955.309 
+[1] "2025-07-10 15:41:45 EDT"
+    user   system  elapsed 
+ 994.557   10.362 1011.666 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -355,7 +370,7 @@ Done - Return data
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-07-08
+ date     2025-07-10
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -526,4 +541,4 @@ Done - Return data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jul  8 09:45:21 PM EDT 2025
+Thu Jul 10 03:41:45 PM EDT 2025
