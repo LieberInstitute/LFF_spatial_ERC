@@ -129,11 +129,6 @@ genes_inter <- opt_clus_summary |>
     mutate(pval05_genes_inter = list(Reduce(intersect, gene_list)),
            n_pval05_genes_inter = length(pval05_genes_inter))
 
-genes_inter |>
-    ggplot(aes(x = cell_type_broad, y = n_pval05_genes_inter, fill = cell_type_broad)) +
-    geom_col() +
-    theme_bw() +
-    scale_fill_manual(values = cell_type_colors$broad)
 
 ## compare sets
 opt_clus_summary <- opt_clus_summary |>
@@ -199,7 +194,7 @@ nPval_line <- opt_clus_summary |>
     scale_color_manual(values = cell_type_colors$broad) + 
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(nPval_line, filename = here(plot_dir, "hc_nPval_unqiue_line.png"))
+ggsave(nPval_line, filename = here(plot_dir, "hc_nPval_unique_line.png"))
 
 ## unique n pval<05 vs. hc level
 nPval_hc_unique_line <- opt_clus_summary |>
@@ -211,5 +206,14 @@ nPval_hc_unique_line <- opt_clus_summary |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ggsave(nPval_hc_unique_line, filename = here(plot_dir, "hc_nPval_hc_unique_line.png"))
+
+## set of genes pval,0.5
+nPval_hc_common_col <- genes_inter |>
+    ggplot(aes(x = cell_type_broad, y = n_pval05_genes_inter, fill = cell_type_broad)) +
+    geom_col() +
+    theme_bw() +
+    scale_fill_manual(values = cell_type_colors$broad)
+
+ggsave(nPval_hc_common_col, filename = here(plot_dir, "hc_nPval_common_col.png"))
 
 
