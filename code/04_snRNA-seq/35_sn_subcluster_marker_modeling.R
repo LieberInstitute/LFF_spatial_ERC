@@ -54,6 +54,7 @@ marker_stats_MeanRatio <- get_mean_ratio(
 )
 
 save(marker_stats_MeanRatio, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype)))
+# load(here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype)), verbose = TRUE)
 
 marker_stats_MeanRatio |> 
     arrange(cellType.target) |>
@@ -189,10 +190,22 @@ plot_marker_express_ALL(
     plot_points = FALSE
 )
 
-#### load modeling ####
 
-modeling <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
-colnames(modeling$enrichment)
+## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
+oligo_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
+                      Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
+                      premyelin_Oligo = c("SOX10", "OLIGO1", "OLIGO2", "NKX2-2", "CD9"),
+                      myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"))
+
+oligo_markers <- map(oligo_markers, ~.x[.x %in% rownames(sce)])
+
+plot_marker_express_List(
+    sce[,sce$cell_type_broad %in% c("Oligo", "OPC")],
+    gene_list = oligo_markers,
+    cellType_col = "cell_type_anno",
+    pdf_fn = here(plot_dir, "sn_violin_Oligo_markers.pdf"),
+    color_pal = cell_type_colors$anno
+)
 
 
 # slurmjobs::job_single('35_sn_subcluster_markers', create_shell = TRUE, memory = '100G', command = "Rscript 35_sn_subcluster_markers.R -celltype 'ct_broad_k20'")

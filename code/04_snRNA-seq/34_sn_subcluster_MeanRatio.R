@@ -21,7 +21,7 @@ print(opt)
 
 cluster <- opt$cluster
 
-# cluster = "cell_type_anno"
+# cluster <- "cell_type_anno"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -49,8 +49,13 @@ marker_stats_MeanRatio <- get_mean_ratio(
 )
 
 save(marker_stats_MeanRatio, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", cluster)))
+# load(here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", cluster)))
 
-## Run 1vALL 
+#### export top 10 ####
+marker_stats_MeanRatio |> 
+    arrange(cellType.target) |>
+    filter(MeanRatio > 1, MeanRatio.rank <= 10) |>
+    write.csv(here(data_dir, sprintf("sn_MeanRatio_top10_%s.csv", celltype)), row.names = FALSE)
 
 
 #### plot hockey stick plots & top markers ####
@@ -63,7 +68,7 @@ cluster %in% colnames(colData(sce))
 ## plot markers
 plot_marker_express_ALL(
     sce,
-    marker_stats,
+    marker_stats_MeanRatio,
     pdf_fn = here(plot_dir, sprintf("sn_violin_MeanRatio_top10-%s.pdf", cluster)),
     n_genes = 10,
     rank_col = "MeanRatio.rank",
