@@ -268,7 +268,7 @@ dim(carrier_data)
 saveRDS(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.csv", opt$datatype)), row.names = FALSE)
 
-carrier_data <- readRDS(here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
+# carrier_data <- readRDS(here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 
 #### compare t-stats ####
 comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
@@ -328,8 +328,8 @@ ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_t_stat_ggpairs.png"
 
 ## log FC
 carrier_data_wide_logFC <- carrier_data |>
-    select(gene_id, gene_id, cluster, vlmf_logFC) |>
-    pivot_wider(values_from = "vlmf_logFC", names_from = "cluster")
+    dplyr::select(gene_id, gene_id, cluster, vlmf_logFC) |>
+    tidyr::pivot_wider(values_from = "vlmf_logFC", names_from = "cluster")
 
 ggpair_logFC <- ggpairs(carrier_data_wide_logFC, columns = 2:ncol(carrier_data_wide_logFC), aes(alpha = 0.2))
 ggsave(ggpair_logFC, filename = here(plot_dir, sprintf("%s_logFC_ggpairs.png", opt$datatype)), height = 10, width = 10)    
