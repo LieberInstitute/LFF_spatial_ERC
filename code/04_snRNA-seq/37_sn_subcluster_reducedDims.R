@@ -77,6 +77,8 @@ sce <- runUMAP(sce, dimred = "HARMONY_st")
 cell_type_colors <- metadata(sce)$cell_type_colors
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+## plot w/ default colors (easier to tell apart)
 walk(c("TSNE", "UMAP"),
     ~my_plot_reduced_dim(sce,
                          prefix = "sn_subcluster",
@@ -91,6 +93,7 @@ walk(c("TSNE", "UMAP"),
                          add_label = TRUE)
      )
 
+## plot w/ cell type colors
 walk(c("TSNE", "UMAP"),
     ~my_plot_reduced_dim(sce,
                          prefix = "sn_subcluster",
@@ -106,6 +109,59 @@ walk(c("TSNE", "UMAP"),
                          add_label = TRUE)
      )
 
+#### Trajectory analysis ####
+
+library(TSCAN)
+
+by.cluster <- aggregateAcrossCells(sce, ids=sce$cell_type_anno)
+centroids <- reducedDim(by.cluster, "HARMONY_st")
+
+# Set clusters=NULL as we have already aggregated above.
+mst <- createClusterMST(centroids, clusters=NULL)
+mst
+
+line.data <- reportEdges(by.cluster, mst=mst, clusters=NULL, use.dimred="TSNE")
+
+tsne_edge <- my_plot_reduced_dim(sce,
+                    prefix = "sn_subcluster",
+                    dimred = "TSNE",
+                    my_var = "cell_type_anno",
+                    var_type = "cat",
+                    save_plot = FALSE,
+                    suffix = celltype,
+                    facet = FALSE,
+                    plot_dir_rd = plot_dir,
+                    verbose = TRUE, 
+                    add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-cell_type_trajectory-Oligo.png")))
+
+
+colLabels(sce) <- sce$cell_type_anno
+
+map.tscan <- mapCellsToEdges(sce, mst=mst, use.dimred="HARMONY_st")
+tscan.pseudo <- orderCells(map.tscan, mst)
+head(tscan.pseudo)
+
+sce$pseudotime <- averagePseudotime(tscan.pseudo) 
+
+tsne_pseudotime <- my_plot_reduced_dim(sce,
+                                 prefix = "sn_subcluster",
+                                 dimred = "TSNE",
+                                 my_var = "pseudotime",
+                                 var_type = "con",
+                                 save_plot = FALSE,
+                                 suffix = celltype,
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-cell_type_pseudotime-Oligo.png")))
+
+    
 # slurmjobs::job_loop(loops = list(celltype = c("Astro", "OPC", "Oligo", "Micro", "Vasc")),
 #                     create_shell = TRUE, 
 #                     name = "37_sn_subcluster_reducedDims", 
