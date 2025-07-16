@@ -10,8 +10,6 @@ library("HDF5Array")
 library("tidyverse")
 library("getopt")
 library("spatialLIBD")
-library("scDotPlot")
-# library(ggsci)
 
 # Import command-line parameters
 scec <- matrix(
