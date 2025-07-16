@@ -23,7 +23,8 @@ my_plot_reduced_dim <- function(spe,
                                 color_pal = NULL,
                                 facet = FALSE,
                                 plot_dir_rd = plot_dir,
-                                verbose = TRUE){
+                                verbose = TRUE,
+                                add_label = FALSE){
     
     rd_x = paste0(dimred, ".1")
     rd_y = paste0(dimred, ".2")
@@ -54,6 +55,28 @@ my_plot_reduced_dim <- function(spe,
     } 
     
     if(!is.null(color_pal))  rd_plot <- rd_plot + scale_color_manual(values = color_pal)
+    
+    if(add_label & var_type == "cat"){
+        
+        rd <- as.data.frame(reducedDim(spe, dimred))
+        rd_x = colnames(rd)[[1]]
+        rd_y = colnames(rd)[[2]]
+        
+        rd$cat <- spe[[my_var]]
+        
+        rd_mean <- rd |> 
+            group_by(cat) |> 
+            # summarise(mean_x = mean(!!sym(rd_x)),
+            #           mean_y = mean(!!sym(rd_y))
+            #           ) |> 
+            summarise(m_x = median(!!sym(rd_x)),
+                      m_y = median(!!sym(rd_y))
+                      )
+        
+        rd_plot <- rd_plot + geom_text(data = rd_mean, aes(x = m_x, y = m_y, label = cat),
+                                       color = "black")
+        
+    }
     
     if(save_plot){
         
