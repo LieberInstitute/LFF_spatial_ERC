@@ -41,10 +41,45 @@ taupathy |> count(taupathy)
 # 1 FALSE       22
 # 2 TRUE         9
 
-sample_info <- sample_info |> left_join(taupathy)
+
+## Read in CERAD data
+path_data <- readxl::read_xlsx(here("processed-data", "00_project_prep", "05_pathology", "LFF_pathtab.xlsx")) |>
+    mutate(path_data = TRUE)
+
+path_data |> count(CERAD)
+path_data |> count(Braak)
+
+path_data |> count(BrNum %in% sample_info$BrNum)
+
+## join with sample data
+sample_info_path <- sample_info |>
+    left_join(taupathy) |>
+    left_join(path_data) |>
+    replace_na(list(path_data = FALSE))
 
 
-with(sample_info, table(APOE, taupathy))
+sample_info_path |> filter(!path_data)
+sample_info_path |> count(path_data, CERAD)
+# path_data CERAD         n
+# <lgl>     <chr>     <int>
+# 1 FALSE     NA            8
+# 2 TRUE      C0-none      11
+# 3 TRUE      C1-sparse     1
+# 4 TRUE      NA           11
+
+sample_info_path |> count(path_data, Braak)
+# path_data Braak           n
+# <lgl>     <chr>       <int>
+# 1 FALSE     NA              8
+# 2 TRUE      B0              3
+# 3 TRUE      B1 (I - II)     5
+# 4 TRUE      I               2
+# 5 TRUE      II              1
+# 6 TRUE      III             1
+# 7 TRUE      NA             11
+
+
+with(sample_info_path, table(APOE, taupathy))
 #         taupathy
 # APOE    FALSE TRUE
 # E2/E2     4    2
@@ -52,19 +87,19 @@ with(sample_info, table(APOE, taupathy))
 # E3/E4     8    2
 # E4/E4     5    2
 
-with(sample_info, table(Ancestry, taupathy))
+with(sample_info_path, table(Ancestry, taupathy))
 #         taupathy
 # Ancestry FALSE TRUE
 #       AA    13    4
 #       EA     9    5
 
-with(sample_info, table(Sex, taupathy))
+with(sample_info_path, table(Sex, taupathy))
 #     taupathy
 # Sex FALSE TRUE
 # F     7    2
 # M    15    7
 
-sample_info |>
+sample_info_path |>
     group_by(APOE_carrier) |>
     summarise(prop_tau = sum(taupathy)/n())
 # APOE_carrier prop_tau
@@ -83,8 +118,8 @@ sample_info |>
 # 4 E4/E4    0.286
 
 ## save data
-sample_info |>
-    select(BrNum, APOE, APOE_carrier, Ancestry, Sex, Age, Diagnosis, Anc_Afr, Anc_Eur, Rin, taupathy) |>
+sample_info_path |>
+    select(BrNum, APOE, APOE_carrier, Ancestry, Sex, Age, Diagnosis, Anc_Afr, Anc_Eur, Rin, taupathy, CERAD, Braak) |>
     write_csv(here("processed-data", "00_project_prep", "05_pathology","sample_taupathy.csv"))
 
 path_counts <- sample_info |>
