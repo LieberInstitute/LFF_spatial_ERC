@@ -51,6 +51,10 @@ rgb_legned <- vis_RGB_legend_simple()
 ggsave(rgb_legned, filename = here(plot_dir, "rgb_legend_simple.png"))
 
 
+rgb_legend_flat <- vis_RGB_legend_simple() +theme(legend.position = "bottom")
+ggsave(rgb_legend_flat, filename = here(plot_dir, "rgb_legend_flat.png"))
+
+
 ## SpDs
 SpD_row <- Reduce("+",
                   map(poster_samples, 
