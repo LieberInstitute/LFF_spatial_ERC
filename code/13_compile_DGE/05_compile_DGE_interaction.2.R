@@ -339,10 +339,10 @@ if(opt$datatype == "sn_fine"){
     # compare_contrast_stats(vlmf_data_tb, stat = "logFC")
 }
 
-slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
-                    create_shell = TRUE, 
-                    name = "05_compile_DGE_interaction.2", 
-                    create_script = FALSE)
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
+#                     create_shell = TRUE, 
+#                     name = "05_compile_DGE_interaction.2", 
+#                     create_script = FALSE)
 
 #### Reproducibility information ####
 print("Reproducibility information:")
