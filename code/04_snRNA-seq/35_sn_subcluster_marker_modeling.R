@@ -24,10 +24,10 @@ celltype <- opt$celltype
 
 # celltype = "Oligo"
 
-data_dir <- here("processed-data", "04_snRNA-seq", "35_sn_subcluster_markers", celltype)
+data_dir <- here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", celltype)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-plot_dir <- here("plots", "04_snRNA-seq", "35_sn_subcluster_markers", celltype)
+plot_dir <- here("plots", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", celltype)
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load the data ####
@@ -353,7 +353,7 @@ if(celltype == "Oligo"){
 }
 
 
-# slurmjobs::job_single('35_sn_subcluster_markers', create_shell = TRUE, memory = '25G', command = "Rscript 35_sn_subcluster_markers.R --celltype Oligo")
+# slurmjobs::job_single('35_sn_subcluster_marker_modeling', create_shell = TRUE, memory = '25G', command = "Rscript 35_sn_subcluster_marker_modeling.R --celltype Oligo")
 
 ## Reproducibility information
 print("Reproducibility information:")
