@@ -39,7 +39,7 @@ if(opt$datatype == "Visium"){
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, basename(pb_fn)))
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction", sprintf("vlmf_%s", opt$datatype))
+data_dir <- here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction.2", sprintf("vlmf_%s", opt$datatype))
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -50,16 +50,17 @@ table(sce_pb$registration_variable)
 clusters <- levels(sce_pb$registration_variable)
 names(clusters) <- clusters
 
+## Add Anc + APOE value
+sce_pb$carrier_Anc <- paste0(sce_pb$APOE_carrier_syn, "_" ,sce_pb$Ancestry)
+
 message(Sys.time(), " - Loop voomlmFit by cluster")
 
-lmf_summary <- map_dfr(clusters, function(clus){
-    
-    sce_pb$carrier_Anc <- paste0(sce_pb$APOE_carrier_syn, "_" ,sce_pb$Ancestry)
+vlmf_summary <- map_dfr(clusters, function(clus){
     
     dge <- sce_pb[,sce_pb$registration_variable == clus]
     
-    # des <- model.matrix(~APOE_carrier_syn*Anc_Afr + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
-    # des <- model.matrix(~APOE_carrier_syn*Ancestry + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+    # table(dge$carrier_Anc)
+    
     des <- model.matrix(~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
     des <- as.data.frame(des)
     
@@ -83,12 +84,14 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     
     cont <- makeContrasts(
-        ## main
+        ## compare carrier by ancestry
+        carrier_AA = "carrier_AncE2_AA-carrier_AncE4_AA",
+        carrier_EA = "carrier_AncE2_EA-carrier_AncE4_EA",
+        ## compare ancestry by carrier stats
         anc_E2 = "carrier_AncE2_AA-carrier_AncE2_EA",
         anc_E4 = "carrier_AncE4_AA-carrier_AncE4_EA",
         levels=des
     )
-    
     
     v.swt.fit <- contrasts.fit(v.swt,contrasts=cont)
     v.swt.fit.e <- eBayes(v.swt.fit)
@@ -103,7 +106,7 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     names(v.swt.e.tt) <- colnames(cont)
     
-    head(v.swt.e.tt)
+    map(v.swt.e.tt, head)
     
     message("Done - Save data")
     saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_interaction_%s_%s.rds", opt$datatype, clus)))
@@ -118,11 +121,14 @@ lmf_summary <- map_dfr(clusters, function(clus){
     #        )
 })
 
-write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_interacton_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
+vlmf_summary <- vlmf_summary |>
+    add_column(cluster = clusters, .before = 1)
 
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_fine")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype Visium")
+write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_interacton2_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
+
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction.2_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.2.R --datatype sn_broad")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction.2_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.2.R --datatype sn_fine")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction.2_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.2.R --datatype Visium")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
