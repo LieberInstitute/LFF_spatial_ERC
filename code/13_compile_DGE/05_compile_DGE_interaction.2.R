@@ -70,13 +70,20 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~do.call("rbind", .x[c("carrier_AA", "carrier
                                           vlmf_P.Value = P.Value,
                                           vlmf_adj.P.Val = adj.P.Val,
                                           vlmf_B = B
-                            ))  |>
-    mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels),
-           mod = "interaction") |>
+                            )) |>
+    mutate(mod = "interaction") |>
     as_tibble()
 
+if(opt$datatype == "Visium"){
+    vlmf_data_tb <- vlmf_data_tb |> mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels))
+} else {
+    vlmf_data_tb <- vlmf_data_tb |> mutate(cluster = factor(cluster, levels = cluster_levels))
+}
+
+any(is.na(vlmf_data_tb$cluster))
+
 vlmf_data_tb|> count(cluster, contrast)
-vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.1) |> count(cluster, contrast)
+vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.05) |> count(cluster, contrast)
 vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC)
 
 
@@ -85,7 +92,6 @@ vlmf_model_summary <- vlmf_data_tb |>
     summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
-
                                
 # ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
@@ -96,7 +102,8 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     facet_wrap(~contrast, ncol = 1) +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None")
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("interaction_%s_vlmf_model_summary_bar.png", opt$datatype)))
 
@@ -148,9 +155,9 @@ custom_volcano <- function(data, FDR_cut = 0.05, model_name){
 
 if(opt$datatype == "sn_fine"){
     
-    # map(cell_type_broad_levels, ~vlmf_data_tb |> 
-    #         filter(grepl(.x, cluster)) |>
-    #         custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction")))
+    map(cell_type_broad_levels, ~vlmf_data_tb |>
+            filter(grepl(.x, cluster)) |>
+            custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction")))
     
     map(cell_type_broad_levels, ~vlmf_data_tb |> 
             filter(grepl(.x, cluster),
@@ -174,7 +181,7 @@ write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%
 # vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
 
 # #### compare t-stats ####
-comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE){
+comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
 
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -230,14 +237,15 @@ comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
             size = 2.5
         ) +
         facet_wrap(~cluster) +
-        theme_bw()
+        theme_bw() +
+        labs(title = datatype)
     
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
-        plot_fn = sprintf("interaction_%s_stat_scatter_%s_risk.png", opt$datatype, stat)
+        plot_fn = sprintf("interaction_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
-        plot_fn = sprintf("interaction_%s_stat_scatter_%s.png", opt$datatype, stat)
+        plot_fn = sprintf("interaction_%s_stat_scatter_%s.png", datatype, stat)
     }
     
 
@@ -245,17 +253,32 @@ comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
 
     # return(t_stat_scatter)
 }
- 
-# ## compare t-stats
-comapre_stats_scatter(vlmf_data_tb)
-comapre_stats_scatter(vlmf_data_tb, risk = TRUE)
 
-## compare logFC
-comapre_stats_scatter(vlmf_data_tb, stat = "logFC")
+if(opt$datatype == "sn_fine"){
 
+    map(cell_type_broad_levels, ~vlmf_data_tb |>
+            filter(grepl(.x, cluster)) |>
+            comapre_stats_scatter(datatype = paste0(opt$datatype, "_", .x)))    
+    # 
+    # map(cell_type_broad_levels, ~vlmf_data_tb |>
+    #         filter(grepl(.x, cluster)) |>
+    #         comapre_stats_scatter(datatype = paste0(opt$datatype, "_", .x),
+    #                               risk = TRUE))
 
-# slurmjobs::job_single('05_compile_DGE_interaction.2_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 05_compile_DGE_interaction.2 --datatype sn_broad")
-# slurmjobs::job_single('05_compile_DGE_interaction.2_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 05_compile_DGE_interaction.2 --datatype Visium")
+    
+} else {
+    # ## compare t-stats
+    comapre_stats_scatter(vlmf_data_tb)
+    comapre_stats_scatter(vlmf_data_tb, risk = TRUE)
+    
+    ## compare logFC
+    comapre_stats_scatter(vlmf_data_tb, stat = "logFC")
+}
+
+slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
+                    create_shell = TRUE, 
+                    name = "05_compile_DGE_interaction.2", 
+                    create_script = FALSE)
 
 #### Reproducibility information ####
 print("Reproducibility information:")
