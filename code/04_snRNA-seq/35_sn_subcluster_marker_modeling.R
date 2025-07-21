@@ -10,6 +10,7 @@ library("HDF5Array")
 library("tidyverse")
 library("getopt")
 library("spatialLIBD")
+library("scDotPlot")
 
 # Import command-line parameters
 scec <- matrix(
@@ -44,17 +45,24 @@ table(sce$cell_type_anno)
 
 
 #### Run Mean Ratio ####
-message(Sys.time(), " - Run MeanRatio on ", celltype)
-marker_stats_MeanRatio <- get_mean_ratio(
-    sce = sce,
-    assay_name = "logcounts",
-    cellType_col = "cell_type_anno",
-    gene_ensembl = "gene_id",
-    gene_name = "gene_name"
-)
+marker_stats_fn <- here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype))
 
-save(marker_stats_MeanRatio, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype)))
-# load(here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype)), verbose = TRUE)
+if(file.exists(marker_stats_fn)){
+    message(Sys.time(), " - Load marker stats data")
+    load(marker_stats_fn, verbose = TRUE)
+} else {
+    message(Sys.time(), " - Run MeanRatio on ", celltype)
+    marker_stats_MeanRatio <- get_mean_ratio(
+        sce = sce,
+        assay_name = "logcounts",
+        cellType_col = "cell_type_anno",
+        gene_ensembl = "gene_id",
+        gene_name = "gene_name"
+    )
+    
+    save(marker_stats_MeanRatio, file = marker_stats_fn)
+}
+
 
 top_MeanRatio_genes <- marker_stats_MeanRatio |> 
     arrange(cellType.target) |>
@@ -93,6 +101,7 @@ sce |>
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "Marker",
+              scale = TRUE,
               annoColors = list("cell_type_anno" = cell_type_colors$anno,
                                 "Marker" = cell_type_colors$anno),
               clusterRows = FALSE,
@@ -158,6 +167,7 @@ sce |>
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "Marker",
+              scale = TRUE,
               annoColors = list("cell_type_anno" = cell_type_colors$anno,
                                 "Marker" = cell_type_colors$anno),
               clusterRows = FALSE,
@@ -292,42 +302,58 @@ dev.off()
 
 
 #### Cell type checks ####
-## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
-oligo_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
-                      Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
-                      premyelin_Oligo = c("SOX10", "OLIGO1", "OLIGO2", "NKX2-2", "CD9"),
-                      myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"))
+if(celltype == "Oligo"){
+    
+    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
+    oligo_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
+                          Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
+                          premyelin_Oligo = c("SOX10", "OLIGO1", "OLIGO2", "NKX2-2", "CD9"),
+                          myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"))
+    
+    oligo_markers <- map(oligo_markers, ~.x[.x %in% rownames(sce)])
+    
+    plot_marker_express_List(
+        sce,
+        gene_list = oligo_markers,
+        cellType_col = "cell_type_anno",
+        pdf_fn = here(plot_dir, "sn_violin_Oligo_markers.pdf"),
+        color_pal = cell_type_colors$anno
+    )
+    
+    ## Bernie genes of interest
+    oligo_bernie_genes <- plot_gene_express(
+        sce,
+        genes = c("PSEN1", "NCSTN"),
+        category = "cell_type_anno",
+        color_pal = cell_type_colors$anno
+    )
+    
+    ggsave(oligo_bernie_genes, filename = here(plot_dir, "sn_violin_Oligo_check.png"))
+    
+    
+    ## oligo marker dot plot
+    oligo_markers <- AnnotationDbi::unlist2(oligo_markers)
+    
+    rowData(sce)$Marker <- NULL
+    rowData(sce)$Marker <- names(oligo_markers)[match(rownames(sce), oligo_markers)] 
+    table(rowData(sce)$Marker)
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
+    sce |>
+        scDotPlot(features = oligo_markers,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marker",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    dev.off()
+    
+}
 
-oligo_markers <- map(oligo_markers, ~.x[.x %in% rownames(sce)])
 
-plot_marker_express_List(
-    sce[,sce$cell_type_broad %in% c("Oligo", "OPC")],
-    gene_list = oligo_markers,
-    cellType_col = "cell_type_anno",
-    pdf_fn = here(plot_dir, "sn_violin_Oligo_markers.pdf"),
-    color_pal = cell_type_colors$anno
-)
-
-## oligo marker dot plot
-oligo_markers <- AnnotationDbi::unlist2(oligo_markers)
-
-rowData(sce)$Marker <- NULL
-rowData(sce)$Marker <- names(oligo_markers)[match(rownames(sce), oligo_markers)] 
-table(rowData(sce)$Marker)
-
-pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
-sce |>
-    scDotPlot(features = oligo_markers,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              featureAnno = "Marker",
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE)
-dev.off()
-
-
-# slurmjobs::job_single('35_sn_subcluster_markers', create_shell = TRUE, memory = '100G', command = "Rscript 35_sn_subcluster_markers.R -celltype 'ct_broad_k20'")
+# slurmjobs::job_single('35_sn_subcluster_markers', create_shell = TRUE, memory = '25G', command = "Rscript 35_sn_subcluster_markers.R --celltype Oligo")
 
 ## Reproducibility information
 print("Reproducibility information:")
