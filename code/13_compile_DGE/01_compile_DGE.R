@@ -271,7 +271,7 @@ write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.cs
 # carrier_data <- readRDS(here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 
 #### compare t-stats ####
-comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
+compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
     
     ## define vars
     statX <- paste0(mX, "_", stat)
@@ -305,14 +305,14 @@ comapre_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
 }
 
 ## compare t-stats
-comapre_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
-comapre_stats_scatter(carrier_data, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-comapre_stats_scatter(carrier_data, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+compare_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
+compare_stats_scatter(carrier_data, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+compare_stats_scatter(carrier_data, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
 ## compare logFC
-comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", model_name = "carrier")
-comapre_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-comapre_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+compare_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", model_name = "carrier")
+compare_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+compare_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
 
 #### compare stats cluster vs. cluster 
