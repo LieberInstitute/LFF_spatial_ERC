@@ -180,8 +180,57 @@ write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%
 
 # vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
 
-# #### compare t-stats ####
-comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
+
+#### compare t-stats ####
+compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
+    
+    ## define vars
+    statX <- paste0(stat, "_", mX)
+    statY <- paste0(stat, "_", mY)
+    fdrX <- paste0("fdr_", mX)
+    fdrY <- paste0("fdr_", mY)
+    
+    # define colors
+    signif_colors <- c("purple", "blue", "red")
+    names(signif_colors) <- c("sig_both", paste(mX, "FDR<", FDR_cut_mX) , paste(mY, "FDR<", FDR_cut_mY))
+    
+    
+    cor <- dge_tb |>
+        group_by(cluster) |>
+        summarise(cor = cor(!!sym(statX), !!sym(statY))) |>
+        mutate(anno = sprintf("cor=%.2f", cor))
+    
+    # make scatter plot
+    stat_scatter <- dge_tb |>
+        mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
+                                    !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "FDR<", FDR_cut_mX),
+                                    !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "FDR<", FDR_cut_mY),
+                                    TRUE ~ "None")) |>
+        ggplot(aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
+        geom_point(alpha = 0.5, size = 0.5) +
+        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
+        geom_abline(linetype = "dashed") +
+        scale_color_manual(values = signif_colors) +
+        labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
+        facet_wrap(~cluster) +
+        geom_label(
+            data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
+            color = "black",
+            alpha = 0.5,
+            vjust = "inward", 
+            hjust = "inward", 
+            size = 2.5
+        ) +
+        theme_bw() +
+        theme(legend.position = "bottom")
+    
+   return(stat_scatter)
+    
+}
+
+
+
+compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
 
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -197,49 +246,21 @@ comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
         select(gene_id, gene_name, cluster, contrast, !!sym(fdr)) |>
         pivot_wider(names_from = "contrast", values_from = !!sym(fdr), names_prefix = "fdr_") |>
         left_join(dge_tb_wide_stat)
-
-    # define colors
-    signif_colors <- c("purple", "blue", "red")
-    names(signif_colors) <- c("sig_both", paste("carrier_AA", "FDR<", FDR_cut) , paste("carrier_EA", "FDR<", FDR_cut))
-
-    fdrX <- "fdr_carrier_AA"
-    fdrY <- "fdr_carrier_EA"
-    
-    statX <- paste0(stat, "_carrier_AA")
-    statY <- paste0(stat, "_carrier_EA")
     
     ## filter risk
     if(risk){
         dge_tb_wide <- dge_tb_wide |> filter(gene_name %in% AD_risk$symbol)
     }
     
-    cor <- dge_tb_wide |>
-        group_by(cluster) |>
-        summarise(cor = cor(!!sym(statX), !!sym(statY))) |>
-        mutate(anno = sprintf("cor=%.2f", cor))
-    
-    # make scatter plot
-    stat_scatter <- dge_tb_wide |>
-        mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut & !!sym(fdrY) < FDR_cut ~ "sig_both",
-                                    !!sym(fdrX) < FDR_cut ~ paste("carrier_AA", "FDR<", FDR_cut),
-                                    !!sym(fdrY) < FDR_cut ~ paste("carrier_EA", "FDR<", FDR_cut),
-                                    TRUE ~ "None")) |>
-        ggplot(aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
-        geom_point(alpha = 0.2, size = 0.5) +
-        geom_abline(linetype = "dashed") +
-        scale_color_manual(values = signif_colors) +
-        geom_label(
-            data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
-            color = "black",
-            alpha = 0.5,
-            vjust = "inward", 
-            hjust = "inward", 
-            size = 2.5
-        ) +
-        facet_wrap(~cluster) +
-        theme_bw() +
-        labs(title = datatype)
-    
+    ## screate scatter plot
+    stat_scatter <- compare_stats_scatter(dge_tb = dge_tb_wide, 
+                          stat = "t", 
+                          mX = "carrier_AA", 
+                          mY = "carrier_EA", 
+                          FDR_cut_mX = FDR_cut, 
+                          FDR_cut_mY = FDR_cut, 
+                          model_name = datatype)
+
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
         plot_fn = sprintf("interaction_%s_stat_scatter_%s_risk.png", datatype, stat)
@@ -247,32 +268,71 @@ comapre_stats_scatter <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
         plot_fn = sprintf("interaction_%s_stat_scatter_%s.png", datatype, stat)
     }
-    
+
 
     ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
-
-    # return(t_stat_scatter)
 }
+
+compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
+    
+    ## load carrier data 
+    carrier_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))) |>
+        select(cluster, gene_id, t_carrier = vlmf_t, fdr_carrier = vlmf_adj.P.Val)
+
+    ## combine data
+    dge_combined <- dge_tb  |>
+        select(cluster, contrast, gene_id, gene_name, t_interaction = vlmf_t, fdr_interaction = vlmf_adj.P.Val) |>
+        left_join(carrier_data)
+    
+    
+    ## filter risk
+    if(risk){
+        dge_combined <- dge_combined |> filter(gene_name %in% AD_risk$symbol)
+    }
+    
+    ## screate scatter plot
+    stat_scatter <- compare_stats_scatter(dge_tb = dge_combined, 
+                                          stat = "t", 
+                                          mX = "carrier", 
+                                          mY = "interaction", 
+                                          FDR_cut_mX = FDR_cut, 
+                                          FDR_cut_mY = FDR_cut, 
+                                          model_name = datatype) +
+        facet_grid(cluster~contrast)
+    
+    if(risk){
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
+        plot_fn = sprintf("interaction_v_carrier_%s_stat_scatter_%s_risk.png", datatype, stat)
+    } else {
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
+        plot_fn = sprintf("interaction_v_carrier_%s_stat_scatter_%s.png", datatype, stat)
+    }
+    
+    
+    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+}
+
+dge_tb <- vlmf_data_tb |> filter(grepl("Astro", cluster))
 
 if(opt$datatype == "sn_fine"){
 
     map(cell_type_broad_levels, ~vlmf_data_tb |>
             filter(grepl(.x, cluster)) |>
-            comapre_stats_scatter(datatype = paste0(opt$datatype, "_", .x)))    
+            compare_contrast_stats(datatype = paste0(opt$datatype, "_", .x)))    
     # 
     # map(cell_type_broad_levels, ~vlmf_data_tb |>
     #         filter(grepl(.x, cluster)) |>
-    #         comapre_stats_scatter(datatype = paste0(opt$datatype, "_", .x),
+    #         compare_stats_scatter(datatype = paste0(opt$datatype, "_", .x),
     #                               risk = TRUE))
 
     
 } else {
     # ## compare t-stats
-    comapre_stats_scatter(vlmf_data_tb)
-    comapre_stats_scatter(vlmf_data_tb, risk = TRUE)
+    compare_stats_scatter(vlmf_data_tb)
+    compare_stats_scatter(vlmf_data_tb, risk = TRUE)
     
     ## compare logFC
-    comapre_stats_scatter(vlmf_data_tb, stat = "logFC")
+    compare_stats_scatter(vlmf_data_tb, stat = "logFC")
 }
 
 slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
