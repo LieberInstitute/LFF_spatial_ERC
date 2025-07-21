@@ -85,8 +85,8 @@ vlmf_summary <- map_dfr(clusters, function(clus){
     
     cont <- makeContrasts(
         ## compare carrier by ancestry
-        carrier_AA = "carrier_AncE2_AA-carrier_AncE4_AA",
-        carrier_EA = "carrier_AncE2_EA-carrier_AncE4_EA",
+        carrier_AA = "-carrier_AncE2_AA + carrier_AncE4_AA",
+        carrier_EA = "-carrier_AncE2_EA + carrier_AncE4_EA",
         ## compare ancestry by carrier stats
         anc_E2 = "carrier_AncE2_AA-carrier_AncE2_EA",
         anc_E4 = "carrier_AncE4_AA-carrier_AncE4_EA",
