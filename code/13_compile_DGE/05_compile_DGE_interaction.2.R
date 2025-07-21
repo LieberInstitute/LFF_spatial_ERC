@@ -80,6 +80,7 @@ if(opt$datatype == "Visium"){
     vlmf_data_tb <- vlmf_data_tb |> mutate(cluster = factor(cluster, levels = cluster_levels))
 }
 
+levels(vlmf_data_tb$cluster)
 any(is.na(vlmf_data_tb$cluster))
 
 vlmf_data_tb|> count(cluster, contrast)
@@ -312,7 +313,7 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
     ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
 }
 
-dge_tb <- vlmf_data_tb |> filter(grepl("Astro", cluster))
+# dge_tb <- vlmf_data_tb |> filter(grepl("Astro", cluster))
 
 if(opt$datatype == "sn_fine"){
 
@@ -328,11 +329,14 @@ if(opt$datatype == "sn_fine"){
     
 } else {
     # ## compare t-stats
-    compare_stats_scatter(vlmf_data_tb)
-    compare_stats_scatter(vlmf_data_tb, risk = TRUE)
+    compare_contrast_stats(vlmf_data_tb)
+    compare_contrast_stats(vlmf_data_tb, risk = TRUE)
+    
+    ## compare w/ overall carrier stats
+    compare_carrier_stats(vlmf_data_tb)
     
     ## compare logFC
-    compare_stats_scatter(vlmf_data_tb, stat = "logFC")
+    # compare_contrast_stats(vlmf_data_tb, stat = "logFC")
 }
 
 slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
