@@ -104,6 +104,17 @@ sex_barplot <- sample_info |>
 ggsave(sex_barplot, filename = here(plot_dir, "sex_barplot.png"), width = 2, height = 2)
 
 
+## Age boxplot + genotype + sex
+
+age_boxplot <- sample_info |>
+    ggplot(aes(x = APOE, y = Age, color = Sex)) +
+    geom_boxplot() +
+    facet_wrap(~Ancestry) +
+    theme_bw()
+
+ggsave(age_boxplot, filename = here(plot_dir, "age_boxplot.png"))
+
+
 # slurmjobs::job_single('03_experiment_tile', create_shell = TRUE, memory = '5G', command = "Rscript 03_experiment_tile.R")
 
 ## Reproducibility information
