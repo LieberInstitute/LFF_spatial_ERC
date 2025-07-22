@@ -81,18 +81,18 @@ if(opt$datatype == "Visium"){
 }
 
 levels(vlmf_data_tb$cluster)
-any(is.na(vlmf_data_tb$cluster))
+stopifnot(!any(is.na(vlmf_data_tb$cluster)))
 
 vlmf_data_tb|> count(cluster, contrast)
 vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.05) |> count(cluster, contrast)
 vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC)
 
 
-vlmf_model_summary <- vlmf_data_tb |> 
+(vlmf_model_summary <- vlmf_data_tb |> 
     group_by(cluster, contrast) |>
     summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
-              nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
+              nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0)))
                                
 # ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
@@ -196,10 +196,10 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
     names(signif_colors) <- c("sig_both", paste(mX, "FDR<", FDR_cut_mX) , paste(mY, "FDR<", FDR_cut_mY))
     
     
-    cor <- dge_tb |>
-        group_by(cluster) |>
-        summarise(cor = cor(!!sym(statX), !!sym(statY))) |>
-        mutate(anno = sprintf("cor=%.2f", cor))
+    # cor <- dge_tb |>
+    #     group_by(cluster) |>
+    #     summarise(cor = cor(!!sym(statX), !!sym(statY))) |>
+    #     mutate(anno = sprintf("cor=%.2f", cor))
     
     # make scatter plot
     stat_scatter <- dge_tb |>
@@ -214,14 +214,14 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
         scale_color_manual(values = signif_colors) +
         labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
         facet_wrap(~cluster) +
-        geom_label(
-            data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
-            color = "black",
-            alpha = 0.5,
-            vjust = "inward", 
-            hjust = "inward", 
-            size = 2.5
-        ) +
+        # geom_label(
+        #     data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
+        #     color = "black",
+        #     alpha = 0.5,
+        #     vjust = "inward", 
+        #     hjust = "inward", 
+        #     size = 2.5
+        # ) +
         theme_bw() +
         theme(legend.position = "bottom")
     
@@ -253,14 +253,29 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
         dge_tb_wide <- dge_tb_wide |> filter(gene_name %in% AD_risk$symbol)
     }
     
-    ## screate scatter plot
+    ## get cor
+    cor <- dge_tb_wide |>
+        group_by(cluster) |>
+        summarise(cor = cor(!!sym(paste0(stat,"_carrier_EA")), !!sym(paste0(stat,"_carrier_AA")))) |>
+        mutate(anno = sprintf("cor=%.2f", cor))
+    
+    
+    ## create scatter plot
     stat_scatter <- compare_stats_scatter(dge_tb = dge_tb_wide, 
-                          stat = "t", 
-                          mX = "carrier_AA", 
-                          mY = "carrier_EA", 
-                          FDR_cut_mX = FDR_cut, 
-                          FDR_cut_mY = FDR_cut, 
-                          model_name = datatype)
+                                          stat = stat, 
+                                          mX = "carrier_AA", 
+                                          mY = "carrier_EA", 
+                                          FDR_cut_mX = FDR_cut, 
+                                          FDR_cut_mY = FDR_cut, 
+                                          model_name = datatype) +
+        geom_label(
+            data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
+            color = "black",
+            alpha = 0.5,
+            vjust = "inward", 
+            hjust = "inward", 
+            size = 2.5
+        )
 
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
@@ -291,6 +306,11 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
         dge_combined <- dge_combined |> filter(gene_name %in% AD_risk$symbol)
     }
     
+    cor <- dge_combined |>
+        group_by(cluster, contrast) |>
+        summarise(cor = cor(t_interaction, t_carrier, use = "complete.obs")) |>
+        mutate(anno = sprintf("cor=%.2f", cor))
+    
     ## screate scatter plot
     stat_scatter <- compare_stats_scatter(dge_tb = dge_combined, 
                                           stat = "t", 
@@ -299,7 +319,15 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
                                           FDR_cut_mX = FDR_cut, 
                                           FDR_cut_mY = FDR_cut, 
                                           model_name = datatype) +
-        facet_grid(cluster~contrast)
+        facet_grid(cluster~contrast) +
+        geom_label(
+            data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
+            color = "black",
+            alpha = 0.5,
+            vjust = "inward", 
+            hjust = "inward", 
+            size = 2.5
+        )
     
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
@@ -310,7 +338,7 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
     }
     
     
-    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 12, width = 10)
 }
 
 # dge_tb <- vlmf_data_tb |> filter(grepl("Astro", cluster))
