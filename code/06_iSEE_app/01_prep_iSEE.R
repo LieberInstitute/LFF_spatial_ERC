@@ -7,7 +7,7 @@ library("Matrix")
 library("tidyverse")
 
 ## Load HD5F sce
-message(Sys.time(), "- load Harmony corrected sce")
+message(Sys.time(), "- load SCEe")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 sce
 
@@ -35,15 +35,15 @@ sce$total <- NULL
 
 ## Check final size
 lobstr::obj_size(sce)
-# 5.87 GB
+# 5.47 GB
 
-rownames(sce) <- rowData(sce)$Symbol
+rownames(sce) <- rowData(sce)$gene_name
 
 #### Add MeanRatio Marker Gene Details ####
-load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio", "MarkerStats_cell_type_anno.Rdata"))
-marker_stats |> dplyr::count(cellType.target)
+load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio", "marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
+marker_stats_MeanRatio |> dplyr::count(cellType.target)
 
-marker_anno <- marker_stats |>
+marker_anno <- marker_stats_MeanRatio |>
     filter(MeanRatio.rank <= 50 & MeanRatio > 1) |>
     select(gene,
            cellType.target,
@@ -51,6 +51,8 @@ marker_anno <- marker_stats |>
            MeanRatio,
            MeanRatio.anno) |>
     column_to_rownames("gene")
+
+any(duplicated(rownames(marker_anno)))
 
 rowData(sce) <- cbind(rowData(sce), marker_anno[rownames(sce),])
 
@@ -67,9 +69,15 @@ sce
 # colnames(140119): cell1 cell2 ... cell160742 cell160743
 # colData names(34): Barcode sample_id ... low_detected_batch sizeFactor
 
-sce 
+## save RDS
+message(Sys.time(), "- Save data RDS")
 saveRDS(sce, file = here("code", "06_iSEE_app", "sce_ERC_iSEE.rds"))
 saveRDS(sn_colors, file = here("code", "06_iSEE_app", "sn_colors.rds"))
+
+## save HDF5
+message(Sys.time(), "- Save data HDF5")
+saveHDF5SummarizedExperiment(sce, dir = here("code", "06_iSEE_app", "sce_ERC_iSEE"), replace=TRUE)
+
 
 # slurmjobs::job_single('01_prep_iSEE', create_shell = TRUE, memory = '25G', command = "Rscript 01_prep_iSEE.R")
 
