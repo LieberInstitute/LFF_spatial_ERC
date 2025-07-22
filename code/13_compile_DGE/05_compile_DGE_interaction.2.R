@@ -43,7 +43,7 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
-    cell_type_broad_levels<- names(cell_type_colors$broad)
+    cell_type_broad_levels <- names(cell_type_colors$broad)[names(cell_type_colors$broad) != "Other"]
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
@@ -82,6 +82,12 @@ if(opt$datatype == "Visium"){
 
 levels(vlmf_data_tb$cluster)
 stopifnot(!any(is.na(vlmf_data_tb$cluster)))
+
+# vlmf_data_tb|> filter(cluster == "Excit.L2_5.2", gene_name == "MAMLD1") |> select(cluster, gene_name, contrast)
+# vlmf_data_tb|> 
+#     filter(cluster == "Excit.L5.2", vlmf_adj.P.Val < 0.05) |> 
+#     select(cluster, gene_name, contrast, vlmf_adj.P.Val, vlmf_logFC) |>
+#     print(n = 175)
 
 vlmf_data_tb|> count(cluster, contrast)
 vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.05) |> count(cluster, contrast)
@@ -202,14 +208,18 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
     #     mutate(anno = sprintf("cor=%.2f", cor))
     
     # make scatter plot
-    stat_scatter <- dge_tb |>
+    dge_tb_class <- dge_tb |>
         mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
                                     !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "FDR<", FDR_cut_mX),
                                     !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "FDR<", FDR_cut_mY),
-                                    TRUE ~ "None")) |>
-        ggplot(aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
+                                    TRUE ~ "None")) 
+    
+    # return(dge_tb_class)
+    
+    stat_scatter <- ggplot(data = dge_tb_class, 
+                          aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
         geom_point(alpha = 0.5, size = 0.5) +
-        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
+        # geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
         geom_abline(linetype = "dashed") +
         scale_color_manual(values = signif_colors) +
         labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
@@ -311,7 +321,7 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
         summarise(cor = cor(t_interaction, t_carrier, use = "complete.obs")) |>
         mutate(anno = sprintf("cor=%.2f", cor))
     
-    ## screate scatter plot
+    ## create scatter plot
     stat_scatter <- compare_stats_scatter(dge_tb = dge_combined, 
                                           stat = "t", 
                                           mX = "carrier", 
@@ -341,13 +351,19 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
     ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 12, width = 10)
 }
 
-# dge_tb <- vlmf_data_tb |> filter(grepl("Astro", cluster))
+# dge_tb <- vlmf_data_tb |> filter(grepl("Oligo", cluster))
 
 if(opt$datatype == "sn_fine"){
 
     map(cell_type_broad_levels, ~vlmf_data_tb |>
             filter(grepl(.x, cluster)) |>
-            compare_contrast_stats(datatype = paste0(opt$datatype, "_", .x)))    
+            compare_contrast_stats(datatype = paste0(opt$datatype, "_", .x)))
+    
+    ## compare w/ overall carrier stats
+    map(cell_type_broad_levels, ~vlmf_data_tb |>
+            filter(grepl(.x, cluster)) |>
+            compare_carrier_stats(datatype = paste0(opt$datatype, "_", .x)))    
+    
     # 
     # map(cell_type_broad_levels, ~vlmf_data_tb |>
     #         filter(grepl(.x, cluster)) |>
