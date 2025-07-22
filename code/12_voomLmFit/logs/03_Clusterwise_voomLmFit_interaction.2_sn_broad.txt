@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Jul 21 10:17:10 AM EDT 2025
+Mon Jul 21 05:52:13 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 19994568
+Job id: 20014020
 Job name: 03_Clusterwise_voomLmFit_interaction.2_sn_broad
-Node name: compute-120
+Node name: compute-148
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -165,64 +165,64 @@ character(0)
 $datatype
 [1] "sn_broad"
 
-2025-07-21 10:17:19.34856 - Datatype = sn_broad, loading 'sce_pseudo_DGE-cell_type_broad.RDS'
+2025-07-21 17:52:22.371511 - Datatype = sn_broad, loading 'sce_pseudo_DGE-cell_type_broad.RDS'
 [1] 38606   235
 
 Astro Macro Micro   OPC Oligo  Vasc Excit Inhib 
    31    19    31    31    31    30    31    31 
-2025-07-21 10:17:21.213793 - Loop voomlmFit by cluster
-2025-07-21 10:17:23.496275 - voomLmFit - cluster: Astro, block= 'exp_round', ncol: 31, ngene: 18506
+2025-07-21 17:52:24.365216 - Loop voomlmFit by cluster
+2025-07-21 17:52:26.74719 - voomLmFit - cluster: Astro, block= 'exp_round', ncol: 31, ngene: 18506
 First sample weights (min/max) 0.346416/1.889239
 First intra-block correlation  0.005748384
 Final sample weights (min/max) 0.3506296/1.8726871
 Final intra-block correlation  0.005679873
 Done - Save data
-2025-07-21 10:18:19.927634 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 19, ngene: 2747
+2025-07-21 17:53:40.598315 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 19, ngene: 2747
 First sample weights (min/max) 0.4004724/1.5451607
 First intra-block correlation  -0.06555743
 Final sample weights (min/max) 0.3907324/1.5506435
 Final intra-block correlation  -0.06510231
 Done - Save data
-2025-07-21 10:18:30.044117 - voomLmFit - cluster: Micro, block= 'exp_round', ncol: 31, ngene: 14462
+2025-07-21 17:53:53.245666 - voomLmFit - cluster: Micro, block= 'exp_round', ncol: 31, ngene: 14462
 First sample weights (min/max) 0.2423777/1.7169494
 First intra-block correlation  0.0172239
 Final sample weights (min/max) 0.2386281/1.7076144
 Final intra-block correlation  0.01747299
 Done - Save data
-2025-07-21 10:19:14.842349 - voomLmFit - cluster: OPC, block= 'exp_round', ncol: 31, ngene: 17462
+2025-07-21 17:54:49.063198 - voomLmFit - cluster: OPC, block= 'exp_round', ncol: 31, ngene: 17462
 First sample weights (min/max) 0.350513/2.370725
 First intra-block correlation  0.03045816
 Final sample weights (min/max) 0.3543268/2.4040550
 Final intra-block correlation  0.03009488
 Done - Save data
-2025-07-21 10:20:06.779514 - voomLmFit - cluster: Oligo, block= 'exp_round', ncol: 31, ngene: 21374
+2025-07-21 17:55:53.946431 - voomLmFit - cluster: Oligo, block= 'exp_round', ncol: 31, ngene: 21374
 First sample weights (min/max) 0.338361/1.747861
 First intra-block correlation  0.05818334
 Final sample weights (min/max) 0.3658497/1.7512237
 Final intra-block correlation  0.05784777
 Done - Save data
-2025-07-21 10:21:09.203602 - voomLmFit - cluster: Vasc, block= 'exp_round', ncol: 30, ngene: 8539
+2025-07-21 17:57:12.28365 - voomLmFit - cluster: Vasc, block= 'exp_round', ncol: 30, ngene: 8539
 First sample weights (min/max) 0.4602979/1.4288749
 First intra-block correlation  -0.02145448
 Final sample weights (min/max) 0.4489672/1.4378832
 Final intra-block correlation  -0.02156289
 Done - Save data
-2025-07-21 10:21:37.637293 - voomLmFit - cluster: Excit, block= 'exp_round', ncol: 31, ngene: 25896
+2025-07-21 17:57:46.60458 - voomLmFit - cluster: Excit, block= 'exp_round', ncol: 31, ngene: 25896
 First sample weights (min/max) 0.4165788/2.2285711
 First intra-block correlation  0.05403125
 Final sample weights (min/max) 0.4365053/2.2377697
 Final intra-block correlation  0.0549522
 Done - Save data
-2025-07-21 10:22:56.114075 - voomLmFit - cluster: Inhib, block= 'exp_round', ncol: 31, ngene: 21258
+2025-07-21 17:59:24.347717 - voomLmFit - cluster: Inhib, block= 'exp_round', ncol: 31, ngene: 21258
 First sample weights (min/max) 0.369608/1.896762
 First intra-block correlation  0.06902758
 Final sample weights (min/max) 0.3753045/1.9418092
 Final intra-block correlation  0.06921328
 Done - Save data
 [1] "Reproducibility information:"
-[1] "2025-07-21 10:23:55 EDT"
+[1] "2025-07-21 18:00:36 EDT"
    user  system elapsed 
-396.831   3.141 403.907 
+495.437   2.577 502.114 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -309,4 +309,4 @@ Done - Save data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Jul 21 10:23:56 AM EDT 2025
+Mon Jul 21 06:00:37 PM EDT 2025
