@@ -3,7 +3,7 @@ LFF_spatial_ERC
 
 ## Internal
 
-JHPCE location: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/
+JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
 
 
 ## Interactive Websites
@@ -62,6 +62,7 @@ cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_p
 **SpatialExperiment**
 
 project path: `"processed-data/spe_objects/spe_ERC_annotated"`
+
 JHPCE path: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/spe_objects/spe_ERC_annotated`
 
 pre-QC version: `processed-data/spe_objects/spe_raw.rds`
