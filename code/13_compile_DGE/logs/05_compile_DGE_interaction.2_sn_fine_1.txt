@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Jul 21 06:14:55 PM EDT 2025
+Tue Jul 22 10:43:59 AM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 20014648
+Job id: 20041021
 Job name: 05_compile_DGE_interaction.2
-Node name: compute-154
+Node name: compute-122
 Task id: 1
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -42,7 +42,6 @@ Loading objects:
 [29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
 [33] "Inhib.Pax6"       "Inhib.Lamp5_Lhx6" "Inhib.Pvalb"      "Inhib.Vip"       
 [37] "Inhib.Chandelier" "Inhib.Sst"       
-[1] FALSE
 # A tibble: 70 × 3
    cluster contrast       n
    <fct>   <chr>      <int>
@@ -87,6 +86,21 @@ Loading objects:
 # ℹ 803,410 more rows
 `summarise()` has grouped output by 'cluster'. You can override using the
 `.groups` argument.
+# A tibble: 70 × 5
+# Groups:   cluster [35]
+   cluster contrast   n_FDR05   nUP nDown
+   <fct>   <chr>        <int> <int> <int>
+ 1 Astro.1 carrier_AA      17    14     3
+ 2 Astro.1 carrier_EA       2     0     2
+ 3 Astro.2 carrier_AA       2     0     2
+ 4 Astro.2 carrier_EA       0     0     0
+ 5 Astro.3 carrier_AA       0     0     0
+ 6 Astro.3 carrier_EA       0     0     0
+ 7 Astro.4 carrier_AA       0     0     0
+ 8 Astro.4 carrier_EA       0     0     0
+ 9 Astro.5 carrier_AA       0     0     0
+10 Astro.5 carrier_EA       0     0     0
+# ℹ 60 more rows
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Error in `map()`:
