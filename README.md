@@ -69,3 +69,6 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 `raw-data/FASTQ`
 
+**Images**
+
+`raw-data/FASTQ/Images`
