@@ -8,7 +8,7 @@ library("tidyverse")
 
 ## Load HD5F sce
 message(Sys.time(), "- load Harmony corrected sce")
-sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 sce
 
 colnames(colData(sce))
@@ -25,14 +25,13 @@ class(logcounts(sce))
 message(Sys.time(), "- Convert logcounts to sparse Matrix")
 logcounts(sce) <- as(logcounts(sce), "sparseMatrix")  
 
+# # sourcing official color palette
+sn_colors <- metadata(sce)$cell_type_colors
+
 ## Drop metadata we don't need
 metadata(sce) <- list()
 sce$path <- NULL
 sce$total <- NULL
-
-# # sourcing official color palette
-load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"))
-sn_colors<- cell_type_colors
 
 ## Check final size
 lobstr::obj_size(sce)
@@ -41,7 +40,7 @@ lobstr::obj_size(sce)
 rownames(sce) <- rowData(sce)$Symbol
 
 #### Add MeanRatio Marker Gene Details ####
-load(here("processed-data", "04_snRNA-seq", "16_sn_MeanRatio", "MarkerStats_cell_type_fine.Rdata"))
+load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio", "MarkerStats_cell_type_anno.Rdata"))
 marker_stats |> dplyr::count(cellType.target)
 
 marker_anno <- marker_stats |>
