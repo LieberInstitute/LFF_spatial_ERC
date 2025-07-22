@@ -32,6 +32,7 @@ We provide the following interactive websites to explore the ERC data:
 **SingleCellExperiment** 
 
 project path: `"processed-data/sce_objects/sce_ERC_subcluster"`
+
 JHPCE path: `"/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/sce_objects/sce_ERC_subcluster"`
 
 Not on github due to size (36G)
@@ -45,6 +46,7 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 ```
 
 **Pseudobulked snRNA-seq**
+
 cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
 cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
 
@@ -75,6 +77,7 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 ```
 
 **Pseudobulked Visium data**
+
 `processed-data/09_pseudoBulkDGE_Visium/01_pseudobulk_data_Visium/spe_pseudo_DGE.RDS`
 
 **FASTQ** 
@@ -85,5 +88,7 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 `raw-data/FASTQ/Images`
 
-**SAMPLE ID table **
+**SAMPLE ID table**
+
 `processed-data/00_project_prep/02_get_online_metadata/metadata_visium_plan.csv`
+
