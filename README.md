@@ -44,16 +44,25 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 
 ```
 
+**Pseudobulked snRNA-seq**
+cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+
 **FASTQ**
 
 `raw-data/FASTQ_snRNAseq`
+
+**Sample ID table**
+`processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
 ### Visium
 
 **SpatialExperiment**
 
 project path: `"processed-data/spe_objects/spe_ERC_annotated"`
-JHPCE path: `"/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/spe_objects/spe_ERC_annotated"`
+JHPCE path: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/spe_objects/spe_ERC_annotated`
+
+pre-QC version: `processed-data/spe_objects/spe_raw.rds`
 
 Not on github due to size (4G)
 
@@ -65,6 +74,9 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 ```
 
+**Pseudobulked Visium data**
+`processed-data/09_pseudoBulkDGE_Visium/01_pseudobulk_data_Visium/spe_pseudo_DGE.RDS`
+
 **FASTQ** 
 
 `raw-data/FASTQ`
@@ -72,3 +84,6 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 **Images**
 
 `raw-data/FASTQ/Images`
+
+**SAMPLE ID table **
+`processed-data/00_project_prep/02_get_online_metadata/metadata_visium_plan.csv`
