@@ -66,6 +66,7 @@ summary(sample_info$Age)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 29.95   47.61   51.63   52.36   59.92   68.38
 
+# genotype tile plot
 APOE_ancestry_tile <- sample_info |> 
     dplyr::count(Ancestry, APOE) |>
     ggplot(aes(x = APOE, y = Ancestry, 
@@ -79,6 +80,27 @@ APOE_ancestry_tile <- sample_info |>
 
 ggsave(APOE_ancestry_tile, filename = here(plot_dir, "LFF_ERC_APOE_ancestry_tileplot.png"), height = 2, width = 3)
 
+## carrier tile plot
+APOE_carrier_count <- sample_info |> 
+    group_by(Ancestry, APOE_carrier) |>
+    summarise(n = n(), 
+              n_M = sum(Sex == "M"),
+              n_F = sum(Sex == "F")) |>
+    mutate(anno = sprintf("%i\n(m:%i, f:%i)", n, n_M, n_F))
+
+APOE_carrier_ancestry_tile <- APOE_carrier_count |>
+    ggplot(aes(x = APOE_carrier, y = Ancestry, 
+               fill = APOE_carrier)) +
+    geom_tile(color = "white") +
+    geom_text(aes(label = anno), color = "black") +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    # scale_color_manual(values = ancestry_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(APOE_carrier_ancestry_tile, filename = here(plot_dir, "LFF_ERC_APOE_carrier_ancestry_tileplot.png"), height = 2, width = 3)
+
+## tile plot split by sex
 APOE_ancestry_sex_tile <- sample_info |> 
     dplyr::count(Ancestry, APOE, Sex) |>
     ggplot(aes(x = APOE, y = Ancestry, 
