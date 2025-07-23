@@ -52,10 +52,10 @@ if(opt$datatype == "sn_broad"){
 
 #### voomLmFit data ####
 
-vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction.2", paste0("vlmf_",opt$datatype)),
+vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "04_Clusterwise_voomLmFit_ancestry", paste0("vlmf_",opt$datatype)),
                       full.names = TRUE, pattern = ".rds")
 
-names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_interaction_sn_broad_|voomLmFit_interaction_sn_fine_|voomLmFit_interaction_Visium_|.rds", "", basename(.x)))
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_ancestry_sn_broad_|voomLmFit_ancestry_sn_fine_|voomLmFit_ancestry_Visium_|.rds", "", basename(.x)))
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -71,7 +71,7 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~do.call("rbind", .x[c("carrier_AA", "carrier
                                           vlmf_adj.P.Val = adj.P.Val,
                                           vlmf_B = B
                             )) |>
-    mutate(mod = "interaction") |>
+    mutate(mod = "carrier_by_ancestry") |>
     as_tibble()
 
 if(opt$datatype == "Visium"){
@@ -100,7 +100,7 @@ vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Valu
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0)))
                                
-# ## n signif bar plots
+## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
     ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
     geom_col() +
@@ -108,11 +108,11 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     scale_fill_manual(values = cluster_colors) +
     facet_wrap(~contrast, ncol = 1) +
     theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    labs(title = sprintf("voomLmFit - %s - carrier by ancestry", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None")
 
-ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("interaction_%s_vlmf_model_summary_bar.png", opt$datatype)))
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("ancestry_%s_vlmf_model_summary_bar.png", opt$datatype)))
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_FDR05) |>
@@ -123,13 +123,13 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     geom_text(aes(label = abs(n_genes))) +
     facet_wrap(~contrast, ncol = 1) +
     theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    labs(title = sprintf("voomLmFit - %s - carrier by ancestry", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("interaction_reg_%s_vlmf_model_summary_bar.png", opt$datatype)))
+ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("ancestry_reg_%s_vlmf_model_summary_bar.png", opt$datatype)))
 
 ## save summary
-write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_interaction_model_summary_%s.csv", opt$datatype)))
+write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_ancestry_model_summary_%s.csv", opt$datatype)))
 
 #### vlmf volcano plots ####
 
@@ -164,28 +164,28 @@ if(opt$datatype == "sn_fine"){
     
     map(cell_type_broad_levels, ~vlmf_data_tb |>
             filter(grepl(.x, cluster)) |>
-            custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction")))
+            custom_volcano(model_name = paste0("sn_fine-", .x, "-ancestry")))
     
     map(cell_type_broad_levels, ~vlmf_data_tb |> 
             filter(grepl(.x, cluster),
                    gene_name %in% AD_risk$symbol) |>
-            custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction-risk")))
+            custom_volcano(model_name = paste0("sn_fine-", .x, "-ancestry-risk")))
     
 } else {
     ## plot volcanos
-    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction"))
+    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-ancestry"))
     
     ## filter to risk genes
-    custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction-risk"))
+    custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-ancestry-risk"))
 }
 
 
 #### save data ####
 
-saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
-write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s.csv", opt$datatype)), row.names = FALSE)
+saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_ancestry_%s.Rds", opt$datatype)))
+write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_ancestry_%s.csv", opt$datatype)), row.names = FALSE)
 
-# vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
+# vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_ancestry_%s.Rds", opt$datatype)))
 
 
 #### compare t-stats ####
@@ -255,19 +255,23 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
     
     dge_tb_wide <- dge_tb |>
         select(gene_id, gene_name, cluster, contrast, !!sym(fdr)) |>
-        pivot_wider(names_from = "contrast", values_from = !!sym(fdr), names_prefix = "fdr_") |>
-        left_join(dge_tb_wide_stat)
+        pivot_wider(names_from = "contrast", values_from = !!sym(fdr), names_prefix = "fdr_") |> ## get wide FDR
+        full_join(dge_tb_wide_stat, by = join_by(gene_id, gene_name, cluster))
     
     ## filter risk
     if(risk){
         dge_tb_wide <- dge_tb_wide |> filter(gene_name %in% AD_risk$symbol)
     }
     
-    ## get cor
+    ## calc correlation
     cor <- dge_tb_wide |>
         group_by(cluster) |>
-        summarise(cor = cor(!!sym(paste0(stat,"_carrier_EA")), !!sym(paste0(stat,"_carrier_AA")))) |>
-        mutate(anno = sprintf("cor=%.2f", cor))
+        summarise(cor = cor.test(!!sym(paste0(stat,"_carrier_EA")), !!sym(paste0(stat,"_carrier_AA")))$estimate,
+                  p_val = cor.test(!!sym(paste0(stat,"_carrier_EA")), !!sym(paste0(stat,"_carrier_AA")))$p.value) |>
+        ungroup() |>
+        mutate(p_val_adj = p.adjust(p_val, method = "bonf"),
+               signif = ifelse(p_val_adj < 0.05, "*", ""),
+               anno = sprintf("cor=%.2f%s", cor, signif))
     
     
     ## create scatter plot
@@ -289,14 +293,16 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
 
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
-        plot_fn = sprintf("interaction_%s_stat_scatter_%s_risk.png", datatype, stat)
+        plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
-        plot_fn = sprintf("interaction_%s_stat_scatter_%s.png", datatype, stat)
+        plot_fn = sprintf("ancestry_%s_stat_scatter_%s.png", datatype, stat)
     }
 
 
     ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+    
+    return(cor)
 }
 
 compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
@@ -307,8 +313,11 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
 
     ## combine data
     dge_combined <- dge_tb  |>
-        select(cluster, contrast, gene_id, gene_name, t_interaction = vlmf_t, fdr_interaction = vlmf_adj.P.Val) |>
-        left_join(carrier_data)
+        select(cluster, contrast, gene_id, gene_name, t_ancestry = vlmf_t, fdr_ancestry = vlmf_adj.P.Val) |>
+        left_join(carrier_data, by = join_by(cluster, gene_id))
+    
+    # dge_combined |> group_by(cluster)|> count(is.na(t_ancestry), is.na(t_carrier))
+    # dge_combined |> filter(is.na(t_ancestry) | is.na(t_carrier)) |> group_by(cluster)|> count(is.na(t_ancestry), is.na(t_carrier))
     
     
     ## filter risk
@@ -316,16 +325,25 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
         dge_combined <- dge_combined |> filter(gene_name %in% AD_risk$symbol)
     }
     
-    cor <- dge_combined |>
+    ## calc correlation
+    cor <- dge_combined |> 
+        filter(!is.na(t_ancestry) & !is.na(t_carrier)) |>
         group_by(cluster, contrast) |>
-        summarise(cor = cor(t_interaction, t_carrier, use = "complete.obs")) |>
-        mutate(anno = sprintf("cor=%.2f", cor))
+        summarise(cor = cor.test(t_ancestry, t_carrier)$estimate,
+                  p_val = cor.test(t_ancestry, t_carrier)$p.value) |>
+        ungroup() |>
+        mutate(p_val_adj = p.adjust(p_val, method = "bonf"),
+               signif = ifelse(p_val_adj < 0.05, "*", ""),
+               anno = sprintf("cor=%.2f%s", cor, signif))
+    
+    
+    # dge_combined <- dge_combined |> replace_na(list(t_carrier = -Inf, t_ancestry = -Inf))
     
     ## create scatter plot
     stat_scatter <- compare_stats_scatter(dge_tb = dge_combined, 
                                           stat = "t", 
                                           mX = "carrier", 
-                                          mY = "interaction", 
+                                          mY = "ancestry", 
                                           FDR_cut_mX = FDR_cut, 
                                           FDR_cut_mY = FDR_cut, 
                                           model_name = datatype) +
@@ -341,14 +359,16 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
     
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
-        plot_fn = sprintf("interaction_v_carrier_%s_stat_scatter_%s_risk.png", datatype, stat)
+        plot_fn = sprintf("ancestry_v_carrier_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
-        plot_fn = sprintf("interaction_v_carrier_%s_stat_scatter_%s.png", datatype, stat)
+        plot_fn = sprintf("ancestry_v_carrier_%s_stat_scatter_%s.png", datatype, stat)
     }
     
     
     ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 12, width = 10)
+    
+    return(cor)
 }
 
 # dge_tb <- vlmf_data_tb |> filter(grepl("Oligo", cluster))
