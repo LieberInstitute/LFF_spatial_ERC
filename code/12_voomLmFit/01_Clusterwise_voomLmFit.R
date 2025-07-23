@@ -45,6 +45,10 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
 sce_pb <- readRDS(pb_fn)
+
+## Drop sample Br1289
+sce_pb <- sce_pb[,sce_pb$BrNum != 'Br1289']
+
 dim(sce_pb)
 table(sce_pb$registration_variable)
 
