@@ -131,8 +131,11 @@ vlmf_summary <- vlmf_summary |>
 write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_ancestry_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
 # slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype sn_broad")
-# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype sn_fine")
-# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype Visium")
+
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "04_Clusterwise_voomLmFit_ancestry",
+#                     create_script = FALSE)
 
 #### Reproducibility information ####
 print("Reproducibility information:")
