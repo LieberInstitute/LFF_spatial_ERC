@@ -21,10 +21,10 @@ opt <- getopt(scec)
 # opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
 
-data_dir <- here("processed-data", "13_compile_DGE", "05_compile_DGE_interaction.2", opt$datatype)
+data_dir <- here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "13_compile_DGE", "05_compile_DGE_interaction.2", opt$datatype)
+plot_dir <- here("plots", "13_compile_DGE", "05_compile_DGE_ancestry", opt$datatype)
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
@@ -385,7 +385,7 @@ if(opt$datatype == "sn_fine"){
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
 #                     create_shell = TRUE, 
-#                     name = "05_compile_DGE_interaction.2", 
+#                     name = "05_compile_DGE_ancestry", 
 #                     create_script = FALSE)
 
 #### Reproducibility information ####
