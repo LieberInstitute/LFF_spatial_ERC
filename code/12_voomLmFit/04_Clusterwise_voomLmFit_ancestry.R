@@ -39,7 +39,7 @@ if(opt$datatype == "Visium"){
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, basename(pb_fn)))
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_ancestry", sprintf("vlmf_%s", opt$datatype))
+data_dir <- here("processed-data", "12_voomLmFit", "04_Clusterwise_voomLmFit_ancestry", sprintf("vlmf_%s", opt$datatype))
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -130,9 +130,9 @@ vlmf_summary <- vlmf_summary |>
 
 write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_ancestry_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_ancestry_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_ancestry.R --datatype sn_broad")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_ancestry_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_ancestry.R --datatype sn_fine")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_ancestry_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_ancestry.R --datatype Visium")
+# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype sn_broad")
+# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype sn_fine")
+# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype Visium")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
