@@ -91,5 +91,5 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 **SAMPLE ID table**
 
-`processed-data/00_project_prep/02_get_online_metadata/metadata_visium_plan.csv`
+`processed-data/02_build_spe/sample_info.csv`
 
