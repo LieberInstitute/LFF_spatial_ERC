@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers & Bernie Mulvey, June 2025
-## Run VoomLmFit on ERC clusters
+## Run VoomLmFit on ERC clusters E2 vs. E4 by ancestry
 
 library("data.table")
 library("edgeR")
@@ -39,7 +39,7 @@ if(opt$datatype == "Visium"){
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, basename(pb_fn)))
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction.2", sprintf("vlmf_%s", opt$datatype))
+data_dir <- here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_ancestry", sprintf("vlmf_%s", opt$datatype))
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -113,7 +113,7 @@ vlmf_summary <- map_dfr(clusters, function(clus){
     map(v.swt.e.tt, head)
     
     message("Done - Save data")
-    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_interaction_%s_%s.rds", opt$datatype, clus)))
+    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_ancestry_%s_%s.rds", opt$datatype, clus)))
     
     return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.05)))
     
@@ -128,11 +128,11 @@ vlmf_summary <- map_dfr(clusters, function(clus){
 vlmf_summary <- vlmf_summary |>
     add_column(cluster = clusters, .before = 1)
 
-write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_interacton2_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
+write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_ancestry_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction.2_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.2.R --datatype sn_broad")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction.2_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.2.R --datatype sn_fine")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction.2_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.2.R --datatype Visium")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_ancestry_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_ancestry.R --datatype sn_broad")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_ancestry_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_ancestry.R --datatype sn_fine")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_ancestry_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_ancestry.R --datatype Visium")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
