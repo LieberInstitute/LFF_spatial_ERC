@@ -124,8 +124,11 @@ lmf_summary <- lmf_summary |>
 write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
 # slurmjobs::job_single('01_Clusterwise_voomLmFit_sn_broad', create_shell = TRUE, memory = '25G', command = "Rscript 01_Clusterwise_voomLmFit.R --datatype sn_broad")
-# slurmjobs::job_single('01_Clusterwise_voomLmFit_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 01_Clusterwise_voomLmFit.R --datatype sn_fine")
-# slurmjobs::job_single('01_Clusterwise_voomLmFit_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 01_Clusterwise_voomLmFit.R --datatype Visium")
+
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "01_Clusterwise_voomLmFit",
+#                     create_script = FALSE)
 
 #### Reproducibility information ####
 print("Reproducibility information:")
