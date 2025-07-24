@@ -86,37 +86,38 @@ write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$d
 
 #### dot plots ####
 
-if(opt$datatype == "sn_fine"){
+pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), 
+      ~print(
+          dotplot(.x, 
+                  x = "DE_class_cluster", 
+                  showCategory = 3, 
+                  label_format = 60)  +
+              ggtitle(paste("GO Enrichment:", .y)) +
+              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+      )
+)
+dev.off()
+
+## by cell type
+# if(opt$datatype == "sn_fine"){
+#     
+#     pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+#     walk2(go_result, names(go_result), function(gr){
+#         
+#         ~print(
+#             dotplot(.x, 
+#                     x = "DE_class_cluster", 
+#                     showCategory = 5, 
+#                     label_format = 60)  +
+#                 ggtitle(paste("GO Enrichment:", .y)) +
+#                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+#         )
+#         
+#         }
+#     )
+#     dev.off()
     
-    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
-    walk2(go_result, names(go_result), function(gr){
-        
-        }
-          ~print(
-              dotplot(.x, 
-                      x = "DE_class_cluster", 
-                      showCategory = 5, 
-                      label_format = 60)  +
-                  ggtitle(paste("GO Enrichment:", .y)) +
-                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-          )
-    )
-    dev.off()
-    
-} else {
-    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
-    walk2(go_result, names(go_result), 
-          ~print(
-              dotplot(.x, 
-                      x = "DE_class_cluster", 
-                      showCategory = 3, 
-                      label_format = 60)  +
-                  ggtitle(paste("GO Enrichment:", .y)) +
-                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-          )
-    )
-    dev.off()
-}
 
 
 #### rrvgo ####
@@ -165,32 +166,37 @@ reducedTerms_list <- map(ont_list, function(o){
 })
 
 
-map_depth(reducedTerms_list, 2, length)
+# map_depth(reducedTerms_list, 2, length)
 
 reducedTerms_list2 <- list_transpose(reducedTerms_list)
-
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
-map_depth(reducedTerms_list2, 2, length)
-map_depth(reducedTerms_list2, 2, is.null)
+
+# map_depth(reducedTerms_list2, 2, length)
+# map_depth(reducedTerms_list2, 2, is.null)
 
 # ## plot treemap
 # pdf(here(plot_dir, "treemap_test.pdf"))
 # treemapPlot(reducedTerms, title = "Oligo")
 # dev.off()
 
+## rm empty results
+reducedTerms_list2 <- reducedTerms_list2[map_lgl(reducedTerms_list2, function(rt) !all(map_lgl(rt, ~all(is.null(.x)))))]
+
+# reducedTerms_list2[["Inhib-Vip_down"]]["CC"]
+
 pdf(here(plot_dir, sprintf("GO_treemap_%s.pdf", opt$datatype)))
 walk2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name){
     
     rt <- rt[!map_lgl(rt, is.null)]
-    map2(rt, names(rt), ~treemapPlot(.x, title = paste(clus_name, .y)))
+    map2(rt, names(rt), ~try(treemapPlot(.x, title = paste(clus_name, .y))))
     
 })
 dev.off()
 
-slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
-                    create_shell = TRUE,
-                    name = "02_GO_analysis",
-                    create_script = FALSE)
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "02_GO_analysis",
+#                     create_script = FALSE)
 
 
 ## Reproducibility information
