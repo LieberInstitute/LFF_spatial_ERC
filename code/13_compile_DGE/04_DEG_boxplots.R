@@ -52,6 +52,9 @@ sce_pb <- readRDS(pb_fn)
 dim(sce_pb)
 table(sce_pb$registration_variable)
 
+## Drop sample Br1289
+sce_pb <- sce_pb[,sce_pb$BrNum != 'Br1289']
+
 rownames(sce_pb) <- rowData(sce_pb)$gene_name
 
 load(here("processed-data", "project_colors.Rdata"))
@@ -72,6 +75,7 @@ DEGs_signif <- DE_data |>
 
 DEGs_signif |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(cluster)
 
+## check model
 head(model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, colData(sce_pb)))
 
 cluster_levels <- levels(sce_pb[[cluster_var]])
@@ -152,6 +156,43 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
 )
 dev.off()
 
+#### Carrier by Ancestry DE data ####
+
+DE_ancestry_data_fn <- here("processed-data", "13_compile_DGE",  "05_compile_DGE_ancestry", opt$datatype, sprintf("DGE_results_ancestry_%s.Rds", opt$datatype))
+DE_ancestry_data <- readRDS(DE_ancestry_data_fn)
+
+DE_ancestry_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(contrast, cluster)
+
+sce_pb$carrier_Anc <- paste(sce_pb$APOE_carrier, sce_pb$Ancestry)
+table(sce_pb$carrier_Anc)
+
+ancestry_mod <- model.matrix(~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio, colData(sce_pb))
+# ancestry_mod <-ancestry_mod[,c("(Intercept)", "APOE_carrier_synE4:AncestryEA", "APOE_carrier_synE4","AncestryEA", "SexM","Age","pseudo_expr_chrM_ratio")]
+head(ancestry_mod)
+
+## resubset clusters
+cluster_levels2 <- as.character(unique(DE_ancestry_data$cluster))
+cluster_levels <- intersect(cluster_levels, cluster_levels2)
+
+
+pdf(here(plot_dir, sprintf("DEG_boxplots_ancestry_%s.pdf", opt$datatype)))
+map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+                                      stats = DE_ancestry_data,
+                                      clus = .x,
+                                      n_genes = 10,
+                                      pval_col = "vlmf_adj.P.Val",
+                                      fc_col = "vlmf_logFC",
+                                      gene_col = "gene_name",
+                                      cluster_col = cluster_var,
+                                      category_col = "carrier_Anc",
+                                      mod = ancestry_mod,
+                                      # color_pal = carrier_tau_colors,
+                                      plot_points = TRUE,
+                                      ncol = 2,
+                                      cleanY_P = 4)
+)
+dev.off()
+
 #### Interaction DE data ####
 
 DE_interaction_data_fn <- here("processed-data", "13_compile_DGE",  "05_compile_DGE_interaction", opt$datatype, sprintf("DGE_results_interaction_%s.Rds", opt$datatype))
@@ -160,9 +201,7 @@ DE_interaction_data <- readRDS(DE_interaction_data_fn)
 DE_interaction_data |> filter(vlmf_adj.P.Val < 0.2) |> dplyr::count(cluster)
 DE_interaction_data |> filter(vlmf_adj.P.Val < 0.05) 
 
-sce_pb$carrier_anc <- paste(sce_pb$APOE_carrier, sce_pb$Ancestry)
-
-table(sce_pb$carrier_anc)
+table(sce_pb$carrier_Anc)
 
 interaction_mod <- model.matrix(~APOE_carrier_syn*Ancestry + Sex + Age + pseudo_expr_chrM_ratio, colData(sce_pb))
 interaction_mod <-interaction_mod[,c("(Intercept)", "APOE_carrier_synE4:AncestryEA", "APOE_carrier_synE4","AncestryEA", "SexM","Age","pseudo_expr_chrM_ratio")]
@@ -182,7 +221,7 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
                                       fc_col = "vlmf_logFC",
                                       gene_col = "gene_name",
                                       cluster_col = cluster_var,
-                                      category_col = "carrier_anc",
+                                      category_col = "carrier_Anc",
                                       mod = interaction_mod,
                                       # color_pal = carrier_tau_colors,
                                       plot_points = TRUE,
