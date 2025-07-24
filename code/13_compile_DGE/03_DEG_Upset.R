@@ -79,5 +79,22 @@ dev.off()
 
 
 
+common_WMuf_Vasc <- intersect(DEGs_signif_list$Visium$`WM.uf~Sp09D07`, DEGs_signif_list$Visium$`Vasc~Sp09D08`)
+
+DEGs_signif$Visium |> 
+    filter(gene_id %in% common_WMuf_Vasc) |> 
+    select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val)
+
+# cluster       gene_name vlmf_logFC vlmf_adj.P.Val
+# <chr>         <chr>          <dbl>          <dbl>
+# 1 Vasc~Sp09D08  KLK6          -1.89          0.0152
+# 2 Vasc~Sp09D08  CFL2          -0.656         0.0337
+# 3 Vasc~Sp09D08  ELOVL1        -1.01          0.0337
+# 4 WM.uf~Sp09D07 KLK6          -1.82          0.0279
+# 5 WM.uf~Sp09D07 CFL2          -0.952         0.0363
+# 6 WM.uf~Sp09D07 ELOVL1        -1.39          0.0438
+
+DEGs_signif$Visium |> 
+    filter(gene_name == "KLK6")
 
 
