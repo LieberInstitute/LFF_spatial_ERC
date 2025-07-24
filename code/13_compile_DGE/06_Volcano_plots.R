@@ -1,15 +1,12 @@
 ## Louise Huuki-Myers, June 2025
-## Compile and plot all DGE data
+## Create figure friendly volcano plots
 
 #### Set up ####
 library("tidyverse")
 library("here")
 library("sessioninfo")
 library("ggrepel")
-
-## select data type
-# datatype = "Visium"
-datatype = "sn_broad"
+library("getopt")
 
 plot_dir <- here("plots", "13_compile_DGE", "06_Volcano_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -58,14 +55,19 @@ custom_volcano <- function(data,
         scale_color_manual(values = signif_colors) +
         labs(x = "log(FC)", y = "-log10(P value)") +
         theme_bw() +
-        labs(title = clus)
+        labs(title = clus) +
+        theme(legend.position = "bottom")
     
     if(nrow(data) > 1000){
-        volcano <- volcano + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) 
+        volcano <- volcano + 
+            # geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) 
+            geom_text_repel(aes(label = ifelse(!!sym(fdr_col) < FDR_cut, gene_name, "")), size = 1.5) 
     } else {
         volcano <- volcano + geom_text_repel(aes(label = gene_name), size = 1.5)
     }
-    if(save) ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_%s_%s-%s.png", datatype, model_name, clus)), height = save_size, width = save_size)
+    if(save) ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_%s_%s-%s.png", datatype, model_name, clus)), 
+                    height = save_size + 0.5, 
+                    width = save_size)
     else return(volcano)    
 }
 
