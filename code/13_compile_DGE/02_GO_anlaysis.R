@@ -80,6 +80,8 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
+# compare_clus |> filter(DE_class_cluster == "Macro_down")
+
 write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
 
 #### dot plots ####
@@ -169,31 +171,26 @@ reducedTerms_list2 <- list_transpose(reducedTerms_list)
 
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
 map_depth(reducedTerms_list2, 2, length)
-
-## plot treemap
-pdf(here(plot_dir, "treemap_test.pdf"))
-treemapPlot(reducedTerms, title = "Oligo")
-dev.off()
-
-my_treemapPlot <- function(reducedTerms, title){
-    if()
-    treemapPlot(.x, title = paste(clus_name, .y))
-}
-
 map_depth(reducedTerms_list2, 2, is.null)
 
-pdf(here(plot_dir, "treemap_test.pdf"))
-map2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name){
+# ## plot treemap
+# pdf(here(plot_dir, "treemap_test.pdf"))
+# treemapPlot(reducedTerms, title = "Oligo")
+# dev.off()
+
+pdf(here(plot_dir, sprintf("GO_treemap_%s.pdf", opt$datatype)))
+walk2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name){
     
+    rt <- rt[!map_lgl(rt, is.null)]
     map2(rt, names(rt), ~treemapPlot(.x, title = paste(clus_name, .y)))
     
 })
 dev.off()
 
-# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
-#                     create_shell = TRUE,
-#                     name = "01_Clusterwise_voomLmFit",
-#                     create_script = FALSE)
+slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+                    create_shell = TRUE,
+                    name = "02_GO_analysis",
+                    create_script = FALSE)
 
 
 ## Reproducibility information
