@@ -54,31 +54,6 @@ dge_anc_data <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE
 dge_data_combined <- bind_rows(dge_data, dge_anc_data) |>
     mutate(cluster = factor(cluster, levels = cluster_levels))
 
-#### combined summary barplot ####
-dge_count_combined <- dge_data_combined |>
-    group_by(cluster, contrast) |>
-    summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
-              Up = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
-              Down = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
-
-
-dge_summary_bar_reg <- dge_count_combined |>
-    select(-n_FDR05) |>
-    mutate(Down = -1*Down) |>
-    pivot_longer(!c(cluster, contrast), names_to = "reg", values_to = "n_genes") |>
-    ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
-    geom_col() +
-    geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""))) +
-    facet_wrap(~contrast, ncol = 1) +
-    scale_fill_manual(values = c(Up = APOE_carrier_colors[["E4+"]],
-                                 Down = APOE_carrier_colors[["E2+"]])) +
-    theme_bw() +
-    labs(title = sprintf("DGE - %s", datatype), y = "n DE genes (FDR < 0.05)") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
-          legend.position = "right")
-
-ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_bar_reg_combined.png", datatype)), height = 5, width = 6)
-
 
 #### Volcano plots ####
 custom_volcano <- function(data, 
@@ -126,5 +101,16 @@ custom_volcano <- function(data,
 walk(unique(dge_data$cluster), ~custom_volcano(dge_data, clus = .x))
 
 
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "06_Volcano_plots",
+#                     create_script = FALSE)
 
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
