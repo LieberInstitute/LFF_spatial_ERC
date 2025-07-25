@@ -38,11 +38,18 @@ if(datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
+} else if(datatype == "sn_fine"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
 }else if(datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
     cluster_levels <- names(SpD_colors)
+    
 }
+
+cluster_levels <- cluster_levels[cluster_levels != "Other"]
 
 #### load data ####
 dge_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", datatype,
@@ -82,47 +89,65 @@ ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_ba
 
 #### logFC heatmaps ####
 
+logFC_Heatmap <- function(gene_list, title){
+    
+    logFC_matrix <- dge_data |>
+        filter(gene_name %in% gene_list) |>
+        select(cluster, gene_name, vlmf_logFC) |>
+        pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
+        column_to_rownames("cluster") |>
+        as.matrix()
+    
+    pval_matrix <- dge_data |>
+        filter(gene_name %in% gene_list) |>
+        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
+                                  vlmf_adj.P.Val < 0.01 ~ "**",
+                                  vlmf_adj.P.Val < 0.05 ~ "*",
+                                  TRUE ~ "")
+        ) |>
+        select(cluster, gene_name, signif) |>
+        pivot_wider(names_from = gene_name, values_from = signif) |>
+        column_to_rownames("cluster") |>
+        as.matrix()
+    
+    pval_matrix[is.na(pval_matrix)] <- ""
+    
+    ## reorder clusters
+    gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
+    cluster_order <- cluster_levels[cluster_levels %in% rownames(logFC_matrix)]
+    
+    logFC_matrix <- logFC_matrix[cluster_order, gene_order]
+    pval_matrix <- pval_matrix[cluster_order, gene_order]
+    
+    # Heatmap(logFC_matrix, cluster_rows = FALSE, cluster_columns = FALSE)
+    
+    pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = 4, width = 10)
+    print(Heatmap(logFC_matrix,
+            name = "log(FC)",
+            cluster_rows = FALSE,
+            cluster_columns = FALSE,
+            cell_fun = function(j, i, x, y, width, height, fill) {
+                grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+            }))
+    dev.off()
+    
+}
+
+## top DGEs
 topDEGs <- dge_data |>
     group_by(cluster) |>
     filter(vlmf_adj.P.Val < 0.05) |>
     arrange(vlmf_adj.P.Val) |>
-    slice(1:10)
+    slice(1:5) |>
+    pull(gene_name) |>
+    unique()
 
-length(unique(topDEGs$gene_name))
+length(topDEGs)
 
-logFC_matrix <- dge_data |>
-    filter(gene_name %in% topDEGs$gene_name) |>
-    select(cluster, gene_name, vlmf_logFC) |>
-    pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
-    column_to_rownames("cluster") |>
-    as.matrix()
+logFC_Heatmap(gene_list = topDEGs, title = "topDEGs")
 
-pval_matrix <- dge_data |>
-    filter(gene_name %in% topDEGs$gene_name) |>
-    mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
-                              vlmf_adj.P.Val < 0.01 ~ "**",
-                              vlmf_adj.P.Val < 0.05 ~ "*",
-                              TRUE ~ "")
-           ) |>
-    select(cluster, gene_name, signif) |>
-    pivot_wider(names_from = gene_name, values_from = signif) |>
-    column_to_rownames("cluster") |>
-    as.matrix()
-
-pval_matrix[is.na(pval_matrix)] <- ""
-
-## reorder clusters
-logFC_matrix <- logFC_matrix[cluster_levels,]
-pval_matrix <- pval_matrix[cluster_levels,]
-
-pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap.pdf", datatype)), height = 4, width = 10)
-Heatmap(logFC_matrix,
-        name = "log(FC)",
-        cluster_rows = FALSE,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-            grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
-        })
-dev.off()
+## Risk gene heatmap
+logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
