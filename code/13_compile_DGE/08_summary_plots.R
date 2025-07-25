@@ -89,16 +89,16 @@ ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_ba
 
 #### logFC heatmaps ####
 
-logFC_Heatmap <- function(gene_list, title){
+logFC_Heatmap <- function(data, gene_list, title, h = 4, w = 10, cluster_col = FALSE){
     
-    logFC_matrix <- dge_data |>
+    logFC_matrix <- data |>
         filter(gene_name %in% gene_list) |>
         select(cluster, gene_name, vlmf_logFC) |>
         pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
         column_to_rownames("cluster") |>
         as.matrix()
     
-    pval_matrix <- dge_data |>
+    pval_matrix <- data |>
         filter(gene_name %in% gene_list) |>
         mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
                                   vlmf_adj.P.Val < 0.01 ~ "**",
@@ -112,20 +112,25 @@ logFC_Heatmap <- function(gene_list, title){
     
     pval_matrix[is.na(pval_matrix)] <- ""
     
-    ## reorder clusters
+    ## reorder clusters & rows
     gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
-    cluster_order <- cluster_levels[cluster_levels %in% rownames(logFC_matrix)]
+    
+    if(all(rownames(logFC_matrix) %in% cluster_levels)){
+        cluster_order <- cluster_levels[cluster_levels %in% rownames(logFC_matrix)]
+    } else {
+        cluster_order <- order(rownames(logFC_matrix))
+    }
     
     logFC_matrix <- logFC_matrix[cluster_order, gene_order]
     pval_matrix <- pval_matrix[cluster_order, gene_order]
     
     # Heatmap(logFC_matrix, cluster_rows = FALSE, cluster_columns = FALSE)
     
-    pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = 4, width = 10)
+    pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = h, width = w)
     print(Heatmap(logFC_matrix,
             name = "log(FC)",
             cluster_rows = FALSE,
-            cluster_columns = FALSE,
+            cluster_columns = cluster_col,
             cell_fun = function(j, i, x, y, width, height, fill) {
                 grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
             }))
@@ -144,10 +149,57 @@ topDEGs <- dge_data |>
 
 length(topDEGs)
 
-logFC_Heatmap(gene_list = topDEGs, title = "topDEGs")
+logFC_Heatmap(data = dge_data, gene_list = topDEGs, title = "topDEGs")
 
 ## Risk gene heatmap
 logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
+
+if(datatype == "cell_type_fine"){
+    
+    ## carrier
+    top_oligo_DEGs <- dge_data |>
+        filter(vlmf_adj.P.Val < 0.05, cluster == "Oligo.3") |>
+        group_by(cluster, vlmf_logFC > 0) |>
+        arrange(vlmf_adj.P.Val) |>
+        slice(1:25) |>
+        pull(gene_name) |>
+        unique()
+    
+    logFC_Heatmap(data = dge_data |>
+                      filter(grepl("Oligo", cluster)), 
+                  gene_list = top_oligo_DEGs, 
+                  title = "topDEGs_Oligo.3", 
+                  cluster_col = TRUE)
+    
+    logFC_Heatmap(data = dge_data |>
+                      filter(grepl("Oligo", cluster)), 
+                  gene_list = AD_risk$symbol, 
+                  title = "ADrisk_Oligo")
+    
+    ## carrier + anc
+    top_oligo_DEGs_anc <- dge_anc_data |>
+        filter(vlmf_adj.P.Val < 0.05, cluster == "Oligo.3") |>
+        group_by(cluster, contrast) |>
+        arrange(vlmf_adj.P.Val) |>
+        slice(1:25) |>
+        pull(gene_name) |>
+        unique()
+    
+    logFC_Heatmap(data = dge_anc_data |>
+                      filter(grepl("Oligo", cluster)) |>
+                      mutate(cluster = gsub("carrier_", "", paste(cluster, contrast))), 
+                  gene_list = top_oligo_DEGs_anc, 
+                  title = "topDEGs_Anc_Oligo.3",
+                  cluster_col = TRUE)
+    
+    logFC_Heatmap(data = dge_data |>
+                      filter(grepl("Oligo", cluster)), 
+                  gene_list = AD_risk$symbol, 
+                  title = "ADrisk_Oligo")
+    
+    
+}
+
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
