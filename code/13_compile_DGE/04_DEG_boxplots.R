@@ -120,6 +120,67 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
          )
 dev.off()
 
+pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
+map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+                                      stats = DE_data,
+                                      clus = .x,
+                                      n_genes = 10,
+                                      pval_col = "vlmf_adj.P.Val",
+                                      fc_col = "vlmf_logFC",
+                                      gene_col = "gene_name",
+                                      cluster_col = cluster_var,
+                                      category_col = "APOE_carrier",
+                                      mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                                      color_pal = APOE_carrier_colors,
+                                      plot_points = TRUE,
+                                      ncol = 2,
+                                      cleanY_P = 4)
+)
+dev.off()
+
+if(opt$datatype == "sn_broad"){
+    
+    #Oligo
+    map(c("C1QL3"), function(g){
+        dge_plot <- plot_DEG_express_single(
+                sce = sce_pb,
+                stats = DE_data,
+                gene = g,
+                cluster_col = "cell_type_broad",
+                clus = "Oligo",
+                gene_col = "gene_name",
+                color_pal = APOE_carrier_colors,
+                plot_points = TRUE
+        ) +
+            labs(title = "Oligo")
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Oligo", g)),
+               height = 4, width = 3)
+        
+    })
+    
+    #Astro
+    map(c("C1QL3"), function(g){
+        dge_plot <- plot_DEG_express_single(
+                sce = sce_pb,
+                stats = DE_data,
+                gene = g,
+                cluster_col = "cell_type_broad",
+                clus = "Oligo",
+                gene_col = "gene_name",
+                color_pal = APOE_carrier_colors,
+                plot_points = TRUE
+        ) +
+            labs(title = "Oligo")
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Oligo", g)),
+               height = 4, width = 3)
+        
+    })
+
+}
+
+
 #### plot taupath data ####
 
 ## load tau pathology data
@@ -163,17 +224,17 @@ DE_ancestry_data <- readRDS(DE_ancestry_data_fn)
 
 DE_ancestry_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(contrast, cluster)
 
-sce_pb$carrier_Anc <- paste(sce_pb$APOE_carrier, sce_pb$Ancestry)
+sce_pb$carrier_Anc <- factor(paste(sce_pb$APOE_carrier, sce_pb$Ancestry), levels = c("E2+ AA","E4+ AA", "E2+ EA", "E4+ EA"))
 table(sce_pb$carrier_Anc)
 
 ancestry_mod <- model.matrix(~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio, colData(sce_pb))
-# ancestry_mod <-ancestry_mod[,c("(Intercept)", "APOE_carrier_synE4:AncestryEA", "APOE_carrier_synE4","AncestryEA", "SexM","Age","pseudo_expr_chrM_ratio")]
-head(ancestry_mod)
+colnames(ancestry_mod)
 
 ## resubset clusters
 cluster_levels2 <- as.character(unique(DE_ancestry_data$cluster))
 cluster_levels <- intersect(cluster_levels, cluster_levels2)
-
+# [1] "carrier_AncE2+ AA"      "carrier_AncE2+ EA"      "carrier_AncE4+ AA"      "carrier_AncE4+ EA"      "SexM"                  
+# [6] "Age"                    "pseudo_expr_chrM_ratio"
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_ancestry_%s.pdf", opt$datatype)))
 map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
