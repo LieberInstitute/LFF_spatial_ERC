@@ -8,6 +8,7 @@ library("sessioninfo")
 library("getopt")
 library("DeconvoBuddies")
 library("SingleCellExperiment")
+library("patchwork")
 
 source(here("code","utils","plot_DEG_express.R"))
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
@@ -180,6 +181,28 @@ if(opt$datatype == "sn_broad"){
 
 }
 
+if(opt$datatype == "Visium"){
+    
+    #Oligo
+    boxplots_klk6 <- map(c("Vasc~Sp09D08", "WM.uf~Sp09D07"), function(spd){
+        dge_plot <- plot_DEG_express_single(
+            sce = sce_pb,
+            stats = DE_data,
+            gene = "KLK6",
+            cluster_col = "SpD",
+            clus = spd,
+            gene_col = "gene_name",
+            color_pal = APOE_carrier_colors,
+            plot_points = TRUE
+        ) +
+            labs(title = spd)
+        return(dge_plot)
+    })
+    ggsave(boxplots_klk6[[1]] | boxplots_klk6[[2]],
+           filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s.png", opt$datatype, "KLK6")),
+           height = 3, width = 6)
+}
+
 
 #### plot taupath data ####
 
@@ -249,9 +272,28 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
 )
 dev.off()
 
+if(opt$datatype == "Visium"){
+    #Astro
+    map(c("PEX14"), function(g){
+        dge_plot <- plot_DEG_express_contrast(
+            sce = sce_pb,
+            stats = DE_ancestry_data,
+            gene = g,
+            cluster_col = "SpD",
+            clus = "WM~Sp09D06",
+            gene_col = "gene_name",
+            category_col = "carrier_Anc",
+            # color_pal = APOE_carrier_colors,
+            plot_points = TRUE
+        ) 
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "WM", g)),
+               height = 3, width = 3)
+    })
+}
+
 
 if(opt$datatype == "sn_broad"){
-    
     #Astro
     map(c("TCTN1", "JUP"), function(g){
         dge_plot <- plot_DEG_express_contrast(
@@ -265,13 +307,11 @@ if(opt$datatype == "sn_broad"){
             # color_pal = APOE_carrier_colors,
             plot_points = TRUE
         ) 
-        
         ggsave(dge_plot, 
                filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Astro", g)),
                height = 4, width = 3)
-        
-    })
-    
+        })
+    #Vasc
     map(c("RIPK2"), function(g){
         dge_plot <- plot_DEG_express_contrast(
             sce = sce_pb,
