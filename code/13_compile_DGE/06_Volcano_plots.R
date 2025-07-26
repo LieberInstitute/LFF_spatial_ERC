@@ -37,7 +37,11 @@ if(datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
-}else if(datatype == "Visium"){
+}else if(opt$datatype == "sn_fine"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
+} else if(datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
     cluster_levels <- names(SpD_colors)
@@ -45,7 +49,7 @@ if(datatype == "sn_broad"){
 
 #### load data ####
 dge_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", datatype,
-                         sprintf("DGE_results_carrier_%s.Rds", datatype)))
+                         sprintf("DGE_results_carrier_%s.Rds", datatype))) |>
     mutate(cluster = factor(cluster, levels = cluster_levels))
 
 dge_anc_data <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", datatype,
