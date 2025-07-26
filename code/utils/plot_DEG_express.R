@@ -270,10 +270,10 @@ plot_DEG_express_single <- function(sce,
 
 #' @examples
 #' ## Plot the top markers for Astrocytes
-#' plot_DEG_express_single(
+#' plot_DEG_express_contrast(
 #'     sce = sce_pb,
-#'     stats = DE_data,
-#'     gene = c("NXPH1", "NYAP2"),
+#'     stats = DE_ancestry_data,
+#'     gene = c("JUP"),
 #'     cluster_col = "cell_type_broad",
 #'     clus = "Astro",
 #'     gene_col = "gene_name"
@@ -282,13 +282,13 @@ plot_DEG_express_single <- function(sce,
 plot_DEG_express_contrast <- function(sce,
                                     stats,
                                     clus = "Astro",
-                                    gene = "NPTXR",
+                                    gene,
                                     pval_col = "vlmf_adj.P.Val",
                                     fc_col = "vlmf_logFC",
                                     gene_col = "gene_name",
                                     cluster_col = "registration_variable",
-                                    category_col = "APOE_carrier",
-                                    mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                                    category_col = "carrier_Anc",
+                                    mod = ~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio,
                                     cleanY_P = 4,
                                     color_pal = NULL,
                                     plot_points = FALSE,
@@ -301,7 +301,7 @@ plot_DEG_express_contrast <- function(sce,
     # RCMD fix
     rank_int <- Symbol <- anno_str <- NULL
     
-    # title <- paste(clus, "Top", n_genes, "DEGs")
+    plot_title <- paste(clus)
     # message(title)
     
     # max_digits <- nchar(n_genes)
@@ -319,7 +319,7 @@ plot_DEG_express_contrast <- function(sce,
     
     stats_filter <- stats |>
         dplyr::rename(dplyr::all_of(lookup)) |>
-        dplyr::select(cluster, gene_col, pval_col, fc_col) |>
+        dplyr::select(cluster, contrast, gene_col, pval_col, fc_col) |>
         dplyr::filter(
             cluster == clus,
             gene_col %in% gene
@@ -333,14 +333,14 @@ plot_DEG_express_contrast <- function(sce,
                                pval_col < 0.05 ~"*",
                                TRUE ~ "",
             ),
-            anno_str = sprintf("FDR=%.2e%s\nlogFC=%.2f", pval_col, signif, fc_col)
+            anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
         )
     
     # return(stats_filter)
     
-    # if (!any(stats_filter$gene_col %in% rownames(sce))) {
-    #     warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
-    # }
+    if (!any(stats_filter$gene_col %in% rownames(sce))) {
+        warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
+    }
     
     #### clean Y ####
     cluster_index <- sce[[cluster_col]] == clus
@@ -373,12 +373,22 @@ plot_DEG_express_contrast <- function(sce,
         free_y = TRUE
     ) +
         ggplot2::geom_label(
-            data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
+            data = stats_filter |> filter(contrast == "carrier_AA"), 
+            ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
             alpha = 0.5,
             vjust = "inward", 
             hjust = "inward", 
             size = 2.5
-        )
+        )+
+        ggplot2::geom_label(
+            data = stats_filter |> filter(contrast == "carrier_EA"), 
+            ggplot2::aes(x = Inf, y = -Inf, label = anno_str),
+            alpha = 0.5,
+            vjust = "inward", 
+            hjust = "inward", 
+            size = 2.5
+        ) +
+        labs(title = plot_title)
     
     
     return(pe)
