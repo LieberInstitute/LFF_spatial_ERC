@@ -33,7 +33,7 @@ print(opt)
 plot_dir <- here("plots", "13_compile_DGE", "04_DEG_boxplots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-#### Load the data ####
+#### Load pseudobulk data ####
 if(opt$datatype == "Visium"){
     pb_fn <- here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS")
     cluster_var <- "SpD"
@@ -230,11 +230,6 @@ table(sce_pb$carrier_Anc)
 ancestry_mod <- model.matrix(~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio, colData(sce_pb))
 colnames(ancestry_mod)
 
-## resubset clusters
-cluster_levels2 <- as.character(unique(DE_ancestry_data$cluster))
-cluster_levels <- intersect(cluster_levels, cluster_levels2)
-# [1] "carrier_AncE2+ AA"      "carrier_AncE2+ EA"      "carrier_AncE4+ AA"      "carrier_AncE4+ EA"      "SexM"                  
-# [6] "Age"                    "pseudo_expr_chrM_ratio"
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_ancestry_%s.pdf", opt$datatype)))
 map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
@@ -253,6 +248,49 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
                                       cleanY_P = 4)
 )
 dev.off()
+
+
+if(opt$datatype == "sn_broad"){
+    
+    #Astro
+    map(c("TCTN1", "JUP"), function(g){
+        dge_plot <- plot_DEG_express_contrast(
+            sce = sce_pb,
+            stats = DE_ancestry_data,
+            gene = g,
+            cluster_col = "cell_type_broad",
+            clus = "Astro",
+            gene_col = "gene_name",
+            category_col = "carrier_Anc",
+            # color_pal = APOE_carrier_colors,
+            plot_points = TRUE
+        ) 
+        
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Astro", g)),
+               height = 4, width = 3)
+        
+    })
+    
+    map(c("RIPK2"), function(g){
+        dge_plot <- plot_DEG_express_contrast(
+            sce = sce_pb,
+            stats = DE_ancestry_data,
+            gene = g,
+            cluster_col = "cell_type_broad",
+            clus = "Vasc",
+            gene_col = "gene_name",
+            category_col = "carrier_Anc",
+            # color_pal = APOE_carrier_colors,
+            plot_points = TRUE
+        ) 
+        
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Vasc", g)),
+               height = 4, width = 3)
+        
+    })
+}
 
 #### Interaction DE data ####
 
