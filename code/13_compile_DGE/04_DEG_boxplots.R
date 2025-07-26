@@ -179,6 +179,27 @@ if(opt$datatype == "sn_broad"){
         
     })
 
+}else if(opt$datatype == "sn_fine"){
+    
+    #Oligo
+    map(c("MAPT", "FOS"), function(g){
+        dge_plot <- plot_DEG_express_single(
+                sce = sce_pb,
+                stats = DE_data,
+                gene = g,
+                cluster_col = "cell_type_anno",
+                clus = "Oligo.3",
+                gene_col = "gene_name",
+                color_pal = APOE_carrier_colors,
+                plot_points = TRUE
+        ) +
+            labs(title = "Oligo")
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Oligo.3", g)),
+               height = 4, width = 3)
+        
+    })
+
 }
 
 if(opt$datatype == "Visium"){
