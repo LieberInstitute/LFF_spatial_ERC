@@ -300,7 +300,7 @@ walk2(go_result, names(go_result),
 )
 dev.off()
 
-
+# disease associated 
 #### Cell type checks ####
 if(celltype == "Oligo"){
     
@@ -308,7 +308,8 @@ if(celltype == "Oligo"){
     oligo_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
                           Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
                           premyelin_Oligo = c("SOX10", "OLIGO1", "OLIGO2", "NKX2-2", "CD9"),
-                          myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"))
+                          myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
+                          disease_associated = c("SERPINA3", "C4B"))
     
     oligo_markers <- map(oligo_markers, ~.x[.x %in% rownames(sce)])
     
