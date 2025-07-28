@@ -43,6 +43,7 @@ sce <- sce[,sce$cell_type_broad == celltype]
 sce$cell_type_anno <- droplevels(sce$cell_type_anno)
 table(sce$cell_type_anno)
 
+cell_type_colors <- metadata(sce)$cell_type_colors
 
 #### Run Mean Ratio ####
 marker_stats_fn <- here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype))
@@ -73,8 +74,6 @@ write.csv(top_MeanRatio_genes, here(data_dir, sprintf("subtype_MeanRatio_top10_%
 
 #### plot top MR markers ####
 message(Sys.time(), " - Plots")
-
-cell_type_colors <- metadata(sce)$cell_type_colors
 
 ## plot markers
 plot_marker_express_ALL(
@@ -309,7 +308,10 @@ if(celltype == "Oligo"){
                           Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
                           premyelin_Oligo = c("SOX10", "OLIGO1", "OLIGO2", "NKX2-2", "CD9"),
                           myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
-                          disease_associated = c("SERPINA3", "C4B"))
+                          disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
+                          AD_risk = c("BACE1", "PSEN1")
+                          )
+                        
     
     oligo_markers <- map(oligo_markers, ~.x[.x %in% rownames(sce)])
     
@@ -342,6 +344,40 @@ if(celltype == "Oligo"){
     pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
     sce |>
         scDotPlot(features = oligo_markers,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marker",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    dev.off()
+    
+}else if(celltype == "Micro"){
+    
+    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
+    lit_markers <- list(disease_associated = c("TREM2")) #https://doi.org/10.1038/s41593-025-01873-x
+    
+    lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
+    
+    plot_marker_express_List(
+        sce,
+        gene_list = lit_markers,
+        cellType_col = "cell_type_anno",
+        pdf_fn = here(plot_dir, sprintf("sn_violin_%s_markers.pdf", celltype)),
+        color_pal = cell_type_colors$anno
+    )
+    
+    ## oligo marker dot plot
+    lit_markers <- AnnotationDbi::unlist2(lit_markers)
+    
+    rowData(sce)$Marker <- NULL
+    rowData(sce)$Marker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
+    table(rowData(sce)$Marker)
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
+    sce |>
+        scDotPlot(features = lit_markers,
                   group = "cell_type_anno",
                   groupAnno = "cell_type_anno",
                   featureAnno = "Marker",
