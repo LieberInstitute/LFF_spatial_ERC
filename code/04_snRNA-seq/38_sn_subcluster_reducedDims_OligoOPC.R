@@ -74,8 +74,7 @@ if(file.exists(harmony_file)){
                   exprs_values = "binomial_deviance_residuals",
                   subset_row = hdgs,
                   ncomponents = 100,
-                  name = "GLMPCA_approx",
-                  BSPARAM = BiocSingular::IrlbaParam()
+                  name = "GLMPCA_approx"
     )
     
     #### Batch Correction ####
