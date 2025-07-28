@@ -11,6 +11,8 @@ library("tidyverse")
 library("getopt")
 # library("spatialLIBD")
 library("scater")
+library("scran")
+library("scry")
 library("TSCAN")
 
 celltype <- "OligoOPC"
