@@ -142,7 +142,7 @@ dev.off()
 if(opt$datatype == "sn_broad"){
     
     #Oligo
-    map(c("C1QL3"), function(g){
+    map(c("C1QL3", "NPTXR"), function(g){
         dge_plot <- plot_DEG_express_single(
                 sce = sce_pb,
                 stats = DE_data,
@@ -161,7 +161,7 @@ if(opt$datatype == "sn_broad"){
     })
     
     #Astro
-    map(c("C1QL3"), function(g){
+    map(c("C1QL3", "NPTXR"), function(g){
         dge_plot <- plot_DEG_express_single(
                 sce = sce_pb,
                 stats = DE_data,
@@ -181,7 +181,7 @@ if(opt$datatype == "sn_broad"){
 
 }else if(opt$datatype == "sn_fine"){
     
-    #Oligo
+    #Oligo.3
     map(c("MAPT", "FOS"), function(g){
         dge_plot <- plot_DEG_express_single(
                 sce = sce_pb,
@@ -193,16 +193,14 @@ if(opt$datatype == "sn_broad"){
                 color_pal = APOE_carrier_colors,
                 plot_points = TRUE
         ) +
-            labs(title = "Oligo")
+            labs(title = "Oligo.3")
         ggsave(dge_plot, 
                filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Oligo.3", g)),
                height = 4, width = 3)
         
     })
 
-}
-
-if(opt$datatype == "Visium"){
+} else if(opt$datatype == "Visium"){
     
     #Oligo
     boxplots_klk6 <- map(c("Vasc~Sp09D08", "WM.uf~Sp09D07"), function(spd){
@@ -311,10 +309,7 @@ if(opt$datatype == "Visium"){
                filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "WM", g)),
                height = 3, width = 3)
     })
-}
-
-
-if(opt$datatype == "sn_broad"){
+} else if(opt$datatype == "sn_broad"){
     #Astro
     map(c("TCTN1", "JUP"), function(g){
         dge_plot <- plot_DEG_express_contrast(
