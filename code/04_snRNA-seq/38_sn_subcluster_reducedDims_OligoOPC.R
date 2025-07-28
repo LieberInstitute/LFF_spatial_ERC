@@ -1,5 +1,5 @@
-## Louise Huuki-Myers, January 2025
-## Run DeconvoBuddies::get_mean_ratio on snRNA_seq data
+## Louise Huuki-Myers, July 2025
+## get reduced dims on Oligo + OPC populations to understand trajectory 
 
 ## Required libraries
 library("here")
@@ -23,13 +23,14 @@ if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive =
 plot_dir <- here("plots", "04_snRNA-seq", "38_sn_subcluster_reducedDims_OligoOPC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
-#### load old data ####
 
 #### Load the data ####
 message(Sys.time(), " - Load HDF5 sce")
-sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC"))
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 
-sce <- sce[,sce$celltype_broad %in% c("Oligo", "OPC")]
+sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
+
+table(sce$cell_type_broad)
 any(duplicated(sce$Barcode))
 
 #### GLM PCA ####
@@ -70,11 +71,12 @@ if(file.exists(harmony_file)){
     hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:5000]
     
     message(Sys.time(), " - running PCA")
-    sce <- runPCA(sce,
+    sce <- scater::runPCA(sce,
                   exprs_values = "binomial_deviance_residuals",
                   subset_row = hdgs,
                   ncomponents = 100,
-                  name = "GLMPCA_approx"
+                  name = "GLMPCA_approx",
+                  BSPARAM = BiocSingular::IrlbaParam()
     )
     
     #### Batch Correction ####
