@@ -195,6 +195,11 @@ write.csv(diff_prop_APOE_carrier, file = here(data_dir, "diff_prop_APOE_carrier.
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
+res_tb <- res |> as_tibble()
+
+res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
+res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_APOE_carrier.csv"))
+
 # Plot hierarchy and testing results
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
