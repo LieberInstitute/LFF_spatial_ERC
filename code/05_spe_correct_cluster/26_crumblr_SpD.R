@@ -87,7 +87,7 @@ fig.vp
 ggsave(fig.vp + 
            theme_bw() + 
            theme(legend.position = "bottom"),
-       filename = here(plot_dir, "crumblr_SpD_vp.png"), width = 4.5, height = 7)
+       filename = here(plot_dir, "crumblr_SpD_vp.png"), width = 4.5, height = 5)
 
 ## variable correlation
 C <- canCorPairs(form, erc_info)
@@ -132,11 +132,12 @@ clr_boxplot_APOE_carrier <- clr_prop_long |>
     geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
     geom_jitter(width = .1) +
-    facet_wrap(~SpD) +
+    facet_wrap(~SpD, nrow = 1) +
     scale_fill_manual(values = APOE_carrier_colors) +
-    theme_bw()
+    theme_bw() +
+    theme(legend.position = "None")
 
-ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, "clr_boxplot_APOE_carrier.png"))
+ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, "clr_boxplot_APOE_carrier.png"), height = 3, width = 10)
 
 clr_boxplot_Visium_slide <- clr_prop_long |>
     ggplot(aes(x = Visium_slide, y = CLR, fill = Visium_slide)) +
@@ -188,17 +189,28 @@ res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "SpD_diff_prop_tree_test_APOE_carrier.csv"))
 
 # Plot hierarchy and testing results
-plotTreeTest(res)
-plotTreeTestBeta(res) 
-plotForest(res)
+tree_fdr_plot <- plotTreeTest(res)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_SpD_APOE_carrier_Tree_FDR.png"))
 
-combined_fig <- fig.vp +
-    theme(legend.position = "left") |
-    plotTreeTestBeta(res) +
-    theme(legend.position = "bottom", legend.box = "vertical") |
-    plotForest(res, hide = FALSE) 
+# Plot hierarchy and regression coefficients
+tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
+    theme(legend.position = "bottom", 
+          legend.box = "vertical"
+    )
+ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_SpD_APOE_carrier_Tree_beta.png"), width = 4, height = 5)
 
-ggsave(combined_fig, filename = here(plot_dir, "crumblr_SpD_combined_APOE_carrier.png"))
+# forest plots
+forest_plot <- plotForest(res, hide = FALSE, low = "#398A84", high = "#D46B43") 
+ggsave(forest_plot, filename = here(plot_dir, "crumblr_SpD_APOE_carrier_forest.png"), width = 4, height = 5)
+
+
+# combined_fig <- fig.vp +
+#     theme(legend.position = "left") |
+#     plotTreeTestBeta(res) +
+#     theme(legend.position = "bottom", legend.box = "vertical") |
+#     plotForest(res, hide = FALSE) 
+# 
+# ggsave(combined_fig, filename = here(plot_dir, "crumblr_SpD_combined_APOE_carrier.png"))
 
 # Perform multivariate test across the hierarchy - visium slide
 (slides <- colnames(fit$design)[grep("Visium_slide", colnames(fit$design))])
