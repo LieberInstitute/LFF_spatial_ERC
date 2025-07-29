@@ -7,6 +7,7 @@ library("crumblr")
 library("variancePartition")
 library("here")
 library("sessioninfo")
+library("dendextend")
 
 ## Prep directories
 plot_dir <- here("plots", "05_spe_correct_cluster", "26_crumblr_SpD")
@@ -22,6 +23,8 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 #### Load data ####
 load(here("processed-data", "05_spe_correct_cluster", "19_SpD_update_spe", "SpD_proportions.Rdata"), verbose = TRUE)
 # SpD_proportions
+
+SpD_proportions <- SpD_proportions |> filter(sample_id != "Br1289")
 
 SpD_df <- SpD_proportions |> 
     mutate(SpD_syn = gsub("~", "_", SpD)) |>
@@ -51,6 +54,7 @@ cell_counts[is.na(cell_counts)] <- 0
 erc_info <- read.csv(here("processed-data", "02_build_spe", "sample_info.csv")) |> 
     select(sample_id, Age, Sex, Ancestry, Anc_Afr, APOE, Visium_slide, round) |>
     mutate(APOE_carrier = ifelse(grepl("E2", APOE), "E2+", "E4+")) |>
+    filter(sample_id != "Br1289") |>
     column_to_rownames("sample_id")
 
 setequal(rownames(erc_info), rownames(cell_counts))
@@ -73,20 +77,25 @@ clr_prop_long <- cobj$E |>
     left_join(error)
 
 # Partition variance into components for sample
-form <- ~ (1 | APOE) + (1 | APOE_carrier) + (1 | Sex) + Age + Anc_Afr + (1 | Visium_slide)+ (1 | round)
+form <- ~ (1 | APOE_carrier) + (1 | Sex) + Age + Anc_Afr + (1 | Visium_slide)
 vp <- fitExtractVarPartModel(cobj, form, erc_info)
 
 # Plot variance fractions
 fig.vp <- plotPercentBars(vp)
 fig.vp
 
-ggsave(fig.vp, filename = here(plot_dir, "crumblr_SpD_vp.png"))
+ggsave(fig.vp + 
+           theme_bw() + 
+           theme(legend.position = "bottom"),
+       filename = here(plot_dir, "crumblr_SpD_vp.png"), width = 4.5, height = 7)
 
 ## variable correlation
 C <- canCorPairs(form, erc_info)
 # APOE and APOE_carrier
 # Visium_slide and round
+pdf(here(plot_dir, "variable_CorrMatrix_SpD.pdf"), height = 5, width = 5)
 plotCorrMatrix(C)
+dev.off()
 
 #### PCA ####
 pca <- prcomp(t(standardize(cobj)))
@@ -96,13 +105,15 @@ df_pca <- merge(pca$x, erc_info, by = "row.names")
 
 # Plot PCA
 #   shape by Stimulated vs unstimulated
-ggplot(df_pca, aes(PC1, PC2, color = Visium_slide, shape = APOE)) +
+cobj_pca <- ggplot(df_pca, aes(PC1, PC2, color = Visium_slide, shape = APOE)) +
     geom_point(size = 3) +
     theme_classic() +
     theme(aspect.ratio = 1) +
     scale_color_discrete(name = "Subject") +
     xlab("PC1") +
     ylab("PC2")
+
+ggsave(cobj_pca, filename = here(plot_dir, "crumblr_pca_SpD.png"))
 
 #### CLR plots ####
 
@@ -114,17 +125,18 @@ clr_boxplot_APOE <- clr_prop_long |>
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE, filename = "clr_boxplot_APOE.png")
+ggsave(clr_boxplot_APOE, filename = here(plot_dir, "clr_boxplot_APOE.png"))
 
 clr_boxplot_APOE_carrier <- clr_prop_long |>
     ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
     geom_boxplot(outlier.shape = NA) +
-    geom_jitter(aes(color = error), width = .1) +
+    # geom_jitter(aes(color = error), width = .1) +
+    geom_jitter(width = .1) +
     facet_wrap(~SpD) +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE_carrier, filename = "clr_boxplot_APOE_carrier.png")
+ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, "clr_boxplot_APOE_carrier.png"))
 
 clr_boxplot_Visium_slide <- clr_prop_long |>
     ggplot(aes(x = Visium_slide, y = CLR, fill = Visium_slide)) +
@@ -134,12 +146,10 @@ clr_boxplot_Visium_slide <- clr_prop_long |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(clr_boxplot_Visium_slide, filename = "clr_boxplot_Visium_slide.png")
+ggsave(clr_boxplot_Visium_slide, filename = here(plot_dir, "clr_boxplot_Visium_slide.png"))
 
 
 #### Hierarchical clustering ####
-library("dendextend")
-
 spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk", "spe_pseudobulk_only-SpD_syn.rds"))
 dim(spe_pb)
 
@@ -152,25 +162,30 @@ dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
 # Use variancePartition workflow to analyze each SpD
 
 #### fit APOE_carrier ####
-fit <- dream(cobj, ~ APOE_carrier + Age + Visium_slide, erc_info)
+fit <- dream(cobj, ~ APOE_carrier + Anc_Afr + Age + Visium_slide, erc_info)
 fit <- eBayes(fit)
 
 # Test APOE carrier
-topTable(fit, coef = "APOE_carrierE4+", number = Inf)
-#                      logFC     AveExpr          t    P.Value adj.P.Val         B
-# WM_Sp09D06    -0.43520093 -0.06954456 -1.8293618 0.07994181 0.7194763 -4.278253
-# L2.3_Sp09D01   0.23153059 -0.19707896  1.1262603 0.27131888 0.8614851 -4.605001
-# LD_Sp09D09     0.10926091 -0.49806362  0.9741968 0.33978757 0.8614851 -4.633960
-# L5_Sp09D03    -0.14617813 -0.14699867 -0.8323957 0.41348626 0.8614851 -4.728817
-# L1_Sp09D05    -0.11433680  0.27080407 -0.5125416 0.61301095 0.8614851 -4.700483
-# L6_Sp09D04    -0.05199031  0.57643431 -0.4436210 0.66133599 0.8614851 -4.732936
-# WM.uf_Sp09D07  0.11849189 -0.08853475  0.4218760 0.67691371 0.8614851 -4.756397
-# Vasc_Sp09D08  -0.04931803 -0.70635115 -0.2151201 0.83151217 0.8614851 -4.782566
-# L3_Sp09D02     0.01522765  0.85933332  0.1763894 0.86148506 0.8614851 -4.755440
+(diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
+#                     logFC     AveExpr           t    P.Value adj.P.Val         B
+# WM_Sp09D06    -0.49369667 -0.06336945 -1.88330104 0.07319348 0.6587413 -4.276222
+# L2.3_Sp09D01   0.29782763 -0.21215444  1.36020054 0.18779244 0.7776110 -4.487527
+# Inhib_Sp09D09  0.11282175 -0.51510636  0.97529404 0.34020990 0.7776110 -4.627923
+# L6_Sp09D04    -0.10189724  0.55858775 -0.87316693 0.39217475 0.7776110 -4.645685
+# L5_Sp09D03    -0.13401893 -0.16236857 -0.68279468 0.50199373 0.7776110 -4.759007
+# WM.uf_Sp09D07  0.15135687 -0.06844375  0.49499131 0.62560326 0.7776110 -4.733619
+# LD_Sp09D02     0.04024377  0.85387084  0.43449588 0.66823749 0.7776110 -4.723201
+# L1_Sp09D05    -0.09734721  0.28070405 -0.40258468 0.69120979 0.7776110 -4.702966
+# Vasc_Sp09D08  -0.01867111 -0.67172007 -0.07730314 0.93909390 0.9390939 -4.762624
 
+write.csv(diff_prop_APOE_carrier, file = here(data_dir, "SpD_diff_prop_APOE_carrier.csv"))
 
 # Perform multivariate test across the hierarchy - APOE_carrier
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
+
+res_tb <- res |> as_tibble()
+res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
+res_tb |> write_csv(here(data_dir, "SpD_diff_prop_tree_test_APOE_carrier.csv"))
 
 # Plot hierarchy and testing results
 plotTreeTest(res)
