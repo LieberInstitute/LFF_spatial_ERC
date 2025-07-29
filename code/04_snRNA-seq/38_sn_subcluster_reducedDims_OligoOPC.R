@@ -40,7 +40,7 @@ harmony_file <- here(data_dir, sprintf("subcluster_HARMONY_pca_%s.rdata", cellty
 
 if(file.exists(harmony_file)){
     message(Sys.time(), " - Load saved HARMONY PCs")
-    load(harmony_file)
+    load(harmony_file, verbose = TRUE)
     reducedDim(sce, "HARMONY") <- subtype_HARMONY
 } else {
     
@@ -108,7 +108,8 @@ message(Sys.time(), " - run UMAP")
 sce <- runUMAP(sce, dimred = "HARMONY")
 
 #### plot reduced dims ####
-celltype_colors <- metadata(sce)$celltype_colors
+message(Sys.time(), " - Plot Reduced Dims")
+cell_type_colors <- metadata(sce)$cell_type_colors
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
@@ -117,7 +118,7 @@ walk(c("TSNE", "UMAP"),
      ~my_plot_reduced_dim(sce,
                           prefix = "sn_subcluster",
                           dimred = .x,
-                          my_var = "celltype_anno",
+                          my_var = "cell_type_anno",
                           var_type = "cat",
                           save_plot = TRUE,
                           suffix = celltype,
@@ -132,11 +133,11 @@ walk(c("TSNE", "UMAP"),
      ~my_plot_reduced_dim(sce,
                           prefix = "sn_subcluster",
                           dimred = .x,
-                          my_var = "celltype_anno",
+                          my_var = "cell_type_anno",
                           var_type = "cat",
                           save_plot = TRUE,
                           suffix = paste0(celltype, "_color"),
-                          color_pal = celltype_colors$anno,
+                          color_pal = cell_type_colors$anno,
                           facet = FALSE,
                           plot_dir_rd = plot_dir,
                           verbose = TRUE, 
@@ -145,8 +146,8 @@ walk(c("TSNE", "UMAP"),
 
 #### Trajectory analysis ####
 
-by.cluster <- aggregateAcrossCells(sce, ids=sce$celltype_anno)
-centroids <- reducedDim(by.cluster, "HARMONY_st")
+by.cluster <- aggregateAcrossCells(sce, ids=sce$cell_type_anno)
+centroids <- reducedDim(by.cluster, "HARMONY")
 
 # Set clusters=NULL as we have already aggregated above.
 mst <- createClusterMST(centroids, clusters=NULL)
@@ -157,7 +158,24 @@ line.data <- reportEdges(by.cluster, mst=mst, clusters=NULL, use.dimred="TSNE")
 tsne_edge <- my_plot_reduced_dim(sce,
                                  prefix = "sn_subcluster",
                                  dimred = "TSNE",
-                                 my_var = "celltype_anno",
+                                 my_var = "cell_type_anno",
+                                 var_type = "cat",
+                                 save_plot = FALSE,
+                                 suffix = celltype,
+                                 color_pal = cell_type_colors$anno,
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC_color.png")))
+
+## with default colors
+tsne_edge <- my_plot_reduced_dim(sce,
+                                 prefix = "sn_subcluster",
+                                 dimred = "TSNE",
+                                 my_var = "cell_type_anno",
                                  var_type = "cat",
                                  save_plot = FALSE,
                                  suffix = celltype,
@@ -167,12 +185,12 @@ tsne_edge <- my_plot_reduced_dim(sce,
                                  add_label = TRUE) + 
     geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
 
-ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-Oligo.png")))
+ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC.png")))
 
+#### pseudotime ####
+colLabels(sce) <- sce$cell_type_anno
 
-colLabels(sce) <- sce$celltype_anno
-
-map.tscan <- mapCellsToEdges(sce, mst=mst, use.dimred="HARMONY_st")
+map.tscan <- mapCellsToEdges(sce, mst=mst, use.dimred="HARMONY")
 tscan.pseudo <- orderCells(map.tscan, mst)
 head(tscan.pseudo)
 
