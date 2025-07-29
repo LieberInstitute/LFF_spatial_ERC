@@ -27,8 +27,10 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 spe
 # dim: 30494 122202 
 
-pd <- as.data.frame(colData(spe))
+SpD_colors <- metadata(spe)$SpD_colors
 
+pd <- as.data.frame(colData(spe))
+colnames(pd)
 
 #### SpD Summary ####
 SpD_summary <- pd |>
@@ -38,7 +40,8 @@ SpD_summary <- pd |>
               n_donors = length(unique(sample_id)),
               median_sum_umi = median(sum_umi),
               median_sum_gene = median(sum_gene),
-              median_expr_chrM_ratio = median(expr_chrM_ratio))
+              median_expr_chrM_ratio = median(expr_chrM_ratio),
+              median_nuclei = median(Nmask_dark_blue))
 # |>
 #     left_join(enrichment_stats_top_list)
 
@@ -60,8 +63,53 @@ summary(sample_summary)
 
 write.csv(sample_summary, file = here(data_dir, "ERC_Visium_summary_sample.csv"))
 
-#### Define colors for SpD ####
-load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+#### Quality metrics ####
+
+qc_violin_sum_umi <- ggplot(pd, aes(x = SpD, y = sum_umi, fill = SpD)) +
+    geom_violin(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = SpD_colors) +
+    scale_y_continuous(trans='log10') +
+    theme_bw() +
+    labs(y = "log10(Sum UMI)") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(qc_violin_sum_umi, filename = here(plot_dir, "ERC_Visium_SpD_QC_violin_sum_umi.png"), width = 7, height =4)
+
+qc_violin_detected <- ggplot(pd, aes(x = SpD, y = sum_gene, fill = SpD)) +
+    geom_violin(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    labs(y = "Detected Genes") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(qc_violin_detected, filename = here(plot_dir, "ERC_Visium_SpD_QC_violin_detected.png"), width = 7, height =4)
+
+
+qc_violin_mito <- ggplot(pd, aes(x = SpD, y = expr_chrM_ratio, fill = SpD)) +
+    geom_violin(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    labs(y = "Precent Mito") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_Visium_QC_SpD_violin_Mito_percent.png"), width = 7, height =4)
+
+#### n nuclei ####
+summary(pd$Nmask_dark_blue)
+
+n_nuclei_violin <- ggplot(pd, aes(x = SpD, y = CNmask_dark_blue, fill = SpD)) +
+    geom_violin(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    labs(y = "n segmented nuclei") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(n_nuclei_violin, filename = here(plot_dir, "ERC_Visium_SpD_violin_n_nuclei.png"), width = 7, height =4)
+
 
 #### Spot plots for representative sections ####
 
