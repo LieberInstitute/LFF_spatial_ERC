@@ -24,13 +24,13 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 
 # Row names should be unique gene names
 rowData(sce)
-any(duplicated(rownames(sce)))
+stopifnot(!any(duplicated(rownames(sce))))
 
 # column names should be unique cell barcodes
 colnames(sce) <- sce$Barcode
 
 # colData(sce)
-any(duplicated(colnames(sce)))
+stopifnot(!any(duplicated(colnames(sce))))
 
 # copy sum umi col to nUMI
 sce$nUMI <- sce$sum
@@ -50,11 +50,11 @@ spe$nUMI <- spe$sum_umi
 
 # Row names should be unique gene names
 rowData(spe)
-any(duplicated(rownames(spe)))
+stopifnot(!any(duplicated(rownames(spe))))
 
 # column names should be unique spot barcodes
 # colData(spe)
-any(duplicated(colnames(spe)))
+stopifnot(!any(duplicated(colnames(spe))))
 
 # Examine pixels. (optional)
 print(dim(assay(spe)))
@@ -68,7 +68,7 @@ message(Sys.time(), " - Run RCDT")
 results_spe <- runRctd(rctd_data, rctd_mode = "multi")
 
 message(Sys.time(), " - Done save")
-write_rds(results_spe, file = here(data_dir, "RCDT_est_prop.rds"))
+saveRDS(results_spe, file = here(data_dir, "RCDT_est_prop.rds"))
 
 # slurmjobs::job_single('01_runRCTD', create_shell = TRUE, memory = '200G', command = "Rscript 01_runRCTD.R")
 
