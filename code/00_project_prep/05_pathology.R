@@ -107,7 +107,7 @@ sample_info_path |>
 # 1 E2+             0.357
 # 2 E4+             0.235
 
-sample_info |>
+sample_info_path |>
     group_by(APOE) |>
     summarise(prop_tau = sum(taupathy)/n())
 # APOE  prop_tau
@@ -116,6 +116,8 @@ sample_info |>
 # 2 E2/E3    0.375
 # 3 E3/E4    0.2  
 # 4 E4/E4    0.286
+
+sample_info_path |> filter(!path_data) |> pull(BrNum) |> cat(sep = ", ")
 
 ## save data
 sample_info_path |>
