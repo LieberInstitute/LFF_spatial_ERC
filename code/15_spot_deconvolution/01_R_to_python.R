@@ -12,49 +12,40 @@ library("zellkonverter")
 library("sessioninfo")
 library("here")
 library("HDF5Array")
+library("getopt")
 
-# cell_group <- "broad" # "broad" or "layer"
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
+print(opt)
+
+if(opt$datatype == "Visium"){
+    data_in <- here("processed-data", "sce_objects", "sce_ERC_subcluster")
+    dataname  <- "spe"
+} else if(opt$datatype == "sn_fine"){
+    data_in <- here("processed-data", "spe_objects", "spe_ERC_annotated")
+    dataname <- "sce"
+} else {
+    stop("non-valid datatype")
+}
 
 #### data prep ####
 
-## SCE
-# sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce_objects", "sce_ERC_subcluster"))
-sce_in <- here("processed-data", "sce_objects", "sce_ERC_subcluster")
+data_out <- here(
+    "processed-data", "15_spot_deconvolution", "01_R_to_python", sprintf("%s.h5ad", dataname)
+)
 
-spe_in <- here("processed-data", "spe_objects", "spe_ERC_annotated")
 
-# nonIF_id_path <- here("processed-data", "15_spot_deconvolution", "nonIF_ID_table.csv")
-# nonIF_counts_path <- here(
-#     "processed-data", "rerun_spaceranger", "{sample_id}", "outs", "spatial",
-#     "tissue_spot_counts.csv"
+# marker_object_in <- here(
+#     "processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"
 # )
-
-sce_out <- here(
-    "processed-data", "15_spot_deconvolution", "01_R_to_python", "sce.h5ad"
-)
-# sce_r_out <- here(
-#     "processed-data", "15_spot_deconvolution", "01_R_to_python",
-#     paste0("sce_", cell_group, ".rds")
-# )
-
-spe_out <- here(
-    "processed-data", "15_spot_deconvolution", "01_R_to_python", "spe.h5ad"
-)
-
-
-marker_object_in <- here(
-    "processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"
-)
-
-# if (cell_group == "broad") {
-#     cell_type_var <- "cellType_broad_hc"
-# } else {
-#     cell_type_var <- "layer_level"
-# }
 
 #  Make sure output directories exist
-dir.create(dirname(spe_out), recursive = TRUE, showWarnings = FALSE)
-dir.create(dirname(spe_out), recursive = TRUE, showWarnings = FALSE)
+dir.create(dirname(data_out), recursive = TRUE, showWarnings = FALSE)
 
 ####  Functions ####
 
@@ -83,32 +74,33 @@ write_anndata <- function(sce, out_path) {
 #### Main data conversion ####
 
 #   Load objects
-## Load HD5F sce
+## Load HD5F data
 sce <- HDF5Array::loadHDF5SummarizedExperiment(sce_in)
-
-## Load HD5F spe
-spe <- HDF5Array::loadHDF5SummarizedExperiment(spe_in)
 
 gc()
 
-####  Check cell counts in spatial object ####
-## Use CNmask_dark_blue as nulcei count
-spe$count <- spe$CNmask_dark_blue
-
-#   Ensure counts for all spots
-if (any(is.na(spe$count))) {
-    stop("Did not find cell counts for all non-IF spots.")
+#### Visium specific data edits ####
+if(opt$datatype == "Visium"){
+    
+    ## Check cell counts in spatial object
+    ## Use CNmask_dark_blue as nulcei count
+    sce$count <- sce$CNmask_dark_blue
+    
+    #   Ensure counts for all spots
+    if (any(is.na(sce$count))) {
+        stop("Did not find cell counts for all non-IF spots.")
+    }
+    
+    #   zellkonverter doesn't know how to convert the 'spatialCoords' slot. We'd
+    #   ultimately like the spatialCoords in the .obsm['spatial'] slot of the
+    #   resulting AnnDatas, which corresponds to reducedDims(spe)$spatial in R
+    coords <- spatialCoords(sce)
+    rownames(coords) <- colnames(sce) ## match rownames to colnames(spe)
+    reducedDims(sce)$spatial <- coords
+    
 }
 
 ####   Convert snRNA-seq and spatial R objects to AnnData python objects ####
-
-#   zellkonverter doesn't know how to convert the 'spatialCoords' slot. We'd
-#   ultimately like the spatialCoords in the .obsm['spatial'] slot of the
-#   resulting AnnDatas, which corresponds to reducedDims(spe)$spatial in R
-coords <- spatialCoords(spe)
-rownames(coords) <- colnames(spe) ## match rownames to colnames(spe)
-reducedDims(spe)$spatial <- coords
-
 #   Use Ensembl gene IDs for rownames (not gene symbol)
 rownames(sce) <- rowData(sce)$gene_id
 
@@ -116,8 +108,6 @@ rownames(sce) <- rowData(sce)$gene_id
 message(Sys.time(), " - Converting SCE objects AnnDatas...")
 write_anndata(sce, sce_out)
 
-message(Sys.time(), " - Converting SPE objects AnnDatas...")
-write_anndata(spe, spe_out)
 
 
 # #-------------------------------------------------------------------------------
@@ -155,6 +145,11 @@ write_anndata(spe, spe_out)
 # saveRDS(marker_stats, marker_object_out)
 
 # slurmjobs::job_single('01_R_to_python', create_shell = TRUE, memory = '25G', command = "Rscript 01_R_to_python.R")
+
+# slurmjobs::job_loop(loops = list(datatype = c("sn","Visium")),
+#                     create_shell = TRUE,
+#                     name = "01_R_to_python",
+#                     create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
