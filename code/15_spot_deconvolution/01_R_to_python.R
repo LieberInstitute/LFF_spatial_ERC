@@ -106,7 +106,7 @@ rownames(sce) <- rowData(sce)$gene_id
 
 #  convert all objects to Anndatas
 message(Sys.time(), " - Converting SCE objects AnnDatas...")
-write_anndata(sce, sce_out)
+write_anndata(sce, data_out)
 
 
 
