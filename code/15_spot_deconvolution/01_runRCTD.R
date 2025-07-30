@@ -65,7 +65,8 @@ rctd_data <- createRctd(spe, sce, UMI_min = 2, cell_type_col = "cell_type_anno")
 
 #### Run RTCD  ####
 message(Sys.time(), " - Run RCDT")
-results_spe <- runRctd(rctd_data, rctd_mode = "multi")
+## max_multi_types = median(spe$CNmask_dark_blue)
+results_spe <- runRctd(rctd_data, rctd_mode = "multi", max_multi_types = 5)
 
 message(Sys.time(), " - Done save")
 saveRDS(results_spe, file = here(data_dir, "RCDT_est_prop.rds"))
