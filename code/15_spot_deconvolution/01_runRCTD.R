@@ -70,7 +70,7 @@ results_spe <- runRctd(rctd_data, rctd_mode = "multi")
 message(Sys.time(), " - Done save")
 write_rds(results_spe, file = here(data_dir, "RCDT_est_prop.rds"))
 
-# slurmjobs::job_single('04_ancestry_check', create_shell = TRUE, memory = '5G', command = "Rscript 04_ancestry_check.R")
+# slurmjobs::job_single('01_runRCTD', create_shell = TRUE, memory = '200G', command = "Rscript 01_runRCTD.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
