@@ -115,7 +115,7 @@ vlmf_summary <- map_dfr(clusters, function(clus){
     map(v.swt.e.tt, head)
     
     message("Done - Save data")
-    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_ancestry_%s_%s.rds", opt$datatype, clus)))
+    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_carrier_sex_%s_%s.rds", opt$datatype, clus)))
     
     return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.05)))
     
@@ -130,7 +130,7 @@ vlmf_summary <- map_dfr(clusters, function(clus){
 vlmf_summary <- vlmf_summary |>
     add_column(cluster = clusters, .before = 1)
 
-write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_ancestry_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
+write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_carrier_sex_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
 # slurmjobs::job_single('05_Clusterwise_voomLmFit_Sex_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 05_Clusterwise_voomLmFit_Sex.R --datatype sn_broad")
 
