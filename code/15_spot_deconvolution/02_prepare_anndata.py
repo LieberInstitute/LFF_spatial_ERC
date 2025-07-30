@@ -28,18 +28,18 @@ cell_group = "layer" # "broad" or "layer"
 
 
 sc_path = pyhere.here(
-    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "processed-data", "15_spot_deconvolution", "05-shared_utilities",
     "sce_" + cell_group + ".h5ad"
 )
 sp_path = pyhere.here(
-    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF", "spe.h5ad"
+    "processed-data", "15_spot_deconvolution", "05-shared_utilities", "nonIF", "spe.h5ad"
 )
 
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "03-cell2location", "nonIF", cell_group
+    "processed-data", "15_spot_deconvolution", "03-cell2location", "nonIF", cell_group
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo", "03-cell2location", "nonIF", cell_group
+    "plots", "15_spot_deconvolution", "03-cell2location", "nonIF", cell_group
 )
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)
@@ -52,12 +52,12 @@ spaceranger_dir = pyhere.here(
 )
 
 marker_path = pyhere.here(
-    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "processed-data", "15_spot_deconvolution", "05-shared_utilities",
     "markers_" + cell_group + ".txt"
 )
 
 sample_info_path = pyhere.here(
-    "processed-data", "spot_deconvo", "nonIF_ID_table.csv"
+    "processed-data", "15_spot_deconvolution", "nonIF_ID_table.csv"
 )
 
 #   In single-cell only
