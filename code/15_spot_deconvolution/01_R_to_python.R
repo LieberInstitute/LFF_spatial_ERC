@@ -75,7 +75,7 @@ write_anndata <- function(sce, out_path) {
 
 #   Load objects
 ## Load HD5F data
-sce <- HDF5Array::loadHDF5SummarizedExperiment(sce_in)
+sce <- HDF5Array::loadHDF5SummarizedExperiment(data_in)
 
 gc()
 
