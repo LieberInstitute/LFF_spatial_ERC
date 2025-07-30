@@ -306,4 +306,5 @@ for sample_id in adata_vis.obs['sample'].cat.categories:
     )
     clusters_subset.to_csv(os.path.join(processed_dir, sample_id, 'clusters.csv'))
 
+## session info
 session_info.show(html=False)

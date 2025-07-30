@@ -75,6 +75,7 @@ write_anndata <- function(sce, out_path) {
 
 #   Load objects
 ## Load HD5F data
+message(Sys.time(), " - Load HDF5 file")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(data_in)
 
 gc()
@@ -144,12 +145,14 @@ write_anndata(sce, data_out)
 # 
 # saveRDS(marker_stats, marker_object_out)
 
-# slurmjobs::job_single('01_R_to_python', create_shell = TRUE, memory = '25G', command = "Rscript 01_R_to_python.R")
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn","Visium")),
 #                     create_shell = TRUE,
 #                     name = "01_R_to_python",
 #                     create_script = FALSE)
+
+# slurmjobs::job_single('01_R_to_python', create_shell = TRUE, memory = '25G', command = "Rscript 01_R_to_python.R")
+
 
 ## Reproducibility information
 print("Reproducibility information:")

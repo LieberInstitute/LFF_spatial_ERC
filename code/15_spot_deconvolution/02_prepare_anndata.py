@@ -14,7 +14,7 @@ from cell2location.utils.filtering import filter_genes
 from matplotlib import rcParams
 rcParams['pdf.fonttype'] = 42 # enables correct plotting of text
 import seaborn as sns
-
+import session_info
 import pyhere
 from pathlib import Path
 from PIL import Image
@@ -24,23 +24,21 @@ import json
 #   Variable definitions
 ################################################################################
 
-cell_group = "layer" # "broad" or "layer"
+# cell_group = "layer" # "broad" or "layer"
 
 
 sc_path = pyhere.here(
-    "processed-data", "15_spot_deconvolution", "05-shared_utilities",
-    "sce_" + cell_group + ".h5ad"
+    "processed-data", "15_spot_deconvolution", "01_R_to_python","sce.h5ad"
 )
 sp_path = pyhere.here(
-    "processed-data", "15_spot_deconvolution", "05-shared_utilities", "nonIF", "spe.h5ad"
+    "processed-data", "15_spot_deconvolution", "01_R_to_python", "spe.h5ad"
 )
 
 processed_dir = pyhere.here(
-    "processed-data", "15_spot_deconvolution", "03-cell2location", "nonIF", cell_group
-)
+    "processed-data", "15_spot_deconvolution", "02_prepare_anndata")
 plot_dir = pyhere.here(
-    "plots", "15_spot_deconvolution", "03-cell2location", "nonIF", cell_group
-)
+    "plots", "15_spot_deconvolution", "02_prepare_anndata")
+    
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)
 
@@ -48,11 +46,11 @@ Path(processed_dir).mkdir(parents=True, exist_ok=True)
 #   spot size for a given sample. Here '{}' will be replaced by a single
 #   sample name
 spaceranger_dir = pyhere.here(
-    'processed-data', 'rerun_spaceranger', '{}', 'outs', 'spatial'
+    'processed-data', '01_spaceranger', '{}', 'outs', 'spatial'
 )
 
 marker_path = pyhere.here(
-    "processed-data", "15_spot_deconvolution", "05-shared_utilities",
+    "processed-data", "15_spot_deconvolution", "01_R_to_python",
     "markers_" + cell_group + ".txt"
 )
 
@@ -188,3 +186,6 @@ if cell_group == 'broad':
 adata_ref.write_h5ad(
     os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 )
+
+## session info
+session_info.show(html=False)
