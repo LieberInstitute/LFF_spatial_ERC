@@ -24,9 +24,9 @@ opt <- getopt(scec)
 print(opt)
 
 if(opt$datatype == "Visium"){
-    data_in <- here("processed-data", "sce_objects", "sce_ERC_subcluster")
+    data_in <- here("processed-data", "spe_objects", "spe_ERC_annotated")
     dataname  <- "spe"
-} else if(opt$datatype == "sn_fine"){
+} else if(opt$datatype == "sn"){
     data_in <- here("processed-data", "spe_objects", "spe_ERC_annotated")
     dataname <- "sce"
 } else {
