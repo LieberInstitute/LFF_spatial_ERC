@@ -61,7 +61,7 @@ names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_carrier_sex_sn_broad_|voomLm
 vlmf_data <- map(vlmf_fn, readRDS)
 
 ## check levels are present
-all(names(vlmf_data) %in% cluster_levels)
+# all(names(vlmf_data) %in% cluster_levels)
 
 names(vlmf_data[[1]])
 
@@ -400,14 +400,15 @@ if(opt$datatype == "sn_fine"){
     
     ## compare w/ overall carrier stats
     compare_carrier_stats(vlmf_data_tb)
+    compare_carrier_stats(vlmf_data_tb, risk = TRUE)
     
     ## compare logFC
     # compare_contrast_stats(vlmf_data_tb, stat = "logFC")
 }
 
-# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")), 
-#                     create_shell = TRUE, 
-#                     name = "09_compile_DGE_Sex", 
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "09_compile_DGE_Sex",
 #                     create_script = FALSE)
 
 #### Reproducibility information ####
