@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=50G
+#SBATCH --mem=200G
 #SBATCH --job-name=01_prep_RCTD
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
