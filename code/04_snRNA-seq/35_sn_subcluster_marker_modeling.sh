@@ -4,10 +4,19 @@
 #SBATCH --job-name=35_sn_subcluster_marker_modeling
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/35_sn_subcluster_marker_modeling.txt
-#SBATCH -e logs/35_sn_subcluster_marker_modeling.txt
+#SBATCH -o /dev/null
+#SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
+#SBATCH --array=1-7%20
 
+## Define loops and appropriately subset each variable for the array task ID
+all_celltype=(Astro Micro Endo OPC Vasc Excit Inhib)
+celltype=${all_celltype[$(( $SLURM_ARRAY_TASK_ID / 1 % 7 ))]}
+
+## Explicitly pipe script output to a log
+log_path=logs/35_sn_subcluster_marker_modeling_${celltype}_${SLURM_ARRAY_TASK_ID}.txt
+
+{
 set -e
 
 echo "**** Job starts ****"
@@ -27,10 +36,13 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 35_sn_subcluster_marker_modeling.R --celltype Oligo
+Rscript 35_sn_subcluster_marker_modeling.R --celltype ${celltype}
 
 echo "**** Job ends ****"
 date
 
+} > $log_path 2>&1
+
 ## This script was made using slurmjobs version 1.3.0
 ## available from http://research.libd.org/slurmjobs/
+
