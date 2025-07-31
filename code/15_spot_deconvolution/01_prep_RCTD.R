@@ -69,13 +69,14 @@ print(dim(assay(spe)))
 message(Sys.time(), " - Prep RCDT data")
 rctd_data <- createRctd(spe, sce, UMI_min = 2, cell_type_col = opt$cell_type_col)
 
+message(Sys.time(), " - Save RCDT data")
+saveRDS(rctd_data, file = here(data_dir, sprintf("rctd_data_%s.rds", opt$cell_type_col)))
 
-saveRDS(results_spe, file = here(data_dir, sprintf("rctd_data_%s.rds", opt$cell_type_col)))
 
-slurmjobs::job_loop(loops = list(cell_type_col = c("cell_type_broad", "cell_type_anno")), 
-                    create_shell = TRUE, 
-                    name = "01_prep_RCTD", 
-                    create_script = FALSE)
+# slurmjobs::job_loop(loops = list(cell_type_col = c("cell_type_broad", "cell_type_anno")), 
+#                     create_shell = TRUE, 
+#                     name = "01_prep_RCTD", 
+#                     create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
