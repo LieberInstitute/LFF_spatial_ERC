@@ -8,6 +8,7 @@ library("spacexr")
 library("HDF5Array")
 library("here")
 library("sessioninfo")
+library("getopt")
 
 # Import command-line parameters
 scec <- matrix(
