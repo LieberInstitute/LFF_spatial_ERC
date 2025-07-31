@@ -59,7 +59,7 @@ sce |>
               groupAnno = "cell_type_anno",
               scale = TRUE,
               annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
+              clusterRows = TRUE,
               groupLegends = FALSE)
 dev.off()
 
