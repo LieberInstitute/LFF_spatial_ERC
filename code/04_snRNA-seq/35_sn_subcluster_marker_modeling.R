@@ -45,6 +45,25 @@ table(sce$cell_type_anno)
 
 cell_type_colors <- metadata(sce)$cell_type_colors
 
+#### #### AD risk gene dotplot ####
+
+## read in risk genes from OpenTargets data
+AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
+    filter(symbol %in% rowData(sce)$gene_name) 
+
+
+pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_AD_risk.pdf", celltype)))
+sce |>
+    scDotPlot(features = AD_risk$symbol,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+
 #### Run Mean Ratio ####
 marker_stats_fn <- here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", celltype))
 
