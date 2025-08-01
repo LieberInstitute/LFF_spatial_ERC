@@ -171,7 +171,7 @@ top_enrichment_genes <- sig_genes_extract(
     gene_name = "gene_name"
 )
 
-write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", celltype)))
+write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", celltype)), row.names = FALSE)
 
 ## all signif
 top100_enrichment_genes <- sig_genes_extract(
@@ -192,7 +192,7 @@ top100_enrichment_genes <- top100_enrichment_genes |>
 
 top100_enrichment_genes |> filter(fdr < 0.05)  |> count(test)
 
-write.csv(top100_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top100_%s.csv", celltype)))
+write.csv(top100_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top100_%s.csv", celltype)), row.names = FALSE)
 
 
 #### Enrichment dot plots ####
