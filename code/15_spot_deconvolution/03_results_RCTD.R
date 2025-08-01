@@ -165,7 +165,7 @@ rcdt_violin <- rcdt_long |>
     theme(legend.position = "none",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
-ggsave(rcdt_violin, filename = here(plot_dir, "rcdt_violin.png"), height = 10)
+ggsave(rcdt_violin, filename = here(plot_dir, sprintf("rcdt_violin-%s.png", cell_type_col)), height = 10)
 
 
 if(cell_type_col == "cell_type_broad"){
@@ -176,10 +176,11 @@ if(cell_type_col == "cell_type_broad"){
         facet_wrap(~cell_type, ncol = 1) +
         theme_bw() +
         scale_color_manual(values = SpD_colors) +
+        labs(y = "mean(weight)") +
         theme(legend.position = "none",
               axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
     
-    ggsave(rcdt_mean_boxplot, filename = here(plot_dir, "rcdt_mean_boxplot.png"), height = 10)
+    ggsave(rcdt_mean_boxplot, filename = here(plot_dir, sprintf("rcdt_mean_boxplot-%s.png", cell_type_col)), height = 10)
     
     
 } else if(cell_type_col == "cell_type_fine"){
@@ -200,6 +201,50 @@ if(cell_type_col == "cell_type_broad"){
 
 ggsave(rcdt_mean_boxplot, filename = here(plot_dir, "rcdt_mean_boxplot.png"), height = 10)
 
+#### compare to sn prop ####
+
+rcdt_sample_summary <- rcdt_long |>
+    group_by(cell_type_broad = cell_type, sample_id = BrNum) |>
+    summarise(rctd_prop = mean(weights))
+
+# load an cell_type_proportions
+load(here("processed-data", "04_snRNA-seq", "28_subcluster_update_sce","cell_type_proportions.Rdata"), verbose = TRUE)
+levels(cell_type_proportions$cell_type_anno)
+
+## calc broad proportions 
+compare_proportions <- cell_type_proportions |>
+    separate(cell_type_anno, into = c("cell_type_broad"), sep ="\\.", extra = "drop") |>
+    mutate(cell_type_broad = factor(cell_type_broad, levels = cell_type_broad_levels)) |>
+    group_by(sample_id, APOE, Sex, Age, Ancestry, cell_type_broad) |>
+    summarise(n = sum(n), sn_prop = sum(prop)) |>
+    group_by(sample_id) |>
+    left_join(rcdt_sample_summary)
+
+
+compare_proportions |>
+    group_by(cell_type_broad) |>
+    summarise(cor = cor(sn_prop, rctd_prop))
+
+# cell_type_broad     cor
+# <fct>             <dbl>
+# 1 Astro            0.648 
+# 2 Oligo            0.781 
+# 3 OPC              0.245 
+# 4 Macro            0.509 
+# 5 Micro            0.638 
+# 6 Vasc             0.0759
+# 7 Excit            0.512 
+# 8 Inhib           -0.0213
+
+compare_proportions_scatter <- compare_proportions |>
+    ggplot(aes(x= sn_prop, y = rctd_prop)) +
+    geom_point() +
+    geom_abline() +
+    facet_wrap(~cell_type_broad, nrow = 2) +
+    coord_equal() +
+    theme_bw()
+
+ggsave(compare_proportions_scatter, filename = here(plot_dir, "compare_proportions_scatter.png"), width = 10)
 
 
 
