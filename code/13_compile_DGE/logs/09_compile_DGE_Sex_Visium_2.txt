@@ -1,0 +1,215 @@
+**** Job starts ****
+Wed Jul 30 09:38:21 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 21145895
+Job name: 09_compile_DGE_Sex
+Node name: compute-163
+Task id: 2
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  SpD_colors
+[1] "carrier_F" "carrier_M" "Sex_E2"    "Sex_E4"   
+[1] "Vasc~Sp09D08"  "L1~Sp09D05"    "L2.3~Sp09D01"  "LD~Sp09D02"   
+[5] "Inhib~Sp09D09" "L5~Sp09D03"    "L6~Sp09D04"    "WM.uf~Sp09D07"
+[9] "WM~Sp09D06"   
+# A tibble: 18 × 3
+   cluster       contrast      n
+   <fct>         <chr>     <int>
+ 1 Vasc~Sp09D08  carrier_F  9014
+ 2 Vasc~Sp09D08  carrier_M  9014
+ 3 L1~Sp09D05    carrier_F 11594
+ 4 L1~Sp09D05    carrier_M 11594
+ 5 L2.3~Sp09D01  carrier_F 14006
+ 6 L2.3~Sp09D01  carrier_M 14006
+ 7 LD~Sp09D02    carrier_F 15053
+ 8 LD~Sp09D02    carrier_M 15053
+ 9 Inhib~Sp09D09 carrier_F 12207
+10 Inhib~Sp09D09 carrier_M 12207
+11 L5~Sp09D03    carrier_F 14322
+12 L5~Sp09D03    carrier_M 14322
+13 L6~Sp09D04    carrier_F 13930
+14 L6~Sp09D04    carrier_M 13930
+15 WM.uf~Sp09D07 carrier_F  3172
+16 WM.uf~Sp09D07 carrier_M  3172
+17 WM~Sp09D06    carrier_F  9409
+18 WM~Sp09D06    carrier_M  9409
+# A tibble: 4 × 3
+  cluster       contrast      n
+  <fct>         <chr>     <int>
+1 L1~Sp09D05    carrier_M     2
+2 Inhib~Sp09D09 carrier_M     1
+3 WM.uf~Sp09D07 carrier_M   144
+4 WM~Sp09D06    carrier_M     1
+# A tibble: 205,414 × 5
+   cluster       gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>         <chr>            <dbl>          <dbl>      <dbl>
+ 1 WM.uf~Sp09D07 GPR37     0.0000000551       0.000175     -2.23 
+ 2 WM.uf~Sp09D07 TMEM144   0.00000207         0.00228      -1.70 
+ 3 WM.uf~Sp09D07 EFEMP1    0.00000215         0.00228      -1.30 
+ 4 WM.uf~Sp09D07 PHGDH     0.00000779         0.00506      -1.12 
+ 5 WM.uf~Sp09D07 CMTM5     0.00000918         0.00506      -1.55 
+ 6 WM.uf~Sp09D07 GPRC5B    0.0000111          0.00506      -0.917
+ 7 WM.uf~Sp09D07 GLTP      0.0000112          0.00506      -1.18 
+ 8 WM.uf~Sp09D07 KLK6      0.0000156          0.00547      -1.97 
+ 9 WM.uf~Sp09D07 CD9       0.0000173          0.00547      -1.32 
+10 WM.uf~Sp09D07 ELOVL1    0.0000178          0.00547      -1.51 
+# ℹ 205,404 more rows
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+# A tibble: 18 × 5
+# Groups:   cluster [9]
+   cluster       contrast  n_FDR05   nUP nDown
+   <fct>         <chr>       <int> <int> <int>
+ 1 Vasc~Sp09D08  carrier_F       0     0     0
+ 2 Vasc~Sp09D08  carrier_M       0     0     0
+ 3 L1~Sp09D05    carrier_F       0     0     0
+ 4 L1~Sp09D05    carrier_M       2     0     2
+ 5 L2.3~Sp09D01  carrier_F       0     0     0
+ 6 L2.3~Sp09D01  carrier_M       0     0     0
+ 7 LD~Sp09D02    carrier_F       0     0     0
+ 8 LD~Sp09D02    carrier_M       0     0     0
+ 9 Inhib~Sp09D09 carrier_F       0     0     0
+10 Inhib~Sp09D09 carrier_M       1     1     0
+11 L5~Sp09D03    carrier_F       0     0     0
+12 L5~Sp09D03    carrier_M       0     0     0
+13 L6~Sp09D04    carrier_F       0     0     0
+14 L6~Sp09D04    carrier_M       0     0     0
+15 WM.uf~Sp09D07 carrier_F       0     0     0
+16 WM.uf~Sp09D07 carrier_M     144    31   113
+17 WM~Sp09D06    carrier_F       0     0     0
+18 WM~Sp09D06    carrier_M       1     0     1
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+There were 32 warnings (use warnings() to see them)
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+# A tibble: 18 × 7
+   cluster       contrast    cor        p_val   p_val_adj signif anno     
+   <chr>         <chr>     <dbl>        <dbl>       <dbl> <chr>  <chr>    
+ 1 Inhib~Sp09D09 carrier_F 0.203 0.419        1           ""     cor=0.20 
+ 2 Inhib~Sp09D09 carrier_M 0.918 0.0000000815 0.00000147  "*"    cor=0.92*
+ 3 L1~Sp09D05    carrier_F 0.658 0.00299      0.0538      ""     cor=0.66 
+ 4 L1~Sp09D05    carrier_M 0.870 0.00000275   0.0000496   "*"    cor=0.87*
+ 5 L2.3~Sp09D01  carrier_F 0.543 0.0162       0.291       ""     cor=0.54 
+ 6 L2.3~Sp09D01  carrier_M 0.814 0.0000226    0.000407    "*"    cor=0.81*
+ 7 L5~Sp09D03    carrier_F 0.227 0.351        1           ""     cor=0.23 
+ 8 L5~Sp09D03    carrier_M 0.816 0.0000203    0.000366    "*"    cor=0.82*
+ 9 L6~Sp09D04    carrier_F 0.272 0.261        1           ""     cor=0.27 
+10 L6~Sp09D04    carrier_M 0.914 0.0000000433 0.000000779 "*"    cor=0.91*
+11 LD~Sp09D02    carrier_F 0.545 0.0130       0.235       ""     cor=0.54 
+12 LD~Sp09D02    carrier_M 0.828 0.00000652   0.000117    "*"    cor=0.83*
+13 Vasc~Sp09D08  carrier_F 0.608 0.0126       0.226       ""     cor=0.61 
+14 Vasc~Sp09D08  carrier_M 0.642 0.00731      0.132       ""     cor=0.64 
+15 WM.uf~Sp09D07 carrier_F 0.466 0.149        1           ""     cor=0.47 
+16 WM.uf~Sp09D07 carrier_M 0.976 0.000000293  0.00000527  "*"    cor=0.98*
+17 WM~Sp09D06    carrier_F 0.345 0.207        1           ""     cor=0.35 
+18 WM~Sp09D06    carrier_M 0.617 0.0143       0.258       ""     cor=0.62 
+Warning messages:
+1: ggrepel: 131 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+2: ggrepel: 8 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+3: ggrepel: 27 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 15 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+5: ggrepel: 11 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+6: ggrepel: 28 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+7: ggrepel: 139 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+8: ggrepel: 1 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+9: ggrepel: 4 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+[1] "Reproducibility information:"
+[1] "2025-07-30 21:39:07 EDT"
+   user  system elapsed 
+ 43.048   0.599  44.992 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-07-30
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package      * version date (UTC) lib source
+ cli            3.6.5   2025-04-23 [2] CRAN (R 4.5.0)
+ dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr        * 1.1.4   2023-11-17 [2] CRAN (R 4.5.0)
+ farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
+ generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2      * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
+ ggrepel      * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
+ glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here         * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
+ hms            1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
+ labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle      1.0.4   2023-11-07 [2] CRAN (R 4.5.0)
+ lubridate    * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr       2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
+ pillar         1.11.0  2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
+ purrr        * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
+ R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg           1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
+ RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.0   2025-07-02 [1] CRAN (R 4.5.0)
+ readr        * 2.1.5   2024-01-10 [2] CRAN (R 4.5.0)
+ rlang          1.1.6   2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot      2.0.4   2023-11-05 [2] CRAN (R 4.5.0)
+ scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr      * 1.5.1   2023-11-14 [2] CRAN (R 4.5.0)
+ systemfonts    1.2.3   2025-04-30 [2] CRAN (R 4.5.0)
+ textshaping    1.0.1   2025-05-01 [2] CRAN (R 4.5.0)
+ tibble       * 3.3.0   2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.1   2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange     0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs          0.6.5   2023-12-01 [2] CRAN (R 4.5.0)
+ withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Jul 30 09:39:07 PM EDT 2025

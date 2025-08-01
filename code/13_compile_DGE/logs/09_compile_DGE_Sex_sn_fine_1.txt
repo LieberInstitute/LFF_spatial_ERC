@@ -1,0 +1,331 @@
+**** Job starts ****
+Wed Jul 30 09:38:21 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 21145894
+Job name: 09_compile_DGE_Sex
+Node name: compute-154
+Task id: 1
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  cell_type_colors
+[1] "carrier_F" "carrier_M" "Sex_E2"    "Sex_E4"   
+ [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
+ [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
+ [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
+[13] "OPC.2"            "OPC.3"            "OPC.4"            "OPC.5"           
+[17] "Oligo.1"          "Oligo.2"          "Oligo.3"          "Oligo.4"         
+[21] "Oligo.5"          "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
+[25] "Excit.L2"         "Excit.L2_5.1"     "Excit.L2_5.2"     "Excit.L5.1"      
+[29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
+[33] "Inhib.Pax6"       "Inhib.Lamp5_Lhx6" "Inhib.Pvalb"      "Inhib.Vip"       
+[37] "Inhib.Chandelier" "Inhib.Sst"       
+# A tibble: 70 × 3
+   cluster contrast      n
+   <fct>   <chr>     <int>
+ 1 Astro.1 carrier_F 16867
+ 2 Astro.1 carrier_M 16867
+ 3 Astro.2 carrier_F  9994
+ 4 Astro.2 carrier_M  9994
+ 5 Astro.3 carrier_F 10634
+ 6 Astro.3 carrier_M 10634
+ 7 Astro.4 carrier_F  8135
+ 8 Astro.4 carrier_M  8135
+ 9 Astro.5 carrier_F  1793
+10 Astro.5 carrier_M  1793
+# ℹ 60 more rows
+# A tibble: 25 × 3
+   cluster contrast      n
+   <fct>   <chr>     <int>
+ 1 Astro.3 carrier_M     7
+ 2 Astro.4 carrier_F     4
+ 3 Astro.4 carrier_M    11
+ 4 Macro   carrier_F     1
+ 5 Macro   carrier_M    45
+ 6 Micro.1 carrier_M     1
+ 7 Micro.3 carrier_M     1
+ 8 Micro.4 carrier_F     1
+ 9 Micro.4 carrier_M     4
+10 OPC.1   carrier_M     3
+# ℹ 15 more rows
+# A tibble: 799,016 × 5
+   cluster gene_name    vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>               <dbl>          <dbl>      <dbl>
+ 1 Oligo.3 ADAMTS10    0.00000000152      0.0000132       2.91
+ 2 Oligo.3 FOS         0.00000000230      0.0000132       3.02
+ 3 Oligo.1 XIST        0.00000000214      0.0000284       2.91
+ 4 Oligo.3 ADAMTS9-AS2 0.0000000306       0.0000660       3.30
+ 5 Oligo.3 LUZP1       0.0000000331       0.0000660       2.21
+ 6 Oligo.3 RFTN1       0.0000000325       0.0000660       2.99
+ 7 Oligo.3 ZFP36       0.0000000344       0.0000660       3.01
+ 8 Oligo.3 PDZRN3      0.0000000699       0.000109        2.76
+ 9 Oligo.3 KCNT2       0.0000000776       0.000109        2.55
+10 Oligo.3 LINC01482   0.0000000856       0.000109        3.17
+# ℹ 799,006 more rows
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+# A tibble: 70 × 5
+# Groups:   cluster [35]
+   cluster contrast  n_FDR05   nUP nDown
+   <fct>   <chr>       <int> <int> <int>
+ 1 Astro.1 carrier_F       0     0     0
+ 2 Astro.1 carrier_M       0     0     0
+ 3 Astro.2 carrier_F       0     0     0
+ 4 Astro.2 carrier_M       0     0     0
+ 5 Astro.3 carrier_F       0     0     0
+ 6 Astro.3 carrier_M       7     0     7
+ 7 Astro.4 carrier_F       4     4     0
+ 8 Astro.4 carrier_M      11     5     6
+ 9 Astro.5 carrier_F       0     0     0
+10 Astro.5 carrier_M       0     0     0
+# ℹ 60 more rows
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Astro-Sex-risk.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Oligo-Sex-risk.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-OPC-Sex-risk.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Macro-Sex-risk.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Micro-Sex-risk.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Vasc-Sex-risk.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Excit-Sex-risk.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/09_compile_DGE_Sex/sn_fine/Volcano_plot_sn_fine-Inhib-Sex-risk.png"
+
+There were 50 or more warnings (use warnings() to see the first 50)
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'cluster'. You can override using the
+`.groups` argument.
+[[1]]
+# A tibble: 10 × 7
+   cluster contrast    cor     p_val p_val_adj signif anno     
+   <fct>   <chr>     <dbl>     <dbl>     <dbl> <chr>  <chr>    
+ 1 Astro.1 carrier_F 0.626 0         0         *      cor=0.63*
+ 2 Astro.1 carrier_M 0.862 0         0         *      cor=0.86*
+ 3 Astro.2 carrier_F 0.570 0         0         *      cor=0.57*
+ 4 Astro.2 carrier_M 0.850 0         0         *      cor=0.85*
+ 5 Astro.3 carrier_F 0.488 0         0         *      cor=0.49*
+ 6 Astro.3 carrier_M 0.849 0         0         *      cor=0.85*
+ 7 Astro.4 carrier_F 0.429 0         0         *      cor=0.43*
+ 8 Astro.4 carrier_M 0.891 0         0         *      cor=0.89*
+ 9 Astro.5 carrier_F 0.541 1.34e-136 1.34e-135 *      cor=0.54*
+10 Astro.5 carrier_M 0.810 0         0         *      cor=0.81*
+
+[[2]]
+# A tibble: 10 × 7
+   cluster contrast    cor p_val p_val_adj signif anno     
+   <fct>   <chr>     <dbl> <dbl>     <dbl> <chr>  <chr>    
+ 1 Oligo.1 carrier_F 0.542     0         0 *      cor=0.54*
+ 2 Oligo.1 carrier_M 0.887     0         0 *      cor=0.89*
+ 3 Oligo.2 carrier_F 0.535     0         0 *      cor=0.54*
+ 4 Oligo.2 carrier_M 0.905     0         0 *      cor=0.91*
+ 5 Oligo.3 carrier_F 0.495     0         0 *      cor=0.50*
+ 6 Oligo.3 carrier_M 0.938     0         0 *      cor=0.94*
+ 7 Oligo.4 carrier_F 0.465     0         0 *      cor=0.47*
+ 8 Oligo.4 carrier_M 0.862     0         0 *      cor=0.86*
+ 9 Oligo.5 carrier_F 0.480     0         0 *      cor=0.48*
+10 Oligo.5 carrier_M 0.903     0         0 *      cor=0.90*
+
+[[3]]
+# A tibble: 10 × 7
+   cluster contrast    cor     p_val p_val_adj signif anno     
+   <fct>   <chr>     <dbl>     <dbl>     <dbl> <chr>  <chr>    
+ 1 OPC.1   carrier_F 0.512 0         0         *      cor=0.51*
+ 2 OPC.1   carrier_M 0.859 0         0         *      cor=0.86*
+ 3 OPC.2   carrier_F 0.451 0         0         *      cor=0.45*
+ 4 OPC.2   carrier_M 0.814 0         0         *      cor=0.81*
+ 5 OPC.3   carrier_F 0.574 0         0         *      cor=0.57*
+ 6 OPC.3   carrier_M 0.866 0         0         *      cor=0.87*
+ 7 OPC.4   carrier_F 0.599 0         0         *      cor=0.60*
+ 8 OPC.4   carrier_M 0.857 0         0         *      cor=0.86*
+ 9 OPC.5   carrier_F 0.565 4.07e-117 4.07e-116 *      cor=0.56*
+10 OPC.5   carrier_M 0.513 2.30e- 93 2.30e- 92 *      cor=0.51*
+
+[[4]]
+# A tibble: 2 × 7
+  cluster contrast    cor        p_val    p_val_adj signif anno     
+  <fct>   <chr>     <dbl>        <dbl>        <dbl> <chr>  <chr>    
+1 Macro   carrier_F 0.102 0.0000000356 0.0000000713 *      cor=0.10*
+2 Macro   carrier_M 0.920 0            0            *      cor=0.92*
+
+[[5]]
+# A tibble: 10 × 7
+   cluster contrast    cor     p_val p_val_adj signif anno     
+   <fct>   <chr>     <dbl>     <dbl>     <dbl> <chr>  <chr>    
+ 1 Micro.1 carrier_F 0.442 0         0         *      cor=0.44*
+ 2 Micro.1 carrier_M 0.872 0         0         *      cor=0.87*
+ 3 Micro.2 carrier_F 0.369 4.62e-280 4.62e-279 *      cor=0.37*
+ 4 Micro.2 carrier_M 0.853 0         0         *      cor=0.85*
+ 5 Micro.3 carrier_F 0.355 1.06e-233 1.06e-232 *      cor=0.35*
+ 6 Micro.3 carrier_M 0.891 0         0         *      cor=0.89*
+ 7 Micro.4 carrier_F 0.411 5.16e-268 5.16e-267 *      cor=0.41*
+ 8 Micro.4 carrier_M 0.882 0         0         *      cor=0.88*
+ 9 Micro.5 carrier_F 0.318 8.28e- 56 8.28e- 55 *      cor=0.32*
+10 Micro.5 carrier_M 0.858 0         0         *      cor=0.86*
+
+[[6]]
+# A tibble: 4 × 7
+  cluster   contrast    cor     p_val p_val_adj signif anno     
+  <fct>     <chr>     <dbl>     <dbl>     <dbl> <chr>  <chr>    
+1 Vasc.Endo carrier_F 0.447 1.50e-246 6.01e-246 *      cor=0.45*
+2 Vasc.Endo carrier_M 0.848 0         0         *      cor=0.85*
+3 Vasc.VLMC carrier_F 0.351 5.32e-192 2.13e-191 *      cor=0.35*
+4 Vasc.VLMC carrier_M 0.862 0         0         *      cor=0.86*
+
+[[7]]
+# A tibble: 14 × 7
+   cluster      contrast      cor     p_val p_val_adj signif anno      
+   <fct>        <chr>       <dbl>     <dbl>     <dbl> <chr>  <chr>     
+ 1 Excit.L2     carrier_F  0.321  0         0         "*"    cor=0.32* 
+ 2 Excit.L2     carrier_M  0.822  0         0         "*"    cor=0.82* 
+ 3 Excit.L2_5.1 carrier_F  0.369  0         0         "*"    cor=0.37* 
+ 4 Excit.L2_5.1 carrier_M  0.886  0         0         "*"    cor=0.89* 
+ 5 Excit.L2_5.2 carrier_F -0.0917 5.22e- 29 7.31e- 28 "*"    cor=-0.09*
+ 6 Excit.L2_5.2 carrier_M  0.553  0         0         "*"    cor=0.55* 
+ 7 Excit.L5.1   carrier_F  0.218  1.81e-199 2.54e-198 "*"    cor=0.22* 
+ 8 Excit.L5.1   carrier_M  0.835  0         0         "*"    cor=0.83* 
+ 9 Excit.L5.2   carrier_F  0.933  0         0         "*"    cor=0.93* 
+10 Excit.L5.2   carrier_M  0.0205 1.76e-  2 2.47e-  1 ""     cor=0.02  
+11 Excit.L6_CT  carrier_F  0.216  1.90e-159 2.66e-158 "*"    cor=0.22* 
+12 Excit.L6_CT  carrier_M  0.680  0         0         "*"    cor=0.68* 
+13 Excit.L6b    carrier_F  0.455  0         0         "*"    cor=0.46* 
+14 Excit.L6b    carrier_M  0.845  0         0         "*"    cor=0.85* 
+
+[[8]]
+# A tibble: 10 × 7
+   cluster          contrast    cor     p_val p_val_adj signif anno     
+   <fct>            <chr>     <dbl>     <dbl>     <dbl> <chr>  <chr>    
+ 1 Inhib.Lamp5_Lhx6 carrier_F 0.210 5.53e-135 5.53e-134 *      cor=0.21*
+ 2 Inhib.Lamp5_Lhx6 carrier_M 0.868 0         0         *      cor=0.87*
+ 3 Inhib.Pvalb      carrier_F 0.147 7.32e- 74 7.32e- 73 *      cor=0.15*
+ 4 Inhib.Pvalb      carrier_M 0.792 0         0         *      cor=0.79*
+ 5 Inhib.Vip        carrier_F 0.459 0         0         *      cor=0.46*
+ 6 Inhib.Vip        carrier_M 0.837 0         0         *      cor=0.84*
+ 7 Inhib.Chandelier carrier_F 0.576 0         0         *      cor=0.58*
+ 8 Inhib.Chandelier carrier_M 0.907 0         0         *      cor=0.91*
+ 9 Inhib.Sst        carrier_F 0.186 7.21e- 95 7.21e- 94 *      cor=0.19*
+10 Inhib.Sst        carrier_M 0.891 0         0         *      cor=0.89*
+
+There were 34 warnings (use warnings() to see them)
+[1] "Reproducibility information:"
+[1] "2025-07-30 21:41:44 EDT"
+   user  system elapsed 
+196.966   1.656 202.330 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-07-30
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package      * version date (UTC) lib source
+ cli            3.6.5   2025-04-23 [2] CRAN (R 4.5.0)
+ dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr        * 1.1.4   2023-11-17 [2] CRAN (R 4.5.0)
+ farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
+ generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2      * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
+ ggrepel      * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
+ glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here         * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
+ hms            1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
+ labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle      1.0.4   2023-11-07 [2] CRAN (R 4.5.0)
+ lubridate    * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr       2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
+ pillar         1.11.0  2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
+ purrr        * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
+ R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg           1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
+ RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.0   2025-07-02 [1] CRAN (R 4.5.0)
+ readr        * 2.1.5   2024-01-10 [2] CRAN (R 4.5.0)
+ rlang          1.1.6   2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot      2.0.4   2023-11-05 [2] CRAN (R 4.5.0)
+ scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr      * 1.5.1   2023-11-14 [2] CRAN (R 4.5.0)
+ systemfonts    1.2.3   2025-04-30 [2] CRAN (R 4.5.0)
+ textshaping    1.0.1   2025-05-01 [2] CRAN (R 4.5.0)
+ tibble       * 3.3.0   2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.1   2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange     0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs          0.6.5   2023-12-01 [2] CRAN (R 4.5.0)
+ withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Jul 30 09:41:44 PM EDT 2025
