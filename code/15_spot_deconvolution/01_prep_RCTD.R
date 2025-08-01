@@ -42,7 +42,19 @@ stopifnot(!any(duplicated(colnames(sce))))
 sce$nUMI <- sce$sum
 
 ## cell type
-table(sce$cell_type_anno)
+table(sce[[opt$cell_type_col]])
+
+## create cell type class table
+cell_type_df <- NULL
+if(opt$cell_type_col == "cell_type_anno"){
+    
+    message("Use class_df")
+    cell_type_levels <- levels(sce$cell_type_anno)
+    
+    cell_type_df <- data.frame(class = jaffelab::ss(cell_type_levels, "\\."))
+    rownames(cell_type_df) <- cell_type_levels
+    
+}
 
 #### load spatial query data ####
 message(Sys.time(), " - Load Spatial data")
@@ -66,8 +78,8 @@ stopifnot(!any(duplicated(colnames(spe))))
 print(dim(assay(spe)))
 
 #### prep RTCD data ####
-message(Sys.time(), " - Prep RCDT data")
-rctd_data <- createRctd(spe, sce, UMI_min = 2, cell_type_col = opt$cell_type_col)
+message(Sys.time(), " - Prep RCDT data with refrence: ", opt$cell_type_col)
+rctd_data <- createRctd(spe, sce, UMI_min = 2, cell_type_col = opt$cell_type_col, class_df = cell_type_df)
 
 message(Sys.time(), " - Save RCDT data")
 saveRDS(rctd_data, file = here(data_dir, sprintf("rctd_data_%s.rds", opt$cell_type_col)))
