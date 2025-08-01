@@ -12,6 +12,7 @@ library("getopt")
 # Import command-line parameters
 scec <- matrix(
     c("cell_type_col", "c", "1", "character", "cell type column"),
+    c("sample", "s", "1", "character", "sample to subset"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
