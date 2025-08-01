@@ -33,6 +33,7 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 rctd_data <- readRDS(here("processed-data", "15_spot_deconvolution", "01_prep_RCTD", sprintf("rctd_data_%s.rds", opt$cell_type_col)))
 
 ## subset to one sample
+message(Sys.time(), " - Load Data")
 rctd_data$spatial_experiment <- rctd_data$spatial_experiment[,rctd_data$spatial_experiment$sample_id == opt$sample]
 message(sprintf("Subset to sample_id = %s, ncol = %i", opt$sample, ncol(rctd_data$spatial_experiment)))
 
