@@ -21,8 +21,11 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
+cell_type_col <- opt$cell_type_col
 # cell_type_col <- "cell_type_broad"
 # cell_type_col <- "cell_type_anno"
+
+message("Cell type col: ", cell_type_col)
 
 plot_dir <- here("plots", "15_spot_deconvolution", "03_results_RCTD", cell_type_col)
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
