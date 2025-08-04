@@ -29,7 +29,7 @@ cell_type_broad_levels <- names(cell_type_colors$broad)
 cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Other"]
 
 #### load results ####
-
+message(Sys.time(), " - load data")
 rctd_fn <- list.files(here("processed-data", "15_spot_deconvolution", "02_run_RCTD", cell_type_col), full.names = TRUE)
 names(rctd_fn) <- gsub(sprintf("RCTD_%s-|.rds", cell_type_col), "", basename(rctd_fn))
 
@@ -84,7 +84,11 @@ rcdt_spe <- SpatialExperiment(sample_id = spe$sample_id,
 assay(rcdt_spe, "cell_counts") <- ceiling(assay(rcdt_spe, "weights") * rcdt_spe$CNmask_dark_blue)
 assay(rcdt_spe, "cell_counts")[1:5, 1:5]
 
+message(Sys.time(), " - Save Data data")
+saveRDS(spe, file = here(data_dir, sprintf("spe_RCTD-%s.rds", cell_type_col)))
+
 #### Visulize cell type weights ####
+message(Sys.time(), " - Visulization")
 
 rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "rep_section.csv")) |>
     filter(rep_section)
@@ -309,5 +313,15 @@ if(cell_type_col == "cell_type_broad"){
     
 }
 
+# slurmjobs::job_loop(loops = list(cell_type_col = c("cell_type_broad", "cell_type_anno")),
+#                     create_shell = TRUE,
+#                     name = "03_results_RCTD",
+#                     create_script = FALSE)
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
