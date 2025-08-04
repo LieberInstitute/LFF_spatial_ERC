@@ -1,17 +1,19 @@
+library(patchwork)
 
 rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "rep_section.csv")) |>
     filter(rep_section)
 
-vis_rep_sections <- function(geneid, 
-                             assayname = "weights",
+vis_rep_sections <- function(spe, 
+                             geneid, 
+                             assayname = "logcounts",
                              point_size = 1){
-    message("vis_ct: ", ct)
+
     ct_plots <- map(c("AA", "EA"), function(anc) {
         samples <- rep_sections_tb |> filter(Ancestry == anc) |> arrange(APOE)
         
         cluster_row_plots <- map(samples$sample_id, function(s) {
             vis_clus_plot <- vis_gene(
-                spe = rcdt_spe,
+                spe = spe,
                 geneid = geneid,
                 assayname = assayname,
                 point_size = point_size,
