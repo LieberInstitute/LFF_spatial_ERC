@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Jul 30 09:05:20 PM EDT 2025
+Mon Aug  4 01:28:34 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21145535
+Job id: 21203105
 Job name: 05_Clusterwise_voomLmFit_Sex
-Node name: compute-163
+Node name: compute-154
 Task id: 2
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -165,7 +165,7 @@ character(0)
 $datatype
 [1] "Visium"
 
-2025-07-30 21:05:28.957023 - Datatype = Visium, loading 'spe_pseudo_DGE.RDS'
+2025-08-04 13:28:41.556872 - Datatype = Visium, loading 'spe_pseudo_DGE.RDS'
 Loading required namespace: SpatialExperiment
 [1] 30494   270
 
@@ -185,65 +185,66 @@ Loading required namespace: SpatialExperiment
   E2_M         10            10         10
   E4_F          5             5          5
   E4_M         11            11         11
-2025-07-30 21:05:32.035532 - Loop voomlmFit by cluster
-2025-07-30 21:05:33.687131 - voomLmFit - cluster: Vasc_Sp09D08, block= 'Visium_slide', ncol: 30, ngene: 9014
-First sample weights (min/max) 0.4336119/1.6008612
-First intra-block correlation  0.02633495
-Final sample weights (min/max) 0.4396699/1.5643464
-Final intra-block correlation  0.02638069
+[1] 29497   270
+2025-08-04 13:28:45.106131 - Loop voomlmFit by cluster
+2025-08-04 13:28:46.61319 - voomLmFit - cluster: Vasc_Sp09D08, block= 'Visium_slide', ncol: 30, ngene: 8710
+First sample weights (min/max) 0.445345/1.785718
+First intra-block correlation  0.03536936
+Final sample weights (min/max) 0.4505075/1.7411284
+Final intra-block correlation  0.03549674
 Done - Save data
-2025-07-30 21:05:58.611642 - voomLmFit - cluster: L1_Sp09D05, block= 'Visium_slide', ncol: 30, ngene: 11594
-First sample weights (min/max) 0.6623716/1.3510575
-First intra-block correlation  0.06805145
-Final sample weights (min/max) 0.6531564/1.3539522
-Final intra-block correlation  0.0680899
+2025-08-04 13:29:08.99788 - voomLmFit - cluster: L1_Sp09D05, block= 'Visium_slide', ncol: 30, ngene: 11180
+First sample weights (min/max) 0.6874609/1.3637385
+First intra-block correlation  0.07815318
+Final sample weights (min/max) 0.6708842/1.3630571
+Final intra-block correlation  0.07803231
 Done - Save data
-2025-07-30 21:06:28.698995 - voomLmFit - cluster: L2.3_Sp09D01, block= 'Visium_slide', ncol: 30, ngene: 14006
-First sample weights (min/max) 0.5908275/1.6291205
-First intra-block correlation  0.0221215
-Final sample weights (min/max) 0.5932413/1.6202520
-Final intra-block correlation  0.02228882
+2025-08-04 13:29:37.089113 - voomLmFit - cluster: L2.3_Sp09D01, block= 'Visium_slide', ncol: 30, ngene: 13502
+First sample weights (min/max) 0.6472006/1.8028393
+First intra-block correlation  0.03604465
+Final sample weights (min/max) 0.6400834/1.8034828
+Final intra-block correlation  0.03604777
 Done - Save data
-2025-07-30 21:07:05.634774 - voomLmFit - cluster: LD_Sp09D02, block= 'Visium_slide', ncol: 30, ngene: 15053
-First sample weights (min/max) 0.4538406/1.5173870
-First intra-block correlation  0.04572447
-Final sample weights (min/max) 0.4501207/1.5103991
-Final intra-block correlation  0.04573352
+2025-08-04 13:30:11.278783 - voomLmFit - cluster: LD_Sp09D02, block= 'Visium_slide', ncol: 30, ngene: 14517
+First sample weights (min/max) 0.6254326/1.8319540
+First intra-block correlation  0.06486759
+Final sample weights (min/max) 0.6147942/1.8311228
+Final intra-block correlation  0.0648862
 Done - Save data
-2025-07-30 21:07:43.994332 - voomLmFit - cluster: Inhib_Sp09D09, block= 'Visium_slide', ncol: 30, ngene: 12207
-First sample weights (min/max) 0.6175053/1.3212230
-First intra-block correlation  0.04067481
-Final sample weights (min/max) 0.6156826/1.3250714
-Final intra-block correlation  0.04080027
+2025-08-04 13:30:46.208765 - voomLmFit - cluster: Inhib_Sp09D09, block= 'Visium_slide', ncol: 30, ngene: 11751
+First sample weights (min/max) 0.7553482/1.5046162
+First intra-block correlation  0.05445962
+Final sample weights (min/max) 0.7502517/1.5090712
+Final intra-block correlation  0.05449578
 Done - Save data
-2025-07-30 21:08:15.887362 - voomLmFit - cluster: L5_Sp09D03, block= 'Visium_slide', ncol: 30, ngene: 14322
-First sample weights (min/max) 0.4551635/1.7323009
-First intra-block correlation  0.0559411
-Final sample weights (min/max) 0.452950/1.714801
-Final intra-block correlation  0.05614271
+2025-08-04 13:31:14.962862 - voomLmFit - cluster: L5_Sp09D03, block= 'Visium_slide', ncol: 30, ngene: 13855
+First sample weights (min/max) 0.5445221/1.9035019
+First intra-block correlation  0.06887604
+Final sample weights (min/max) 0.5409299/1.8878821
+Final intra-block correlation  0.06875903
 Done - Save data
-2025-07-30 21:08:51.362303 - voomLmFit - cluster: L6_Sp09D04, block= 'Visium_slide', ncol: 30, ngene: 13930
-First sample weights (min/max) 0.5112208/1.4240590
-First intra-block correlation  0.09745938
-Final sample weights (min/max) 0.5033424/1.4095753
-Final intra-block correlation  0.0978219
+2025-08-04 13:31:48.747202 - voomLmFit - cluster: L6_Sp09D04, block= 'Visium_slide', ncol: 30, ngene: 13384
+First sample weights (min/max) 0.5395781/1.5154122
+First intra-block correlation  0.09939901
+Final sample weights (min/max) 0.5305035/1.5023615
+Final intra-block correlation  0.09947505
 Done - Save data
-2025-07-30 21:09:26.196042 - voomLmFit - cluster: WM.uf_Sp09D07, block= 'Visium_slide', ncol: 30, ngene: 3172
-First sample weights (min/max) 0.5937692/1.5293009
-First intra-block correlation  0.08206002
-Final sample weights (min/max) 0.5908141/1.5312082
-Final intra-block correlation  0.0823487
+2025-08-04 13:32:21.236611 - voomLmFit - cluster: WM.uf_Sp09D07, block= 'Visium_slide', ncol: 30, ngene: 3013
+First sample weights (min/max) 0.506179/1.402119
+First intra-block correlation  0.08147468
+Final sample weights (min/max) 0.5000419/1.4268737
+Final intra-block correlation  0.0816856
 Done - Save data
-2025-07-30 21:09:34.679889 - voomLmFit - cluster: WM_Sp09D06, block= 'Visium_slide', ncol: 30, ngene: 9409
-First sample weights (min/max) 0.3600804/1.9809772
-First intra-block correlation  0.07836165
-Final sample weights (min/max) 0.3446747/1.9600900
-Final intra-block correlation  0.07898872
+2025-08-04 13:32:28.905804 - voomLmFit - cluster: WM_Sp09D06, block= 'Visium_slide', ncol: 30, ngene: 9093
+First sample weights (min/max) 0.3759016/2.0263811
+First intra-block correlation  0.0829526
+Final sample weights (min/max) 0.3737872/1.9963921
+Final intra-block correlation  0.08370452
 Done - Save data
 [1] "Reproducibility information:"
-[1] "2025-07-30 21:09:58 EDT"
+[1] "2025-08-04 13:32:49 EDT"
    user  system elapsed 
-272.039   2.522 276.821 
+249.831   2.321 254.627 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -254,7 +255,7 @@ Done - Save data
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-07-30
+ date     2025-08-04
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -334,4 +335,4 @@ Done - Save data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jul 30 09:09:59 PM EDT 2025
+Mon Aug  4 01:32:49 PM EDT 2025
