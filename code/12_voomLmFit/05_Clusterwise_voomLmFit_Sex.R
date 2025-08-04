@@ -59,15 +59,19 @@ sce_pb$carrier_Sex <- paste0(sce_pb$APOE_carrier_syn, "_" ,sce_pb$Sex)
 
 table(sce_pb$carrier_Sex, sce_pb$registration_variable)
 
-message(Sys.time(), " - Loop voomlmFit by cluster")
+## filter out chr X&Y genes
+sce_pb <- sce_pb[!seqnames(sce_pb) %in% c("chrX", "chrY"),]
 
+dim(sce_pb)
+
+message(Sys.time(), " - Loop voomlmFit by cluster")
 vlmf_summary <- map_dfr(clusters, function(clus){
     
     dge <- sce_pb[,sce_pb$registration_variable == clus]
     
     # table(dge$carrier_Sex)
     
-    des <- model.matrix(~0+carrier_Sex + Ancestry + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+    des <- model.matrix(~0+carrier_Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
     des <- as.data.frame(des)
     
     # filter low expression genes
