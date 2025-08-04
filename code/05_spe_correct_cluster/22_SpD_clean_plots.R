@@ -98,7 +98,28 @@ qc_violin_mito <- ggplot(pd, aes(x = SpD, y = expr_chrM_ratio, fill = SpD)) +
 ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_Visium_QC_SpD_violin_Mito_percent.png"), width = 7, height =4)
 
 #### n nuclei ####
-summary(pd$Nmask_dark_blue)
+summary(pd$CNmask_dark_blue)
+
+pd |>
+    group_by(SpD) |>
+    summarise(median_nuc = median(CNmask_dark_blue),
+              n_0_nuc = sum(CNmask_dark_blue == 0),
+              p_0_nuc = n_0_nuc/n(),
+              n_100_nuc = sum(CNmask_dark_blue > 100),
+              p_100_nuc = n_100_nuc/n(),
+              max = max(CNmask_dark_blue))
+
+# SpD           median_nuc n_0_nuc p_0_nuc n_100_nuc p_100_nuc   max
+# <fct>              <dbl>   <int>   <dbl>     <int>     <dbl> <int>
+# 1 Vasc~Sp09D08           4    1434  0.231        124   0.0199    314
+# 2 L1~Sp09D05             3    2134  0.139        243   0.0158    307
+# 3 L2.3~Sp09D01           6     801  0.0698        53   0.00462   231
+# 4 LD~Sp09D02             3    3871  0.146        244   0.00921   244
+# 5 Inhib~Sp09D09          5     316  0.0457        64   0.00926   235
+# 6 L5~Sp09D03             6     629  0.0541       104   0.00895   190
+# 7 L6~Sp09D04             5    1578  0.0811       281   0.0144    290
+# 8 WM.uf~Sp09D07          6    1870  0.149        718   0.0574    398
+# 9 WM~Sp09D06             9     419  0.0344       790   0.0649    374
 
 n_nuclei_violin <- ggplot(pd, aes(x = SpD, y = CNmask_dark_blue, fill = SpD)) +
     geom_violin(draw_quantiles = c(.5)) +
