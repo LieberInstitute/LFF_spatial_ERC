@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Aug  4 04:02:16 PM EDT 2025
+Tue Aug  5 04:42:41 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21205143
+Job id: 21241176
 Job name: 03_results_RCTD
-Node name: compute-120
+Node name: compute-163
 Task id: 2
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -173,7 +173,7 @@ Loading objects:
   SpD_colors
 Loading objects:
   cell_type_colors
-2025-08-04 16:02:34.555335 - load data
+2025-08-05 16:42:56.528462 - load data
 [1] "coldata" "assays" 
 [1] 122152      5
 DataFrame with 6 rows and 5 columns
@@ -203,27 +203,80 @@ $weights_full
 [1]      8 122152
 
 spots failed RCDT: 50
+[1] 154752      2
+                                 num_nuclei_within num_nuclei_intersect
+ACGCCTGACACGCGCT-1_V13B23-363_A1                 1                    1
+TACCGATCCAACACTT-1_V13B23-363_A1                 1                    1
+ATTAAAGCGGACGAGC-1_V13B23-363_A1                 1                    1
+GATAAGGGACGATTAG-1_V13B23-363_A1                 1                    1
+GTGCAAATCACCAATA-1_V13B23-363_A1                 1                    1
+TGTTGGCTGGCGGAAG-1_V13B23-363_A1                 1                    1
+
+  TRUE 
+122152 
+# A tibble: 9 × 8
+  SpD           median_nuc n_0_nuc p_0_nuc   q59 n_30_nuc  p_30_nuc   max
+  <fct>              <dbl>   <int>   <dbl> <dbl>    <int>     <dbl> <int>
+1 Vasc~Sp09D08           3       0       0    10        9 0.00145      59
+2 L1~Sp09D05             2       0       0     6        4 0.000260     36
+3 L2.3~Sp09D01           4       0       0     8        0 0            29
+4 LD~Sp09D02             2       0       0     6       10 0.000378     44
+5 Inhib~Sp09D09          3       0       0     8        1 0.000145     31
+6 L5~Sp09D03             4       0       0     9        1 0.0000861    39
+7 L6~Sp09D04             3       0       0     8        0 0            27
+8 WM.uf~Sp09D07          3       0       0     7        2 0.000161     39
+9 WM~Sp09D06             4       0       0     8        0 0            26
 5 x 5 sparse Matrix of class "dgCMatrix"
       AAACAAGTATCTCCCA-1_Br1039 AAACAATCTACTAGCA-1_Br1039
-Astro                         8                        40
-Macro                         1                         .
-Micro                         .                         .
-OPC                           .                         .
-Oligo                        19                         .
+Astro                 1.2335213                  1.531492
+Macro                 0.2897087                  .       
+Micro                 .                          .       
+OPC                   .                          .       
+Oligo                 0.7821295                  .       
       AAACACCAATAACTGC-1_Br1039 AAACAGCTTTCAGAAG-1_Br1039
-Astro                        36                        14
-Macro                         .                         .
-Micro                         .                         .
-OPC                           .                         .
-Oligo                         3                         0
+Astro                 0.9553224                 1.1842330
+Macro                 .                         .        
+Micro                 .                         .        
+OPC                   .                         .        
+Oligo                 3.6563715                 0.2960469
       AAACAGGGTCTATATT-1_Br1039
 Astro                         .
 Macro                         .
 Micro                         .
 OPC                           .
 Oligo                         .
-2025-08-04 16:05:14.084768 - Save Data data
-2025-08-04 16:42:59.604679 - Visulization
+2025-08-05 16:44:48.334012 - Save Data
+Warning message:
+In geom_boxplot(draw_quantiles = c(0.5)) :
+  Ignoring unknown parameters: `draw_quantiles`
+Saving 7 x 7 in image
+2025-08-05 16:49:03.716513 - Visualization
+vis_ct: Astro
+vis_ct: Macro
+vis_ct: Micro
+vis_ct: OPC
+vis_ct: Oligo
+vis_ct: Vasc
+vis_ct: Excit
+vis_ct: Inhib
+[[1]]
+
+[[2]]
+
+[[3]]
+
+[[4]]
+
+[[5]]
+
+[[6]]
+
+[[7]]
+
+[[8]]
+
+null device 
+          1 
 vis_ct: Astro
 vis_ct: Macro
 vis_ct: Micro
@@ -255,32 +308,11 @@ Joining with `by = join_by(key)`
 using the `.groups` argument.
 `summarise()` has grouped output by 'BrNum'. You can override using the
 `.groups` argument.
-Storing counts in `nn`, as `n` already present in input
-ℹ Use `name = "new_name"` to pick a new name.
-# A tibble: 1 × 2
-      n    nn
-  <int> <int>
-1     8   279
-# A tibble: 2 × 2
-  almost1     n
-  <lgl>   <int>
-1 FALSE      92
-2 TRUE      187
-# A tibble: 279 × 5
-# Groups:   BrNum [31]
-   BrNum  SpD             sum     n almost1
-   <chr>  <fct>         <dbl> <int> <lgl>  
- 1 Br1556 WM.uf~Sp09D07 0.484     8 FALSE  
- 2 Br5276 WM.uf~Sp09D07 0.555     8 FALSE  
- 3 Br6098 WM.uf~Sp09D07 0.624     8 FALSE  
- 4 Br1039 WM.uf~Sp09D07 0.633     8 FALSE  
- 5 Br5529 WM.uf~Sp09D07 0.668     8 FALSE  
- 6 Br5517 WM.uf~Sp09D07 0.681     8 FALSE  
- 7 Br5599 WM.uf~Sp09D07 0.702     8 FALSE  
- 8 Br6085 WM.uf~Sp09D07 0.704     8 FALSE  
- 9 Br3974 WM.uf~Sp09D07 0.716     8 FALSE  
-10 Br5212 WM.uf~Sp09D07 0.727     8 FALSE  
-# ℹ 269 more rows
+`summarise()` has grouped output by 'cell_type', 'SpD'. You can override using
+the `.groups` argument.
+Saving 7 x 10 in image
+Saving 7 x 10 in image
+Saving 7 x 10 in image
 Saving 7 x 10 in image
 Saving 7 x 10 in image
 Saving 7 x 10 in image
@@ -296,16 +328,16 @@ Loading objects:
 [29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
 [33] "Inhib.Chandelier" "Inhib.Lamp5_Lhx6" "Inhib.Pax6"       "Inhib.Pvalb"     
 [37] "Inhib.Sst"        "Inhib.Vip"       
-`summarise()` has grouped output by 'cell_type_broad'. You can override using
-the `.groups` argument.
+`summarise()` has grouped output by 'cell_type'. You can override using the
+`.groups` argument.
 `summarise()` has grouped output by 'sample_id', 'APOE', 'Sex', 'Age',
 'Ancestry'. You can override using the `.groups` argument.
 Joining with `by = join_by(sample_id, cell_type_broad)`
 Saving 10 x 7 in image
 [1] "Reproducibility information:"
-[1] "2025-08-04 16:44:27 EDT"
-    user   system  elapsed 
-2437.232   29.788 2529.557 
+[1] "2025-08-05 16:51:43 EDT"
+   user  system elapsed 
+529.622   5.077 541.043 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -316,7 +348,7 @@ Saving 10 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-08-04
+ date     2025-08-05
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -501,4 +533,4 @@ Saving 10 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Aug  4 04:44:28 PM EDT 2025
+Tue Aug  5 04:51:44 PM EDT 2025
