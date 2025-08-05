@@ -85,26 +85,26 @@ spe <- spe[,rownames(rcdt_colData)]
 
 
 #### replace our assays with RCDT results ####
-rcdt_spe <- SpatialExperiment(sample_id = spe$sample_id,
+spe_rctd <- SpatialExperiment(sample_id = spe$sample_id,
                   colData = cbind(colData(spe), rcdt_colData),
                   assays = rctd_assays,
                   spatialCoords = spatialCoords(spe),
                   imgData = imgData(spe)
                   )
 
-assay(rcdt_spe, "cell_counts") <- ceiling(assay(rcdt_spe, "weights") * rcdt_spe$CNmask_dark_blue)
-assay(rcdt_spe, "cell_counts")[1:5, 1:5]
+assay(spe_rctd, "cell_counts") <- ceiling(assay(spe_rctd, "weights") * spe_rctd$CNmask_dark_blue)
+assay(spe_rctd, "cell_counts")[1:5, 1:5]
 
-message(Sys.time(), " - Save Data data")
-saveHDF5SummarizedExperiment(spe, dir = here(data_dir, sprintf("spe_RCTD-%s", cell_type_col)), replace=TRUE)
+message(Sys.time(), " - Save Data")
+HDF5Array::saveHDF5SummarizedExperiment(spe_rctd, dir = here(data_dir, sprintf("spe_RCTD-%s", cell_type_col)), replace=TRUE)
 
-#### Visulize cell type weights ####
-message(Sys.time(), " - Visulization")
+#### Visualize cell type weights ####
+message(Sys.time(), " - Visualization")
 
 rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "rep_section.csv")) |>
     filter(rep_section)
 
-# test_vis_gene <- vis_gene(rcdt_spe, 
+# test_vis_gene <- vis_gene(spe_rctd, 
 #          # geneid = c("Oligo.1","Oligo.2", "Oligo.3","Oligo.4","Oligo.5"),
 #          geneid = "Oligo",
 #          assayname = "weights",
@@ -113,14 +113,14 @@ rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22
 # ggsave(test_vis_gene, filename = here(plot_dir, "test_vis_gene.png"))
 
 pdf(here(plot_dir, "vis_ct_ALL_rep_sections.pdf"), width = 18, height = 9)
-map(rownames(rcdt_spe), function(ct){
+map(rownames(spe_rctd), function(ct){
     message("vis_ct: ", ct)
     ct_plots <- map(c("AA", "EA"), function(anc) {
         samples <- rep_sections_tb |> filter(Ancestry == anc) |> arrange(APOE)
         
         cluster_row_plots <- map(samples$sample_id, function(s) {
             vis_clus_plot <- vis_gene(
-                spe = rcdt_spe,
+                spe = spe_rctd,
                 geneid = ct,
                 assayname = "weights",
                 point_size = 1,
@@ -146,7 +146,7 @@ dev.off()
 sample_info <- colData(spe)[,c("key", "BrNum","SpD", "APOE", "CNmask_dark_blue")] |>
     as.data.frame() 
 
-rcdt_long <- assay(rcdt_spe, "weights") |>
+rcdt_long <- assay(spe_rctd, "weights") |>
     as.matrix() |>
     reshape2::melt() |>
     dplyr::rename(cell_type = Var1, key = Var2, weights = value) |>
