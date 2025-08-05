@@ -353,6 +353,10 @@ if(opt$datatype == "Visium"){
 DE_Sex_data_fn <- here("processed-data", "13_compile_DGE",  "09_compile_DGE_Sex", opt$datatype, sprintf("DGE_results_Sex_%s.Rds", opt$datatype))
 DE_Sex_data <- readRDS(DE_Sex_data_fn)
 
+cluster_levels <- levels(sce_pb[[cluster_var]])
+cluster_levels2 <- as.character(unique(DE_data$cluster))
+cluster_levels <- intersect(cluster_levels, cluster_levels2)
+
 DE_Sex_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(contrast, cluster)
 
 sce_pb$carrier_Sex <- factor(paste(sce_pb$APOE_carrier, sce_pb$Sex), levels = c("E2+ F","E4+ F", "E2+ M", "E4+ M"))
@@ -362,8 +366,36 @@ Sex_mod <- model.matrix(~0+carrier_Sex + Ancestry + Age + pseudo_expr_chrM_ratio
 colnames(Sex_mod)
 
 
+DE_Sex_data_signif <- DE_Sex_data |> 
+    filter(vlmf_adj.P.Val < 0.05) |> 
+    group_by(cluster, contrast) |> 
+    arrange(vlmf_adj.P.Val) |>
+    dplyr::slice(1:10) |>
+    mutate(cluster_contrast <- paste(cluster, contrast))
+
+
+map(cluster_levels, ~plot_DEG_express_contrast(sce = sce_pb,
+                                               stats = DE_Sex_data,
+                                               clus = "Oligo",
+                                               n_genes = 10,
+                                               pval_col = "vlmf_adj.P.Val",
+                                               fc_col = "vlmf_logFC",
+                                               gene_col = "gene_name",
+                                               cluster_col = cluster_var,
+                                               category_col = "carrier_Sex",
+                                               contrast_1 = "carrier_F",
+                                               contrast_2 = "carrier_M",
+                                               mod = Sex_mod,
+                                               # color_pal = carrier_tau_colors,
+                                               plot_points = TRUE,
+                                               ncol = 2,
+                                               cleanY_P = 4)
+)
+    
+
+
 pdf(here(plot_dir, sprintf("DEG_boxplots_Sex_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+map(cluster_levels, ~plot_DEG_express_contrast(sce = sce_pb,
                                       stats = DE_Sex_data,
                                       clus = .x,
                                       n_genes = 10,
@@ -372,6 +404,8 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
                                       gene_col = "gene_name",
                                       cluster_col = cluster_var,
                                       category_col = "carrier_Sex",
+                                      contrast_1 = "carrier_F",
+                                      contrast_2 = "carrier_M",
                                       mod = Sex_mod,
                                       # color_pal = carrier_tau_colors,
                                       plot_points = TRUE,
@@ -379,6 +413,24 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
                                       cleanY_P = 4)
 )
 dev.off()
+
+# pdf(here(plot_dir, sprintf("DEG_boxplots_Sex_%s.pdf", opt$datatype)))
+# map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+#                                       stats = DE_Sex_data,
+#                                       clus = .x,
+#                                       n_genes = 10,
+#                                       pval_col = "vlmf_adj.P.Val",
+#                                       fc_col = "vlmf_logFC",
+#                                       gene_col = "gene_name",
+#                                       cluster_col = cluster_var,
+#                                       category_col = "carrier_Sex",
+#                                       mod = Sex_mod,
+#                                       # color_pal = carrier_tau_colors,
+#                                       plot_points = TRUE,
+#                                       ncol = 2,
+#                                       cleanY_P = 4)
+# )
+# dev.off()
 
 if(opt$datatype == "Visium"){
     #Astro
