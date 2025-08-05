@@ -73,7 +73,7 @@ sample_df = pd.concat(
         pd.read_csv(sample_1_path, header = None),
         pd.read_csv(sample_2_path, header = None),
     ],
-    axis = 1
+    axis = 0
 )
 
 #   Get the sample ID and image path for this task
