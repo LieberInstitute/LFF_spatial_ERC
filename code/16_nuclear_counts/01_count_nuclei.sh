@@ -6,7 +6,7 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o ../../processed-data/16_nuclear_counts/logs/01_count_nuclei_%a.txt
 #SBATCH -e ../../processed-data/16_nuclear_counts/logs/01_count_nuclei_%a.txt
-#SBATCH --array=1-16%10
+#SBATCH --array=18-31%10
 
 set -e
 
