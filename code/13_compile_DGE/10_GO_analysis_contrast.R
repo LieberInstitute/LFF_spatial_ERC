@@ -12,37 +12,47 @@ library("rrvgo")
 
 # Import command-line parameters
 scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type"),
+    c("datatype", "d", "1", "character", "Data type",
+      "contrast", "c", "1", "character", "contrast"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
 
 ## test
 # opt$datatype = "sn_broad"
+# opt$contrast = "ancestry"
+
 # opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
 
-data_dir <- here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast")
+
+data_dir <- here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", paste0("GO_", opt$contrast))
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "13_compile_DGE", "10_GO_analysis_contrast")
+plot_dir <- here("plots", "13_compile_DGE", "10_GO_analysis_contrast", paste0("GO_", opt$contrast))
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
 
+if(opt$contrast == "ancestry"){
+    dge_dir = "05_compile_DGE_ancestry"
+} else if(opt$contrast == "Sex"){
+    dge_dir = "09_compile_DGE_Sex"
+} 
+
 ## load DE data ##
-DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
+DE_data_fn <- here("processed-data", "13_compile_DGE", dge_dir, opt$datatype, sprintf("DGE_results_%s_%s.Rds", opt$contrast, opt$datatype))
 file.exists(DE_data_fn)
 
 DE_data <- readRDS(DE_data_fn)
 
-DE_data |> count(cluster)
+DE_data |> count(cluster, contrast)
 
 head(DE_data)
-DE_data |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster)
+DE_data |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster, contrast)
 
 ## ENTREZID look up
-entrez_search <- bitr(DE_data$gene_id, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+entrez_search <- bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
 entrez_search |> count(ENSEMBL) |> count(n)
 
 DE_entrez <- DE_data |> 
@@ -51,9 +61,10 @@ DE_entrez <- DE_data |>
     mutate(DE_class = case_when(vlmf_logFC > 0 & vlmf_adj.P.Val < 0.05 ~ "up",
                                 vlmf_logFC < 0 & vlmf_adj.P.Val < 0.05 ~ "down",
                                 TRUE ~ "None"),
-           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class)) ## doesn't like .  in cluster names
+           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_", gsub("carrier_", "", contrast), "_",DE_class)) ## doesn't like .  in cluster names
     
-DE_entrez |> count(cluster)
+DE_entrez |> count(DE_class_cluster)
+DE_entrez |> count(cluster, contrast)
 DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
 
 # DE_clusters <- DE_entrez |> filter(DE_class != "None") |> pull(cluster) |> unique()
@@ -61,10 +72,12 @@ DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
 
 #### Run GO ####
 universe <- unique(DE_entrez$ENTREZID)
-length(universe)
+message("Universe n genes: ", length(universe))
 
 ont_list <- c("CC","BP","MF")
 names(ont_list) <- ont_list
+
+DE_entrez |> 
 
 go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
                                       data = DE_entrez |> filter(DE_class != "None"), 
@@ -75,18 +88,21 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
                                       pAdjustMethod = "BH",
                                       pvalueCutoff = 0.05,
                                       # qvalueCutoff = 0.05,
+                                      minGSSize =5, # i dont think this worked...
                                       readable = TRUE))
 
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
-# compare_clus |> filter(DE_class_cluster == "Macro_down")
+# compare_clus |> filter(DE_class_cluster == "Macro_AA_up")
+# compare_clus |> filter(DE_class_cluster == "Vasc_EA_up")
 
-write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
+
+write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s_%s.csv", opt$contrast, opt$datatype)), row.names = FALSE)
 
 #### dot plots ####
 
-pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
 walk2(go_result, names(go_result), 
       ~print(
           dotplot(.x, 
@@ -166,25 +182,13 @@ reducedTerms_list <- map(ont_list, function(o){
 })
 
 
-# map_depth(reducedTerms_list, 2, length)
-
 reducedTerms_list2 <- list_transpose(reducedTerms_list)
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
-
-# map_depth(reducedTerms_list2, 2, length)
-# map_depth(reducedTerms_list2, 2, is.null)
-
-# ## plot treemap
-# pdf(here(plot_dir, "treemap_test.pdf"))
-# treemapPlot(reducedTerms, title = "Oligo")
-# dev.off()
 
 ## rm empty results
 reducedTerms_list2 <- reducedTerms_list2[map_lgl(reducedTerms_list2, function(rt) !all(map_lgl(rt, ~all(is.null(.x)))))]
 
-# reducedTerms_list2[["Inhib-Vip_down"]]["CC"]
-
-pdf(here(plot_dir, sprintf("GO_treemap_%s.pdf", opt$datatype)))
+pdf(here(plot_dir, sprintf("GO_treemap_%s_%s.pdf", opt$contrast, opt$datatype)))
 walk2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name){
     
     rt <- rt[!map_lgl(rt, is.null)]
@@ -193,7 +197,8 @@ walk2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name){
 })
 dev.off()
 
-# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
+#                                  contrast = c("ancestry", "Sex")),
 #                     create_shell = TRUE,
 #                     name = "10_GO_analysis_contrast",
 #                     create_script = FALSE)
