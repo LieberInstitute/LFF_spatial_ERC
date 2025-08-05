@@ -96,7 +96,8 @@ assay(spe_rctd, "cell_counts") <- ceiling(assay(spe_rctd, "weights") * spe_rctd$
 assay(spe_rctd, "cell_counts")[1:5, 1:5]
 
 message(Sys.time(), " - Save Data")
-HDF5Array::saveHDF5SummarizedExperiment(spe_rctd, dir = here(data_dir, sprintf("spe_RCTD-%s", cell_type_col)), replace=TRUE)
+saveRDS(spe_rctd, file = here(data_dir, sprintf("spe_RCTD-%s.rds", cell_type_col)))
+# HDF5Array::saveHDF5SummarizedExperiment(spe_rctd, dir = here(data_dir, sprintf("spe_RCTD-%s", cell_type_col)), replace=TRUE)
 
 #### Visualize cell type weights ####
 message(Sys.time(), " - Visualization")
