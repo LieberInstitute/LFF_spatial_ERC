@@ -77,8 +77,6 @@ message("Universe n genes: ", length(universe))
 ont_list <- c("CC","BP","MF")
 names(ont_list) <- ont_list
 
-DE_entrez |> 
-
 go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
                                       data = DE_entrez |> filter(DE_class != "None"), 
                                       OrgDb = org.Hs.eg.db,
