@@ -1,0 +1,60 @@
+**** Job starts ****
+Mon Aug  4 07:08:08 PM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 21207134
+Job name: 02_spaceranger_segment
+Hostname: 
+Task id: 30
+Loading LIBD SLURM module for spaceranger/4.0.1
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   2) JHPCE_tools/3.0   3) spaceranger/4.0.1
+
+ 
+
+Processing sample V13B23-366_D1
+
+
+Martian Runtime - v4.0.14
+Running preflight checks (please wait)...
+2025-08-04 19:08:13 [runtime] (ready)           ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GET_SEGMENT_WEBSUMMARY_IMAGE
+2025-08-04 19:08:13 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GET_SEGMENT_WEBSUMMARY_IMAGE.fork0.split
+2025-08-04 19:08:13 [runtime] (ready)           ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.NORMALIZE_TISSUE_IMAGE
+2025-08-04 19:08:13 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.NORMALIZE_TISSUE_IMAGE.fork0.split
+2025-08-04 19:08:14 [runtime] (split_complete)  ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.NORMALIZE_TISSUE_IMAGE
+2025-08-04 19:08:14 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.NORMALIZE_TISSUE_IMAGE.fork0.join
+2025-08-04 19:08:14 [runtime] (split_complete)  ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GET_SEGMENT_WEBSUMMARY_IMAGE
+2025-08-04 19:08:14 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GET_SEGMENT_WEBSUMMARY_IMAGE.fork0.join
+2025-08-04 19:08:34 [runtime] (join_complete)   ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.NORMALIZE_TISSUE_IMAGE
+2025-08-04 19:08:34 [runtime] (ready)           ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION
+2025-08-04 19:08:34 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION.fork0.split
+2025-08-04 19:08:36 [runtime] (split_complete)  ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION
+2025-08-04 19:08:36 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION.fork0.join
+2025-08-04 19:09:04 [runtime] (join_complete)   ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GET_SEGMENT_WEBSUMMARY_IMAGE
+2025-08-04 19:15:05 [runtime] (update)          ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION.fork0 join_running
+2025-08-04 19:21:06 [runtime] (update)          ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION.fork0 join_running
+2025-08-04 19:27:08 [runtime] (update)          ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION.fork0 join_running
+2025-08-04 19:32:57 [runtime] (join_complete)   ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENT_NUCLEI.RUN_NUCLEI_SEGMENTATION
+2025-08-04 19:32:57 [runtime] (ready)           ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENTATION_SPATIAL_PLOTS
+2025-08-04 19:32:57 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENTATION_SPATIAL_PLOTS.fork0.chnk0.main
+2025-08-04 19:33:15 [runtime] (chunks_complete) ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.SEGMENTATION_SPATIAL_PLOTS
+2025-08-04 19:33:15 [runtime] (ready)           ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GENERATE_SEGMENT_WEBSUMMARY
+2025-08-04 19:33:15 [runtime] (run:local)       ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GENERATE_SEGMENT_WEBSUMMARY.fork0.chnk0.main
+2025-08-04 19:33:15 [runtime] (chunks_complete) ID.V13B23-366_D1.SPATIAL_SEGMENT_NUCLEI_CS.GENERATE_SEGMENT_WEBSUMMARY
+
+Outputs:
+- nucleus_instance_mask: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/segmentation/V13B23-366_D1/outs/nucleus_instance_mask.tiff
+- nucleus_segmentations: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/segmentation/V13B23-366_D1/outs/nucleus_segmentations.geojson
+- websummary:            /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/segmentation/V13B23-366_D1/outs/websummary.html
+
+Pipestance completed successfully!
+
+2025-08-04 19:33:15 Shutting down.
+Saving pipestance info to "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/01_spaceranger/segmentation/V13B23-366_D1/V13B23-366_D1.mri.tgz"
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+**** Job ends ****
+Mon Aug  4 07:33:16 PM EDT 2025
