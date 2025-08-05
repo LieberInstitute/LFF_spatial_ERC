@@ -51,6 +51,15 @@ for (sample_id in sample_ids) {
 }
 count_df = do.call(rbind, count_df_list)
 
+message('Max nuclei counted in each sample:')
+count_df |>
+    group_by(sample_id) |>
+    summarize(
+        max_within = max(num_nuclei_within),
+        max_intersect = max(num_nuclei_intersect)
+    ) |>
+    print(n = length(sample_ids))
+
 #   Boxplots for both types of nuclear counts
 sample_boxplot(count_df, 'num_nuclei_within', 'nuclei_within_boxplot.pdf')
 sample_boxplot(count_df, 'num_nuclei_intersect', 'nuclei_intersect_boxplot.pdf')
