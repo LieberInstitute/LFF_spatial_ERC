@@ -6,7 +6,9 @@ rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22
 vis_rep_sections <- function(spe, 
                              geneid, 
                              assayname = "logcounts",
-                             point_size = 1){
+                             minCount = 0,
+                             point_size = 1
+                             ){
 
     ct_plots <- map(c("AA", "EA"), function(anc) {
         samples <- rep_sections_tb |> filter(Ancestry == anc) |> arrange(APOE)
@@ -16,6 +18,7 @@ vis_rep_sections <- function(spe,
                 spe = spe,
                 geneid = geneid,
                 assayname = assayname,
+                minCount = minCount,
                 point_size = point_size,
                 sampleid = s,
                 cont_colors = viridisLite::rocket(10, direction = -1)
