@@ -282,12 +282,15 @@ plot_DEG_express_single <- function(sce,
 plot_DEG_express_contrast <- function(sce,
                                     stats,
                                     clus = "Astro",
-                                    gene,
+                                    gene = NULL,
+                                    n_genes = NULL,
                                     pval_col = "vlmf_adj.P.Val",
                                     fc_col = "vlmf_logFC",
                                     gene_col = "gene_name",
                                     cluster_col = "registration_variable",
                                     category_col = "carrier_Anc",
+                                    contrast_1 = "carrier_AA",
+                                    contrast_2 = "carrier_EA",
                                     mod = ~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio,
                                     cleanY_P = 4,
                                     color_pal = NULL,
@@ -319,23 +322,50 @@ plot_DEG_express_contrast <- function(sce,
     
     stats_filter <- stats |>
         dplyr::rename(dplyr::all_of(lookup)) |>
-        dplyr::select(cluster, contrast, gene_col, pval_col, fc_col) |>
-        dplyr::filter(
-            cluster == clus,
-            gene_col %in% gene
-        ) |>
-        arrange(pval_col) |>
-        mutate(
-            rank_col = row_number(),
-            Var1 = gene_col,
-            signif = case_when(pval_col < 0.001 ~"***",
-                               pval_col < 0.01 ~"**",
-                               pval_col < 0.05 ~"*",
-                               TRUE ~ "",
-            ),
-            anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
-        )
+        dplyr::select(cluster, contrast, gene_col, pval_col, fc_col) 
     
+    if(is.null(n_genes) & !is.null(gene)){ # select specific genes
+        stats_filter <- stats_filter |>
+            dplyr::filter(
+                cluster == clus,
+                gene_col %in% gene
+            ) |>
+            arrange(pval_col) |>
+            mutate(
+                rank_col = row_number(),
+                Var1 = gene_col,
+                signif = case_when(pval_col < 0.001 ~"***",
+                                   pval_col < 0.01 ~"**",
+                                   pval_col < 0.05 ~"*",
+                                   TRUE ~ "",
+                ),
+                anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
+            )
+    } else if(!is.null(n_genes)) { ## choose top genes
+        
+        max_digits <- nchar(n_genes)
+        
+        stats_filter <- stats_filter |>
+            dplyr::filter(
+                cluster == clus
+            ) |>
+            arrange(pval_col) |>
+            mutate(
+                rank_col = row_number(),
+                Feature = sprintf("%s:%s",
+                                  stringr::str_pad(rank_col, max_digits, "left"), 
+                                  gene_col),
+                Var1 = Feature,
+                signif = case_when(pval_col < 0.001 ~"***",
+                                   pval_col < 0.01 ~"**",
+                                   pval_col < 0.05 ~"*",
+                                   TRUE ~ "",
+                ),
+                anno_str = sprintf("%i %s\nFDR=%.2e%s\nlogFC=%.2f", rank_col, contrast, pval_col, signif, fc_col)
+            )  |>
+            filter(rank_col <= n_genes)
+    }
+     
     # return(stats_filter)
     
     if (!any(stats_filter$gene_col %in% rownames(sce))) {
@@ -373,7 +403,7 @@ plot_DEG_express_contrast <- function(sce,
         free_y = TRUE
     ) +
         ggplot2::geom_label(
-            data = stats_filter |> filter(contrast == "carrier_AA"), 
+            data = stats_filter |> filter(contrast == contrast_1), 
             ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
             alpha = 0.5,
             vjust = "inward", 
@@ -381,7 +411,7 @@ plot_DEG_express_contrast <- function(sce,
             size = 2.5
         )+
         ggplot2::geom_label(
-            data = stats_filter |> filter(contrast == "carrier_EA"), 
+            data = stats_filter |> filter(contrast == contrast_2), 
             ggplot2::aes(x = Inf, y = -Inf, label = anno_str),
             alpha = 0.5,
             vjust = "inward", 
