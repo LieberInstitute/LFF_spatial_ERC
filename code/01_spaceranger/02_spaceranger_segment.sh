@@ -3,9 +3,9 @@
 #SBATCH -c 8
 #SBATCH -p katun
 #SBATCH --job-name=02_spaceranger_segment
-#SBATCH -o logs/02_spaceranger_segment_%a.txt
-#SBATCH -e logs/02_spaceranger_segment_%a.txt
-#SBATCH --array=1-31%4
+#SBATCH -o logs/02_spaceranger_segment_31.txt
+#SBATCH -e logs/02_spaceranger_segment_31.txt
+#SBATCH --array=17
 
 #   Segment the full-res image for each Visium capture area
 
