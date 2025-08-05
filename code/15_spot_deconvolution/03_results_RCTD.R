@@ -92,62 +92,120 @@ spe_rctd <- SpatialExperiment(sample_id = spe$sample_id,
                   imgData = imgData(spe)
                   )
 
-assay(spe_rctd, "cell_counts") <- ceiling(assay(spe_rctd, "weights") * spe_rctd$CNmask_dark_blue)
+#### Add updated cell counts ####
+nuc_count_fn <- list.files(here("processed-data","16_nuclear_counts"), pattern = ".csv.gz", full.names = TRUE)
+
+nuc_count <- map_dfr(nuc_count_fn, ~read.csv(gzfile(.x), row.names = 1))
+dim(nuc_count)
+head(nuc_count)
+
+# match key
+spe_rctd$key2 <- paste0(gsub("Br[0-9]+","",spe$key), spe$VNum)
+
+table(spe_rctd$key2 %in% rownames(nuc_count))
+
+spe_rctd$num_nuclei_within <- nuc_count[spe_rctd$key2, "num_nuclei_within"]
+spe_rctd$num_nuclei_intersect <- nuc_count[spe_rctd$key2, "num_nuclei_intersect"]
+
+pd <- colData(spe_rctd) |> as.data.frame()
+
+pd |>
+    group_by(SpD) |>
+    summarise(median_nuc = median(num_nuclei_within),
+              n_0_nuc = sum(num_nuclei_within == 0),
+              p_0_nuc = n_0_nuc/n(),
+              q59 = quantile(num_nuclei_within, 0.90),
+              n_30_nuc = sum(num_nuclei_within > 30),
+              p_30_nuc = n_30_nuc/n(),
+              max = max(num_nuclei_within))
+
+# SpD           median_nuc n_0_nuc p_0_nuc   q59 n_30_nuc  p_30_nuc   max
+# <fct>              <dbl>   <int>   <dbl> <dbl>    <int>     <dbl> <int>
+# 1 Vasc~Sp09D08           3       0       0    10        9 0.00145      59
+# 2 L1~Sp09D05             2       0       0     6        4 0.000260     36
+# 3 L2.3~Sp09D01           4       0       0     8        0 0            29
+# 4 LD~Sp09D02             2       0       0     6       10 0.000378     44
+# 5 Inhib~Sp09D09          3       0       0     8        1 0.000145     31
+# 6 L5~Sp09D03             4       0       0     9        1 0.0000861    39
+# 7 L6~Sp09D04             3       0       0     8        0 0            27
+# 8 WM.uf~Sp09D07          3       0       0     7        2 0.000161     39
+# 9 WM~Sp09D06             4       0       0     8        0 0            26
+
+
+## add cell count assays based on nuc counts
+assay(spe_rctd, "cell_counts") <- assay(spe_rctd, "weights") * spe_rctd$num_nuclei_within
 assay(spe_rctd, "cell_counts")[1:5, 1:5]
 
 message(Sys.time(), " - Save Data")
 saveRDS(spe_rctd, file = here(data_dir, sprintf("spe_RCTD-%s.rds", cell_type_col)))
 # HDF5Array::saveHDF5SummarizedExperiment(spe_rctd, dir = here(data_dir, sprintf("spe_RCTD-%s", cell_type_col)), replace=TRUE)
 
+#### Visualize nuc counts ####
+
+n_nuclei_boxplot <- ggplot(pd, aes(x = SpD, y = num_nuclei_within, fill = SpD)) +
+    geom_boxplot(draw_quantiles = c(.5)) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(n_nuclei_boxplot, filename = here(plot_dir, "ERC_Visium_SpD_boxplot_n_nuclei.png"), width = 7, height =4)
+
+
+## vis_gene
+
+vis_n_nuc_test <- vis_gene(
+    spe = spe_rctd,
+    geneid = "num_nuclei_within",
+    assayname = "weights",
+    point_size = 2,
+    cont_colors = viridisLite::rocket(10, direction = -1)
+)
+
+ggsave(vis_n_nuc_test, filename = here(plot_dir, "vis_n_nuc_test.png"))
+
+## rep sections
+source(here("code", "15_spot_deconvolution", "vis_rep_sections.R"))
+
+vis_rep_n_nuclei <- vis_rep_sections(spe, geneid = "num_nuclei_within")
+ggsave(vis_rep_n_nuclei, filename = here(plot_dir, "vis_rep_n_nuclei.png"), width = 18, height = 9)
+
 #### Visualize cell type weights ####
 message(Sys.time(), " - Visualization")
 
-rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "rep_section.csv")) |>
-    filter(rep_section)
-
-# test_vis_gene <- vis_gene(spe_rctd, 
-#          # geneid = c("Oligo.1","Oligo.2", "Oligo.3","Oligo.4","Oligo.5"),
-#          geneid = "Oligo",
-#          assayname = "weights",
-#          cont_colors = viridisLite::rocket(10, direction = -1))
-# 
-# ggsave(test_vis_gene, filename = here(plot_dir, "test_vis_gene.png"))
+## rep sections weights
 
 pdf(here(plot_dir, "vis_ct_ALL_rep_sections.pdf"), width = 18, height = 9)
 map(rownames(spe_rctd), function(ct){
     message("vis_ct: ", ct)
-    ct_plots <- map(c("AA", "EA"), function(anc) {
-        samples <- rep_sections_tb |> filter(Ancestry == anc) |> arrange(APOE)
-        
-        cluster_row_plots <- map(samples$sample_id, function(s) {
-            vis_clus_plot <- vis_gene(
-                spe = spe_rctd,
-                geneid = ct,
-                assayname = "weights",
-                point_size = 1,
-                sampleid = s,
-                cont_colors = viridisLite::rocket(10, direction = -1)
-            ) 
-            return(vis_clus_plot)
-        })
-        cluster_row <- Reduce("+", cluster_row_plots) + plot_layout(nrow = 1)
-        return(cluster_row)
-    })
     
-    ct_grid <- Reduce("/", ct_plots)
+    ct_grid <- vis_rep_sections(spe_rctd, assayname = "weights", geneid = ct)
+    
     ggsave(ct_grid, filename = here(plot_dir, sprintf("vis_ct_%s_rep_sections.png", ct)), width = 18, height = 9)
     return(ct_grid)
 })
 dev.off()
 
 
+## rep sections cell counts
+pdf(here(plot_dir, "vis_ct_ALL_rep_sections_counts.pdf"), width = 18, height = 9)
+map(rownames(spe_rctd), function(ct){
+    message("vis_ct: ", ct)
+    
+    ct_grid <- vis_rep_sections(spe_rctd, assayname = "cell_counts", geneid = ct)
+    
+    ggsave(ct_grid, filename = here(plot_dir, sprintf("vis_ct_counts_%s_rep_sections_counts.png", ct)), width = 18, height = 9)
+    return(ct_grid)
+})
+dev.off()
+
 
 #### long data ####
 
-sample_info <- colData(spe)[,c("key", "BrNum","SpD", "APOE", "CNmask_dark_blue")] |>
+sample_info <- colData(spe)[,c("key", "BrNum","SpD", "APOE", "num_nuclei_within")] |>
     as.data.frame() 
 
-rcdt_long <- assay(spe_rctd, "weights") |>
+rcdt_long <- assay(spe_rctd, "cell_counts") |>
     as.matrix() |>
     reshape2::melt() |>
     dplyr::rename(cell_type = Var1, key = Var2, weights = value) |>
