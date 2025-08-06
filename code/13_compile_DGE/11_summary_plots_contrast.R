@@ -10,19 +10,19 @@ library("getopt")
 library("ComplexHeatmap")
 
 # Import command-line parameters
-scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type",
-      "contrast", "c", "1", "character", "contrast"),
-    ncol = 5, byrow = TRUE
-)
-opt <- getopt(scec)
-
-datatype <- opt$datatype
-contrast <- opt$contrast
+# scec <- matrix(
+#     c("datatype", "d", "1", "character", "Data type",
+#       "contrast", "c", "1", "character", "contrast"),
+#     ncol = 5, byrow = TRUE
+# )
+# opt <- getopt(scec)
+# 
+# datatype <- opt$datatype
+# contrast <- opt$contrast
 
 ## test
-# datatype = "sn_broad"
-# contrast = "ancestry"
+datatype = "sn_broad"
+contrast = "ancestry"
 
 # datatype = "sn_fine"
 # datatype = "Visium"
@@ -76,6 +76,12 @@ dge_count <- dge_data |>
               Up = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               Down = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
 
+if(datatype == "sn_fine"){
+    
+    dge_count <- dge_count |> filter(n_FDR05 > 1)
+    
+}
+
 
 dge_summary_bar_reg <- dge_count |>
     select(-n_FDR05) |>
@@ -84,23 +90,35 @@ dge_summary_bar_reg <- dge_count |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
     geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""))) +
-    # facet_wrap(~contrast, ncol = 1) +
+    facet_wrap(~contrast, ncol = 1, strip.position = "right") +
     scale_fill_manual(values = c(Up = APOE_carrier_colors[["E4+"]],
                                  Down = APOE_carrier_colors[["E2+"]])) +
     theme_bw() +
-    labs(title = sprintf("DGE - %s", datatype), y = "n DE genes (FDR < 0.05)") +
+    labs(y = sprintf("%s\nn DE genes (FDR < 0.05)", datatype)) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "bottom")
 
-ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_%s_summary_bar_reg_combined.png", contrast, datatype)), height = 3, width = 6)
+ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_%s_summary_bar_reg_combined.png", contrast, datatype)), height = 4, width = 5)
 
 #### select stat scatter plots ####
 source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 
-if(datatype == "sn_broad"){
+if(datatype == "Visium"){
+    
+    compare_contrast_stats(dge_data |> filter(cluster == "WM.uf~Sp09D07"), 
+                           datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
+                           height = 5, width = 4)
+    
+} else if(datatype == "sn_broad"){
     
     compare_contrast_stats(dge_data |> filter(cluster == "Astro"), 
                            datatype = sprintf("%s_%s_%s",contrast, datatype, "Astro"),
+                           height = 6, width = 5)
+    
+}else if(datatype == "sn_fine"){
+    
+    compare_contrast_stats(dge_data |> filter(cluster == "Oligo.3"), 
+                           datatype = sprintf("%s_%s_%s",contrast, datatype, "Oligo.3"),
                            height = 6, width = 5)
     
 }
@@ -114,16 +132,16 @@ topDEGs <- dge_data |>
     group_by(cluster,contrast) |>
     filter(vlmf_adj.P.Val < 0.05) |>
     arrange(vlmf_adj.P.Val) |>
-    slice(1:5) |>
+    slice(1:10) |>
     pull(gene_name) |>
     unique()
 
 length(topDEGs)
 
-logFC_Heatmap_contrast(data = dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype))
+logFC_Heatmap_contrast(dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype))
 
 ## Risk gene heatmap
-logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
+logFC_Heatmap_contrast(dge_data, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype))
 
 if(datatype == "cell_type_fine"){
     
