@@ -94,60 +94,24 @@ dge_summary_bar_reg <- dge_count |>
 
 ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_%s_summary_bar_reg_combined.png", contrast, datatype)), height = 3, width = 6)
 
-#### logFC heatmaps ####
+#### select stat scatter plots ####
+source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 
-logFC_Heatmap <- function(data, gene_list, title, h = 4, w = 10, cluster_col = FALSE){
+if(datatype == "sn_broad"){
     
-    logFC_matrix <- data |>
-        filter(gene_name %in% gene_list) |>
-        select(cluster, gene_name, vlmf_logFC) |>
-        pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
-        column_to_rownames("cluster") |>
-        as.matrix()
-    
-    pval_matrix <- data |>
-        filter(gene_name %in% gene_list) |>
-        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
-                                  vlmf_adj.P.Val < 0.01 ~ "**",
-                                  vlmf_adj.P.Val < 0.05 ~ "*",
-                                  TRUE ~ "")
-        ) |>
-        select(cluster, gene_name, signif) |>
-        pivot_wider(names_from = gene_name, values_from = signif) |>
-        column_to_rownames("cluster") |>
-        as.matrix()
-    
-    pval_matrix[is.na(pval_matrix)] <- ""
-    
-    ## reorder clusters & rows
-    gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
-    
-    if(all(rownames(logFC_matrix) %in% cluster_levels)){
-        cluster_order <- cluster_levels[cluster_levels %in% rownames(logFC_matrix)]
-    } else {
-        cluster_order <- order(rownames(logFC_matrix))
-    }
-    
-    logFC_matrix <- logFC_matrix[cluster_order, gene_order]
-    pval_matrix <- pval_matrix[cluster_order, gene_order]
-    
-    # Heatmap(logFC_matrix, cluster_rows = FALSE, cluster_columns = FALSE)
-    
-    pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = h, width = w)
-    print(Heatmap(logFC_matrix,
-            name = "log(FC)",
-            cluster_rows = FALSE,
-            cluster_columns = cluster_col,
-            cell_fun = function(j, i, x, y, width, height, fill) {
-                grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
-            }))
-    dev.off()
+    compare_contrast_stats(dge_data |> filter(cluster == "Astro"), 
+                           datatype = sprintf("%s_%s_%s",contrast, datatype, "Astro"),
+                           height = 6, width = 5)
     
 }
 
+
+#### logFC heatmaps ####
+source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
+
 ## top DGEs
 topDEGs <- dge_data |>
-    group_by(cluster) |>
+    group_by(cluster,contrast) |>
     filter(vlmf_adj.P.Val < 0.05) |>
     arrange(vlmf_adj.P.Val) |>
     slice(1:5) |>
@@ -156,7 +120,7 @@ topDEGs <- dge_data |>
 
 length(topDEGs)
 
-logFC_Heatmap(data = dge_data, gene_list = topDEGs, title = "topDEGs")
+logFC_Heatmap_contrast(data = dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype))
 
 ## Risk gene heatmap
 logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
