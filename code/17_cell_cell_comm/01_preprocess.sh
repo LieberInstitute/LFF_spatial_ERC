@@ -37,8 +37,8 @@ out_dir=$repo_dir/processed-data/17_cell_cell_comm
 cellnest preprocess \
     --data_name=${sample_id} \
     --data_from=${in_dir} \
-    --data_to=${out_dir}/input_graph/ \
-    --metadata_to=${out_dir}/metadata/ \
+    --data_to=${out_dir}/input_graph/${sample_id}/ \
+    --metadata_to=${out_dir}/metadata/${sample_id}/ \
     --database_path=${database_path}
 
 echo "**** Job ends ****"
