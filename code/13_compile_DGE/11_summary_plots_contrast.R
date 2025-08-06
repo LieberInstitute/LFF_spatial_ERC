@@ -128,64 +128,111 @@ if(datatype == "Visium"){
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
 ## top DGEs
-topDEGs <- dge_data |>
-    group_by(cluster,contrast) |>
-    filter(vlmf_adj.P.Val < 0.05) |>
-    arrange(vlmf_adj.P.Val) |>
-    slice(1:10) |>
-    pull(gene_name) |>
-    unique()
+if(datatype == "sn_fine"){
+    
+    topDEGs <- dge_data |>
+        group_by(cluster,contrast) |>
+        filter(vlmf_adj.P.Val < 0.05) |>
+        arrange(vlmf_adj.P.Val) |>
+        slice(1:5) |>
+        pull(gene_name) |>
+        unique()
+    
+    length(topDEGs)
+    
+    logFC_Heatmap_contrast(dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype))
+    
+    ## Risk gene heatmap
+    logFC_Heatmap_contrast(dge_data, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype))
+    
+} else {
+    topDEGs <- dge_data |>
+        group_by(cluster,contrast) |>
+        filter(vlmf_adj.P.Val < 0.05) |>
+        arrange(vlmf_adj.P.Val) |>
+        slice(1:10) |>
+        pull(gene_name) |>
+        unique()
+    
+    length(topDEGs)
+    
+    logFC_Heatmap_contrast(dge_data |> filter(cluster %in% dge_count$cluster), 
+                           gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype),
+                           h = 6)
+    
+    ## Risk gene heatmap
+    logFC_Heatmap_contrast(dge_data, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype), h = 12)
+    
+}
 
-length(topDEGs)
-
-logFC_Heatmap_contrast(dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype))
-
-## Risk gene heatmap
-logFC_Heatmap_contrast(dge_data, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype))
 
 if(datatype == "cell_type_fine"){
     
-    ## carrier
+    ## top Oligo 3
     top_oligo_DEGs <- dge_data |>
         filter(vlmf_adj.P.Val < 0.05, cluster == "Oligo.3") |>
-        group_by(cluster, vlmf_logFC > 0) |>
+        group_by(cluster,contrast, vlmf_logFC > 0) |>
         arrange(vlmf_adj.P.Val) |>
-        slice(1:25) |>
+        slice(1:10) |>
         pull(gene_name) |>
         unique()
     
-    logFC_Heatmap(data = dge_data |>
-                      filter(grepl("Oligo", cluster)), 
-                  gene_list = top_oligo_DEGs, 
-                  title = "topDEGs_Oligo.3", 
-                  cluster_col = TRUE)
+    logFC_Heatmap_contrast(dge_data |>
+                               filter(grepl("Oligo", cluster)), 
+                           gene_list = top_oligo_DEGs, 
+                           title = sprintf("topDEGs_%s_%s_Oligo.3", contrast, datatype), 
+                           cluster_col = TRUE)    
     
-    logFC_Heatmap(data = dge_data |>
-                      filter(grepl("Oligo", cluster)), 
-                  gene_list = AD_risk$symbol, 
-                  title = "ADrisk_Oligo")
+    ## largest diff Oligo 3
     
-    ## carrier + anc
-    top_oligo_DEGs_anc <- dge_anc_data |>
+    contrast_levels <- unique(dge_data$contrast)
+    
+    diff_oligo_DEGs <- dge_data |>
         filter(vlmf_adj.P.Val < 0.05, cluster == "Oligo.3") |>
-        group_by(cluster, contrast) |>
+        select(gene_name,contrast, vlmf_logFC) |> 
+        pivot_wider(values_from = vlmf_logFC, names_from = contrast) |>
+        mutate(diff = !!sym(contrast_levels[[1]]) - !!sym(contrast_levels[[2]]),
+               abs_diff = abs(diff),
+               d_reg = case_when(!!sym(contrast_levels[[1]]) > 1  ~ "dd_c1",
+               # d_reg = case_when(!!sym(contrast_levels[[1]]) > 1 & !!sym(contrast_levels[[2]]) < -1 ~ "dd_c1",
+                                 !!sym(contrast_levels[[2]]) > 1 & !!sym(contrast_levels[[1]]) < -1 ~ "dd_c2",
+                                 TRUE ~ NA)) |>
+        
+        dge_data |>
+        filter(vlmf_adj.P.Val < 0.05, cluster == "Oligo.3") |>
+        select(gene_name,contrast, vlmf_logFC) |>
+        count(is.na(vlmf_logFC), contrast)
+    
+    dge_data |>
+        filter(vlmf_adj.P.Val < 0.05, cluster == "Oligo.3") |>
+        select(gene_name,contrast, vlmf_logFC) |> 
+        pivot_wider(values_from = vlmf_logFC, names_from = contrast) |>
+        ggplot(aes(x = carrier_AA, y = carrier_EA)) +
+        geom_point()
+        
+        arrange(-diff)
+    
+    
+    diff_oligo_DEGs |> count(d_reg)   
+    diff_oligo_DEGs |> filter(d_reg == "dd_c1") |> arrange(-carrier_EA)
+    
+    group_by(cluster,contrast, vlmf_logFC > 0) |>
         arrange(vlmf_adj.P.Val) |>
-        slice(1:25) |>
+        slice(1:10) |>
         pull(gene_name) |>
         unique()
     
-    logFC_Heatmap(data = dge_anc_data |>
-                      filter(grepl("Oligo", cluster)) |>
-                      mutate(cluster = gsub("carrier_", "", paste(cluster, contrast))), 
-                  gene_list = top_oligo_DEGs_anc, 
-                  title = "topDEGs_Anc_Oligo.3",
-                  cluster_col = TRUE)
+    logFC_Heatmap_contrast(dge_data |>
+                               filter(grepl("Oligo", cluster)), 
+                           gene_list = top_oligo_DEGs, 
+                           title = sprintf("topDEGs_%s_%s_Oligo.3", contrast, datatype), 
+                           cluster_col = TRUE)
     
-    logFC_Heatmap(data = dge_data |>
-                      filter(grepl("Oligo", cluster)), 
-                  gene_list = AD_risk$symbol, 
-                  title = "ADrisk_Oligo")
-    
+    ## risk in Oligo sub-types
+    logFC_Heatmap_contrast(dge_data |>
+                               filter(grepl("Oligo", cluster)), 
+                           gene_list = AD_risk$symbol, 
+                           title = sprintf("ADrisk_%s_%s_Oligo", contrast, datatype))
     
 }
 
