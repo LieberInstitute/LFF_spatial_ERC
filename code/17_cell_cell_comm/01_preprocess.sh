@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -p katun
-#SBATCH --mem=5G
+#SBATCH --mem=10G
 #SBATCH --job-name=01_preprocess
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
 #SBATCH -o ../../processed-data/17_cell_cell_comm/logs/01_preprocess_%a.txt
 #SBATCH -e ../../processed-data/17_cell_cell_comm/logs/01_preprocess_%a.txt
-#SBATCH --array=2-31%15
+#SBATCH --array=25
 
 set -e
 
