@@ -22,7 +22,7 @@ library("ComplexHeatmap")
 
 ## test
 datatype = "sn_broad"
-contrast = "ancestry"
+contrast = "Sex"
 
 # datatype = "sn_fine"
 # datatype = "Visium"
@@ -59,8 +59,15 @@ cluster_levels <- cluster_levels[cluster_levels != "Other"]
 ## contrast data locations
 if(contrast == "ancestry"){
     dge_dir = "05_compile_DGE_ancestry"
+    
+    contrast_1 <- "carrier_AA"
+    contrast_2 <- "carrier_EA"
+    
 } else if(contrast == "Sex"){
     dge_dir = "09_compile_DGE_Sex"
+    
+    contrast_1 <- "carrier_F"
+    contrast_2 <- "carrier_M"
 } 
 
 
@@ -107,19 +114,49 @@ if(datatype == "Visium"){
     
     compare_contrast_stats(dge_data |> filter(cluster == "WM.uf~Sp09D07"), 
                            datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
-                           height = 5, width = 4)
+                           height = 5, width = 4,
+                           contrast_1 = contrast_1,
+                           contrast_2 = contrast_2)
     
 } else if(datatype == "sn_broad"){
     
-    compare_contrast_stats(dge_data |> filter(cluster == "Astro"), 
-                           datatype = sprintf("%s_%s_%s",contrast, datatype, "Astro"),
-                           height = 6, width = 5)
+    if(contrast == "ancestry"){
+                compare_contrast_stats(dge_data |> filter(cluster == "Astro"), 
+                               datatype = sprintf("%s_%s_%s",contrast, datatype, "Astro"),
+                               height = 6, width = 5,
+                               contrast_1 = contrast_1,
+                               contrast_2 = contrast_2)
+            }else if(contrast == "Sex"){
+                compare_contrast_stats(dge_data |> filter(cluster == "Oligo"), 
+                               datatype = sprintf("%s_%s_%s",contrast, datatype, "Oligo"),
+                               height = 6, width = 5,
+                               contrast_1 = contrast_1,
+                               contrast_2 = contrast_2)
+            }
+    
     
 }else if(datatype == "sn_fine"){
     
     compare_contrast_stats(dge_data |> filter(cluster == "Oligo.3"), 
                            datatype = sprintf("%s_%s_%s",contrast, datatype, "Oligo.3"),
-                           height = 6, width = 5)
+                           height = 6, width = 5,
+                           contrast_1 = contrast_1,
+                           contrast_2 = contrast_2)
+    
+    if(contrast == "Sex"){
+        
+        compare_contrast_stats(dge_data |> filter(cluster == "Astro.4"), 
+                               datatype = sprintf("%s_%s_%s",contrast, datatype, "Astro.4"),
+                               height = 6, width = 5,
+                               contrast_1 = contrast_1,
+                               contrast_2 = contrast_2)
+        
+        compare_contrast_stats(dge_data |> filter(cluster == "OPC.5"), 
+                               datatype = sprintf("%s_%s_%s",contrast, datatype, "OPC.5"),
+                               height = 6, width = 5,
+                               contrast_1 = contrast_1,
+                               contrast_2 = contrast_2)
+            }
     
 }
 
@@ -140,7 +177,7 @@ if(datatype == "sn_fine"){
     
     length(topDEGs)
     
-    logFC_Heatmap_contrast(dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype))
+    logFC_Heatmap_contrast(dge_data, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype), h = 10)
     
     ## Risk gene heatmap
     logFC_Heatmap_contrast(dge_data, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype))
