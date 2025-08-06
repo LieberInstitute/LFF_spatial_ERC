@@ -373,7 +373,7 @@ plot_DEG_express_contrast <- function(sce,
     
     pe <- plot_gene_express(
         sce = sce,
-        genes = stats_filter$gene_col,
+        genes = unique(stats_filter$gene_col),
         assay_name = "cleanY",
         category = category_col,
         color_pal = color_pal,
@@ -382,7 +382,7 @@ plot_DEG_express_contrast <- function(sce,
         plot_type = "boxplot",
         free_y = TRUE
     ) +
-        ggplot2::geom_label(
+        ggplot2::geom_label( ## contrast_1 annotations - bottom left
             data = stats_filter |> filter(contrast == contrast_1), 
             ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
             alpha = 0.5,
@@ -390,7 +390,7 @@ plot_DEG_express_contrast <- function(sce,
             hjust = "inward", 
             size = 2.5
         ) +
-        ggplot2::geom_label(
+        ggplot2::geom_label( ## contrast_1 annotations - bottom right
             data = stats_filter |> filter(contrast == contrast_2), 
             ggplot2::aes(x = Inf, y = -Inf, label = anno_str),
             alpha = 0.5,
@@ -405,14 +405,14 @@ plot_DEG_express_contrast <- function(sce,
 }
 
 #' ## Plot select genes for Astrocytes
-plot_DEG_express_contrast_top(
-    sce = sce_pb,
-    clus = "Oligo",
-    n_genes = 6,
-    stats = DE_ancestry_data,
-    cluster_col = "cell_type_broad",
-    gene_col = "gene_name"
-)
+#'plot_DEG_express_contrast_top(
+#'    sce = sce_pb,
+#'    clus = "Oligo",
+#'    n_genes = 6,
+#'    stats = DE_ancestry_data,
+#'    cluster_col = "cell_type_broad",
+#'    gene_col = "gene_name"
+#')
 
 plot_DEG_express_contrast_top <- function(sce,
                                  stats,
@@ -462,7 +462,8 @@ plot_DEG_express_contrast_top <- function(sce,
                 cluster_col = cluster_col,
                 clus = clus,
                 gene_col = gene_col,
-                title = paste("-", c)
+                title = paste("-", c),
+                plot_points = plot_points
             )
         )
     }
