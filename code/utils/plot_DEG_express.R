@@ -320,12 +320,12 @@ plot_DEG_express_contrast <- function(sce,
         gene_col = gene_col
     )
     
-    stats_filter <- stats |>
+    stats <- stats |>
         dplyr::rename(dplyr::all_of(lookup)) |>
         dplyr::select(cluster, contrast, gene_col, pval_col, fc_col) 
     
     if(is.null(n_genes) & !is.null(gene)){ # select specific genes
-        stats_filter <- stats_filter |>
+        stats_filter <- stats |>
             dplyr::filter(
                 cluster == clus,
                 gene_col %in% gene
@@ -341,36 +341,43 @@ plot_DEG_express_contrast <- function(sce,
                 ),
                 anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
             )
+        
     } else if(!is.null(n_genes)) { ## choose top genes
         
         max_digits <- nchar(n_genes)
         
-        stats_filter <- stats_filter |>
+        stats_filter <- stats |>
             dplyr::filter(
                 cluster == clus
             ) |>
             arrange(pval_col) |>
+            group_by(contrast) |>
             mutate(
                 rank_col = row_number(),
                 Feature = sprintf("%s:%s",
                                   stringr::str_pad(rank_col, max_digits, "left"), 
                                   gene_col),
-                Var1 = Feature,
                 signif = case_when(pval_col < 0.001 ~"***",
                                    pval_col < 0.01 ~"**",
                                    pval_col < 0.05 ~"*",
                                    TRUE ~ "",
                 ),
-                anno_str = sprintf("%i %s\nFDR=%.2e%s\nlogFC=%.2f", rank_col, contrast, pval_col, signif, fc_col)
+                anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
             )  |>
             filter(rank_col <= n_genes)
+        
+        sce <- sce[stats_filter$gene_col, ]
+        rownames(sce) <- stats_filter$Feature
+        
+        stats_filter$gene_col <- stats_filter$Feature
+
     }
-     
-    # return(stats_filter)
     
     if (!any(stats_filter$gene_col %in% rownames(sce))) {
         warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
     }
+    
+    # return(stats_filter)
     
     #### clean Y ####
     cluster_index <- sce[[cluster_col]] == clus
