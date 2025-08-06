@@ -1,13 +1,12 @@
 #!/bin/bash
-#SBATCH -p caracol
-#SBATCH --gpus=1
+#SBATCH -p katun
 #SBATCH --mem=32G
-#SBATCH --job-name=02_run
+#SBATCH --job-name=02_run_cpu
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/02_run_%a.txt
-#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/02_run_%a.txt
-#SBATCH --array=1
+#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/02_run_cpu_%a.txt
+#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/02_run_cpu_%a.txt
+#SBATCH --array=2
 
 set -e
 
@@ -37,7 +36,7 @@ sample_id_path_2=$repo_dir/code/01_spaceranger/spaceranger_parameters_17v-31v_tr
 
 sample_id=$(cat ${sample_id_path_1} ${sample_id_path_2} | awk 'BEGIN {FS=","} {print $1}' | awk "NR==${sample_index}")
 in_dir=$repo_dir/processed-data/01_spaceranger/$sample_id/outs
-out_dir=$repo_dir/processed-data/17_cell_cell_comm/${sample_id}
+out_dir=$repo_dir/processed-data/17_cell_cell_comm
 
 mkdir -p ${out_dir}
 

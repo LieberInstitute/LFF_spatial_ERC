@@ -6,7 +6,7 @@
 #SBATCH -t 1-0:00:00
 #SBATCH -o ../../processed-data/17_cell_cell_comm/logs/01_preprocess_%a.txt
 #SBATCH -e ../../processed-data/17_cell_cell_comm/logs/01_preprocess_%a.txt
-#SBATCH --array=25
+#SBATCH --array=1-31%10
 
 set -e
 
@@ -32,9 +32,7 @@ database_path=/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/database/CellNEST_d
 
 sample_id=$(cat ${sample_id_path_1} ${sample_id_path_2} | awk 'BEGIN {FS=","} {print $1}' | awk "NR==${SLURM_ARRAY_TASK_ID}")
 in_dir=$repo_dir/processed-data/01_spaceranger/$sample_id/outs
-out_dir=$repo_dir/processed-data/17_cell_cell_comm/${sample_id}
-
-mkdir -p ${out_dir}
+out_dir=$repo_dir/processed-data/17_cell_cell_comm
 
 cellnest preprocess \
     --data_name=${sample_id} \
