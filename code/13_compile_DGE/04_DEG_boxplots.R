@@ -264,6 +264,12 @@ dev.off()
 DE_ancestry_data_fn <- here("processed-data", "13_compile_DGE",  "05_compile_DGE_ancestry", opt$datatype, sprintf("DGE_results_ancestry_%s.Rds", opt$datatype))
 DE_ancestry_data <- readRDS(DE_ancestry_data_fn)
 
+## update cluster levels
+cluster_levels <- levels(sce_pb[[cluster_var]])
+cluster_levels2 <- as.character(unique(DE_ancestry_data$cluster))
+cluster_levels <- intersect(cluster_levels, cluster_levels2)
+
+
 DE_ancestry_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(contrast, cluster)
 
 sce_pb$carrier_Anc <- factor(paste(sce_pb$APOE_carrier, sce_pb$Ancestry), levels = c("E2+ AA","E4+ AA", "E2+ EA", "E4+ EA"))
@@ -274,79 +280,60 @@ colnames(ancestry_mod)
 
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_ancestry_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
-                                      stats = DE_ancestry_data,
-                                      clus = .x,
-                                      n_genes = 10,
-                                      pval_col = "vlmf_adj.P.Val",
-                                      fc_col = "vlmf_logFC",
-                                      gene_col = "gene_name",
-                                      cluster_col = cluster_var,
-                                      category_col = "carrier_Anc",
-                                      mod = ancestry_mod,
-                                      # color_pal = carrier_tau_colors,
-                                      plot_points = TRUE,
-                                      ncol = 2,
-                                      cleanY_P = 4)
+map(cluster_levels, ~plot_DEG_express_contrast_top(sce = sce_pb,
+                                               stats = DE_ancestry_data,
+                                               clus = .x,
+                                               n_genes = 10,
+                                               pval_col = "vlmf_adj.P.Val",
+                                               fc_col = "vlmf_logFC",
+                                               gene_col = "gene_name",
+                                               cluster_col = cluster_var,
+                                               category_col = "carrier_Anc",
+                                               contrast_1 = "carrier_AA",
+                                               contrast_2 = "carrier_EA",
+                                               mod = ancestry_mod,
+                                               plot_points = TRUE,
+                                               ncol = 2,
+                                               cleanY_P = 4)
 )
 dev.off()
 
-if(opt$datatype == "Visium"){
-    #Astro
-    map(c("PEX14"), function(g){
-        dge_plot <- plot_DEG_express_contrast(
-            sce = sce_pb,
-            stats = DE_ancestry_data,
-            gene = g,
-            cluster_col = "SpD",
-            clus = "WM~Sp09D06",
-            gene_col = "gene_name",
-            category_col = "carrier_Anc",
-            # color_pal = APOE_carrier_colors,
-            plot_points = TRUE
-        ) 
-        ggsave(dge_plot, 
-               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "WM", g)),
-               height = 3, width = 3)
-    })
-} else if(opt$datatype == "sn_broad"){
-    #Astro
-    map(c("TCTN1", "JUP"), function(g){
-        dge_plot <- plot_DEG_express_contrast(
-            sce = sce_pb,
-            stats = DE_ancestry_data,
-            gene = g,
-            cluster_col = "cell_type_broad",
-            clus = "Astro",
-            gene_col = "gene_name",
-            category_col = "carrier_Anc",
-            # color_pal = APOE_carrier_colors,
-            plot_points = TRUE
-        ) 
-        ggsave(dge_plot, 
-               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Astro", g)),
-               height = 4, width = 3)
+anc_single_gene <- function(gene_list, 
+                            cluster_col = registration_variable){
+    
+    map2(gene_list, names(gene_list), function(genes, cl){
+        
+        map(genes, function(g){
+            dge_plot <- plot_DEG_express_contrast(
+                sce = sce_pb,
+                stats = DE_ancestry_data,
+                gene = g,
+                cluster_col = cluster_col,
+                clus = cl,
+                gene_col = "gene_name",
+                category_col = "carrier_Anc",
+                # color_pal = APOE_carrier_colors,
+                plot_points = TRUE
+            ) 
+            ggsave(dge_plot, 
+                   filename = here(plot_dir, sprintf("DEG_boxplots_ancestry_%s_%s_%s.png", opt$datatype, cl, g)),
+                   height = 3, width = 3)
         })
-    #Vasc
-    map(c("RIPK2"), function(g){
-        dge_plot <- plot_DEG_express_contrast(
-            sce = sce_pb,
-            stats = DE_ancestry_data,
-            gene = g,
-            cluster_col = "cell_type_broad",
-            clus = "Vasc",
-            gene_col = "gene_name",
-            category_col = "carrier_Anc",
-            # color_pal = APOE_carrier_colors,
-            plot_points = TRUE
-        ) 
-        
-        ggsave(dge_plot, 
-               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Vasc", g)),
-               height = 4, width = 3)
-        
     })
 }
+
+
+
+if(opt$datatype == "Visium"){
+    anc_single_gene(gene_list = list(`WM_Sp09D06` = c("PEX14")))
+    
+} else if(opt$datatype == "sn_broad"){
+    
+    anc_single_gene(gene_list = list(Astro = c("TCTN1", "JUP"),
+                                     Vasc = c("RIPK2")), 
+                    cluster_col = "cell_type_broad")
+}
+
 
 #### Carrier by Sex DE data ####
 
@@ -354,7 +341,7 @@ DE_Sex_data_fn <- here("processed-data", "13_compile_DGE",  "09_compile_DGE_Sex"
 DE_Sex_data <- readRDS(DE_Sex_data_fn)
 
 cluster_levels <- levels(sce_pb[[cluster_var]])
-cluster_levels2 <- as.character(unique(DE_data$cluster))
+cluster_levels2 <- as.character(unique(DE_Sex_data$cluster))
 cluster_levels <- intersect(cluster_levels, cluster_levels2)
 
 DE_Sex_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(contrast, cluster)
@@ -365,129 +352,74 @@ table(sce_pb$carrier_Sex)
 Sex_mod <- model.matrix(~0+carrier_Sex + Ancestry + Age + pseudo_expr_chrM_ratio, colData(sce_pb))
 colnames(Sex_mod)
 
+DE_Sex_data |> 
+    filter(vlmf_adj.P.Val < 0.05) |>
+    dplyr::count(contrast, cluster)
 
-DE_Sex_data_signif <- DE_Sex_data |> 
-    filter(vlmf_adj.P.Val < 0.05) |> 
-    group_by(cluster, contrast) |> 
+DE_Sex_data |> 
+    group_by(cluster, contrast) |>
     arrange(vlmf_adj.P.Val) |>
-    dplyr::slice(1:10) |>
-    mutate(cluster_contrast <- paste(cluster, contrast))
-
-
-map(cluster_levels, ~plot_DEG_express_contrast(sce = sce_pb,
-                                               stats = DE_Sex_data,
-                                               clus = "Oligo",
-                                               n_genes = 10,
-                                               pval_col = "vlmf_adj.P.Val",
-                                               fc_col = "vlmf_logFC",
-                                               gene_col = "gene_name",
-                                               cluster_col = cluster_var,
-                                               category_col = "carrier_Sex",
-                                               contrast_1 = "carrier_F",
-                                               contrast_2 = "carrier_M",
-                                               mod = Sex_mod,
-                                               # color_pal = carrier_tau_colors,
-                                               plot_points = TRUE,
-                                               ncol = 2,
-                                               cleanY_P = 4)
-)
-    
-
+    dplyr::slice(1) |>
+    select(cluster, contrast, gene_name, vlmf_adj.P.Val, vlmf_logFC)
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_Sex_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express_contrast(sce = sce_pb,
-                                      stats = DE_Sex_data,
-                                      clus = .x,
-                                      n_genes = 10,
-                                      pval_col = "vlmf_adj.P.Val",
-                                      fc_col = "vlmf_logFC",
-                                      gene_col = "gene_name",
-                                      cluster_col = cluster_var,
-                                      category_col = "carrier_Sex",
-                                      contrast_1 = "carrier_F",
-                                      contrast_2 = "carrier_M",
-                                      mod = Sex_mod,
-                                      # color_pal = carrier_tau_colors,
-                                      plot_points = TRUE,
-                                      ncol = 2,
-                                      cleanY_P = 4)
+map(cluster_levels, ~plot_DEG_express_contrast_top(sce = sce_pb,
+                                                   stats = DE_Sex_data,
+                                                   clus = .x,
+                                                   n_genes = 10,
+                                                   pval_col = "vlmf_adj.P.Val",
+                                                   fc_col = "vlmf_logFC",
+                                                   gene_col = "gene_name",
+                                                   cluster_col = cluster_var,
+                                                   category_col = "carrier_Sex",
+                                                   contrast_1 = "carrier_F",
+                                                   contrast_2 = "carrier_M",
+                                                   mod = Sex_mod,
+                                                   plot_points = TRUE,
+                                                   ncol = 2,
+                                                   cleanY_P = 4)
 )
 dev.off()
 
-# pdf(here(plot_dir, sprintf("DEG_boxplots_Sex_%s.pdf", opt$datatype)))
-# map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
-#                                       stats = DE_Sex_data,
-#                                       clus = .x,
-#                                       n_genes = 10,
-#                                       pval_col = "vlmf_adj.P.Val",
-#                                       fc_col = "vlmf_logFC",
-#                                       gene_col = "gene_name",
-#                                       cluster_col = cluster_var,
-#                                       category_col = "carrier_Sex",
-#                                       mod = Sex_mod,
-#                                       # color_pal = carrier_tau_colors,
-#                                       plot_points = TRUE,
-#                                       ncol = 2,
-#                                       cleanY_P = 4)
-# )
-# dev.off()
-
-if(opt$datatype == "Visium"){
-    #Astro
-    map(c("PEX14"), function(g){
-        dge_plot <- plot_DEG_express_contrast(
-            sce = sce_pb,
-            stats = DE_Sex_data,
-            gene = g,
-            cluster_col = "SpD",
-            clus = "WM~Sp09D06",
-            gene_col = "gene_name",
-            category_col = "carrier_Anc",
-            # color_pal = APOE_carrier_colors,
-            plot_points = TRUE
-        ) 
-        ggsave(dge_plot, 
-               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "WM", g)),
-               height = 3, width = 3)
-    })
-} else if(opt$datatype == "sn_broad"){
-    #Astro
-    map(c("TCTN1", "JUP"), function(g){
-        dge_plot <- plot_DEG_express_contrast(
-            sce = sce_pb,
-            stats = DE_Sex_data,
-            gene = g,
-            cluster_col = "cell_type_broad",
-            clus = "Astro",
-            gene_col = "gene_name",
-            category_col = "carrier_Anc",
-            # color_pal = APOE_carrier_colors,
-            plot_points = TRUE
-        ) 
-        ggsave(dge_plot, 
-               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Astro", g)),
-               height = 4, width = 3)
+sex_single_gene <- function(gene_list, 
+                            cluster_col = registration_variable){
+    
+    map2(gene_list, names(gene_list), function(genes, cl){
+        
+        map(genes, function(g){
+            dge_plot <- plot_DEG_express_contrast(
+                sce = sce_pb,
+                stats = DE_Sex_data,
+                gene = g,
+                cluster_col = cluster_col,
+                clus = cl,
+                gene_col = "gene_name",
+                category_col = "carrier_Sex",
+                contrast_1 = "carrier_F",
+                contrast_2 = "carrier_M",
+                # color_pal = APOE_carrier_colors,
+                plot_points = TRUE
+            ) 
+            ggsave(dge_plot, 
+                   filename = here(plot_dir, sprintf("DEG_boxplots_Sex_%s_%s_%s.png", opt$datatype, cl, g)),
+                   height = 3, width = 3)
         })
-    #Vasc
-    map(c("RIPK2"), function(g){
-        dge_plot <- plot_DEG_express_contrast(
-            sce = sce_pb,
-            stats = DE_Sex_data,
-            gene = g,
-            cluster_col = "cell_type_broad",
-            clus = "Vasc",
-            gene_col = "gene_name",
-            category_col = "carrier_Anc",
-            # color_pal = APOE_carrier_colors,
-            plot_points = TRUE
-        ) 
-        
-        ggsave(dge_plot, 
-               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Vasc", g)),
-               height = 4, width = 3)
-        
     })
 }
+
+
+
+if(opt$datatype == "Visium"){
+    anc_single_gene(gene_list = list(`WM_Sp09D06` = c("PEX14")))
+    
+} else if(opt$datatype == "sn_broad"){
+    
+    sex_single_gene(gene_list = list(Oligo = c("ADAMTS10", "RIOK2"),
+                                     Vasc = c("CCN3"),
+                                     Macro = c("CCL4L2", "EZR")), 
+                    cluster_col = "cell_type_broad")
+}
+
 
 #### Interaction DE data ####
 
