@@ -1,0 +1,30 @@
+**** Job starts ****
+Wed Aug  6 08:55:11 AM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 21245883
+Job name: 02_run
+Node name: compute-126
+Task id: 1
+Loading LIBD SLURM module for visium_hd/1.0
+Loading LIBD SLURM module for htslib/1.18
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0   5) visium_hd/1.0
+  2) JHPCE_tools/3.0            4) htslib/1.18
+
+ 
+
+Executing run 1 with sample 1...
+V13Y24-343_A1, 1, /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/input_graph/V13Y24-343_A1/V13Y24-343_A1_adjacency_records, 512
+------------------------Model and Training Details--------------------------
+Namespace(data_name='V13Y24-343_A1', model_name='model_V13Y24-343_A1_r1', run_id=1, num_epoch=80000, model_path='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/model/V13Y24-343_A1/', embedding_path='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/embedding_data/V13Y24-343_A1/', hidden=512, training_data='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/input_graph/V13Y24-343_A1/V13Y24-343_A1_adjacency_records', heads=1, dropout=0, lr_rate=1e-05, manual_seed='yes', seed=1, total_subgraphs=1, metadata_to='metadata/', load=0, load_model_name='None')
+cuda
+Traceback (most recent call last):
+  File "/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/run_CellNEST.py", line 88, in <module>
+    from CCC_gat import get_graph, train_CellNEST
+  File "/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/CCC_gat.py", line 14, in <module>
+    from GATv2Conv_CellNEST import GATv2Conv
+  File "/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/GATv2Conv_CellNEST.py", line 10, in <module>
+    from torch_sparse import SparseTensor, set_diag
+ModuleNotFoundError: No module named 'torch_sparse'

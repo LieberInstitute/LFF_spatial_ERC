@@ -6,7 +6,7 @@
 #SBATCH -t 1-0:00:00
 #SBATCH -o ../../processed-data/17_cell_cell_comm/logs/01_preprocess_%a.txt
 #SBATCH -e ../../processed-data/17_cell_cell_comm/logs/01_preprocess_%a.txt
-#SBATCH --array=1-31%10
+#SBATCH --array=2-31%15
 
 set -e
 
@@ -39,8 +39,8 @@ mkdir -p ${out_dir}
 cellnest preprocess \
     --data_name=${sample_id} \
     --data_from=${in_dir} \
-    --data_to=${out_dir}/input_graph \
-    --metadata_to=${out_dir}/metadata \
+    --data_to=${out_dir}/input_graph/ \
+    --metadata_to=${out_dir}/metadata/ \
     --database_path=${database_path}
 
 echo "**** Job ends ****"
