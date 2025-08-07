@@ -111,9 +111,23 @@ pd <- colData(spe_rctd) |> as.data.frame()
 
 pd |>
     group_by(SpD) |>
+    summarise(median_nuc = median(CNmask_dark_blue),
+              n_0_nuc = sum(CNmask_dark_blue == 0),
+              p_0_nuc = n_0_nuc/n(),
+              n_1_nuc = sum(CNmask_dark_blue == 1),
+              p_1_nuc = n_1_nuc/n(),
+              q59 = quantile(CNmask_dark_blue, 0.90),
+              n_30_nuc = sum(CNmask_dark_blue > 30),
+              p_30_nuc = n_30_nuc/n(),
+              max = max(CNmask_dark_blue))
+
+pd |>
+    group_by(SpD) |>
     summarise(median_nuc = median(num_nuclei_within),
               n_0_nuc = sum(num_nuclei_within == 0),
               p_0_nuc = n_0_nuc/n(),
+              n_1_nuc = sum(num_nuclei_within == 1),
+              p_1_nuc = n_1_nuc/n(),
               q59 = quantile(num_nuclei_within, 0.90),
               n_30_nuc = sum(num_nuclei_within > 30),
               p_30_nuc = n_30_nuc/n(),
@@ -134,11 +148,21 @@ pd |>
 
 ## add cell count assays based on nuc counts
 assay(spe_rctd, "cell_counts") <- assay(spe_rctd, "weights") * spe_rctd$num_nuclei_within
-assay(spe_rctd, "cell_counts")[1:5, 1:5]
+assay(spe_rctd, "cell_counts")[1:10, 1:5]
+
+
+## determine major cell type
+# which.max(assay(spe_rctd, "weights")[, 1])
+
+major_cell_index <- apply(assay(spe_rctd, "weights"), 2, which.max)
+spe_rctd$major_cell <- rownames(spe_rctd)[major_cell_index]
+
+table(spe_rctd$major_cell)
 
 message(Sys.time(), " - Save Data")
 saveRDS(spe_rctd, file = here(data_dir, sprintf("spe_RCTD-%s.rds", cell_type_col)))
-# HDF5Array::saveHDF5SummarizedExperiment(spe_rctd, dir = here(data_dir, sprintf("spe_RCTD-%s", cell_type_col)), replace=TRUE)
+
+# spe_rctd <- readRDS(here(data_dir, sprintf("spe_RCTD-%s.rds", cell_type_col)))
 
 #### Visualize nuc counts ####
 
@@ -197,6 +221,40 @@ map(rownames(spe_rctd), function(ct){
     ggsave(ct_grid, filename = here(plot_dir, sprintf("vis_ct_%s_rep_sections_counts.png", ct)), width = 18, height = 9)
     return(ct_grid)
 })
+dev.off()
+
+
+#### major cell count plots ####
+
+table(spe_rctd$sample_id, spe_rctd$major_cell)
+
+SpD_major_cell <- table(spe_rctd$SpD, spe_rctd$major_cell)
+
+SpD_major_cell_prop <- sweep(SpD_major_cell, 1, table(spe_rctd$SpD), FUN = '/')
+
+library(ComplexHeatmap)
+
+library(circlize)
+
+col_fun = colorRamp2(c (0, max(SpD_major_cell)), c("white", "red"))
+pdf(here(plot_dir, sprintf("rctd_major_%s_count.pdf", cell_type_col)))
+Heatmap(SpD_major_cell, 
+        name = "count",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        col = col_fun)
+dev.off()
+
+
+
+col_fun = colorRamp2(c (0, max(SpD_major_cell_prop)), c("white", "red"))
+
+pdf(here(plot_dir, sprintf("rctd_major_%s_prop.pdf", cell_type_col)))
+Heatmap(SpD_major_cell_prop, 
+        name = "prop",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        col = col_fun)
 dev.off()
 
 

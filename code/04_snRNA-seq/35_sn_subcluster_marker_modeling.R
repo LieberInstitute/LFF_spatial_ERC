@@ -45,7 +45,7 @@ table(sce$cell_type_anno)
 
 cell_type_colors <- metadata(sce)$cell_type_colors
 
-#### #### AD risk gene dotplot ####
+#### AD risk gene dotplot ####
 
 ## read in risk genes from OpenTargets data
 AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
@@ -434,7 +434,8 @@ if(celltype == "Oligo"){
 }else if(celltype == "Micro"){
     
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
-    lit_markers <- list(disease_associated = c("TREM2")) #https://doi.org/10.1038/s41593-025-01873-x
+    lit_markers <- list(disease_associated = c("TREM2"), #https://doi.org/10.1038/s41593-025-01873-x
+                        inflamation = c("NLPR3")) 
     
     lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
     

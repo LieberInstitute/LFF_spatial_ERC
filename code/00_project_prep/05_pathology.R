@@ -17,7 +17,8 @@ sample_info <- read_csv(here("processed-data", "02_build_spe",  "sample_info.csv
 ## Read in data from RNAScope
 taupathy <- read_csv(here("processed-data", "00_project_prep", "05_pathology", "Tau identification_KRM - Final Path Score.csv")) |>
     transmute(BrNum = gsub(" ", "", `Brain number`),
-           taupathy = `Taupathy?` == "Yes") 
+              taupathy = `Taupathy?` == "Yes") |>
+    filter(BrNum %in% sample_info$sample_id)
 
 taupathy |> count(taupathy)
 # taupathy     n
@@ -43,7 +44,7 @@ taupathy |> count(taupathy)
 
 
 ## Read in CERAD data
-path_data <- readxl::read_xlsx(here("processed-data", "00_project_prep", "05_pathology", "LFF_pathtab.xlsx")) |>
+path_data <- read_csv(here("processed-data", "00_project_prep", "05_pathology", "donor_braak_CERAD_scores.csv")) |>
     mutate(path_data = TRUE)
 
 path_data |> count(CERAD)
@@ -58,25 +59,20 @@ sample_info_path <- sample_info |>
     replace_na(list(path_data = FALSE))
 
 
-sample_info_path |> filter(!path_data)
 sample_info_path |> count(path_data, CERAD)
 # path_data CERAD         n
 # <lgl>     <chr>     <int>
-# 1 FALSE     NA            8
-# 2 TRUE      C0-none      11
-# 3 TRUE      C1-sparse     1
-# 4 TRUE      NA           11
+# 1 TRUE      C0-none      17
+# 2 TRUE      C1-sparse     1
+# 3 TRUE      NA           13
 
 sample_info_path |> count(path_data, Braak)
-# path_data Braak           n
-# <lgl>     <chr>       <int>
-# 1 FALSE     NA              8
-# 2 TRUE      B0              3
-# 3 TRUE      B1 (I - II)     5
-# 4 TRUE      I               2
-# 5 TRUE      II              1
-# 6 TRUE      III             1
-# 7 TRUE      NA             11
+# path_data Braak             n
+# <lgl>     <chr>         <int>
+# 1 TRUE      B0                7
+# 2 TRUE      B1 (I - II)      10
+# 3 TRUE      B2 (III - IV)     1
+# 4 TRUE      NA               13
 
 
 with(sample_info_path, table(APOE, taupathy))
@@ -117,14 +113,17 @@ sample_info_path |>
 # 3 E3/E4    0.2  
 # 4 E4/E4    0.286
 
-sample_info_path |> filter(!path_data) |> pull(BrNum) |> cat(sep = ", ")
+# sample_info_path |> filter(!path_data) |> pull(BrNum) |> cat(sep = ", ")
 
 ## save data
 sample_info_path |>
     select(BrNum, APOE, APOE_carrier, Ancestry, Sex, Age, Diagnosis, Anc_Afr, Anc_Eur, Rin, taupathy, CERAD, Braak) |>
     write_csv(here("processed-data", "00_project_prep", "05_pathology","sample_taupathy.csv"))
 
-path_counts <- sample_info |>
+
+sample_info_path <- sample_info_path |> filter(sample_id != "Br1289")
+
+path_counts <- sample_info_path |>
     count(APOE, taupathy)
 
 
@@ -137,23 +136,66 @@ taupathy_tile <- path_counts |>
     theme_bw() +
     theme(legend.position = "None")
 
-
 ggsave(taupathy_tile, filename = here(plot_dir, "taupathy_tile.png"), height = 4, width = 3)
+
+# by carrier
+taupathy_carrier_tile <- sample_info_path |>
+    count(APOE_carrier, taupathy) |>
+    ggplot(aes(x = taupathy, y = APOE_carrier, 
+               fill = APOE_carrier)) +
+    geom_tile(color = "white") +
+    geom_text(aes(label = n), color = "black") +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+
+ggsave(taupathy_carrier_tile, filename = here(plot_dir, "taupathy_carrier_tile.png"), height = 4, width = 3)
 
 
 ## taupathy age
 
-taupathy_age_density <- ggplot(sample_info, aes(x = Age, color = taupathy)) +
+taupathy_age_boxplot <- sample_info_path |>
+    ggplot(aes(x = taupathy, y = Age)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE)) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(taupathy_age_boxplot, filename = here(plot_dir, "taupathy_age_boxplot.png"), height = 4, width = 3)
+
+taupathy_age_density <- sample_info_path |>
+    ggplot(aes(x = Age, color = taupathy)) +
     geom_density() +
     theme_bw()
 
 ggsave(taupathy_age_density, filename = here(plot_dir, "taupathy_age_density.png"), height = 4)
 
-taupathy_age_histo <- ggplot(sample_info, aes(x = Age, fill = taupathy)) +
+taupathy_age_histo <- sample_info_path |> 
+    ggplot(aes(x = Age, fill = taupathy)) +
     geom_histogram() +
     theme_bw()
 
-ggsave(taupathy_age_histo, filename = here(plot_dir, "taupathy_age_histo.png"), height = 4)
+ggsave(taupathy_age_histo, filename = here(plot_dir, "taupathy_age_histo.png"), height = 4, width = 4)
 
+## braak age
+braak_age_boxplot <- sample_info_path |>
+    ggplot(aes(x = Braak, y = Age)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE), width = .2) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(braak_age_boxplot, filename = here(plot_dir, "braak_age_boxplot.png"), height = 4, width = 5)
+
+## CERAD age
+cerad_age_boxplot <- sample_info_path |>
+    ggplot(aes(x = CERAD, y = Age)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE), width = .2) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(cerad_age_boxplot, filename = here(plot_dir, "CERAD_age_boxplot.png"), height = 4, width = 5)
 
 
