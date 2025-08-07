@@ -1,0 +1,471 @@
+**** Job starts ****
+Tue Aug  5 06:05:51 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 21241920
+Job name: 10_GO_analysis_contrast
+Node name: compute-168
+Task id: 6
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: AnnotationDbi
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following object is masked from ‘package:lubridate’:
+
+    as.difftime
+
+The following object is masked from ‘package:dplyr’:
+
+    explain
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+Loading required package: IRanges
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
+The following objects are masked from ‘package:dplyr’:
+
+    first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:lubridate’:
+
+    %within%
+
+The following objects are masked from ‘package:dplyr’:
+
+    collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
+
+
+Attaching package: ‘AnnotationDbi’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+
+
+clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+
+Please cite:
+
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
+
+Attaching package: ‘clusterProfiler’
+
+The following object is masked from ‘package:AnnotationDbi’:
+
+    select
+
+The following object is masked from ‘package:IRanges’:
+
+    slice
+
+The following object is masked from ‘package:S4Vectors’:
+
+    rename
+
+The following object is masked from ‘package:purrr’:
+
+    simplify
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+[1] TRUE
+# A tibble: 16 × 3
+   cluster contrast       n
+   <fct>   <chr>      <int>
+ 1 Astro   carrier_AA 18320
+ 2 Astro   carrier_EA 18320
+ 3 Oligo   carrier_AA 21175
+ 4 Oligo   carrier_EA 21175
+ 5 OPC     carrier_AA 17290
+ 6 OPC     carrier_EA 17290
+ 7 Macro   carrier_AA  2931
+ 8 Macro   carrier_EA  2931
+ 9 Micro   carrier_AA 14350
+10 Micro   carrier_EA 14350
+11 Vasc    carrier_AA  8801
+12 Vasc    carrier_EA  8801
+13 Excit   carrier_AA 25772
+14 Excit   carrier_EA 25772
+15 Inhib   carrier_AA 21076
+16 Inhib   carrier_EA 21076
+# A tibble: 6 × 21
+  data_type cluster contrast   seqnames  start    end  width strand source type 
+  <chr>     <fct>   <chr>      <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
+1 sn_broad  Astro   carrier_AA chr1     9.93e7 9.93e7  45299 +      HAVANA gene 
+2 sn_broad  Astro   carrier_AA chr4     1.58e8 1.59e8 338062 +      HAVANA gene 
+3 sn_broad  Astro   carrier_AA chr6     1.16e8 1.16e8   4112 -      HAVANA gene 
+4 sn_broad  Astro   carrier_AA chr19    4.74e7 4.74e7  16404 -      HAVANA gene 
+5 sn_broad  Astro   carrier_AA chr19    5.52e7 5.52e7   9094 -      HAVANA gene 
+6 sn_broad  Astro   carrier_AA chr19    5.68e7 5.68e7  30652 -      HAVANA gene 
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
+#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>, mod <chr>
+# A tibble: 7 × 3
+  cluster contrast       n
+  <fct>   <chr>      <int>
+1 Astro   carrier_AA    98
+2 OPC     carrier_EA     1
+3 Macro   carrier_AA     2
+4 Micro   carrier_AA     3
+5 Micro   carrier_EA     1
+6 Vasc    carrier_AA     1
+7 Vasc    carrier_EA     1
+'select()' returned 1:many mapping between keys and columns
+Warning message:
+In bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID",  :
+  25.23% of input gene IDs are fail to map...
+Storing counts in `nn`, as `n` already present in input
+ℹ Use `name = "new_name"` to pick a new name.
+  n    nn
+1 1 19931
+2 2   299
+3 3    32
+4 4     4
+5 5     2
+# A tibble: 25 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro_AA_None    15799
+ 2 Astro_AA_down        5
+ 3 Astro_AA_up         87
+ 4 Astro_EA_None    15891
+ 5 Excit_AA_None    19841
+ 6 Excit_EA_None    19841
+ 7 Inhib_AA_None    17437
+ 8 Inhib_EA_None    17437
+ 9 Macro_AA_None     2909
+10 Macro_AA_up          2
+# ℹ 15 more rows
+# A tibble: 16 × 3
+   cluster contrast       n
+   <fct>   <chr>      <int>
+ 1 Astro   carrier_AA 15891
+ 2 Astro   carrier_EA 15891
+ 3 Oligo   carrier_AA 17850
+ 4 Oligo   carrier_EA 17850
+ 5 OPC     carrier_AA 15194
+ 6 OPC     carrier_EA 15194
+ 7 Macro   carrier_AA  2911
+ 8 Macro   carrier_EA  2911
+ 9 Micro   carrier_AA 13311
+10 Micro   carrier_EA 13311
+11 Vasc    carrier_AA  8565
+12 Vasc    carrier_EA  8565
+13 Excit   carrier_AA 19841
+14 Excit   carrier_EA 19841
+15 Inhib   carrier_AA 17437
+16 Inhib   carrier_EA 17437
+# A tibble: 9 × 2
+  DE_class_cluster     n
+  <chr>            <int>
+1 Astro_AA_down        5
+2 Astro_AA_up         87
+3 Macro_AA_up          2
+4 Micro_AA_down        2
+5 Micro_AA_up          1
+6 Micro_EA_up          1
+7 OPC_EA_up            1
+8 Vasc_AA_down         1
+9 Vasc_EA_up           1
+Universe n genes: 20605
+   DE_class_cluster ONTOLOGY   n
+1     Astro_AA_down       BP  22
+2     Astro_AA_down       CC   2
+3     Astro_AA_down       MF   1
+4       Astro_AA_up       BP  78
+5       Astro_AA_up       CC  44
+6       Astro_AA_up       MF  39
+7       Macro_AA_up       BP 187
+8       Macro_AA_up       CC  18
+9       Macro_AA_up       MF   6
+10    Micro_AA_down       BP  24
+11    Micro_AA_down       MF   7
+12      Micro_AA_up       CC   1
+13        OPC_EA_up       BP   4
+14        OPC_EA_up       MF   3
+15     Vasc_AA_down       BP  55
+16     Vasc_AA_down       CC   5
+17     Vasc_AA_down       MF  14
+18       Vasc_EA_up       BP 242
+19       Vasc_EA_up       MF  39
+null device 
+          1 
+2025-08-05 18:07:28.723751 - CC
+--Astro_AA_up (44)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_AA_up (18)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-08-05 18:07:39.93923 - BP
+--Astro_AA_down (22)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro_AA_up (78)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_AA_up (187)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro_AA_down (24)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-08-05 18:10:21.730711 - MF
+--Astro_AA_up (39)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_AA_up (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro_AA_down (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+Warning messages:
+1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 4 terms that were not found in orgdb for MF
+2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2025-08-05 18:10:42 EDT"
+   user  system elapsed 
+284.337   4.227 290.060 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-08-05
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package          * version  date (UTC) lib source
+ AnnotationDbi    * 1.70.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ape                5.8-1    2024-12-16 [1] CRAN (R 4.5.0)
+ aplot              0.2.8    2025-07-02 [1] CRAN (R 4.5.0)
+ askpass            1.2.1    2024-10-04 [2] CRAN (R 4.5.0)
+ Biobase          * 2.68.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics     * 0.54.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocParallel       1.42.1   2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
+ Biostrings         2.76.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ bit                4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
+ bit64              4.6.0-1  2025-01-16 [2] CRAN (R 4.5.0)
+ blob               1.2.4    2023-03-17 [2] CRAN (R 4.5.0)
+ cachem             1.1.0    2024-05-16 [2] CRAN (R 4.5.0)
+ cli                3.6.5    2025-04-23 [2] CRAN (R 4.5.0)
+ clusterProfiler  * 4.16.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ codetools          0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace         2.1-1    2024-07-26 [2] CRAN (R 4.5.0)
+ cowplot            1.2.0    2025-07-07 [1] CRAN (R 4.5.0)
+ crayon             1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
+ data.table         1.17.8   2025-07-10 [1] CRAN (R 4.5.0)
+ DBI                1.2.3    2024-06-02 [2] CRAN (R 4.5.0)
+ dichromat          2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
+ digest             0.6.37   2024-08-19 [2] CRAN (R 4.5.0)
+ DOSE               4.2.0    2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ dplyr            * 1.1.4    2023-11-17 [2] CRAN (R 4.5.0)
+ enrichplot         1.28.4   2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
+ farver             2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ fastmap            1.2.0    2024-05-15 [2] CRAN (R 4.5.0)
+ fastmatch          1.1-6    2024-12-23 [2] CRAN (R 4.5.0)
+ fgsea              1.34.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ forcats          * 1.0.0    2023-01-29 [2] CRAN (R 4.5.0)
+ fs                 1.6.6    2025-04-12 [2] CRAN (R 4.5.0)
+ generics         * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb       1.44.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData   1.2.14   2025-05-21 [2] Bioconductor
+ getopt           * 1.20.4   2023-10-01 [1] CRAN (R 4.5.0)
+ ggfun              0.1.8    2024-12-03 [2] CRAN (R 4.5.0)
+ ggplot2          * 3.5.2    2025-04-09 [2] CRAN (R 4.5.0)
+ ggplotify          0.1.2    2023-08-09 [1] CRAN (R 4.5.0)
+ ggrepel            0.9.6    2024-09-07 [2] CRAN (R 4.5.0)
+ ggtangle           0.0.7    2025-06-30 [1] CRAN (R 4.5.0)
+ ggtree             3.16.3   2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
+ glue               1.8.0    2024-09-30 [2] CRAN (R 4.5.0)
+ GO.db              3.21.0   2025-05-21 [2] Bioconductor
+ GOSemSim           2.34.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ gridBase           0.4-7    2014-02-24 [1] CRAN (R 4.5.0)
+ gridGraphics       0.5-1    2020-12-13 [1] CRAN (R 4.5.0)
+ gson               0.1.0    2023-03-07 [1] CRAN (R 4.5.0)
+ gtable             0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ here             * 1.0.1    2020-12-13 [2] CRAN (R 4.5.0)
+ hms                1.1.3    2023-03-21 [2] CRAN (R 4.5.0)
+ htmltools          0.5.8.1  2024-04-04 [2] CRAN (R 4.5.0)
+ httpuv             1.6.16   2025-04-16 [2] CRAN (R 4.5.0)
+ httr               1.4.7    2023-08-15 [2] CRAN (R 4.5.0)
+ igraph             2.1.4    2025-01-23 [2] CRAN (R 4.5.0)
+ IRanges          * 2.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ jsonlite           2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGREST           1.48.1   2025-06-22 [1] Bioconductor 3.21 (R 4.5.0)
+ labeling           0.4.3    2023-08-29 [2] CRAN (R 4.5.0)
+ later              1.4.2    2025-04-08 [2] CRAN (R 4.5.0)
+ lattice            0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval           0.2.2    2019-03-15 [2] CRAN (R 4.5.0)
+ lifecycle          1.0.4    2023-11-07 [2] CRAN (R 4.5.0)
+ lubridate        * 1.9.4    2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr           2.0.3    2022-03-30 [2] CRAN (R 4.5.0)
+ Matrix             1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ memoise            2.0.1    2021-11-26 [2] CRAN (R 4.5.0)
+ mime               0.13     2025-03-17 [2] CRAN (R 4.5.0)
+ nlme               3.1-168  2025-03-31 [3] CRAN (R 4.5.0)
+ NLP                0.3-2    2024-11-20 [1] CRAN (R 4.5.0)
+ openssl            2.3.3    2025-05-26 [1] CRAN (R 4.5.0)
+ org.Hs.eg.db     * 3.21.0   2025-05-21 [2] Bioconductor
+ patchwork          1.3.0    2024-09-16 [2] CRAN (R 4.5.0)
+ pheatmap           1.0.13   2025-06-05 [1] CRAN (R 4.5.0)
+ pillar             1.11.0   2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig          2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ plyr               1.8.9    2023-10-02 [2] CRAN (R 4.5.0)
+ png                0.1-8    2022-11-29 [2] CRAN (R 4.5.0)
+ promises           1.3.3    2025-05-29 [1] CRAN (R 4.5.0)
+ purrr            * 1.0.4    2025-02-05 [2] CRAN (R 4.5.0)
+ qvalue             2.40.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ R.methodsS3        1.8.2    2022-06-13 [2] CRAN (R 4.5.0)
+ R.oo               1.27.1   2025-05-02 [2] CRAN (R 4.5.0)
+ R.utils            2.13.0   2025-02-24 [2] CRAN (R 4.5.0)
+ R6                 2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RColorBrewer       1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp               1.1.0    2025-07-02 [1] CRAN (R 4.5.0)
+ readr            * 2.1.5    2024-01-10 [2] CRAN (R 4.5.0)
+ reshape2           1.4.4    2020-04-09 [2] CRAN (R 4.5.0)
+ reticulate         1.42.0   2025-03-25 [2] CRAN (R 4.5.0)
+ rlang              1.1.6    2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot          2.0.4    2023-11-05 [2] CRAN (R 4.5.0)
+ rrvgo            * 1.20.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ RSpectra           0.16-2   2024-07-18 [2] CRAN (R 4.5.0)
+ RSQLite            2.4.2    2025-07-18 [1] CRAN (R 4.5.0)
+ S4Vectors        * 0.46.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales             1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo      * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
+ shiny              1.11.1   2025-07-03 [1] CRAN (R 4.5.0)
+ slam               0.1-55   2024-11-13 [2] CRAN (R 4.5.0)
+ stringi            1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
+ stringr          * 1.5.1    2023-11-14 [2] CRAN (R 4.5.0)
+ tibble           * 3.3.0    2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr            * 1.3.1    2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect         1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidytree           0.4.6    2023-12-12 [1] CRAN (R 4.5.0)
+ tidyverse        * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange         0.3.0    2024-01-18 [2] CRAN (R 4.5.0)
+ tm                 0.7-16   2025-02-19 [1] CRAN (R 4.5.0)
+ treeio             1.32.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ treemap            2.4-4    2023-05-25 [1] CRAN (R 4.5.0)
+ tzdb               0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils         1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ umap               0.2.10.0 2023-02-01 [1] CRAN (R 4.5.0)
+ utf8               1.2.6    2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs              0.6.5    2023-12-01 [2] CRAN (R 4.5.0)
+ withr              3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
+ wordcloud          2.6      2018-08-24 [1] CRAN (R 4.5.0)
+ xml2               1.3.8    2025-03-14 [2] CRAN (R 4.5.0)
+ xtable             1.8-4    2019-04-21 [2] CRAN (R 4.5.0)
+ XVector            0.48.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ yulab.utils        0.2.0    2025-01-29 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Tue Aug  5 06:10:42 PM EDT 2025
