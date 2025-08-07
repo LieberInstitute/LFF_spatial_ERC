@@ -139,9 +139,30 @@ overlay_plot(
 #   Spatial join, counting number of nuclei fully within each spot, and touching
 #   each spot, repectively
 join_gdf = gpd.sjoin(nuc_gdf, spot_gdf, how = 'right', predicate = 'within')
-spot_gdf['num_nuclei_within'] = join_gdf.groupby(join_gdf.index).size()
+spot_gdf['num_nuclei_within'] = (
+    join_gdf
+        .dropna()
+        .groupby(join_gdf.dropna().index)
+        .size()
+)
+spot_gdf['num_nuclei_within'] = (
+    spot_gdf['num_nuclei_within']
+        .fillna(0)
+        .astype(int)
+)
+
 join_gdf = gpd.sjoin(nuc_gdf, spot_gdf, how = 'right', predicate = 'intersects')
-spot_gdf['num_nuclei_intersect'] = join_gdf.groupby(join_gdf.index).size()
+spot_gdf['num_nuclei_intersect'] = (
+    join_gdf
+        .dropna()
+        .groupby(join_gdf.dropna().index)
+        .size()
+)
+spot_gdf['num_nuclei_intersect'] = (
+    spot_gdf['num_nuclei_intersect']
+        .fillna(0)
+        .astype(int)
+)
 
 #   To verify counting of nuclei per spot worked, examine the first spot with
 #   5 reported nuclei
