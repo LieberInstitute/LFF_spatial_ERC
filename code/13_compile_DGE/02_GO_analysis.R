@@ -30,6 +30,17 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
 
+if(opt$datatype == "sn_broad"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$broad
+    cluster_levels <- names(cell_type_colors$broad)
+}else if(opt$datatype == "Visium"){
+    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+    cluster_colors <- SpD_colors
+    cluster_levels <- names(SpD_colors)
+}
+
+
 ## load DE data ##
 DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
 file.exists(DE_data_fn)
@@ -192,6 +203,144 @@ walk2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name){
     
 })
 dev.off()
+
+
+#### GO Heatplots ####
+
+reducedTerms_list_long <- map(reducedTerms_list, ~do.call("rbind", .x))
+
+reducedTerms_list_long$BP |> count(parentTerm) 
+
+go_lookup <- function(term){
+    go_terms <- map(reducedTerms_list_long, ~.x |> filter(parentTerm == term) |> pull(go) |> unique())
+    go_table <- map_dfr(go_terms, ~compare_clus |> filter(ID %in% .x))
+    return(unique(go_table$Description))
+    # return(go_table)
+}
+
+go_terms_test <- go_lookup("myelination")
+go_terms_test 
+
+
+get_go_genes <- function(go_terms){
+    
+    go_genes <- compare_clus |>
+        filter(Description %in% go_terms) |>
+        select(ONTOLOGY, ID, Description, geneID) |>
+        mutate(geneID = str_split(geneID, "/")) |>
+        unnest_longer(geneID) |>
+        unique()
+    
+    return(go_genes)
+}
+
+go_genes <- get_go_genes(go_terms_test)
+
+## gene can map parent term multiple times
+go_genes |> count(geneID) |> arrange(-n)
+# geneID       n
+# <chr>    <int>
+# 1 MAP2        11
+# 2 CD9          8
+# 3 JPH3         6
+# 4 MAG          4
+# 5 PRC1         4
+go_genes |> filter(geneID == "MAP2")
+go_genes |> filter(geneID == "KLK6")
+go_genes |> filter(Description = )
+
+get_go_DE_stats <- function(go_term){
+    
+    go_gene <- compare_clus |>
+        filter(Description == go_term) |>
+        select(ONTOLOGY, ID, Description, gene_name = geneID) |>
+        mutate(gene_name = str_split(gene_name, "/")) |>
+        unnest_longer(gene_name) |>
+        unique() 
+    
+    go_term_de <- go_gene |>
+        left_join(DE_data |> select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val),
+                  by = "gene_name",
+                  relationship = "many-to-many") |>
+        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
+                                  vlmf_adj.P.Val < 0.01 ~ "**",
+                                  vlmf_adj.P.Val < 0.05 ~ "*",
+                                  TRUE ~ "")
+        ) 
+    
+    log_fc_matrix <- go_term_de |> 
+        select(gene_name, cluster, vlmf_logFC) |>
+        pivot_wider(names_from = "cluster", values_from = "vlmf_logFC")|>
+        column_to_rownames("gene_name")
+    
+    log_fc_matrix <- log_fc_matrix[, cluster_levels]
+    
+    signif_matrix <- go_term_de |> 
+        select(gene_name, cluster, signif) |>
+        pivot_wider(names_from = "cluster", values_from = "signif")|>
+        column_to_rownames("gene_name")
+    
+    signif_matrix <- signif_matrix[, cluster_levels]
+    
+    return(list(log_fc = log_fc_matrix, 
+                signif = signif_matrix,
+                go_gene = go_gene))
+    
+}
+
+go_stats <- get_go_DE_stats("myelin assembly")
+go_stats <- get_go_DE_stats("myelination")
+get_go_DE_stats("protein autoprocessing")
+get_go_DE_stats("dendrite terminus")
+
+
+get_go_DE_stats_multi <- function(go_list){
+    
+   go_stats <-  map(go_list, get_go_DE_stats)
+   map(list_transpose(go_stats), ~do.call("rbind",.x))
+    
+}
+
+go_stats_multi <- get_go_DE_stats_multi(go_list = c("myelin assembly", "protein autoprocessing", "dendrite terminus"))
+go_stats_multi <- get_go_DE_stats_multi(go_list = c("protein autoprocessing", "myelination"))
+
+
+library(ComplexHeatmap)
+
+logfc_Heatmap <- function(go_stats){
+    
+    logFC <- as.matrix(go_stats$log_fc)
+    signif <- as.matrix(go_stats$signif)
+    
+    anno_table <- go_stats$go_gene |>
+        mutate(Description_n = gsub(" ", "\n", Description)) |>
+        column_to_rownames("gene_name")
+    
+    anno_table <- anno_table[rownames(logFC),]
+
+    max_abs <- max(abs(logFC), na.rm = TRUE)
+    
+    my.col <- circlize::colorRamp2(
+        breaks = c(-1*max_abs,0,max_abs),
+        colors = c(APOE_carrier_colors[["E2+"]], "white", APOE_carrier_colors[["E4+"]])
+    )
+    
+    
+    Heatmap(as.matrix(logFC),
+            col = my.col,
+            name = "log(FC)",
+            cluster_rows = FALSE,
+            cluster_columns = FALSE,
+            row_split = anno_table$Description_n,
+            row_title_rot = 0,
+            cell_fun = function(j, i, x, y, width, height, fill) {
+                grid.text(signif[i, j], x, y, gp = gpar(fontsize = 10))
+            })
+    
+}
+
+logfc_Heatmap(go_stats_multi)
+
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
