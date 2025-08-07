@@ -102,25 +102,26 @@ head(nuc_count)
 # match key
 spe_rctd$key2 <- paste0(gsub("Br[0-9]+","",spe$key), spe$VNum)
 
-table(spe_rctd$key2 %in% rownames(nuc_count))
+stopifnot(all(spe_rctd$key2 %in% rownames(nuc_count)))
 
 spe_rctd$num_nuclei_within <- nuc_count[spe_rctd$key2, "num_nuclei_within"]
 spe_rctd$num_nuclei_intersect <- nuc_count[spe_rctd$key2, "num_nuclei_intersect"]
 
 pd <- colData(spe_rctd) |> as.data.frame()
 
-pd |>
-    group_by(SpD) |>
-    summarise(median_nuc = median(CNmask_dark_blue),
-              n_0_nuc = sum(CNmask_dark_blue == 0),
-              p_0_nuc = n_0_nuc/n(),
-              n_1_nuc = sum(CNmask_dark_blue == 1),
-              p_1_nuc = n_1_nuc/n(),
-              q59 = quantile(CNmask_dark_blue, 0.90),
-              n_30_nuc = sum(CNmask_dark_blue > 30),
-              p_30_nuc = n_30_nuc/n(),
-              max = max(CNmask_dark_blue))
+# pd |>
+#     group_by(SpD) |>
+#     summarise(median_nuc = median(CNmask_dark_blue),
+#               n_0_nuc = sum(CNmask_dark_blue == 0),
+#               p_0_nuc = n_0_nuc/n(),
+#               n_1_nuc = sum(CNmask_dark_blue == 1),
+#               p_1_nuc = n_1_nuc/n(),
+#               q59 = quantile(CNmask_dark_blue, 0.90),
+#               n_30_nuc = sum(CNmask_dark_blue > 30),
+#               p_30_nuc = n_30_nuc/n(),
+#               max = max(CNmask_dark_blue))
 
+message("num_nuclei_within SPD summary:")
 pd |>
     group_by(SpD) |>
     summarise(median_nuc = median(num_nuclei_within),
@@ -128,27 +129,27 @@ pd |>
               p_0_nuc = n_0_nuc/n(),
               n_1_nuc = sum(num_nuclei_within == 1),
               p_1_nuc = n_1_nuc/n(),
-              q59 = quantile(num_nuclei_within, 0.90),
+              q95 = quantile(num_nuclei_within, 0.90),
               n_30_nuc = sum(num_nuclei_within > 30),
               p_30_nuc = n_30_nuc/n(),
               max = max(num_nuclei_within))
 
-# SpD           median_nuc n_0_nuc p_0_nuc   q59 n_30_nuc  p_30_nuc   max
-# <fct>              <dbl>   <int>   <dbl> <dbl>    <int>     <dbl> <int>
-# 1 Vasc~Sp09D08           3       0       0    10        9 0.00145      59
-# 2 L1~Sp09D05             2       0       0     6        4 0.000260     36
-# 3 L2.3~Sp09D01           4       0       0     8        0 0            29
-# 4 LD~Sp09D02             2       0       0     6       10 0.000378     44
-# 5 Inhib~Sp09D09          3       0       0     8        1 0.000145     31
-# 6 L5~Sp09D03             4       0       0     9        1 0.0000861    39
-# 7 L6~Sp09D04             3       0       0     8        0 0            27
-# 8 WM.uf~Sp09D07          3       0       0     7        2 0.000161     39
-# 9 WM~Sp09D06             4       0       0     8        0 0            26
+# SpD           median_nuc n_0_nuc p_0_nuc n_1_nuc p_1_nuc   q95 n_30_nuc  p_30_nuc   max
+# <fct>              <dbl>   <int>   <dbl>   <int>   <dbl> <dbl>    <int>     <dbl> <int>
+# 1 Vasc~Sp09D08           3    1437  0.231      811  0.130     10        9 0.00145      59
+# 2 L1~Sp09D05             2    2248  0.146     2940  0.191      6        4 0.000260     36
+# 3 L2.3~Sp09D01           4     991  0.0864    1334  0.116      8        0 0            29
+# 4 LD~Sp09D02             2    4847  0.183     5208  0.197      6       10 0.000378     44
+# 5 Inhib~Sp09D09          3     389  0.0563     839  0.121      8        1 0.000145     31
+# 6 L5~Sp09D03             4     693  0.0597    1016  0.0875     9        1 0.0000861    39
+# 7 L6~Sp09D04             3    2011  0.103     2587  0.133      8        0 0            27
+# 8 WM.uf~Sp09D07          3    2197  0.176     1769  0.142      7        2 0.000161     39
+# 9 WM~Sp09D06             4     620  0.0510    1013  0.0833     8        0 0            26
 
 
 ## add cell count assays based on nuc counts
 assay(spe_rctd, "cell_counts") <- assay(spe_rctd, "weights") * spe_rctd$num_nuclei_within
-assay(spe_rctd, "cell_counts")[1:10, 1:5]
+# assay(spe_rctd, "cell_counts")[1:8, 1:5]
 
 
 ## determine major cell type
@@ -167,13 +168,34 @@ saveRDS(spe_rctd, file = here(data_dir, sprintf("spe_RCTD-%s.rds", cell_type_col
 #### Visualize nuc counts ####
 
 n_nuclei_boxplot <- ggplot(pd, aes(x = SpD, y = num_nuclei_within, fill = SpD)) +
-    geom_boxplot(draw_quantiles = c(.5)) +
+    geom_boxplot() +
     scale_fill_manual(values = SpD_colors) +
     theme_bw() +
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(n_nuclei_boxplot, filename = here(plot_dir, "ERC_Visium_SpD_boxplot_n_nuclei.png"), width = 7, height =4)
+
+n_nuclei_histogram <- ggplot(pd, aes(x = num_nuclei_within, fill = SpD)) +
+    geom_histogram(binwidth = 1, color = "grey30") +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    # ylim(0,20) +
+    facet_wrap(~SpD, ncol = 1) +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(n_nuclei_histogram, filename = here(plot_dir, "ERC_Visium_SpD_histogram_n_nuclei.png"), width = 7, height =4)
+
+
+n_nuclei_density <- ggplot(pd, aes(x = num_nuclei_within, color = SpD)) +
+    geom_density(adjust = 2) +
+    scale_color_manual(values = SpD_colors) +
+    theme_bw() +
+    # xlim(0,20) +
+    theme(legend.position = "None")
+
+ggsave(n_nuclei_density, filename = here(plot_dir, "ERC_Visium_SpD_density_n_nuclei.png"), width = 7, height =4)
 
 
 ## vis_gene
