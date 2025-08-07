@@ -5,7 +5,9 @@ compare_contrast_stats <- function(dge_tb,
                                    risk = FALSE, 
                                    datatype = opt$datatype,
                                    height = 10,
-                                   width = 10){
+                                   width = 10,
+                                   contrast_1,
+                                   contrast_2){
     
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -30,8 +32,8 @@ compare_contrast_stats <- function(dge_tb,
     ## calc correlation
     cor <- dge_tb_wide |>
         group_by(cluster) |>
-        summarise(cor = cor.test(!!sym(paste0(stat,"_carrier_EA")), !!sym(paste0(stat,"_carrier_AA")))$estimate,
-                  p_val = cor.test(!!sym(paste0(stat,"_carrier_EA")), !!sym(paste0(stat,"_carrier_AA")))$p.value) |>
+        summarise(cor = cor.test(!!sym(paste0(stat,"_",contrast_2)), !!sym(paste0(stat,"_", contrast_1)))$estimate,
+                  p_val = cor.test(!!sym(paste0(stat,"_", contrast_2)), !!sym(paste0(stat,"_", contrast_1)))$p.value) |>
         ungroup() |>
         mutate(p_val_adj = p.adjust(p_val, method = "bonf"),
                signif = ifelse(p_val_adj < 0.05, "*", ""),
@@ -41,8 +43,8 @@ compare_contrast_stats <- function(dge_tb,
     ## create scatter plot
     stat_scatter <- compare_stats_scatter(dge_tb = dge_tb_wide, 
                                           stat = stat, 
-                                          mX = "carrier_AA", 
-                                          mY = "carrier_EA", 
+                                          mX = contrast_1, 
+                                          mY = contrast_2, 
                                           FDR_cut_mX = FDR_cut, 
                                           FDR_cut_mY = FDR_cut, 
                                           model_name = datatype) +
