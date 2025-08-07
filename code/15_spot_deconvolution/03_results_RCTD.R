@@ -111,10 +111,23 @@ pd <- colData(spe_rctd) |> as.data.frame()
 
 pd |>
     group_by(SpD) |>
+    summarise(median_nuc = median(CNmask_dark_blue),
+              n_0_nuc = sum(CNmask_dark_blue == 0),
+              p_0_nuc = n_0_nuc/n(),
+              n_1_nuc = sum(CNmask_dark_blue == 1),
+              p_1_nuc = n_1_nuc/n(),
+              q59 = quantile(CNmask_dark_blue, 0.90),
+              n_30_nuc = sum(CNmask_dark_blue > 30),
+              p_30_nuc = n_30_nuc/n(),
+              max = max(CNmask_dark_blue))
+
+pd |>
+    group_by(SpD) |>
     summarise(median_nuc = median(num_nuclei_within),
               n_0_nuc = sum(num_nuclei_within == 0),
-              n_1_nuc = sum(num_nuclei_within == 1),
               p_0_nuc = n_0_nuc/n(),
+              n_1_nuc = sum(num_nuclei_within == 1),
+              p_1_nuc = n_1_nuc/n(),
               q59 = quantile(num_nuclei_within, 0.90),
               n_30_nuc = sum(num_nuclei_within > 30),
               p_30_nuc = n_30_nuc/n(),
