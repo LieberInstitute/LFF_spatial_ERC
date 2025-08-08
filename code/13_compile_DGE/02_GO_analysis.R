@@ -96,8 +96,8 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
-# compare_clus |> filter(DE_class_cluster == "Macro_down")
-
+# Save data
+saveRDS(compare_clus, file = here(data_dir, sprintf("GO_compare_clus_%s.rds", opt$datatype)))
 write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
 
 #### dot plots ####
@@ -184,6 +184,9 @@ reducedTerms_list <- map(ont_list, function(o){
 
 # map_depth(reducedTerms_list, 2, length)
 
+## save
+saveRDS(reducedTerms_list, file = here(data_dir, sprintf("GO_reduced_terms_%s.rds", opt$datatype)))
+
 reducedTerms_list2 <- list_transpose(reducedTerms_list)
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
 
@@ -223,9 +226,7 @@ go_lookup <- function(search_term){
     # return(go_table)
 }
 
-go_terms_myelination <- go_lookup("myelination")
-go_terms_myelination <- go_lookup("myelination")
-
+# go_terms_myelination <- go_lookup("myelination")
 
 get_go_genes <- function(go_terms){
     
@@ -239,13 +240,13 @@ get_go_genes <- function(go_terms){
     return(go_genes)
 }
 
-go_genes <- get_go_genes(go_terms_myelination)
+# go_genes <- get_go_genes(go_terms_myelination)
 
 compare_clus |> arrange(-Count) |> head()
 
 ## gene can map parent term multiple times
-go_genes |> count(geneID) |> arrange(-n)
-go_genes |> count(Description) |> arrange(-n)
+# go_genes |> count(geneID) |> arrange(-n)
+# go_genes |> count(Description) |> arrange(-n)
 
 get_go_DE_stats <- function(go_term){
     
@@ -297,8 +298,8 @@ get_go_DE_stats <- function(go_term){
     
 }
 
-go_stats <- get_go_DE_stats("myelin assembly")
-go_stats <- get_go_DE_stats(go_term = "synaptic membrane")
+# go_stats <- get_go_DE_stats("myelin assembly")
+# go_stats <- get_go_DE_stats(go_term = "synaptic membrane")
 
 # go_stats <- get_go_DE_stats("myelin assembly")
 # go_stats <- get_go_DE_stats("myelination")
@@ -309,7 +310,7 @@ go_stats <- get_go_DE_stats(go_term = "synaptic membrane")
 get_go_DE_stats_multi <- function(go_list){
     
    go_stats_m <- map(go_list, get_go_DE_stats)
-   go_stats_m <- map(list_transpose(go_stats_m), ~do.call("rbind",.x))
+   go_stats_m <- map(list_transpose(go_stats_m, simplify = FALSE), ~do.call("rbind",.x))
    
    go_stats_m$go_gene <-  go_stats_m$go_gene |> 
        group_by(gene_name) |>
@@ -323,7 +324,7 @@ get_go_DE_stats_multi <- function(go_list){
 }
 
 # go_stats_multi <- get_go_DE_stats_multi(go_list = c("myelin assembly", "protein autoprocessing", "dendrite terminus"))
-go_stats_multi <- get_go_DE_stats_multi(go_list = c("protein autoprocessing", "myelination"))
+# go_stats_multi <- get_go_DE_stats_multi(go_list = c("protein autoprocessing", "myelination"))
 
 GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
     
@@ -373,6 +374,8 @@ parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_
                          head(5) |>
                          pull(Description))
     
+    get_go_DE_stats_multi(top_terms[[2]])
+    
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)), height = 10, width = 10)
     
     map2(top_terms, search_term, ~print(GO_logfc_Heatmap(get_go_DE_stats_multi(.x),
@@ -402,22 +405,14 @@ if(opt$datatype == "Visium"){
     GO_logfc_Heatmap(get_go_DE_stats("myelin assembly"))
     GO_logfc_Heatmap(get_go_DE_stats("central nervous system myelination"))
     GO_logfc_Heatmap(get_go_DE_stats("oligodendrocyte differentiation"))
-    GO_logfc_Heatmap(go_stats_multi1)
-    
+    GO_logfc_Heatmap(get_go_DE_stats("oligodendrocyte differentiation"))
     GO_logfc_Heatmap(go_stats_multi1)
     
     dev.off()
     
-    #oligodendrocyte differentiation
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('oligodendrocyte differentiation')) |>
-    #     arrange(-Count)|>
-    #     head() 
-    # 
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('microtubule associated complex')) |>
-    #     arrange(-Count)|>
-    #     head()
+    parent_term_heatmap(search_term = c("myelination",
+                                        "calcium ion transmembrane import into cytosol"), 
+                        pdf_suffix = "MULTI")
     
     
 } else if(opt$datatype == "sn_broad"){
@@ -433,18 +428,7 @@ if(opt$datatype == "Visium"){
     GO_logfc_Heatmap(get_go_DE_stats_multi(c("central nervous system myelination", "oligodendrocyte differentiation")))
     
     dev.off()
-    
-    get_go_genes(go_lookup("monoatomic ion channel complex")) |>
-        count(Description) |>
-               arrange(-n)    
-    
-    ## parent terms
-    parent_term_heatmap("synaptic membrane", pdf_suffix = "synaptic_membrane")
-    parent_term_heatmap("neurotransmitter transport", pdf_suffix = "neuro_transport")
-    parent_term_heatmap("cellular response to calcium ion", pdf_suffix = "calcium_ion")
-    parent_term_heatmap("learning or memory", pdf_suffix = "learning_memory")
-    
-    
+
     parent_term_heatmap(search_term = c("synaptic membrane",
                                         "neurotransmitter transport",
                                         "cellular response to calcium ion",
@@ -460,20 +444,6 @@ if(opt$datatype == "Visium"){
                                              "regulation of membrane potential")),
                      title = "cellular response to calcium ion")
     dev.off()
-    
-    
-    #oligodendrocyte differentiation
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('oligodendrocyte differentiation')) |>
-    #     arrange(-Count)|>
-    #     head() 
-    # 
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('microtubule associated complex')) |>
-    #     arrange(-Count)|>
-    #     head()
-    
-    
 }
 
 
