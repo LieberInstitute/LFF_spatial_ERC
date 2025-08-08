@@ -146,10 +146,10 @@ list(Green_Blue = "#00B3B3",
      Violet_Blue = "#2E2EFF")
 
 cell_type_colors_broad.V2 <- c(Astro = "#3BB273",
-                               Oligo = "#F57A00",
-                               OPC = "#D2B037",
                                Macro = "#79354E",
                                Micro = "#663894",
+                               Oligo = "#F57A00",
+                               OPC = "#D2B037",
                                Vasc = "#FF56AF",
                                Excit = "#247FBC",
                                Inhib = "#E83E38",
