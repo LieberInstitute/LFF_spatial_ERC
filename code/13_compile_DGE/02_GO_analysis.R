@@ -374,7 +374,11 @@ parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_
                          head(5) |>
                          pull(Description))
     
-    get_go_DE_stats_multi(top_terms[[2]])
+    # TODO collapse duplicated searches
+    # duplicated(top_terms)
+    
+    # debug
+    # get_go_DE_stats_multi(top_terms[[2]])
     
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)), height = 10, width = 10)
     
@@ -411,7 +415,12 @@ if(opt$datatype == "Visium"){
     dev.off()
     
     parent_term_heatmap(search_term = c("myelination",
-                                        "calcium ion transmembrane import into cytosol"), 
+                                        "oligodendrocyte differentiation",
+                                        "calcium ion transmembrane import into cytosol",
+                                        "negative regulation of developmental growth",
+                                        "dendrite terminus",
+                                        "mitotic spindle midzone",
+                                        "dipeptidase activity"), 
                         pdf_suffix = "MULTI")
     
     
