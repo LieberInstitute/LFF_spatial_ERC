@@ -19,6 +19,8 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
+## test 
+# opt$datatype = "sn_broad"
 
 data_dir <- here("processed-data", "14_MOFA", "01_MOFA", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -42,7 +44,7 @@ if(opt$datatype == "sn_fine"){
 } else if(opt$datatype == "sn_broad"){
     message("sn BROAD")
     sn_sce <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
-    }
+}
 
 #   Subset to shared genes
 shared_genes <- intersect(rownames(sn_sce), rownames(visium_spe))
@@ -116,18 +118,26 @@ spe$cluster <- spe$registration_variable
 table(spe$cluster)
 
 ## load tau pathology data
-tau_tb <- read.csv(here("processed-data", "00_project_prep","05_pathology","sample_taupathy.csv")) |>
+path_tb <- read.csv(here("processed-data", "00_project_prep","05_pathology","sample_taupathy.csv")) |>
     column_to_rownames("BrNum")
 
-spe$taupathy <- ifelse(tau_tb[spe$BrNum,]$taupathy, "t+", "t-")
+spe$taupathy <- ifelse(path_tb[spe$BrNum,]$taupathy, "t+", "t-")
+spe$CERAD <- path_tb[spe$BrNum,]$CERAD
+spe$Braak <- path_tb[spe$BrNum,]$Braak
+
+## Drop Br1289
+spe <- spe[,spe$BrNum != "Br1289"]
+
+table(spe$BrNum, spe$data_type)
 
 ## get donor data
 pd <- colData(spe) |>
     as_tibble() |>
-    select(BrNum, Age, Sex, Ancestry, Anc_Afr, APOE, APOE_carrier, taupathy) |>
+    select(BrNum, Age, Sex, Ancestry, Anc_Afr, APOE, APOE_carrier, taupathy, CERAD, Braak) |>
     unique()
 
 #### Preprocess expression and create a MOFA object ####
+message(Sys.time() , " - Create MOFA object")
 set.seed(708)
 
 mofa = create_init_exp(
@@ -140,20 +150,13 @@ mofa = create_init_exp(
         counts_col = "ncells",
         ct_col = "cluster"
     ) |>
-    #   Drop spatial domains seen in very few samples
-    filt_views_bysamples(nsamples = 2) |>
-    #   Require a gene to have 5 counts in at least 25% of samples
-    filt_gex_byexpr(min.count = 5, min.prop = 0.25) |>
-    #   Drop spatial domains having below 15 genes at this point
-    filt_views_bygenes(ngenes = 15) |>
-    #   Drop samples below 90% coverage of genes
-    filt_samples_bycov(prop_coverage = 0.9) |>
-    #   Normalize expression
-    tmm_trns(scale_factor = 1000000) |>
-    #   Filter to HVGs only
-    filt_gex_byhvg(prior_hvg = NULL, var.threshold = 0) |>
-    #   Again, drop spatial domains having below 15 genes at this point
-    filt_views_bygenes(ngenes = 15) |>
+    filt_views_bysamples(nsamples = 2) |> #   Drop spatial domains seen in very few samples
+    filt_gex_byexpr(min.count = 5, min.prop = 0.25) |> #   Require a gene to have 5 counts in at least 25% of samples
+    filt_views_bygenes(ngenes = 15) |> #   Drop spatial domains having below 15 genes at this point
+    filt_samples_bycov(prop_coverage = 0.9) |> #   Drop samples below 90% coverage of genes
+    tmm_trns(scale_factor = 1000000) |> #   Normalize expression
+    filt_gex_byhvg(prior_hvg = NULL, var.threshold = 0) |> #   Filter to HVGs only
+    filt_views_bygenes(ngenes = 15) |>  #   Again, drop spatial domains having below 15 genes at this point
     pb_dat2MOFA(sample_column = 'BrNum') |>
     create_mofa()
 
@@ -163,15 +166,15 @@ samples_metadata(mofa) = left_join(
 )
 
 ####   Fit the MOFA model ####
-
+message(Sys.time() , " - Fit the MOFA model")
 #   Use mostly default options except where overriden in
 #   https://saezlab.github.io/MOFAcellulaR/articles/get-started.html#fitting-a-mofa-model.
-#   Use 5 factors in response to warnings when using any more
+
 data_opts = get_default_data_options(mofa)
 train_opts = get_default_training_options(mofa)
 model_opts = get_default_model_options(mofa)
 model_opts$spikeslab_weights = FALSE 
-model_opts$num_factors = 5
+model_opts$num_factors = 7 #   Use 7 factors in response to warnings when using any more
 
 mofa <- prepare_mofa(
     object = mofa,
@@ -186,24 +189,7 @@ model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
 
 ####  Exploratory plots ####
 
-# #   Weights to each factor grouped by APOE genotype
-# p = plot_factor(
-#     model, factors = "all", color_by = 'APOE', dodge = TRUE,
-#     add_violin = TRUE
-# )
-# pdf(file.path(plot_dir, 'weights_by_APOE.pdf'), width = 10, height = 5)
-# print(p)
-# dev.off()
-# 
-# ## by APOE carrier
-# pdf(file.path(plot_dir, 'weights_by_APOE_carrier.pdf'), width = 10, height = 5)
-# print(plot_factor(
-#     model, factors = "all", color_by = 'APOE_carrier', dodge = TRUE,
-#     add_violin = TRUE
-# ))
-# dev.off()
-
-#   Get factor weights for each donor
+#   Get factor weights for each donor - export to csv
 factor_df = get_tidy_factors(
     model = model,
     metadata = samples_metadata(model),
@@ -211,9 +197,20 @@ factor_df = get_tidy_factors(
     sample_id_column = "sample"
 )
 
+## check min and max samples
+factor_df |>
+    group_by(Factor) |>
+    slice_max(value)
+
+factor_df |>
+    group_by(Factor) |>
+    slice_min(value)
+
+write_csv(factor_df, file = here(data_dir, sprintf("MOFA_factor_df-%s.csv", opt$datatype)))
+
 #   Test association of APOE genotype with each factor
 
-test_vars <- c('APOE_carrier', 'APOE', 'Ancestry', "taupathy", "Sex")
+test_vars <- c('APOE_carrier', 'Ancestry', "taupathy", "Sex", "Age","Braak","CERAD")
 names(test_vars) <- test_vars
     
 assoc_list <- map(test_vars, ~get_associations( model = model,
@@ -221,44 +218,41 @@ assoc_list <- map(test_vars, ~get_associations( model = model,
                                                 sample_id_column = "sample",
                                                 test_variable = .x,
                                                 test_type = "categorical",
-                                                group = FALSE)
-)
+                                                group = FALSE))
 
-# ERROR ! Can't join `x$Age` with `y$Age` due to incompatible types.
-# get_associations( model = model,
-#                   metadata = samples_metadata(model),
-#                   sample_id_column = "Age",
-#                   test_variable = .x,
-#                   test_type = "continuous",
-#                   group = FALSE)
+assoc_tb <- do.call("bind_rows", assoc_list) |>
+    mutate(signif = case_when(adj_pvalue < 0.001 ~ "***",
+                              adj_pvalue < 0.01 ~ "**",
+                              adj_pvalue < 0.05 ~ "*",
+                              TRUE ~ "")
+    ) 
 
+assoc_tb |> group_by(term) |> arrange(adj_pvalue) |> slice(1)
 
-print(assoc_list)
 
 #   Show unadjusted p-value for consistency with other plots ??
 # assoc_list[['APOE']]$adj_pvalue = assoc_list[['APOE']]$p.value
 
 
-factor_boxplot <- function(var, fill_colors = NULL, text45 = TRUE, assoc_tb = NULL){
+factor_boxplot <- function(var, fill_colors = NULL, text45 = TRUE, assoc_tb){
     
-    weights_boxplot <- ggplot(factor_df, aes(x = !!sym(var), y = value, fill = !!sym(var))) +
-        geom_boxplot(outlier.shape = NA) +
-        geom_jitter(width = 0.1) +
+    weights_boxplot <- ggplot(factor_df) +
+        geom_boxplot(aes(x = !!sym(var), y = value, fill = !!sym(var)), outlier.shape = NA) +
+        geom_jitter(aes(x = !!sym(var), y = value, fill = !!sym(var)), width = 0.1) +
         facet_wrap(~Factor, nrow = 1, scales = "free") +
         labs(y = "Weight") +
         theme_bw() +
         theme(legend.position = "None") 
     
-    if(!is.null(assoc_tb)) {
         weights_boxplot <- weights_boxplot + ggplot2::geom_label(
-            data = assoc_tb, 
-            ggplot2::aes(x = -Inf, y = -Inf, label = sprintf("pval=%.2e", adj_pvalue)),
+            data = assoc_tb |> filter(term == var), 
+            ggplot2::aes(x = -Inf, y = -Inf, label = sprintf("pval=%.2e%s", adj_pvalue, signif)),
             alpha = 0.5,
             vjust = "inward", 
             hjust = "inward", 
             size = 2.5
         )
-    }
+
     if(!is.null(fill_colors)) weights_boxplot <- weights_boxplot + scale_fill_manual(values = fill_colors)
     if(text45) weights_boxplot <- weights_boxplot + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
     
@@ -266,17 +260,11 @@ factor_boxplot <- function(var, fill_colors = NULL, text45 = TRUE, assoc_tb = NU
     
 }
 
-# factor_boxplot(var = "APOE", fill_colors = APOE_genotype_colors, assoc_tb = assoc_list$APOE)
-## TODO fix annotation bug
-# Error in `ggplot2::geom_label()`:
-#     ! Problem while computing aesthetics.
-# ℹ Error occurred in the 3rd layer.
-# Caused by error:
-#     ! object 'APOE' not found
-
-factor_boxplot(var = "APOE_carrier", fill_colors = APOE_carrier_colors)
-factor_boxplot(var = "Ancestry", fill_colors = ancestry_colors)
-factor_boxplot(var = "taupathy")
+factor_boxplot(var = "APOE_carrier", fill_colors = APOE_carrier_colors, assoc_tb = assoc_tb)
+factor_boxplot(var = "Ancestry", fill_colors = ancestry_colors, assoc_tb = assoc_tb)
+factor_boxplot(var = "Sex", fill_colors = sex_colors, assoc_tb = assoc_tb)
+factor_boxplot(var = "taupathy", assoc_tb = assoc_tb)
+factor_boxplot(var = "Braak", assoc_tb = assoc_tb)
 
 
 #   Convert to wide format
@@ -299,16 +287,16 @@ dev.off()
 
 
 #   Plot a heatmap of summary results, labeling with covariates of interest
-pdf(file.path(plot_dir, 'MOFA_heatmap.pdf'))
+pdf(file.path(plot_dir, sprintf('MOFA_heatmap_%s.pdf', opt$datatype)), height = 3 + (length(model@data)/4))
 plot_MOFA_hmap(
     model = model,
     group = FALSE,
     metadata = samples_metadata(model),
     sample_id_column = "sample",
-    sample_anns = c("APOE", "Ancestry", "Age", "Sex"),
+    sample_anns = c("APOE_carrier", "Ancestry", "Age", "Sex"),
     assoc_list = assoc_list,
     col_rows = list(
-        'APOE' = APOE_genotype_colors,
+        'APOE_carrier' = APOE_carrier_colors,
         'Ancestry' = ancestry_colors,
         'Sex' = sex_colors
     )
