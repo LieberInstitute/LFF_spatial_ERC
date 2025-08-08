@@ -365,18 +365,18 @@ GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
     
 }
 
-parent_term_heatmap <- function(search_term, term_title = gsub(" ", "_", search_term)){
+parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term)){
     
-    top_terms <- get_go_genes(go_lookup(search_term))|>
-        count(Description) |>
-        arrange(-n) |>
-        head(5) |>
-        pull(Description)
+    top_terms <- map(search_term, ~get_go_genes(go_lookup(.x))|>
+                         count(Description) |>
+                         arrange(-n) |>
+                         head(5) |>
+                         pull(Description))
     
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, term_title)), height = 10, width = 10)
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)), height = 10, width = 10)
     
-    print(GO_logfc_Heatmap(get_go_DE_stats_multi(top_terms),
-                           title = search_term))
+    map2(top_terms, search_term, ~print(GO_logfc_Heatmap(get_go_DE_stats_multi(.x),
+                                                         title = .y)))
     dev.off()
     
 }
@@ -422,23 +422,9 @@ if(opt$datatype == "Visium"){
     
 } else if(opt$datatype == "sn_broad"){
     
-    go_terms1 <- c( "extracellular matrix",
-                    
-        "myelin assembly", 
-                   "cell-cell recognition",
-                   "myelination", 
-                   "ensheathment of neurons", 
-                   "axon ensheathment")
-    
-    go_terms1 %in% go_terms_myelination
-    
-    go_stats_multi1 <- get_go_DE_stats_multi(go_list = go_terms1)
-    
+    ## select GO terms
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s.pdf", opt$datatype)))
-    
-    ## major terms
-    # go_genes |> count(Description) |> arrange(-n)
-    
+
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "neurotransmitter transport"))
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "cell fate commitment"))
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "passive transmembrane transporter activity"))
@@ -452,57 +438,20 @@ if(opt$datatype == "Visium"){
         count(Description) |>
                arrange(-n)    
     
+    ## parent terms
+    parent_term_heatmap("synaptic membrane", pdf_suffix = "synaptic_membrane")
+    parent_term_heatmap("neurotransmitter transport", pdf_suffix = "neuro_transport")
+    parent_term_heatmap("cellular response to calcium ion", pdf_suffix = "calcium_ion")
+    parent_term_heatmap("learning or memory", pdf_suffix = "learning_memory")
     
     
-    parent_term_heatmap("neurotransmitter transport", term_title = "neuro_transport")
-    parent_term_heatmap("neurotransmitter transport", term_title = "neuro_transport")
-    parent_term_heatmap("cellular response to calcium ion", term_title = "calcium_ion")
+    parent_term_heatmap(search_term = c("synaptic membrane",
+                                        "neurotransmitter transport",
+                                        "cellular response to calcium ion",
+                                        "learning or memory"), 
+                        pdf_suffix = "MULTI")
     
-    
-    get_go_genes(go_lookup("neurotransmitter transport"))|>
-        count(Description) |>
-               arrange(-n)
-    
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-neurotransmitter.pdf", opt$datatype)), height = 10, width = 10)
-    GO_logfc_Heatmap(get_go_DE_stats_multi(c("signal release", 
-                                             "calcium ion transport",
-                                             "regulation of trans-synaptic signaling",
-                                             "cellular response to calcium ion",
-                                             "cellular response to thyroid hormone stimulus")),
-                     title = "neurotransmitter transport")
-    dev.off()
-    
-    go_calcium <- get_go_genes(go_lookup("cellular response to calcium ion"))
-    go_calcium |>
-        count(Description) |>
-               arrange(-n)
-    # Description                                        n
-    # <chr>                                          <int>
-    # 1 response to metal ion                            11
-    # 2 response to calcium ion                           7
-    # 3 cellular response to calcium ion                  6
-    # 4 cellular response to thyroid hormone stimulus     3
-    
-    go_calcium |>
-        count(geneID) |>
-        arrange(-n)
-    
-    # geneID      n
-    # <chr>   <int>
-    # 1 INHBB       4
-    # 2 ADGRV1      3
-    # 3 CPNE8       3
-    # 4 FOS         3
-    
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-calcium_ion.pdf", opt$datatype)), height = 10, width = 10)
-    GO_logfc_Heatmap(get_go_DE_stats_multi(c("response to metal ion", 
-                                             "response to calcium ion",
-                                             "regulation of trans-synaptic signaling",
-                                             "cellular response to calcium ion",
-                                             "cellular response to thyroid hormone stimulus")),
-                     title = "cellular response to calcium ion")
-    dev.off()
-    
+   
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-TOP.pdf", opt$datatype)), height = 10, width = 10)
     GO_logfc_Heatmap(get_go_DE_stats_multi(c("synaptic membrane", 
                                              "external encapsulating structure",
