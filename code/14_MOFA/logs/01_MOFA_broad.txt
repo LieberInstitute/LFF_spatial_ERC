@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Jul  8 04:33:20 PM EDT 2025
+Fri Aug  8 03:01:35 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 19791822
+Job id: 21268488
 Job name: 01_MOFA_broad
-Node name: compute-168
+Node name: compute-121
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -208,14 +208,49 @@ sn BROAD
            19            31            31            31            30 
         Excit         Inhib 
            31            31 
+        
+         snRNA-seq Visium
+  Br1039         8      9
+  Br1556         8      9
+  Br1691         7      9
+  Br1706         8      9
+  Br2305         7      9
+  Br2582         8      9
+  Br3974         7      9
+  Br5161         8      9
+  Br5212         8      9
+  Br5276         7      9
+  Br5367         8      9
+  Br5415         8      9
+  Br5426         7      9
+  Br5460         8      9
+  Br5517         7      9
+  Br5529         7      9
+  Br5599         8      9
+  Br5634         7      9
+  Br5712         8      9
+  Br5832         8      9
+  Br5854         8      9
+  Br5941         8      9
+  Br6085         7      9
+  Br6098         8      9
+  Br6161         7      9
+  Br6263         7      9
+  Br6321         8      9
+  Br6423         8      9
+  Br6476         6      9
+  Br6538         8      9
+2025-08-08 15:02:00.234669 - Create MOFA object
 Creating MOFA object from a data.frame...
 There were 17 warnings (use warnings() to see them)
+2025-08-08 15:02:27.857346 - Fit the MOFA model
 Checking data options...
 Checking training options...
 Checking model options...
 Warning message:
 In prepare_mofa(object = mofa, data_options = data_opts, model_options = model_opts,  :
   Some view(s) have a lot of features, it is recommended to perform a more stringent feature selection before creating the MOFA object....
+Warning: Output file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/14_MOFA/01_MOFA/sn_broad/model.hdf5 already exists, it will be replaced
 Connecting to the mofapy2 package using basilisk. 
     Set 'use_basilisk' to FALSE if you prefer to manually set the python binary using 'reticulate'.
 
@@ -233,23 +268,23 @@ Connecting to the mofapy2 package using basilisk.
         
 use_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...
 
-Successfully loaded view='Astro' group='single_group' with N=31 samples and D=8175 features...
-Successfully loaded view='Excit' group='single_group' with N=31 samples and D=11433 features...
-Successfully loaded view='Inhib' group='single_group' with N=31 samples and D=9650 features...
-Successfully loaded view='Inhib_Sp09D09' group='single_group' with N=31 samples and D=5632 features...
-Successfully loaded view='L1_Sp09D05' group='single_group' with N=31 samples and D=5536 features...
-Successfully loaded view='L2.3_Sp09D01' group='single_group' with N=31 samples and D=6305 features...
-Successfully loaded view='L5_Sp09D03' group='single_group' with N=31 samples and D=6269 features...
-Successfully loaded view='L6_Sp09D04' group='single_group' with N=31 samples and D=6354 features...
-Successfully loaded view='LD_Sp09D02' group='single_group' with N=31 samples and D=6982 features...
-Successfully loaded view='Macro' group='single_group' with N=31 samples and D=924 features...
-Successfully loaded view='Micro' group='single_group' with N=31 samples and D=6011 features...
-Successfully loaded view='Oligo' group='single_group' with N=31 samples and D=8152 features...
-Successfully loaded view='OPC' group='single_group' with N=31 samples and D=7644 features...
-Successfully loaded view='Vasc' group='single_group' with N=31 samples and D=3533 features...
-Successfully loaded view='Vasc_Sp09D08' group='single_group' with N=31 samples and D=3789 features...
-Successfully loaded view='WM_Sp09D06' group='single_group' with N=31 samples and D=4628 features...
-Successfully loaded view='WM.uf_Sp09D07' group='single_group' with N=31 samples and D=1274 features...
+Successfully loaded view='Astro' group='single_group' with N=30 samples and D=8199 features...
+Successfully loaded view='Excit' group='single_group' with N=30 samples and D=11642 features...
+Successfully loaded view='Inhib' group='single_group' with N=30 samples and D=9703 features...
+Successfully loaded view='Inhib_Sp09D09' group='single_group' with N=30 samples and D=5635 features...
+Successfully loaded view='L1_Sp09D05' group='single_group' with N=30 samples and D=5505 features...
+Successfully loaded view='L2.3_Sp09D01' group='single_group' with N=30 samples and D=6196 features...
+Successfully loaded view='L5_Sp09D03' group='single_group' with N=30 samples and D=6304 features...
+Successfully loaded view='L6_Sp09D04' group='single_group' with N=30 samples and D=6355 features...
+Successfully loaded view='LD_Sp09D02' group='single_group' with N=30 samples and D=6981 features...
+Successfully loaded view='Macro' group='single_group' with N=30 samples and D=989 features...
+Successfully loaded view='Micro' group='single_group' with N=30 samples and D=6052 features...
+Successfully loaded view='Oligo' group='single_group' with N=30 samples and D=8053 features...
+Successfully loaded view='OPC' group='single_group' with N=30 samples and D=7760 features...
+Successfully loaded view='Vasc' group='single_group' with N=30 samples and D=3509 features...
+Successfully loaded view='Vasc_Sp09D08' group='single_group' with N=30 samples and D=3763 features...
+Successfully loaded view='WM_Sp09D06' group='single_group' with N=30 samples and D=4744 features...
+Successfully loaded view='WM.uf_Sp09D07' group='single_group' with N=30 samples and D=1328 features...
 
 
 Model options:
@@ -284,154 +319,209 @@ Likelihoods:
 ######################################
 
 
-ELBO before training: -14199988.57 
+ELBO before training: -17627085.09 
 
-Iteration 1: time=0.12, ELBO=-2148938.21, deltaELBO=12051050.361 (84.86662014%), Factors=5
-Iteration 2: time=0.11, Factors=5
-Iteration 3: time=0.11, Factors=5
-Iteration 4: time=0.11, Factors=5
-Iteration 5: time=0.11, Factors=5
-Iteration 6: time=0.12, ELBO=-1770611.52, deltaELBO=378326.687 (2.66427459%), Factors=5
-Iteration 7: time=0.11, Factors=5
-Iteration 8: time=0.11, Factors=5
-Iteration 9: time=0.11, Factors=5
-Iteration 10: time=0.11, Factors=5
-Iteration 11: time=0.12, ELBO=-1759963.01, deltaELBO=10648.513 (0.07498959%), Factors=5
-Iteration 12: time=0.11, Factors=5
-Iteration 13: time=0.11, Factors=5
-Iteration 14: time=0.11, Factors=5
-Iteration 15: time=0.11, Factors=5
-Iteration 16: time=0.12, ELBO=-1756664.62, deltaELBO=3298.390 (0.02322812%), Factors=5
-Iteration 17: time=0.11, Factors=5
-Iteration 18: time=0.11, Factors=5
-Iteration 19: time=0.11, Factors=5
-Iteration 20: time=0.11, Factors=5
-Iteration 21: time=0.12, ELBO=-1755181.32, deltaELBO=1483.303 (0.01044580%), Factors=5
-Iteration 22: time=0.11, Factors=5
-Iteration 23: time=0.11, Factors=5
-Iteration 24: time=0.11, Factors=5
-Iteration 25: time=0.11, Factors=5
-Iteration 26: time=0.12, ELBO=-1754366.20, deltaELBO=815.121 (0.00574029%), Factors=5
-Iteration 27: time=0.11, Factors=5
-Iteration 28: time=0.11, Factors=5
-Iteration 29: time=0.10, Factors=5
-Iteration 30: time=0.11, Factors=5
-Iteration 31: time=0.11, ELBO=-1753837.01, deltaELBO=529.187 (0.00372667%), Factors=5
-Iteration 32: time=0.11, Factors=5
-Iteration 33: time=0.10, Factors=5
-Iteration 34: time=0.11, Factors=5
-Iteration 35: time=0.11, Factors=5
-Iteration 36: time=0.12, ELBO=-1753443.92, deltaELBO=393.086 (0.00276822%), Factors=5
-Iteration 37: time=0.11, Factors=5
-Iteration 38: time=0.11, Factors=5
-Iteration 39: time=0.11, Factors=5
-Iteration 40: time=0.11, Factors=5
-Iteration 41: time=0.12, ELBO=-1753116.91, deltaELBO=327.016 (0.00230293%), Factors=5
-Iteration 42: time=0.11, Factors=5
-Iteration 43: time=0.11, Factors=5
-Iteration 44: time=0.11, Factors=5
-Iteration 45: time=0.11, Factors=5
-Iteration 46: time=0.12, ELBO=-1752817.35, deltaELBO=299.554 (0.00210953%), Factors=5
-Iteration 47: time=0.11, Factors=5
-Iteration 48: time=0.11, Factors=5
-Iteration 49: time=0.11, Factors=5
-Iteration 50: time=0.11, Factors=5
-Iteration 51: time=0.12, ELBO=-1752520.26, deltaELBO=297.089 (0.00209218%), Factors=5
-Iteration 52: time=0.11, Factors=5
-Iteration 53: time=0.11, Factors=5
-Iteration 54: time=0.11, Factors=5
-Iteration 55: time=0.11, Factors=5
-Iteration 56: time=0.12, ELBO=-1752205.58, deltaELBO=314.688 (0.00221612%), Factors=5
-Iteration 57: time=0.10, Factors=5
-Iteration 58: time=0.11, Factors=5
-Iteration 59: time=0.11, Factors=5
-Iteration 60: time=0.11, Factors=5
-Iteration 61: time=0.12, ELBO=-1751855.64, deltaELBO=349.937 (0.00246435%), Factors=5
-Iteration 62: time=0.11, Factors=5
-Iteration 63: time=0.11, Factors=5
-Iteration 64: time=0.11, Factors=5
-Iteration 65: time=0.10, Factors=5
-Iteration 66: time=0.11, ELBO=-1751454.25, deltaELBO=401.393 (0.00282672%), Factors=5
-Iteration 67: time=0.11, Factors=5
-Iteration 68: time=0.11, Factors=5
-Iteration 69: time=0.11, Factors=5
-Iteration 70: time=0.10, Factors=5
-Iteration 71: time=0.11, ELBO=-1750989.11, deltaELBO=465.139 (0.00327563%), Factors=5
-Iteration 72: time=0.10, Factors=5
-Iteration 73: time=0.11, Factors=5
-Iteration 74: time=0.10, Factors=5
-Iteration 75: time=0.10, Factors=5
-Iteration 76: time=0.11, ELBO=-1750452.90, deltaELBO=536.202 (0.00377607%), Factors=5
-Iteration 77: time=0.11, Factors=5
-Iteration 78: time=0.11, Factors=5
-Iteration 79: time=0.11, Factors=5
-Iteration 80: time=0.11, Factors=5
-Iteration 81: time=0.12, ELBO=-1749848.00, deltaELBO=604.906 (0.00425990%), Factors=5
-Iteration 82: time=0.11, Factors=5
-Iteration 83: time=0.11, Factors=5
-Iteration 84: time=0.11, Factors=5
-Iteration 85: time=0.11, Factors=5
-Iteration 86: time=0.12, ELBO=-1749188.82, deltaELBO=659.179 (0.00464211%), Factors=5
-Iteration 87: time=0.11, Factors=5
-Iteration 88: time=0.11, Factors=5
-Iteration 89: time=0.11, Factors=5
-Iteration 90: time=0.12, Factors=5
-Iteration 91: time=0.12, ELBO=-1748502.44, deltaELBO=686.375 (0.00483363%), Factors=5
-Iteration 92: time=0.11, Factors=5
-Iteration 93: time=0.11, Factors=5
-Iteration 94: time=0.11, Factors=5
-Iteration 95: time=0.12, Factors=5
-Iteration 96: time=0.13, ELBO=-1747824.67, deltaELBO=677.779 (0.00477309%), Factors=5
-Iteration 97: time=0.12, Factors=5
-Iteration 98: time=0.11, Factors=5
-Iteration 99: time=0.12, Factors=5
-Iteration 100: time=0.11, Factors=5
-Iteration 101: time=0.12, ELBO=-1747190.90, deltaELBO=633.767 (0.00446315%), Factors=5
-Iteration 102: time=0.11, Factors=5
-Iteration 103: time=0.12, Factors=5
-Iteration 104: time=0.11, Factors=5
-Iteration 105: time=0.12, Factors=5
-Iteration 106: time=0.13, ELBO=-1746629.97, deltaELBO=560.933 (0.00395023%), Factors=5
-Iteration 107: time=0.12, Factors=5
-Iteration 108: time=0.12, Factors=5
-Iteration 109: time=0.11, Factors=5
-Iteration 110: time=0.11, Factors=5
-Iteration 111: time=0.12, ELBO=-1746158.65, deltaELBO=471.314 (0.00331912%), Factors=5
-Iteration 112: time=0.12, Factors=5
-Iteration 113: time=0.12, Factors=5
-Iteration 114: time=0.12, Factors=5
-Iteration 115: time=0.12, Factors=5
-Iteration 116: time=0.12, ELBO=-1745782.17, deltaELBO=376.486 (0.00265131%), Factors=5
-Iteration 117: time=0.11, Factors=5
-Iteration 118: time=0.11, Factors=5
-Iteration 119: time=0.11, Factors=5
-Iteration 120: time=0.11, Factors=5
-Iteration 121: time=0.12, ELBO=-1745495.06, deltaELBO=287.110 (0.00202191%), Factors=5
-Iteration 122: time=0.11, Factors=5
-Iteration 123: time=0.11, Factors=5
-Iteration 124: time=0.11, Factors=5
-Iteration 125: time=0.11, Factors=5
-Iteration 126: time=0.12, ELBO=-1745285.19, deltaELBO=209.865 (0.00147793%), Factors=5
-Iteration 127: time=0.11, Factors=5
-Iteration 128: time=0.11, Factors=5
-Iteration 129: time=0.11, Factors=5
-Iteration 130: time=0.11, Factors=5
-Iteration 131: time=0.12, ELBO=-1745137.02, deltaELBO=148.166 (0.00104342%), Factors=5
-Iteration 132: time=0.11, Factors=5
-Iteration 133: time=0.11, Factors=5
-Iteration 134: time=0.11, Factors=5
-Iteration 135: time=0.11, Factors=5
-Iteration 136: time=0.12, ELBO=-1745035.00, deltaELBO=102.023 (0.00071847%), Factors=5
-Iteration 137: time=0.11, Factors=5
-Iteration 138: time=0.11, Factors=5
-Iteration 139: time=0.11, Factors=5
-Iteration 140: time=0.11, Factors=5
-Iteration 141: time=0.12, ELBO=-1744965.52, deltaELBO=69.482 (0.00048931%), Factors=5
-Iteration 142: time=0.11, Factors=5
-Iteration 143: time=0.11, Factors=5
-Iteration 144: time=0.11, Factors=5
-Iteration 145: time=0.11, Factors=5
-Iteration 146: time=0.12, ELBO=-1744918.30, deltaELBO=47.222 (0.00033255%), Factors=5
+Iteration 1: time=0.19, ELBO=-2103256.93, deltaELBO=15523828.159 (88.06803892%), Factors=7
+Iteration 2: time=0.18, Factors=7
+Iteration 3: time=0.18, Factors=7
+Iteration 4: time=0.18, Factors=7
+Iteration 5: time=0.18, Factors=7
+Iteration 6: time=0.19, ELBO=-1712673.83, deltaELBO=390583.106 (2.21581222%), Factors=7
+Iteration 7: time=0.18, Factors=7
+Iteration 8: time=0.17, Factors=7
+Iteration 9: time=0.17, Factors=7
+Iteration 10: time=0.18, Factors=7
+Iteration 11: time=0.19, ELBO=-1699670.48, deltaELBO=13003.347 (0.07376913%), Factors=7
+Iteration 12: time=0.18, Factors=7
+Iteration 13: time=0.18, Factors=7
+Iteration 14: time=0.18, Factors=7
+Iteration 15: time=0.18, Factors=7
+Iteration 16: time=0.20, ELBO=-1695028.19, deltaELBO=4642.285 (0.02633609%), Factors=7
+Iteration 17: time=0.18, Factors=7
+Iteration 18: time=0.18, Factors=7
+Iteration 19: time=0.18, Factors=7
+Iteration 20: time=0.18, Factors=7
+Iteration 21: time=0.19, ELBO=-1691424.32, deltaELBO=3603.873 (0.02044509%), Factors=7
+Iteration 22: time=0.18, Factors=7
+Iteration 23: time=0.18, Factors=7
+Iteration 24: time=0.18, Factors=7
+Iteration 25: time=0.18, Factors=7
+Iteration 26: time=0.19, ELBO=-1688352.67, deltaELBO=3071.650 (0.01742574%), Factors=7
+Iteration 27: time=0.18, Factors=7
+Iteration 28: time=0.18, Factors=7
+Iteration 29: time=0.18, Factors=7
+Iteration 30: time=0.18, Factors=7
+Iteration 31: time=0.19, ELBO=-1685562.99, deltaELBO=2789.681 (0.01582611%), Factors=7
+Iteration 32: time=0.18, Factors=7
+Iteration 33: time=0.18, Factors=7
+Iteration 34: time=0.18, Factors=7
+Iteration 35: time=0.18, Factors=7
+Iteration 36: time=0.20, ELBO=-1683194.01, deltaELBO=2368.978 (0.01343942%), Factors=7
+Iteration 37: time=0.18, Factors=7
+Iteration 38: time=0.18, Factors=7
+Iteration 39: time=0.18, Factors=7
+Iteration 40: time=0.18, Factors=7
+Iteration 41: time=0.20, ELBO=-1681312.36, deltaELBO=1881.656 (0.01067480%), Factors=7
+Iteration 42: time=0.18, Factors=7
+Iteration 43: time=0.18, Factors=7
+Iteration 44: time=0.18, Factors=7
+Iteration 45: time=0.18, Factors=7
+Iteration 46: time=0.20, ELBO=-1679838.34, deltaELBO=1474.014 (0.00836221%), Factors=7
+Iteration 47: time=0.18, Factors=7
+Iteration 48: time=0.18, Factors=7
+Iteration 49: time=0.18, Factors=7
+Iteration 50: time=0.18, Factors=7
+Iteration 51: time=0.21, ELBO=-1678845.23, deltaELBO=993.112 (0.00563401%), Factors=7
+Iteration 52: time=0.18, Factors=7
+Iteration 53: time=0.18, Factors=7
+Iteration 54: time=0.18, Factors=7
+Iteration 55: time=0.18, Factors=7
+Iteration 56: time=0.19, ELBO=-1678271.89, deltaELBO=573.338 (0.00325260%), Factors=7
+Iteration 57: time=0.18, Factors=7
+Iteration 58: time=0.18, Factors=7
+Iteration 59: time=0.18, Factors=7
+Iteration 60: time=0.18, Factors=7
+Iteration 61: time=0.19, ELBO=-1677926.24, deltaELBO=345.652 (0.00196092%), Factors=7
+Iteration 62: time=0.18, Factors=7
+Iteration 63: time=0.18, Factors=7
+Iteration 64: time=0.18, Factors=7
+Iteration 65: time=0.18, Factors=7
+Iteration 66: time=0.20, ELBO=-1677685.83, deltaELBO=240.414 (0.00136389%), Factors=7
+Iteration 67: time=0.18, Factors=7
+Iteration 68: time=0.19, Factors=7
+Iteration 69: time=0.18, Factors=7
+Iteration 70: time=0.18, Factors=7
+Iteration 71: time=0.20, ELBO=-1677496.78, deltaELBO=189.050 (0.00107250%), Factors=7
+Iteration 72: time=0.18, Factors=7
+Iteration 73: time=0.18, Factors=7
+Iteration 74: time=0.18, Factors=7
+Iteration 75: time=0.18, Factors=7
+Iteration 76: time=0.19, ELBO=-1677334.00, deltaELBO=162.774 (0.00092343%), Factors=7
+Iteration 77: time=0.18, Factors=7
+Iteration 78: time=0.18, Factors=7
+Iteration 79: time=0.18, Factors=7
+Iteration 80: time=0.18, Factors=7
+Iteration 81: time=0.19, ELBO=-1677182.84, deltaELBO=151.157 (0.00085753%), Factors=7
+Iteration 82: time=0.18, Factors=7
+Iteration 83: time=0.18, Factors=7
+Iteration 84: time=0.18, Factors=7
+Iteration 85: time=0.18, Factors=7
+Iteration 86: time=0.21, ELBO=-1677032.37, deltaELBO=150.471 (0.00085363%), Factors=7
+Iteration 87: time=0.18, Factors=7
+Iteration 88: time=0.18, Factors=7
+Iteration 89: time=0.18, Factors=7
+Iteration 90: time=0.18, Factors=7
+Iteration 91: time=0.19, ELBO=-1676870.84, deltaELBO=161.536 (0.00091641%), Factors=7
+Iteration 92: time=0.18, Factors=7
+Iteration 93: time=0.18, Factors=7
+Iteration 94: time=0.18, Factors=7
+Iteration 95: time=0.18, Factors=7
+Iteration 96: time=0.19, ELBO=-1676686.11, deltaELBO=184.725 (0.00104796%), Factors=7
+Iteration 97: time=0.18, Factors=7
+Iteration 98: time=0.17, Factors=7
+Iteration 99: time=0.17, Factors=7
+Iteration 100: time=0.17, Factors=7
+Iteration 101: time=0.19, ELBO=-1676463.91, deltaELBO=222.202 (0.00126057%), Factors=7
+Iteration 102: time=0.18, Factors=7
+Iteration 103: time=0.17, Factors=7
+Iteration 104: time=0.19, Factors=7
+Iteration 105: time=0.18, Factors=7
+Iteration 106: time=0.20, ELBO=-1676187.25, deltaELBO=276.664 (0.00156954%), Factors=7
+Iteration 107: time=0.18, Factors=7
+Iteration 108: time=0.18, Factors=7
+Iteration 109: time=0.18, Factors=7
+Iteration 110: time=0.18, Factors=7
+Iteration 111: time=0.19, ELBO=-1675837.44, deltaELBO=349.808 (0.00198449%), Factors=7
+Iteration 112: time=0.18, Factors=7
+Iteration 113: time=0.18, Factors=7
+Iteration 114: time=0.18, Factors=7
+Iteration 115: time=0.18, Factors=7
+Iteration 116: time=0.20, ELBO=-1675396.72, deltaELBO=440.719 (0.00250024%), Factors=7
+Iteration 117: time=0.19, Factors=7
+Iteration 118: time=0.19, Factors=7
+Iteration 119: time=0.19, Factors=7
+Iteration 120: time=0.19, Factors=7
+Iteration 121: time=0.20, ELBO=-1674851.19, deltaELBO=545.533 (0.00309486%), Factors=7
+Iteration 122: time=0.18, Factors=7
+Iteration 123: time=0.18, Factors=7
+Iteration 124: time=0.18, Factors=7
+Iteration 125: time=0.18, Factors=7
+Iteration 126: time=0.20, ELBO=-1674196.35, deltaELBO=654.834 (0.00371493%), Factors=7
+Iteration 127: time=0.19, Factors=7
+Iteration 128: time=0.19, Factors=7
+Iteration 129: time=0.19, Factors=7
+Iteration 130: time=0.19, Factors=7
+Iteration 131: time=0.20, ELBO=-1673440.03, deltaELBO=756.320 (0.00429067%), Factors=7
+Iteration 132: time=0.19, Factors=7
+Iteration 133: time=0.18, Factors=7
+Iteration 134: time=0.18, Factors=7
+Iteration 135: time=0.18, Factors=7
+Iteration 136: time=0.20, ELBO=-1672602.33, deltaELBO=837.698 (0.00475233%), Factors=7
+Iteration 137: time=0.19, Factors=7
+Iteration 138: time=0.19, Factors=7
+Iteration 139: time=0.19, Factors=7
+Iteration 140: time=0.19, Factors=7
+Iteration 141: time=0.20, ELBO=-1671712.76, deltaELBO=889.578 (0.00504665%), Factors=7
+Iteration 142: time=0.18, Factors=7
+Iteration 143: time=0.17, Factors=7
+Iteration 144: time=0.18, Factors=7
+Iteration 145: time=0.18, Factors=7
+Iteration 146: time=0.20, ELBO=-1670807.72, deltaELBO=905.041 (0.00513438%), Factors=7
+Iteration 147: time=0.19, Factors=7
+Iteration 148: time=0.18, Factors=7
+Iteration 149: time=0.18, Factors=7
+Iteration 150: time=0.18, Factors=7
+Iteration 151: time=0.19, ELBO=-1669930.90, deltaELBO=876.820 (0.00497427%), Factors=7
+Iteration 152: time=0.17, Factors=7
+Iteration 153: time=0.18, Factors=7
+Iteration 154: time=0.18, Factors=7
+Iteration 155: time=0.18, Factors=7
+Iteration 156: time=0.19, ELBO=-1669129.14, deltaELBO=801.755 (0.00454842%), Factors=7
+Iteration 157: time=0.18, Factors=7
+Iteration 158: time=0.18, Factors=7
+Iteration 159: time=0.18, Factors=7
+Iteration 160: time=0.18, Factors=7
+Iteration 161: time=0.19, ELBO=-1668443.88, deltaELBO=685.265 (0.00388757%), Factors=7
+Iteration 162: time=0.18, Factors=7
+Iteration 163: time=0.18, Factors=7
+Iteration 164: time=0.18, Factors=7
+Iteration 165: time=0.18, Factors=7
+Iteration 166: time=0.19, ELBO=-1667898.25, deltaELBO=545.623 (0.00309537%), Factors=7
+Iteration 167: time=0.18, Factors=7
+Iteration 168: time=0.18, Factors=7
+Iteration 169: time=0.18, Factors=7
+Iteration 170: time=0.18, Factors=7
+Iteration 171: time=0.19, ELBO=-1667490.20, deltaELBO=408.050 (0.00231490%), Factors=7
+Iteration 172: time=0.18, Factors=7
+Iteration 173: time=0.18, Factors=7
+Iteration 174: time=0.18, Factors=7
+Iteration 175: time=0.18, Factors=7
+Iteration 176: time=0.20, ELBO=-1667197.88, deltaELBO=292.322 (0.00165837%), Factors=7
+Iteration 177: time=0.18, Factors=7
+Iteration 178: time=0.18, Factors=7
+Iteration 179: time=0.18, Factors=7
+Iteration 180: time=0.18, Factors=7
+Iteration 181: time=0.19, ELBO=-1666991.39, deltaELBO=206.496 (0.00117147%), Factors=7
+Iteration 182: time=0.18, Factors=7
+Iteration 183: time=0.18, Factors=7
+Iteration 184: time=0.18, Factors=7
+Iteration 185: time=0.18, Factors=7
+Iteration 186: time=0.19, ELBO=-1666844.20, deltaELBO=147.184 (0.00083499%), Factors=7
+Iteration 187: time=0.18, Factors=7
+Iteration 188: time=0.18, Factors=7
+Iteration 189: time=0.18, Factors=7
+Iteration 190: time=0.18, Factors=7
+Iteration 191: time=0.19, ELBO=-1666735.81, deltaELBO=108.389 (0.00061490%), Factors=7
+Iteration 192: time=0.18, Factors=7
+Iteration 193: time=0.18, Factors=7
+Iteration 194: time=0.18, Factors=7
+Iteration 195: time=0.18, Factors=7
+Iteration 196: time=0.19, ELBO=-1666652.48, deltaELBO=83.333 (0.00047275%), Factors=7
+Iteration 197: time=0.18, Factors=7
+Iteration 198: time=0.18, Factors=7
+Iteration 199: time=0.18, Factors=7
+Iteration 200: time=0.18, Factors=7
+Iteration 201: time=0.20, ELBO=-1666585.26, deltaELBO=67.218 (0.00038133%), Factors=7
 
 Converged!
 
@@ -442,61 +532,47 @@ Converged!
 #######################
 
 
+Warning: Output file /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/14_MOFA/01_MOFA/sn_broad/model.hdf5 already exists, it will be replaced
 Saving model in /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/14_MOFA/01_MOFA/sn_broad/model.hdf5...
 Warning message:
 In .quality_control(object, verbose = verbose) :
-  Factor(s) 1, 2, 4 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+  Factor(s) 1, 2 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
 
-$APOE_carrier
-# A tibble: 5 × 4
-  Factor  term         p.value adj_pvalue
-  <chr>   <chr>          <dbl>      <dbl>
-1 Factor1 APOE_carrier  0.814       1    
-2 Factor2 APOE_carrier  0.0205      0.103
-3 Factor3 APOE_carrier  0.772       1    
-4 Factor4 APOE_carrier  0.667       1    
-5 Factor5 APOE_carrier  0.307       1    
-
-$APOE
-# A tibble: 5 × 4
-  Factor  term  p.value adj_pvalue
-  <chr>   <chr>   <dbl>      <dbl>
-1 Factor1 APOE   0.0967      0.484
-2 Factor2 APOE   0.154       0.597
-3 Factor3 APOE   0.858       0.858
-4 Factor4 APOE   0.408       0.816
-5 Factor5 APOE   0.149       0.597
-
-$Ancestry
-# A tibble: 5 × 4
-  Factor  term     p.value adj_pvalue
-  <chr>   <chr>      <dbl>      <dbl>
-1 Factor1 Ancestry   0.695      1    
-2 Factor2 Ancestry   0.188      0.938
-3 Factor3 Ancestry   0.708      1    
-4 Factor4 Ancestry   0.453      1    
-5 Factor5 Ancestry   0.295      1    
-
-$taupathy
-# A tibble: 5 × 4
-  Factor  term     p.value adj_pvalue
-  <chr>   <chr>      <dbl>      <dbl>
-1 Factor1 taupathy 0.319       0.957 
-2 Factor2 taupathy 0.00233     0.0116
-3 Factor3 taupathy 0.121       0.482 
-4 Factor4 taupathy 0.805       0.957 
-5 Factor5 taupathy 0.477       0.957 
-
-$Sex
-# A tibble: 5 × 4
-  Factor  term  p.value adj_pvalue
-  <chr>   <chr>   <dbl>      <dbl>
-1 Factor1 Sex    0.0853      0.341
-2 Factor2 Sex    0.0536      0.268
-3 Factor3 Sex    0.704       1    
-4 Factor4 Sex    0.900       1    
-5 Factor5 Sex    0.133       0.400
-
+# A tibble: 7 × 13
+# Groups:   Factor [7]
+  sample APOE  APOE_carrier   Age Anc_Afr Ancestry Braak       CERAD Sex   group
+  <chr>  <chr> <chr>        <dbl>   <dbl> <chr>    <chr>       <chr> <chr> <fct>
+1 Br5276 E3/E4 E4+           59.9 0.00305 EA       B1 (I - II) C0-n… M     sing…
+2 Br1691 E4/E4 E4+           46.5 0.797   AA       None        None  F     sing…
+3 Br2582 E2/E2 E2+           41.4 0.00311 EA       None        None  M     sing…
+4 Br6538 E2/E3 E2+           60.8 0.00458 EA       B1 (I - II) C0-n… M     sing…
+5 Br5529 E2/E2 E2+           48.7 0.864   AA       None        None  F     sing…
+6 Br3974 E3/E4 E4+           62.7 0.809   AA       B1 (I - II) C0-n… M     sing…
+7 Br5599 E3/E4 E4+           55.9 0.00396 EA       B0          C0-n… M     sing…
+# ℹ 3 more variables: taupathy <chr>, Factor <chr>, value <dbl>
+# A tibble: 7 × 13
+# Groups:   Factor [7]
+  sample APOE  APOE_carrier   Age Anc_Afr Ancestry Braak       CERAD Sex   group
+  <chr>  <chr> <chr>        <dbl>   <dbl> <chr>    <chr>       <chr> <chr> <fct>
+1 Br5212 E2/E3 E2+           51.6 0.00294 EA       B0          C0-n… M     sing…
+2 Br5276 E3/E4 E4+           59.9 0.00305 EA       B1 (I - II) C0-n… M     sing…
+3 Br6161 E2/E2 E2+           43.7 0.0412  EA       None        None  M     sing…
+4 Br5599 E3/E4 E4+           55.9 0.00396 EA       B0          C0-n… M     sing…
+5 Br5276 E3/E4 E4+           59.9 0.00305 EA       B1 (I - II) C0-n… M     sing…
+6 Br1556 E2/E2 E2+           30.0 0.837   AA       None        None  F     sing…
+7 Br2305 E4/E4 E4+           54.9 0.844   AA       None        None  F     sing…
+# ℹ 3 more variables: taupathy <chr>, Factor <chr>, value <dbl>
+# A tibble: 7 × 5
+# Groups:   term [7]
+  Factor  term         p.value adj_pvalue signif
+  <chr>   <chr>          <dbl>      <dbl> <chr> 
+1 Factor2 APOE_carrier 0.0188      0.132  ""    
+2 Factor6 Age          0.130       0.910  ""    
+3 Factor2 Ancestry     0.133       0.933  ""    
+4 Factor1 Braak        0.147       1      ""    
+5 Factor1 CERAD        0.674       1      ""    
+6 Factor2 Sex          0.0406      0.284  ""    
+7 Factor2 taupathy     0.00251     0.0176 "*"   
 null device 
           1 
 null device 
@@ -504,9 +580,9 @@ null device
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2025-07-08 16:34:30 EDT"
+[1] "2025-08-08 15:03:32 EDT"
    user  system elapsed 
- 59.321   2.103  68.762 
+105.667   5.578 116.152 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -517,7 +593,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-07-08
+ date     2025-08-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -533,6 +609,8 @@ null device
  BiocNeighbors          2.2.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  BiocParallel           1.42.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
  BiocSingular           1.24.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.0)
  bluster                1.18.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  broom                  1.0.8      2025-03-28 [2] CRAN (R 4.5.0)
  Cairo                  1.6-2      2023-11-28 [2] CRAN (R 4.5.0)
@@ -584,7 +662,7 @@ null device
  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
  lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
- limma                  3.64.1     2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ limma                  3.64.3     2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
  locfit                 1.5-9.12   2025-03-05 [2] CRAN (R 4.5.0)
  lubridate            * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
  magick                 2.8.7      2025-06-06 [1] CRAN (R 4.5.0)
@@ -644,6 +722,7 @@ null device
  utf8                   1.2.6      2025-06-08 [1] CRAN (R 4.5.0)
  uwot                 * 0.2.3      2025-02-24 [2] CRAN (R 4.5.0)
  vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+ vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.0)
  withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
  XVector                0.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
 
@@ -664,4 +743,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jul  8 04:34:31 PM EDT 2025
+Fri Aug  8 03:03:33 PM EDT 2025
