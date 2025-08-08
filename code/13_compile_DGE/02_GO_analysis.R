@@ -325,7 +325,7 @@ get_go_DE_stats_multi <- function(go_list){
 # go_stats_multi <- get_go_DE_stats_multi(go_list = c("myelin assembly", "protein autoprocessing", "dendrite terminus"))
 go_stats_multi <- get_go_DE_stats_multi(go_list = c("protein autoprocessing", "myelination"))
 
-GO_logfc_Heatmap <- function(go_stats, title = NULL){
+GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
     
     logFC <- as.matrix(go_stats$log_fc)
     signif <- as.matrix(go_stats$signif)
@@ -354,14 +354,30 @@ GO_logfc_Heatmap <- function(go_stats, title = NULL){
     Heatmap(as.matrix(logFC),
             col = my.col,
             name = "log(FC)",
-            cluster_rows = TRUE,
+            cluster_rows = cluster_rows,
             cluster_columns = FALSE,
-            row_split = anno_table$Description_n,
+            row_split = anno_table$Description,
             row_title_rot = 0,
             cell_fun = function(j, i, x, y, width, height, fill) {
                 grid.text(signif[i, j], x, y, gp = gpar(fontsize = 10))
             },
             column_title = title)
+    
+}
+
+parent_term_heatmap <- function(search_term, term_title = gsub(" ", "_", search_term)){
+    
+    top_terms <- get_go_genes(go_lookup(search_term))|>
+        count(Description) |>
+        arrange(-n) |>
+        head(5) |>
+        pull(Description)
+    
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, term_title)), height = 10, width = 10)
+    
+    print(GO_logfc_Heatmap(get_go_DE_stats_multi(top_terms),
+                           title = search_term))
+    dev.off()
     
 }
 
@@ -438,25 +454,9 @@ if(opt$datatype == "Visium"){
     
     
     
-    
-    parent_term_heatmap <- function(search_term, term_title = gsub(" ", "_", search_term)){
-        
-        top_terms <- get_go_genes(go_lookup(search_term))|>
-            count(Description) |>
-            arrange(-n) |>
-            head(5) |>
-            pull(Description)
-        
-        pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, term_title)), height = 10, width = 10)
-        
-        print(GO_logfc_Heatmap(get_go_DE_stats_multi(top_terms),
-                         title = search_term))
-        dev.off()
-        
-    }
-    
     parent_term_heatmap("neurotransmitter transport", term_title = "neuro_transport")
-    parent_term_heatmap("synaptic membrane")
+    parent_term_heatmap("neurotransmitter transport", term_title = "neuro_transport")
+    parent_term_heatmap("cellular response to calcium ion", term_title = "calcium_ion")
     
     
     get_go_genes(go_lookup("neurotransmitter transport"))|>
