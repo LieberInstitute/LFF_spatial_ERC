@@ -35,6 +35,10 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
+}else if(opt$datatype == "sn_fine"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
@@ -49,6 +53,8 @@ DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$dat
 file.exists(DE_data_fn)
 
 DE_data <- readRDS(DE_data_fn)
+
+cluster_levels <- cluster_levels[cluster_levels %in% DE_data$cluster]
 
 DE_data <- DE_data |> mutate(cluster = factor(cluster, levels = cluster_levels))
 
@@ -217,9 +223,27 @@ dev.off()
 
 reducedTerms_list_long <- map(reducedTerms_list, ~do.call("rbind", .x))
 
-reducedTerms_list_long$BP |> count(parentTerm) 
+## check most common parent terms
+map(reducedTerms_list_long, ~.x |> count(parentTerm) |> arrange(-n) |> head())
 
+## check most common terms
+map(reducedTerms_list_long, ~.x |> count(term) |> arrange(-n) |> head())
+
+## check GO terms w/ most genes
+compare_clus |> arrange(-Count) |> head()
+
+
+compare_clus |> filter(grepl("MAPT", geneID))
+
+## find GO terms associated w/ parent terms
 go_lookup <- function(search_term){
+    
+    hit <- any(map_lgl(reducedTerms_list_long, ~search_term %in% .x$parentTerm))
+    
+    if(!hit){
+        stop(sprintf("GO parent term '%s' not in any reducedTerms_list", search_term))
+    }
+    
     go_terms <- map(reducedTerms_list_long, ~.x |> dplyr::filter(parentTerm == search_term) |> pull(go) |> unique())
     go_table <- map_dfr(go_terms, ~compare_clus |> filter(ID %in% .x))
     return(unique(go_table$Description))
@@ -227,7 +251,15 @@ go_lookup <- function(search_term){
 }
 
 # go_terms_myelination <- go_lookup("myelination")
+# go_terms_synaptic <- go_lookup("synaptic membrane")
 
+parent_term_lookup <- function(search){
+        map(reducedTerms_list_long, ~unique(.x$parentTerm[grep(search, .x$parentTerm)]))
+}
+
+parent_term_lookup("calcium")
+
+## get genes matching GO terms
 get_go_genes <- function(go_terms){
     
     go_genes <- compare_clus |>
@@ -242,8 +274,6 @@ get_go_genes <- function(go_terms){
 
 # go_genes <- get_go_genes(go_terms_myelination)
 
-compare_clus |> arrange(-Count) |> head()
-
 ## gene can map parent term multiple times
 # go_genes |> count(geneID) |> arrange(-n)
 # go_genes |> count(Description) |> arrange(-n)
@@ -251,7 +281,7 @@ compare_clus |> arrange(-Count) |> head()
 get_go_DE_stats <- function(go_term){
     
     if(!go_term %in% compare_clus$Description){
-        stop("GO term not in compare_clus")
+        stop(sprintf("GO term '%s' not in compare_clus", go_term))
     }
     
     go_gene <- compare_clus |>
@@ -453,6 +483,38 @@ if(opt$datatype == "Visium"){
                                              "regulation of membrane potential")),
                      title = "cellular response to calcium ion")
     dev.off()
+} else if(opt$datatype == "sn_fine"){
+    
+    # compare_clus |> filter(grepl("MAPT", geneID))
+    # compare_clus |> filter(grepl("FOS", geneID))
+    
+    ## select GO terms
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s.pdf", opt$datatype)), width = 12, height = 12)
+
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "neuronal cell body"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "synaptic membrane"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "metal ion transmembrane transporter activity"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "response to calcium ion"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "oligodendrocyte differentiation"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "main axon"))
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("main axon", "neuronal cell body")))
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("memory", "cognition")))
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("central nervous system myelination", "oligodendrocyte differentiation")))
+    
+    dev.off()
+    
+    # parent_term_lookup("calcium")
+
+    parent_term_heatmap(search_term = c("myelin sheath",  # down in Astro.3 + Oligo.3
+                                        "myelination",
+                                        "cell-cell junction",
+                                        "synaptic membrane",  # Oligo.3 Up
+                                        "metal ion transmembrane transporter activity",
+                                        "regulation of metal ion transport",
+                                        "response to calcium ion",
+                                        "actin filament-based movement"), 
+                        pdf_suffix = "MULTI")
+    
 }
 
 
