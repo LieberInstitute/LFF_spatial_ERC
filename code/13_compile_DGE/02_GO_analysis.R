@@ -396,7 +396,7 @@ GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
     
 }
 
-parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term)){
+parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term), height = 10, width = 10){
     
     top_terms <- map(search_term, ~get_go_genes(go_lookup(.x))|>
                          count(Description) |>
@@ -410,13 +410,12 @@ parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_
     # debug
     # get_go_DE_stats_multi(top_terms[[2]])
     
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)), height = 10, width = 10)
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)), height = height, width = width)
     
     map2(top_terms, search_term, ~print(GO_logfc_Heatmap(get_go_DE_stats_multi(.x),
                                                          title = .y)))
     dev.off()
-    
-}
+    }
 
 
 #### GO heatmap by datatype ####
@@ -451,7 +450,7 @@ if(opt$datatype == "Visium"){
                                         "dendrite terminus",
                                         "mitotic spindle midzone",
                                         "dipeptidase activity"), 
-                        pdf_suffix = "MULTI")
+                        pdf_suffix = "ParentTerms")
     
     
 } else if(opt$datatype == "sn_broad"){
@@ -472,7 +471,7 @@ if(opt$datatype == "Visium"){
                                         "neurotransmitter transport",
                                         "cellular response to calcium ion",
                                         "learning or memory"), 
-                        pdf_suffix = "MULTI")
+                        pdf_suffix = "ParentTerms")
     
    
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-TOP.pdf", opt$datatype)), height = 10, width = 10)
@@ -513,7 +512,8 @@ if(opt$datatype == "Visium"){
                                         "regulation of metal ion transport",
                                         "response to calcium ion",
                                         "actin filament-based movement"), 
-                        pdf_suffix = "MULTI")
+                        pdf_suffix = "ParentTerms",
+                        height = 14, width = 12)
     
 }
 
