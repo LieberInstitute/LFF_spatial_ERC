@@ -17,29 +17,29 @@ metadata_sn_plan <- read_csv(file = here("processed-data", "00_project_prep", "0
 
 metadata_sn_plan |> count(snRNA_complete)
 
-
-metadata_plan <- metadata_visium_plan |>
-    select(BrNum, APOE) |>
-    mutate(assay = "Visium", complete = TRUE) |>
-    bind_rows(metadata_sn_plan |>
-                  select(BrNum, APOE, complete = snRNA_complete) |>
-                  mutate(assay = "snRNA-seq"))
-
-metadata_plan |> dplyr::count(assay, complete)
+# 
+# metadata_plan <- metadata_visium_plan |>
+#     select(BrNum, APOE) |>
+#     mutate(assay = "Visium", complete = TRUE) |>
+#     bind_rows(metadata_sn_plan |>
+#                   select(BrNum, APOE, complete = snRNA_complete) |>
+#                   mutate(assay = "snRNA-seq"))
+# 
+# metadata_plan |> dplyr::count(assay, complete)
 # assay     complete     n
 # <chr>     <lgl>    <int>
 # 1 Visium    TRUE        32
 # 2 snRNA-seq FALSE       17
 # 3 snRNA-seq TRUE        14
 
-experiment_tile <- metadata_plan |>
-    ggplot(aes(x = BrNum, y = assay, fill = complete)) +
-    geom_tile(color = "black") +
-    facet_grid(.~APOE, scales = "free_x", space='free')+
-    theme_bw()+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
-    
-ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile_n%i.png", n)), height = 4, width = 7)
+# experiment_tile <- metadata_plan |>
+#     ggplot(aes(x = BrNum, y = assay, fill = complete)) +
+#     geom_tile(color = "black") +
+#     facet_grid(.~APOE, scales = "free_x", space='free')+
+#     theme_bw()+
+#     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+#     
+# ggsave(experiment_tile, filename = here(plot_dir, sprintf("experiment_tile_n%i.png", n)), height = 4, width = 7)
 
 #### Donor Info ####
 
@@ -159,22 +159,26 @@ age_apoe_carrier_boxplot <- sample_info |>
     mutate(APOE_carrier_Anc = paste(APOE_carrier, Ancestry)) |>
     ggplot(aes(y = Age, x = APOE_carrier_Anc, fill = Ancestry)) +
     geom_boxplot(outlier.shape = NA) +
-    geom_point(aes(color = APOE_carrier)) +
+    geom_jitter(aes(color = APOE_carrier), width = .2) +
     scale_fill_manual(values = ancestry_colors) +
     scale_color_manual(values = APOE_carrier_colors) +
-    labs(x = "APOE_carrier + Anc")
+    labs(x = "APOE_carrier + Anc") +
     theme_bw()
 
 ggsave(age_apoe_carrier_boxplot, filename = here(plot_dir, sprintf("age_apoe_carrier_boxplot_n%i.png", n)), width = 4, height = 6)
 
-
-age_boxplot <- sample_info |>
-    ggplot(aes(x = APOE, y = Age, color = Sex)) +
-    geom_boxplot() +
-    facet_wrap(~Ancestry) +
+age_apoe_carrier_sex_boxplot <- sample_info |> 
+    mutate(APOE_carrier_Sex = paste(APOE_carrier, Sex)) |>
+    ggplot(aes(y = Age, x = APOE_carrier_Sex, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE_carrier), width = .2) +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    labs(x = "APOE_carrier + Sex") +
     theme_bw()
 
-ggsave(age_boxplot, filename = here(plot_dir, sprintf("age_boxplot_n%i.png", n)))
+ggsave(age_apoe_carrier_sex_boxplot, filename = here(plot_dir, sprintf("age_apoe_carrier_sex_boxplot_n%i.png", n)), width = 4, height = 6)
+
 
 
 # slurmjobs::job_single('03_experiment_tile', create_shell = TRUE, memory = '5G', command = "Rscript 03_experiment_tile.R")
