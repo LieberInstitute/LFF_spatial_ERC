@@ -40,7 +40,7 @@ APOE_genotype_colors <- c(`E2/E2`="#186E8B", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B
 APOE_carrier_colors <- c(`E2+`="#398A84", `E4+`="#D46B43")
 
 ## phenotype colors
-ancestry_colors <- c(EA="#1B3174",AA="#698F3F")
+ancestry_colors <- c(EA="#8BA1E4",AA="#A4C77F")
 sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
 
 ## test APOE colors
