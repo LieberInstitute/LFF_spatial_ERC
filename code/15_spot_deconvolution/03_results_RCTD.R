@@ -192,10 +192,11 @@ n_nuclei_density <- ggplot(pd, aes(x = num_nuclei_within, color = SpD)) +
     geom_density(adjust = 2) +
     scale_color_manual(values = SpD_colors) +
     theme_bw() +
+    coord_flip() +
     # xlim(0,20) +
     theme(legend.position = "None")
 
-ggsave(n_nuclei_density, filename = here(plot_dir, "ERC_Visium_SpD_density_n_nuclei.png"), width = 7, height =4)
+ggsave(n_nuclei_density, filename = here(plot_dir, "ERC_Visium_SpD_density_n_nuclei.png"), width = 4, height =7)
 
 
 ## vis_gene
