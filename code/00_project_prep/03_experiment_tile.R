@@ -1,6 +1,6 @@
 
 library("tidyverse")
-library("googlesheets4")
+# library("googlesheets4")
 library("sessioninfo")
 library("here")
 
@@ -39,12 +39,18 @@ experiment_tile <- metadata_plan |>
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
     
-ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile.png"), height = 4, width = 7)
+ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile_n%i.png", n)), height = 4, width = 7)
 
 #### Donor Info ####
 
+n = 30
+
 sample_info <- read_csv(here("processed-data", "02_build_spe", "sample_info.csv"))
 sample_info$APOE_carrier = ifelse(grepl("E2", sample_info$APOE), "E2+", "E4+")
+
+if(n == 30){
+    sample_info <- sample_info |> filter(BrNum != "Br1289")
+}
 
 table(sample_info$Sex)
 # F  M 
@@ -78,7 +84,7 @@ APOE_ancestry_tile <- sample_info |>
     theme_bw() +
     theme(legend.position = "None")
 
-ggsave(APOE_ancestry_tile, filename = here(plot_dir, "LFF_ERC_APOE_ancestry_tileplot.png"), height = 2, width = 3)
+ggsave(APOE_ancestry_tile, filename = here(plot_dir, sprintf("LFF_ERC_APOE_ancestry_tileplot_n%i.png", n)), height = 2, width = 3)
 
 ## carrier tile plot
 APOE_carrier_count <- sample_info |> 
@@ -98,7 +104,7 @@ APOE_carrier_ancestry_tile <- APOE_carrier_count |>
     theme_bw() +
     theme(legend.position = "None")
 
-ggsave(APOE_carrier_ancestry_tile, filename = here(plot_dir, "LFF_ERC_APOE_carrier_ancestry_tileplot.png"), height = 2, width = 3)
+ggsave(APOE_carrier_ancestry_tile, filename = here(plot_dir, sprintf("LFF_ERC_APOE_carrier_ancestry_tileplot_n%i.png", n)), height = 2, width = 3)
 
 ## tile plot split by sex
 APOE_ancestry_sex_tile <- sample_info |> 
@@ -112,7 +118,7 @@ APOE_ancestry_sex_tile <- sample_info |>
     theme_bw() +
     theme(legend.position = "None")
 
-ggsave(APOE_ancestry_sex_tile, filename = here(plot_dir, "LFF_ERC_APOE_ancestry_sex_tileplot.png"), height = 2, width = 6)
+ggsave(APOE_ancestry_sex_tile, filename = here(plot_dir, sprintf("LFF_ERC_APOE_ancestry_sex_tileplot_n%i.png", n)), height = 2, width = 6)
 
 ## sex barplot
 sex_barplot <- sample_info |>
@@ -123,10 +129,44 @@ sex_barplot <- sample_info |>
     theme_bw() +
     theme(legend.position= "None")
 
-ggsave(sex_barplot, filename = here(plot_dir, "sex_barplot.png"), width = 2, height = 2)
+ggsave(sex_barplot, filename = here(plot_dir, sprintf("sex_barplot_n%i.png", n)), width = 2, height = 2)
 
 
-## Age boxplot + genotype + sex
+#### Age ####
+
+age_boxplot <- sample_info |> 
+    ggplot(aes(y = Age, x = "All Samples")) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE_carrier)) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(age_boxplot, filename = here(plot_dir, sprintf("age_boxplot_n%i.png", n)), width = 1.5, height = 6)
+
+
+age_apoe_boxplot <- sample_info |> 
+    ggplot(aes(y = Age, x = APOE, fill = APOE)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Ancestry)) +
+    scale_color_manual(values = ancestry_colors) +
+    scale_fill_manual(values = APOE_genotype_colors) +
+    theme_bw()
+
+ggsave(age_apoe_boxplot, filename = here(plot_dir, sprintf("age_apoe_boxplot_n%i.png", n)), width = 4, height = 6)
+
+age_apoe_carrier_boxplot <- sample_info |> 
+    mutate(APOE_carrier_Anc = paste(APOE_carrier, Ancestry)) |>
+    ggplot(aes(y = Age, x = APOE_carrier_Anc, fill = Ancestry)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = APOE_carrier)) +
+    scale_fill_manual(values = ancestry_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    labs(x = "APOE_carrier + Anc")
+    theme_bw()
+
+ggsave(age_apoe_carrier_boxplot, filename = here(plot_dir, sprintf("age_apoe_carrier_boxplot_n%i.png", n)), width = 4, height = 6)
+
 
 age_boxplot <- sample_info |>
     ggplot(aes(x = APOE, y = Age, color = Sex)) +
@@ -134,7 +174,7 @@ age_boxplot <- sample_info |>
     facet_wrap(~Ancestry) +
     theme_bw()
 
-ggsave(age_boxplot, filename = here(plot_dir, "age_boxplot.png"))
+ggsave(age_boxplot, filename = here(plot_dir, sprintf("age_boxplot_n%i.png", n)))
 
 
 # slurmjobs::job_single('03_experiment_tile', create_shell = TRUE, memory = '5G', command = "Rscript 03_experiment_tile.R")
