@@ -37,7 +37,9 @@ load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose =
 ## APOE colors
 # APOE_genotype_colors <- c(`E2/E2`="#114B5F", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
 APOE_genotype_colors <- c(`E2/E2`="#186E8B", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
-APOE_carrier_colors <- c(`E2+`="#398A84", `E4+`="#D46B43")
+
+APOE_carrier_colors_dark <- c(`E2+`="#3B918B", `E4+`="#B7522A")
+APOE_carrier_colors <- c(`E2+`="#51B8B1", `E4+`="#D97D59")
 
 ## phenotype colors
 ancestry_colors <- c(EA="#8BA1E4",AA="#A4C77F")
@@ -71,7 +73,12 @@ names(sample_colors) <- apoe_colors_tb$sample_id
 # "#CD727A" "#D78F95" "#E1ABAF" "#EBC6CA" "#F5E3E4"
 
 ## save
-save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors, sample_colors,
+save(ancestry_colors, 
+     sex_colors, 
+     APOE_genotype_colors, 
+     APOE_carrier_colors, 
+     APOE_carrier_colors_dark,
+     sample_colors,
      file = here("processed-data", "project_colors.Rdata"))
 
 #### Cell type color archive ####
