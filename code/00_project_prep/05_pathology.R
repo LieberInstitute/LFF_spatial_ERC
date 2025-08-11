@@ -198,4 +198,18 @@ cerad_age_boxplot <- sample_info_path |>
 
 ggsave(cerad_age_boxplot, filename = here(plot_dir, "CERAD_age_boxplot.png"), height = 4, width = 5)
 
+### tau + braak 
+
+braak_tau_age_boxplot <- sample_info_path |>
+    replace_na(list(Braak = " Not Assessed")) |>
+    mutate(Braak = fct_rev(Braak)) |>
+    ggplot(aes(y = taupathy, x = Age)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE)) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    facet_wrap(~Braak, ncol = 1, strip.position ="left") +
+    labs(y = "Tau+") +
+    theme_bw() 
+
+ggsave(braak_tau_age_boxplot, filename = here(plot_dir, "braak_tau_age_boxplot.png"), height = 4, width = 5)
 
