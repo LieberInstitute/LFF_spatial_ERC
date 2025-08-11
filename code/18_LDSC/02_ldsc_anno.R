@@ -11,27 +11,28 @@ library("here")
 library("slurmjobs")
 
 # Import command-line parameters
-scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type",
-      "mode", "m", "1", "character", "specificity or enrichment"),
-    ncol = 5, byrow = TRUE
-)
-opt <- getopt(scec)
+# scec <- matrix(
+#     c("datatype", "d", "1", "character", "Data type",
+#       "mode", "m", "1", "character", "specificity or enrichment"),
+#     ncol = 5, byrow = TRUE
+# )
+# opt <- getopt(scec)
+# print(opt)
 
 ## test
-# opt$datatype <- "Visium"
-# opt$datatype <- "sn_broad"
-# opt$mode <- "specificity"
+datatype <- "Visium"
+# datatype <- "sn_broad"
 
-print(opt)
+mode <- "specificity"
 
 ## format output dir
-out_dir <- here("processed-data", "18_LDSC", sprintf("LDSC_%s_%s", opt$datatype, opt$mode))
+out_dir <- here("processed-data", "18_LDSC", sprintf("LDSC_%s_%s", datatype, mode))
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 out_dir
 
+#### 2. LDSC annotation ####
 ## get bed files/clusters
-bed_data_dir <- here("processed-data", "18_LDSC", "01_prep_marker_bed", sprintf("bed_%s_%s", opt$mode, opt$datatype))
+bed_data_dir <- here("processed-data", "18_LDSC", "01_prep_marker_bed", sprintf("bed_%s_%s", mode, datatype))
 bed_files <- list.files(bed_data_dir)
 (clusters = gsub(".bed", "", bed_files))
 
@@ -45,11 +46,14 @@ create_sub_out_dir <- function(name){
 purrr::walk(clusters, create_sub_out_dir)
 all(clusters %in% list.files(out_dir))
 
+# for i in $(seq 1 22);
+# do
+# echo $i
+# done
 
-slurmjobs::job_loop(loops = list(cluster = clusters,
-                                 chr = as.character(1:22)),
+slurmjobs::job_loop(loops = list(cluster = clusters),
                     create_shell = TRUE,
-                    name = sprintf("02_ldsc_anno-%s_%s", opt$datatype, opt$mode),
+                    name = sprintf("02_ldsc_anno-%s_%s", datatype, mode),
                     create_script = FALSE)
 
 ## check reference inputs on JHPCE
@@ -67,4 +71,24 @@ dir.exists(referenceDir)
 #         --bimfile /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.bim \
 #         --annot-file %s/Astro/chr.1.annot.gz",
 # )
+
+#### LD Score ####
+
+#### LDSC H2 ####
+
+ldsc = "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldsc.py"
+baseline2 = "/dcs04/lieber/shared/statsgen/LDSC/base/baseline2/baselineLD."
+weights = "/dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC."
+freq = "/dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_Phase3_frq/1000G.EUR.QC."
+
+gwas_datasets <- gsub(".gz", "", list.files("/dcs04/lieber/shared/statsgen/LDSC/base/gwas_brain/"))
+##loop over gwas datasets in sh file
+
+slurmjobs::job_loop(loops = list(cluster = clusters),
+                    create_shell = TRUE,
+                    name = sprintf("03_ldsc_h2-%s_%s", datatype, mode),
+                    create_script = FALSE)
+
+
+
 
