@@ -1,12 +1,13 @@
 #!/bin/bash
-#SBATCH -p katun
-#SBATCH --mem=32G
-#SBATCH --job-name=02_run_cpu
+#SBATCH -p caracol
+#SBATCH --gpus=1
+#SBATCH --mem=64G
+#SBATCH --job-name=02_run
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/02_run_cpu_%a.txt
-#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/02_run_cpu_%a.txt
-#SBATCH --array=2
+#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/02_run_%a.txt
+#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/02_run_%a.txt
+#SBATCH --array=1
 
 set -e
 
