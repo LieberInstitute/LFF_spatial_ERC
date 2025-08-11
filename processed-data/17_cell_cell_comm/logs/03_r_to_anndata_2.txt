@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Aug 11 02:05:54 PM EDT 2025
+Mon Aug 11 04:16:18 PM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 21297083
+Job id: 21303425
 Job name: 03_r_to_anndata
-Node name: compute-099
+Node name: compute-097
 Task id: 2
 Loading conda_R/4.5
 
@@ -144,8 +144,8 @@ Registered S3 method overwritten by 'zellkonverter':
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Warning message:
 In .check_reddim_names(x, value[[v]], withDimnames = TRUE, vname = sprintf("value[[%s]]",  :
-  non-NULL 'rownames(value[[12]])' should be the same as 'colnames(x)'
-for 'reducedDims<-'. This will be an error in the next release of
+  non-NULL 'rownames(value[[2]])' should be the same as 'colnames(x)' for
+'reducedDims<-'. This will be an error in the next release of
 Bioconductor.
 ℹ Using the 'counts' assay as the X matrix
 Warning message:
@@ -234,4 +234,4 @@ Bioconductor.
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Aug 11 02:18:05 PM EDT 2025
+Mon Aug 11 04:28:32 PM EDT 2025

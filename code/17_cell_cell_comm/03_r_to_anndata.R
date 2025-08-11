@@ -41,7 +41,18 @@ write_anndata <- function(sce, out_path) {
 
 sce = loadHDF5SummarizedExperiment(sce_dir)
 
-if (task_id == 2) {
+#   Discard parts of objects we don't need, ensure proper data types, and
+#   otherwise prepare objects for conversion
+if (task_id == 1) {
+    assays(sce) = list(
+        counts = as(assays(sce)$counts, "dgCMatrix"),
+        logcounts = as(assays(sce)$logcounts, "dgCMatrix")
+    )
+    reducedDims(sce) = list(UMAP = reducedDims(sce)$UMAP)
+    metadata(sce) = list(cell_type_colors = metadata(sce)$cell_type_colors)
+} else {
+    reducedDims(sce) = list(UMAP = reducedDims(sce)$UMAP)
+    
     #   zellkonverter doesn't know how to convert the 'spatialCoords' slot. We'd
     #   ultimately like the spatialCoords in the .obsm['spatial'] slot of the
     #   resulting AnnData, which corresponds to reducedDims(spe)$spatial in R
