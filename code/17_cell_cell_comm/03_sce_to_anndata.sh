@@ -1,11 +1,12 @@
 #!/bin/bash
 #SBATCH -p katun
-#SBATCH --mem=100G
+#SBATCH --mem=200G
 #SBATCH --job-name=03_sce_to_anndata
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/03_sce_to_anndata.txt
-#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/03_sce_to_anndata.txt
+#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/03_sce_to_anndata_%a.txt
+#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/03_sce_to_anndata_%a.txt
+#SBATCH --array=1-2%2
 
 set -e
 
