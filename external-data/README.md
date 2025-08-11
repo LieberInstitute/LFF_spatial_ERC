@@ -2,8 +2,11 @@
 
 `Allen_Brain_Mouse_cortex_hippo`
 
+`Grubman2019` Supplementary tables from Grubman et al., 2019 [10.1038/s41593-019-0539-4](https://doi.org/10.1038/s41593-019-0539-4)
+
 `OpenTargets` Alzheimer disease associated gene list Downloaded May 21, 2025
  [link](https://platform.opentargets.org/disease/MONDO_0004975/associations)
 
 `Ramsden2015` Supplementary tables from Ramsden et al., 2015 10.1371/journal.pcbi.1004032
+
 
