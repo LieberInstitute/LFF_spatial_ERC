@@ -53,6 +53,11 @@ DE_gene_set_enrichment <- function(gene_list,
             
             enrichList <- lapply(tabList, fisher.test, alternative = "greater")
             
+            sig_gene_names <- de_results_filter$gene_name[sig_genes]
+            
+            common_genes <- map_chr(geneList_present, ~paste(sig_gene_names[sig_gene_names %in% .x], collapse = ","))
+            # common_genes <- map(geneList_present, ~sig_gene_names[sig_gene_names %in% .x])
+            
             enrichTab <- data.frame(
                 OR = vapply(enrichList, `[[`, numeric(1), "estimate"),
                 Pval = vapply(enrichList, `[[`, numeric(1), "p.value"),
@@ -62,6 +67,7 @@ DE_gene_set_enrichment <- function(gene_list,
                 fdr_cut = fdr_cut,
                 DEG_n = sum(sig_genes),
                 ID = names(geneList_present),
+                common_genes = common_genes,
                 stringsAsFactors = FALSE
             )
             rownames(enrichTab) <- NULL
