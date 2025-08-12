@@ -53,7 +53,7 @@ ldsc_data_filter <- ldsc_data |>
 ldsc_dot <- ldsc_data |>
     ggplot(aes(x = cluster, y = gwas)) +
     geom_point(aes(color = z.score, size = -log10(p_zcore))) +
-    geom_text(aes(label = mark), color = 'black', size = 5, vjust = 0.5) +
+    geom_text(aes(label = mark), color = 'black', size = 5) +
     scale_color_gradient2(low = 'blue', high = 'red', midpoint = 0,
                           name = "Coefficient\n(z-score)") +
     theme_bw() +
@@ -64,7 +64,7 @@ ldsc_dot <- ldsc_data |>
 ldsc_dot_filter <- ldsc_data_filter |>
     ggplot(aes(x = cluster, y = gwas)) +
     geom_point(aes(color = z.score, size = -log10(p_zcore))) +
-    geom_text(aes(label = mark), color = 'black', size = 5, vjust = 0.5) +
+    geom_text(aes(label = mark), color = 'black', size = 5) +
     scale_color_gradient2(low = 'blue', high = 'red', midpoint = 0,
                           name = "Coefficient\n(z-score)") +
     theme_bw() +
@@ -85,7 +85,7 @@ ldsc_tile <-ggplot(ldsc_data, aes(x = cluster, y = gwas, fill = z.score)) +
 
 # ggsave(ldsc_tile, filename = here(plot_dir, sprintf("ldsc_tile_%s_%s.png", opt$datatype, opt$mode)), height = 6, width = 6)
 
-ldsc_filter_tile <-ggplot(ldsc_data_filter, aes(x = cluster, y = gwas, fill = z.score)) +
+ldsc_filter_tile <- ggplot(ldsc_data_filter, aes(x = cluster, y = gwas, fill = z.score)) +
     geom_tile() +
     scale_fill_gradient2(low = 'blue', high = 'red', midpoint = 0,
                          name = "Coefficient\n(z-score)") +
