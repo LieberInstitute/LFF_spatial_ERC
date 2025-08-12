@@ -18,8 +18,9 @@ scec <- matrix(
 opt <- getopt(scec)
 
 
-opt$datatype <- "sn_broad"
-opt$mode <- "specificity"
+# opt$datatype <- "sn_broad"
+# opt$datatype <- "Visium"
+# opt$mode <- "specificity"
 
 data_dir <- here("processed-data", "18_LDSC", "04_ldsc_results")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -47,13 +48,17 @@ ldsc_results <- ldsc_results |>
     mutate(p_zcore =  pnorm(abs(Coefficient_z.score),lower.tail=F)*2,
            FDR = p.adjust(p_zcore, method="fdr"))
 
+ldsc_results |> group_by(cluster) |> slice_min(FDR) |>
+    select(cluster, gwas, Coefficient_z.score, p_zcore, FDR)
+
 ## save data
 
-write.csv(ldsc_results, file = here(data_dir, sprintf("LDSC_results-%s_%s.scv", opt$datatype, opt$mode)))
+write.csv(ldsc_results, file = here(data_dir, sprintf("LDSC_results-%s_%s.scv", opt$datatype, opt$mode)),
+          row.names = FALSE)
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
-#                     name = "01_prep_marker_bed",
+#                     name = "04_ldsc_results",
 #                     create_script = FALSE)
 
 
