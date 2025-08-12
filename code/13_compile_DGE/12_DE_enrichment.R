@@ -33,17 +33,22 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
+    
+    modeling_fn <- here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_broad.rds")
+    
 }else if(opt$datatype == "sn_fine"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
     
-    modeling_fn <- here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "modeling_results-cell_type_anno.rds")
+    modeling_fn <- here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds")
     
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
     cluster_levels <- names(SpD_colors)
+    
+    modeling_fn <- here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds")
 }
 
 cluster_levels <- cluster_levels[cluster_levels != "Other"]
@@ -60,7 +65,6 @@ DE_data <- DE_data |> mutate(cluster = factor(cluster, levels = cluster_levels))
 DE_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(cluster)
 
 
-
 ## load Mathys DE data ##
 source(here("external-data", "Mathys2019", "get_Mathys_DE_data.R"))
 
@@ -75,8 +79,8 @@ Mathys_DE_data_path <- Mathys_DE_data |>
 Mathys_DE_data_path |> dplyr::count(cell_type)
 
 ## match counts in Fig 1b
-Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type)
-Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type, IndModel.FC > 0)
+# Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type)
+# Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type, IndModel.FC > 0)
 Mathys_DE_data_path |> dplyr::count(DE_ct_reg)
 
 # DE_ct_reg     n
@@ -98,8 +102,24 @@ Mathys_DE_data_path |> dplyr::count(DE_ct_reg)
 mathys_ct_DEGs <- map(splitit(Mathys_DE_data_path$DE_ct), ~Mathys_DE_data_path$gene_name[.x])
 mathys_ct_reg_DEGs <- map(splitit(Mathys_DE_data_path$DE_ct_reg), ~Mathys_DE_data_path$gene_name[.x])
 
-#### modeling ####
+#### cluster modeling ####
+modeling_data <- readRDS(modeling_fn)
 
+modeling_data$enrichment$ensembl <- modeling_data$enrichment$gene
+
+mathys_cluster_gse <- gene_set_enrichment(
+    gene_list = mathys_ct_reg_DEGs,
+    modeling_results = modeling_data,
+    model_type = "enrichment"
+)
+
+write_csv(mathys_cluster_gse, file = here(data_dir, sprintf("Cluster_gene_enrichment_Mathys_%s.csv", opt$datatype)))
+mathys_cluster_gse |> filter(Pval < 0.1)
+
+## plot enrichment
+pdf(here(plot_dir, sprintf("Cluster_gene_enrichment_Mathys_%s.pdf", opt$datatype)))
+gene_set_enrichment_plot(mathys_cluster_gse)
+dev.off()
 
 #### DE enrichment ####
 source(here("code", "13_compile_DGE", "DE_gene_set_enrichment.R"))
@@ -112,7 +132,9 @@ mathys_gse |> filter(NumSig > 0) |> arrange(Pval)
 write_csv(mathys_gse, file = here(data_dir, sprintf("DE_gene_enrichment_Mathys_%s.csv", opt$datatype)))
 
 ## enrichment heatmap
-pdf(here(plot_dir, sprintf("DE_gene_enrichment_Mathys_%s.pdf", opt$datatype)))
+pdf_height = 5 + length(cluster_levels)/4
+
+pdf(here(plot_dir, sprintf("DE_gene_enrichment_Mathys_%s.pdf", opt$datatype)), height = pdf_height)
 gene_set_enrichment_plot(mathys_gse)
 dev.off()
 
@@ -124,6 +146,21 @@ mathys_gse_reg |> filter(NumSig > 0) |> arrange(Pval)
 write_csv(mathys_gse_reg, file = here(data_dir, sprintf("DE_gene_enrichment_Mathys_reg_%s.csv", opt$datatype)))
 
 ## enrichment heatmap
-pdf(here(plot_dir, sprintf("DE_gene_enrichment_Mathys_reg_%s.pdf", opt$datatype)))
+pdf(here(plot_dir, sprintf("DE_gene_enrichment_Mathys_reg_%s.pdf", opt$datatype)), height = pdf_height)
 gene_set_enrichment_plot(mathys_gse_reg)
 dev.off()
+
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "12_DE_enrichment",
+#                     create_script = FALSE)
+
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
+
