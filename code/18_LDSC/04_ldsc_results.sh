@@ -36,7 +36,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 04_ldsc_results.R --datatype ${datatype}
+Rscript 04_ldsc_results.R --datatype ${datatype} --mode "specificity"
 
 echo "**** Job ends ****"
 date
