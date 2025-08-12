@@ -7,6 +7,7 @@ library("here")
 library("sessioninfo")
 library("getopt")
 library("spatialLIBD")
+library("jaffelab")
 
 # Import command-line parameters
 scec <- matrix(
@@ -36,6 +37,9 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
+    
+    modeling_fn <- here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "modeling_results-cell_type_anno.rds")
+    
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
@@ -59,3 +63,67 @@ DE_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(cluster)
 
 ## load Mathys DE data ##
 source(here("external-data", "Mathys2019", "get_Mathys_DE_data.R"))
+
+## just no vs. path data
+
+Mathys_DE_data_path <- Mathys_DE_data |> 
+    filter(DE_type == "no_v_path") |>
+    mutate(reg = ifelse(IndModel.FC > 0, "up", "down"),
+           DE_ct = ifelse(DEGs.Ind.Mix.models, cell_type, NA),
+           DE_ct_reg = ifelse(DEGs.Ind.Mix.models, paste0(DE_ct, "_", reg), NA))
+
+Mathys_DE_data_path |> dplyr::count(cell_type)
+
+## match counts in Fig 1b
+Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type)
+Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type, IndModel.FC > 0)
+Mathys_DE_data_path |> dplyr::count(DE_ct_reg)
+
+# DE_ct_reg     n
+# <chr>     <int>
+# 1 Ast_down     32
+# 2 Ast_up       37
+# 3 Ex_down     565
+# 4 Ex_up       191
+# 5 In_down      51
+# 6 In_up         3
+# 7 Mic_down     13
+# 8 Mic_up       22
+# 9 Oli_down     71
+# 10 Oli_up      102
+# 11 Opc_down     18
+# 12 Opc_up       10
+
+
+mathys_ct_DEGs <- map(splitit(Mathys_DE_data_path$DE_ct), ~Mathys_DE_data_path$gene_name[.x])
+mathys_ct_reg_DEGs <- map(splitit(Mathys_DE_data_path$DE_ct_reg), ~Mathys_DE_data_path$gene_name[.x])
+
+#### modeling ####
+
+
+#### DE enrichment ####
+source(here("code", "13_compile_DGE", "DE_gene_set_enrichment.R"))
+
+## combine reg
+mathys_gse <- DE_gene_set_enrichment(mathys_ct_DEGs, DE_data)
+mathys_gse |> filter(Pval < 0.1)
+mathys_gse |> filter(NumSig > 0) |> arrange(Pval)
+
+write_csv(mathys_gse, file = here(data_dir, sprintf("DE_gene_enrichment_Mathys_%s.csv", opt$datatype)))
+
+## enrichment heatmap
+pdf(here(plot_dir, sprintf("DE_gene_enrichment_Mathys_%s.pdf", opt$datatype)))
+gene_set_enrichment_plot(mathys_gse)
+dev.off()
+
+## by up/down reg
+mathys_gse_reg <- DE_gene_set_enrichment(mathys_ct_reg_DEGs, DE_data)
+mathys_gse_reg |> filter(Pval < 0.1)
+mathys_gse_reg |> filter(NumSig > 0) |> arrange(Pval)
+
+write_csv(mathys_gse_reg, file = here(data_dir, sprintf("DE_gene_enrichment_Mathys_reg_%s.csv", opt$datatype)))
+
+## enrichment heatmap
+pdf(here(plot_dir, sprintf("DE_gene_enrichment_Mathys_reg_%s.pdf", opt$datatype)))
+gene_set_enrichment_plot(mathys_gse_reg)
+dev.off()
