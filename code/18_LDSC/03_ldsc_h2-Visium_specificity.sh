@@ -48,8 +48,8 @@ for gwas in adhd alcohol_ldscore Alzheimer_ldscore Alzheimer_ldscore2 Alzheimer_
 do
     echo ${gwas}
 	
-	python /dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldsc.py 
-		--h2 /dcs04/lieber/shared/statsgen/LDSC/base/gwas_brain/${gwas}.gz \ 
+	python /dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldsc.py \
+		--h2 /dcs04/lieber/shared/statsgen/LDSC/base/gwas_brain/${gwas}.gz \
 		--w-ld-chr /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC. \
 		--ref-ld-chr ${OUT_DIR}/${cluster}/chr.,/dcs04/lieber/shared/statsgen/LDSC/base/baseline2/baselineLD. \
 		--overlap-annot --frqfile-chr /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_Phase3_frq/1000G.EUR.QC. \
