@@ -24,19 +24,17 @@ opt <- getopt(scec)
 # opt$datatype <- "Visium"
 # opt$datatype <- "sn_broad"
 # opt$mode <- "specificity"
+# opt$mode <- "DEG"
 
 print(opt)
 
 ## filenames for "cluster only" pseudobulk & enrichment data
 if(opt$datatype == "Visium"){
     pb_fn <- here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk","spe_pseudobulk_only-SpD_syn.rds")
-    enrich_fn <- here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds")
 } else if(opt$datatype == "sn_broad"){
     pb_fn <- here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_ERC_subcluster_pseudobulk_only-cell_type_broad.rds")
-    # enrich_fn <- 
 }else if(opt$datatype == "sn_fine"){
     pb_fn <- here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_ERC_subcluster_pseudobulk_only-cell_type_anno.rds")
-    # enrich_fn <- 
 } else {
     stop("non-valid datatype")
 }
@@ -46,6 +44,17 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### specificity ###
 if(opt$mode == "specificity"){
+    
+    ## filenames for "cluster only" pseudobulk & enrichment data
+    if(opt$datatype == "Visium"){
+        pb_fn <- here("processed-data", "05_spe_correct_cluster", "25_SpD_pseudobulk","spe_pseudobulk_only-SpD_syn.rds")
+    } else if(opt$datatype == "sn_broad"){
+        pb_fn <- here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_ERC_subcluster_pseudobulk_only-cell_type_broad.rds")
+    }else if(opt$datatype == "sn_fine"){
+        pb_fn <- here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_ERC_subcluster_pseudobulk_only-cell_type_anno.rds")
+    } else {
+        stop("non-valid datatype")
+    }
     
     message(Sys.time(), sprintf(" - Specificity: Datatype = %s, loading '%s'", opt$datatype, basename(pb_fn)))
     
@@ -70,6 +79,29 @@ if(opt$mode == "specificity"){
     
     colSums(res[-1])
     
+}else if(opt$mode == "DEG"){
+    
+    #### DEG ####
+    
+    DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
+    file.exists(DE_data_fn)
+    
+    message(Sys.time(), sprintf(" - DE: Datatype = %s, loading '%s'", opt$datatype, basename(DE_data_fn)))
+    DE_data <- readRDS(DE_data_fn)
+    
+    res <- DE_data |> 
+        mutate(is_DE = as.numeric(vlmf_adj.P.Val < 0.05)) |>
+        select(geneName = gene_id, cluster, is_DE) |>
+        pivot_wider(names_from = "cluster", values_from = "is_DE")
+    
+    head(res)
+    
+    message('n DEGs')
+    colSums(res[-1], na.rm = TRUE)
+    
+    message('n NAs')
+    colSums(is.na(res[-1]))
+    
 }
 
 #### make Bed file ####
@@ -83,17 +115,21 @@ modules <- colnames(res)[-1]
 
 for(i in 1:length(modules)){
     idx <- which(colnames(res) == modules[i])
-    genes <- res$geneName[res[,idx]==1]
+    genes <- res$geneName[res[,idx]==1 & !is.na(res[,idx])]
     genes <- intersect(genes,gene.meta$Gene.stable.ID)
-    bed <- gene.meta[is.element(gene.meta$Gene.stable.ID, genes),3:5]
-    bed[,1] <- paste0("chr",bed[,1])
-    bed[,2] <- ifelse(bed[,2] - 100000 > 0, bed[,2] - 100000, 0)
-    bed[,3] <- bed[,3] + 100000
-    idx <- bed[,1] !="chrX" & bed[,1] !="chrY" & bed[,1] !="chrMT"
-    bed <- bed[idx,]
-    filename <- paste0(modules[i],".bed")
-    outfile <- here::here(data_dir, filename)
-    write.table(bed,outfile,row.names=F,col.names=F,sep="\t",quote=F)
+    if(length(genes) >= 10){
+        bed <- gene.meta[is.element(gene.meta$Gene.stable.ID, genes),3:5]
+        bed[,1] <- paste0("chr",bed[,1])
+        bed[,2] <- ifelse(bed[,2] - 100000 > 0, bed[,2] - 100000, 0)
+        bed[,3] <- bed[,3] + 100000
+        idx <- bed[,1] !="chrX" & bed[,1] !="chrY" & bed[,1] !="chrMT"
+        bed <- bed[idx,]
+        filename <- paste0(modules[i],".bed")
+        outfile <- here::here(data_dir, filename)
+        write.table(bed,outfile,row.names=F,col.names=F,sep="\t",quote=F)
+    } else {
+        warning("Less than 10 genes for: ", modules[i], " - wont write BED")
+    }
 }
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
