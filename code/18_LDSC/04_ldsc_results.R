@@ -18,6 +18,7 @@ scec <- matrix(
 opt <- getopt(scec)
 
 
+# opt$datatype <- "sn_fine"
 # opt$datatype <- "sn_broad"
 # opt$datatype <- "Visium"
 # opt$mode <- "specificity"
@@ -27,7 +28,9 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Get output ####
 out_dir <- here("processed-data", "18_LDSC", sprintf("LDSC_%s_%s", opt$datatype, opt$mode))
-clusters <- list.files(out_dir)
+(clusters <- list.files(out_dir))
+
+map_int(clusters, ~length(list.files(here(out_dir, .x), pattern = ".results")))
 
 ldsc_results <- map_dfr(clusters, function(clus){
     
