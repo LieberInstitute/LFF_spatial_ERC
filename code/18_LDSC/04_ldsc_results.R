@@ -47,6 +47,9 @@ ldsc_results <- ldsc_results |>
     mutate(p_zcore =  pnorm(abs(Coefficient_z.score),lower.tail=F)*2,
            FDR = p.adjust(p_zcore, method="fdr"))
 
+ldsc_results |> group_by(cluster) |> slice_min(FDR) |>
+    select(cluster, gwas, Coefficient_z.score, p_zcore, FDR)
+
 ## save data
 
 write.csv(ldsc_results, file = here(data_dir, sprintf("LDSC_results-%s_%s.scv", opt$datatype, opt$mode)))
