@@ -35,7 +35,7 @@ module load ldsc/1.0.1
 ## List current modules for reproducibility
 module list
 
-OUT_DIR="/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_broad_specificity"
+OUT_DIR="/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_Visium_specificity"
 
 
 ## H2 
