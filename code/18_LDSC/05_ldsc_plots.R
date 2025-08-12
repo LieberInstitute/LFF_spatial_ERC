@@ -28,7 +28,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### load data ####
 trait_tb <- read_csv(here("processed-data", "18_LDSC", "04_ldsc_results","gwas_trait_tb.csv"))
 
-ldsc_data <- read_csv(here("processed-data", "18_LDSC", "04_ldsc_results", sprintf("LDSC_results-%s_%s.scv", opt$datatype, opt$mode))) |>
+ldsc_data <- read_csv(here("processed-data", "18_LDSC", "04_ldsc_results", sprintf("LDSC_results-%s_%s.csv", opt$datatype, opt$mode))) |>
     mutate(z.score = Coefficient_z.score,  
            mark = ifelse(FDR < 0.05, '+', ''))
 
