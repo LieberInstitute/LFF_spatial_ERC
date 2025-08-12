@@ -1,8 +1,8 @@
 **** Job starts ****
-Wed Aug  6 08:55:11 AM EDT 2025
+Thu Aug  7 12:34:25 AM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 21245883
+Job id: 21248811
 Job name: 02_run
 Node name: compute-126
 Task id: 1
@@ -16,15 +16,200 @@ Currently Loaded Modules:
  
 
 Executing run 1 with sample 1...
-V13Y24-343_A1, 1, /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/input_graph/V13Y24-343_A1/V13Y24-343_A1_adjacency_records, 512
+V13Y24-343_A1, 1, /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/input_graph/V13Y24-343_A1/V13Y24-343_A1_adjacency_records, 512
 ------------------------Model and Training Details--------------------------
-Namespace(data_name='V13Y24-343_A1', model_name='model_V13Y24-343_A1_r1', run_id=1, num_epoch=80000, model_path='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/model/V13Y24-343_A1/', embedding_path='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/embedding_data/V13Y24-343_A1/', hidden=512, training_data='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/V13Y24-343_A1/input_graph/V13Y24-343_A1/V13Y24-343_A1_adjacency_records', heads=1, dropout=0, lr_rate=1e-05, manual_seed='yes', seed=1, total_subgraphs=1, metadata_to='metadata/', load=0, load_model_name='None')
+Namespace(data_name='V13Y24-343_A1', model_name='model_V13Y24-343_A1_r1', run_id=1, num_epoch=80000, model_path='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/model/V13Y24-343_A1/', embedding_path='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/embedding_data/V13Y24-343_A1/', hidden=512, training_data='/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/17_cell_cell_comm/input_graph/V13Y24-343_A1/V13Y24-343_A1_adjacency_records', heads=1, dropout=0, lr_rate=1e-05, manual_seed='yes', seed=1, total_subgraphs=1, metadata_to='metadata/', load=0, load_model_name='None')
 cuda
-Traceback (most recent call last):
-  File "/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/run_CellNEST.py", line 88, in <module>
-    from CCC_gat import get_graph, train_CellNEST
-  File "/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/CCC_gat.py", line 14, in <module>
-    from GATv2Conv_CellNEST import GATv2Conv
-  File "/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/GATv2Conv_CellNEST.py", line 10, in <module>
-    from torch_sparse import SparseTensor, set_diag
-ModuleNotFoundError: No module named 'torch_sparse'
+Node feature matrix: X has dimension  (4677, 4677)
+Total number of edges in the input graph is 3284375
+Input graph generation done
+/jhpce/shared/libd/core/visium_hd/1.0/hd_env/lib/python3.9/site-packages/torch_geometric/deprecation.py:26: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  warnings.warn(out)
+incoming channel 4677
+Saving init model state ...
+Epoch: 001, Loss: 1.3881
+making the bundle to save
+Epoch: 501, Loss: 0.4781
+making the bundle to save
+Epoch: 1001, Loss: 0.2095
+making the bundle to save
+Epoch: 1501, Loss: 0.1606
+making the bundle to save
+Epoch: 2001, Loss: 0.1060
+making the bundle to save
+Epoch: 2501, Loss: 0.0608
+making the bundle to save
+Epoch: 3001, Loss: 0.0996
+Epoch: 3501, Loss: 0.0778
+Epoch: 4001, Loss: 0.1069
+Epoch: 4501, Loss: 0.0681
+Epoch: 5001, Loss: 0.0553
+making the bundle to save
+Epoch: 5501, Loss: 0.0486
+making the bundle to save
+Epoch: 6001, Loss: 0.1214
+Epoch: 6501, Loss: 0.0604
+Epoch: 7001, Loss: 0.0883
+Epoch: 7501, Loss: 0.0484
+making the bundle to save
+Epoch: 8001, Loss: 0.0835
+Epoch: 8501, Loss: 0.0615
+Epoch: 9001, Loss: 0.1065
+Epoch: 9501, Loss: 0.0686
+Epoch: 10001, Loss: 0.0678
+Epoch: 10501, Loss: 0.0828
+Epoch: 11001, Loss: 0.0501
+Epoch: 11501, Loss: 0.0508
+Epoch: 12001, Loss: 0.0793
+Epoch: 12501, Loss: 0.0872
+Epoch: 13001, Loss: 0.1026
+Epoch: 13501, Loss: 0.0864
+Epoch: 14001, Loss: 0.0675
+Epoch: 14501, Loss: 0.0679
+Epoch: 15001, Loss: 0.0363
+making the bundle to save
+Epoch: 15501, Loss: 0.0676
+Epoch: 16001, Loss: 0.0663
+Epoch: 16501, Loss: 0.0740
+Epoch: 17001, Loss: 0.1097
+Epoch: 17501, Loss: 0.0594
+Epoch: 18001, Loss: 0.0586
+Epoch: 18501, Loss: 0.0708
+Epoch: 19001, Loss: 0.0964
+Epoch: 19501, Loss: 0.0791
+Epoch: 20001, Loss: 0.0670
+Epoch: 20501, Loss: 0.0603
+Epoch: 21001, Loss: 0.0727
+Epoch: 21501, Loss: 0.0748
+Epoch: 22001, Loss: 0.0898
+Epoch: 22501, Loss: 0.0820
+Epoch: 23001, Loss: 0.0730
+Epoch: 23501, Loss: 0.0632
+Epoch: 24001, Loss: 0.0665
+Epoch: 24501, Loss: 0.0645
+Epoch: 25001, Loss: 0.0574
+Epoch: 25501, Loss: 0.0441
+Epoch: 26001, Loss: 0.0521
+Epoch: 26501, Loss: 0.0260
+making the bundle to save
+Epoch: 27001, Loss: 0.0797
+Epoch: 27501, Loss: 0.0546
+Epoch: 28001, Loss: 0.0529
+Epoch: 28501, Loss: 0.0971
+Epoch: 29001, Loss: 0.0650
+Epoch: 29501, Loss: 0.0753
+Epoch: 30001, Loss: 0.0492
+Epoch: 30501, Loss: 0.0991
+Epoch: 31001, Loss: 0.0512
+Epoch: 31501, Loss: 0.0713
+Epoch: 32001, Loss: 0.0634
+Epoch: 32501, Loss: 0.1202
+Epoch: 33001, Loss: 0.0869
+Epoch: 33501, Loss: 0.0684
+Epoch: 34001, Loss: 0.0436
+Epoch: 34501, Loss: 0.0515
+Epoch: 35001, Loss: 0.0809
+Epoch: 35501, Loss: 0.0831
+Epoch: 36001, Loss: 0.0647
+Epoch: 36501, Loss: 0.0492
+Epoch: 37001, Loss: 0.0528
+Epoch: 37501, Loss: 0.0581
+Epoch: 38001, Loss: 0.0494
+Epoch: 38501, Loss: 0.0377
+Epoch: 39001, Loss: 0.0510
+Epoch: 39501, Loss: 0.0734
+Epoch: 40001, Loss: 0.0744
+Epoch: 40501, Loss: 0.0509
+Epoch: 41001, Loss: 0.0305
+Epoch: 41501, Loss: 0.0610
+Epoch: 42001, Loss: 0.0587
+Epoch: 42501, Loss: 0.0577
+Epoch: 43001, Loss: 0.0547
+Epoch: 43501, Loss: 0.0482
+Epoch: 44001, Loss: 0.0728
+Epoch: 44501, Loss: 0.0487
+Epoch: 45001, Loss: 0.0807
+Epoch: 45501, Loss: 0.0242
+making the bundle to save
+Epoch: 46001, Loss: 0.0409
+Epoch: 46501, Loss: 0.0799
+Epoch: 47001, Loss: 0.1036
+Epoch: 47501, Loss: 0.0296
+Epoch: 48001, Loss: 0.0386
+Epoch: 48501, Loss: 0.0303
+Epoch: 49001, Loss: 0.0355
+Epoch: 49501, Loss: 0.0311
+Epoch: 50001, Loss: 0.0493
+Epoch: 50501, Loss: 0.0150
+making the bundle to save
+Epoch: 51001, Loss: 0.0350
+Epoch: 51501, Loss: 0.0190
+Epoch: 52001, Loss: 0.0206
+Epoch: 52501, Loss: 0.0190
+Epoch: 53001, Loss: 0.0191
+Epoch: 53501, Loss: 0.0147
+making the bundle to save
+Epoch: 54001, Loss: 0.0158
+Epoch: 54501, Loss: 0.0168
+Epoch: 55001, Loss: 0.0215
+Epoch: 55501, Loss: 0.0148
+Epoch: 56001, Loss: 0.0200
+Epoch: 56501, Loss: 0.0146
+making the bundle to save
+Epoch: 57001, Loss: 0.0160
+Epoch: 57501, Loss: 0.0148
+Epoch: 58001, Loss: 0.0125
+making the bundle to save
+Epoch: 58501, Loss: 0.0197
+Epoch: 59001, Loss: 0.0117
+making the bundle to save
+Epoch: 59501, Loss: 0.0164
+Epoch: 60001, Loss: 0.0141
+Epoch: 60501, Loss: 0.0119
+Epoch: 61001, Loss: 0.0136
+Epoch: 61501, Loss: 0.0117
+making the bundle to save
+Epoch: 62001, Loss: 0.0151
+Epoch: 62501, Loss: 0.0170
+Epoch: 63001, Loss: 0.0090
+making the bundle to save
+Epoch: 63501, Loss: 0.0117
+Epoch: 64001, Loss: 0.0153
+Epoch: 64501, Loss: 0.0169
+Epoch: 65001, Loss: 0.0134
+Epoch: 65501, Loss: 0.0137
+Epoch: 66001, Loss: 0.0159
+Epoch: 66501, Loss: 0.0165
+Epoch: 67001, Loss: 0.0144
+Epoch: 67501, Loss: 0.0167
+Epoch: 68001, Loss: 0.0105
+Epoch: 68501, Loss: 0.0181
+Epoch: 69001, Loss: 0.0204
+Epoch: 69501, Loss: 0.0107
+Epoch: 70001, Loss: 0.0150
+Epoch: 70501, Loss: 0.0140
+Epoch: 71001, Loss: 0.0147
+Epoch: 71501, Loss: 0.0131
+Epoch: 72001, Loss: 0.0159
+Epoch: 72501, Loss: 0.0119
+Epoch: 73001, Loss: 0.0129
+Epoch: 73501, Loss: 0.0143
+Epoch: 74001, Loss: 0.0176
+Epoch: 74501, Loss: 0.0146
+Epoch: 75001, Loss: 0.0097
+Epoch: 75501, Loss: 0.0132
+Epoch: 76001, Loss: 0.0148
+Epoch: 76501, Loss: 0.0156
+Epoch: 77001, Loss: 0.0145
+Epoch: 77501, Loss: 0.0183
+Epoch: 78001, Loss: 0.0179
+Epoch: 78501, Loss: 0.0173
+Epoch: 79001, Loss: 0.0108
+Epoch: 79501, Loss: 0.0113
+Training time in seconds:  77901
+/jhpce/shared/libd/core/visium_hd/1.0/CellNEST/CCC_gat.py:266: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(DGI_filename)
+debug loss
+debug loss latest tupple 0.0132041
+**** Job ends ****
+Thu Aug  7 10:13:09 PM EDT 2025
