@@ -17,6 +17,9 @@ mofa_model_path = here(
 mdata_out_path = here(
     'processed-data', '17_cell_cell_comm', 'liana', 'mdata.h5mu'
 )
+results_out_path = here(
+    'processed-data', '17_cell_cell_comm', 'liana', 'all_pairs.csv.gz'
+)
 mofa_meta_vars = ['APOE_carrier', 'Ancestry', 'Sex', 'Age']
 mofa_num_factors = 10
 samples_per_view_prop = 0.8
@@ -40,6 +43,8 @@ li.mt.rank_aggregate.by_sample(
     return_all_lrs=False,
     verbose=True
 )
+
+ad_sc.uns['liana_res'].to_csv(results_out_path, index = False)
 
 num_samples_per_view = int(
     round(samples_per_view_prop * ad_sc.obs['sample_id'].nunique())

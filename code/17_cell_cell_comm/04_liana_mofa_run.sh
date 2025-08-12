@@ -3,7 +3,7 @@
 #SBATCH --mem=32G
 #SBATCH --job-name=04_liana_mofa_run
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 3-00:00:00
 #SBATCH -o ../../processed-data/17_cell_cell_comm/logs/04_liana_mofa_run.txt
 #SBATCH -e ../../processed-data/17_cell_cell_comm/logs/04_liana_mofa_run.txt
 
