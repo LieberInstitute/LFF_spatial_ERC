@@ -1,34 +1,33 @@
-import numpy as np
-import pandas as pd
+#   Run LIANA by sample on the fine snRNA-seq data and prepare for analyzing
+#   results with MOFA. Largely based on:
+#   https://liana-py.readthedocs.io/en/latest/notebooks/mofatalk.html
+
 import scanpy as sc
-import plotnine as p9
 import liana as li
 import muon as mu
-import mofax as mofa
-import decoupler as dc
 from pyhere import here
-import matplotlib.pyplot as plt
+import session_info
 import os
+import mudata
 
 ad_sc_path = here('processed-data', '17_cell_cell_comm', 'sce.h5ad')
 mofa_model_path = here(
     'processed-data', '17_cell_cell_comm', 'liana', 'mofa_model.h5ad'
 )
-plot_dir = here('plots', '17_cell_cell_comm', 'liana')
+mdata_out_path = here(
+    'processed-data', '17_cell_cell_comm', 'liana', 'mdata.h5mu'
+)
 mofa_meta_vars = ['APOE_carrier', 'Ancestry', 'Sex', 'Age']
 mofa_num_factors = 10
 samples_per_view_prop = 0.8
 
 os.makedirs(mofa_model_path.parent, exist_ok=True)
-os.makedirs(plot_dir, exist_ok=True)
 
 ad_sc = sc.read_h5ad(ad_sc_path)
 
 #   Must use gene symbols for LIANA+
 ad_sc.var.index = ad_sc.var['gene_name'].astype(str)
 ad_sc.var.index.name = None
-
-# ad_sc = ad_sc[ad_sc.obs['sample_id'].isin(ad_sc.obs['sample_id'].unique()[:2]), :].copy()
 
 li.mt.rank_aggregate.by_sample(
     ad_sc,
@@ -67,16 +66,6 @@ mu.tl.mofa(
     n_factors=mofa_num_factors
 )
 
-adata = sc.AnnData(obs = mdata.obs, obsm = mdata.obsm)
+mudata.write(str(mdata_out_path), mdata)
 
-dc.tl.rankby_obsm(adata, key='X_mofa', uns_key='rank_obsm')
-dc.pl.obsm(
-    adata,
-    key='rank_obsm',
-    names = mofa_meta_vars
-    titles=['Principle component scores', 'Adjusted p-values from ANOVA'],
-    figsize=(7, 5),
-    nvar=10
-)
-plt.savefig(os.path.join(plot_dir, 'mofa_heatmap.pdf'))
-plt.close('all')
+session_info.show()
