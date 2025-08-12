@@ -56,7 +56,7 @@ ldsc_results |> group_by(cluster) |> slice_min(FDR) |>
 
 ## save data
 
-write.csv(ldsc_results, file = here(data_dir, sprintf("LDSC_results-%s_%s.scv", opt$datatype, opt$mode)),
+write.csv(ldsc_results, file = here(data_dir, sprintf("LDSC_results-%s_%s.csv", opt$datatype, opt$mode)),
           row.names = FALSE)
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
