@@ -1,0 +1,32 @@
+**** Job starts ****
+Wed Aug 13 01:00:51 PM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 21319527
+Job name: 06_liana_bivariate_run
+Node name: compute-166
+Task id: 10
+Loading LIBD SLURM module for liana_plus/1.5.1
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) liana_plus/1.5.1
+
+ 
+
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/06_liana_bivariate_run.py:39: ImplicitModificationWarning: Trying to modify index of attribute `.var` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/utils/spatial_neighbors.py:143: ImplicitModificationWarning: Setting element `.obsp['spatial_connectivities']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Using `.X`!
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+11648 features of mat are empty, they will be removed.
+Using resource `consensus`.
+Traceback (most recent call last):
+  File "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/06_liana_bivariate_run.py", line 66, in <module>
+    ad_lr = li.mt.bivariate(
+  File "/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sp/_bivariate/_spatial_bivariate.py", line 175, in __call__
+    raise ValueError("No features with non-zero proportions")
+ValueError: No features with non-zero proportions
