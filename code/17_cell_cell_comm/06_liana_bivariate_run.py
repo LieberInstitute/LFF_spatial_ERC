@@ -31,7 +31,9 @@ os.makedirs(out_path.parent, exist_ok=True)
 sample_info = pd.read_csv(sample_info_path)
 sample_info['sample_id'] = sample_info['Visium Slide #'] + '_' + sample_info['Visium_subslide']
 
+#   Read in and drop the incorrectly labeled donor
 ad_sp = sc.read_h5ad(ad_sp_path)
+ad_sp = ad_sp[ad_sp.obs['sample_id'] != 'Br1289', :]
 
 #   Must use gene symbols for LIANA+
 ad_sp.var.index = ad_sp.var['gene_name'].astype(str)
@@ -41,7 +43,9 @@ ad_sp.var.index.name = None
 ad_sp.X = ad_sp.layers['logcounts']
 
 #   Subset to just this one sample
-donor_id = ad_sp.obs['sample_id'].cat.categories[0]
+donor_id = ad_sp.obs['sample_id'].cat.categories[
+    int(os.getenv('SLURM_ARRAY_TASK_ID')) - 1
+]
 sample_id = sample_info.loc[sample_info['BrNum'] == donor_id, 'sample_id'].values[0]
 ad_sp_small = ad_sp[ad_sp.obs['sample_id'] == donor_id, :]
 scale_path = str(scale_path).format(sample_id)
