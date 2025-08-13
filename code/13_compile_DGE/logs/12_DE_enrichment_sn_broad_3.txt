@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Aug 12 08:45:41 PM EDT 2025
+Tue Aug 12 08:53:11 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21313082
+Job id: 21313088
 Job name: 12_DE_enrichment
-Node name: compute-158
+Node name: compute-168
 Task id: 3
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -230,20 +230,20 @@ Oli_down   Oli_up Opc_down   Opc_up
       71      102       18       10 
 
 $Mathys_early
-Ast  Ex  In Mic Oli Opc 
- 69 756  54  35 173  28 
+ Ast   Ex   In  Mic  Oli  Opc 
+  51 1151  207   10   96   18 
 
 $Mathys_early_reg
 Ast_down   Ast_up  Ex_down    Ex_up  In_down    In_up Mic_down   Mic_up 
-      32       37      565      191       51        3       13       22 
+      29       22      940      211      198        9        4        6 
 Oli_down   Oli_up Opc_down   Opc_up 
-      71      102       18       10 
+      52       44       15        3 
 
-There were 22 warnings (use warnings() to see them)
+There were 29 warnings (use warnings() to see them)
 [1] "Reproducibility information:"
-[1] "2025-08-12 20:46:07 EDT"
+[1] "2025-08-12 20:53:34 EDT"
    user  system elapsed 
- 23.323   1.034  25.275 
+ 19.618   0.784  22.047 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -431,4 +431,4 @@ There were 22 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Aug 12 08:46:07 PM EDT 2025
+Tue Aug 12 08:53:34 PM EDT 2025
