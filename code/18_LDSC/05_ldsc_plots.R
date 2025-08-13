@@ -19,7 +19,9 @@ opt <- getopt(scec)
 # opt$datatype <- "sn_fine"
 # opt$datatype <- "sn_broad"
 # opt$datatype <- "Visium"
+
 # opt$mode <- "specificity"
+# opt$mode <- "DEG"
 
 plot_dir <- here("plots", "18_LDSC", "05_ldsc_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -96,7 +98,7 @@ ldsc_filter_tile <- ggplot(ldsc_data_filter, aes(x = cluster, y = gwas, fill = z
 
 # ggsave(ldsc_filter_tile, filename = here(plot_dir, sprintf("ldsc_tile_%s_%s_filter.png", opt$datatype, opt$mode)), height = 6, width = 6)
 
-if(!opt$datatype == "sn_fine"){
+if(opt$datatype == "sn_fine"){
     
      ldsc_dot <- ldsc_dot + facet_grid(~cell_type_broad,  scales = "free_x", space = "free_x")
      ggsave(ldsc_dot, filename = here(plot_dir, sprintf("ldsc_dot_%s_%s.png", opt$datatype, opt$mode)), height = 6, width = 12)
