@@ -124,8 +124,8 @@ mathys_early_ct_reg_DEGs <- map(splitit(Mathys_DE_data_early$DE_ct_reg), ~Mathys
 
 gene_set_list <- list(Mathys = mathys_ct_DEGs,
                       Mathys_reg = mathys_ct_reg_DEGs,
-                      Mathys_early = mathys_ct_DEGs,
-                      Mathys_early_reg = mathys_ct_reg_DEGs
+                      Mathys_early = mathys_early_ct_DEGs,
+                      Mathys_early_reg = mathys_early_ct_reg_DEGs
                       )
 
 map_int(gene_set_list[[1]], length)
