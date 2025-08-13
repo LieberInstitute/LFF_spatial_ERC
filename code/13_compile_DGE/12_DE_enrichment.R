@@ -152,7 +152,7 @@ map2(gene_set_list, names(gene_set_list), function(gene_set, name){
     cluster_gse |> filter(Pval < 0.1)
     
     ## plot enrichment
-    pdf(here(plot_dir, sprintf("Cluster_gene_enrichment_%s.pdf", opt$datatype)))
+    pdf(here(plot_dir, sprintf("Cluster_gene_enrichment_%s_%s.pdf", opt$datatype, name)))
     print(gene_set_enrichment_plot(cluster_gse))
     dev.off()
     
