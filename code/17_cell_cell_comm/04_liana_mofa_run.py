@@ -22,9 +22,10 @@ results_out_path = here(
 )
 mofa_meta_vars = ['APOE_carrier', 'Ancestry', 'Sex', 'Age']
 mofa_num_factors = 10
-samples_per_view_prop = 0.8
+samples_per_view_prop = 0.5
 
 os.makedirs(mofa_model_path.parent, exist_ok=True)
+num_cores = int(os.getenv('SLURM_CPUS_ON_NODE'))
 
 #   Read in and drop the incorrectly labeled donor
 ad_sc = sc.read_h5ad(ad_sc_path)
@@ -41,9 +42,10 @@ li.mt.rank_aggregate.by_sample(
     sample_key='sample_id',
     expr_prop = 0.1,
     use_raw=False,
-    n_perms=100,
+    n_perms=1000,
     return_all_lrs=False,
-    verbose=True
+    verbose=True,
+    n_jobs=num_cores
 )
 
 ad_sc.uns['liana_res'].to_csv(results_out_path, index = False)
@@ -56,7 +58,7 @@ mdata = li.multi.lrs_to_views(
     sample_key='sample_id',
     score_key='magnitude_rank',
     obs_keys=mofa_meta_vars,
-    lr_prop = 0.3, # minimum required proportion of samples to keep an LR
+    lr_prop = 0.2, # minimum required proportion of samples to keep an LR
     lrs_per_sample = 20, # min num of interactions to keep a sample in a view
     lrs_per_view = 20, # minimum number of interactions to keep a view
     samples_per_view = num_samples_per_view, # min num samples to keep a view
