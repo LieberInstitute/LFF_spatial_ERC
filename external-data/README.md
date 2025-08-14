@@ -3,6 +3,7 @@
 `Allen_Brain_Mouse_cortex_hippo`
 
 `Grubman2019` Supplementary tables from Grubman et al., 2019 [10.1038/s41593-019-0539-4](https://doi.org/10.1038/s41593-019-0539-4)
+DE data downloaded from http://adsn.ddnetbio.com "AD vs Control cells within each cell type". LFC cutoff 0.5 (minimum option) FDR cutoff 0.05.
 
 `Mathys2016`  Supplementary tables from Mathys et al., 2019 [10.1038/s41586-019-1195-2](https://doi.org/10.1038/s41586-019-1195-2)
 
