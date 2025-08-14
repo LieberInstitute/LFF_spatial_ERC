@@ -4,8 +4,9 @@
 #SBATCH --job-name=05_liana_mofa_run
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/05_liana_mofa_run.txt
-#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/05_liana_mofa_run.txt
+#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/05_liana_mofa_run_%a.txt
+#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/05_liana_mofa_run_%a.txt
+#SBATCH --array=1-3%3
 
 set -e
 

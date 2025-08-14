@@ -2,6 +2,7 @@
 #   based on:
 #   https://liana-py.readthedocs.io/en/latest/notebooks/mofatalk.html
 
+import os
 import scanpy as sc
 import liana as li
 import muon as mu
@@ -11,26 +12,41 @@ import mudata
 import numpy as np
 import pandas as pd
 
+task_id = int(os.getenv('SLURM_ARRAY_TASK_ID')) - 1
+data_description = ['broad', 'fine', 'visium'][task_id]
+
 ad_in_path = here(
-    'processed-data', '17_cell_cell_comm', 'liana', 'ad_sc_ranked.h5ad'
+    'processed-data', '17_cell_cell_comm', 'liana', 'ranked_adatas',
+    f'{data_description}.h5ad'
 )
 mofa_model_path = here(
-    'processed-data', '17_cell_cell_comm', 'liana', 'mofa_model.h5ad'
+    'processed-data', '17_cell_cell_comm', 'liana', 'mofa_results',
+    f'model_{data_description}.h5ad'
 )
 mdata_out_path = here(
-    'processed-data', '17_cell_cell_comm', 'liana', 'mdata.h5mu'
+    'processed-data', '17_cell_cell_comm', 'liana', 'mofa_results',
+    f'mdata_{data_description}.h5mu'
 )
 mofa_meta_vars = ['APOE_carrier', 'Ancestry', 'Sex', 'Age']
 mofa_num_factors = 10
 samples_per_view_prop = 0.5
 
-ad_sc = sc.read_h5ad(ad_in_path)
+if task_id == 1:
+    group_var = 'cell_type_broad'
+elif task_id == 2:
+    group_var = 'cell_type_anno'
+else:
+    group_var = 'SpD'
+
+os.makedirs(mofa_model_path.parent, exist_ok=True)
+
+adata = sc.read_h5ad(ad_in_path)
 
 num_samples_per_view = int(
-    round(samples_per_view_prop * ad_sc.obs['sample_id'].nunique())
+    round(samples_per_view_prop * adata.obs['sample_id'].nunique())
 )
 mdata = li.multi.lrs_to_views(
-    ad_sc,
+    adata,
     sample_key='sample_id',
     score_key='magnitude_rank',
     obs_keys=mofa_meta_vars,
@@ -49,7 +65,7 @@ m_df = pd.DataFrame(
     columns = ['num_samples', 'num_pairs']
 )
 
-print(f'{m_df.shape[0]} views kept of {ad_sc.obs['cell_type_anno'].nunique() ** 2}.')
+print(f'{m_df.shape[0]} views kept of {adata.obs[group_var].nunique() ** 2}.')
 print('Distribution of number of samples by view:')
 print(m_df['num_samples'].describe())
 print('Distribution of number of pairs by view:')
