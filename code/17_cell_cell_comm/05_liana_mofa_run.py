@@ -1,3 +1,7 @@
+#   Run MOFA on LIANA+ identified LR pairs, the second of two steps largely
+#   based on:
+#   https://liana-py.readthedocs.io/en/latest/notebooks/mofatalk.html
+
 import scanpy as sc
 import liana as li
 import muon as mu
