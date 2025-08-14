@@ -26,7 +26,9 @@ samples_per_view_prop = 0.8
 
 os.makedirs(mofa_model_path.parent, exist_ok=True)
 
+#   Read in and drop the incorrectly labeled donor
 ad_sc = sc.read_h5ad(ad_sc_path)
+ad_sc = ad_sc[ad_sc.obs['sample_id'] != 'Br1289', :]
 
 #   Must use gene symbols for LIANA+
 ad_sc.var.index = ad_sc.var['gene_name'].astype(str)
