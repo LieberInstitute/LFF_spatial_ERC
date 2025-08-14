@@ -121,12 +121,29 @@ Mathys_DE_data_early |> dplyr::count(DE_ct_reg)
 mathys_early_ct_DEGs <- map(splitit(Mathys_DE_data_early$DE_ct), ~Mathys_DE_data_early$gene_name[.x])
 mathys_early_ct_reg_DEGs <- map(splitit(Mathys_DE_data_early$DE_ct_reg), ~Mathys_DE_data_early$gene_name[.x])
 
+## Grubman data ##
+
+suppressMessages(source(here("external-data", "Grubman2019", "get_Grubman_DE_data.R")))
+
+Grubman_DE_data <- Grubman_DE_data |>
+    mutate(reg = ifelse(LFC > 0, "up", "down"),
+           DE_ct_reg = paste0(cell_type, "_", reg))
+
+Grubman_DE_data |> dplyr::count(DE_ct_reg)
+
+grubman_ct_DEGs <- map(splitit(Grubman_DE_data$cell_type), ~Grubman_DE_data$geneName[.x])
+grubman_ct_reg_DEGs <- map(splitit(Grubman_DE_data$DE_ct_reg), ~Grubman_DE_data$geneName[.x])
+
+
+#### Run Enrichment ####
 
 gene_set_list <- list(Mathys = mathys_ct_DEGs,
                       Mathys_reg = mathys_ct_reg_DEGs,
                       Mathys_early = mathys_early_ct_DEGs,
-                      Mathys_early_reg = mathys_early_ct_reg_DEGs
-                      )
+                      Mathys_early_reg = mathys_early_ct_reg_DEGs,
+                      Grubman = grubman_ct_DEGs,
+                      Grubman_reg = grubman_ct_reg_DEGs
+)
 
 map_int(gene_set_list[[1]], length)
 

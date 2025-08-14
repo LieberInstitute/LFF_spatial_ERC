@@ -28,7 +28,7 @@ names(grubman_fn) <- gsub("Grubman2019_DEG_|.csv","",basename(grubman_fn))
 
 Grubman_DE_data <- map2_dfr(grubman_fn, names(grubman_fn), ~read_csv(.x, show_col_types = FALSE) |> mutate(cell_type = .y))
 
-Grubman_DE_data |> count(cell_type)
+# Grubman_DE_data |> count(cell_type)
 # cell_type     n 
 # <chr>     <int>.  # Extended data Fig. 3 values
 # 1 Astro       705 #700
