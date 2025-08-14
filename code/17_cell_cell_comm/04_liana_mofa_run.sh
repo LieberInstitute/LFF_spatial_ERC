@@ -2,7 +2,7 @@
 #SBATCH -p katun
 #SBATCH --mem=64G
 #SBATCH --job-name=04_liana_mofa_run
-#SBATCH -c 4
+#SBATCH -c 2
 #SBATCH -t 2-00:00:00
 #SBATCH -o ../../processed-data/17_cell_cell_comm/logs/04_liana_mofa_run_%a.txt
 #SBATCH -e ../../processed-data/17_cell_cell_comm/logs/04_liana_mofa_run_%a.txt

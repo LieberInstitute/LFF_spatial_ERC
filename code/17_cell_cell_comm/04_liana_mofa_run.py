@@ -8,27 +8,27 @@ from pyhere import here
 import session_info
 import os
 
-task_id = int(os.getenv('SLURM_ARRAY_TASK_ID') - 1)
+task_id = int(os.getenv('SLURM_ARRAY_TASK_ID'))
 
 if task_id == 1:
     ad_in_path = here('processed-data', '17_cell_cell_comm', 'sce.h5ad')
     ad_out_path = here(
         'processed-data', '17_cell_cell_comm', 'liana', 'ranked_adatas',
-        'ad_sc_broad.h5ad'
+        'broad.h5ad'
     )
     group_var = 'cell_type_broad'
 elif task_id == 2:
     ad_in_path = here('processed-data', '17_cell_cell_comm', 'sce.h5ad')
     ad_out_path = here(
         'processed-data', '17_cell_cell_comm', 'liana', 'ranked_adatas',
-        'ad_sc_fine.h5ad'
+        'fine.h5ad'
     )
     group_var = 'cell_type_anno'
 else:
     ad_in_path = here('processed-data', '17_cell_cell_comm', 'spe.h5ad')
     ad_out_path = here(
         'processed-data', '17_cell_cell_comm', 'liana', 'ranked_adatas',
-        'ad_sc_visium.h5ad'
+        'visium.h5ad'
     )
     group_var = 'SpD'
 
