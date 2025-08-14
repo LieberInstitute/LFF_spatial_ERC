@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=32G
-#SBATCH --job-name=06_liana_bivariate_run
+#SBATCH --job-name=07_liana_bivariate_run
 #SBATCH -c 1
 #SBATCH -t 1:00:00
-#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/06_liana_bivariate_run_%a.txt
-#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/06_liana_bivariate_run_%a.txt
+#SBATCH -o ../../processed-data/17_cell_cell_comm/logs/07_liana_bivariate_run_%a.txt
+#SBATCH -e ../../processed-data/17_cell_cell_comm/logs/07_liana_bivariate_run_%a.txt
 #SBATCH --array=1-30%10
 
 set -e
@@ -25,7 +25,7 @@ module load liana_plus/1.5.1
 ## List current modules for reproducibility
 module list
 
-python 06_liana_bivariate_run.py
+python 07_liana_bivariate_run.py
 
 echo "**** Job ends ****"
 date
