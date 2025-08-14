@@ -1,0 +1,44 @@
+**** Job starts ****
+Wed Aug 13 01:02:18 PM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 21319545
+Job name: 06_liana_bivariate_run
+Node name: compute-093
+Task id: 27
+Loading LIBD SLURM module for liana_plus/1.5.1
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) liana_plus/1.5.1
+
+ 
+
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/06_liana_bivariate_run.py:39: ImplicitModificationWarning: Trying to modify index of attribute `.var` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/utils/spatial_neighbors.py:143: ImplicitModificationWarning: Setting element `.obsp['spatial_connectivities']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Using `.X`!
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+8875 features of mat are empty, they will be removed.
+Using resource `consensus`.
+  0%|          | 0/100 [00:00<?, ?it/s] 18%|█▊        | 18/100 [00:00<00:00, 173.24it/s] 36%|███▌      | 36/100 [00:00<00:00, 173.48it/s] 54%|█████▍    | 54/100 [00:00<00:00, 173.59it/s] 72%|███████▏  | 72/100 [00:00<00:00, 173.51it/s] 90%|█████████ | 90/100 [00:00<00:00, 173.54it/s]100%|██████████| 100/100 [00:00<00:00, 173.48it/s]
+  0%|          | 0/100 [00:00<?, ?it/s]  2%|▏         | 2/100 [00:00<00:06, 14.78it/s]  4%|▍         | 4/100 [00:00<00:06, 14.78it/s]  6%|▌         | 6/100 [00:00<00:06, 14.78it/s]  8%|▊         | 8/100 [00:00<00:06, 14.77it/s] 10%|█         | 10/100 [00:00<00:06, 14.78it/s] 12%|█▏        | 12/100 [00:00<00:05, 14.78it/s] 14%|█▍        | 14/100 [00:00<00:05, 14.77it/s] 16%|█▌        | 16/100 [00:01<00:05, 14.73it/s] 18%|█▊        | 18/100 [00:01<00:05, 14.71it/s] 20%|██        | 20/100 [00:01<00:05, 14.72it/s] 22%|██▏       | 22/100 [00:01<00:05, 14.74it/s] 24%|██▍       | 24/100 [00:01<00:05, 14.76it/s] 26%|██▌       | 26/100 [00:01<00:05, 14.76it/s] 28%|██▊       | 28/100 [00:01<00:04, 14.76it/s] 30%|███       | 30/100 [00:02<00:04, 14.77it/s] 32%|███▏      | 32/100 [00:02<00:04, 14.77it/s] 34%|███▍      | 34/100 [00:02<00:04, 14.78it/s] 36%|███▌      | 36/100 [00:02<00:04, 14.80it/s] 38%|███▊      | 38/100 [00:02<00:04, 14.78it/s] 40%|████      | 40/100 [00:02<00:04, 14.78it/s] 42%|████▏     | 42/100 [00:02<00:03, 14.78it/s] 44%|████▍     | 44/100 [00:02<00:03, 14.77it/s] 46%|████▌     | 46/100 [00:03<00:03, 14.77it/s] 48%|████▊     | 48/100 [00:03<00:03, 14.77it/s] 50%|█████     | 50/100 [00:03<00:03, 14.77it/s] 52%|█████▏    | 52/100 [00:03<00:03, 14.77it/s] 54%|█████▍    | 54/100 [00:03<00:03, 14.79it/s] 56%|█████▌    | 56/100 [00:03<00:02, 14.84it/s] 58%|█████▊    | 58/100 [00:03<00:02, 14.88it/s] 60%|██████    | 60/100 [00:04<00:02, 14.91it/s] 62%|██████▏   | 62/100 [00:04<00:02, 14.91it/s] 64%|██████▍   | 64/100 [00:04<00:02, 14.90it/s] 66%|██████▌   | 66/100 [00:04<00:02, 14.98it/s] 68%|██████▊   | 68/100 [00:04<00:02, 15.04it/s] 70%|███████   | 70/100 [00:04<00:01, 15.07it/s] 72%|███████▏  | 72/100 [00:04<00:01, 15.03it/s] 74%|███████▍  | 74/100 [00:04<00:01, 15.00it/s] 76%|███████▌  | 76/100 [00:05<00:01, 15.00it/s] 78%|███████▊  | 78/100 [00:05<00:01, 15.02it/s] 80%|████████  | 80/100 [00:05<00:01, 15.01it/s] 82%|████████▏ | 82/100 [00:05<00:01, 15.01it/s] 84%|████████▍ | 84/100 [00:05<00:01, 15.04it/s] 86%|████████▌ | 86/100 [00:05<00:00, 15.12it/s] 88%|████████▊ | 88/100 [00:05<00:00, 15.24it/s] 90%|█████████ | 90/100 [00:06<00:00, 15.34it/s] 92%|█████████▏| 92/100 [00:06<00:00, 15.41it/s] 94%|█████████▍| 94/100 [00:06<00:00, 15.46it/s] 96%|█████████▌| 96/100 [00:06<00:00, 15.49it/s] 98%|█████████▊| 98/100 [00:06<00:00, 15.51it/s]100%|██████████| 100/100 [00:06<00:00, 15.47it/s]100%|██████████| 100/100 [00:06<00:00, 14.96it/s]
+... storing 'ligand' as categorical
+... storing 'receptor' as categorical
+-----
+anndata             0.11.4
+liana               1.5.1
+pandas              2.3.1
+pyhere              1.0.3
+scanpy              1.11.4
+session_info        v1.0.1
+-----
+Python 3.10.18 | packaged by conda-forge | (main, Jun  4 2025, 14:45:41) [GCC 13.3.0]
+Linux-5.14.0-427.13.1.el9_4.x86_64-x86_64-with-glibc2.34
+-----
+Session information updated at 2025-08-13 13:02
+**** Job ends ****
+Wed Aug 13 01:02:55 PM EDT 2025
