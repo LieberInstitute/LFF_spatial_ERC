@@ -1,12 +1,11 @@
 **** Job starts ****
-Tue Aug 12 08:53:11 PM EDT 2025
+Thu Aug 14 12:55:30 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21313088
+Job id: 21333939
 Job name: 12_DE_enrichment
 Node name: compute-168
 Task id: 3
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -213,12 +212,29 @@ There were 50 or more warnings (use warnings() to see the first 50)
 11 Opc_down     15
 12 Opc_up        3
 13 <NA>      80842
+# A tibble: 12 × 2
+   DE_ct_reg       n
+   <chr>       <int>
+ 1 Astro_down    368
+ 2 Astro_up      337
+ 3 Endo_down     190
+ 4 Endo_up       189
+ 5 Micro_down    118
+ 6 Micro_up      127
+ 7 Neuron_down   381
+ 8 Neuron_up     579
+ 9 OPC_down      199
+10 OPC_up        252
+11 Oligo_down     99
+12 Oligo_up      119
 Ast  Ex  In Mic Oli Opc 
  69 756  54  35 173  28 
 gene set enrichment for: Mathys
 gene set enrichment for: Mathys_reg
 gene set enrichment for: Mathys_early
 gene set enrichment for: Mathys_early_reg
+gene set enrichment for: Grubman
+gene set enrichment for: Grubman_reg
 $Mathys
 Ast  Ex  In Mic Oli Opc 
  69 756  54  35 173  28 
@@ -239,11 +255,21 @@ Ast_down   Ast_up  Ex_down    Ex_up  In_down    In_up Mic_down   Mic_up
 Oli_down   Oli_up Opc_down   Opc_up 
       52       44       15        3 
 
+$Grubman
+ Astro   Endo  Micro Neuron  Oligo    OPC 
+   705    379    245    960    218    451 
+
+$Grubman_reg
+ Astro_down    Astro_up   Endo_down     Endo_up  Micro_down    Micro_up 
+        368         337         190         189         118         127 
+Neuron_down   Neuron_up  Oligo_down    Oligo_up    OPC_down      OPC_up 
+        381         579          99         119         199         252 
+
 There were 29 warnings (use warnings() to see them)
 [1] "Reproducibility information:"
-[1] "2025-08-12 20:53:34 EDT"
+[1] "2025-08-14 12:55:51 EDT"
    user  system elapsed 
- 19.618   0.784  22.047 
+ 17.901   0.756  20.621 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -254,7 +280,7 @@ There were 29 warnings (use warnings() to see them)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-08-12
+ date     2025-08-14
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -431,4 +457,4 @@ There were 29 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Aug 12 08:53:34 PM EDT 2025
+Thu Aug 14 12:55:51 PM EDT 2025
