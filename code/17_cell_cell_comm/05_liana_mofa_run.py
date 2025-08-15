@@ -31,9 +31,9 @@ mofa_meta_vars = ['APOE_carrier', 'Ancestry', 'Sex', 'Age']
 mofa_num_factors = 10
 samples_per_view_prop = 0.5
 
-if task_id == 1:
+if data_description == 'broad':
     group_var = 'cell_type_broad'
-elif task_id == 2:
+elif data_description == 'fine':
     group_var = 'cell_type_anno'
 else:
     group_var = 'SpD'
