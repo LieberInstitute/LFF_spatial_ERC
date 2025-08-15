@@ -11,8 +11,12 @@ import matplotlib.pyplot as plt
 import os
 import mudata
 
+task_id = int(os.getenv('SLURM_ARRAY_TASK_ID')) - 1
+data_description = ['broad', 'fine', 'visium'][task_id]
+
 mdata_in_path = here(
-    'processed-data', '17_cell_cell_comm', 'liana', 'mdata.h5mu'
+    'processed-data', '17_cell_cell_comm', 'liana', 'mofa_results',
+    f'mdata_{data_description}.h5mu'
 )
 plot_dir = here('plots', '17_cell_cell_comm', 'liana')
 
@@ -30,5 +34,7 @@ dc.pl.obsm(
     figsize=(10, 7),
     nvar=10
 )
-plt.savefig(os.path.join(plot_dir, 'mofa_heatmap.pdf'))
+plt.savefig(os.path.join(plot_dir, f'mofa_heatmap_{data_description}.pdf'))
 plt.close('all')
+
+session_info.show()
