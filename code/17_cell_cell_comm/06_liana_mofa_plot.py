@@ -1,15 +1,10 @@
-import numpy as np
-import pandas as pd
 import scanpy as sc
-import plotnine as p9
-import liana as li
-import muon as mu
-import mofax as mofa
 import decoupler as dc
 from pyhere import here
 import matplotlib.pyplot as plt
 import os
 import mudata
+import session_info
 
 task_id = int(os.getenv('SLURM_ARRAY_TASK_ID')) - 1
 data_description = ['broad', 'fine', 'visium'][task_id]
