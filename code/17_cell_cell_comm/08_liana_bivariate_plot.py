@@ -8,6 +8,7 @@ import os
 import re
 import session_info
 import matplotlib.pyplot as plt
+from plotnine import *
 
 in_dir = here(
     'processed-data', '17_cell_cell_comm', 'liana', 'bivariate_adatas'
@@ -83,5 +84,40 @@ sc.pl.spatial(
 )
 plt.savefig(os.path.join(plot_dir, 'bivariate_cats.pdf'))
 plt.close('all')
+
+#   Grab scores for the top pairs at all spots in all samples
+pair_df_list = []
+for f in in_files:
+    adata = sc.read(f)
+    present_pairs = [x for x in top_pairs if x in adata.var.index]
+    if len(present_pairs) > 0:
+        pair_df = pd.DataFrame(
+            adata[:, present_pairs].X.toarray(), columns = present_pairs,
+            index = adata.obs.index
+        )
+        pair_df['SpD'] = adata.obs['SpD']
+        pair_df_list.append(pair_df)
+
+pair_df = (
+    pd.concat(pair_df_list, axis = 0)
+        .groupby('SpD', as_index = False)
+        .agg({x: 'mean' for x in top_pairs})
+        .melt(
+            id_vars = 'SpD', value_vars = top_pairs, var_name = 'pair_id',
+            value_name='score'
+        )
+)
+
+#   Add barplot showing distribution of mean LR scores across spatial domains
+p = (
+    ggplot(pair_df, aes(x = 'pair_id', y = 'score', fill = 'SpD')) +
+        geom_bar(position='fill', stat='identity') +
+        theme_bw(base_size=20) +
+        theme(axis_text_x = element_text(angle=90, vjust=0.5, hjust=1))
+)
+p.save(
+    filename=os.path.join(plot_dir, 'top_pairs_by_domain.pdf'),
+    width=7, height=7
+)
 
 session_info.show()

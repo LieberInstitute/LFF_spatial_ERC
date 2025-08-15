@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Aug 13 03:24:26 PM EDT 2025
+Fri Aug 15 12:54:05 PM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 21320685
-Job name: 07_liana_bivariate_plot
-Node name: compute-169
+Job id: 21339117
+Job name: 08_liana_bivariate_plot
+Node name: compute-168
 Task id: 
 Loading LIBD SLURM module for liana_plus/1.5.1
 
@@ -14,16 +14,17 @@ Currently Loaded Modules:
 
  
 
-/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/07_liana_bivariate_plot.py:66: FutureWarning: Use `squidpy.pl.spatial_scatter` instead.
-  sc.pl.spatial(
-/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/07_liana_bivariate_plot.py:73: FutureWarning: Use `squidpy.pl.spatial_scatter` instead.
-  sc.pl.spatial(
-/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/07_liana_bivariate_plot.py:80: FutureWarning: Use `squidpy.pl.spatial_scatter` instead.
-  sc.pl.spatial(
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/08_liana_bivariate_plot.py:67: FutureWarning: Use `squidpy.pl.spatial_scatter` instead.
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/08_liana_bivariate_plot.py:74: FutureWarning: Use `squidpy.pl.spatial_scatter` instead.
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/08_liana_bivariate_plot.py:81: FutureWarning: Use `squidpy.pl.spatial_scatter` instead.
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/08_liana_bivariate_plot.py:102: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/plotnine/ggplot.py:630: PlotnineWarning: Saving 7 x 7 in image.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/plotnine/ggplot.py:631: PlotnineWarning: Filename: /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/17_cell_cell_comm/liana/top_pairs_by_domain.pdf
 -----
 anndata             0.11.4
 matplotlib          3.10.5
 pandas              2.3.1
+plotnine            0.15.0
 pyhere              1.0.3
 scanpy              1.11.4
 session_info        v1.0.1
@@ -31,6 +32,6 @@ session_info        v1.0.1
 Python 3.10.18 | packaged by conda-forge | (main, Jun  4 2025, 14:45:41) [GCC 13.3.0]
 Linux-5.14.0-427.13.1.el9_4.x86_64-x86_64-with-glibc2.34
 -----
-Session information updated at 2025-08-13 15:24
+Session information updated at 2025-08-15 12:54
 **** Job ends ****
-Wed Aug 13 03:24:43 PM EDT 2025
+Fri Aug 15 12:54:26 PM EDT 2025
