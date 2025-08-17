@@ -117,6 +117,9 @@ spe$cluster <- spe$registration_variable
 
 table(spe$cluster)
 
+rm(visium_spe)
+rm(sn_sce)
+
 ## load tau pathology data
 path_tb <- read.csv(here("processed-data", "00_project_prep","05_pathology","sample_taupathy.csv")) |>
     column_to_rownames("BrNum")
@@ -186,6 +189,10 @@ mofa <- prepare_mofa(
 out_path = here(data_dir, 'model.hdf5')
 
 model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
+
+## how to read in mofa?
+# library(rhdf5)
+# h5read(name = out_path)
 
 ####  Exploratory plots ####
 
@@ -287,7 +294,7 @@ dev.off()
 
 
 #   Plot a heatmap of summary results, labeling with covariates of interest
-pdf(file.path(plot_dir, sprintf('MOFA_heatmap_%s.pdf', opt$datatype)), height = 3 + (length(model@data)/4))
+pdf(here(plot_dir, sprintf('MOFA_heatmap_%s.pdf', opt$datatype)), height = 3 + (length(model@data)/4))
 plot_MOFA_hmap(
     model = model,
     group = FALSE,
@@ -302,6 +309,20 @@ plot_MOFA_hmap(
     )
 )
 dev.off()
+
+#### MOFA gene weights ####
+
+rd <- rowData(spe) |>
+    as.data.frame() |>
+    select(feature = gene_id, gene_name)
+
+factor_names <- paste0("Factor", seq(model_opts$num_factors))
+names(factor_names) <- factor_names
+
+gene_weights <- map(factor_names, ~MOFAcellulaR::get_geneweights(model = model, factor = .x) |> left_join(rd, by = join_by(feature)))
+map(gene_weights, dim)
+
+write_rds(gene_weights, file = here(data_dir, sprintf('MOFA_gene_weights_%s.pdf', opt$datatype)))
 
 # slurmjobs::job_single('01_MOFA_broad', create_shell = TRUE, memory = '10G', command = "Rscript 04_DEG_boxplots.R --datatype sn_broad")
 # slurmjobs::job_single('01_MOFA_fine', create_shell = TRUE, memory = '10G', command = "Rscript 04_DEG_boxplots.R --datatype sn_fine")
