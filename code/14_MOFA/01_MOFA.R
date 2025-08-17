@@ -195,7 +195,7 @@ model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
 # h5read(name = out_path)
 
 ####  Exploratory plots ####
-
+message(Sys.time() , " - Explore MOFA factors")
 #   Get factor weights for each donor - export to csv
 factor_df = get_tidy_factors(
     model = model,
@@ -293,6 +293,9 @@ print(p)
 dev.off()
 
 
+#### MOFA heatmap ####
+message(Sys.time() , " - Create MOFA heatmap")
+
 #   Plot a heatmap of summary results, labeling with covariates of interest
 pdf(here(plot_dir, sprintf('MOFA_heatmap_%s.pdf', opt$datatype)), height = 3 + (length(model@data)/4))
 plot_MOFA_hmap(
@@ -311,6 +314,7 @@ plot_MOFA_hmap(
 dev.off()
 
 #### MOFA gene weights ####
+message(Sys.time() , " - Calc MOFA gene weights")
 
 rd <- rowData(spe) |>
     as.data.frame() |>
@@ -322,7 +326,7 @@ names(factor_names) <- factor_names
 gene_weights <- map(factor_names, ~MOFAcellulaR::get_geneweights(model = model, factor = .x) |> left_join(rd, by = join_by(feature)))
 map(gene_weights, dim)
 
-write_rds(gene_weights, file = here(data_dir, sprintf('MOFA_gene_weights_%s.pdf', opt$datatype)))
+write_rds(gene_weights, file = here(data_dir, sprintf('MOFA_gene_weights_%s.rds', opt$datatype)))
 
 # slurmjobs::job_single('01_MOFA_broad', create_shell = TRUE, memory = '10G', command = "Rscript 04_DEG_boxplots.R --datatype sn_broad")
 # slurmjobs::job_single('01_MOFA_fine', create_shell = TRUE, memory = '10G', command = "Rscript 04_DEG_boxplots.R --datatype sn_fine")
