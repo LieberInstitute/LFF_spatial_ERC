@@ -80,7 +80,7 @@ def metric_boxplots(in_files, top_pairs, metric_name):
 #   Main
 ################################################################################
 
-#   Read input files as they exist (for one donor, no file was generated)
+#   Read input files
 in_files = [
     os.path.join(in_dir, f)
     for f in os.listdir(in_dir)
