@@ -1,4 +1,14 @@
-logFC_Heatmap <- function(data, gene_list, title, h = 4, w = 10, cluster_col = FALSE){
+logFC_Heatmap <- function(data, 
+                          gene_list, 
+                          title, 
+                          h = 4, 
+                          w = 10, 
+                          cluster_col = FALSE, 
+                          cluster_row = FALSE,
+                          datatype,
+                          flip = FALSE,
+                          save = TRUE, 
+                          order_genes = TRUE){
     
     logFC_matrix <- data |>
         filter(gene_name %in% gene_list) |>
@@ -22,7 +32,15 @@ logFC_Heatmap <- function(data, gene_list, title, h = 4, w = 10, cluster_col = F
     pval_matrix[is.na(pval_matrix)] <- ""
     
     ## reorder clusters & rows
-    gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
+    
+    ## reorder clusters & rows
+    if(order_genes){
+        # message("order genes")
+        gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
+    } else {
+        # message("DONT order genes")
+        gene_order = gene_list[gene_list %in% colnames(logFC_matrix)]
+    }
     
     if(all(rownames(logFC_matrix) %in% cluster_levels)){
         cluster_order <- cluster_levels[cluster_levels %in% rownames(logFC_matrix)]
@@ -35,21 +53,51 @@ logFC_Heatmap <- function(data, gene_list, title, h = 4, w = 10, cluster_col = F
     
     # Heatmap(logFC_matrix, cluster_rows = FALSE, cluster_columns = FALSE)
     
-    pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = h, width = w)
-    print(Heatmap(logFC_matrix,
-                  name = "log(FC)",
-                  cluster_rows = FALSE,
-                  cluster_columns = cluster_col,
-                  cell_fun = function(j, i, x, y, width, height, fill) {
-                      grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
-                  }))
-    dev.off()
+    max_abs <- max(abs(logFC_matrix), na.rm = TRUE)
+    
+    my.col <- circlize::colorRamp2(
+        breaks = c(-1*max_abs,0,max_abs),
+        colors = c(APOE_carrier_colors[["E2+"]], "white", APOE_carrier_colors[["E4+"]])
+    )
+    
+    if(flip){
+        logFC_matrix <- t(logFC_matrix)
+        pval_matrix <- t(pval_matrix)
+    } 
+    
+    # return(logFC_matrix)
+    
+    log_fc_heatmap <- Heatmap(logFC_matrix,
+                              col = my.col,
+                              name = "log(FC)",
+                              cluster_rows = FALSE,
+                              cluster_columns = cluster_col,
+                              cell_fun = function(j, i, x, y, width, height, fill) {
+                                  grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+                              })
+    
+    if(save){
+        pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = h, width = w)
+        print(log_fc_heatmap)
+        dev.off()
+    } else {
+        print(log_fc_heatmap)
+    }
+    
     
 }
 
 
 
-logFC_Heatmap_contrast <- function(dge_data, gene_list, title, h = 4, w = 10, cluster_col = FALSE){
+logFC_Heatmap_contrast <- function(dge_data, 
+                                   gene_list, 
+                                   title, 
+                                   h = 4, 
+                                   w = 10, 
+                                   cluster_col = FALSE,
+                                   flip = FALSE,
+                                   save = TRUE, 
+                                   order_genes = TRUE){
     
     dge_data_filter <- dge_data |>
         filter(gene_name %in% gene_list) |>
@@ -75,7 +123,13 @@ logFC_Heatmap_contrast <- function(dge_data, gene_list, title, h = 4, w = 10, cl
     pval_matrix[is.na(pval_matrix)] <- ""
     
     ## reorder clusters & rows
-    gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
+    if(order_genes){
+        # message("order genes")
+        gene_order <- order(colMeans(logFC_matrix, na.rm = TRUE))
+    } else {
+        # message("DONT order genes")
+        gene_order = gene_list[gene_list %in% colnames(logFC_matrix)]
+    }
     
     if(all(rownames(logFC_matrix) %in% cluster_levels)){
         cluster_order <- cluster_levels[cluster_levels %in% rownames(logFC_matrix)]
@@ -99,7 +153,7 @@ logFC_Heatmap_contrast <- function(dge_data, gene_list, title, h = 4, w = 10, cl
     print(Heatmap(logFC_matrix,
                   col = my.col,
                   name = "log(FC)",
-                  cluster_rows = FALSE,
+                  cluster_rows = cluster_row,
                   cluster_columns = cluster_col,
                   cell_fun = function(j, i, x, y, width, height, fill) {
                       grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
