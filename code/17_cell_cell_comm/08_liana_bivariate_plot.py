@@ -14,6 +14,9 @@ in_dir = here(
     'processed-data', '17_cell_cell_comm', 'liana', 'bivariate_adatas'
 )
 plot_dir = here('plots', '17_cell_cell_comm', 'liana')
+out_path = here(
+    'processed-data', '17_cell_cell_comm', 'liana', 'bivariate_stats.csv.gz'
+)
 min_num_donors = 20
 
 #   Read input files as they exist (for one donor, no file was generated)
@@ -32,6 +35,7 @@ for f in in_files:
     lr_df_list.append(lr_df)
 
 lr_df = pd.concat(lr_df_list, axis=0, ignore_index=True)
+lr_df.to_csv(out_path, index = False)
 
 #   Require a pair to be present in some minimum number of donors
 lr_df = lr_df[
@@ -95,29 +99,31 @@ for f in in_files:
             adata[:, present_pairs].X.toarray(), columns = present_pairs,
             index = adata.obs.index
         )
-        pair_df['SpD'] = adata.obs['SpD']
+        pair_df[['SpD', 'sample_id']] = adata.obs[['SpD', 'sample_id']]
         pair_df_list.append(pair_df)
 
 pair_df = (
     pd.concat(pair_df_list, axis = 0)
-        .groupby('SpD', as_index = False)
+        .groupby(['SpD', 'sample_id'], as_index = False)
         .agg({x: 'mean' for x in top_pairs})
         .melt(
-            id_vars = 'SpD', value_vars = top_pairs, var_name = 'pair_id',
-            value_name='score'
+            id_vars = ['SpD', 'sample_id'], value_vars = top_pairs,
+            var_name = 'pair_id', value_name='score'
         )
 )
 
-#   Add barplot showing distribution of mean LR scores across spatial domains
+#   Boxplot showing metrics by spatial domain for each LR pair
 p = (
-    ggplot(pair_df, aes(x = 'pair_id', y = 'score', fill = 'SpD')) +
-        geom_bar(position='fill', stat='identity') +
-        theme_bw(base_size=20) +
+    ggplot(pair_df, aes(x = 'SpD', y = 'score', color = 'SpD')) +
+        geom_boxplot(outlier_shape = None) +
+        geom_jitter(width = 0.1) +
+        facet_wrap('~pair_id', ncol = 4) +
+        theme_bw(base_size=15) +
         theme(axis_text_x = element_text(angle=90, vjust=0.5, hjust=1))
 )
 p.save(
     filename=os.path.join(plot_dir, 'top_pairs_by_domain.pdf'),
-    width=7, height=7
+    width=12, height=7
 )
 
 session_info.show()
