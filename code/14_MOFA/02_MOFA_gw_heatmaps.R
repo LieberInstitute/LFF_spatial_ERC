@@ -17,6 +17,7 @@ opt <- getopt(scec)
 
 ## test 
 # opt$datatype = "sn_broad"
+# opt$datatype = "sn_fine"
 
 data_dir <- here("processed-data", "14_MOFA", "02_MOFA_gw_heatmaps", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -59,6 +60,8 @@ summary(gene_weights$Factor3$value)
 
 if(opt$datatype == "sn_broad"){
     my_views <- c("Oligo","WM~Sp09D06")
+} else if(opt$datatype == "sn_fine"){
+    my_views <- c("Oligo.3","Oligo.4","Oligo.5","WM~Sp09D06") #Excit.L5.2
 }
 
 top_gene_weights <- gene_weights$Factor3 |>
@@ -68,7 +71,7 @@ top_gene_weights <- gene_weights$Factor3 |>
     filter(ctype %in% my_views) |>
     group_by(ctype,weight_pos) |>
     arrange(-abs_value) |>
-    dplyr::slice(1:10)
+    dplyr::slice(1:5)
 
 
 ## prep heatmap 
@@ -95,8 +98,22 @@ dim(top_gw_value_matrix)
 top_gw_value_matrix[1:5, 1:5]
 
 
-pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_all.pdf", opt$datatype)), width = 5, height = 7)
+pdf_width_all <- (nrow(top_gw_value_matrix)/8) + 3
+pdf_width_select <- (length(my_views)/8) + 3
+
+pdf_height <- length(row_order)/5
+
+## weights across all clusters
+pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_all.pdf", opt$datatype)), width = pdf_width_all, height = pdf_height)
 Heatmap(top_gw_value_matrix,
+        name = "feature\nweights",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE)
+dev.off()
+
+## select clusters
+pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_select.pdf", opt$datatype)), width = pdf_width_select, height = pdf_height)
+Heatmap(top_gw_value_matrix[,my_views],
         name = "feature\nweights",
         cluster_rows = FALSE,
         cluster_columns = FALSE)
@@ -117,11 +134,24 @@ dge_data <- bind_rows(spd_dge_data, sn_dge_data)
 
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
+## all clusters
 logFC_Heatmap(dge_data, 
               gene_list = row_order,
               title = "Factor3", 
-              h = 7, 
-              w = 5, 
+              h = pdf_height, 
+              w = pdf_width_all, 
+              cluster_col = FALSE,
+              datatype = "MOFA",
+              flip = TRUE,
+              save = TRUE,
+              order_genes = FALSE)
+
+## select clusters
+logFC_Heatmap(dge_data |> filter(cluster %in% my_views), 
+              gene_list = row_order,
+              title = "Factor3_select", 
+              h = pdf_height, 
+              w = pdf_width_select, 
               cluster_col = FALSE,
               datatype = "MOFA",
               flip = TRUE,
