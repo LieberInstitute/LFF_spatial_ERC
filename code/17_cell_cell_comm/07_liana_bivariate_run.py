@@ -68,10 +68,10 @@ ad_lr = li.mt.bivariate(
     resource_name='consensus', # NOTE: uses HUMAN gene symbols!
     local_name='cosine', # Name of the function
     global_name='morans', # Name global function
-    n_perms=100, # Number of permutations to calculate a p-value
+    n_perms=1000, # Number of permutations to calculate a p-value
     mask_negatives=False, # Whether to mask LowLow/NegativeNegative interactions
     add_categories=True, # Whether to add local categories to the results
-    nz_prop=0.2, # Minimum expr. proportion for ligands/receptors and their subunits
+    nz_prop=0.05, # Minimum expr. proportion for ligands/receptors and their subunits
     use_raw=False,
     verbose=True
 )
