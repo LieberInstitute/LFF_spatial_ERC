@@ -99,12 +99,17 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
                                       # qvalueCutoff = 0.05,
                                       readable = TRUE))
 
+saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s.rds", opt$datatype)))
+
+## convert to table
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
-# Save data
+# Save 
 saveRDS(compare_clus, file = here(data_dir, sprintf("GO_compare_clus_%s.rds", opt$datatype)))
 write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
+
+# compare_clus <- readRDS(here(data_dir, sprintf("GO_compare_clus_%s.rds", opt$datatype)))
 
 #### dot plots ####
 
@@ -121,25 +126,59 @@ walk2(go_result, names(go_result),
 )
 dev.off()
 
-## by cell type
-# if(opt$datatype == "sn_fine"){
-#     
-#     pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
-#     walk2(go_result, names(go_result), function(gr){
-#         
-#         ~print(
-#             dotplot(.x, 
-#                     x = "DE_class_cluster", 
-#                     showCategory = 5, 
-#                     label_format = 60)  +
-#                 ggtitle(paste("GO Enrichment:", .y)) +
-#                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-#         )
-#         
-#         }
-#     )
-#     dev.off()
+# for sn fine plot by cell type
+if(opt$datatype == "sn_fine"){
     
+    ## by broad cell types
+    broad_cell_types <- unique(jaffelab::ss(cluster_levels, "\\."))
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_cell_type.pdf", opt$datatype)), width = 6, height = 6)
+    
+    map(broad_cell_types, function(ct){
+        go_result_ct <- map(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster))
+            
+            # dotplot
+            print(
+                dotplot(gr, 
+                        x = "DE_class_cluster", 
+                        showCategory = 5, 
+                        label_format = 60)  +
+                    ggtitle(sprintf("GO Enrichment:%s - %s", ont, ct)) +
+                    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )
+            
+            return(map_int(gr, ~.x@compareClusterResult |> count(Cluster)))
+        })
+    })
+    dev.off()
+    
+    
+    
+    
+    go_result_Oligo3 <- map(go_result, function(gr){
+        gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl("Oligo.3", Cluster) | grepl("Astro.3", Cluster))
+        return(gr)
+    })
+    
+    map(go_result_Oligo3, ~.x@compareClusterResult |> count(Cluster))
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_Oligo.3.pdf", opt$datatype)), width = 6, height = 6)
+    walk2(go_result_Oligo3, names(go_result_Oligo3), 
+          ~print(
+              dotplot(.x, 
+                      x = "DE_class_cluster", 
+                      showCategory = 5, 
+                      label_format = 60)  +
+                  ggtitle(paste("GO Enrichment:", .y)) +
+                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+          )
+    )
+    dev.off()
+    
+    
+}
 
 
 #### rrvgo ####
