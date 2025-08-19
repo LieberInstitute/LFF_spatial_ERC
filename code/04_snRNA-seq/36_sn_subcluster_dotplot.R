@@ -68,7 +68,11 @@ lit_markers |> count(gene_name) |> filter(n > 1)
 lit_markers |> filter(gene_name == "CLDN5")
 
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_lit_genes.pdf")))
+rowData(sce)$Marker <- NULL
+rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
+table(rowData(sce)$Marker)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_lit_genes.pdf")), height = 10)
 sce |>
     scDotPlot(features = unique(lit_markers$gene_name),
               group = "cell_type_anno",
@@ -102,6 +106,8 @@ dev.off()
 
 #### Oligo OPC marker genes ####
 
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
+
 ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
 oligo_lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
                     Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
@@ -120,14 +126,40 @@ rowData(sce)$oligo_marker <- NULL
 rowData(sce)$oligo_marker <- names(oligo_lit_markers)[match(rownames(sce), oligo_lit_markers)] 
 table(rowData(sce)$oligo_marker)
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_lit.pdf"))
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_lit_alt_colors.pdf"))
 sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_lit_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "oligo_marker",
               scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+## Oligo Enrichment genes w/ OPC.5 outgroup
+
+oligo_enrichment_genes <- read_csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_enrichment_top10_Oligo.csv")) |>
+    select(-`...1`)
+
+rowData(sce)$oligo_enrich_marker <- NULL
+rowData(sce)$oligo_enrich_marker <- oligo_enrichment_genes$test[match(rownames(sce), oligo_enrichment_genes$gene)] 
+table(rowData(sce)$oligo_enrich_marker)
+
+# pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment_alt_colors.pdf"))
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment.pdf"), width = 5)
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
+    scDotPlot(features = oligo_enrichment_genes$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_enrich_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "oligo_enrich_marker" = cell_type_colors$anno),
+              # annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+              #                   "oligo_enrich_marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
 dev.off()
