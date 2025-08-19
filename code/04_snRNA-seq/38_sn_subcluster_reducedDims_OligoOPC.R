@@ -152,7 +152,7 @@ walk(c("TSNE", "UMAP"),
 
 
 #### Trajectory analysis ####
-
+message(Sys.time(), " - Trajectory analysis")
 by.cluster <- aggregateAcrossCells(sce, ids=sce$cell_type_anno)
 centroids <- reducedDim(by.cluster, "HARMONY")
 
@@ -239,6 +239,8 @@ walk(c("OMG", "OPALIN", "MOG"), function(g){
 
 
 #### pseudotime ####
+message(Sys.time(), " - pseudotime")
+
 colLabels(sce) <- sce$cell_type_anno
 
 map.tscan <- mapCellsToEdges(sce, mst=mst, use.dimred="HARMONY")
