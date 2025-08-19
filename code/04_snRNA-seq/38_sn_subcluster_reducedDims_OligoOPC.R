@@ -144,6 +144,9 @@ walk(c("TSNE", "UMAP"),
                           add_label = TRUE)
 )
 
+
+saveRDS(reducedDims(sce), file = here(data_dir, "Oligo_OPC_reducedDims.Rds"))
+
 #### Trajectory analysis ####
 
 by.cluster <- aggregateAcrossCells(sce, ids=sce$cell_type_anno)
