@@ -217,6 +217,13 @@ cell_type_colors <- list(broad = cell_type_colors_broad.V2,
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"))
 
+## Oligo + OPC alt colors
+Oligo_OPC_colors <- create_cell_colors(cell_types = c(paste0("OPC.", 1:5), paste0("Oligo.", 1:5)), palette_name = "gg")
+# OPC.1     OPC.2     OPC.3     OPC.4     OPC.5   Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5
+# "#F8766D" "#D89000" "#A3A500" "#39B600" "#00BF7D" "#00BFC4" "#00B0F6" "#9590FF" "#E76BF3" "#FF62BC"
+
+save(Oligo_OPC_colors, file = here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"))
+
 
 #### SpD colors ####
 SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
