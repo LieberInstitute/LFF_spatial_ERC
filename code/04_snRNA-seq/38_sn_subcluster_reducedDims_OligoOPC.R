@@ -107,13 +107,18 @@ sce <- runTSNE(sce, dimred = "HARMONY")
 message(Sys.time(), " - run UMAP")
 sce <- runUMAP(sce, dimred = "HARMONY")
 
+saveRDS(reducedDims(sce), file = here(data_dir, "Oligo_OPC_reducedDims.Rds"))
+# reducedDims(sce) <- readRDS(here(data_dir, "Oligo_OPC_reducedDims.Rds"))
+
 #### plot reduced dims ####
 message(Sys.time(), " - Plot Reduced Dims")
 cell_type_colors <- metadata(sce)$cell_type_colors
 
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"))
+
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-## plot w/ default colors (easier to tell apart)
+## plot w/ default cell type colors
 walk(c("TSNE", "UMAP"),
      ~my_plot_reduced_dim(sce,
                           prefix = "sn_subcluster",
@@ -122,13 +127,14 @@ walk(c("TSNE", "UMAP"),
                           var_type = "cat",
                           save_plot = TRUE,
                           suffix = celltype,
+                          color_pal = cell_type_colors$anno,
                           facet = FALSE,
                           plot_dir_rd = plot_dir,
                           verbose = TRUE, 
                           add_label = TRUE)
 )
 
-## plot w/ cell type colors
+## plot w/ alt Oligo + OPC cell type colors
 walk(c("TSNE", "UMAP"),
      ~my_plot_reduced_dim(sce,
                           prefix = "sn_subcluster",
@@ -137,15 +143,13 @@ walk(c("TSNE", "UMAP"),
                           var_type = "cat",
                           save_plot = TRUE,
                           suffix = paste0(celltype, "_color"),
-                          color_pal = cell_type_colors$anno,
+                          color_pal = Oligo_OPC_colors,
                           facet = FALSE,
                           plot_dir_rd = plot_dir,
                           verbose = TRUE, 
                           add_label = TRUE)
 )
 
-
-saveRDS(reducedDims(sce), file = here(data_dir, "Oligo_OPC_reducedDims.Rds"))
 
 #### Trajectory analysis ####
 
@@ -158,6 +162,40 @@ mst
 
 line.data <- reportEdges(by.cluster, mst=mst, clusters=NULL, use.dimred="TSNE")
 
+## Oligo_OPC_colors
+tsne_edge <- my_plot_reduced_dim(sce,
+                                 prefix = "sn_subcluster",
+                                 dimred = "TSNE",
+                                 my_var = "cell_type_anno",
+                                 var_type = "cat",
+                                 save_plot = FALSE,
+                                 suffix = celltype,
+                                 color_pal = Oligo_OPC_colors,
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC_color.png")))
+
+tsne_edge <- my_plot_reduced_dim(sce,
+                                 prefix = "sn_subcluster",
+                                 dimred = "TSNE",
+                                 my_var = "cell_type_anno",
+                                 var_type = "cat",
+                                 save_plot = FALSE,
+                                 suffix = celltype,
+                                 color_pal = Oligo_OPC_colors,
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = FALSE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC_color_noLabel.png")))
+
+## with cell type colors
 tsne_edge <- my_plot_reduced_dim(sce,
                                  prefix = "sn_subcluster",
                                  dimred = "TSNE",
@@ -172,23 +210,32 @@ tsne_edge <- my_plot_reduced_dim(sce,
                                  add_label = TRUE) + 
     geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
 
-ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC_color.png")))
-
-## with default colors
-tsne_edge <- my_plot_reduced_dim(sce,
-                                 prefix = "sn_subcluster",
-                                 dimred = "TSNE",
-                                 my_var = "cell_type_anno",
-                                 var_type = "cat",
-                                 save_plot = FALSE,
-                                 suffix = celltype,
-                                 facet = FALSE,
-                                 plot_dir_rd = plot_dir,
-                                 verbose = TRUE, 
-                                 add_label = TRUE) + 
-    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
-
 ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC.png")))
+
+
+## mature Oligo gene expression
+rownames(sce) <- rowData(sce)$gene_name
+
+walk(c("OMG", "OPALIN", "MOG"), function(g){
+    
+    tsne_edge <- my_plot_reduced_dim(sce,
+                                     prefix = "sn_subcluster",
+                                     dimred = "TSNE",
+                                     my_var = g,
+                                     var_type = "express",
+                                     save_plot = FALSE,
+                                     suffix = celltype,
+                                     facet = FALSE,
+                                     plot_dir_rd = plot_dir,
+                                     verbose = TRUE, 
+                                     add_label = TRUE) +
+        geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+    
+    ggsave(tsne_edge, filename =here(plot_dir, sprintf("sn_subcluster_TSNE-celltype_trajectory-OligoOPC_expres%s.png", g)))
+    
+    
+})
+
 
 #### pseudotime ####
 colLabels(sce) <- sce$cell_type_anno
