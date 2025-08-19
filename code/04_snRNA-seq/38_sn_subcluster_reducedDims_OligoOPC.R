@@ -161,6 +161,7 @@ mst <- createClusterMST(centroids, clusters=NULL)
 mst
 
 line.data <- reportEdges(by.cluster, mst=mst, clusters=NULL, use.dimred="TSNE")
+saveRDS(line.data, file = here(data_dir, "Oligo_OPC_line.data.Rds"))
 
 ## Oligo_OPC_colors
 tsne_edge <- my_plot_reduced_dim(sce,
