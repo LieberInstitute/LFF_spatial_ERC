@@ -223,11 +223,11 @@ save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type
 # "#F8766D" "#D89000" "#A3A500" "#39B600" "#00BF7D" "#00BFC4" "#00B0F6" "#9590FF" "#E76BF3" "#FF62BC"
 
 Oligo_OPC_colors <- c(cell_type_colors_anno[grepl("OPC", names(cell_type_colors_anno))],
-                      Oligo.1 = "#46aed7",
-                      Oligo.2 = "#6169d6",
-                      Oligo.3 = "#976bb3",
-                      Oligo.4 = "#7088cd",
-                      Oligo.5 = "#b25fce")
+                      Oligo.1 = "#00BFC4",
+                      Oligo.2 =  "#00B0F6",
+                      Oligo.3 = "#9590FF",
+                      Oligo.4 = "#E76BF3",
+                      Oligo.5 = "#FF62BC")
 
 # OPC.1     OPC.2     OPC.3     OPC.4     OPC.5   Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5 
 # "#D2B037" "#BDB76B" "#FFDB58" "#A2852D" "#DA9100" "#46aed7" "#6169d6" "#976bb3" "#7088cd" "#b25fce" 
