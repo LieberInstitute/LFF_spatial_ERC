@@ -121,16 +121,31 @@ rowData(sce)$GlobalEnrich <- NULL
 rowData(sce)$GlobalEnrich <- enrichment_stats_top_unique$cell_type_anno[match(rownames(sce), enrichment_stats_top_unique$ensembl)] 
 table(rowData(sce)$GlobalEnrich)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes.pdf")), height = 10)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes.pdf")), height = 14, width = 10)
 sce |>
     scDotPlot(features = enrichment_stats_top_unique$ensembl,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "GlobalEnrich",
+              # scale = TRUE,
+              annoColors = list(cell_type_anno = cell_type_colors$anno,
+                                GlobalEnrich = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.pdf")), height = 5, width = 10)
+sce |>
+    scDotPlot(features = enrichment_stats_top |> filter(cell_type_anno == "Oligo.03") |> pull(ensembl),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "GlobalEnrich",
               scale = TRUE,
               annoColors = list(cell_type_anno = cell_type_colors$anno,
                                 GlobalEnrich = cell_type_colors$anno),
-              clusterRows = TRUE,
+              clusterRows = FALSE,
               groupLegends = FALSE
     )
 dev.off()
@@ -246,7 +261,7 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
               groupLegends = FALSE)
 dev.off()
 
-#### Oligo OPC gene list dotplots ###
+#### Oligo OPC gene list dotplots ####
 
 ## blanchard data
 source(here("external-data", "Blanchard2022", "get_Blanchard_gene_list.R"))
