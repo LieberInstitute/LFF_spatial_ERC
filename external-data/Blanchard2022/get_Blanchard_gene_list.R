@@ -1,0 +1,3 @@
+Blanchard_gene_list <- list(Blanchard_Fig3c = c("DHCR24", "LPCAT3", "SCP2", "PRKN","SEC23A","PCYT1B","MBTPS1","LPIN1","LBR","NR1H2","IRS2","LPIN2"),
+                           Blanchard_Fig4a = c("PLLP", "MYRF", "MAG", "OPALIN", "SREBF1", "PLP1", "SCAP", "MVK", "FDPS", "ABCG1", "HMGCS1", "IDI1", "LDLR", "INSIG1", "SREBF2", "SQLE", "DHCR7", "DHCR24", "FDFT1", "LSS"),
+                           Blanchard_ExFig8a = c("PLP1", "OPALIN", "PLLP", "MYRF", "MAG", "MOG"))
