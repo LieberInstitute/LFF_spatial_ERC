@@ -1,6 +1,8 @@
 ## Louise Huuki-Myers, April 2025
 ## Run differential proportion analysis with Crumblr
 
+# BiocManager::install('DiseaseNeurogenomics/crumblr')
+
 library("SingleCellExperiment")
 library("tidyverse")
 library("crumblr")
@@ -206,11 +208,12 @@ tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43",
-                                   fdr.cutoff = 0.1) +
+# TODO fdr.cutoff = 0.1
+tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
     theme(legend.position = "left" 
           # legend.box = "vertical"
-          )
+    )
+
 ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_beta.png"), width = 4, height = 7)
 
 # forest plots
