@@ -107,9 +107,38 @@ sce |>
 dev.off()
 
 
+#### Global Enrichment Dot plot ####
+enrichment_stats_top <- read.csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv"))
+
+non_unique <- enrichment_stats_top |> count(ensembl) |> filter(n != 1) |> pull(ensembl)
+
+enrichment_stats_top |> filter(ensembl %in% non_unique) |> count(cell_type_anno)
+enrichment_stats_top |> filter(cell_type_anno == "Oligo.03")
+
+enrichment_stats_top_unique <- enrichment_stats_top |> filter(!ensembl %in% non_unique)
+
+rowData(sce)$GlobalEnrich <- NULL
+rowData(sce)$GlobalEnrich <- enrichment_stats_top_unique$cell_type_anno[match(rownames(sce), enrichment_stats_top_unique$ensembl)] 
+table(rowData(sce)$GlobalEnrich)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes.pdf")), height = 10)
+sce |>
+    scDotPlot(features = enrichment_stats_top_unique$ensembl,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "GlobalEnrich",
+              scale = TRUE,
+              annoColors = list(cell_type_anno = cell_type_colors$anno,
+                                GlobalEnrich = cell_type_colors$anno),
+              clusterRows = TRUE,
+              groupLegends = FALSE
+    )
+dev.off()
+
+
 #### MeanRatio dot plots ####
 rowData(sce)$Marker <- NULL
-rowData(sce)$Marker <- top_MeanRatio_genes$cellType.target[match(rownames(sce), top_MeanRatio_genes$gene)] 
+rowData(sce)$Marker <- top_MeanRatio_genes$cellType.target[match(rownames(sce), enrichment_stats_top$ensembl)] 
 table(rowData(sce)$Marker)
 
 pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_MeanRatio.pdf", celltype)))
@@ -185,6 +214,20 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
               groupLegends = FALSE)
 dev.off()
 
+## Oligo markers in ALL cell types
+pdf(here(plot_dir, "sn_subtype_dotplot_OligoEnrichment.pdf"), width = 12, height = 9)
+sce |>
+    scDotPlot(features = oligo_enrichment_genes$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_enrich_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "oligo_enrich_marker" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
 ## top 5 genes
 
 oligo_enrichment_genes |> filter(top <=5) |> pull(gene)
@@ -202,4 +245,33 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
               clusterRows = FALSE,
               groupLegends = FALSE)
 dev.off()
+
+#### Oligo OPC gene list dotplots ###
+
+## blanchard data
+source(here("external-data", "Blanchard2022", "get_Blanchard_gene_list.R"))
+
+Blanchard_gene_list <- map(Blanchard_gene_list, ~.x[.x %in% rownames(sce)])
+map_int(Blanchard_gene_list, length)
+
+
+plot_OligoOPC_dotplot <- function(gene_list, name){
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_OligoOPC5_dotplot_%s_alt_colors.pdf", name)), width = 5, height = (length(gene_list)/3) + 1)
+    
+    print(sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+        scDotPlot(features = gene_list,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  # featureAnno = "oligo_marker",
+                  scale = TRUE,
+                  # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE))
+    
+    dev.off()
+}
+
+map2(Blanchard_gene_list, names(Blanchard_gene_list), ~plot_OligoOPC_dotplot(.x, .y))
 
