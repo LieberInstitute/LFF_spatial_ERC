@@ -1,0 +1,801 @@
+**** Job starts ****
+Wed Aug 20 03:57:53 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 21566268
+Job name: 22_crumblr_sn
+Node name: compute-154
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading required package: BiocParallel
+
+Attaching package: ‘variancePartition’
+
+The following objects are masked from ‘package:limma’:
+
+    eBayes, topTable
+
+
+---------------------
+Welcome to dendextend version 1.19.0
+Type citation('dendextend') for how to cite the package.
+
+Type browseVignettes(package = 'dendextend') for the package vignette.
+The github page is: https://github.com/talgalili/dendextend/
+
+Suggestions and bug-reports can be submitted at: https://github.com/talgalili/dendextend/issues
+You may ask questions at stackoverflow, use the r and dendextend tags: 
+	 https://stackoverflow.com/questions/tagged/dendextend
+
+	To suppress this message use:  suppressPackageStartupMessages(library(dendextend))
+---------------------
+
+
+Attaching package: ‘dendextend’
+
+The following object is masked from ‘package:generics’:
+
+    prune
+
+The following object is masked from ‘package:stats’:
+
+    cutree
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading objects:
+  cell_type_colors
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+Loading objects:
+  cell_type_proportions
+Adding missing grouping variables: `APOE`, `Sex`, `Ancestry`
+[1] TRUE
+[1] TRUE
+Joining with `by = join_by(sample_id)`
+Joining with `by = join_by(cell_type_anno, sample_id, Sex, Ancestry, APOE)`
+pdf 
+  2 
+Saving 7 x 7 in image
+# A tibble: 30 × 14
+   cell_type_anno sample_id   CLR   Age Sex   Ancestry Anc_Afr APOE_carrier
+   <chr>          <chr>     <dbl> <dbl> <chr> <chr>      <dbl> <chr>       
+ 1 Oligo.3        Br5529     3.88  48.7 F     AA         0.874 E2+         
+ 2 Oligo.3        Br6263     3.53  50.7 F     AA         0.896 E4+         
+ 3 Oligo.3        Br6423     2.62  51.7 M     EA         0.001 E2+         
+ 4 Oligo.3        Br5161     2.11  54.4 M     EA         0.001 E4+         
+ 5 Oligo.3        Br5367     2.12  31.3 F     EA         0.001 E2+         
+ 6 Oligo.3        Br3974     2.30  62.7 M     AA         0.811 E4+         
+ 7 Oligo.3        Br5276     2.81  59.9 M     EA         0.001 E4+         
+ 8 Oligo.3        Br6538     2.01  60.8 M     EA         0     E2+         
+ 9 Oligo.3        Br5426     1.86  48.8 F     AA         0.86  E2+         
+10 Oligo.3        Br5599     1.93  55.9 M     EA         0.001 E4+         
+# ℹ 20 more rows
+# ℹ 6 more variables: APOE <chr>, exp_round <chr>, seq_round <chr>, prop <dbl>,
+#   error <dbl>, anno <chr>
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Loading objects:
+  dend
+  tree.clusCollapsed
+  dist.clusCollapsed
+                        logFC     AveExpr           t     P.Value  adj.P.Val
+Oligo.1          -0.838001493  2.12294822 -3.29041883 0.003391148 0.07677455
+Excit.L2          0.878852848  0.06115206  3.21587912 0.004040766 0.07677455
+Oligo.2          -0.903751212  1.90335046 -3.02138982 0.006355225 0.07762043
+Excit.L6b        -1.093021726 -0.88692098 -2.91208013 0.008170572 0.07762043
+Inhib.Pvalb       0.697314283 -0.23355939  2.77258192 0.011215030 0.08523423
+Inhib.Lamp5_Lhx6  0.546190860 -0.18985351  2.63405746 0.015284600 0.09680246
+Astro.4          -0.707230347 -0.37611093 -2.32148552 0.030091782 0.15319537
+OPC.5             1.088450759 -1.80267586  2.28861479 0.032251657 0.15319537
+Inhib.Chandelier  0.688357304 -1.63358095  1.98106191 0.060442292 0.23390520
+Astro.2           0.392413915  1.34967165  1.94695090 0.064644512 0.23390520
+Inhib.Sst         0.428559732 -0.58176722  1.88044489 0.073584438 0.23390520
+Astro.5           0.365941950 -0.49334478  1.86414641 0.075934050 0.23390520
+OPC.2             0.324067132  1.12356745  1.83682222 0.080020201 0.23390520
+Inhib.Vip         0.331001077  1.74252203  1.77553031 0.089886616 0.24397796
+Inhib.Pax6        0.423064696 -2.37023158  1.67679567 0.107980140 0.27354969
+Micro.3          -0.353276307  0.07707637 -1.55351606 0.134813363 0.32018174
+Excit.L5_6_NP     0.709187619 -2.87877116  1.40416313 0.174469702 0.38999110
+Micro.5          -0.286477457 -0.82747513 -1.35434971 0.189608177 0.39475654
+Excit.L5.1        0.565014474 -0.21236456  1.31505545 0.202266046 0.39475654
+Astro.1          -0.283221383  2.05129454 -1.29857728 0.207766602 0.39475654
+Excit.L2_5.1      0.284670898  1.72804430  1.18529852 0.248761443 0.42323408
+Vasc.PC           0.317115667 -2.04439168  1.16974487 0.254834850 0.42323408
+Micro.4          -0.206728166  0.09432697 -1.15303643 0.261481428 0.42323408
+Oligo.4          -0.261289823  1.65924744 -1.13865155 0.267305734 0.42323408
+Excit.L6_CT      -0.340111271 -1.17637604 -1.03203082 0.313462206 0.47646255
+Micro.1          -0.211853668  0.93472418 -0.95932674 0.347997911 0.50861233
+Oligo.5          -0.175199065  1.16152659 -0.92620633 0.364560514 0.51308517
+Micro.2           0.110301575  1.02262349  0.71753419 0.480724270 0.65241151
+Oligo.3          -0.104996873  1.73901614 -0.44119648 0.663450348 0.83704547
+Macro            -0.099373432 -1.23557998 -0.40273896 0.691093881 0.83704547
+Vasc.Endo        -0.088673741 -0.72226222 -0.40187265 0.691721884 0.83704547
+Vasc.VLMC        -0.143383699 -0.76820999 -0.38379153 0.704880398 0.83704547
+OPC.4            -0.105366638  0.41445229 -0.34925809 0.730273502 0.84092100
+OPC.3            -0.086598944  1.14374900 -0.30756809 0.761353564 0.85092457
+Excit.L2_5.2     -0.058671325 -1.70821487 -0.10451003 0.917727859 0.97376584
+Astro.3           0.008351182  0.88854197  0.06032562 0.952450326 0.97376584
+Excit.L5.2        0.026915137 -2.44512048  0.05420166 0.957272120 0.97376584
+OPC.1             0.007424014  1.36897616  0.03326823 0.973765841 0.97376584
+                         B
+Oligo.1          -1.714310
+Excit.L2         -1.981697
+Oligo.2          -2.274637
+Excit.L6b        -2.577251
+Inhib.Pvalb      -2.932870
+Inhib.Lamp5_Lhx6 -3.112341
+Astro.4          -3.821864
+OPC.5            -3.891058
+Inhib.Chandelier -4.296099
+Astro.2          -4.214102
+Inhib.Sst        -4.423714
+Astro.5          -4.392437
+OPC.2            -4.396870
+Inhib.Vip        -4.484313
+Inhib.Pax6       -4.877214
+Micro.3          -5.080858
+Excit.L5_6_NP    -5.148777
+Micro.5          -5.257820
+Excit.L5.1       -5.371693
+Astro.1          -5.193805
+Excit.L2_5.1     -5.388728
+Vasc.PC          -5.362530
+Micro.4          -5.605111
+Oligo.4          -5.342518
+Excit.L6_CT      -5.522034
+Micro.1          -5.797148
+Oligo.5          -5.544158
+Micro.2          -5.854085
+Oligo.3          -5.888081
+Macro            -6.115254
+Vasc.Endo        -5.888615
+Vasc.VLMC        -6.117619
+OPC.4            -5.882560
+OPC.3            -5.889817
+Excit.L2_5.2     -6.148939
+Astro.3          -5.993619
+Excit.L5.2       -6.001829
+OPC.1            -5.887047
+ℹ invalid tbl_tree object. Missing column: parent,node.
+# A tibble: 75 × 4
+   label                                              beta  pvalue   FDR
+   <chr>                                             <dbl>   <dbl> <dbl>
+ 1 Oligo.1                                          -0.838 0.00339 0.101
+ 2 Excit.L2                                          0.879 0.00404 0.101
+ 3 Oligo.1/Oligo.2                                  -0.827 0.00358 0.101
+ 4 Oligo.2                                          -0.904 0.00636 0.119
+ 5 Excit.L6b                                        -1.09  0.00817 0.123
+ 6 Inhib.Pvalb                                       0.697 0.0112  0.140
+ 7 Inhib.Lamp5_Lhx6                                  0.546 0.0153  0.143
+ 8 Inhib.Lamp5_Lhx6/Inhib.Pvalb/Inhib.Sst/Inhib.Vip  0.429 0.0157  0.143
+ 9 Inhib.Pvalb/Inhib.Sst                             0.534 0.0172  0.143
+10 Astro.4                                          -0.707 0.0301  0.202
+# ℹ 65 more rows
+Saving 7 x 7 in image
+                        logFC     AveExpr            t    P.Value adj.P.Val
+Astro.5           1.095913740 -0.49334478  2.794277807 0.01067930 0.4058135
+Astro.1          -0.905199343  2.05129454 -1.908800559 0.06964807 0.7463084
+Astro.4          -1.186548943 -0.37611093 -1.875741764 0.07425583 0.7463084
+Oligo.5           0.695162709  1.16152659  1.640000683 0.11547171 0.7463084
+Astro.2           0.708070896  1.34967165  1.639412403 0.11559495 0.7463084
+Inhib.Lamp5_Lhx6  0.655628979 -0.18985351  1.489408168 0.15082038 0.7463084
+Oligo.1          -0.699671848  2.12294822 -1.432508313 0.16629615 0.7463084
+OPC.5             1.371949498 -1.80267586  1.415758952 0.17108792 0.7463084
+Oligo.2          -0.755898785  1.90335046 -1.394539977 0.17731656 0.7463084
+Inhib.Pvalb       0.723490352 -0.23355939  1.333027864 0.19639694 0.7463084
+Macro            -0.537567418 -1.23557998 -1.080735138 0.29172055 0.8935794
+Oligo.4           0.522504764  1.65924744  1.076048514 0.29376434 0.8935794
+Excit.L2         -0.872935479  0.06115206 -1.044576849 0.30775516 0.8935794
+Micro.3          -0.409824449  0.07707637 -0.903265409 0.37633708 0.8935794
+Oligo.3           0.474016124  1.73901614  0.880589920 0.38822170 0.8935794
+Vasc.Endo         0.369252216 -0.72226222  0.830967179 0.41507301 0.8935794
+Excit.L2_5.1      0.526851496  1.72804430  0.800683897 0.43202379 0.8935794
+Excit.L6_CT       0.648067692 -1.17637604  0.793206619 0.43627439 0.8935794
+Micro.2           0.254842361  1.02262349  0.774899703 0.44678968 0.8935794
+OPC.1            -0.318741056  1.36897616 -0.667893359 0.51126743 0.9252111
+Excit.L5_6_NP    -0.921279690 -2.87877116 -0.646763842 0.52459069 0.9252111
+Excit.L5.2        0.557129441 -2.44512048  0.603516632 0.55244338 0.9252111
+Micro.4           0.215781383  0.09432697  0.591990010 0.55999619 0.9252111
+Inhib.Sst        -0.248833423 -0.58176722 -0.550151598 0.58785340 0.9307679
+Micro.5          -0.186836002 -0.82747513 -0.441581735 0.66317581 0.9688502
+OPC.3            -0.252343674  1.14374900 -0.415341989 0.68198367 0.9688502
+OPC.4            -0.249207096  0.41445229 -0.405309962 0.68923146 0.9688502
+Excit.L2_5.2      0.398320870 -1.70821487  0.371487118 0.71388960 0.9688502
+Inhib.Chandelier -0.199387697 -1.63358095 -0.308183271 0.76089178 0.9926487
+Vasc.PC          -0.154989947 -2.04439168 -0.270736313 0.78916109 0.9926487
+Excit.L6b        -0.178514475 -0.88692098 -0.181216513 0.85788534 0.9926487
+Astro.3          -0.047980531  0.88854197 -0.169123894 0.86727117 0.9926487
+Excit.L5.1       -0.167123612 -0.21236456 -0.155896122 0.87756100 0.9926487
+Inhib.Pax6        0.032928636 -2.37023158  0.056891717 0.95515384 0.9926487
+OPC.2             0.019657649  1.12356745  0.053196394 0.95806379 0.9926487
+Inhib.Vip         0.021484137  1.74252203  0.051490026 0.95940771 0.9926487
+Vasc.VLMC         0.006976926 -0.76820999  0.009458374 0.99254014 0.9926487
+Micro.1          -0.004174879  0.93472418 -0.009320729 0.99264869 0.9926487
+                         B
+Astro.5          -3.016682
+Astro.1          -4.025608
+Astro.4          -4.031940
+Oligo.5          -4.279470
+Astro.2          -4.281606
+Inhib.Lamp5_Lhx6 -4.417621
+Oligo.1          -4.452394
+OPC.5            -4.545372
+Oligo.2          -4.504029
+Inhib.Pvalb      -4.593821
+Macro            -4.826101
+Oligo.4          -4.705675
+Excit.L2         -4.684844
+Micro.3          -4.980565
+Oligo.3          -4.803874
+Vasc.Endo        -4.872359
+Excit.L2_5.1     -4.800336
+Excit.L6_CT      -4.831263
+Micro.2          -4.945872
+OPC.1            -4.879419
+Excit.L5_6_NP    -4.857610
+Excit.L5.2       -5.044857
+Micro.4          -5.162949
+Inhib.Sst        -5.046022
+Micro.5          -5.147652
+OPC.3            -4.981101
+OPC.4            -5.019088
+Excit.L2_5.2     -5.215315
+Inhib.Chandelier -5.192438
+Vasc.PC          -5.073789
+Excit.L6b        -5.014738
+Astro.3          -5.094446
+Excit.L5.1       -5.111692
+Inhib.Pax6       -5.171320
+OPC.2            -5.034189
+Inhib.Vip        -4.992701
+Vasc.VLMC        -5.272396
+Micro.1          -5.298863
+                       logFC     AveExpr           t     P.Value  adj.P.Val
+Oligo.5          -0.94666061  1.16152659 -3.29523642 0.003352853 0.07350752
+Oligo.3          -1.19927385  1.73901614 -3.22491808 0.003955976 0.07350752
+Micro.3           1.09017877  0.07707637  2.98973855 0.006836606 0.07350752
+Micro.4           0.85464395  0.09432697  2.93586040 0.007737634 0.07350752
+Astro.5          -0.89531742 -0.49334478 -2.76536537 0.011398815 0.08663099
+Astro.3          -0.51624896  0.88854197 -2.34750811 0.028477075 0.18035481
+Micro.1           0.79067975  0.93472418  2.22869437 0.036557945 0.19845742
+Macro             0.84138145 -1.23557998  2.09579669 0.048032864 0.22815610
+Oligo.4          -0.72506343  1.65924744 -1.97793112 0.060817632 0.25678556
+Micro.5           0.66630515 -0.82747513  1.89225665 0.071921633 0.26719304
+Astro.2          -0.61141591  1.34967165 -1.85456719 0.077345352 0.26719304
+Excit.L5.2        0.77311344 -2.44512048  1.03934681 0.310125241 0.85757699
+Astro.4          -0.49434954 -0.37611093 -1.03759536 0.310921817 0.85757699
+Excit.L2_5.1     -0.38979562  1.72804430 -1.01931301 0.319323080 0.85757699
+Inhib.Pax6        0.37696722 -2.37023158  0.97876951 0.338517231 0.85757699
+Inhib.Chandelier -0.47690938 -1.63358095 -0.92120902 0.367104636 0.87187351
+OPC.2            -0.19673672  1.12356745 -0.68951181 0.497833931 0.90474949
+OPC.4            -0.32303503  0.41445229 -0.68611694 0.499930082 0.90474949
+OPC.3            -0.28858713  1.14374900 -0.66860681 0.510820885 0.90474949
+OPC.1            -0.21972999  1.36897616 -0.63382696 0.532841163 0.90474949
+Vasc.PC           0.25952906 -2.04439168  0.62903033 0.535917975 0.90474949
+Inhib.Sst         0.19684994 -0.58176722  0.54429163 0.591809353 0.90474949
+Excit.L2_5.2      0.41562335 -1.70821487  0.46175796 0.648866297 0.90474949
+Astro.1          -0.15322198  2.05129454 -0.45032419 0.656958848 0.90474949
+Oligo.2           0.18620943  1.90335046  0.41974042 0.678815792 0.90474949
+OPC.5            -0.30007407 -1.80267586 -0.40715747 0.687894377 0.90474949
+Excit.L5_6_NP    -0.32892735 -2.87877116 -0.38500995 0.703990663 0.90474949
+Inhib.Pvalb      -0.15080196 -0.23355939 -0.38165975 0.706438146 0.90474949
+Vasc.Endo        -0.12573422 -0.72226222 -0.37841378 0.708812592 0.90474949
+Excit.L6_CT      -0.15592702 -1.17637604 -0.29987537 0.767135682 0.90474949
+Micro.2           0.05966329  1.02262349  0.25184975 0.803535214 0.90474949
+Oligo.1           0.08221995  2.12294822  0.20728937 0.837723399 0.90474949
+Inhib.Lamp5_Lhx6  0.06358275 -0.18985351  0.19661061 0.845968256 0.90474949
+Inhib.Vip        -0.05423548  1.74252203 -0.18770257 0.852859859 0.90474949
+Excit.L2          0.06668970  0.06115206  0.15321962 0.879645802 0.90474949
+Excit.L6b        -0.08566687 -0.88692098 -0.15313109 0.879714778 0.90474949
+Vasc.VLMC         0.08591598 -0.76820999  0.15155831 0.880940291 0.90474949
+Excit.L5.1        0.05109065 -0.21236456  0.07689653 0.939412867 0.93941287
+                         B
+Oligo.5          -1.705243
+Oligo.3          -1.849009
+Micro.3          -2.419935
+Micro.4          -2.538259
+Astro.5          -2.734235
+Astro.3          -3.534640
+Micro.1          -3.910195
+Macro            -4.092315
+Oligo.4          -4.129987
+Micro.5          -4.363974
+Astro.2          -4.265208
+Excit.L5.2       -5.435610
+Astro.4          -5.612866
+Excit.L2_5.1     -5.455534
+Inhib.Pax6       -5.660845
+Inhib.Chandelier -5.617834
+OPC.2            -5.564359
+OPC.4            -5.627110
+OPC.3            -5.648309
+OPC.1            -5.612038
+Vasc.PC          -5.754863
+Inhib.Sst        -5.782231
+Excit.L2_5.2     -5.930514
+Astro.1          -5.799889
+Oligo.2          -5.807761
+OPC.5            -6.073515
+Excit.L5_6_NP    -5.843526
+Inhib.Pvalb      -6.045292
+Vasc.Endo        -5.839685
+Excit.L6_CT      -5.888403
+Micro.2          -5.994645
+Oligo.1          -5.775227
+Inhib.Lamp5_Lhx6 -5.961834
+Inhib.Vip        -5.803022
+Excit.L2         -6.051930
+Excit.L6b        -6.044493
+Vasc.VLMC        -6.112576
+Excit.L5.1       -6.117654
+                       logFC     AveExpr           t     P.Value  adj.P.Val
+Oligo.5          -0.94666061  1.16152659 -3.29523642 0.003352853 0.07350752
+Oligo.3          -1.19927385  1.73901614 -3.22491808 0.003955976 0.07350752
+Micro.3           1.09017877  0.07707637  2.98973855 0.006836606 0.07350752
+Micro.4           0.85464395  0.09432697  2.93586040 0.007737634 0.07350752
+Astro.5          -0.89531742 -0.49334478 -2.76536537 0.011398815 0.08663099
+Astro.3          -0.51624896  0.88854197 -2.34750811 0.028477075 0.18035481
+Micro.1           0.79067975  0.93472418  2.22869437 0.036557945 0.19845742
+Macro             0.84138145 -1.23557998  2.09579669 0.048032864 0.22815610
+Oligo.4          -0.72506343  1.65924744 -1.97793112 0.060817632 0.25678556
+Micro.5           0.66630515 -0.82747513  1.89225665 0.071921633 0.26719304
+Astro.2          -0.61141591  1.34967165 -1.85456719 0.077345352 0.26719304
+Excit.L5.2        0.77311344 -2.44512048  1.03934681 0.310125241 0.85757699
+Astro.4          -0.49434954 -0.37611093 -1.03759536 0.310921817 0.85757699
+Excit.L2_5.1     -0.38979562  1.72804430 -1.01931301 0.319323080 0.85757699
+Inhib.Pax6        0.37696722 -2.37023158  0.97876951 0.338517231 0.85757699
+Inhib.Chandelier -0.47690938 -1.63358095 -0.92120902 0.367104636 0.87187351
+OPC.2            -0.19673672  1.12356745 -0.68951181 0.497833931 0.90474949
+OPC.4            -0.32303503  0.41445229 -0.68611694 0.499930082 0.90474949
+OPC.3            -0.28858713  1.14374900 -0.66860681 0.510820885 0.90474949
+OPC.1            -0.21972999  1.36897616 -0.63382696 0.532841163 0.90474949
+Vasc.PC           0.25952906 -2.04439168  0.62903033 0.535917975 0.90474949
+Inhib.Sst         0.19684994 -0.58176722  0.54429163 0.591809353 0.90474949
+Excit.L2_5.2      0.41562335 -1.70821487  0.46175796 0.648866297 0.90474949
+Astro.1          -0.15322198  2.05129454 -0.45032419 0.656958848 0.90474949
+Oligo.2           0.18620943  1.90335046  0.41974042 0.678815792 0.90474949
+OPC.5            -0.30007407 -1.80267586 -0.40715747 0.687894377 0.90474949
+Excit.L5_6_NP    -0.32892735 -2.87877116 -0.38500995 0.703990663 0.90474949
+Inhib.Pvalb      -0.15080196 -0.23355939 -0.38165975 0.706438146 0.90474949
+Vasc.Endo        -0.12573422 -0.72226222 -0.37841378 0.708812592 0.90474949
+Excit.L6_CT      -0.15592702 -1.17637604 -0.29987537 0.767135682 0.90474949
+Micro.2           0.05966329  1.02262349  0.25184975 0.803535214 0.90474949
+Oligo.1           0.08221995  2.12294822  0.20728937 0.837723399 0.90474949
+Inhib.Lamp5_Lhx6  0.06358275 -0.18985351  0.19661061 0.845968256 0.90474949
+Inhib.Vip        -0.05423548  1.74252203 -0.18770257 0.852859859 0.90474949
+Excit.L2          0.06668970  0.06115206  0.15321962 0.879645802 0.90474949
+Excit.L6b        -0.08566687 -0.88692098 -0.15313109 0.879714778 0.90474949
+Vasc.VLMC         0.08591598 -0.76820999  0.15155831 0.880940291 0.90474949
+Excit.L5.1        0.05109065 -0.21236456  0.07689653 0.939412867 0.93941287
+                         B
+Oligo.5          -1.705243
+Oligo.3          -1.849009
+Micro.3          -2.419935
+Micro.4          -2.538259
+Astro.5          -2.734235
+Astro.3          -3.534640
+Micro.1          -3.910195
+Macro            -4.092315
+Oligo.4          -4.129987
+Micro.5          -4.363974
+Astro.2          -4.265208
+Excit.L5.2       -5.435610
+Astro.4          -5.612866
+Excit.L2_5.1     -5.455534
+Inhib.Pax6       -5.660845
+Inhib.Chandelier -5.617834
+OPC.2            -5.564359
+OPC.4            -5.627110
+OPC.3            -5.648309
+OPC.1            -5.612038
+Vasc.PC          -5.754863
+Inhib.Sst        -5.782231
+Excit.L2_5.2     -5.930514
+Astro.1          -5.799889
+Oligo.2          -5.807761
+OPC.5            -6.073515
+Excit.L5_6_NP    -5.843526
+Inhib.Pvalb      -6.045292
+Vasc.Endo        -5.839685
+Excit.L6_CT      -5.888403
+Micro.2          -5.994645
+Oligo.1          -5.775227
+Inhib.Lamp5_Lhx6 -5.961834
+Inhib.Vip        -5.803022
+Excit.L2         -6.051930
+Excit.L6b        -6.044493
+Vasc.VLMC        -6.112576
+Excit.L5.1       -6.117654
+ℹ invalid tbl_tree object. Missing column: parent,node.
+# A tibble: 75 × 4
+   label                                     beta  pvalue    FDR
+   <chr>                                    <dbl>   <dbl>  <dbl>
+ 1 Oligo.3                                 -1.20  0.00396 0.0424
+ 2 Oligo.5                                 -0.947 0.00335 0.0424
+ 3 Astro.1/Astro.2/Astro.3/Astro.4/Astro.5 -0.634 0.00240 0.0424
+ 4 Oligo.3/Oligo.4/Oligo.5                 -0.976 0.00100 0.0424
+ 5 Astro.1/Astro.2/Astro.3                 -0.560 0.00379 0.0424
+ 6 Oligo.4/Oligo.5                         -0.892 0.00168 0.0424
+ 7 Astro.1/Astro.3                         -0.562 0.00256 0.0424
+ 8 Micro.3                                  1.09  0.00684 0.0600
+ 9 Micro.4                                  0.855 0.00774 0.0600
+10 Astro.1/Astro.2/Astro.3/Astro.4         -0.556 0.00800 0.0600
+# ℹ 65 more rows
+Saving 7 x 7 in image
+                         logFC     AveExpr           t      P.Value  adj.P.Val
+Oligo.5           0.0445079005  1.16152659  3.88315362 0.0008221231 0.03124068
+Oligo.3           0.0367116103  1.73901614  2.36749646 0.0272914275 0.48068363
+Oligo.4           0.0317998131  1.65924744  2.21071638 0.0379487078 0.48068363
+Oligo.2           0.0293314314  1.90335046  1.80114910 0.0856416555 0.71944456
+Excit.L2         -0.0295045494  0.06115206 -1.74791732 0.0946637574 0.71944456
+Oligo.1           0.0210257857  2.12294822  1.44571222 0.1625953266 0.91414821
+Inhib.Lamp5_Lhx6 -0.0172032831 -0.18985351 -1.42512229 0.1683957221 0.91414821
+Micro.4          -0.0153253569  0.09432697 -1.34465818 0.1926706316 0.91518550
+Excit.L6_CT       0.0212212043 -1.17637604  1.12136970 0.2744285710 0.93394325
+Excit.L5_6_NP     0.0380717548 -2.87877116  1.11094717 0.2787908529 0.93394325
+Excit.L5.2       -0.0297243530 -2.44512048 -1.09109081 0.2872408733 0.93394325
+Inhib.Pax6       -0.0153039329 -2.37023158 -0.97243870 0.3415845979 0.93394325
+Vasc.PC           0.0159887973 -2.04439168  0.85440005 0.4022495075 0.93394325
+Inhib.Chandelier -0.0151747885 -1.63358095 -0.76678576 0.4514992227 0.93394325
+Astro.1          -0.0097990634  2.05129454 -0.74904993 0.4618976538 0.93394325
+Vasc.VLMC        -0.0161695763 -0.76820999 -0.74784126 0.4626114659 0.93394325
+Astro.5           0.0084980225 -0.49334478  0.73489061 0.4703010682 0.93394325
+Inhib.Vip        -0.0082692649  1.74252203 -0.73015399 0.4731322687 0.93394325
+Excit.L6b         0.0148379027 -0.88692098  0.70252689 0.4898443985 0.93394325
+OPC.5            -0.0196573969 -1.80267586 -0.63777089 0.5303184954 0.93394325
+Micro.5          -0.0075251844 -0.82747513 -0.55629645 0.5837192414 0.93394325
+Astro.4           0.0090910177 -0.37611093  0.51918198 0.6089069059 0.93394325
+Inhib.Sst        -0.0070618547 -0.58176722 -0.51443604 0.6121647827 0.93394325
+OPC.3             0.0086760183  1.14374900  0.51438019 0.6122031668 0.93394325
+Excit.L5.1       -0.0140693918 -0.21236456 -0.51113400 0.6144363482 0.93394325
+Inhib.Pvalb       0.0066126679 -0.23355939  0.41928075 0.6791465727 0.93759677
+OPC.4             0.0077104095  0.41445229  0.41904403 0.6793169467 0.93759677
+Micro.3          -0.0053085717  0.07707637 -0.37509206 0.7112455929 0.93759677
+OPC.2            -0.0038021968  1.12356745 -0.33889655 0.7379563250 0.93759677
+Micro.2           0.0031011894  1.02262349  0.32422250 0.7488846993 0.93759677
+Vasc.Endo        -0.0039195404 -0.72226222 -0.30287208 0.7648815762 0.93759677
+Micro.1           0.0026848654  0.93472418  0.19308601 0.8486935510 0.98301491
+OPC.1            -0.0024673586  1.36897616 -0.18490264 0.8550285094 0.98301491
+Astro.2           0.0018608776  1.34967165  0.15335587 0.8795396535 0.98301491
+Excit.L2_5.2      0.0036704785 -1.70821487  0.11247647 0.9114831686 0.98632296
+Excit.L2_5.1     -0.0008808489  1.72804430 -0.05819578 0.9541270913 0.98632296
+Macro            -0.0002735005 -1.23557998 -0.01850906 0.9854024621 0.98632296
+Astro.3          -0.0001456675  0.88854197 -0.01734178 0.9863229603 0.98632296
+                          B
+Oligo.5          -0.6656332
+Oligo.3          -3.8912433
+Oligo.4          -4.1927394
+Oligo.2          -5.0027736
+Excit.L2         -5.2052008
+Oligo.1          -5.4309144
+Inhib.Lamp5_Lhx6 -5.6292292
+Micro.4          -5.8320673
+Excit.L6_CT      -5.9726443
+Excit.L5_6_NP    -5.8738837
+Excit.L5.2       -6.0170224
+Inhib.Pax6       -6.2137572
+Vasc.PC          -6.0343546
+Inhib.Chandelier -6.3539941
+Astro.1          -6.2265513
+Vasc.VLMC        -6.4694436
+Astro.5          -6.2248478
+Inhib.Vip        -6.1405432
+Excit.L6b        -6.4425428
+OPC.5            -6.4890831
+Micro.5          -6.4402041
+Astro.4          -6.6657226
+Inhib.Sst        -6.4169290
+OPC.3            -6.3213038
+Excit.L5.1       -6.5356745
+Inhib.Pvalb      -6.6126951
+OPC.4            -6.3551495
+Micro.3          -6.6500508
+OPC.2            -6.3127854
+Micro.2          -6.5426061
+Vasc.Endo        -6.4623848
+Micro.1          -6.7134127
+OPC.1            -6.3892520
+Astro.2          -6.3956724
+Excit.L2_5.2     -6.7055858
+Excit.L2_5.1     -6.5352501
+Macro            -6.7257434
+Astro.3          -6.5051100
+ℹ invalid tbl_tree object. Missing column: parent,node.
+# A tibble: 75 × 4
+   label                                       beta   pvalue    FDR
+   <chr>                                      <dbl>    <dbl>  <dbl>
+ 1 Oligo.3/Oligo.4/Oligo.5                  0.0416  0.000480 0.0180
+ 2 Oligo.4/Oligo.5                          0.0412  0.000268 0.0180
+ 3 Oligo.5                                  0.0445  0.000822 0.0206
+ 4 Oligo.1/Oligo.2/Oligo.3/Oligo.4/Oligo.5  0.0348  0.00321  0.0602
+ 5 Oligo.3                                  0.0367  0.0273   0.409 
+ 6 Oligo.4                                  0.0318  0.0379   0.474 
+ 7 Oligo.2                                  0.0293  0.0856   0.887 
+ 8 Excit.L2                                -0.0295  0.0947   0.887 
+ 9 Astro.1                                 -0.00980 0.462    0.956 
+10 Astro.2                                  0.00186 0.880    0.956 
+# ℹ 65 more rows
+Saving 7 x 7 in image
+`geom_smooth()` using formula = 'y ~ x'
+`geom_smooth()` using formula = 'y ~ x'
+[1] "Reproducibility information:"
+[1] "2025-08-20 15:59:55 EDT"
+   user  system elapsed 
+116.620   1.265 121.537 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-08-20
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+ aod                    1.3.3      2023-12-13 [1] CRAN (R 4.5.0)
+ ape                    5.8-1      2024-12-16 [1] CRAN (R 4.5.0)
+ aplot                  0.2.8      2025-07-02 [1] CRAN (R 4.5.0)
+ backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.0)
+ Biobase              * 2.68.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocParallel         * 1.42.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
+ bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.0)
+ bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+ boot                   1.3-31     2024-08-28 [3] CRAN (R 4.5.0)
+ broom                  1.0.9      2025-07-28 [1] CRAN (R 4.5.0)
+ caTools                1.18.3     2024-09-04 [2] CRAN (R 4.5.0)
+ cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+ codetools              0.2-20     2024-03-31 [3] CRAN (R 4.5.0)
+ corpcor                1.6.10     2021-09-16 [2] CRAN (R 4.5.0)
+ crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+ crumblr              * 1.0.0      2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ DelayedArray           0.34.1     2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
+ dendextend           * 1.19.0     2024-11-15 [2] CRAN (R 4.5.0)
+ dichromat              2.0-0.1    2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+ EnvStats               3.1.0      2025-04-24 [1] CRAN (R 4.5.0)
+ fANCOVA                0.6-1      2020-11-13 [1] CRAN (R 4.5.0)
+ farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.5.0)
+ fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.1     2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14     2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ggfun                  0.2.0      2025-07-15 [1] CRAN (R 4.5.0)
+ ggplot2              * 3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+ ggplotify              0.1.2      2023-08-09 [1] CRAN (R 4.5.0)
+ ggtree                 3.16.3     2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
+ glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+ gplots                 3.2.0      2024-10-05 [2] CRAN (R 4.5.0)
+ gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
+ gridGraphics           0.5-1      2020-12-13 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+ gtools                 3.9.5      2023-11-20 [2] CRAN (R 4.5.0)
+ here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.5.0)
+ hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+ IRanges              * 2.42.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+ KernSmooth             2.23-26    2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
+ lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.2      2019-03-15 [2] CRAN (R 4.5.0)
+ lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+ limma                * 3.64.3     2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
+ lme4                   1.1-37     2025-03-26 [2] CRAN (R 4.5.0)
+ lmerTest               3.1-3      2020-10-23 [1] CRAN (R 4.5.0)
+ lubridate            * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+ MASS                   7.3-65     2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3      2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ matrixStats          * 1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+ mgcv                   1.9-3      2025-04-04 [3] CRAN (R 4.5.0)
+ minqa                  1.2.8      2024-08-17 [2] CRAN (R 4.5.0)
+ mvtnorm                1.3-3      2025-01-10 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168    2025-03-31 [3] CRAN (R 4.5.0)
+ nloptr                 2.2.1      2025-03-17 [2] CRAN (R 4.5.0)
+ numDeriv               2016.8-1.1 2019-06-06 [2] CRAN (R 4.5.0)
+ patchwork              1.3.1      2025-06-21 [1] CRAN (R 4.5.0)
+ pbkrtest               0.5.5      2025-07-18 [1] CRAN (R 4.5.0)
+ pillar                 1.11.0     2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ purrr                * 1.1.0      2025-07-10 [1] CRAN (R 4.5.0)
+ R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+ ragg                   1.4.0      2025-04-10 [2] CRAN (R 4.5.0)
+ rappdirs               0.3.3      2021-01-31 [2] CRAN (R 4.5.0)
+ rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.0      2025-07-02 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.10     2025-01-24 [2] CRAN (R 4.5.0)
+ Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+ readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.5.0)
+ reformulas             0.4.1      2025-04-30 [2] CRAN (R 4.5.0)
+ remaCor                0.0.20     2025-08-20 [1] CRAN (R 4.5.0)
+ reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.5.0)
+ Rfast                  2.1.5.1    2025-03-14 [1] CRAN (R 4.5.0)
+ RhpcBLASctl            0.23-42    2023-02-11 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+ rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.1      2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
+ S4Vectors            * 0.46.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1     2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.1      2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0      2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)
+ textshaping            1.0.1      2025-05-01 [2] CRAN (R 4.5.0)
+ tibble               * 3.3.0      2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.1      2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+ tidytree               0.4.6      2023-12-12 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.0)
+ treeio                 1.32.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ utf8                   1.2.6      2025-06-08 [1] CRAN (R 4.5.0)
+ variancePartition    * 1.38.1     2025-08-17 [1] Bioconductor 3.21 (R 4.5.0)
+ vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+ viridis                0.6.5      2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.2      2023-05-02 [2] CRAN (R 4.5.0)
+ vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.0)
+ withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ yulab.utils            0.2.1      2025-08-19 [1] CRAN (R 4.5.0)
+ zigg                   0.0.2      2025-02-07 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Aug 20 03:59:56 PM EDT 2025
