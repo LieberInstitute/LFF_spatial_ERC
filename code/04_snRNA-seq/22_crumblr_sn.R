@@ -169,12 +169,14 @@ load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_clust
 # tree.clusCollapsed
 # dist.clusCollapsed
 
+
+#### Run DREAM + eBayes on cobj ####
+fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round , erc_info) 
+fit <- eBayes(fit = fit)
+
 #### fit APOE_carrier ####
 # Perform regression on each cell type separately
 #  then use eBayes to shrink residual variance
-
-fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round , erc_info) 
-fit <- eBayes(fit = fit)
 
 # Extract results for each cell type
 (diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
@@ -204,7 +206,8 @@ tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
+tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43",
+                                   fdr.cutoff = 0.1) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
           )
