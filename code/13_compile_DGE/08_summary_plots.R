@@ -87,6 +87,11 @@ dge_summary_bar_reg <- dge_count_combined |>
 
 ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_bar_reg_combined.png", datatype)), height = 5, width = 6)
 
+if(datatype == "sn_fine"){
+    ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_bar_reg_combined_wide.png", datatype)), height = 5, width = 10)
+    
+}
+
 #### logFC heatmaps ####
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
@@ -106,7 +111,7 @@ logFC_Heatmap(data = dge_data, gene_list = topDEGs, title = "topDEGs")
 ## Risk gene heatmap
 logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
 
-if(datatype == "cell_type_fine"){
+if(datatype == "sn_fine"){
     
     ## carrier
     top_oligo_DEGs <- dge_data |>
@@ -121,7 +126,8 @@ if(datatype == "cell_type_fine"){
                       filter(grepl("Oligo", cluster)), 
                   gene_list = top_oligo_DEGs, 
                   title = "topDEGs_Oligo.3", 
-                  cluster_col = TRUE)
+                  cluster_col = TRUE,
+                  datatype = datatype)
     
     logFC_Heatmap(data = dge_data |>
                       filter(grepl("Oligo", cluster)), 
@@ -148,6 +154,21 @@ if(datatype == "cell_type_fine"){
                       filter(grepl("Oligo", cluster)), 
                   gene_list = AD_risk$symbol, 
                   title = "ADrisk_Oligo")
+    
+    
+    #### check Blanchard genes in select cell types ####
+    source(here("external-data", "Blanchard2022", "get_Blanchard_gene_list.R"))
+    Blanchard_gene_list <- map(Blanchard_gene_list, ~.x[.x %in% dge_data$gene_name])
+    map_int(Blanchard_gene_list, length)
+    
+
+    map2(Blanchard_gene_list, names(Blanchard_gene_list),  ~logFC_Heatmap(data = dge_data |>
+                                                                             filter(grepl("Oligo", cluster) | cluster == "Astro.3"), 
+                                                                         gene_list = .x, 
+                                                                         title = .y, 
+                                                                         # cluster_col = TRUE,
+                                                                         order_genes = TRUE,
+                                                                         datatype = datatype))
     
     
 }
