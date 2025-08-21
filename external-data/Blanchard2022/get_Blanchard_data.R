@@ -97,7 +97,7 @@ Blanchard_DE_All_signif <- Blancard_DE_ipsc_Oligo_signif |>
     bind_rows(Blancard_DE_pm_Oligo_signif) |>
     bind_rows(Blancard_DE_Nebula_signif)
 
-Blancard_gene_list <- map(rafalib::splitit(Blanchard_DE_All_signif$reg), ~Blanchard_DE_All_signif$gene[.x])
+Blanchard_DEG_list <- map(rafalib::splitit(Blanchard_DE_All_signif$reg), ~Blanchard_DE_All_signif$gene[.x])
 
-map_int(Blancard_gene_list, length)
+map_int(Blanchard_DEG_list, length)
 
