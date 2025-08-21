@@ -55,7 +55,7 @@ DE_gene_set_enrichment <- function(gene_list,
             
             sig_gene_names <- de_results_filter$gene_name[sig_genes]
             
-            common_genes <- map_chr(geneList_present, ~paste(sig_gene_names[sig_gene_names %in% .x], collapse = ","))
+            common_genes <- map_chr(geneList_present, ~paste(sig_gene_names[sig_gene_names %in% .x], collapse = ", "))
             # common_genes <- map(geneList_present, ~sig_gene_names[sig_gene_names %in% .x])
             
             enrichTab <- data.frame(
