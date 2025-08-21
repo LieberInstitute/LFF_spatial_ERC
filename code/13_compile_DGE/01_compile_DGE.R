@@ -271,38 +271,7 @@ write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.cs
 # carrier_data <- readRDS(here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 
 #### compare t-stats ####
-compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, FDR_cut_mY = 0.2, model_name){
-    
-    ## define vars
-    statX <- paste0(mX, "_", stat)
-    statY <- paste0(mY, "_", stat)
-    fdrX <- paste0(mX, "_adj.P.Val")
-    fdrY <- paste0(mY, "_adj.P.Val")
-
-    # define colors
-    signif_colors <- c("purple", "blue", "red")
-    names(signif_colors) <- c("sig_both", paste(mX, "FDR<", FDR_cut_mX) , paste(mY, "FDR<", FDR_cut_mY))
-    
-    # make scatter plot
-    stat_scatter <- dge_tb |>
-        mutate(DE_class = case_when(!!sym(fdrX) < FDR_cut_mX & !!sym(fdrY) < FDR_cut_mY ~ "sig_both",
-                                    !!sym(fdrX) < FDR_cut_mX ~ paste(mX, "FDR<", FDR_cut_mX),
-                                    !!sym(fdrY) < FDR_cut_mY ~ paste(mY, "FDR<", FDR_cut_mY),
-                                    TRUE ~ "None")) |>
-        ggplot(aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
-        geom_point(alpha = 0.5, size = 0.5) +
-        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
-        geom_abline(linetype = "dashed") +
-        scale_color_manual(values = signif_colors) +
-        labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
-        facet_wrap(~cluster) +
-        theme_bw()
-    
-    plot_fn = sprintf("%s_%s_stat_scatter_%s_%s-v-%s.png", opt$datatype, stat, model_name, mX, mY)
-    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
-    
-    # return(t_stat_scatter)
-}
+source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 
 ## compare t-stats
 compare_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
