@@ -99,5 +99,8 @@ Blanchard_DE_All_signif <- Blancard_DE_ipsc_Oligo_signif |>
 
 Blanchard_DEG_list <- map(rafalib::splitit(Blanchard_DE_All_signif$reg), ~Blanchard_DE_All_signif$gene[.x])
 
-map_int(Blanchard_DEG_list, length)
-
+# map_int(Blanchard_DEG_list, length)
+# E34_E33_AD_down     E34_E33_AD_up E34_E33_noAD_down   E34_E33_noAD_up  E4+_E33_ALL_down    E4+_E33_ALL_up         ipsc_down           ipsc_up       Nebula_down 
+# 1091              2117              2815              9467              2775              8733               662              1529               528 
+# Nebula_up 
+# 896 
