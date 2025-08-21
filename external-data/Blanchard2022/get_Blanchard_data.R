@@ -98,6 +98,7 @@ Blanchard_DE_All_signif <- Blancard_DE_ipsc_Oligo_signif |>
     bind_rows(Blancard_DE_Nebula_signif)
 
 Blanchard_DEG_list <- map(rafalib::splitit(Blanchard_DE_All_signif$reg), ~Blanchard_DE_All_signif$gene[.x])
+saveRDS(Blanchard_DEG_list, file = here("external-data", "Blanchard2022", "Blanchard_DEG_list.rds"))
 
 # map_int(Blanchard_DEG_list, length)
 # E34_E33_AD_down     E34_E33_AD_up E34_E33_noAD_down   E34_E33_noAD_up  E4+_E33_ALL_down    E4+_E33_ALL_up         ipsc_down           ipsc_up       Nebula_down 
