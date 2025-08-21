@@ -64,18 +64,18 @@ Blancard_DE_pm_Oligo_signif <-  Blancard_DE_pm_Oligo |>
 # Supplementary Table S14. Differential expressed genes in post-mortem oligodendrocytes computed by Nebula
 
 Blancard_DE_Nebula <- read_csv(here("external-data", "Blanchard2022","Blanchard22_SuppTable14.csv")) |>
-    rename(gene = `...1`, logFC = logFC_Apoe_e4yes) |>
+    dplyr::rename(gene = `...1`, logFC = logFC_Apoe_e4yes) |>
     mutate(reg = ifelse(logFC > 0, "up", "down"),
            abs_logFC = abs(logFC))
 
-Blancard_DE_Nebula |> filter(padj < 0.05) |> count(reg) 
+# Blancard_DE_Nebula |> filter(padj < 0.05) |> count(reg) 
 
 Blancard_DE_Nebula_signif <- Blancard_DE_Nebula |>
     filter(padj < 0.05) |>
     mutate(reg = paste0("Nebula_", reg)) |> 
     select(gene, padj, logFC, reg) 
 
-Blancard_DE_Nebula_signif |> count(reg)
+# Blancard_DE_Nebula_signif |> count(reg)
 # reg             n
 # <chr>       <int>
 # 1 Nebula_down   528
