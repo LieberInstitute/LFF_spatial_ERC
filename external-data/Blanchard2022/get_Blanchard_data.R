@@ -37,7 +37,7 @@ grp_table <- tibble(grp = c("APOE34 & APOE44 vs APOE33 (AD and nonAD)", "APOE34 
 
 Blancard_DE_pm_Oligo <- read_csv(here("external-data", "Blanchard2022","Blanchard22_SuppTable13.csv")) |>
     left_join(grp_table) |>
-    rename(gene = feature) |>
+    dplyr::rename(gene = feature) |>
     mutate(reg = ifelse(logFC > 0, "up", "down"),
            abs_logFC = abs(logFC))
 
