@@ -135,8 +135,8 @@ grubman_ct_DEGs <- map(splitit(Grubman_DE_data$cell_type), ~Grubman_DE_data$gene
 grubman_ct_reg_DEGs <- map(splitit(Grubman_DE_data$DE_ct_reg), ~Grubman_DE_data$geneName[.x])
 
 ## Blanchard data ##
-suppressMessages(source(here("external-data", "Blanchard2022", "get_Blanchard_data.R")))
-Blanchard_DEG_list
+# suppressMessages(source(here("external-data", "Blanchard2022", "get_Blanchard_data.R")))
+Blanchard_DEG_list <- readRDS(file = here("external-data", "Blanchard2022", "Blanchard_DEG_list.rds"))
 
 
 #### Run Enrichment ####
