@@ -443,6 +443,66 @@ clr_boxplot_Sex_Oligo <- clr_prop_long |>
 
 ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
 
+clr_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    mutate(Sex_APOE = paste(Sex, APOE_carrier)) |>
+    ggplot(aes(x = Sex_APOE, y = CLR, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+
+clr_boxplot_Sex_carrier_Astro <- clr_prop_long |>
+    filter(grepl("Astro", cell_type_anno)) |>
+    mutate(Sex_APOE = paste(Sex, APOE_carrier)) |>
+    ggplot(aes(x = Sex_APOE, y = CLR, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1, scales = "free_y") +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_Sex_carrier_Astro, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Astro.png"), height = 4, width = 6)
+
+clr_boxplot_Sex_carrier_Micro <- clr_prop_long |>
+    filter(grepl("Micro", cell_type_anno)) |>
+    mutate(Sex_APOE = paste(Sex, APOE_carrier)) |>
+    ggplot(aes(x = Sex_APOE, y = CLR, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1, scales = "free_y") +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Micro.png"), height = 4, width = 6)
+
+prop_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    mutate(Sex_APOE = paste(Sex, APOE_carrier)) |>
+    ggplot(aes(x = Sex_APOE, y = prop, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(prop_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "prop_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+
 #### fit Age ####
 
 # Extract results for each cell type
@@ -500,6 +560,13 @@ clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
     theme_bw() 
 
 ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
+
+#### Run DREAM + eBayes on cobj interaction ####
+## not enought data
+# intertaction_fit <- dream(cobj, ~ APOE_carrier*Sex + Age + Anc_Afr + exp_round , erc_info) 
+# intertaction_fit <- eBayes(fit = intertaction_fit)
+# 
+# (diff_prop_APOE_Sex <- topTable(intertaction_fit, coef = "APOE_carrierE4+:SexM", number = Inf))
 
 
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 22_crumblr_sn.R")
