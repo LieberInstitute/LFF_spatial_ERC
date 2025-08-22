@@ -575,42 +575,53 @@ ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Age_forest.png"
 #### Plot cleanY CLR for Age ####
 
 mod <- model.matrix( ~ Age + APOE_carrier + Sex +  + Anc_Afr + exp_round , erc_info)
-cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=3)
+cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=2)
+
+clr_prop_long$CLR_cleanY_Age <- NULL
 
 clr_prop_long <- clr_prop_long |> 
-    left_join(cleanY_cobj_sex |>
+    left_join(cleanY_cobj_Age |>
                   as.data.frame() |>
                   rownames_to_column("cell_type_anno") |>
-                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_Sex")) 
+                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_Age")) 
 
 
 clr_sactter_Age_Oligo <- clr_prop_long |>
     filter(grepl("Oligo", cell_type_anno)) |>
-    ggplot(aes(x = Age, y = CLR)) +
+    ggplot(aes(x = Age, y = CLR_cleanY_Age)) +
     geom_point() +
     geom_smooth(method = "lm") +
-    facet_wrap(~cell_type_anno, nrow = 1, scales = "free_y") +
+    facet_wrap(~cell_type_anno, nrow = 1) +
     theme_bw() 
 
 ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "clr_sactter_Age_Oligo.png"), height = 4, width =10)
 
+
+#### Plot cleanY CLR for Age & APOE ####
+
+# mod <- model.matrix( ~ Age + APOE_carrier + Sex +  + Anc_Afr + exp_round , erc_info)
+cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=3)
+
+clr_prop_long$CLR_cleanY_carrier_Age <- NULL
+
+clr_prop_long <- clr_prop_long |> 
+    left_join(cleanY_cobj_Age |>
+                  as.data.frame() |>
+                  rownames_to_column("cell_type_anno") |>
+                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_carrier_Age")) 
+
+
 clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
     filter(grepl("Oligo", cell_type_anno)) |>
-    ggplot(aes(x = Age, y = CLR, color = APOE_carrier)) +
+    ggplot(aes(x = Age, y = CLR_cleanY_carrier_Age, color = APOE_carrier)) +
     geom_point() +
     geom_smooth(method = "lm") +
-    facet_wrap(~cell_type_anno, nrow = 1, scales = "free_y") +
+    facet_wrap(~cell_type_anno, nrow = 1) +
     scale_color_manual(values = APOE_carrier_colors) +
-    theme_bw() 
+    theme_bw() +
+    theme(legend.position = "bottom")
 
 ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
-
-#### Run DREAM + eBayes on cobj interaction ####
-## not enought data
-# intertaction_fit <- dream(cobj, ~ APOE_carrier*Sex + Age + Anc_Afr + exp_round , erc_info) 
-# intertaction_fit <- eBayes(fit = intertaction_fit)
-# 
-# (diff_prop_APOE_Sex <- topTable(intertaction_fit, coef = "APOE_carrierE4+:SexM", number = Inf))
 
 
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 22_crumblr_sn.R")
