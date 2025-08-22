@@ -8,13 +8,16 @@ library("here")
 list.files(here("external-data", "Blanchard2022"))
 
 Blancard_DE_ipsc_Oligo <- read_csv(here("external-data", "Blanchard2022","Blanchard22_SuppTable12.csv")) |>
-    mutate(logFC =  as.numeric(`log2.fold_change.`),
+    mutate(logFC =  ifelse(log2.fold_change. == "#NAME?" & status == "OK", -Inf, as.numeric(`log2.fold_change.`)),
            abs_logFC = abs(logFC))
 
-# Blancard_DE_ipsc_Oligo |> count(q_value < 0.05, status)
+# Blancard_DE_ipsc_Oligo |> dplyr::count(q_value < 0.05, status)
 # 
-# Blancard_DE_ipsc_Oligo |> 
+# Blancard_DE_ipsc_Oligo |>
 #     filter(status == "OK", is.na(logFC), q_value < 0.05)
+# 
+# Blancard_DE_ipsc_Oligo |>
+#     filter(log2.fold_change. == "#NAME?")
 
 Blancard_DE_ipsc_Oligo_signif <- Blancard_DE_ipsc_Oligo |> 
     filter(status == "OK" & q_value < 0.05 & (abs_logFC > 1 | is.na(logFC))) |>
