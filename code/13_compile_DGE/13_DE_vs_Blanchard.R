@@ -28,21 +28,17 @@ suppressMessages(source(here("external-data", "Blanchard2022", "get_Blanchard_da
 # Blancard_DE_pm_Oligo
 # Blancard_DE_Nebula
 
-
-
-DE_Oligo <- DE_data |> filter(grepl("Oligo", cluster))
-
-
-
-compare_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
-
-
 #### combine data ####
-Blancard_DE_pm_Oligo  <- Blancard_DE_pm_Oligo |> select(Blanchard_test = grp2, gene_name = gene, fdr_Blanchard = padj, logFC_Blanchard = logFC)
+Blancard_DE <- Blancard_DE_pm_Oligo |> 
+    select(Blanchard_test = grp2, gene_name = gene, fdr_Blanchard = padj, logFC_Blanchard = logFC) |>
+    rbind(Blancard_DE_ipsc_Oligo |> select(gene_name = gene, fdr_Blanchard = q_value, logFC_Blanchard = logFC) |> mutate(Blanchard_test = "iPSC")) |>
+    rbind(Blancard_DE_Nebula |> select(gene_name = gene, fdr_Blanchard = padj, logFC_Blanchard = logFC) |> mutate(Blanchard_test = "Nebula"))
+
+Blancard_DE |> dplyr::count(fdr_Blanchard <= 0.05, Blanchard_test)
 
 dge_combined <- DE_Oligo  |>
     select(cluster, contrast, gene_id, gene_name, vlmf_t, fdr_ERC = vlmf_adj.P.Val, logFC_ERC = vlmf_logFC) |>
-    inner_join(Blancard_DE_pm_Oligo, by = join_by(gene_name), relationship = "many-to-many")
+    inner_join(Blancard_DE, by = join_by("gene_name"), relationship = "many-to-many")
 
 ## calc correlation
 cor <- dge_combined |> 
@@ -56,12 +52,13 @@ cor <- dge_combined |>
            anno = sprintf("cor=%.2f%s", cor, signif))
 
 cor |> filter(cluster == "Oligo.3")
+cor |> arrange(-cor)
 
     
 ## create scatter plot
 source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 
-stat_scatter <- compare_stats_scatter(dge_tb = dge_combined, 
+stat_scatter <- compare_stats_scatter(dge_tb = dge_combined |> filter(Blanchard_test != "iPSC"), 
                                       stat = "logFC", 
                                       mX = "ERC", 
                                       mY = "Blanchard", 
@@ -70,7 +67,8 @@ stat_scatter <- compare_stats_scatter(dge_tb = dge_combined,
                                       model_name = "Blancard PM") +
     facet_grid(cluster~Blanchard_test) +
     geom_label(
-        data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
+        data = cor |> filter(Blanchard_test != "iPSC"), 
+        ggplot2::aes(x = -Inf, y = Inf, label = anno),
         color = "black",
         alpha = 0.5,
         vjust = "inward", 
@@ -78,10 +76,9 @@ stat_scatter <- compare_stats_scatter(dge_tb = dge_combined,
         size = 2.5
     )
 
-ggsave(stat_scatter, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.png"), height = 10, width = 10)
+ggsave(stat_scatter, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.png"), height = 10, width = 12)
 
-
-stat_scatter_Oligo.3 <- compare_stats_scatter(dge_tb = dge_combined |> filter(cluster == "Oligo.3") |> mutate(cluster = droplevels(cluster)), 
+stat_scatter_ipsc <- compare_stats_scatter(dge_tb = dge_combined |> filter(Blanchard_test == "iPSC"), 
                                       stat = "logFC", 
                                       mX = "ERC", 
                                       mY = "Blanchard", 
@@ -90,7 +87,30 @@ stat_scatter_Oligo.3 <- compare_stats_scatter(dge_tb = dge_combined |> filter(cl
                                       model_name = "Blancard PM") +
     facet_grid(cluster~Blanchard_test) +
     geom_label(
-        data = cor |> filter(cluster == "Oligo.3"), 
+        data = cor |> filter(Blanchard_test == "iPSC"), 
+        ggplot2::aes(x = -Inf, y = Inf, label = anno),
+        color = "black",
+        alpha = 0.5,
+        vjust = "inward", 
+        hjust = "inward", 
+        size = 2.5
+    )
+
+ggsave(stat_scatter_ipsc, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_ipsc_Oligo.png"), height = 10, width = 5)
+
+
+stat_scatter_Oligo.3 <- compare_stats_scatter(dge_tb = dge_combined |>
+                                                  filter(cluster == "Oligo.3", Blanchard_test != "iPSC") |>
+                                                  mutate(cluster = droplevels(cluster)), 
+                                      stat = "logFC", 
+                                      mX = "ERC", 
+                                      mY = "Blanchard", 
+                                      FDR_cut_mX = 0.05, 
+                                      FDR_cut_mY = 0.05, 
+                                      model_name = "Blancard PM") +
+    facet_grid(cluster~Blanchard_test) +
+    geom_label(
+        data = cor |> filter(cluster == "Oligo.3", Blanchard_test != "iPSC"), 
         ggplot2::aes(x = -Inf, y = Inf, label = anno),
         color = "black",
         alpha = 0.5,
@@ -99,7 +119,29 @@ stat_scatter_Oligo.3 <- compare_stats_scatter(dge_tb = dge_combined |> filter(cl
         size = 2.5
     )
     
-ggsave(stat_scatter_Oligo.3, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.3.png"), height = 6, width = 10)
+ggsave(stat_scatter_Oligo.3, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.3.png"), height = 6, width = 12)
+
+stat_scatter_Oligo.3_ipsc <- compare_stats_scatter(dge_tb = dge_combined |>
+                                                  filter(cluster == "Oligo.3", Blanchard_test == "iPSC") |>
+                                                  mutate(cluster = droplevels(cluster)), 
+                                      stat = "logFC", 
+                                      mX = "ERC", 
+                                      mY = "Blanchard", 
+                                      FDR_cut_mX = 0.05, 
+                                      FDR_cut_mY = 0.05, 
+                                      model_name = "Blancard PM") +
+    facet_grid(cluster~Blanchard_test) +
+    geom_label(
+        data = cor |> filter(cluster == "Oligo.3", Blanchard_test == "iPSC"), 
+        ggplot2::aes(x = -Inf, y = -Inf, label = anno),
+        color = "black",
+        alpha = 0.5,
+        vjust = "inward", 
+        hjust = "inward", 
+        size = 2.5
+    )
+    
+ggsave(stat_scatter_Oligo.3_ipsc, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.3_ipsc.png"), height = 6, width = 5)
 
 ## filter to genes of interest 
 suppressMessages(source(here("external-data", "Blanchard2022", "get_Blanchard_gene_list.R")))
@@ -109,6 +151,7 @@ Blanchard_genes <- unlist(Blanchard_gene_list)
 
 stat_scatter_Oligo.3_select <- compare_stats_scatter(dge_tb = dge_combined |> 
                                                   filter(cluster == "Oligo.3",
+                                                         Blanchard_test != "iPSC",
                                                          gene_name %in% Blanchard_genes) |> 
                                                   mutate(cluster = droplevels(cluster)), 
                                       stat = "logFC", 
@@ -120,7 +163,21 @@ stat_scatter_Oligo.3_select <- compare_stats_scatter(dge_tb = dge_combined |>
     facet_grid(cluster~Blanchard_test) 
 
 
-ggsave(stat_scatter_Oligo.3_select, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.3_select.png"), height = 6, width = 10)
+ggsave(stat_scatter_Oligo.3_select, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.3_select.png"), height = 6, width = 12)
+
+stat_scatter_Oligo.3_select_ipsc <- compare_stats_scatter(dge_tb = dge_combined |> 
+                                                  filter(cluster == "Oligo.3",
+                                                         Blanchard_test == "iPSC",
+                                                         gene_name %in% Blanchard_genes) |> 
+                                                  mutate(cluster = droplevels(cluster)), 
+                                      stat = "logFC", 
+                                      mX = "ERC", 
+                                      mY = "Blanchard", 
+                                      FDR_cut_mX = 0.05, 
+                                      FDR_cut_mY = 0.05, 
+                                      model_name = "Blancard PM") +
+    facet_grid(cluster~Blanchard_test) 
 
 
+ggsave(stat_scatter_Oligo.3_select_ipsc, filename = here(plot_dir, "Blanchard_pm_logFC_scatter_Oligo.3_ipsc_select.png"), height = 6, width = 12)
 
