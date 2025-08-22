@@ -103,7 +103,7 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
     stat_scatter <- ggplot(data = dge_tb_class, 
                            aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
         geom_point(alpha = 0.5, size = 0.5) +
-        # geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
+        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) +
         geom_abline(linetype = "dashed") +
         scale_color_manual(values = signif_colors) +
         labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
