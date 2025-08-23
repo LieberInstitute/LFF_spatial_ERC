@@ -1,18 +1,4 @@
-#### GO Heatplots ####
 
-reducedTerms_list_long <- map(reducedTerms_list, ~do.call("rbind", .x))
-
-## check most common parent terms
-map(reducedTerms_list_long, ~.x |> count(parentTerm) |> arrange(-n) |> head())
-
-## check most common terms
-map(reducedTerms_list_long, ~.x |> count(term) |> arrange(-n) |> head())
-
-## check GO terms w/ most genes
-compare_clus |> arrange(-Count) |> head()
-
-
-compare_clus |> filter(grepl("MAPT", geneID))
 
 ## find GO terms associated w/ parent terms
 go_lookup <- function(search_term){
@@ -57,7 +43,7 @@ get_go_genes <- function(go_terms){
 # go_genes |> count(geneID) |> arrange(-n)
 # go_genes |> count(Description) |> arrange(-n)
 
-get_go_DE_stats <- function(go_term){
+get_go_DE_stats <- function(go_term, contrast = FALSE){
     
     if(!go_term %in% compare_clus$Description){
         stop(sprintf("GO term '%s' not in compare_clus", go_term))
@@ -70,24 +56,47 @@ get_go_DE_stats <- function(go_term){
         unnest_longer(gene_name) |>
         unique() 
     
-    go_term_de <- go_gene |>
-        left_join(DE_data |> select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val),
-                  by = "gene_name",
-                  relationship = "many-to-many") |>
-        group_by(cluster, gene_name) |>
-        arrange(vlmf_adj.P.Val) |>
-        slice(1) |>
-        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
-                                  vlmf_adj.P.Val < 0.01 ~ "**",
-                                  vlmf_adj.P.Val < 0.05 ~ "*",
-                                  TRUE ~ "")
-        ) 
+    if(contrast){
+        go_term_de <- go_gene |>
+            left_join(DE_data |> select(cluster, contrast, gene_name, vlmf_logFC, vlmf_adj.P.Val),
+                      by = "gene_name",
+                      relationship = "many-to-many") |>
+            mutate(cluster = paste0(cluster, gsub("carrier","", contrast))) |>
+            group_by(cluster, gene_name) |>
+            arrange(vlmf_adj.P.Val) |>
+            slice(1) |>
+            mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
+                                      vlmf_adj.P.Val < 0.01 ~ "**",
+                                      vlmf_adj.P.Val < 0.05 ~ "*",
+                                      TRUE ~ "")
+            ) 
+        
+    } else {
+        go_term_de <- go_gene |>
+            left_join(DE_data |> select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val),
+                      by = "gene_name",
+                      relationship = "many-to-many") |>
+            group_by(cluster, gene_name) |>
+            arrange(vlmf_adj.P.Val) |>
+            slice(1) |>
+            mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
+                                      vlmf_adj.P.Val < 0.01 ~ "**",
+                                      vlmf_adj.P.Val < 0.05 ~ "*",
+                                      TRUE ~ "")
+            ) 
+    }
+    
+    missing_col <- cluster_levels[!cluster_levels %in% go_term_de$cluster]
+
     
     log_fc_matrix <- go_term_de |> 
+        ungroup() |>
         select(gene_name, cluster, vlmf_logFC) |>
         pivot_wider(names_from = "cluster", values_from = "vlmf_logFC", 
                     names_expand = TRUE) |>
         column_to_rownames("gene_name")
+    
+    log_fc_matrix[missing_col] <- NA
     
     log_fc_matrix <- log_fc_matrix[, cluster_levels]
     
@@ -97,6 +106,7 @@ get_go_DE_stats <- function(go_term){
                     names_expand = TRUE)|>
         column_to_rownames("gene_name")
     
+    signif_matrix[missing_col] <- NA
     signif_matrix <- signif_matrix[, cluster_levels]
     
     signif_matrix[is.na(signif_matrix)] <- ""
@@ -116,9 +126,10 @@ get_go_DE_stats <- function(go_term){
 # get_go_DE_stats("dendrite terminus")
 
 
-get_go_DE_stats_multi <- function(go_list){
+get_go_DE_stats_multi <- function(go_list, contrast = FALSE){
     
-    go_stats_m <- map(go_list, get_go_DE_stats)
+    go_stats_m <- map(go_list, ~get_go_DE_stats(.x, contrast = contrast))
+    # map(go_stats_m, ~ncol(.x$log_fc))
     go_stats_m <- map(list_transpose(go_stats_m, simplify = FALSE), ~do.call("rbind",.x))
     
     go_stats_m$go_gene <-  go_stats_m$go_gene |> 
@@ -175,7 +186,7 @@ GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
     
 }
 
-parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term), height = 10, width = 10){
+parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term), height = 10, width = 10, contrast = FALSE){
     
     top_terms <- map(search_term, ~get_go_genes(go_lookup(.x))|>
                          count(Description) |>
@@ -187,11 +198,19 @@ parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_
     # duplicated(top_terms)
     
     # debug
-    # get_go_DE_stats_multi(top_terms[[2]])
+    # get_go_DE_stats_multi(top_terms[[1]], contrast = TRUE)
     
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)), height = height, width = width)
+    top_terms_stats <- map(top_terms, ~get_go_DE_stats_multi(.x, contrast = contrast))
     
-    map2(top_terms, search_term, ~print(GO_logfc_Heatmap(get_go_DE_stats_multi(.x),
-                                                         title = .y)))
+    # print(GO_logfc_Heatmap(top_terms_stats[[1]]))
+    
+    if(contrast){
+        filename = sprintf("GO_logFC_heatmap_%s_%s-%s.pdf", opt$datatype, opt$contrast, pdf_suffix)
+    } else {
+        filename = sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)
+    }
+    
+    pdf(here(plot_dir, filename), height = height, width = width)
+    map2(top_terms_stats, search_term, ~print(GO_logfc_Heatmap(.x, title = .y)))
     dev.off()
 }
