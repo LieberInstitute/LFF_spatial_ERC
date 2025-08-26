@@ -68,14 +68,118 @@ bivariate_data <- fread(here("processed-data","17_cell_cell_comm","liana","bivar
 
 bivariate_data |> filter(ligand == "ADGRB1", receptor == "RTN4R")
 
-bivariate_data |> group_by(ligand, receptor) |> summarise()
+bivariate_data_summary <- bivariate_data |> 
+    group_by(ligand, receptor) |> 
+    summarise(mean_morans = mean(morans),
+              median_morans = median(morans),
+              mean_mean = mean(mean),
+              max_moran_pval = max(morans_pvals),
+              n_moran_pval_pass = sum(morans_pvals < 0.05)) |>
+    mutate(LR = paste0(ligand, "->", receptor))
+
+bivariate_data_summary |> arrange(-mean_morans)
+
+bivariate_data_summary |> 
+    pivot_longer(!c("ligand", "receptor", "LR"), names_to = "metric") |>
+    ggplot(aes(x = value)) +
+    geom_histogram(binwidth = 0.01) +
+    facet_wrap(~metric, ncol = 1, scales = "free_x")
+
+bivariate_data_summary_scatter <- bivariate_data_summary |>
+    ggplot(aes(x = mean_morans, y = mean_mean, color = n_moran_pval_pass)) +
+    geom_point() +
+    geom_text_repel(aes(label = LR))
+
+bivariate_data_summary_pass_scatter <- bivariate_data_summary |>
+    ggplot(aes(x = mean_morans, y = n_moran_pval_pass, color = n_moran_pval_pass)) +
+    geom_point(aes())
+
+bivariate_data_summary |>
+    ggplot(aes(x = median_morans, y = -log10(max_moran_pval), color = n_moran_pval_pass)) +
+    geom_point() +
+    geom_hline(yintercept = -log10(0.05))
+
+# Moran’s R values near zero imply spatial independence, while positive or negative values reflect spatial co-clustering or spatial cross-dispersion
+bivariate_data_summary |> ungroup() |> count(n_moran_pval_pass) |> arrange(-n_moran_pval_pass)
+
+## moran p-val pass all 
+bivariate_data_summary |> arrange(-mean_morans)
+
+# Mean "global bivariate score"
+bivariate_data_summary |> arrange(-mean_mean)
+
 
 # top-expressed and highest-spatial-association LR pairs
 
 #### load LR data ####
+#pre MFA non-spatially aware data
 liana_fn <- here("processed-data", "17_cell_cell_comm", "liana", "ranked_results", sprintf("%s.csv.gz", tolower(gsub("sn_", "", opt$datatype))))
 file.exists(liana_fn)
 
 liana_data <- fread(liana_fn)
 
+
+liana_data |> count(magnitude_rank < 0.05)
+
+# rank_aggregate method, which provides a robust rank consensus that combines the predictions of multiple ligand-receptor methods
+
+summary(liana_data)
+
+liana_data_summary <- liana_data |>
+    group_by(source, target, ligand_complex, receptor_complex) |>
+    summarise(n_pass_magnitude_rank = sum(magnitude_rank < 0.05),
+              n_pass_specificity_rank = sum(specificity_rank < 0.05, na.rm = TRUE),
+              n_test = n())
+
+summary(liana_data_summary)
+
+
+liana_data_summary |> ungroup() |> count(n_pass_specificity_rank, n_pass_magnitude_rank) 
+
+liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(source, target) |> arrange(-n)
+liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(ligand_complex, receptor_complex) |> arrange(-n)
+
+liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> count(source, target) |> arrange(-n)
+
+liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
+
+liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-mean_lrscore)
+liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_cellphone_pval_pass)
+
+liana_data_summary |> group_by(source) |> arrange(-mean_lrscore) |> slice(10)
+
+liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-mean_magnitude_rank)
+liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-mean_lrscore)
+liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-n_cellphone_pval_pass)
+liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-mean_specificity_rank)
+
+
+liana_data_summary |> filter(n_pass_magnitude_rank >= 20 ,target == "Oligo.3")
+
+liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(source)
+liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(target)
+
+liana_data_summary |> ungroup() |> 
+    count(n_pass_specificity_rank, n_pass_magnitude_rank)  |>
+    filter(n_pass_magnitude_rank > 10,
+           n_pass_specificity_rank > 0) |>
+    ggplot(aes(x = n_pass_magnitude_rank, n_pass_specificity_rank, fill = n)) +
+    geom_tile()
+
+liana_data_summary |> 
+    ggplot(aes(x = n_pass_magnitude_rank, y= n_pass_specificity_rank)) +
+    geom_point()
+
+n_pass_magnitude_rank_histo <- liana_data_summary |> 
+    filter(n_pass_magnitude_rank > 0) |>
+    ggplot(aes(x = n_pass_magnitude_rank)) +
+    geom_histogram(binwidth = 1) +
+    theme_bw()
+
+ggsave(n_pass_magnitude_rank_histo, filename = here(plot_dir, "n_pass_magnitude_rank_histo.png"))
+
+liana_data_summary |> 
+    filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |>
+    ggplot(aes(x = mean_magnitude_rank, y= mean_specificity_rank)) +
+    geom_point()
 

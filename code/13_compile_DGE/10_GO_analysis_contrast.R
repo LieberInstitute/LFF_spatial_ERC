@@ -22,6 +22,7 @@ opt <- getopt(scec)
 ## test
 # opt$datatype = "sn_broad"
 # opt$contrast = "ancestry"
+# opt$contrast = "Sex"
 
 # opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
@@ -42,8 +43,13 @@ if(opt$datatype == "sn_broad"){
     cluster_levels <- names(cell_type_colors$broad)
 }else if(opt$datatype == "sn_fine"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    
     cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
+    
+    broad_cell_types <- names(cell_type_colors$broad)
+    broad_cell_types <- broad_cell_types[broad_cell_types != "Other"]
+    
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
@@ -115,6 +121,8 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
 
 saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s_%s.rds", opt$contrast, opt$datatype)))
 
+# go_result <- readRDS(here(data_dir, sprintf("GO_result_%s_%s.rds", opt$contrast, opt$datatype)))
+
 # convert to table
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
@@ -147,25 +155,48 @@ walk2(go_result, names(go_result),
 dev.off()
 
 ## by cell type
-# if(opt$datatype == "sn_fine"){
-#     
-#     pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
-#     walk2(go_result, names(go_result), function(gr){
-#         
-#         ~print(
-#             dotplot(.x, 
-#                     x = "DE_class_cluster", 
-#                     showCategory = 5, 
-#                     label_format = 60)  +
-#                 ggtitle(paste("GO Enrichment:", .y)) +
-#                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-#         )
-#         
-#         }
-#     )
-#     dev.off()
+if(opt$datatype == "sn_fine"){
     
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_cell_type.pdf", opt$datatype)), width = 8, height = 8)
+    
+    ct_dot_plots <- map(broad_cell_types, function(ct){
+        go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster))
+            
+            # dotplot
+            print(dotplot(gr,
+                          x = "DE_class_cluster",
+                          showCategory = 5,
+                          label_format = 60)  +
+                      ggtitle(sprintf("GO Enrichment: %s - %s", ont, ct)) +
+                      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )
+        })
+    })
+    dev.off()
+    
+    go_result_Oligo3 <- map(go_result, function(gr){
+        gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl("Oligo.3", Cluster) | grepl("Astro.3", Cluster))
+        return(gr)
+    })
+    
+    map(go_result_Oligo3, ~.x@compareClusterResult |> count(Cluster))
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s_Oligo.3.pdf", opt$contrast, opt$datatype)), width = 8, height = 8)
+    walk2(go_result_Oligo3, names(go_result_Oligo3), 
+          ~print(
+              dotplot(.x, 
+                      x = "DE_class_cluster", 
+                      showCategory = 5, 
+                      label_format = 60)  +
+                  ggtitle(paste("GO Enrichment:", .y)) +
+                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+          )
+    )
+    dev.off()
 
+}
 
 #### rrvgo ####
 
@@ -210,6 +241,8 @@ reducedTerms_list <- map(ont_list, function(o){
     return(ont_reducedTerms)
 })
 
+## save
+saveRDS(reducedTerms_list, file = here(data_dir, sprintf("GO_reduced_terms_%s_%s.rds", opt$contrast, opt$datatype)))
 
 reducedTerms_list2 <- list_transpose(reducedTerms_list)
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
@@ -253,6 +286,8 @@ compare_clus |> arrange(-Count) |> head()
 go_genes <- get_go_genes(go_terms_test)
 
 cluster_levels <- unlist(map(cluster_levels, ~paste0(.x, "_", contrast_levels)))
+
+if(opt$contrast == "Ancestry"){
 
 if(opt$datatype == "Visium"){
     
@@ -402,7 +437,51 @@ if(opt$datatype == "Visium"){
                         height = 14, width = 12)
     
 }
-
+} else if(opt$contrast == 'Sex'){
+    if(opt$datatype == "sn_broad"){
+        
+        # compare_clus |> filter(grepl("FOS", geneID))
+        
+        ## select GO terms
+        pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s_%s.pdf", opt$contrast, opt$datatype)), width = 12, height = 12)
+        
+        GO_logfc_Heatmap(get_go_DE_stats(go_term = "synaptic membrane", contrast = TRUE))
+        GO_logfc_Heatmap(get_go_DE_stats(go_term = "extracellular matrix", contrast = TRUE))
+        
+        dev.off()
+        
+        # parent_term_lookup("calcium")
+        
+        parent_term_heatmap(search_term = c("synaptic membrane"), 
+                            pdf_suffix = sprintf("%s_ParentTerms", opt$contrast),
+                            height = 14, width = 12)
+        
+    }else if(opt$datatype == "sn_fine"){
+        
+        # compare_clus |> filter(grepl("MAPT", geneID))
+        # compare_clus |> filter(grepl("FOS", geneID))
+        
+        compare_clus |> filter(grepl("chemokine", Description))
+        compare_clus |> filter(grepl("eosinophil", Description))
+        
+        ## select GO terms
+        pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s_%s.pdf", opt$contrast, opt$datatype)), width = 12, height = 12)
+        
+        GO_logfc_Heatmap(get_go_DE_stats(go_term = "synaptic membrane", contrast = TRUE))
+        GO_logfc_Heatmap(get_go_DE_stats(go_term = "extracellular matrix", contrast = TRUE))
+        
+        # GO_logfc_Heatmap(get_go_DE_stats(go_term = "eosinophil migration", contrast = TRUE))
+        
+        dev.off()
+        
+        # parent_term_lookup("calcium")
+        
+        parent_term_heatmap(search_term = c("synaptic membrane"), 
+                            pdf_suffix = sprintf("%s_ParentTerms", opt$contrast),
+                            height = 14, width = 12)
+        
+    }
+}
 
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
