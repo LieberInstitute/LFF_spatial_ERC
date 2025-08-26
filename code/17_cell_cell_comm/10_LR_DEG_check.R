@@ -7,6 +7,7 @@ library("here")
 library("sessioninfo")
 library("getopt")
 library("data.table")
+library(ComplexHeatmap)
 
 # Import command-line parameters
 scec <- matrix(
@@ -233,23 +234,127 @@ LR_p_source_tile <- source_target_counts |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(LR_p_source_tile, filename = here(plot_dir, "LR_p_source_tile.png"), height = 6, width = 7)
-    
+
 LR_p_target_tile <- source_target_counts |>
     ggplot(aes(x = target, y = source, fill = p_target)) +
     geom_tile() +
     scale_fill_viridis_c(name = "prop target\nLR pairs") +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-    
+
 ggsave(LR_p_target_tile, filename = here(plot_dir, "LR_p_target_tile.png"), height = 6, width = 7)
 
+## Oligo.3 senders and targets 
 
-liana_data_summary |> 
-    filter(n_pass_magnitude_rank > 20) |>
-    ungroup() |>
-    count(source, target) |>
+source_target_counts |>
     filter(source == "Oligo.3") |> 
     arrange(-n)
+
+LR_count_bar_Oligo.3 <- source_target_counts |>
+    filter(source == "Oligo.3" | target == "Oligo.3") |>
+    mutate(st = paste(source, target)) |>
+    select(st, source, target, n) |>
+    pivot_longer(!c(n, st), names_to = "class", values_to = "cell_type") |>
+    ggplot(aes(x = cell_type, y = n, fill = cell_type)) +
+    geom_col() +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    facet_wrap(~class, ncol = 1) +
+    theme_bw() +
+    labs(y="n LR pairs with Oligo.3") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None")
+    
+ggsave(LR_count_bar_Oligo.3, filename = here(plot_dir, "LR_count_bar_Oligo.3.png"), height = 4, width = 6)
+
+
+#### DEG intersect ####
+
+LR_DEGS <- liana_data_summary |> 
+    filter(n_pass_magnitude_rank > 20) |>
+    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC))|>
+    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC)) |>
+    mutate(L_DEG = ligand_adj.P.Val < 0.05,
+           R_DEG = receptor_adj.P.Val < 0.05)
+
+LR_DEGS |> filter(is.na(R_DEG)) |> select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG)
+
+LR_DEGS |> ungroup() |> count(L_DEG, R_DEG)
+
+LR_DEGS |> ungroup() |> filter(L_DEG) |>  count(source)
+LR_DEGS |> ungroup() |> filter(R_DEG) |>  count(target)
+
+LR_DEGS |> ungroup() |> 
+    filter(ligand_complex == "NRXN1",
+           receptor_complex == "NLGN1") |> 
+    filter(target == "Oligo.3") |>
+    select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG)
+
+## log FC heatmap
+
+ligand_degs <- LR_DEGS |> ungroup() |> filter(L_DEG) |> pull(ligand_complex) |> unique()
+receptor_of_ligand_degs <- LR_DEGS |> ungroup() |> filter(L_DEG) |> pull(receptor_complex) |> unique()
+
+receptor_degs <- LR_DEGS |> ungroup() |> filter(R_DEG) |> pull(receptor_complex) |> unique()
+
+LR_deg_list <- unique(c())
+
+source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
+
+cluster_levels = names(cell_type_colors$anno)
+
+logFC_Heatmap(data = DE_data, gene_list = ligand_degs, datatype = "sn_fine", save = FALSE, flip = TRUE)
+logFC_Heatmap(data = DE_data, gene_list = receptor_of_ligand_degs, datatype = "sn_fine", save = FALSE, flip = TRUE)
+
+
+LR_DEGS_plot_data <- LR_DEGS |>
+    filter(L_DEG | R_DEG) |>
+    ungroup() |>
+    mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
+    select(interaction, source, target) |>
+    pivot_longer(!c(interaction), names_to = "class", values_to = "cell_type") |>
+    mutate(class = case_when(class == "target" ~ "Receptor",
+                             class == "source" ~ "Ligand",
+                             TRUE ~ NA
+    )) |>
+    unique()
+
+LR_DEGS_plot_data2 <- LR_DEGS |>
+    filter(L_DEG | R_DEG) |>
+    ungroup() |>
+    mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
+    select(interaction, receptor_complex, ligand_complex) |>
+    pivot_longer(!c(interaction), names_to = "class", values_to = "gene_name") |>
+    mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
+                             class == "ligand_complex" ~ "Ligand",
+                             TRUE ~ NA
+                             )) |>
+    unique()
+
+
+LR_DEGS_plot_data3 <- LR_DEGS_plot_data |>
+    left_join(LR_DEGS_plot_data2) |>
+    left_join(DE_data |> 
+                  select(cell_type = cluster, gene_name, vlmf_t, vlmf_adj.P.Val, vlmf_logFC)) |>
+    mutate(signif = case_when(vlmf_adj.P.Val < 0.005 ~ "***",
+                              vlmf_adj.P.Val < 0.01 ~"**",
+                              vlmf_adj.P.Val < 0.05 ~"*",
+                              TRUE~""))
+
+LR_DEGS_plot_data3 |> count(interaction)
+
+max_abs = max(abs(LR_DEGS_plot_data3$vlmf_logFC))
+
+
+LR_DEGS_plot <- LR_DEGS_plot_data3 |>
+    ggplot(aes(x = cell_type, y = interaction, fill = vlmf_logFC)) +
+    facet_wrap(~class) +
+    geom_tile(color = "black") +
+    geom_text(aes(label = signif)) +
+    scale_fill_gradient2(high = APOE_carrier_colors[["E4+"]], low = APOE_carrier_colors[["E2+"]])  +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+
+ggsave(LR_DEGS_plot, filename = here(plot_dir, "LR_DEGS.png"), width = 8, height = 6)
 
 
 
