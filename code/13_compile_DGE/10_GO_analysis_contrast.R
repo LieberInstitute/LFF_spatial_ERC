@@ -286,6 +286,7 @@ compare_clus |> arrange(-Count) |> head()
 go_genes <- get_go_genes(go_terms_test)
 
 cluster_levels <- unlist(map(cluster_levels, ~paste0(.x, "_", contrast_levels)))
+
 if(opt$contrast == "Ancestry"){
 
 if(opt$datatype == "Visium"){
@@ -437,9 +438,8 @@ if(opt$datatype == "Visium"){
     
 }
 } else if(opt$contrast == 'Sex'){
-    if(opt$datatype == "sn_fine"){
+    if(opt$datatype == "sn_broad"){
         
-        # compare_clus |> filter(grepl("MAPT", geneID))
         # compare_clus |> filter(grepl("FOS", geneID))
         
         ## select GO terms
@@ -461,11 +461,16 @@ if(opt$datatype == "Visium"){
         # compare_clus |> filter(grepl("MAPT", geneID))
         # compare_clus |> filter(grepl("FOS", geneID))
         
+        compare_clus |> filter(grepl("chemokine", Description))
+        compare_clus |> filter(grepl("eosinophil", Description))
+        
         ## select GO terms
         pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s_%s.pdf", opt$contrast, opt$datatype)), width = 12, height = 12)
         
         GO_logfc_Heatmap(get_go_DE_stats(go_term = "synaptic membrane", contrast = TRUE))
         GO_logfc_Heatmap(get_go_DE_stats(go_term = "extracellular matrix", contrast = TRUE))
+        
+        # GO_logfc_Heatmap(get_go_DE_stats(go_term = "eosinophil migration", contrast = TRUE))
         
         dev.off()
         
