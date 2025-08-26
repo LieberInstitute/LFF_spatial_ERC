@@ -26,7 +26,8 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "17_cell_cell_comm", "10_LR_DEG_check")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-# load(here("processed-data", "project_colors.Rdata"))
+load(here("processed-data", "project_colors.Rdata"))
+load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 
 #### load DE data ####
 DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
@@ -37,6 +38,14 @@ DE_data <- readRDS(DE_data_fn) |> select(gene_name, cluster, vlmf_t, vlmf_adj.P.
 DE_data_signif <- DE_data |> filter(vlmf_adj.P.Val < 0.05)
 DE_data_signif |> count(cluster)
 
+
+DE_data |> filter(gene_name == "NRXN1") |> arrange(vlmf_adj.P.Val)
+# gene_name cluster   vlmf_t vlmf_adj.P.Val vlmf_logFC
+#     1 NRXN1     Oligo.3     3.27         0.0398      1.15 
+
+DE_data |> filter(gene_name == "NLGN1") |> arrange(vlmf_adj.P.Val)
+# gene_name cluster      vlmf_t vlmf_adj.P.Val vlmf_logFC
+#1 NLGN1     Oligo.3      -2.74          0.0739     -0.538
 
 
 #top pairs 
@@ -118,10 +127,22 @@ file.exists(liana_fn)
 
 liana_data <- fread(liana_fn)
 
-
-liana_data |> count(magnitude_rank < 0.05)
-
 # rank_aggregate method, which provides a robust rank consensus that combines the predictions of multiple ligand-receptor methods
+liana_data |> count(magnitude_rank < 0.05)
+# magnitude_rank < 0.05        n
+# <lgcl>    <int>
+# 1:                 FALSE 12488436
+# 2:                  TRUE   783746
+
+liana_data |> count(specificity_rank < 0.05)
+# specificity_rank < 0.05        n
+# <lgcl>    <int>
+# 1:                   FALSE   616979
+# 2:                    TRUE    94080
+# 3:                      NA 1256112
+
+
+liana_data |> count(specificity_rank < 0.05, magnitude_rank < 0.05)
 
 summary(liana_data)
 
@@ -129,7 +150,9 @@ liana_data_summary <- liana_data |>
     group_by(source, target, ligand_complex, receptor_complex) |>
     summarise(n_pass_magnitude_rank = sum(magnitude_rank < 0.05),
               n_pass_specificity_rank = sum(specificity_rank < 0.05, na.rm = TRUE),
-              n_test = n())
+              n_test = n()) |>
+    mutate(source = factor(source, levels = names(cell_type_colors$anno)),
+           target = factor(target, levels = names(cell_type_colors$anno)))
 
 summary(liana_data_summary)
 
@@ -140,25 +163,24 @@ liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(
 liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(ligand_complex, receptor_complex) |> arrange(-n)
 
 liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> count(source, target) |> arrange(-n)
+liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3") |> count(source, target) |> arrange(-n)
 
+## Oligo.3 <-> astro
 liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
+liana_data_summary |> filter(grepl("Astro", source), target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
 
-liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-mean_lrscore)
-liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_cellphone_pval_pass)
-
-liana_data_summary |> group_by(source) |> arrange(-mean_lrscore) |> slice(10)
-
-liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-mean_magnitude_rank)
-liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-mean_lrscore)
-liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-n_cellphone_pval_pass)
-liana_data_summary |> filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |> arrange(-mean_specificity_rank)
+liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")
 
 
-liana_data_summary |> filter(n_pass_magnitude_rank >= 20 ,target == "Oligo.3")
+liana_data_summary |> filter(n_pass_magnitude_rank >= 20, ligand_complex == "NLGN1", receptor_complex == "NRXN1")
 
 liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(source)
 liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(target)
 
+
+liana_data_summary |> filter(n_pass_magnitude_rank == 30) 
+
+## plots
 liana_data_summary |> ungroup() |> 
     count(n_pass_specificity_rank, n_pass_magnitude_rank)  |>
     filter(n_pass_magnitude_rank > 10,
@@ -178,8 +200,56 @@ n_pass_magnitude_rank_histo <- liana_data_summary |>
 
 ggsave(n_pass_magnitude_rank_histo, filename = here(plot_dir, "n_pass_magnitude_rank_histo.png"))
 
+# liana_data_summary |> 
+#     filter(n_pass_magnitude_rank > 0) |>
+#     ggplot(aes(x = n_pass_magnitude_rank)) +
+#     geom_histogram(binwidth = 1) +
+#     theme_bw() +
+#     facet_wrap(~target)
+
+source_target_counts <- liana_data_summary |> 
+    filter(n_pass_magnitude_rank > 20) |>
+    ungroup() |>
+    count(source, target) |>
+    group_by(source) |>
+    mutate(p_target = n/sum(n)) |>
+    group_by(target) |>
+    mutate(p_source = n/sum(n))
+
+LR_count_tile <- source_target_counts |>
+    ggplot(aes(x = target, y = source, fill = n)) +
+    geom_tile() +
+    scale_fill_viridis_c(name = "Number\nLR pairs") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(LR_count_tile, filename = here(plot_dir, "LR_count_tile.png"), height = 6, width = 7)
+
+LR_p_source_tile <- source_target_counts |>
+    ggplot(aes(x = target, y = source, fill = p_source)) +
+    geom_tile() +
+    scale_fill_viridis_c(name = "prop source\nLR pairs") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(LR_p_source_tile, filename = here(plot_dir, "LR_p_source_tile.png"), height = 6, width = 7)
+    
+LR_p_target_tile <- source_target_counts |>
+    ggplot(aes(x = target, y = source, fill = p_target)) +
+    geom_tile() +
+    scale_fill_viridis_c(name = "prop target\nLR pairs") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+    
+ggsave(LR_p_target_tile, filename = here(plot_dir, "LR_p_target_tile.png"), height = 6, width = 7)
+
+
 liana_data_summary |> 
-    filter(ligand_complex == "NPTX1", receptor_complex == "NPTXR", n_test > 10) |>
-    ggplot(aes(x = mean_magnitude_rank, y= mean_specificity_rank)) +
-    geom_point()
+    filter(n_pass_magnitude_rank > 20) |>
+    ungroup() |>
+    count(source, target) |>
+    filter(source == "Oligo.3") |> 
+    arrange(-n)
+
+
 
