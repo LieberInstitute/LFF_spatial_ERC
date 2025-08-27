@@ -317,14 +317,30 @@ if(opt$datatype == "Visium"){
     
 } else if(opt$datatype == "sn_broad"){
     
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_MF_%s.pdf", opt$datatype)))
+    # Astro Up
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("channel activity", "passive transmembrane transporter activity","GABA receptor activity")))
+    # Astro Down
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("exopeptidase activity", "dipeptidase activity","oligopeptide binding")))
+    # Inhib UP
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("heparan sulfate sulfotransferase activity", "proteoglycan sulfotransferase activity","microfilament motor activity")))
+    # Macro down
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("G protein-coupled purinergic nucleotide receptor activity","semaphorin receptor activity","purinergic nucleotide receptor activity")))
+    # Micro down
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("protein folding chaperone", "hydrolase activity, hydrolyzing O-glycosyl compounds","unfolded protein binding")))
+    # Oligo up
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("collagen binding", "high voltage-gated calcium channel activity")))
+    
+    dev.off()
+    
+    
+    
     ## select GO terms
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s.pdf", opt$datatype)))
-
-    GO_logfc_Heatmap(get_go_DE_stats(go_term = "synaptic membrane"))
-    GO_logfc_Heatmap(get_go_DE_stats(go_term = "modulation of chemical synaptic transmission"))
-    GO_logfc_Heatmap(get_go_DE_stats(go_term = "neurotransmitter transport"))
     
-    # Inhib
+    # Astro Up
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "modulation of chemical synaptic transmission"))
+
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "oligodendrocyte differentiation"))
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "heparin proteoglycan"))
     
@@ -339,6 +355,7 @@ if(opt$datatype == "Visium"){
     # go_lookup("dipeptidase activity")
     # parent_term_lookup("peptid")
     # compare_clus |> filter(grepl("pepti", Description))
+    compare_clus |> filter(grepl("hydrolase activity", Description))
 
     parent_term_heatmap(search_term = c("synaptic membrane",
                                         "oligodendrocyte differentiation",
