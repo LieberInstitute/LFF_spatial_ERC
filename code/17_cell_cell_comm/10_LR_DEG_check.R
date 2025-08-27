@@ -8,6 +8,7 @@ library("sessioninfo")
 library("getopt")
 library("data.table")
 library(ComplexHeatmap)
+library(ggrepel)
 
 # Import command-line parameters
 scec <- matrix(
@@ -85,9 +86,13 @@ bivariate_data_summary <- bivariate_data |>
               mean_mean = mean(mean),
               max_moran_pval = max(morans_pvals),
               n_moran_pval_pass = sum(morans_pvals < 0.05)) |>
-    mutate(LR = paste0(ligand, "->", receptor))
+    ungroup() |>
+    arrange(-mean_mean) |>
+    mutate(LR = paste0(ligand, "->", receptor),
+           mean_rank = row_number())
 
 bivariate_data_summary |> arrange(-mean_morans)
+bivariate_data_summary |> arrange(-mean_mean)
 
 bivariate_data_summary |> 
     pivot_longer(!c("ligand", "receptor", "LR"), names_to = "metric") |>
@@ -108,6 +113,12 @@ bivariate_data_summary |>
     ggplot(aes(x = median_morans, y = -log10(max_moran_pval), color = n_moran_pval_pass)) +
     geom_point() +
     geom_hline(yintercept = -log10(0.05))
+
+
+bivariate_data_summary |> 
+    ungroup() |>
+    arrange(-mean_mean) |>
+    mutate(rank = row_number())
 
 # Moran’s R values near zero imply spatial independence, while positive or negative values reflect spatial co-clustering or spatial cross-dispersion
 bivariate_data_summary |> ungroup() |> count(n_moran_pval_pass) |> arrange(-n_moran_pval_pass)
@@ -153,7 +164,8 @@ liana_data_summary <- liana_data |>
               n_pass_specificity_rank = sum(specificity_rank < 0.05, na.rm = TRUE),
               n_test = n()) |>
     mutate(source = factor(source, levels = names(cell_type_colors$anno)),
-           target = factor(target, levels = names(cell_type_colors$anno)))
+           target = factor(target, levels = names(cell_type_colors$anno))) |>
+    left_join(bivariate_data_summary |> select(ligand_complex = ligand, receptor_complex = receptor, mean_mean, mean_rank))
 
 summary(liana_data_summary)
 
@@ -244,6 +256,15 @@ LR_p_target_tile <- source_target_counts |>
 
 ggsave(LR_p_target_tile, filename = here(plot_dir, "LR_p_target_tile.png"), height = 6, width = 7)
 
+## LR mean_mean
+LR_bivaraite_rank_magnitude_pass_histo <- liana_data_summary |>
+    filter(n_pass_magnitude_rank > 20) |>
+    ggplot(aes(x = mean_mean)) +
+    geom_histogram(binwidth = 0.02) +
+    theme_bw()
+
+ggsave(LR_bivaraite_rank_magnitude_pass_histo, filename = here(plot_dir, "LR_bivaraite_rank_magnitude_pass_histo.png"), height = 6, width = 7)
+
 ## Oligo.3 senders and targets 
 
 source_target_counts |>
@@ -283,11 +304,12 @@ LR_DEGS |> ungroup() |> count(L_DEG, R_DEG)
 LR_DEGS |> ungroup() |> filter(L_DEG) |>  count(source)
 LR_DEGS |> ungroup() |> filter(R_DEG) |>  count(target)
 
-LR_DEGS |> ungroup() |> 
+LR_DEGS |> 
+    ungroup() |> 
     filter(ligand_complex == "NRXN1",
            receptor_complex == "NLGN1") |> 
     filter(target == "Oligo.3") |>
-    select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG)
+    select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG, mean_mean)
 
 ## log FC heatmap
 
@@ -322,8 +344,8 @@ LR_DEGS_plot_data2 <- LR_DEGS |>
     filter(L_DEG | R_DEG) |>
     ungroup() |>
     mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
-    select(interaction, receptor_complex, ligand_complex) |>
-    pivot_longer(!c(interaction), names_to = "class", values_to = "gene_name") |>
+    select(interaction, mean_mean, receptor_complex, ligand_complex) |>
+    pivot_longer(!c(interaction, mean_mean), names_to = "class", values_to = "gene_name") |>
     mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
                              class == "ligand_complex" ~ "Ligand",
                              TRUE ~ NA
@@ -335,10 +357,13 @@ LR_DEGS_plot_data3 <- LR_DEGS_plot_data |>
     left_join(LR_DEGS_plot_data2) |>
     left_join(DE_data |> 
                   select(cell_type = cluster, gene_name, vlmf_t, vlmf_adj.P.Val, vlmf_logFC)) |>
-    mutate(signif = case_when(vlmf_adj.P.Val < 0.005 ~ "***",
+    replace_na(list(mean_mean = 0)) |>
+    mutate(interaction = fct_reorder(interaction, mean_mean),
+           signif = case_when(vlmf_adj.P.Val < 0.005 ~ "***",
                               vlmf_adj.P.Val < 0.01 ~"**",
                               vlmf_adj.P.Val < 0.05 ~"*",
-                              TRUE~""))
+                              TRUE~"")
+           )
 
 LR_DEGS_plot_data3 |> count(interaction)
 
@@ -355,6 +380,34 @@ LR_DEGS_plot <- LR_DEGS_plot_data3 |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
 ggsave(LR_DEGS_plot, filename = here(plot_dir, "LR_DEGS.png"), width = 8, height = 6)
+
+
+LR_DEGS_plot_ct <- LR_DEGS_plot_data3 |>
+    ggplot(aes(x = cell_type, y = interaction, fill = cell_type)) +
+    facet_wrap(~class) +
+    geom_tile(color = "black") +
+    geom_text(aes(label = signif)) +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+
+ggsave(LR_DEGS_plot_ct, filename = here(plot_dir, "LR_DEGS_ct.png"), width = 8, height = 6)
+
+
+LR_DEGS_plot_data3 |>
+    group_by(interaction) |>
+    slice(1)|>
+    arrange(mean_mean)
+    
+    
+LR_DEGS_mean_mean <- LR_DEGS_plot_data3 |>
+    group_by(interaction) |>
+    slice(1)|>
+    ggplot(aes(x = mean_mean, y = interaction)) +
+    geom_col() +
+    theme_bw()
+
+ggsave(LR_DEGS_mean_mean, filename = here(plot_dir, "LR_DEGS_mean_mean.png"), width = 3, height = 6)
 
 
 
