@@ -67,6 +67,12 @@ DE_data |> count(cluster)
 head(DE_data)
 DE_data |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster)
 
+DE_data |>
+    # filter(grepl("LINGO", gene_name)) |>
+    filter(gene_name == "ITGB5") |>
+    select(gene_name, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC) |>
+    arrange(vlmf_adj.P.Val)
+
 ## ENTREZID look up
 entrez_search <- bitr(DE_data$gene_id, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
 entrez_search |> count(ENSEMBL) |> count(n)

@@ -7,8 +7,8 @@ library("here")
 library("sessioninfo")
 library("getopt")
 library("data.table")
-library(ComplexHeatmap)
-library(ggrepel)
+library("ComplexHeatmap")
+library("ggrepel")
 
 # Import command-line parameters
 scec <- matrix(
@@ -30,6 +30,25 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+
+
+if(opt$datatype == "sn_broad"){
+    cluster_colors <- cell_type_colors$broad
+    cluster_levels <- names(cell_type_colors$broad)
+}else if(opt$datatype == "sn_fine"){
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
+    
+    broad_cell_types <- names(cell_type_colors$broad)
+    broad_cell_types <- broad_cell_types[broad_cell_types != "Other"]
+    
+}else if(opt$datatype == "Visium"){
+    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+    cluster_colors <- SpD_colors
+    cluster_levels <- names(SpD_colors)
+}
+
+cluster_levels <- cluster_levels[cluster_levels != "Other"]
 
 #### load DE data ####
 DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
@@ -163,8 +182,8 @@ liana_data_summary <- liana_data |>
     summarise(n_pass_magnitude_rank = sum(magnitude_rank < 0.05),
               n_pass_specificity_rank = sum(specificity_rank < 0.05, na.rm = TRUE),
               n_test = n()) |>
-    mutate(source = factor(source, levels = names(cell_type_colors$anno)),
-           target = factor(target, levels = names(cell_type_colors$anno))) |>
+    mutate(source = factor(source, levels = cluster_levels),
+           target = factor(target, levels = cluster_levels)) |>
     left_join(bivariate_data_summary |> select(ligand_complex = ligand, receptor_complex = receptor, mean_mean, mean_rank))
 
 summary(liana_data_summary)
@@ -175,16 +194,19 @@ liana_data_summary |> ungroup() |> count(n_pass_specificity_rank, n_pass_magnitu
 liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(source, target) |> arrange(-n)
 liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(ligand_complex, receptor_complex) |> arrange(-n)
 
-liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> count(source, target) |> arrange(-n)
-liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3") |> count(source, target) |> arrange(-n)
-
-## Oligo.3 <-> astro
-liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
-liana_data_summary |> filter(grepl("Astro", source), target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
-
-liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")
-
-
+if(opt$datatype == "sn_fine"){
+    
+    liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> count(source, target) |> arrange(-n)
+    liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3") |> count(source, target) |> arrange(-n)
+    
+    ## Oligo.3 <-> astro
+    liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
+    liana_data_summary |> filter(grepl("Astro", source), target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
+    
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")
+    
+    }
+   
 liana_data_summary |> filter(n_pass_magnitude_rank >= 20, ligand_complex == "NLGN1", receptor_complex == "NRXN1")
 
 liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(source)
@@ -201,17 +223,13 @@ liana_data_summary |> ungroup() |>
     ggplot(aes(x = n_pass_magnitude_rank, n_pass_specificity_rank, fill = n)) +
     geom_tile()
 
-liana_data_summary |> 
-    ggplot(aes(x = n_pass_magnitude_rank, y= n_pass_specificity_rank)) +
-    geom_point()
-
 n_pass_magnitude_rank_histo <- liana_data_summary |> 
     filter(n_pass_magnitude_rank > 0) |>
     ggplot(aes(x = n_pass_magnitude_rank)) +
     geom_histogram(binwidth = 1) +
     theme_bw()
 
-ggsave(n_pass_magnitude_rank_histo, filename = here(plot_dir, "n_pass_magnitude_rank_histo.png"))
+ggsave(n_pass_magnitude_rank_histo, filename = here(plot_dir, sprintf("n_pass_magnitude_rank_histo_%s.png", opt$datatype)))
 
 # liana_data_summary |> 
 #     filter(n_pass_magnitude_rank > 0) |>
@@ -236,7 +254,7 @@ LR_count_tile <- source_target_counts |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(LR_count_tile, filename = here(plot_dir, "LR_count_tile.png"), height = 6, width = 7)
+ggsave(LR_count_tile, filename = here(plot_dir, sprintf("LR_count_tile_%s.png", opt$datatype)), height = 6, width = 7)
 
 LR_p_source_tile <- source_target_counts |>
     ggplot(aes(x = target, y = source, fill = p_source)) +
@@ -245,7 +263,7 @@ LR_p_source_tile <- source_target_counts |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(LR_p_source_tile, filename = here(plot_dir, "LR_p_source_tile.png"), height = 6, width = 7)
+ggsave(LR_p_source_tile, filename = here(plot_dir, sprintf("LR_p_source_tile_%s.png", opt$datatype)), height = 6, width = 7)
 
 LR_p_target_tile <- source_target_counts |>
     ggplot(aes(x = target, y = source, fill = p_target)) +
@@ -254,7 +272,7 @@ LR_p_target_tile <- source_target_counts |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(LR_p_target_tile, filename = here(plot_dir, "LR_p_target_tile.png"), height = 6, width = 7)
+ggsave(LR_p_target_tile, filename = here(plot_dir, sprintf("LR_p_target_tile_%s.png", opt$datatype)), height = 6, width = 7)
 
 ## LR mean_mean
 LR_bivaraite_rank_magnitude_pass_histo <- liana_data_summary |>
@@ -263,29 +281,55 @@ LR_bivaraite_rank_magnitude_pass_histo <- liana_data_summary |>
     geom_histogram(binwidth = 0.02) +
     theme_bw()
 
-ggsave(LR_bivaraite_rank_magnitude_pass_histo, filename = here(plot_dir, "LR_bivaraite_rank_magnitude_pass_histo.png"), height = 6, width = 7)
+ggsave(LR_bivaraite_rank_magnitude_pass_histo, filename = here(plot_dir, sprintf("LR_bivaraite_rank_magnitude_pass_histo_%s.png", opt$datatype)), height = 6, width = 7)
 
-## Oligo.3 senders and targets 
-
-source_target_counts |>
-    filter(source == "Oligo.3") |> 
-    arrange(-n)
-
-LR_count_bar_Oligo.3 <- source_target_counts |>
-    filter(source == "Oligo.3" | target == "Oligo.3") |>
-    mutate(st = paste(source, target)) |>
-    select(st, source, target, n) |>
-    pivot_longer(!c(n, st), names_to = "class", values_to = "cell_type") |>
-    ggplot(aes(x = cell_type, y = n, fill = cell_type)) +
-    geom_col() +
-    scale_fill_manual(values = cell_type_colors$anno) +
-    facet_wrap(~class, ncol = 1) +
-    theme_bw() +
-    labs(y="n LR pairs with Oligo.3") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
-          legend.position = "None")
+if(opt$datatype == "sn_fine"){
+    ## Oligo.3 senders and targets 
     
-ggsave(LR_count_bar_Oligo.3, filename = here(plot_dir, "LR_count_bar_Oligo.3.png"), height = 4, width = 6)
+    source_target_counts |>
+        filter(source == "Oligo.3") |> 
+        arrange(-n)
+    
+    LR_count_bar_Oligo.3 <- source_target_counts |>
+        filter(source == "Oligo.3" | target == "Oligo.3") |>
+        mutate(st = paste(source, target)) |>
+        select(st, source, target, n) |>
+        pivot_longer(!c(n, st), names_to = "class", values_to = "cell_type") |>
+        ggplot(aes(x = cell_type, y = n, fill = cell_type)) +
+        geom_col() +
+        scale_fill_manual(values = cell_type_colors$anno) +
+        facet_wrap(~class, ncol = 1) +
+        theme_bw() +
+        labs(y="n LR pairs with Oligo.3") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+              legend.position = "None")
+    
+    ggsave(LR_count_bar_Oligo.3, filename = here(plot_dir, "LR_count_bar_Oligo.3.png"), height = 4, width = 6)
+    
+}else if(opt$datatype == "sn_broad"){
+    ## Oligo.3 senders and targets 
+    
+    source_target_counts |>
+        filter(source == "Oligo") |> 
+        arrange(-n)
+    
+    LR_count_bar_Oligo <- source_target_counts |>
+        filter(source == "Oligo" | target == "Oligo") |>
+        mutate(st = paste(source, target)) |>
+        select(st, source, target, n) |>
+        pivot_longer(!c(n, st), names_to = "class", values_to = "cell_type") |>
+        ggplot(aes(x = cell_type, y = n, fill = cell_type)) +
+        geom_col() +
+        scale_fill_manual(values = cluster_colors) +
+        facet_wrap(~class, ncol = 1) +
+        theme_bw() +
+        labs(y="n LR pairs with Oligo") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+              legend.position = "None")
+    
+    ggsave(LR_count_bar_Oligo, filename = here(plot_dir, "LR_count_bar_Oligo.png"), height = 4, width = 6)
+    
+}
 
 
 #### DEG intersect ####
@@ -301,113 +345,123 @@ LR_DEGS |> filter(is.na(R_DEG)) |> select(source, target, ligand_complex, recept
 
 LR_DEGS |> ungroup() |> count(L_DEG, R_DEG)
 
-LR_DEGS |> ungroup() |> filter(L_DEG) |>  count(source)
-LR_DEGS |> ungroup() |> filter(R_DEG) |>  count(target)
-
-LR_DEGS |> 
-    ungroup() |> 
-    filter(ligand_complex == "NRXN1",
-           receptor_complex == "NLGN1") |> 
-    filter(target == "Oligo.3") |>
-    select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG, mean_mean)
-
-## log FC heatmap
-
-ligand_degs <- LR_DEGS |> ungroup() |> filter(L_DEG) |> pull(ligand_complex) |> unique()
-receptor_of_ligand_degs <- LR_DEGS |> ungroup() |> filter(L_DEG) |> pull(receptor_complex) |> unique()
-
-receptor_degs <- LR_DEGS |> ungroup() |> filter(R_DEG) |> pull(receptor_complex) |> unique()
-
-LR_deg_list <- unique(c())
-
-source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
-
-cluster_levels = names(cell_type_colors$anno)
-
-logFC_Heatmap(data = DE_data, gene_list = ligand_degs, datatype = "sn_fine", save = FALSE, flip = TRUE)
-logFC_Heatmap(data = DE_data, gene_list = receptor_of_ligand_degs, datatype = "sn_fine", save = FALSE, flip = TRUE)
-
-
-LR_DEGS_plot_data <- LR_DEGS |>
-    filter(L_DEG | R_DEG) |>
-    ungroup() |>
-    mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
-    select(interaction, source, target) |>
-    pivot_longer(!c(interaction), names_to = "class", values_to = "cell_type") |>
-    mutate(class = case_when(class == "target" ~ "Receptor",
-                             class == "source" ~ "Ligand",
-                             TRUE ~ NA
-    )) |>
-    unique()
-
-LR_DEGS_plot_data2 <- LR_DEGS |>
-    filter(L_DEG | R_DEG) |>
-    ungroup() |>
-    mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
-    select(interaction, mean_mean, receptor_complex, ligand_complex) |>
-    pivot_longer(!c(interaction, mean_mean), names_to = "class", values_to = "gene_name") |>
-    mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
-                             class == "ligand_complex" ~ "Ligand",
-                             TRUE ~ NA
-                             )) |>
-    unique()
-
-
-LR_DEGS_plot_data3 <- LR_DEGS_plot_data |>
-    left_join(LR_DEGS_plot_data2) |>
-    left_join(DE_data |> 
-                  select(cell_type = cluster, gene_name, vlmf_t, vlmf_adj.P.Val, vlmf_logFC)) |>
-    replace_na(list(mean_mean = 0)) |>
-    mutate(interaction = fct_reorder(interaction, mean_mean),
-           signif = case_when(vlmf_adj.P.Val < 0.005 ~ "***",
-                              vlmf_adj.P.Val < 0.01 ~"**",
-                              vlmf_adj.P.Val < 0.05 ~"*",
-                              TRUE~"")
-           )
-
-LR_DEGS_plot_data3 |> count(interaction)
-
-max_abs = max(abs(LR_DEGS_plot_data3$vlmf_logFC))
-
-
-LR_DEGS_plot <- LR_DEGS_plot_data3 |>
-    ggplot(aes(x = cell_type, y = interaction, fill = vlmf_logFC)) +
-    facet_wrap(~class) +
-    geom_tile(color = "black") +
-    geom_text(aes(label = signif)) +
-    scale_fill_gradient2(high = APOE_carrier_colors[["E4+"]], low = APOE_carrier_colors[["E2+"]])  +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
-
-ggsave(LR_DEGS_plot, filename = here(plot_dir, "LR_DEGS.png"), width = 8, height = 6)
-
-
-LR_DEGS_plot_ct <- LR_DEGS_plot_data3 |>
-    ggplot(aes(x = cell_type, y = interaction, fill = cell_type)) +
-    facet_wrap(~class) +
-    geom_tile(color = "black") +
-    geom_text(aes(label = signif)) +
-    scale_fill_manual(values = cell_type_colors$anno) +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
-
-ggsave(LR_DEGS_plot_ct, filename = here(plot_dir, "LR_DEGS_ct.png"), width = 8, height = 6)
-
-
-LR_DEGS_plot_data3 |>
-    group_by(interaction) |>
-    slice(1)|>
-    arrange(mean_mean)
+if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
+    
+    LR_DEGS |> ungroup() |> filter(L_DEG) |>  count(source)
+    LR_DEGS |> ungroup() |> filter(R_DEG) |>  count(target)
+    
+    LR_DEGS |> 
+        ungroup() |> 
+        filter(ligand_complex == "NRXN1",
+               receptor_complex == "NLGN1") |> 
+        # filter(target == "Oligo.3") |>
+        select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG, mean_mean)
+    
+    ## log FC heatmap
+    
+    ligand_degs <- LR_DEGS |> ungroup() |> filter(L_DEG) |> pull(ligand_complex) |> unique()
+    receptor_of_ligand_degs <- LR_DEGS |> ungroup() |> filter(L_DEG) |> pull(receptor_complex) |> unique()
+    
+    receptor_degs <- LR_DEGS |> ungroup() |> filter(R_DEG) |> pull(receptor_complex) |> unique()
+    
+    source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
+    
+    cluster_levels = names(cell_type_colors$anno)
+    
+    LR_DEGS_plot_data <- LR_DEGS |>
+        filter(L_DEG | R_DEG) |>
+        ungroup() |>
+        mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
+        select(interaction, source, target) |>
+        pivot_longer(!c(interaction), names_to = "class", values_to = "cell_type") |>
+        mutate(class = case_when(class == "target" ~ "Receptor",
+                                 class == "source" ~ "Ligand",
+                                 TRUE ~ NA
+        )) |>
+        unique()
+    
+    LR_DEGS_plot_data2 <- LR_DEGS |>
+        filter(L_DEG | R_DEG) |>
+        ungroup() |>
+        mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
+        select(interaction, mean_mean, receptor_complex, ligand_complex) |>
+        pivot_longer(!c(interaction, mean_mean), names_to = "class", values_to = "gene_name") |>
+        mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
+                                 class == "ligand_complex" ~ "Ligand",
+                                 TRUE ~ NA
+        )) |>
+        unique()
     
     
-LR_DEGS_mean_mean <- LR_DEGS_plot_data3 |>
-    group_by(interaction) |>
-    slice(1)|>
-    ggplot(aes(x = mean_mean, y = interaction)) +
-    geom_col() +
-    theme_bw()
+    LR_DEGS_plot_data3 <- LR_DEGS_plot_data |>
+        left_join(LR_DEGS_plot_data2) |>
+        left_join(DE_data |> 
+                      select(cell_type = cluster, gene_name, vlmf_t, vlmf_adj.P.Val, vlmf_logFC)) |>
+        replace_na(list(mean_mean = 0)) |>
+        mutate(interaction = fct_reorder(interaction, mean_mean),
+               signif = case_when(vlmf_adj.P.Val < 0.005 ~ "***",
+                                  vlmf_adj.P.Val < 0.01 ~"**",
+                                  vlmf_adj.P.Val < 0.05 ~"*",
+                                  TRUE~"")
+        )
+    
+    LR_DEGS_plot_data3 |> count(interaction)
+    
+    max_abs = max(abs(LR_DEGS_plot_data3$vlmf_logFC))
+    
+    
+    LR_DEGS_plot <- LR_DEGS_plot_data3 |>
+        ggplot(aes(x = cell_type, y = interaction, fill = vlmf_logFC)) +
+        facet_wrap(~class) +
+        geom_tile(color = "black") +
+        geom_text(aes(label = signif)) +
+        scale_fill_gradient2(high = APOE_carrier_colors[["E4+"]], low = APOE_carrier_colors[["E2+"]])  +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+    
+    ggsave(LR_DEGS_plot, filename = here(plot_dir, sprintf("LR_DEGS_%s.png", opt$datatype), width = 8, height = 6))
+    
+    
+    LR_DEGS_plot_ct <- LR_DEGS_plot_data3 |>
+        ggplot(aes(x = cell_type, y = interaction, fill = cell_type)) +
+        facet_wrap(~class) +
+        geom_tile(color = "black") +
+        geom_text(aes(label = signif)) +
+        scale_fill_manual(values = cluster_colors) +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+    
+    ggsave(LR_DEGS_plot_ct, filename = here(plot_dir, sprintf("LR_DEGS_ct.png", opt$datatype)), width = 8, height = 6)
+    
+    
+    LR_DEGS_plot_data3 |>
+        group_by(interaction) |>
+        slice(1)|>
+        arrange(mean_mean)
+    
+    
+    LR_DEGS_mean_mean <- LR_DEGS_plot_data3 |>
+        group_by(interaction) |>
+        slice(1)|>
+        ggplot(aes(x = mean_mean, y = interaction)) +
+        geom_col() +
+        theme_bw()
+    
+    ggsave(LR_DEGS_mean_mean, filename = here(plot_dir, sprintf("LR_DEGS_mean_mean_%s.png", opt$datatype)), width = 3, height = 6)
+    
+}
 
-ggsave(LR_DEGS_mean_mean, filename = here(plot_dir, "LR_DEGS_mean_mean.png"), width = 3, height = 6)
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
+#                     create_shell = TRUE,
+#                     name = "10_GO_analysis_contrast",
+#                     create_script = FALSE)
 
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
 
