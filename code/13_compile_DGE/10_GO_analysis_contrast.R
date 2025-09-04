@@ -95,10 +95,65 @@ DE_entrez |> count(cluster, contrast)
 DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
 DE_entrez |> filter(DE_class != "None") |> arrange(DE_class_cluster) |> select(gene_name, DE_class_cluster, cluster)
 
+
+## genes in reverse direction
+
+pval_contrast <- paste0("vlmf_P.Value_", contrast_levels)
+pval_adj_contrast <- paste0("vlmf_adj.P.Val_", contrast_levels)
+lfc_contrast <- paste0("vlmf_logFC_", contrast_levels)
+
+DE_entrez_op <- DE_data |>
+    select(gene_id, gene_name, cluster, contrast, vlmf_logFC, vlmf_P.Value, vlmf_adj.P.Val) |>
+    mutate(contrast = gsub("carrier_", "", contrast)) |>
+    pivot_wider(names_from = "contrast", values_from = c("vlmf_logFC", "vlmf_P.Value", "vlmf_adj.P.Val")) |>
+    mutate(DE_class = case_when(!!sym(lfc_contrast[[1]]) > 0 & ## up F or AA
+                                    !!sym(pval_contrast[[1]]) < 0.10 & 
+                                    !!sym(lfc_contrast[[2]]) < 0 & 
+                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_up%s_Down%s", contrast_levels[[1]], contrast_levels[[2]]),
+                                !!sym(lfc_contrast[[1]]) > 0 & ## both UP
+                                    !!sym(pval_contrast[[1]]) < 0.10 & 
+                                    !!sym(lfc_contrast[[2]]) > 0 & 
+                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_up%s_Up%s", contrast_levels[[1]], contrast_levels[[2]]),
+                                !!sym(lfc_contrast[[1]]) < 0 & ## down F or EA
+                                    !!sym(pval_contrast[[1]]) < 0.10 & 
+                                    !!sym(lfc_contrast[[2]]) > 0 & 
+                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_down%s_Up%s", contrast_levels[[1]], contrast_levels[[2]]),
+                                !!sym(lfc_contrast[[1]]) < 0 & ## both Down
+                                    !!sym(pval_contrast[[1]]) < 0.10 & 
+                                    !!sym(lfc_contrast[[2]]) < 0 & 
+                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_down%s_Down%s", contrast_levels[[1]], contrast_levels[[2]]),
+                                TRUE ~ "None"),
+           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class)) |>
+    left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many")
+
+
+DE_entrez_op |> count(DE_class)
+
+DE_entrez_op |> filter(DE_class != "None") |> count(cluster, DE_class_cluster)
+
+DE_opp_tile <-  DE_entrez_op |>
+    count(cluster, DE_class) |>
+    ggplot(aes(x = DE_class, y = cluster, fill = n)) +
+    geom_tile() +
+    geom_text(aes(label = n, color = DE_class)) +
+    theme_bw()
+
+ggsave(DE_opp_tile, filename = here(plot_dir, "DEG_opposite_contrast_tile.png"))
+
+DE_entrez_op |> filter(DE_class != "None")
+
 # DE_entrez |> filter(gene_name == "FOXO3") |> select(gene_name, contrast, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC) |> arrange(vlmf_adj.P.Val)
 
 # DE_clusters <- DE_entrez |> filter(DE_class != "None") |> pull(cluster) |> unique()
 # names(DE_clusters) <- DE_clusters
+
+DE_entrez2 <- DE_entrez |>
+    select(ENTREZID, gene_id, gene_name, cluster, contrast, DE_class, DE_class_cluster) |>
+    bind_rows(DE_entrez_op) |>
+    filter(DE_class != "None")
+
+DE_entrez2 |> count(DE_class, is.na(ENTREZID))
+DE_entrez2 |> count(DE_class_cluster) |> print(n=50)
 
 #### Run GO ####
 universe <- unique(DE_entrez$ENTREZID)
@@ -108,7 +163,7 @@ ont_list <- c("CC","BP","MF")
 names(ont_list) <- ont_list
 
 go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
-                                      data = DE_entrez |> filter(DE_class != "None"), 
+                                      data = DE_entrez2, 
                                       OrgDb = org.Hs.eg.db,
                                       fun = enrichGO,
                                       universe = universe,
@@ -124,7 +179,8 @@ saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s_%s.rds", opt$cont
 # go_result <- readRDS(here(data_dir, sprintf("GO_result_%s_%s.rds", opt$contrast, opt$datatype)))
 
 # convert to table
-compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
+compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y)) |>
+    mutate(op = grepl("0", Cluster))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
 # Save 
@@ -140,29 +196,71 @@ write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s_%s.csv", op
 # compare_clus |> filter(DE_class_cluster == "Vasc_EA_up")
 
 #### dot plots ####
-
 pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
-walk2(go_result, names(go_result), 
-      ~print(
-          dotplot(.x, 
-                  x = "DE_class_cluster", 
-                  showCategory = 3, 
-                  label_format = 60)  +
-              ggtitle(paste("GO Enrichment:", .y)) +
-              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-      )
-)
+walk2(go_result, names(go_result), function(gr, ont){
+    
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster))
+    
+    print(
+        dotplot(gr, 
+                x = "DE_class_cluster", 
+                showCategory = 5, 
+                label_format = 60)  +
+            ggtitle(paste("GO Enrichment:", ont)) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+    
+})
 dev.off()
 
-## by cell type
+## plot terms w/ 5+ genes
+compare_clus |> filter(Count >= 5) |> count(DE_class_cluster)
+
+pdf(file = here(plot_dir, sprintf("GO_dotplot_5plus_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), function(gr, ont){
+    
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 5)
+    
+    print(
+        dotplot(gr, 
+                x = "DE_class_cluster", 
+                showCategory = 5, 
+                label_format = 60)  +
+            ggtitle(paste("GO Enrichment:", ont, "5+ genes")) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+    
+})
+dev.off()
+
+## opposite DEGs
+pdf(file = here(plot_dir, sprintf("GO_dotplot_opposite_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), function(gr, ont){
+    
+    gr@compareClusterResult <- gr@compareClusterResult |> 
+        filter(grepl("0", DE_class_cluster), Count >= 2) |>
+        mutate(DE_class_cluster = gsub("_0_", ": ", DE_class_cluster))
+    
+    print(
+        dotplot(gr, 
+                x = "DE_class_cluster", 
+                showCategory = 5, 
+                label_format = 60)  +
+            ggtitle(paste("GO Enrichment:", ont, "opposite, 2+ genes")) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+    
+})
+dev.off()
+
+#### sn fine data - by cell type ####
 if(opt$datatype == "sn_fine"){
-    
-    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_cell_type.pdf", opt$datatype)), width = 8, height = 8)
-    
+  
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s_cell_type.pdf" , opt$contrast, opt$datatype)), width = 8, height = 10)
     ct_dot_plots <- map(broad_cell_types, function(ct){
         go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
             # subset
-            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster))
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster) & !grepl("0", Cluster))
             
             # dotplot
             print(dotplot(gr,
@@ -170,6 +268,47 @@ if(opt$datatype == "sn_fine"){
                           showCategory = 5,
                           label_format = 60)  +
                       ggtitle(sprintf("GO Enrichment: %s - %s", ont, ct)) +
+                      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )
+        })
+    })
+    dev.off()
+       
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_opposite_%s_%s_cell_type.pdf" , opt$contrast, opt$datatype)), width = 8, height = 10)
+    ct_dot_plots <- map(broad_cell_types, function(ct){
+        go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster) & grepl("0", Cluster))
+            
+            if(nrow(gr@compareClusterResult) == 0) return(NULL)
+            
+            # dotplot
+            print(dotplot(gr,
+                          x = "DE_class_cluster",
+                          showCategory = 5,
+                          label_format = 60)  +
+                      ggtitle(sprintf("GO Enrichment: Opposite %s - %s", ont, ct)) +
+                      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )
+        })
+    })
+    dev.off()
+    
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_5_plus_%s_%s_cell_type.pdf", opt$contrast, opt$datatype)), width = 8, height = 8)
+    ct_dot_plots <- map(broad_cell_types, function(ct){
+        go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster), Count >= 5)
+            
+            if(nrow(gr@compareClusterResult) == 0) return(NULL)
+            
+            # dotplot
+            print(dotplot(gr,
+                          x = "DE_class_cluster",
+                          showCategory = 5,
+                          label_format = 60)  +
+                      ggtitle(sprintf("GO Enrichment: %s - %s, 5+ genes", ont, ct)) +
                       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
             )
         })
@@ -184,21 +323,41 @@ if(opt$datatype == "sn_fine"){
     map(go_result_Oligo3, ~.x@compareClusterResult |> count(Cluster))
     
     pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s_Oligo.3.pdf", opt$contrast, opt$datatype)), width = 8, height = 8)
-    walk2(go_result_Oligo3, names(go_result_Oligo3), 
-          ~print(
-              dotplot(.x, 
-                      x = "DE_class_cluster", 
-                      showCategory = 5, 
-                      label_format = 60)  +
-                  ggtitle(paste("GO Enrichment:", .y)) +
-                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-          )
+    walk2(go_result_Oligo3, names(go_result_Oligo3), function(gr, ont){
+        print(
+            dotplot(gr, 
+                    x = "DE_class_cluster", 
+                    showCategory = 5, 
+                    label_format = 60)  +
+                ggtitle(paste("GO Enrichment:", ont)) +
+                theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+        )
+    }
+    )
+    dev.off()   
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_5plus_%s_%s_Oligo.3.pdf", opt$contrast, opt$datatype)), width = 8, height = 8)
+    walk2(go_result_Oligo3, names(go_result_Oligo3), function(gr, ont){
+        
+        gr@compareClusterResult <- gr@compareClusterResult |> filter(Count >= 5)
+        
+        print(
+            dotplot(gr, 
+                    x = "DE_class_cluster", 
+                    showCategory = 5, 
+                    label_format = 60)  +
+                ggtitle(paste("GO Enrichment:", ont)) +
+                theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+        )
+            }
     )
     dev.off()
-
+    
 }
 
 #### rrvgo ####
+
+compare_clus |> count(Cluster, is.na(qvalue), qvalue < 0.05, Count == 1)
 
 reducedTerms_list <- map(ont_list, function(o){
     ## loop ontologies
@@ -214,7 +373,9 @@ reducedTerms_list <- map(ont_list, function(o){
         ## calc similarity scores
         go_analysis_c <- go_analysis |>
             filter(Cluster == clus,
-                   !is.na(qvalue)) ## why are some NA?
+                   !is.na(qvalue), ## Sometimes qvalue NA when only 1 gene
+                   qvalue < 0.05
+                   ) 
         
         if(nrow(go_analysis_c) == 0) return(NULL)
         
@@ -249,6 +410,8 @@ reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
 
 ## rm empty results
 reducedTerms_list2 <- reducedTerms_list2[map_lgl(reducedTerms_list2, function(rt) !all(map_lgl(rt, ~all(is.null(.x)))))]
+
+# map_depth(reducedTerms_list2, 2, ~.x |> dplyr::count(parentTerm))
 
 ##  treemap plots
 pdf(here(plot_dir, sprintf("GO_treemap_%s_%s.pdf", opt$contrast, opt$datatype)))
@@ -482,7 +645,6 @@ if(opt$datatype == "Visium"){
         
     }
 }
-
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
 #                                  contrast = c("ancestry", "Sex")),

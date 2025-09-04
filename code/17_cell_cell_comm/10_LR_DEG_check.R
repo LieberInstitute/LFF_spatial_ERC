@@ -31,6 +31,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 load(here("processed-data", "project_colors.Rdata"))
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 if(opt$datatype == "sn_broad"){
     cluster_colors <- cell_type_colors$broad
@@ -43,7 +44,7 @@ if(opt$datatype == "sn_broad"){
     broad_cell_types <- broad_cell_types[broad_cell_types != "Other"]
     
 }else if(opt$datatype == "Visium"){
-    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+
     cluster_colors <- SpD_colors
     cluster_levels <- names(SpD_colors)
 }
@@ -93,7 +94,7 @@ LR_top_pairs_long |> left_join(DE_data_signif)
 # 12 PSAP^SORT1  L     PSAP      NA       NA           NA          NA    
 # 13 PSAP^SORT1  R     SORT1     NA       NA           NA          NA   
 
-#### bivariate data ####
+#### sample level bivariate data ####
 bivariate_data <- fread(here("processed-data","17_cell_cell_comm","liana","bivariate_stats.csv.gz"))
 
 bivariate_data |> filter(ligand == "ADGRB1", receptor == "RTN4R")
@@ -151,7 +152,32 @@ bivariate_data_summary |> arrange(-mean_mean)
 
 # top-expressed and highest-spatial-association LR pairs
 
-#### load LR data ####
+
+#### Spot level bivaritate data ####
+bivariate_spot_data <- fread(here("processed-data", "17_cell_cell_comm", "liana", "bivariate_stats_spot.csv.gz"))
+
+dim(bivariate_spot_data)
+
+bivariate_spot_data |> 
+    group_by(pair_id) |>
+    count()
+
+bivariate_SpD_data <- bivariate_spot_data |>
+    group_by(pair_id, SpD) |>
+    summarise(mean_score = mean(local_score),
+              n = n())
+
+
+bivaraite_SpD_score_histo <- bivariate_SpD_data |>
+    ggplot(aes(x = mean_score)) +
+    geom_histogram(binwidth = 0.01) +
+    facet_wrap(~SpD) +
+    theme_bw()
+
+ggsave(bivaraite_SpD_score_histo, filename = here(plot_dir, "bivariate_SpD_score_histogram.png"))
+
+
+#### load & Summarize LR data ####
 #pre MFA non-spatially aware data
 liana_fn <- here("processed-data", "17_cell_cell_comm", "liana", "ranked_results", sprintf("%s.csv.gz", tolower(gsub("sn_", "", opt$datatype))))
 file.exists(liana_fn)
@@ -371,19 +397,24 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
     LR_DEGS_plot_data <- LR_DEGS |>
         filter(L_DEG | R_DEG) |>
         ungroup() |>
-        mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
-        select(interaction, source, target) |>
-        pivot_longer(!c(interaction), names_to = "class", values_to = "cell_type") |>
+        mutate(interaction = paste(ligand_complex, "->", receptor_complex),
+               DEG = case_when(L_DEG ~ "L_DEG",
+                               R_DEG ~ "R_DEG",
+                               TRUE ~ "Other")) |>
+        select(DEG, interaction, source, target) |>
+        pivot_longer(!c(DEG, interaction), names_to = "class", values_to = "cell_type") |>
         mutate(class = case_when(class == "target" ~ "Receptor",
                                  class == "source" ~ "Ligand",
                                  TRUE ~ NA
         )) |>
         unique()
     
+    LR_DEGS_plot_data |> count(DEG)
+    
     LR_DEGS_plot_data2 <- LR_DEGS |>
         filter(L_DEG | R_DEG) |>
         ungroup() |>
-        mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
+        mutate(interaction = paste(ligand_complex, "->", receptor_complex),) |>
         select(interaction, mean_mean, receptor_complex, ligand_complex) |>
         pivot_longer(!c(interaction, mean_mean), names_to = "class", values_to = "gene_name") |>
         mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
@@ -405,33 +436,33 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
                                   TRUE~"")
         )
     
-    LR_DEGS_plot_data3 |> count(interaction)
+    LR_DEGS_plot_data3 |> count(DEG, interaction)
     
     max_abs = max(abs(LR_DEGS_plot_data3$vlmf_logFC))
     
     
     LR_DEGS_plot <- LR_DEGS_plot_data3 |>
         ggplot(aes(x = cell_type, y = interaction, fill = vlmf_logFC)) +
-        facet_wrap(~class) +
+        facet_grid(DEG~class, scales = "free", space = "free") +
         geom_tile(color = "black") +
         geom_text(aes(label = signif)) +
         scale_fill_gradient2(high = APOE_carrier_colors[["E4+"]], low = APOE_carrier_colors[["E2+"]])  +
         theme_bw() +
         theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
     
-    ggsave(LR_DEGS_plot, filename = here(plot_dir, sprintf("LR_DEGS_%s.png", opt$datatype), width = 8, height = 6))
+    ggsave(LR_DEGS_plot, filename = here(plot_dir, sprintf("LR_DEGS_%s.png", opt$datatype)), width = 8, height = 6)
     
     
     LR_DEGS_plot_ct <- LR_DEGS_plot_data3 |>
         ggplot(aes(x = cell_type, y = interaction, fill = cell_type)) +
-        facet_wrap(~class) +
+        facet_grid(DEG~class, scales = "free", space = "free") +
         geom_tile(color = "black") +
         geom_text(aes(label = signif)) +
         scale_fill_manual(values = cluster_colors) +
         theme_bw() +
         theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
     
-    ggsave(LR_DEGS_plot_ct, filename = here(plot_dir, sprintf("LR_DEGS_ct.png", opt$datatype)), width = 8, height = 6)
+    ggsave(LR_DEGS_plot_ct, filename = here(plot_dir, sprintf("LR_DEGS_ct_%s.png", opt$datatype)), width = 8, height = 6)
     
     
     LR_DEGS_plot_data3 |>
@@ -450,6 +481,138 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
     ggsave(LR_DEGS_mean_mean, filename = here(plot_dir, sprintf("LR_DEGS_mean_mean_%s.png", opt$datatype)), width = 3, height = 6)
     
 }
+
+#### Bivaraite DEG data ####
+
+LR_DEGS_SpD_bar <- bivariate_SpD_data |>
+    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
+    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
+    ggplot(aes(y = interaction, x = mean_score, fill = SpD)) +
+    geom_col(position = "dodge") +
+    theme_bw()
+
+ggsave(LR_DEGS_SpD_bar, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_bar.png"))
+
+LR_DEGS_SpD_tile<- bivariate_SpD_data |>
+    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
+    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
+    ggplot(aes(y = interaction, x = SpD, fill = mean_score)) +
+    geom_tile() +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+
+ggsave(LR_DEGS_SpD_tile, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_tile.png"))
+
+
+#### AD Risk Genes ####
+
+AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
+
+## no commonly observed APOE LS-RTs
+liana_data_summary |> 
+    filter((ligand_complex  == "APOE" | receptor_complex == "APOE")) |>
+    arrange(-n_pass_magnitude_rank)
+
+LR_risk <- liana_data_summary |> 
+    filter(n_pass_magnitude_rank > 20 & (ligand_complex %in% AD_risk$symbol | receptor_complex %in% AD_risk$symbol)) |>
+    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC))|>
+    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC)) |>
+    mutate(L_DEG = ligand_adj.P.Val < 0.05,
+           R_DEG = receptor_adj.P.Val < 0.05,
+           L_risk = ligand_complex %in% AD_risk$symbol ,
+           R_risk = receptor_complex %in% AD_risk$symbol,
+           interaction = paste(ligand_complex, "->", receptor_complex)) |>
+    ungroup()
+
+## no LR both risk pairs
+LR_risk |> count(L_risk, R_risk)
+
+LR_risk_plot_data <- LR_risk |>
+    mutate(Risk = case_when(L_risk ~ "L_risk",
+                           R_risk ~ "R_risk",
+                           TRUE ~ "Other")) |>
+    select(Risk, interaction, source, target) |>
+    pivot_longer(!c(Risk, interaction), names_to = "class", values_to = "cell_type") |>
+    mutate(class = case_when(class == "target" ~ "Receptor",
+                             class == "source" ~ "Ligand",
+                             TRUE ~ NA
+    )) |>
+    unique()
+
+LR_risk_plot_data |> count(Risk, cell_type)
+
+LR_risk_plot_data2 <- LR_risk |>
+    select(interaction, mean_mean, receptor_complex, ligand_complex) |>
+    pivot_longer(!c(interaction, mean_mean), names_to = "class", values_to = "gene_name") |>
+    mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
+                             class == "ligand_complex" ~ "Ligand",
+                             TRUE ~ NA
+    )) |>
+    unique()
+
+
+LR_risk_plot_data3 <- LR_risk_plot_data |>
+    left_join(LR_risk_plot_data2) |>
+    left_join(DE_data |> 
+                  select(cell_type = cluster, gene_name, vlmf_t, vlmf_adj.P.Val, vlmf_logFC)) |>
+    replace_na(list(mean_mean = 0)) |>
+    mutate(interaction = fct_reorder(interaction, mean_mean),
+           signif = case_when(vlmf_adj.P.Val < 0.005 ~ "***",
+                              vlmf_adj.P.Val < 0.01 ~"**",
+                              vlmf_adj.P.Val < 0.05 ~"*",
+                              TRUE~"")
+    )
+
+LR_risk_plot_data3 |> count(Risk, interaction)
+
+max_abs = max(abs(LR_risk_plot_data3$vlmf_logFC))
+
+
+LR_risk_plot <- LR_risk_plot_data3 |>
+    ggplot(aes(x = cell_type, y = interaction, fill = vlmf_logFC)) +
+    facet_grid(Risk~class, scales = "free", space = "free") +
+    geom_tile(color = "black") +
+    geom_text(aes(label = signif)) +
+    scale_fill_gradient2(high = APOE_carrier_colors[["E4+"]], low = APOE_carrier_colors[["E2+"]])  +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "bottom") 
+
+ggsave(LR_risk_plot, filename = here(plot_dir, sprintf("LR_risk_%s.png", opt$datatype)), width = 10, height = 6)
+
+
+LR_risk_plot_ct <- LR_risk_plot_data3 |>
+    ggplot(aes(x = cell_type, y = interaction, fill = cell_type)) +
+    facet_grid(Risk~class, scales = "free", space = "free") +
+    geom_tile(color = "black") +
+    geom_text(aes(label = signif)) +
+    scale_fill_manual(values = cluster_colors) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None") 
+
+ggsave(LR_risk_plot_ct, filename = here(plot_dir, sprintf("LR_risk_ct_%s.png", opt$datatype)), width = 10, height = 6)
+
+#### Bivaraite DEG data ####
+
+LR_DEGS_SpD_bar <- bivariate_SpD_data |>
+    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
+    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
+    ggplot(aes(y = interaction, x = mean_score, fill = SpD)) +
+    geom_col(position = "dodge") +
+    theme_bw()
+
+ggsave(LR_DEGS_SpD_bar, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_bar.png"))
+
+LR_DEGS_SpD_tile<- bivariate_SpD_data |>
+    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
+    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
+    ggplot(aes(y = interaction, x = SpD, fill = mean_score)) +
+    geom_tile() +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+
+ggsave(LR_DEGS_SpD_tile, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_tile.png"))
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
 #                     create_shell = TRUE,
