@@ -20,10 +20,10 @@ scec <- matrix(
 opt <- getopt(scec)
 
 ## test
-# opt$datatype = "sn_broad"
 # opt$contrast = "ancestry"
 # opt$contrast = "Sex"
 
+# opt$datatype = "sn_broad"
 # opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
 
@@ -61,7 +61,7 @@ cluster_levels <- cluster_levels[cluster_levels != "Other"]
 ## contrast details
 if(opt$contrast == "ancestry"){
     dge_dir = "05_compile_DGE_ancestry"
-    contrast_levels <- c("AA", "EA")
+    contrast_levels <- c("EA", "AA")
 } else if(opt$contrast == "Sex"){
     dge_dir = "09_compile_DGE_Sex"
     contrast_levels <- c("F", "M")
@@ -96,7 +96,7 @@ DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
 DE_entrez |> filter(DE_class != "None") |> arrange(DE_class_cluster) |> select(gene_name, DE_class_cluster, cluster)
 
 
-## genes in reverse direction
+#### Check contrast directions ####
 
 pval_contrast <- paste0("vlmf_P.Value_", contrast_levels)
 pval_adj_contrast <- paste0("vlmf_adj.P.Val_", contrast_levels)
@@ -127,11 +127,16 @@ DE_entrez_op <- DE_data |>
     left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many")
 
 
+# DE_entrez_op |> count(!!sym(pval_contrast[[1]]) < 0.10,
+#                       !!sym(lfc_contrast[[1]]) < 0,
+#                       !!sym(lfc_contrast[[2]]) < 0,
+#                       !!sym(pval_adj_contrast[[2]]) < 0.05)
+
 DE_entrez_op |> count(DE_class)
 
 DE_entrez_op |> filter(DE_class != "None") |> count(cluster, DE_class_cluster)
 
-DE_opp_tile <-  DE_entrez_op |>
+DE_opp_tile <- DE_entrez_op |>
     count(cluster, DE_class) |>
     ggplot(aes(x = DE_class, y = cluster, fill = n)) +
     geom_tile() +
