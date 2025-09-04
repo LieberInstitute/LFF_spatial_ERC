@@ -22,7 +22,7 @@ library("ComplexHeatmap")
 
 ## test
 datatype = "sn_broad"
-contrast = "Sex"
+contrast = "ancestry"
 
 # datatype = "sn_fine"
 # datatype = "Visium"
@@ -163,6 +163,8 @@ if(datatype == "Visium"){
 
 #### logFC heatmaps ####
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
+
+cluster_row = FALSE
 
 ## top DGEs
 if(datatype == "sn_fine"){
