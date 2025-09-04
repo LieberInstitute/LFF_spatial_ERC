@@ -1,12 +1,11 @@
 **** Job starts ****
-Tue Aug  5 06:05:51 PM EDT 2025
+Thu Sep  4 12:22:42 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21241928
+Job id: 21814866
 Job name: 10_GO_analysis_contrast
-Node name: compute-168
+Node name: compute-155
 Task id: 5
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -20,7 +19,7 @@ Currently Loaded Modules:
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.4     
+✔ purrr     1.1.0     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -126,9 +125,8 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
@@ -152,6 +150,28 @@ The following object is masked from ‘package:stats’:
 
     filter
 
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading objects:
+  SpD_colors
 [1] TRUE
 # A tibble: 18 × 3
    cluster       contrast      n
@@ -242,6 +262,20 @@ Storing counts in `nn`, as `n` already present in input
 1 WM-uf~Sp09D07_M_down    74
 2 WM-uf~Sp09D07_M_up      16
 3 WM~Sp09D06_F_up          1
+# A tibble: 91 × 3
+   gene_name DE_class_cluster     cluster      
+   <chr>     <chr>                <fct>        
+ 1 GPR37     WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 2 TMEM144   WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 3 EFEMP1    WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 4 CLIC4     WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 5 GPRC5B    WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 6 GLTP      WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 7 PHGDH     WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 8 CMTM5     WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+ 9 SCARB2    WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+10 TTYH2     WM-uf~Sp09D07_M_down WM.uf~Sp09D07
+# ℹ 81 more rows
 Universe n genes: 14266
       DE_class_cluster ONTOLOGY   n
 1 WM-uf~Sp09D07_M_down       BP  17
@@ -252,7 +286,7 @@ Universe n genes: 14266
 6      WM~Sp09D06_F_up       MF  19
 null device 
           1 
-2025-08-05 18:06:49.178409 - CC
+2025-09-04 12:24:05.11539 - CC
 --WM-uf~Sp09D07_M_down (6)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -262,12 +296,12 @@ preparing gene to GO mapping data...
 preparing IC data...
 Error in hclust(as.dist(1 - simMatrix)) : 
   must have n >= 2 objects to cluster
-2025-08-05 18:06:56.161356 - BP
+2025-09-04 12:24:17.93566 - BP
 --WM-uf~Sp09D07_M_down (17)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-08-05 18:07:17.88127 - MF
+2025-09-04 12:24:48.297288 - MF
 --WM-uf~Sp09D07_M_down (3)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -276,153 +310,82 @@ Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  :
   Object <dtf> is not a data.frame
 null device 
           1 
-[1] "Reproducibility information:"
-[1] "2025-08-05 18:07:23 EDT"
-   user  system elapsed 
- 87.648   2.455  91.562 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.5.0 Patched (2025-05-21 r88220)
- os       Rocky Linux 9.4 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2025-08-05
- pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
- quarto   NA
+$CC
+                    parentTerm n
+1               compact myelin 3
+2          blood microparticle 1
+3           microtubule bundle 1
+4 platelet dense granule lumen 1
+5                         <NA> 1
 
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package          * version  date (UTC) lib source
- AnnotationDbi    * 1.70.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- ape                5.8-1    2024-12-16 [1] CRAN (R 4.5.0)
- aplot              0.2.8    2025-07-02 [1] CRAN (R 4.5.0)
- askpass            1.2.1    2024-10-04 [2] CRAN (R 4.5.0)
- Biobase          * 2.68.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocGenerics     * 0.54.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocParallel       1.42.1   2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
- Biostrings         2.76.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- bit                4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
- bit64              4.6.0-1  2025-01-16 [2] CRAN (R 4.5.0)
- blob               1.2.4    2023-03-17 [2] CRAN (R 4.5.0)
- cachem             1.1.0    2024-05-16 [2] CRAN (R 4.5.0)
- cli                3.6.5    2025-04-23 [2] CRAN (R 4.5.0)
- clusterProfiler  * 4.16.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- codetools          0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
- colorspace         2.1-1    2024-07-26 [2] CRAN (R 4.5.0)
- cowplot            1.2.0    2025-07-07 [1] CRAN (R 4.5.0)
- crayon             1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
- data.table         1.17.8   2025-07-10 [1] CRAN (R 4.5.0)
- DBI                1.2.3    2024-06-02 [2] CRAN (R 4.5.0)
- dichromat          2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
- digest             0.6.37   2024-08-19 [2] CRAN (R 4.5.0)
- DOSE               4.2.0    2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- dplyr            * 1.1.4    2023-11-17 [2] CRAN (R 4.5.0)
- enrichplot         1.28.4   2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
- farver             2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
- fastmap            1.2.0    2024-05-15 [2] CRAN (R 4.5.0)
- fastmatch          1.1-6    2024-12-23 [2] CRAN (R 4.5.0)
- fgsea              1.34.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- forcats          * 1.0.0    2023-01-29 [2] CRAN (R 4.5.0)
- fs                 1.6.6    2025-04-12 [2] CRAN (R 4.5.0)
- generics         * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
- GenomeInfoDb       1.44.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- GenomeInfoDbData   1.2.14   2025-05-21 [2] Bioconductor
- getopt           * 1.20.4   2023-10-01 [1] CRAN (R 4.5.0)
- ggfun              0.1.8    2024-12-03 [2] CRAN (R 4.5.0)
- ggplot2          * 3.5.2    2025-04-09 [2] CRAN (R 4.5.0)
- ggplotify          0.1.2    2023-08-09 [1] CRAN (R 4.5.0)
- ggrepel            0.9.6    2024-09-07 [2] CRAN (R 4.5.0)
- ggtangle           0.0.7    2025-06-30 [1] CRAN (R 4.5.0)
- ggtree             3.16.3   2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
- glue               1.8.0    2024-09-30 [2] CRAN (R 4.5.0)
- GO.db              3.21.0   2025-05-21 [2] Bioconductor
- GOSemSim           2.34.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- gridBase           0.4-7    2014-02-24 [1] CRAN (R 4.5.0)
- gridGraphics       0.5-1    2020-12-13 [1] CRAN (R 4.5.0)
- gson               0.1.0    2023-03-07 [1] CRAN (R 4.5.0)
- gtable             0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
- here             * 1.0.1    2020-12-13 [2] CRAN (R 4.5.0)
- hms                1.1.3    2023-03-21 [2] CRAN (R 4.5.0)
- htmltools          0.5.8.1  2024-04-04 [2] CRAN (R 4.5.0)
- httpuv             1.6.16   2025-04-16 [2] CRAN (R 4.5.0)
- httr               1.4.7    2023-08-15 [2] CRAN (R 4.5.0)
- igraph             2.1.4    2025-01-23 [2] CRAN (R 4.5.0)
- IRanges          * 2.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- jsonlite           2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
- KEGGREST           1.48.1   2025-06-22 [1] Bioconductor 3.21 (R 4.5.0)
- labeling           0.4.3    2023-08-29 [2] CRAN (R 4.5.0)
- later              1.4.2    2025-04-08 [2] CRAN (R 4.5.0)
- lattice            0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
- lazyeval           0.2.2    2019-03-15 [2] CRAN (R 4.5.0)
- lifecycle          1.0.4    2023-11-07 [2] CRAN (R 4.5.0)
- lubridate        * 1.9.4    2024-12-08 [2] CRAN (R 4.5.0)
- magrittr           2.0.3    2022-03-30 [2] CRAN (R 4.5.0)
- Matrix             1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
- memoise            2.0.1    2021-11-26 [2] CRAN (R 4.5.0)
- mime               0.13     2025-03-17 [2] CRAN (R 4.5.0)
- nlme               3.1-168  2025-03-31 [3] CRAN (R 4.5.0)
- NLP                0.3-2    2024-11-20 [1] CRAN (R 4.5.0)
- openssl            2.3.3    2025-05-26 [1] CRAN (R 4.5.0)
- org.Hs.eg.db     * 3.21.0   2025-05-21 [2] Bioconductor
- patchwork          1.3.0    2024-09-16 [2] CRAN (R 4.5.0)
- pheatmap           1.0.13   2025-06-05 [1] CRAN (R 4.5.0)
- pillar             1.11.0   2025-07-04 [1] CRAN (R 4.5.0)
- pkgconfig          2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
- plyr               1.8.9    2023-10-02 [2] CRAN (R 4.5.0)
- png                0.1-8    2022-11-29 [2] CRAN (R 4.5.0)
- promises           1.3.3    2025-05-29 [1] CRAN (R 4.5.0)
- purrr            * 1.0.4    2025-02-05 [2] CRAN (R 4.5.0)
- qvalue             2.40.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- R.methodsS3        1.8.2    2022-06-13 [2] CRAN (R 4.5.0)
- R.oo               1.27.1   2025-05-02 [2] CRAN (R 4.5.0)
- R.utils            2.13.0   2025-02-24 [2] CRAN (R 4.5.0)
- R6                 2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
- RColorBrewer       1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp               1.1.0    2025-07-02 [1] CRAN (R 4.5.0)
- readr            * 2.1.5    2024-01-10 [2] CRAN (R 4.5.0)
- reshape2           1.4.4    2020-04-09 [2] CRAN (R 4.5.0)
- reticulate         1.42.0   2025-03-25 [2] CRAN (R 4.5.0)
- rlang              1.1.6    2025-04-11 [2] CRAN (R 4.5.0)
- rprojroot          2.0.4    2023-11-05 [2] CRAN (R 4.5.0)
- rrvgo            * 1.20.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- RSpectra           0.16-2   2024-07-18 [2] CRAN (R 4.5.0)
- RSQLite            2.4.2    2025-07-18 [1] CRAN (R 4.5.0)
- S4Vectors        * 0.46.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scales             1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
- sessioninfo      * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
- shiny              1.11.1   2025-07-03 [1] CRAN (R 4.5.0)
- slam               0.1-55   2024-11-13 [2] CRAN (R 4.5.0)
- stringi            1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
- stringr          * 1.5.1    2023-11-14 [2] CRAN (R 4.5.0)
- tibble           * 3.3.0    2025-06-08 [1] CRAN (R 4.5.0)
- tidyr            * 1.3.1    2024-01-24 [2] CRAN (R 4.5.0)
- tidyselect         1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
- tidytree           0.4.6    2023-12-12 [1] CRAN (R 4.5.0)
- tidyverse        * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
- timechange         0.3.0    2024-01-18 [2] CRAN (R 4.5.0)
- tm                 0.7-16   2025-02-19 [1] CRAN (R 4.5.0)
- treeio             1.32.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- treemap            2.4-4    2023-05-25 [1] CRAN (R 4.5.0)
- tzdb               0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
- UCSC.utils         1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- umap               0.2.10.0 2023-02-01 [1] CRAN (R 4.5.0)
- utf8               1.2.6    2025-06-08 [1] CRAN (R 4.5.0)
- vctrs              0.6.5    2023-12-01 [2] CRAN (R 4.5.0)
- withr              3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
- wordcloud          2.6      2018-08-24 [1] CRAN (R 4.5.0)
- xml2               1.3.8    2025-03-14 [2] CRAN (R 4.5.0)
- xtable             1.8-4    2019-04-21 [2] CRAN (R 4.5.0)
- XVector            0.48.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- yulab.utils        0.2.0    2025-01-29 [2] CRAN (R 4.5.0)
+$BP
+                          parentTerm n
+1                  axon ensheathment 5
+2                    myelin assembly 4
+3      L-serine biosynthetic process 3
+4 glycosylceramide metabolic process 3
+5    cell-cell junction organization 2
 
- [1] /users/lhuuki/R/4.5
- [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
- * ── Packages attached to the search path.
+$MF
+                   parentTerm n
+1   exogenous protein binding 2
+2 scavenger receptor activity 1
 
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Tue Aug  5 06:07:24 PM EDT 2025
+$CC
+                          term n
+1   Schmidt-Lanterman incisure 1
+2          blood microparticle 1
+3               compact myelin 1
+4           microtubule bundle 1
+5                myelin sheath 1
+6 platelet dense granule lumen 1
+
+$BP
+                                         term n
+1               L-serine biosynthetic process 1
+2                           axon ensheathment 1
+3 axon ensheathment in central nervous system 1
+4        carboxylic acid biosynthetic process 1
+5                 cell-cell junction assembly 1
+6             cell-cell junction organization 1
+
+$MF
+                         term n
+1   exogenous protein binding 1
+2 scavenger receptor activity 1
+3     virus receptor activity 1
+
+               Cluster     DE_class_cluster         ID
+1 WM-uf~Sp09D07_M_down WM-uf~Sp09D07_M_down GO:0007272
+2 WM-uf~Sp09D07_M_down WM-uf~Sp09D07_M_down GO:0008366
+3 WM-uf~Sp09D07_M_down WM-uf~Sp09D07_M_down GO:0042552
+4 WM-uf~Sp09D07_M_down WM-uf~Sp09D07_M_down GO:0045216
+5 WM-uf~Sp09D07_M_down WM-uf~Sp09D07_M_down GO:0046394
+6 WM-uf~Sp09D07_M_down WM-uf~Sp09D07_M_down GO:0016053
+                           Description GeneRatio   BgRatio RichFactor
+1              ensheathment of neurons     10/70 144/12156 0.06944444
+2                    axon ensheathment     10/70 144/12156 0.06944444
+3                          myelination      9/70 142/12156 0.06338028
+4      cell-cell junction organization      7/70 162/12156 0.04320988
+5 carboxylic acid biosynthetic process      7/70 240/12156 0.02916667
+6    organic acid biosynthetic process      7/70 241/12156 0.02904564
+  FoldEnrichment    zScore       pvalue     p.adjust       qvalue
+1      12.059524 10.160035 8.598395e-09 7.437611e-06 6.498576e-06
+2      12.059524 10.160035 8.598395e-09 7.437611e-06 6.498576e-06
+3      11.006439  9.127779 1.115355e-07 6.431883e-05 5.619826e-05
+4       7.503704  6.341930 3.885389e-05 9.602462e-03 8.390104e-03
+5       5.065000  4.840454 4.458449e-04 4.915891e-02 4.295236e-02
+6       5.043983  4.825653 4.571029e-04 4.915891e-02 4.295236e-02
+                                              geneID Count ONTOLOGY
+1 MAL/KLK6/CD9/JAM3/UGT8/MYRF/PMP22/PLLP/CLDN11/FA2H    10       BP
+2 MAL/KLK6/CD9/JAM3/UGT8/MYRF/PMP22/PLLP/CLDN11/FA2H    10       BP
+3        MAL/KLK6/CD9/JAM3/UGT8/MYRF/PMP22/PLLP/FA2H     9       BP
+4               CD9/AGT/JAM3/UGT8/GJB6/FERMT2/CLDN11     7       BP
+5         PHGDH/PSAT1/SUCLA2/CBR1/ELOVL1/FA2H/CARNS1     7       BP
+6         PHGDH/PSAT1/SUCLA2/CBR1/ELOVL1/FA2H/CARNS1     7       BP
+Error in (function (cond)  : 
+  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
+Caused by error in `h()`:
+! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
+Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
+Execution halted
