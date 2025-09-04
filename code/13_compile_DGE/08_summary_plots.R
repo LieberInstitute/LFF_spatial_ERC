@@ -106,7 +106,7 @@ topDEGs <- dge_data |>
 
 length(topDEGs)
 
-logFC_Heatmap(data = dge_data, gene_list = topDEGs, title = "topDEGs")
+logFC_Heatmap(data = dge_data, gene_list = topDEGs, title = "topDEGs", datatype = datatype)
 
 ## Risk gene heatmap
 logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
@@ -173,7 +173,7 @@ if(datatype == "sn_fine"){
     
 }
 
-
+# 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
 #                     name = "08_summary_plots",
