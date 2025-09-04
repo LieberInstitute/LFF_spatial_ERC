@@ -206,6 +206,8 @@ walk2(go_result, names(go_result), function(gr, ont){
     
     gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster))
     
+    if(nrow(gr@compareClusterResult) == 0) return(NULL)
+    
     print(
         dotplot(gr, 
                 x = "DE_class_cluster", 
@@ -225,6 +227,8 @@ pdf(file = here(plot_dir, sprintf("GO_dotplot_5plus_%s_%s.pdf", opt$contrast, op
 walk2(go_result, names(go_result), function(gr, ont){
     
     gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 5)
+    
+    if(nrow(gr@compareClusterResult) == 0) return(NULL)
     
     print(
         dotplot(gr, 
@@ -246,6 +250,8 @@ walk2(go_result, names(go_result), function(gr, ont){
         filter(grepl("0", DE_class_cluster), Count >= 2) |>
         mutate(DE_class_cluster = gsub("_0_", ": ", DE_class_cluster))
     
+    if(nrow(gr@compareClusterResult) == 0) return(NULL)
+    
     print(
         dotplot(gr, 
                 x = "DE_class_cluster", 
@@ -266,6 +272,8 @@ if(opt$datatype == "sn_fine"){
         go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
             # subset
             gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster) & !grepl("0", Cluster))
+            
+            if(nrow(gr@compareClusterResult) == 0) return(NULL)
             
             # dotplot
             print(dotplot(gr,
@@ -329,6 +337,9 @@ if(opt$datatype == "sn_fine"){
     
     pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s_Oligo.3.pdf", opt$contrast, opt$datatype)), width = 8, height = 8)
     walk2(go_result_Oligo3, names(go_result_Oligo3), function(gr, ont){
+        
+        if(nrow(gr@compareClusterResult) == 0) return(NULL)
+        
         print(
             dotplot(gr, 
                     x = "DE_class_cluster", 
@@ -345,6 +356,8 @@ if(opt$datatype == "sn_fine"){
     walk2(go_result_Oligo3, names(go_result_Oligo3), function(gr, ont){
         
         gr@compareClusterResult <- gr@compareClusterResult |> filter(Count >= 5)
+        
+        if(nrow(gr@compareClusterResult) == 0) return(NULL)
         
         print(
             dotplot(gr, 
