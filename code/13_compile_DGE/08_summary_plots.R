@@ -170,19 +170,22 @@ if(datatype == "sn_fine"){
                                                                          datatype = datatype))
     
     ## annotations + stats 
+    
+    Blanchard_gene_anno_stats |> filter(gene_name == "PLP1")
+    
     Blanchard_gene_anno_stats <- read_csv(here("external-data", "Blanchard2022","Blanchard_gene_anno_stats.csv")) |>
-        filter(grp2 == "E34_E33_noAD") |>
         unique() |>
         arrange(logFC)
     
     Blanchard_gene_anno <- Blanchard_gene_anno_stats |>
-        select(gene_name, anno, logFC) |>
-        unique() |>
+        filter(grp2 %in% c("E34_E33_noAD", "E34_E33_AD")) |>
+        select(gene_name, grp2, anno, logFC) |>
+        pivot_wider(names_from = "grp2", values_from = "logFC") |>
         column_to_rownames("gene_name")
     
     Blanchard_gene_anno |> count(anno)
     
-    logfc_col_fun = colorRamp2(c(min(Blanchard_gene_anno$logFC), 0, max(Blanchard_gene_anno$logFC)), 
+    logfc_col_fun = colorRamp2(c(min(Blanchard_gene_anno_stats$logFC), 0, max(Blanchard_gene_anno_stats$logFC)), 
                                colors = c("blue", "white", "red"))
     
     gene_col_ha<- HeatmapAnnotation(
@@ -190,7 +193,8 @@ if(datatype == "sn_fine"){
         col = list(anno = c(Cholesterol = "red",
                             Myelination = "blue",
                             `Sterol tf` = "yellow"),
-                   logFC = logfc_col_fun)
+                   E34_E33_AD = logfc_col_fun,
+                   E34_E33_noAD = logfc_col_fun)
     )
     
     
