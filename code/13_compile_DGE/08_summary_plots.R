@@ -46,7 +46,6 @@ if(datatype == "sn_broad"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
     cluster_levels <- names(SpD_colors)
-    
 }
 
 cluster_levels <- cluster_levels[cluster_levels != "Other"]
@@ -169,6 +168,41 @@ if(datatype == "sn_fine"){
                                                                          # cluster_col = TRUE,
                                                                          order_genes = TRUE,
                                                                          datatype = datatype))
+    
+    ## annotations + stats 
+    Blanchard_gene_anno_stats <- read_csv(here("external-data", "Blanchard2022","Blanchard_gene_anno_stats.csv")) |>
+        filter(grp2 == "E34_E33_noAD") |>
+        unique() |>
+        arrange(logFC)
+    
+    Blanchard_gene_anno <- Blanchard_gene_anno_stats |>
+        select(gene_name, anno, logFC) |>
+        unique() |>
+        column_to_rownames("gene_name")
+    
+    Blanchard_gene_anno |> count(anno)
+    
+    logfc_col_fun = colorRamp2(c(min(Blanchard_gene_anno$logFC), 0, max(Blanchard_gene_anno$logFC)), 
+                               colors = c("blue", "white", "red"))
+    
+    gene_col_ha<- HeatmapAnnotation(
+        df = Blanchard_gene_anno,
+        col = list(anno = c(Cholesterol = "red",
+                            Myelination = "blue",
+                            `Sterol tf` = "yellow"),
+                   logFC = logfc_col_fun)
+    )
+    
+    
+    logFC_Heatmap(data = dge_data |>
+                      filter(grepl("Oligo", cluster)), 
+                  gene_list = rownames(Blanchard_gene_anno), 
+                  title = "Blancard_anno", 
+                  # cluster_col = TRUE,
+                  order_genes = FALSE,
+                  datatype = datatype,
+                  col_anno = gene_col_ha,
+                  save = TRUE)
     
     
 }
