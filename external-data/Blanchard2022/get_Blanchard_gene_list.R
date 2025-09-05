@@ -28,6 +28,8 @@ Blanchard_gene_anno_stats <- Blanchard_gene_annotaions |>
                                            padj < 0.05 ~"*",
                                            TRUE~""))
 
+write_csv(Blanchard_gene_anno_stats, file = "Blanchard_gene_anno_stats.csv")
+
 Blanchard_gene_anno_stats |> count(p.signif)
 
 Blanchard_stats_col <- Blanchard_gene_anno_stats |>
