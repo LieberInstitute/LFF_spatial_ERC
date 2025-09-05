@@ -61,7 +61,7 @@ summary(gene_weights$Factor3$value)
 if(opt$datatype == "sn_broad"){
     my_views <- c("Oligo","WM~Sp09D06")
 } else if(opt$datatype == "sn_fine"){
-    my_views <- c("Oligo.3","Oligo.4","Oligo.5","WM~Sp09D06") #Excit.L5.2
+    my_views <- c("Oligo.3","Oligo.4","Oligo.5","WM~Sp09D06") #Excit.L5.2 - ugly when added
 }
 
 top_gene_weights <- gene_weights$Factor3 |>
@@ -157,6 +157,81 @@ logFC_Heatmap(dge_data |> filter(cluster %in% my_views),
               flip = TRUE,
               save = TRUE,
               order_genes = FALSE)
+
+#### GO on top genes ####
+library("org.Hs.eg.db")
+library("clusterProfiler")
+
+entrez_search <- bitr(unique(gene_weights$Factor3$feature), fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+entrez_search |> count(ENSEMBL) |> count(n)
+
+weight_density <- gene_weights$Factor3 |>
+    filter(ctype %in% my_views) |>
+    ggplot(aes(x = value, color = ctype)) +
+    geom_density()
+
+ggsave(weight_density, filename = here(plot_dir, "weight_density.png"))
+    
+
+gene_weights_GO <- gene_weights$Factor3 |>
+    left_join(entrez_search, by = c("feature" = "ENSEMBL"), relationship = "many-to-many") |>
+    mutate(abs_value = abs(value),
+           weight_pos = value > 0,
+           datatype = ifelse(grepl("_Sp", ctype), "Visium", "snRNA-seq")) |>
+    filter(ctype %in% my_views) |>
+    group_by(ctype,weight_pos) |>
+    arrange(-abs_value) |>
+    mutate(rank = row_number(),
+           GO_group = ifelse(rank <= 25, 
+                         ifelse(weight_pos, 
+                                paste0(gsub("\\.", "", ctype), "_F3+"), 
+                                paste0(gsub("\\.", "", ctype), "_F3-")),
+                                "None")
+    ) |>
+    ungroup()
+
+gene_weights_GO |> count(GO_group)
+
+universe <- unique(gene_weights_GO$ENTREZID)
+length(universe)
+
+ont_list <- c("CC","BP","MF")
+names(ont_list) <- ont_list
+
+## run GO
+go_result <- map(ont_list, ~compareCluster(ENTREZID ~ GO_group,
+                                           data = gene_weights_GO |> filter(GO_group != "None"), 
+                                           OrgDb = org.Hs.eg.db,
+                                           fun = enrichGO,
+                                           universe = universe,
+                                           ont = .x, ##ALL,CC,BP,MF
+                                           pAdjustMethod = "BH",
+                                           pvalueCutoff = 0.05,
+                                           # qvalueCutoff = 0.05,
+                                           readable = TRUE))
+
+saveRDS(go_result, file = here(data_dir, sprintf("MOFA_GO_result_%s.rds", opt$datatype)))
+
+## convert to table
+compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
+
+compare_clus |> count(ONTOLOGY, GO_group)
+compare_clus |> filter(Count >=5)|> count(ONTOLOGY, GO_group)
+
+## dotplots
+pdf(file = here(plot_dir, sprintf("MOFA_GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), 
+      ~print(
+          dotplot(.x, 
+                  x = "GO_group", 
+                  showCategory = 5, 
+                  label_format = 60)  +
+              ggtitle(paste("GO Enrichment:", .y)) +
+              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+      )
+)
+dev.off()
+
 
 #### Reproducibility information ####
 print("Reproducibility information:")
