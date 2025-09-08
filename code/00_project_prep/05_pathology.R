@@ -34,12 +34,12 @@ taupathy |> filter(BrNum %in% c("Br5634", "Br5599"))
 # 1 Br5634 FALSE   
 # 2 Br5634 TRUE 
 
-taupathy <- taupathy |> group_by(BrNum) |> summarize(taupathy = any(taupathy))
+taupathy <- taupathy |> group_by(BrNum) |> summarize(taupathy = any(taupathy)) |> filter(BrNum != "Br1289")
 taupathy |> count(taupathy)
 # # A tibble: 2 × 2
 # taupathy     n
 # <lgl>    <int>
-# 1 FALSE       22
+# 1 FALSE       21
 # 2 TRUE         9
 
 
@@ -53,7 +53,8 @@ path_data |> count(Braak)
 path_data |> count(BrNum %in% sample_info$BrNum)
 
 ## join with sample data
-sample_info_path <- sample_info |>
+sample_info_path <- sample_info |> 
+    filter(BrNum != "Br1289") |>
     left_join(taupathy) |>
     left_join(path_data) |>
     replace_na(list(path_data = FALSE))
@@ -64,7 +65,7 @@ sample_info_path |> count(path_data, CERAD)
 # <lgl>     <chr>     <int>
 # 1 TRUE      C0-none      17
 # 2 TRUE      C1-sparse     1
-# 3 TRUE      NA           13
+# 3 TRUE      NA           12
 
 sample_info_path |> count(path_data, Braak)
 # path_data Braak             n
@@ -72,7 +73,7 @@ sample_info_path |> count(path_data, Braak)
 # 1 TRUE      B0                7
 # 2 TRUE      B1 (I - II)      10
 # 3 TRUE      B2 (III - IV)     1
-# 4 TRUE      NA               13
+# 4 TRUE      NA               12
 
 
 with(sample_info_path, table(APOE, taupathy))
@@ -81,27 +82,29 @@ with(sample_info_path, table(APOE, taupathy))
 # E2/E2     4    2
 # E2/E3     5    3
 # E3/E4     8    2
-# E4/E4     5    2
+# E4/E4     4    2
 
 with(sample_info_path, table(Ancestry, taupathy))
 #         taupathy
 # Ancestry FALSE TRUE
-#       AA    13    4
+#       AA    12    4
 #       EA     9    5
 
 with(sample_info_path, table(Sex, taupathy))
 #     taupathy
 # Sex FALSE TRUE
 # F     7    2
-# M    15    7
+# M    14    7
 
 sample_info_path |>
     group_by(APOE_carrier) |>
-    summarise(prop_tau = sum(taupathy)/n())
-# APOE_carrier prop_tau
-# <chr>           <dbl>
-# 1 E2+             0.357
-# 2 E4+             0.235
+    summarise(n = n(), 
+              tau = sum(taupathy),
+              prop_tau = sum(taupathy)/n())
+# APOE_carrier     n   tau prop_tau
+# <chr>        <int> <int>    <dbl>
+# 1 E2+             14     5    0.357
+# 2 E4+             16     4    0.25 
 
 sample_info_path |>
     group_by(APOE) |>
@@ -111,7 +114,7 @@ sample_info_path |>
 # 1 E2/E2    0.333
 # 2 E2/E3    0.375
 # 3 E3/E4    0.2  
-# 4 E4/E4    0.286
+# 4 E4/E4    0.333
 
 # sample_info_path |> filter(!path_data) |> pull(BrNum) |> cat(sep = ", ")
 
@@ -146,12 +149,11 @@ taupathy_carrier_tile <- sample_info_path |>
     geom_tile(color = "white") +
     geom_text(aes(label = n), color = "black") +
     scale_fill_manual(values = APOE_carrier_colors) +
+    labs(x = "tau detected") +
     theme_bw() +
     theme(legend.position = "None")
 
-
-ggsave(taupathy_carrier_tile, filename = here(plot_dir, "taupathy_carrier_tile.png"), height = 4, width = 3)
-
+ggsave(taupathy_carrier_tile, filename = here(plot_dir, "taupathy_carrier_tile.png"), height = 2.5, width = 2.5)
 
 ## taupathy age
 
@@ -208,8 +210,34 @@ braak_tau_age_boxplot <- sample_info_path |>
     geom_jitter(aes(color = APOE)) +
     scale_color_manual(values = APOE_genotype_colors) +
     facet_wrap(~Braak, ncol = 1, strip.position ="left") +
-    labs(y = "Tau+") +
+    labs(y = "tau detected") +
     theme_bw() 
 
 ggsave(braak_tau_age_boxplot, filename = here(plot_dir, "braak_tau_age_boxplot.png"), height = 4, width = 5)
+
+braak_tau_age_boxplot_carrier <- sample_info_path |>
+    replace_na(list(Braak = " Not Assessed")) |>
+    mutate(Braak = fct_rev(Braak)) |>
+    ggplot(aes(y = taupathy, x = Age)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = APOE_carrier)) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    facet_wrap(~Braak, ncol = 1, strip.position ="left") +
+    labs(y = "tau detected") +
+    theme_bw() 
+
+ggsave(braak_tau_age_boxplot_carrier, filename = here(plot_dir, "braak_tau_age_boxplot_carrier.png"), height = 4, width = 5)
+
+braak_tau_age_boxplot_carrier2 <- sample_info_path |>
+    replace_na(list(Braak = " Not Assessed")) |>
+    mutate(Braak = fct_rev(Braak)) |>
+    ggplot(aes(y = taupathy, x = Age, color = APOE_carrier)) +
+    geom_boxplot() +
+    # geom_jitter(aes(color = APOE_carrier)) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    facet_wrap(~Braak, ncol = 1, strip.position ="left") +
+    labs(y = "tau detected") +
+    theme_bw() 
+
+ggsave(braak_tau_age_boxplot_carrier2, filename = here(plot_dir, "braak_tau_age_boxplot_carrier2.png"), height = 4, width = 5)
 
