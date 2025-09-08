@@ -21,6 +21,7 @@ opt <- getopt(scec)
 
 ## test 
 # opt$datatype = "sn_broad"
+# opt$datatype = "sn_fine"
 
 data_dir <- here("processed-data", "14_MOFA", "01_MOFA", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -191,8 +192,7 @@ out_path = here(data_dir, 'model.hdf5')
 model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
 
 ## how to read in mofa?
-# library(rhdf5)
-# h5read(name = out_path)
+# model = mofa.mofa_model(out_path)
 
 ####  Exploratory plots ####
 message(Sys.time() , " - Explore MOFA factors")
@@ -312,6 +312,10 @@ plot_MOFA_hmap(
     )
 )
 dev.off()
+
+## select boxplots
+factor_df <- read_csv(here(data_dir, sprintf("MOFA_factor_df-%s.csv", opt$datatype)))
+
 
 #### MOFA gene weights ####
 message(Sys.time() , " - Calc MOFA gene weights")

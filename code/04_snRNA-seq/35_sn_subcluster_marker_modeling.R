@@ -275,6 +275,62 @@ dev.off()
 #     dev.off()
 # })
 
+if(celltype == "Oligo"){
+    
+    grubman_subtypes_fn <- list.files(here("external-data", "Grubman2019"), pattern = "Oligo_", full.names = TRUE)
+    names(grubman_subtypes_fn) <- gsub("Grubman_Oligo_|.csv", "", basename(grubman_subtypes_fn))
+    
+    grubman_subtypes_data <- map2_dfr(grubman_subtypes_fn, names(grubman_subtypes_fn), ~read.csv(.x) |> mutate(g_cell_type = .y)) |>
+        rename(gene = geneName)
+    
+    # grubman_subtypes_data |> count(cell_type)
+    
+    top500_enrichment_genes <- sig_genes_extract(
+        n = 1000,
+        modeling_results = modeling_results,
+        model_type = "enrichment",
+        reverse = FALSE,
+        sce_layer = sce_pseudo,
+        gene_name = "gene_name"
+    )
+
+    erc_v_grubman <- top500_enrichment_genes |>
+        inner_join(grubman_subtypes_data)
+    
+    erc_v_grubman_cor <- erc_v_grubman |>
+        group_by(test, g_cell_type) |>
+        summarise(n = n(),
+                  cor = cor(logFC, LFC))
+    
+    erc_v_grubman_cor |>
+        group_by(test) |> 
+        arrange(-cor) |>
+        slice(1)
+    
+    # test    g_cell_type     n   cor
+    # <chr>   <chr>       <int> <dbl>
+    # 1 Oligo.1 o5             26 0.476
+    # 2 Oligo.2 o4             48 0.598
+    # 3 Oligo.3 o5             14 0.430
+    # 4 Oligo.4 o3              6 0.700
+    # 5 Oligo.5 o1             10 0.358
+    
+    erc_v_grubman_cor |>
+        select(-n) |>
+        pivot_wider(names_from = "test", values_from = "cor")
+    
+    # g_cell_type Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5
+    # <chr>         <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+    # 1 o1            0.104   0.237   0.132   0.212  0.358 
+    # 2 o2           -0.328  -0.331  -0.330  -0.444 -0.398 
+    # 3 o3            0.156  -0.238  -0.243   0.700  0.191 
+    # 4 o4           -0.296   0.598   0.162   0.464  0.0669
+    # 5 o5            0.476  -0.208   0.430  -0.710 -0.320 
+        
+    
+}
+
+
 ####  GO analysis ####
 library("org.Hs.eg.db")
 library("clusterProfiler")
