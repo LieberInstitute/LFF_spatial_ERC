@@ -524,6 +524,9 @@ LR_risk <- liana_data_summary |>
            interaction = paste(ligand_complex, "->", receptor_complex)) |>
     ungroup()
 
+# Check for risk genes in commonly observed LR interactions
+LR_risk |> count(L_DEG, R_DEG)
+
 ## no LR both risk pairs
 LR_risk |> count(L_risk, R_risk)
 
