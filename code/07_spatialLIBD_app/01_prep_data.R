@@ -12,6 +12,9 @@ library("sessioninfo")
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 
+## spatialLIBD col
+spe$spatialLIBD <- spe$SpD
+
 lobstr::obj_size(spe)
 # 3.20 GB <- but assays are DelayedArray
 
@@ -59,32 +62,45 @@ saveRDS(spe, here("code", "07_spatialLIBD_app", "spe_ERC_app.rds"))
 
 #### Extract sig genes #####
 
-modeling_results_k09 <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm", "modeling_results-BayesSpace_SVGm_k09.rds"))
-spe_pb_k09 <- readRDS(here("processed-data","05_spe_correct_cluster","08_model_pseudobulk","BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k09.rds"))
+modeling_results <- readRDS(here("processed-data","05_spe_correct_cluster","20_model_pseudobulk_anno","modeling_results-SpD.rds"))
+spe_pb <- readRDS(here("processed-data","05_spe_correct_cluster","20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
+
+colnames(rowData(spe_pb))
 
 ##define cluster col - needs better documentation in spatialLIBD::sig_genes_extract_all 
+spe_pb$spatialLIBD <- spe_pb$SpD
 
-spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_SVGm_k09
+## Add gene_search
+# rowData(spe_pb)$gene_search <- paste0(rowData(spe_pb)$gene_name, "; ", rowData(spe_pb)$gene_id)
 
-tests <- lapply(modeling_results_k09, function(x) {
+tests <- lapply(modeling_results, function(x) {
     colnames(x)[grep("stat", colnames(x))]
 })
+
+# names(tests)
+
+# modeling_results$anova
 
 k=9
 stopifnot(length(tests$anova) == 1) ## assuming only "all"
 stopifnot(length(tests$enrichment) == k)
 stopifnot(length(tests$pairwise) == choose(k, 2))
 
-sig_genes_k09 <- sig_genes_extract_all(
-    modeling_results = modeling_results_k09,
-    sce_layer = spe_pb_k09,
-    n = nrow(spe_pb_k09)
+
+# check_sce_layer(spe_pb)
+# check_modeling_results(modeling_results)
+
+sig_genes <- sig_genes_extract_all(
+    modeling_results = modeling_results,
+    sce_layer = spe_pb,
+    n = nrow(spe_pb),
+    gene_name = "gene_id"
 )
 
-nrow(sig_genes_k09)
+nrow(sig_genes)
 # 1023032
 
-saveRDS(sig_genes_k09, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", "sig_genes_k09.rds"))
+saveRDS(sig_genes, file = here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "sig_genes_SpD.rds"))
 
 # slurmjobs::job_single('01_prep_data', create_shell = TRUE, memory = '50G', command = "Rscript 01_prep_data.R")
 
