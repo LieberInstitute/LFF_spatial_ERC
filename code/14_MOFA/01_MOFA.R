@@ -192,7 +192,7 @@ out_path = here(data_dir, 'model.hdf5')
 model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
 
 ## how to read in mofa?
-# model = mofa.mofa_model(out_path)
+# model = load_model(out_path)
 
 ####  Exploratory plots ####
 message(Sys.time() , " - Explore MOFA factors")
@@ -219,13 +219,13 @@ write_csv(factor_df, file = here(data_dir, sprintf("MOFA_factor_df-%s.csv", opt$
 
 test_vars <- c('APOE_carrier', 'Ancestry', "taupathy", "Sex", "Age","Braak","CERAD")
 names(test_vars) <- test_vars
-    
-assoc_list <- map(test_vars, ~get_associations( model = model,
-                                                metadata = samples_metadata(model),
-                                                sample_id_column = "sample",
-                                                test_variable = .x,
-                                                test_type = "categorical",
-                                                group = FALSE))
+
+assoc_list <- map(test_vars, ~get_associations(model = model,
+                                               metadata = samples_metadata(model),
+                                               sample_id_column = "sample",
+                                               test_variable = .x,
+                                               test_type = "categorical",
+                                               group = FALSE))
 
 assoc_tb <- do.call("bind_rows", assoc_list) |>
     mutate(signif = case_when(adj_pvalue < 0.001 ~ "***",
@@ -272,6 +272,56 @@ factor_boxplot(var = "Ancestry", fill_colors = ancestry_colors, assoc_tb = assoc
 factor_boxplot(var = "Sex", fill_colors = sex_colors, assoc_tb = assoc_tb)
 factor_boxplot(var = "taupathy", assoc_tb = assoc_tb)
 factor_boxplot(var = "Braak", assoc_tb = assoc_tb)
+
+
+## factor 3 boxplots
+
+# tau_colors <- c(`t-` = "#493657", `t+` = "#BF2626")
+tau_colors <- c(`t-` = "#AFA4B6", `t+` = "#684F7D")
+
+F3_weights_boxplot <- factor_df |>
+    filter(Factor == "Factor3") |>
+    select(sample, APOE_carrier, taupathy, Sex, Factor3 = value) |>
+    pivot_longer(!c(sample, Factor3), names_to = "cat") |>
+    ggplot() +
+    geom_boxplot(aes(x = value, y = Factor3, fill = value), outlier.shape = NA) +
+    geom_jitter(aes(x = value, y = Factor3, fill = value), width = 0.1) +
+    facet_wrap(~cat, nrow = 1, scales = "free_x") +
+    scale_fill_manual(values = c(APOE_carrier_colors, sex_colors, tau_colors)) +
+    labs(x = "samples", y = "Factor 3 Weight") +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(F3_weights_boxplot, filename = here(plot_dir, "factor3_weights_boxplot.png"), height = 4, width = 6)
+
+weights_boxplot <- weights_boxplot + ggplot2::geom_label(
+    data = assoc_tb |> filter(term == var), 
+    ggplot2::aes(x = -Inf, y = -Inf, label = sprintf("pval=%.2e%s", adj_pvalue, signif)),
+    alpha = 0.5,
+    vjust = "inward", 
+    hjust = "inward", 
+    size = 2.5
+)
+
+
+carrier_tau_colors <- c(`E2+ t-` = "#398A84",
+                        `E2+ t+` = "#60BEB8",
+                        `E4+ t-` = "#D46B43",
+                        `E4+ t+` = "#DD8A69")
+
+F3_carrier_tau_boxplot <- factor_df |>
+    filter(Factor == "Factor3") |>
+    mutate(carrier_tau = paste(APOE_carrier, taupathy)) |>
+    ggplot() +
+    geom_boxplot(aes(x = carrier_tau, y = value, fill = carrier_tau), outlier.shape = NA) +
+    geom_jitter(aes(x = carrier_tau, y = value, fill = carrier_tau), width = 0.1) +
+    scale_fill_manual(values = carrier_tau_colors) +
+    labs(x="APOE Carrier + Tau",y = "Factor3 Weight") +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(F3_carrier_tau_boxplot, filename = here(plot_dir, "factor3_weights_boxplot_carrier_tau_boxplot.png"), height = 4, width = 6)
+
 
 
 #   Convert to wide format
