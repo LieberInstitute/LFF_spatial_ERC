@@ -6,6 +6,8 @@ library("shiny")
 sce <- readRDS("sce_ERC_iSEE.rds")
 sn_colors <- readRDS("sn_colors.rds")
 
+sce <- registerAppOptions(sce, color.maxlevels = 38)
+
 ## iSEE configuration
 initial <- list()
 
@@ -113,10 +115,9 @@ iSEE(sce,
         initial = initial,
         colormap = ExperimentColorMap(
             colData = list(
-                #  cell_type_anno= function(n) {
-                #     return(sn_colors$anno)
-                # }
-                # ,
+                 cell_type_anno= function(n) {
+                    return(sn_colors$anno)
+                } ,
                 cell_type_broad = function(n) {
                     return(sn_colors$broad)
                 }
