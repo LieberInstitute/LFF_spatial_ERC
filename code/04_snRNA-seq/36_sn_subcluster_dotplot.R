@@ -79,29 +79,36 @@ dev.off()
 #### lit marker dot plot ####
 
 lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
-    filter(gene_name %in% rowData(sce)$gene_name) |>
-    # mutate(cell_type_broad = factor(cell_type_broad, levels = levels(sce$cell_type_broad))) |>
-    arrange(cell_type_broad)
+    mutate(cell_type_broad = factor(gsub("Endo", "Vasc", cell_type_broad), 
+                                    levels = c(levels(sce$cell_type_broad), "Neuron"))) |>
+    filter(gene_name %in% rowData(sce)$gene_name,
+           !is.na(cell_type_broad)) |>
+    # mutate(cell_type_broad = gsub("Endo", "Vasc", cell_type_broad)) |>
+    arrange(cell_type_broad) 
 
 
-lit_markers |> count(cell_type_broad)
+lit_markers |> ungroup() |> count(cell_type_broad)
 lit_markers |> count(gene_name) |> filter(n > 1)
 lit_markers |> filter(gene_name == "CLDN5")
 
+cell_type_colors$broad <- c(cell_type_colors$broad, Neuron = "lightblue")
+levels(lit_markers$cell_type_broad)[!unique(lit_markers$cell_type_broad) %in% names(cell_type_colors$broad)]
 
-rowData(sce)$Marker <- NULL
-rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
-table(rowData(sce)$Marker)
+rowData(sce)$LitMarker <- NULL
+rowData(sce)$LitMarker <- lit_markers$cell_type_broad[match(rownames(sce), lit_markers$gene_name)] 
+table(rowData(sce)$LitMarker)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_lit_genes.pdf")), height = 10)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_lit_genes.pdf")), height = 10, width = 12)
 sce |>
     scDotPlot(features = unique(lit_markers$gene_name),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
-              # featureAnno = "sex_check",
-              # scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = TRUE,
+              featureAnno = "LitMarker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "LitMarker" = cell_type_colors$broad),
+              clusterRows = FALSE,
               groupLegends = FALSE
     )
 dev.off()
@@ -135,7 +142,7 @@ sce |>
     )
 dev.off()
 
-
+## Oligo Enrich genes
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.pdf")), height = 5, width = 10)
 sce |>
     scDotPlot(features = enrichment_stats_top |> filter(cell_type_anno == "Oligo.03") |> pull(ensembl),
@@ -179,8 +186,18 @@ oligo_lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
                     premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
                     myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
                     disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
-                    AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+                    AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
 )
+
+# MBP, BACE1, and APP capable of producing ABeta  Bright/Ranjani
+
+# oligo_lit_markers2 <- list(OPC = c("PDGFRA", "MEGF11"),
+#                     Oligo = c("OLIG1", "OLIG2"),
+#                     premyelin_Oligo = c("SOX10",  "NKX2-2"),
+#                     myelinating_Oligo = c("MBP", "PLP"),
+#                     disease_associated = c("SERPINA3", "C4B"), #https://doi.org/10.1038/s41593-025-01873-x
+#                     AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+# )
 
 
 oligo_lit_markers <- map(oligo_lit_markers, ~.x[.x %in% rownames(sce)])
@@ -289,4 +306,78 @@ plot_OligoOPC_dotplot <- function(gene_list, name){
 }
 
 map2(Blanchard_gene_list, names(Blanchard_gene_list), ~plot_OligoOPC_dotplot(.x, .y))
+
+
+#### Inhib sub-types ####
+
+lit_markers |> filter(cell_type_broad == "Inhib")
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Inhib.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Inhib"]|>
+    scDotPlot(features = c(unique(lit_markers |> dplyr::filter(cell_type_broad == "Inhib") |> pull(gene_name)), "PAX6"),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "LitMarker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+               # clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
+#### Micro sub-types ####
+
+lit_markers |> filter(cell_type_broad %in% c("Micro", "Macro"))
+
+# 10.15252/embj.2019101997
+# micro_genes <- c("IBA1", "CD11B", "CX3CR1", "CR3", "CD11B", "CX3CR1-EGFP", "CD45", "CCR2", "TREM2", "4D4")
+
+# 10.1083/jcb.201709069
+# micro_gene <- c("APOE", "CLU", "SORL1", "ABCA7", "TREM2", "CD33", "MS4A6A", "CR1", "EPHA1", "HLA-DRB1", "IL1RAP")
+
+## 
+micro_lit_markers <- c("C1QB", "CSF1R", "CX3CR1", "HLA-DRA", "APOE", "TREM2", "CD33")
+micro_lit_markers2 <- micro_lit_markers[micro_lit_markers %in% rownames(sce)]
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Micro.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
+    scDotPlot(features = micro_lit_markers2,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "LitMarker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
+#### Astro sub-types ####
+
+lit_markers |> filter(cell_type_broad == "Astro")
+
+Astro_lit_markers <- list(Astro = c("AQP4", "GFAP", "SLC1A2"),
+                          disease_associated = c("SERPINA3", "TNFRSF1A", "IL1B", "IL33", "HMOX1"), #https://doi.org/10.1038/s41593-025-01873-x
+                          AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+)
+
+Astro_lit_markers <- AnnotationDbi::unlist2(Astro_lit_markers)
+
+rowData(sce)$astro_marker <- NULL
+rowData(sce)$astro_marker <- names(Astro_lit_markers)[match(rownames(sce), Astro_lit_markers)] 
+table(rowData(sce)$astro_marker)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Astro" | sce$cell_type_anno == "OPC.5" ]|>
+    scDotPlot(features = Astro_lit_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
 
