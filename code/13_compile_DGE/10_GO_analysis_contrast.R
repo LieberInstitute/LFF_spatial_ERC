@@ -68,32 +68,66 @@ if(opt$contrast == "ancestry"){
 } 
 
 ## load DE data ##
-DE_data_fn <- here("processed-data", "13_compile_DGE", dge_dir, opt$datatype, sprintf("DGE_results_%s_%s.Rds", opt$contrast, opt$datatype))
+DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
 file.exists(DE_data_fn)
 
 DE_data <- readRDS(DE_data_fn)
 
-DE_data |> count(cluster, contrast)
+## load DE contrast data ##
+DE_data_contrast_fn <- here("processed-data", "13_compile_DGE", dge_dir, opt$datatype, sprintf("DGE_results_%s_%s.Rds", opt$contrast, opt$datatype))
+file.exists(DE_data_contrast_fn)
 
-head(DE_data)
-DE_data |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster, contrast)
+DE_data_contrast <- readRDS(DE_data_contrast_fn)
+
+DE_data_contrast |> count(cluster, contrast)
+
+head(DE_data_contrast)
+DE_data_contrast |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster, contrast)
 
 ## ENTREZID look up
-entrez_search <- bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+entrez_search <- bitr(unique(DE_data_contrast$gene_id), fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
 entrez_search |> count(ENSEMBL) |> count(n)
 
 DE_entrez <- DE_data |> 
+    filter(contrast == "carrier") |>
     left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many") |>
     filter(!is.na(ENTREZID)) |>
     mutate(DE_class = case_when(vlmf_logFC > 0 & vlmf_adj.P.Val < 0.05 ~ "up",
                                 vlmf_logFC < 0 & vlmf_adj.P.Val < 0.05 ~ "down",
                                 TRUE ~ "None"),
-           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_", gsub("carrier_", "", contrast), "_",DE_class)) ## doesn't like .  in cluster names
-    
+           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_" ,DE_class, "_ALL"),
+           model_type = "All") 
+
 DE_entrez |> count(DE_class_cluster)
-DE_entrez |> count(cluster, contrast)
-DE_entrez |> filter(DE_class != "None") |> count(DE_class_cluster)
-DE_entrez |> filter(DE_class != "None") |> arrange(DE_class_cluster) |> select(gene_name, DE_class_cluster, cluster)
+
+DE_entrez_contrast <- DE_data_contrast |> 
+    left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many") |>
+    filter(!is.na(ENTREZID)) |>
+    mutate(DE_class = case_when(vlmf_logFC > 0 & vlmf_adj.P.Val < 0.05 ~ "up",
+                                vlmf_logFC < 0 & vlmf_adj.P.Val < 0.05 ~ "down",
+                                TRUE ~ "None"),
+           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class , "_", gsub("carrier_", "", contrast)),
+           model_type = "Specifc") |>
+    bind_rows(DE_entrez)
+
+
+DE_entrez_contrast_summary <- DE_entrez_contrast |> 
+    group_by(model_type, ENTREZID, gene_name, cluster) |> 
+    filter(!grepl("None", DE_class)) |> 
+    summarise(DE_classes = paste(sort(DE_class_cluster), collapse = ", "),
+              n = n())
+
+DE_entrez_contrast_summary |> arrange(-n)
+
+DE_entrez_contrast_summary |> ungroup() |> count(model_type, cluster, DE_classes) 
+DE_entrez_contrast_summary |> ungroup() |> count(model_type, cluster, DE_classes)  |> filter(cluster == "Oligo.3")
+
+    
+DE_entrez_contrast |> count(DE_class_cluster)
+DE_entrez_contrast |> count(cluster, contrast)
+DE_entrez_contrast |> count(contrast)
+DE_entrez_contrast |> filter(!grepl("None", DE_class)) |> count(DE_class_cluster) |> arrange(-n)
+DE_entrez_contrast |> filter(!grepl("None", DE_class))  |> arrange(DE_class_cluster) |> select(gene_name, DE_class_cluster, cluster)
 
 
 #### Check contrast directions ####
@@ -102,7 +136,7 @@ pval_contrast <- paste0("vlmf_P.Value_", contrast_levels)
 pval_adj_contrast <- paste0("vlmf_adj.P.Val_", contrast_levels)
 lfc_contrast <- paste0("vlmf_logFC_", contrast_levels)
 
-DE_entrez_op <- DE_data |>
+DE_entrez_contrast_op <- DE_data_contrast |>
     select(gene_id, gene_name, cluster, contrast, vlmf_logFC, vlmf_P.Value, vlmf_adj.P.Val) |>
     mutate(contrast = gsub("carrier_", "", contrast)) |>
     pivot_wider(names_from = "contrast", values_from = c("vlmf_logFC", "vlmf_P.Value", "vlmf_adj.P.Val")) |>
@@ -127,16 +161,16 @@ DE_entrez_op <- DE_data |>
     left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many")
 
 
-# DE_entrez_op |> count(!!sym(pval_contrast[[1]]) < 0.10,
+# DE_entrez_contrast_op |> count(!!sym(pval_contrast[[1]]) < 0.10,
 #                       !!sym(lfc_contrast[[1]]) < 0,
 #                       !!sym(lfc_contrast[[2]]) < 0,
 #                       !!sym(pval_adj_contrast[[2]]) < 0.05)
 
-DE_entrez_op |> count(DE_class)
+DE_entrez_contrast_op |> count(DE_class)
 
-DE_entrez_op |> filter(DE_class != "None") |> count(cluster, DE_class_cluster)
+DE_entrez_contrast_op |> filter(DE_class != "None") |> count(cluster, DE_class_cluster)
 
-DE_opp_tile <- DE_entrez_op |>
+DE_opp_tile <- DE_entrez_contrast_op |>
     count(cluster, DE_class) |>
     ggplot(aes(x = DE_class, y = cluster, fill = n)) +
     geom_tile() +
@@ -145,39 +179,40 @@ DE_opp_tile <- DE_entrez_op |>
 
 ggsave(DE_opp_tile, filename = here(plot_dir, "DEG_opposite_contrast_tile.png"))
 
-DE_entrez_op |> filter(DE_class != "None")
+DE_entrez_contrast_op |> filter(DE_class != "None")
 
-# DE_entrez |> filter(gene_name == "FOXO3") |> select(gene_name, contrast, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC) |> arrange(vlmf_adj.P.Val)
+# DE_entrez_contrast |> filter(gene_name == "FOXO3") |> select(gene_name, contrast, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC) |> arrange(vlmf_adj.P.Val)
 
-# DE_clusters <- DE_entrez |> filter(DE_class != "None") |> pull(cluster) |> unique()
+# DE_clusters <- DE_entrez_contrast |> filter(DE_class != "None") |> pull(cluster) |> unique()
 # names(DE_clusters) <- DE_clusters
 
-DE_entrez2 <- DE_entrez |>
-    select(ENTREZID, gene_id, gene_name, cluster, contrast, DE_class, DE_class_cluster) |>
-    bind_rows(DE_entrez_op) |>
-    filter(DE_class != "None")
-
-DE_entrez2 |> count(DE_class, is.na(ENTREZID))
-DE_entrez2 |> count(DE_class_cluster) |> print(n=50)
+# DE_entrez_contrast2 <- DE_entrez_contrast |>
+#     select(ENTREZID, gene_id, gene_name, cluster, contrast, DE_class, DE_class_cluster) |>
+#     bind_rows(DE_entrez_contrast_op) |>
+#     filter(DE_class != "None")
+# 
+# DE_entrez_contrast2 |> count(DE_class, is.na(ENTREZID))
+# DE_entrez_contrast2 |> count(DE_class_cluster) |> print(n=50)
 
 #### Run GO ####
-universe <- unique(DE_entrez$ENTREZID)
+universe <- unique(DE_entrez_contrast$ENTREZID)
 message("Universe n genes: ", length(universe))
 
 ont_list <- c("CC","BP","MF")
 names(ont_list) <- ont_list
 
-go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
-                                      data = DE_entrez2, 
-                                      OrgDb = org.Hs.eg.db,
-                                      fun = enrichGO,
-                                      universe = universe,
-                                      ont = .x, ##ALL,CC,BP,MF
-                                      pAdjustMethod = "BH",
-                                      pvalueCutoff = 0.05,
-                                      # qvalueCutoff = 0.05,
-                                      minGSSize =5, # i dont think this worked...
-                                      readable = TRUE))
+go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_classes,
+                                           # data = DE_entrez_contrast |> filter(!grepl("None", DE_class_cluster)), 
+                                           data = DE_entrez_contrast_summary, 
+                                           OrgDb = org.Hs.eg.db,
+                                           fun = enrichGO,
+                                           universe = universe,
+                                           ont = .x, ##ALL,CC,BP,MF
+                                           pAdjustMethod = "BH",
+                                           pvalueCutoff = 0.05,
+                                           # qvalueCutoff = 0.05,
+                                           minGSSize = 5, # i dont think this worked...
+                                           readable = TRUE))
 
 saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s_%s.rds", opt$contrast, opt$datatype)))
 
@@ -186,7 +221,7 @@ saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s_%s.rds", opt$cont
 # convert to table
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y)) |>
     mutate(op = grepl("0", Cluster))
-compare_clus |> count(DE_class_cluster, ONTOLOGY)
+compare_clus |> count(DE_classes, ONTOLOGY)
 
 # Save 
 saveRDS(compare_clus, file = here(data_dir, sprintf("GO_compare_clus_%s_%s.rds", opt$contrast, opt$datatype)))
@@ -201,7 +236,7 @@ write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s_%s.csv", op
 # compare_clus |> filter(DE_class_cluster == "Vasc_EA_up")
 
 #### dot plots ####
-pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
+pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 12)
 walk2(go_result, names(go_result), function(gr, ont){
     
     gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster))
@@ -211,9 +246,31 @@ walk2(go_result, names(go_result), function(gr, ont){
     print(
         dotplot(gr, 
                 x = "DE_class_cluster", 
-                showCategory = 5, 
+                showCategory = 4, 
                 label_format = 60)  +
             ggtitle(paste("GO Enrichment:", ont)) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+    
+})
+dev.off()
+
+## plot terms w/ 2+ genes
+compare_clus |> filter(Count >= 2) |> count(DE_class_cluster)
+
+pdf(file = here(plot_dir, sprintf("GO_dotplot_2plus_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), function(gr, ont){
+    
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 5)
+    
+    if(nrow(gr@compareClusterResult) == 0) return(NULL)
+    
+    print(
+        dotplot(gr, 
+                x = "DE_class_cluster", 
+                showCategory = 5, 
+                label_format = 60)  +
+            ggtitle(paste("GO Enrichment:", ont, "2+ genes")) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
     )
     
@@ -277,7 +334,7 @@ if(opt$datatype == "sn_fine"){
             
             # dotplot
             print(dotplot(gr,
-                          x = "DE_class_cluster",
+                          x = "DE_classes",
                           showCategory = 5,
                           label_format = 60)  +
                       ggtitle(sprintf("GO Enrichment: %s - %s", ont, ct)) +
@@ -297,7 +354,7 @@ if(opt$datatype == "sn_fine"){
             
             # dotplot
             print(dotplot(gr,
-                          x = "DE_class_cluster",
+                          x = "DE_classes",
                           showCategory = 5,
                           label_format = 60)  +
                       ggtitle(sprintf("GO Enrichment: Opposite %s - %s", ont, ct)) +
@@ -318,7 +375,7 @@ if(opt$datatype == "sn_fine"){
             
             # dotplot
             print(dotplot(gr,
-                          x = "DE_class_cluster",
+                          x = "DE_classes",
                           showCategory = 5,
                           label_format = 60)  +
                       ggtitle(sprintf("GO Enrichment: %s - %s, 5+ genes", ont, ct)) +
@@ -329,21 +386,26 @@ if(opt$datatype == "sn_fine"){
     dev.off()
     
     go_result_Oligo3 <- map(go_result, function(gr){
-        gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl("Oligo.3", Cluster) | grepl("Astro.3", Cluster))
+        # gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl("Oligo.3", Cluster) | grepl("Astro.3", Cluster))
+        gr@compareClusterResult <- gr@compareClusterResult |> 
+            filter(grepl("Oligo.3", Cluster)) |>
+            mutate(DE_classes2 = gsub(", ", "\n", DE_classes),
+                   DE_classes3 = gsub(", Oligo.3_", "+", DE_classes))
         return(gr)
     })
     
     map(go_result_Oligo3, ~.x@compareClusterResult |> count(Cluster))
+    map(go_result_Oligo3, ~.x@compareClusterResult |> count(DE_classes3))
     
-    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s_Oligo.3.pdf", opt$contrast, opt$datatype)), width = 8, height = 8)
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s_Oligo.3.pdf", opt$contrast, opt$datatype)), width = 8, height = 12)
     walk2(go_result_Oligo3, names(go_result_Oligo3), function(gr, ont){
         
         if(nrow(gr@compareClusterResult) == 0) return(NULL)
         
         print(
             dotplot(gr, 
-                    x = "DE_class_cluster", 
-                    showCategory = 5, 
+                    x = "DE_classes3", 
+                    showCategory = 6, 
                     label_format = 60)  +
                 ggtitle(paste("GO Enrichment:", ont)) +
                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
@@ -361,10 +423,10 @@ if(opt$datatype == "sn_fine"){
         
         print(
             dotplot(gr, 
-                    x = "DE_class_cluster", 
+                    x = "DE_classes3", 
                     showCategory = 5, 
                     label_format = 60)  +
-                ggtitle(paste("GO Enrichment:", ont)) +
+                ggtitle(paste("GO Enrichment:", ont, " 5+ genes")) +
                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
         )
             }
