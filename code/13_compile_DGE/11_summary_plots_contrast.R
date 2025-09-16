@@ -94,26 +94,28 @@ dge_data_contrast <- readRDS(here("processed-data", "13_compile_DGE", dge_dir, d
 dge_data_contrast |> count(DE_class_cluster)
 
 DE_contrast_summary <- dge_data_contrast |> 
+    mutate(DE = ifelse(vlmf_adj.P.Val < 0.05, gsub("carrier_", "", contrast),"None")) |>
     group_by(gene_name, cluster) |> 
-    filter(!grepl("None", DE_class)) |> 
+    summarise(DE = paste(unique(DE), collapse = ", "),
+              n = n()) |>
+    ungroup() |>
+    count(cluster, DE)
+
+DE_contrast_summary_reg <- dge_data_contrast |> 
+    group_by(gene_name, cluster) |> 
     summarise(contrast = paste(sort(contrast), collapse = ", "),
               DE_classes = paste(sort(DE_class_cluster), collapse = ", "),
               n = n()) |>
     ungroup() |>
     count(cluster, contrast, DE_classes)
 
-DE_contrast_summary |> filter(cluster == "Oligo.3")
-
-DE_contrast_summary |> filter(cluster == "Oligo.3") |> group_by(contrast) |> summarise(n = sum(n))
-# contrast                   n
-# <chr>                  <int>
-# 1 carrier_AA               509
-# 2 carrier_AA, carrier_EA    24
-# 3 carrier_EA               209
 
 dge_data_contrast |> 
     filter(DE_class != "None") |> 
-    group_by()
+    count(contrast, cluster)
+
+dge_data_contrast |> 
+    filter(DE_class != "None") |> 
     count(contrast, cluster)
 
 #### combined summary barplot ####
@@ -140,6 +142,30 @@ if(datatype == "sn_fine"){
         filter(vlmf_adj.P.Val < 0.05,
                cluster == "Oligo.3") |>
         count(cluster, contrast) 
+    
+    DE_contrast_summary |> filter(cluster == "Oligo.3")
+    # cluster DE           n
+    # <fct>   <chr>    <int>
+    # 1 Oligo.3 AA, EA      24
+    # 2 Oligo.3 AA, None   509
+    # 3 Oligo.3 None     10754
+    # 4 Oligo.3 None, EA   209
+    
+    o3_mat <-  matrix(c(509, 24, 10754, 209), byrow = TRUE, ncol = 2)
+    fisher.test(o3_mat, alt = "greater")
+    
+#     Fisher's Exact Test for Count Data
+# 
+#       data:  o3_mat
+#       p-value = 0.9999
+#       alternative hypothesis: true odds ratio is greater than 1
+#       95 percent confidence interval:
+#       0.2838639       Inf
+#       sample estimates:
+#       odds ratio 
+#       0.4122245 
+    
+    DE_contrast_summary_reg |> filter(cluster == "Oligo.3")
     
     dge_count <- dge_count |> filter(n_FDR05 > 1)
     
