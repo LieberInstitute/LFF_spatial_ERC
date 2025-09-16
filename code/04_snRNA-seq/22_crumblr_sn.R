@@ -574,7 +574,7 @@ ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Age_forest.png"
 
 #### Plot cleanY CLR for Age ####
 
-mod <- model.matrix( ~ Age + APOE_carrier + Sex +  + Anc_Afr + exp_round , erc_info)
+mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + exp_round , erc_info)
 cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=2)
 
 clr_prop_long$CLR_cleanY_Age <- NULL
@@ -599,7 +599,7 @@ ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "clr_sactter_Age_Oligo.p
 
 #### Plot cleanY CLR for Age & APOE ####
 
-# mod <- model.matrix( ~ Age + APOE_carrier + Sex +  + Anc_Afr + exp_round , erc_info)
+# mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + exp_round , erc_info)
 cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=3)
 
 clr_prop_long$CLR_cleanY_carrier_Age <- NULL
