@@ -191,7 +191,7 @@ out_path = here(data_dir, 'model.hdf5')
 
 model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
 
-## how to read in mofa?
+## read-in MOFA data
 # model = load_model(out_path)
 
 ####  Exploratory plots ####
@@ -236,6 +236,7 @@ assoc_tb <- do.call("bind_rows", assoc_list) |>
 
 assoc_tb |> group_by(term) |> arrange(adj_pvalue) |> slice(1)
 
+write_csv(assoc_tb, file = here(data_dir, sprintf("MOFA_factor_associations_df-%s.csv", opt$datatype)))
 
 #   Show unadjusted p-value for consistency with other plots ??
 # assoc_list[['APOE']]$adj_pvalue = assoc_list[['APOE']]$p.value
@@ -277,22 +278,33 @@ factor_boxplot(var = "Braak", assoc_tb = assoc_tb)
 ## factor 3 boxplots
 
 # tau_colors <- c(`t-` = "#493657", `t+` = "#BF2626")
-tau_colors <- c(`t-` = "#AFA4B6", `t+` = "#684F7D")
+tau_colors <- c(`t-` = "#684F7D", `t+` = "#AFA4B6")
 
 F3_weights_boxplot <- factor_df |>
     filter(Factor == "Factor3") |>
     select(sample, APOE_carrier, taupathy, Sex, Factor3 = value) |>
-    pivot_longer(!c(sample, Factor3), names_to = "cat") |>
+    pivot_longer(!c(sample, Factor3), names_to = "term") |>
+    mutate(term = factor(term, levels = c("APOE_carrier", "taupathy", "Sex")))|>
     ggplot() +
     geom_boxplot(aes(x = value, y = Factor3, fill = value), outlier.shape = NA) +
     geom_jitter(aes(x = value, y = Factor3, fill = value), width = 0.1) +
-    facet_wrap(~cat, nrow = 1, scales = "free_x") +
+    facet_wrap(~term, nrow = 1, scales = "free_x") +
     scale_fill_manual(values = c(APOE_carrier_colors, sex_colors, tau_colors)) +
     labs(x = "samples", y = "Factor 3 Weight") +
     theme_bw() +
-    theme(legend.position = "None")
+    theme(legend.position = "None")  + 
+    ggplot2::geom_label(
+        data = assoc_tb |> 
+            filter(Factor == "Factor3", 
+                   term %in% c("APOE_carrier", "taupathy", "Sex")) |>
+            mutate(term = factor(term, levels = c("APOE_carrier", "taupathy", "Sex"))), 
+        ggplot2::aes(x = Inf, y = Inf, label = sprintf("pval=%.2e%s", adj_pvalue, signif)),
+        size = 2,
+        vjust = "inward", 
+        hjust = "inward"
+    )
 
-ggsave(F3_weights_boxplot, filename = here(plot_dir, "factor3_weights_boxplot.png"), height = 4, width = 6)
+ggsave(F3_weights_boxplot, filename = here(plot_dir, "factor3_weights_boxplot.png"), height = 4, width = 4)
 
 weights_boxplot <- weights_boxplot + ggplot2::geom_label(
     data = assoc_tb |> filter(term == var), 
@@ -314,13 +326,16 @@ F3_carrier_tau_boxplot <- factor_df |>
     mutate(carrier_tau = paste(APOE_carrier, taupathy)) |>
     ggplot() +
     geom_boxplot(aes(x = carrier_tau, y = value, fill = carrier_tau), outlier.shape = NA) +
-    geom_jitter(aes(x = carrier_tau, y = value, fill = carrier_tau), width = 0.1) +
+    geom_jitter(aes(x = carrier_tau, y = value, fill = carrier_tau, shape = Sex), width = 0.1) +
     scale_fill_manual(values = carrier_tau_colors) +
-    labs(x="APOE Carrier + Tau",y = "Factor3 Weight") +
+    labs(x="APOE Carrier + Tau", y = "Factor3 Weight") +
+    guides(fill = "none") +
     theme_bw() +
-    theme(legend.position = "None")
+    theme(legend.position = "right", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ggsave(F3_carrier_tau_boxplot, filename = here(plot_dir, "factor3_weights_boxplot_carrier_tau_boxplot.png"), height = 4, width = 6)
+
+ggsave(F3_carrier_tau_boxplot, filename = here(plot_dir, "factor3_weights_boxplot_carrier_tau_boxplot_small.png"), height = 4, width = 3)
 
 
 
