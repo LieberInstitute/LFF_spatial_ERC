@@ -298,7 +298,7 @@ F3_weights_boxplot <- factor_df |>
             filter(Factor == "Factor3", 
                    term %in% c("APOE_carrier", "taupathy", "Sex")) |>
             mutate(term = factor(term, levels = c("APOE_carrier", "taupathy", "Sex"))), 
-        ggplot2::aes(x = Inf, y = Inf, label = sprintf("pval=%.2e%s", adj_pvalue, signif)),
+        ggplot2::aes(x = Inf, y = Inf, label = sprintf("FDR=%.2e%s", adj_pvalue, signif)),
         size = 2,
         vjust = "inward", 
         hjust = "inward"
