@@ -14,6 +14,8 @@ library("spatialLIBD")
 # library("dendextend")
 # library("readxl")
 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
@@ -178,5 +180,37 @@ plot_marker_express_List(sce,
                          gene_name_col = "gene_name",
                          color_pal = cell_type_colors$anno,
 )
+
+
+#### plot on UMAP + TSNE ####
+message(Sys.time(), " - Plot UMAP + TSNE")
+
+## source reduced dims function
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+## plot annotated clusters
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "cell_type_anno",
+                          color_pal = cell_type_colors$anno))
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "cell_type_broad",
+                          color_pal = cell_type_colors$broad))
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "APOE_carrier",
+                          color_pal = APOE_carrier_colors))
 
 
