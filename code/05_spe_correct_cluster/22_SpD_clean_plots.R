@@ -324,6 +324,50 @@ plot_marker_express_ALL(
 )
 
 
+#### Layer5 sublayer plots ####
+
+
+L5_sublayer_express <- plot_gene_express(
+    spe,
+    genes = c("ETV1", "BCL11B","FEZF2"),
+    category = "SpD",
+    color_pal = SpD_colors,
+    ncol = 1
+)
+
+ggsave(L5_sublayer_express, filename = here(plot_dir, "L5_sublayer_expression.png"), height = 9, width = 4)
+
+L5_vis_gene <- map(c("ETV1", "BCL11B","FEZF2"), ~vis_gene(spe = spe,
+                                                            point_size = 1.7,
+                                                            sampleid = "Br5517",
+                                                            geneid = .x,
+                                                            spatial = TRUE))
+
+
+ggsave(Reduce("/", L5_vis_gene), filename = here(plot_dir, "L5_sublayer_vis_gene.png"), height = 15, width = 8)
+
+
+library("escheR")
+
+L5_escheR <- map(c("ETV1", "BCL11B","FEZF2"), function(g){
+    
+    spe$logcounts <- logcounts(spe)[which(rowData(spe)$gene_name==g),]
+    
+    p <- make_escheR(spe[, spe$sample_id %in% c("Br5517")]) |>
+        add_ground(var = "SpD") |>
+        add_fill(var = "logcounts") + 
+        scale_fill_gradient(low = "white", high = "black") +
+        scale_color_manual(values = SpD_colors) +
+        labs(title = g)
+
+}
+)
+
+ggsave(Reduce("/", L5_escheR), filename = here(plot_dir, "L5_sublayer_escher.png"), height = 15, width = 8)
+
+
+
+
 # slurmjobs::job_single('22_SpD_clean_plots', create_shell = TRUE, memory = '5G', command = "Rscript 22_SpD_clean_plots.R")
 
 ## Reproducibility information
