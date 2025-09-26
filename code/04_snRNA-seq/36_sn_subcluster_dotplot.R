@@ -115,7 +115,7 @@ dev.off()
 
 
 #### Global Enrichment Dot plot ####
-enrichment_stats_top <- read.csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv"))
+enrichment_stats_top <- read.csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv")) |> filter(top == 1)
 
 non_unique <- enrichment_stats_top |> count(ensembl) |> filter(n != 1) |> pull(ensembl)
 
@@ -134,15 +134,47 @@ sce |>
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "GlobalEnrich",
-              # scale = TRUE,
+              scale = FALSE,
               annoColors = list(cell_type_anno = cell_type_colors$anno,
                                 GlobalEnrich = cell_type_colors$anno),
+              clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE
     )
 dev.off()
 
-## Oligo Enrich genes
+
+#### Mean Ratio Dot plot ####
+
+load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
+
+marker_stats_top <- marker_stats_MeanRatio |>
+    filter(MeanRatio.rank <= 2, MeanRatio > 1, gene_name %in% rownames(sce_pb)) |>
+    arrange(cellType.target)
+
+marker_stats_top  |> print(n = 35)
+
+rowData(sce)$MeanRatio <- NULL
+rowData(sce)$MeanRatio <- marker_stats_top$cellType.target[match(rownames(sce), marker_stats_top$gene)] 
+table(rowData(sce)$MeanRatio)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_genes.pdf")), height = 14, width = 10)
+sce |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "MeanRatio",
+              scale = TRUE,
+              annoColors = list(cell_type_anno = cell_type_colors$anno,
+                                MeanRatio = cell_type_colors$anno),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
+
+#### Oligo Enrich genes ####
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.pdf")), height = 5, width = 10)
 sce |>
     scDotPlot(features = enrichment_stats_top |> filter(cell_type_anno == "Oligo.03") |> pull(ensembl),
