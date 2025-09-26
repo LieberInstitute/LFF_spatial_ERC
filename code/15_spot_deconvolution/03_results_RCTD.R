@@ -199,7 +199,7 @@ n_nuclei_density <- ggplot(pd, aes(x = num_nuclei_within, color = SpD)) +
 ggsave(n_nuclei_density, filename = here(plot_dir, "ERC_Visium_SpD_density_n_nuclei.png"), width = 4, height =7)
 
 
-## vis_gene
+## vis_gene for nuclei counts
 
 vis_n_nuc_test <- vis_gene(
     spe = spe_rctd,
@@ -279,6 +279,8 @@ Heatmap(SpD_major_cell_prop,
         cluster_columns = FALSE,
         col = col_fun)
 dev.off()
+
+
 
 
 #### long data ####
@@ -460,6 +462,36 @@ if(cell_type_col == "cell_type_broad"){
 
 
 ggsave(rcdt_mean_boxplot, filename = here(plot_dir, "rcdt_mean_boxplot.png"), height = 10)
+
+
+#### Dot plot ####
+
+library("scDotPlot")
+
+assayNames(spe_rctd)
+rowData(spe_rctd) <- DataFrame(cell_type = rownames(spe_rctd))
+
+## hack for scDotPlot
+assay(spe_rctd, "logcounts") <- assay(spe_rctd, "weights") 
+
+# cell_type_colors$broad
+
+weight_dotplot <- spe_rctd |>
+    scDotPlot(features = rownames(spe_rctd),
+              group = "SpD",
+              groupAnno = "SpD",
+              featureAnno = "cell_type",
+              # scale = TRUE,
+              annoColors = list("SpD" = SpD_colors,
+                                cell_type = cell_type_colors$broad),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+
+ggsave(weight_dotplot, filename = here(plot_dir, sprintf("rcdt_dotplot_weights-%s.pdf", cell_type_col)), height = 7, width = 5)
+ggsave(weight_dotplot, filename = here(plot_dir, sprintf("rcdt_dotplot_weights-%s.png", cell_type_col)), height = 7, width = 5)
+
 
 #### compare to sn prop ####
 
