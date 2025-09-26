@@ -324,7 +324,17 @@ plot_marker_express_ALL(
 )
 
 
+sig_genes_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "sig_genes_SpD.rds"))
+
 #### Layer5 sublayer plots ####
+
+sig_genes_SpD |>
+    as.data.frame() |>
+    dplyr::filter(gene %in% c("ETV1", "BCL11B","FEZF2"),
+                  model_type == "enrichment") |>
+    arrange(fdr) |>
+    group_by(gene) |>
+    slice_min(fdr)
 
 
 L5_sublayer_express <- plot_gene_express(
@@ -336,6 +346,18 @@ L5_sublayer_express <- plot_gene_express(
 )
 
 ggsave(L5_sublayer_express, filename = here(plot_dir, "L5_sublayer_expression.png"), height = 9, width = 4)
+
+L5_sublayer_express_pb <- plot_gene_express(
+    spe_pb,
+    genes = c("ETV1", "BCL11B","FEZF2"),
+    category = "SpD",
+    color_pal = SpD_colors,
+    # plot_type = "boxplot",
+    plot_points = TRUE,
+    ncol = 1
+)
+
+ggsave(L5_sublayer_express_pb, filename = here(plot_dir, "L5_sublayer_expression_pb.png"), height = 9, width = 4)
 
 L5_vis_gene <- map(c("ETV1", "BCL11B","FEZF2"), ~vis_gene(spe = spe,
                                                             point_size = 1.7,
