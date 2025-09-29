@@ -347,8 +347,17 @@ if(celltype == "Oligo"){
     # o5  0.7063523  0.5439999 -0.6512348  0.35844107 -0.6110251
     # o6  0.5113262  0.4239644 -0.5416082  0.12368402 -0.3155310
     
-    pdf(here(plot_dir, "Oligo_grubman_cor_logFC.pdf"), height = 4, width = 6)
-    Heatmap(t(erc_v_grubman_cor_wide), name = "logFC cor")
+    
+    ## grubman annotations 
+    grubmab_anno <- data.frame(annotation = c("AD", "AD","AD", "Undetermined", "Control", "Control"))
+    rownames(grubmab_anno) <- paste0("o", 1:6)
+    
+    grubman_col_ha <- HeatmapAnnotation(df = grubmab_anno,
+                                         col = list("annotation" = c(AD = "purple",Undetermined = "black", Control = "Green")))
+    
+    pdf(here(plot_dir, "Oligo_grubman_cor_logFC.pdf"), height = 4, width = 8)
+    Heatmap(t(erc_v_grubman_cor_wide), name = "logFC cor",
+            bottom_annotation = grubman_col_ha)
     dev.off()
         
     
