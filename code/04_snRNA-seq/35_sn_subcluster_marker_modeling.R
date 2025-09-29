@@ -11,6 +11,7 @@ library("tidyverse")
 library("getopt")
 library("spatialLIBD")
 library("scDotPlot")
+library("ComplexHeatmap")
 
 # Import command-line parameters
 scec <- matrix(
@@ -275,6 +276,7 @@ dev.off()
 #     dev.off()
 # })
 
+#### Oligo Grubman Cor ####
 if(celltype == "Oligo"){
     
     grubman_subtypes_fn <- list.files(here("external-data", "Grubman2019"), pattern = "Oligo_", full.names = TRUE)
@@ -283,10 +285,10 @@ if(celltype == "Oligo"){
     grubman_subtypes_data <- map2_dfr(grubman_subtypes_fn, names(grubman_subtypes_fn), ~read.csv(.x) |> mutate(g_cell_type = .y)) |>
         rename(gene = geneName)
     
-    # grubman_subtypes_data |> count(cell_type)
+    grubman_subtypes_data |> count(g_cell_type)
     
-    top500_enrichment_genes <- sig_genes_extract(
-        n = 1000,
+    enrichment_genes <- sig_genes_extract(
+        n = nrow(sce_pseudo),
         modeling_results = modeling_results,
         model_type = "enrichment",
         reverse = FALSE,
@@ -294,13 +296,15 @@ if(celltype == "Oligo"){
         gene_name = "gene_name"
     )
 
-    erc_v_grubman <- top500_enrichment_genes |>
-        inner_join(grubman_subtypes_data)
+    erc_v_grubman <- enrichment_genes |>
+        inner_join(grubman_subtypes_data, relationship = "many-to-many")
     
     erc_v_grubman_cor <- erc_v_grubman |>
         group_by(test, g_cell_type) |>
         summarise(n = n(),
                   cor = cor(logFC, LFC))
+    
+    write_csv(erc_v_grubman_cor, file = here(data_dir, "erc_v_grubman_oligo_cor.csv"))
     
     erc_v_grubman_cor |>
         group_by(test) |> 
@@ -309,24 +313,78 @@ if(celltype == "Oligo"){
     
     # test    g_cell_type     n   cor
     # <chr>   <chr>       <int> <dbl>
-    # 1 Oligo.1 o5             26 0.476
-    # 2 Oligo.2 o4             48 0.598
-    # 3 Oligo.3 o5             14 0.430
-    # 4 Oligo.4 o3              6 0.700
-    # 5 Oligo.5 o1             10 0.358
+    # 1 Oligo.1 o5             95 0.706
+    # 2 Oligo.2 o5             95 0.544
+    # 3 Oligo.3 o4            651 0.752
+    # 4 Oligo.4 o5             95 0.358
+    # 5 Oligo.5 o4            651 0.482
     
     erc_v_grubman_cor |>
-        select(-n) |>
-        pivot_wider(names_from = "test", values_from = "cor")
+        group_by( g_cell_type) |> 
+        arrange(-cor) |>
+        slice(1) 
     
-    # g_cell_type Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5
-    # <chr>         <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
-    # 1 o1            0.104   0.237   0.132   0.212  0.358 
-    # 2 o2           -0.328  -0.331  -0.330  -0.444 -0.398 
-    # 3 o3            0.156  -0.238  -0.243   0.700  0.191 
-    # 4 o4           -0.296   0.598   0.162   0.464  0.0669
-    # 5 o5            0.476  -0.208   0.430  -0.710 -0.320 
+    # test    g_cell_type     n   cor
+    # <chr>   <chr>       <int> <dbl>
+    # 1 Oligo.3 o1            411 0.483
+    # 2 Oligo.2 o2            394 0.397
+    # 3 Oligo.1 o3             96 0.303
+    # 4 Oligo.3 o4            651 0.752
+    # 5 Oligo.1 o5             95 0.706
+    # 6 Oligo.1 o6            212 0.511
+    
+    (erc_v_grubman_cor_wide <- erc_v_grubman_cor |>
+            select(-n) |>
+            pivot_wider(names_from = "test", values_from = "cor") |>
+            column_to_rownames("g_cell_type") |>
+            as.matrix())
+    
+    # Oligo.1    Oligo.2    Oligo.3     Oligo.4    Oligo.5
+    # o1 -0.4213429 -0.3937171  0.4830757 -0.08971312  0.2299773
+    # o2  0.3170668  0.3972655 -0.4272965  0.03675172 -0.2132549
+    # o3  0.3034454  0.2883027 -0.4272468  0.28193107 -0.2031632
+    # o4 -0.6556795 -0.6273667  0.7524666 -0.33494686  0.4816174
+    # o5  0.7063523  0.5439999 -0.6512348  0.35844107 -0.6110251
+    # o6  0.5113262  0.4239644 -0.5416082  0.12368402 -0.3155310
+    
+    pdf(here(plot_dir, "Oligo_grubman_cor_logFC.pdf"), height = 4, width = 6)
+    Heatmap(t(erc_v_grubman_cor_wide), name = "logFC cor")
+    dev.off()
         
+    
+    ## grubman marker dot plot
+    
+    grubman_o_makers <- grubman_subtypes_data |>
+        group_by(g_cell_type) |>
+        arrange(-LFC) |>
+        slice(1:5) |>
+        ungroup() |>
+        group_by(gene) |>
+        slice_max(LFC) |>
+        filter(gene %in% rownames(sce)) |>
+        arrange(g_cell_type)
+    
+    # grubman_o_makers |>
+    #     ungroup() |>
+    #     count(gene) |>
+    #     filter(n==2)
+    #     
+    
+    rowData(sce)$Grubman_Oligo <- NULL
+    rowData(sce)$Grubman_Oligo <- grubman_o_makers$g_cell_type[match(rownames(sce), grubman_o_makers$gene)] 
+    table(rowData(sce)$Grubman_Oligo)
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Grubman_Oligo.pdf", celltype)))
+    sce |>
+        scDotPlot(features = grubman_o_makers$gene,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Grubman_Oligo",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    dev.off()
     
 }
 
@@ -397,6 +455,7 @@ dev.off()
 
 # disease associated 
 #### Cell type checks ####
+#### Oligo ####
 if(celltype == "Oligo"){
     
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
