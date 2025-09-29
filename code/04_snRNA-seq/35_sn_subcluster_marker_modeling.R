@@ -304,6 +304,8 @@ if(celltype == "Oligo"){
         summarise(n = n(),
                   cor = cor(logFC, LFC))
     
+    write_csv(erc_v_grubman_cor, file = here(data_dir, "erc_v_grubman_oligo_cor.csv"))
+    
     erc_v_grubman_cor |>
         group_by(test) |> 
         arrange(-cor) |>
