@@ -16,13 +16,13 @@ namely:
 
 We provide the following interactive websites to explore the ERC data:
 
-- 🔭 [LFF_ERC_Visium](https://libd.shinyapps.io/LFF_ERC_Visium/):
+- 🔭 [LFF_ERC_Visium](https://interactive.libd.org/LFF_ERC_spatialLIBD-app/):
     Visium data for 31 samples post-QC w/ clustering and modeling results
     
 - 🔭 [LFF_ERC_Visium_QC](https://libd.shinyapps.io/LFF_ERC_Visium_QC/):
     Visium data for 31 samples pre-QC drops (including out-tissue spots)
     
-- 👀 [iSEE](https://libd.shinyapps.io/LFF_ERC_snRNA-seq/):
+- 👀 [iSEE](https://interactive.libd.org/LFF_ERC_iSEE-app/):
     snRNA-seq data for 31 samples
     
 ## Main Data
