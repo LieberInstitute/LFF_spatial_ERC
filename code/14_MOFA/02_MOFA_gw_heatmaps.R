@@ -61,7 +61,7 @@ summary(gene_weights$Factor3$value)
 if(opt$datatype == "sn_broad"){
     my_views <- c("Oligo","WM~Sp09D06")
 } else if(opt$datatype == "sn_fine"){
-    my_views <- c("Oligo.3","Oligo.4","Oligo.5","WM~Sp09D06") #Excit.L5.2 - ugly when added
+    my_views <- c("Oligo.3","Oligo.4","Oligo.5","Excit.L5.2","WM~Sp09D06") #Excit.L5.2 - ugly when added
 }
 
 top_gene_weights <- gene_weights$Factor3 |>
@@ -73,6 +73,18 @@ top_gene_weights <- gene_weights$Factor3 |>
     arrange(-abs_value) |>
     dplyr::slice(1:5)
 
+# duplicated genes?
+top_gene_weights |> ungroup() |> count(gene_name) |> arrange(-n)
+
+view_table <- top_gene_weights |> 
+    ungroup() |> 
+    group_by(gene_name) |> 
+    summarise(n = n(),
+              weight_pos = Reduce('|', weight_pos),
+              view = paste0(ctype, collapse = ", ")
+              ) 
+
+view_table |> filter(n > 1)
 
 ## prep heatmap 
 top_gw_value_matrix <- gene_weights$Factor3 |>
@@ -92,23 +104,46 @@ row_order <- top_gene_weights |>
     arrange(-max_value) |>
     pull(gene_name)
 
-top_gw_value_matrix <- top_gw_value_matrix[row_order,col_order]
-
 dim(top_gw_value_matrix)
 top_gw_value_matrix[1:5, 1:5]
 
 
-pdf_width_all <- (nrow(top_gw_value_matrix)/8) + 3
-pdf_width_select <- (length(my_views)/8) + 3
+pdf_width_all <- (nrow(top_gw_value_matrix)/8) + 4
+pdf_width_select <- (length(my_views)/8) + 4
 
 pdf_height <- length(row_order)/5
+
+## annotations
+view_levels <- c("Multi", my_views)
+
+view_table_anno <- view_table |>
+    mutate(view = factor(ifelse(n > 1, "Multi", view), levels = view_levels)) |>
+    select(gene_name, positive_weight = weight_pos, view) |>
+    column_to_rownames("gene_name") |>
+    arrange(-positive_weight, view)
+
+# view_table_anno <- view_table_anno[rownames(top_gw_value_matrix),,drop= FALSE]
+
+view_colors <- c(cell_type_colors$anno, SpD_colors)[my_views]
+view_colors <- c(view_colors, Multi = "grey30")
+
+view_table_anno_row<- rowAnnotation(
+    df = view_table_anno,
+    col = list(view = view_colors,
+               positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"))
+)
+
+
+# top_gw_value_matrix <- top_gw_value_matrix[row_order,col_order]
+top_gw_value_matrix <- top_gw_value_matrix[rownames(view_table_anno),col_order]
 
 ## weights across all clusters
 pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_all.pdf", opt$datatype)), width = pdf_width_all, height = pdf_height)
 Heatmap(top_gw_value_matrix,
         name = "feature\nweights",
         cluster_rows = FALSE,
-        cluster_columns = FALSE)
+        cluster_columns = FALSE,
+        right_annotation = view_table_anno_row)
 dev.off()
 
 ## select clusters
@@ -116,7 +151,16 @@ pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_select.pdf", opt$datatyp
 Heatmap(top_gw_value_matrix[,my_views],
         name = "feature\nweights",
         cluster_rows = FALSE,
-        cluster_columns = FALSE)
+        cluster_columns = FALSE,
+        right_annotation = view_table_anno_row)
+dev.off()
+
+pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_select_cluster.pdf", opt$datatype)), width = pdf_width_select, height = pdf_height)
+Heatmap(top_gw_value_matrix[,my_views],
+        name = "feature\nweights",
+        cluster_rows = FALSE,
+        cluster_columns = TRUE,
+        right_annotation = view_table_anno_row)
 dev.off()
 
 #### DEG data ####
@@ -136,7 +180,8 @@ source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
 ## all clusters
 logFC_Heatmap(dge_data, 
-              gene_list = row_order,
+              # gene_list = row_order,
+              gene_list = rownames(view_table_anno),
               title = "Factor3", 
               h = pdf_height, 
               w = pdf_width_all, 
@@ -144,11 +189,26 @@ logFC_Heatmap(dge_data,
               datatype = "MOFA",
               flip = TRUE,
               save = TRUE,
-              order_genes = FALSE)
+              order_genes = FALSE,
+              row_anno = view_table_anno_row)
 
 ## select clusters
+
+MOFA_deg_data <- dge_data |> 
+    filter(cluster %in% my_views, 
+           gene_name %in% rownames(view_table_anno))
+
+common_genes <- rownames(view_table_anno)[!rownames(view_table_anno) %in% MOFA_deg_data$gene_name]
+
+view_table_anno_row2 <- rowAnnotation(
+    df = view_table_anno[common_genes,],
+    col = list(view = view_colors,
+               positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"))
+)
+
 logFC_Heatmap(dge_data |> filter(cluster %in% my_views), 
-              gene_list = row_order,
+              # gene_list = row_order,
+              gene_list = rownames(view_table_anno),
               title = "Factor3_select", 
               h = pdf_height, 
               w = pdf_width_select, 
@@ -156,7 +216,8 @@ logFC_Heatmap(dge_data |> filter(cluster %in% my_views),
               datatype = "MOFA",
               flip = TRUE,
               save = TRUE,
-              order_genes = FALSE)
+              order_genes = FALSE,
+              row_anno = view_table_anno_row2)
 
 #### GO on top genes ####
 library("org.Hs.eg.db")

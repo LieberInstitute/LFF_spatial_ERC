@@ -109,6 +109,14 @@ spe_rctd$num_nuclei_intersect <- nuc_count[spe_rctd$key2, "num_nuclei_intersect"
 
 pd <- colData(spe_rctd) |> as.data.frame()
 
+summary(spe_rctd$num_nuclei_within)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.000   1.000   3.000   3.632   5.000  59.000 
+
+summary(spe_rctd$num_nuclei_intersect)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.00    3.00    5.00    5.45    7.00   70.00 
+
 # pd |>
 #     group_by(SpD) |>
 #     summarise(median_nuc = median(CNmask_dark_blue),

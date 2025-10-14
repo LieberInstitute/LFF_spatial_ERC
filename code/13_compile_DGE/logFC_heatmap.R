@@ -74,7 +74,7 @@ logFC_Heatmap <- function(data,
                               name = "log(FC)",
                               cluster_rows = FALSE,
                               cluster_columns = cluster_col,
-                              left_annotation = row_anno,
+                              right_annotation = row_anno,
                               bottom_annotation = col_anno,
                               cell_fun = function(j, i, x, y, width, height, fill) {
                                   grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
