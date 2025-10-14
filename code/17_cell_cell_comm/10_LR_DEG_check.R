@@ -229,7 +229,27 @@ if(opt$datatype == "sn_fine"){
     liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
     liana_data_summary |> filter(grepl("Astro", source), target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
     
-    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")|> ungroup() |> count(source) |> arrange(-n)
+    # source               n
+    # <fct>            <int>
+    # 1 Excit.L2            15
+    # 2 Excit.L6b           14
+    # 3 Inhib.Lamp5_Lhx6    11
+    # 4 Inhib.Pvalb         11
+    
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3")|> ungroup() |> count(target) |> arrange(-n)
+    # target               n
+    # <fct>            <int>
+    # 1 Excit.L2            24
+    # 2 Excit.L6b           17
+    # 3 Excit.L5.1          15
+    # 4 Inhib.Sst            9
+    # 5 Excit.L2_5.1         8
+    
+    
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20) |> ungroup() |> count(target == "Oligo.3", source == "Oligo.3")
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20) |> ungroup() |> count(target == "Oligo.3", source == "Oligo.3")
+    liana_data_summary |> ungroup() |> filter(target == "Oligo.3", source == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
     
     }
    
@@ -316,8 +336,16 @@ if(opt$datatype == "sn_fine"){
         filter(source == "Oligo.3") |> 
         arrange(-n)
     
-    LR_count_bar_Oligo.3 <- source_target_counts |>
+    source_target_counts |>
+        filter(source == "Oligo.3" & target == "Oligo.3")  
+    
+    source_target_counts |>
         filter(source == "Oligo.3" | target == "Oligo.3") |>
+        mutate(st = paste(source, target)) |>
+        select(st, source, target, n)
+    
+    LR_count_bar_Oligo.3 <- source_target_counts |>
+        filter(source == "Oligo.3" | target == "Oligo.3") |> 
         mutate(st = paste(source, target)) |>
         select(st, source, target, n) |>
         pivot_longer(!c(n, st), names_to = "class", values_to = "cell_type") |>
