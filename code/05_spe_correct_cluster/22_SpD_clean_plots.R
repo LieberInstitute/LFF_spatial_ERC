@@ -97,6 +97,25 @@ qc_violin_mito <- ggplot(pd, aes(x = SpD, y = expr_chrM_ratio, fill = SpD)) +
 
 ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_Visium_QC_SpD_violin_Mito_percent.png"), width = 7, height =4)
 
+#### SpD metrics ####
+SpD_info <- read_csv(here("processed-data", "05_spe_correct_cluster", "19_SpD_update_spe", "ERC_spe_cluster_info.csv")) |>
+    mutate(SpD = factor(SpD, levels = names(SpD_colors)))
+
+# n nuclei bar plot 
+
+SpD_barplot_n_spots <- SpD_info |>
+    ggplot(aes(x = SpD, y =n, fill = SpD)) +
+    geom_col() +
+    geom_text(aes(label = n), vjust = -.5) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw()  +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    labs(y = "n spots")
+    
+    
+ggsave(SpD_barplot_n_spots, filename = here(plot_dir, "ERC_SpD_barplot_n_spots.png"), height = 5, width = 7)
+
 #### n nuclei ####
 summary(pd$CNmask_dark_blue)
 
