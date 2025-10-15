@@ -114,7 +114,7 @@ qc_violin_mito <- ggplot(pd, aes(x = cell_type_anno, y = subsets_Mito_percent, f
     # scale_y_continuous(trans='log10') +
     theme_bw() +
     facet_grid(.~cell_type_broad, scales = "free_x", space = "free") +
-    labs(x = "Cell Type", y = "Precent Mito") +
+    labs(x = "Cell Type", y = "Percent Mito") +
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 

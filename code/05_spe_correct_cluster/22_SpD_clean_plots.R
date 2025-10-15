@@ -91,7 +91,7 @@ qc_violin_mito <- ggplot(pd, aes(x = SpD, y = expr_chrM_ratio, fill = SpD)) +
     geom_violin(draw_quantiles = c(.5)) +
     scale_fill_manual(values = SpD_colors) +
     theme_bw() +
-    labs(y = "Precent Mito") +
+    labs(y = "Percent Mito") +
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
