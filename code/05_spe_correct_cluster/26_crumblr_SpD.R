@@ -8,6 +8,7 @@ library("variancePartition")
 library("here")
 library("sessioninfo")
 library("dendextend")
+library("jaffelab")
 
 ## Prep directories
 plot_dir <- here("plots", "05_spe_correct_cluster", "26_crumblr_SpD")
@@ -180,6 +181,33 @@ fit <- eBayes(fit)
 # Vasc_Sp09D08  -0.01867111 -0.67172007 -0.07730314 0.93909390 0.9390939 -4.762624
 
 write.csv(diff_prop_APOE_carrier, file = here(data_dir, "SpD_diff_prop_APOE_carrier.csv"))
+
+#### cleanY on cobj  APOE_carrier ####
+
+mod <- model.matrix( ~ APOE_carrier + Sex + Age + Anc_Afr + Visium_slide , erc_info)
+cleanY_cobj <- cleaningY(cobj$E , mod, P=2)
+head(cleanY_cobj)
+
+clean_clr_prop_long <- cleanY_cobj |>
+    as.data.frame() |>
+    rownames_to_column("SpD_syn") |>
+    pivot_longer(!SpD_syn, names_to = "sample_id", values_to = "CLR_cleanY")
+
+clr_prop_long <- clr_prop_long |> left_join(clean_clr_prop_long)
+
+## clr plot of top results
+clr_cleanY_boxplot_APOE_carrier  <- clr_prop_long |>
+    ggplot(aes(x = APOE_carrier, y = CLR_cleanY, fill = APOE_carrier)) +
+    geom_boxplot(outlier.shape = NA) +
+    # geom_jitter(aes(color = error), width = .1) +
+    geom_jitter(width = .1) +
+    facet_wrap(~SpD, scales = "free_y", nrow = 1) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(clr_cleanY_boxplot_APOE_carrier, filename = here(plot_dir, "clr_cleanY_boxplot_APOE_carrier.png"), height = 4, width = 12)
+
 
 # Perform multivariate test across the hierarchy - APOE_carrier
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
