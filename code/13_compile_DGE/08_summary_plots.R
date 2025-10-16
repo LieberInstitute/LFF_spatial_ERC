@@ -75,10 +75,14 @@ dge_summary_bar_reg <- dge_count_combined |>
     pivot_longer(!c(cluster, contrast), names_to = "reg", values_to = "n_genes") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
-    geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""))) +
+    geom_text(aes(y = n_genes + (n_genes/abs(n_genes)*40), label = ifelse(n_genes != 0, abs(n_genes), ""), color = reg)) +
+    # geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""), color = reg), 
+    #                 size = 3) +
     facet_wrap(~contrast, ncol = 1) +
     scale_fill_manual(values = c(Up = APOE_carrier_colors[["E4+"]],
-                                 Down = APOE_carrier_colors[["E2+"]])) +
+                                 Down = APOE_carrier_colors[["E2+"]])) +    
+    scale_color_manual(values = c(Up = APOE_carrier_colors_dark[["E4+"]],
+                                 Down = APOE_carrier_colors_dark[["E2+"]])) +
     theme_bw() +
     labs(title = sprintf("DGE - %s", datatype), y = "n DE genes (FDR < 0.05)") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
@@ -87,7 +91,7 @@ dge_summary_bar_reg <- dge_count_combined |>
 ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_bar_reg_combined.png", datatype)), height = 5, width = 6)
 
 if(datatype == "sn_fine"){
-    ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_bar_reg_combined_wide.png", datatype)), height = 5, width = 10)
+    ggsave(dge_summary_bar_reg, filename = here(plot_dir, sprintf("DGE_%s_summary_bar_reg_combined_wide.png", datatype)), height = 8, width = 10)
     
 }
 
