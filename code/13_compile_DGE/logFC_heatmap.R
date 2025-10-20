@@ -14,7 +14,7 @@ logFC_Heatmap <- function(data,
     
     logFC_matrix <- data |>
         filter(gene_name %in% gene_list) |>
-        select(cluster, gene_name, vlmf_logFC) |>
+        dplyr::select(cluster, gene_name, vlmf_logFC) |>
         pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
         column_to_rownames("cluster") |>
         as.matrix()
@@ -26,7 +26,7 @@ logFC_Heatmap <- function(data,
                                   vlmf_adj.P.Val < 0.05 ~ "*",
                                   TRUE ~ "")
         ) |>
-        select(cluster, gene_name, signif) |>
+        dplyr::select(cluster, gene_name, signif) |>
         pivot_wider(names_from = gene_name, values_from = signif) |>
         column_to_rownames("cluster") |>
         as.matrix()
@@ -108,7 +108,7 @@ logFC_Heatmap_contrast <- function(dge_data,
         mutate(cluster_contrast = paste0(cluster, gsub("carrier","", contrast))) 
     
     logFC_matrix <- dge_data_filter|>
-        select(cluster_contrast, gene_name, vlmf_logFC) |>
+        dplyr::select(cluster_contrast, gene_name, vlmf_logFC) |>
         pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
         column_to_rownames("cluster_contrast") |>
         as.matrix()
@@ -119,7 +119,7 @@ logFC_Heatmap_contrast <- function(dge_data,
                                   vlmf_adj.P.Val < 0.05 ~ "*",
                                   TRUE ~ "")
         ) |>
-        select(cluster_contrast, gene_name, signif) |>
+        dplyr::select(cluster_contrast, gene_name, signif) |>
         pivot_wider(names_from = gene_name, values_from = signif) |>
         column_to_rownames("cluster_contrast") |>
         as.matrix()
