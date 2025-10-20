@@ -8,6 +8,8 @@ library(ComplexHeatmap)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
+source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
+
 num_factors = 7
 specific_factor = 'Factor3'
 fdr_cutoff = 0.05
@@ -19,12 +21,21 @@ cell_colors_path = here(
     "processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"
 )
 spd_colors_path = here("processed-data", "SpD_colors.Rdata")
+project_colors_path = here("processed-data", "project_colors.Rdata")
 model_path = here(
     "processed-data", "14_MOFA", "01_MOFA", "sn_fine", "model.hdf5"
 )
 sce_path = here(
     "processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn",
     "sce_pseudo_DGE-cell_type_anno.RDS"
+)
+spd_dge_path = here(
+    "processed-data", "13_compile_DGE", "01_compile_DGE", "Visium",
+    "DGE_results_carrier_Visium.Rds"
+)
+sn_dge_path = here(
+    "processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine",
+    "DGE_results_carrier_sn_fine.Rds"
 )
 plot_dir = here("plots", "14_MOFA", "04_reduced_gw_heatmap")
 
@@ -33,6 +44,7 @@ dir.create(file.path(plot_dir, 'GO'), recursive = TRUE, showWarnings = FALSE)
 #   Prepare view colors
 load(cell_colors_path, verbose = TRUE)
 load(spd_colors_path, verbose = TRUE)
+load(project_colors_path, verbose = TRUE)
 names(SpD_colors) = sub('~', '_', names(SpD_colors))
 view_colors = c(cell_type_colors$anno, SpD_colors)[my_views]
 view_colors = c(view_colors, Multi = "grey30")
@@ -109,6 +121,26 @@ Heatmap(
     right_annotation = view_table_row
 )
 dev.off()
+
+#   Also produce a corresponding heatmap of logFC from DGE results
+dge_data = bind_rows(readRDS(spd_dge_path), readRDS(sn_dge_path)) |>
+    mutate(cluster = sub('~', '_', cluster)) |>
+    filter(cluster %in% my_views)
+
+cluster_levels = c(names(cell_type_colors$anno), names(SpD_colors))
+logFC_Heatmap(
+    dge_data, 
+    gene_list = rownames(view_table),
+    title = "Factor3", 
+    h = nrow(view_table) / 4 + 1, 
+    w = length(my_views) / 4 + 2, 
+    cluster_col = FALSE,
+    datatype = "MOFA",
+    flip = TRUE,
+    save = TRUE,
+    order_genes = FALSE,
+    row_anno = view_table_row
+)
 
 ################################################################################
 #   GO of top-weighted genes
