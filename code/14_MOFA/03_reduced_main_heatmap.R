@@ -51,62 +51,29 @@ highlighted_views = factor_weights |>
     pull(view)
 
 stopifnot(all(highlighted_views %in% colnames(factor_weights)))
-factor_weights = factor_weights[, highlighted_views]
+factor_weights = factor_weights[
+    specific_factor, highlighted_views, drop = FALSE
+]
 
 col_fun_r2 = colorRamp2(
-    seq(0, min(100, max(factor_weights, na.rm = TRUE) + 5), length = 50),
+    seq(0, min(100, max(factor_weights, na.rm = TRUE)), length = 50),
     hcl.colors(50, "Oranges", rev = TRUE)
-)
-
-################################################################################
-#   Donor-level covariates column annotation
-################################################################################
-
-#   Test association of a couple donor-level covariates with each factor
-assoc_list = list()
-for (var_name in c("APOE_carrier", "taupathy")) {
-    assoc_list[[var_name]] = get_associations(
-        model = model,
-        metadata = samples_metadata(model),
-        sample_id_column = "sample",
-        test_variable = var_name,
-        test_type = "categorical",
-        group = FALSE
-    )
-}
-
-#   Show unadjusted p-value for consistency with other plots
-for (var_name in names(assoc_list)) {
-    assoc_list[[var_name]]$adj_pvalue = assoc_list[[var_name]]$p.value
-}
-
-assoc_pvals = assoc_list |>
-    tibble::enframe(name = "test") |>
-    tidyr::unnest(c(value)) |>
-    dplyr::mutate(log_adjpval = -log10(.data$adj_pvalue)) |>
-    dplyr::select(test, Factor, log_adjpval) |>
-    tidyr::pivot_wider(names_from = test, values_from = log_adjpval) |>
-    dplyr::select(-Factor) |>
-    as.matrix()
-
-col_fun_assoc = colorRamp2(
-    seq(0, max(assoc_pvals) + 0.5, length = 20),
-    hcl.colors(20, "Purples", rev = TRUE)
 )
 
 column_ha = HeatmapAnnotation(
     "R2" = factor_weights,
-    "pvalue" = assoc_pvals,
     gap = unit(2.5, "mm"),
     border = TRUE,
-    col = list(R2 = col_fun_r2, pvalue = col_fun_assoc)
+    col = list(R2 = col_fun_r2)
 )
 
 ################################################################################
 #   Main heatmap body
 ################################################################################
 
-factor_matrix = get_factors(model, factors = "all")$single_group
+factor_matrix = get_factors(model, factors = "all")$single_group[
+    , specific_factor, drop = FALSE
+]
 
 max_fact = abs(max(factor_matrix))
 col_fun_fact = colorRamp2(
@@ -130,8 +97,8 @@ scores_hmap = Heatmap(
     col = col_fun_fact
 )
 
-pdf(plot_path, width = 4, height = as.integer(round(num_views * 0.75) + 1))
-ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 15), "mm"))
+pdf(plot_path, width = 2, height = 3)
+ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 2), "mm"))
 dev.off()
 
 session_info()
