@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Oct 20 10:01:41 AM EDT 2025
+Mon Oct 20 10:44:26 AM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 23433052
+Job id: 23437710
 Job name: 04_reduced_gw_heatmap
-Node name: compute-168
+Node name: compute-177
 Task id: 
 Loading conda_R/4.5
 
@@ -184,9 +184,10 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320
+Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
+clusterProfiler: an R package for comparing biological themes among
+gene clusters. OMICS: A Journal of Integrative Biology. 2012,
+16(5):284-287
 
 Attaching package: ‘clusterProfiler’
 
@@ -223,10 +224,19 @@ Loading objects:
   cell_type_colors
 Loading objects:
   SpD_colors
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
 Warning message:
 In .quality_control(object, verbose = verbose) :
   Factor(s) 1, 4, 5, 6 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
 
+null device 
+          1 
 null device 
           1 
 For view "Oligo.3", using 138 up and 0 down signature genes
@@ -413,4 +423,4 @@ For view "WM_Sp09D06", using 41 up and 0 down signature genes
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Oct 20 10:09:31 AM EDT 2025
+Mon Oct 20 10:49:34 AM EDT 2025
