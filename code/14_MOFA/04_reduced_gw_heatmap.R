@@ -72,7 +72,7 @@ select_genes = top_gene_weights |>
 ################################################################################
 
 #   Annotation of rows-- each gene is labeled by the view it is a signature gene
-#   for and whether it has a positive weight
+#   for
 view_table = top_gene_weights |>
     filter(feature %in% select_genes) |>
     group_by(gene_name) |> 
@@ -109,3 +109,92 @@ Heatmap(
     right_annotation = view_table_row
 )
 dev.off()
+
+################################################################################
+#   GO of top-weighted genes
+################################################################################
+
+do_go = function(gene_list, universe, plot_path) {
+    for (ont_type in c("BP", "MF", "CC")) {
+        go_obj = compareCluster(
+            gene_list, fun = "enrichGO", universe = universe,
+            OrgDb = org.Hs.eg.db, ont = "ALL", pAdjustMethod = "BH",
+            pvalueCutoff = 1, qvalueCutoff = 1, readable = TRUE,
+            keyType = "ENSEMBL"
+        )
+
+        if(!is.null(go_obj)) {
+            go_obj@compareClusterResult = go_obj@compareClusterResult |>
+                filter(p.adjust < fdr_cutoff, ONTOLOGY == ont_type)
+            
+            if(nrow(go_obj@compareClusterResult) > 0) {
+                pdf(
+                    sprintf(plot_path, ont_type),
+                    height = as.integer(
+                        min(11, nrow(go_obj@compareClusterResult) * 0.7)
+                    ),
+                )
+                print(dotplot(go_obj, showCategory = 15))
+                dev.off()
+            }
+        }
+    }
+}
+
+#-------------------------------------------------------------------------------
+#   One view at a time
+#-------------------------------------------------------------------------------
+
+for (this_view in my_views) {
+    gene_list = list()
+    gene_list[['up']] = top_gene_weights |>
+        filter(value > 0, ctype == this_view) |>
+        pull(feature)
+    gene_list[['down']] = c()
+
+    message(
+        sprintf(
+            'For view "%s", using %d up and %d down signature genes',
+            this_view, length(gene_list[['up']]), length(gene_list[['down']])
+        )
+    )
+
+    #   Only consider genes measured in this view
+    universe = gene_weights |>
+        filter(ctype == this_view) |>
+        pull(feature)
+
+    do_go(
+        gene_list,
+        universe,
+        file.path(
+            plot_dir, 'GO', sprintf('%%s_%s_%s.pdf', specific_factor, this_view)
+        )
+    )
+}
+
+#-------------------------------------------------------------------------------
+#   Selected views pooled together
+#-------------------------------------------------------------------------------
+
+gene_list = list()
+gene_list[['up']] = top_gene_weights |>
+    filter(value > 0) |>
+    pull(feature)
+gene_list[['down']] = c()
+
+#   Only consider genes measured in any of the selected views
+universe = gene_weights |>
+    filter(ctype %in% my_views) |>
+    pull(feature) |>
+    unique()
+
+do_go(
+    gene_list,
+    universe,
+    file.path(
+        plot_dir, 'GO', sprintf('%%s_%s_together.pdf', specific_factor)
+    )
+)
+
+session_info()
