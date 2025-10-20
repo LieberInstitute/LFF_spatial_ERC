@@ -107,6 +107,15 @@ top_gw_value_matrix = gene_weights |>
     pivot_wider(names_from = ctype, values_from = value) |>
     column_to_rownames("gene_name") |>
     as.matrix()
+top_gw_value_matrix = top_gw_value_matrix[rownames(view_table), my_views]
+
+min_val = min(top_gw_value_matrix, na.rm = TRUE)
+max_val = max(top_gw_value_matrix, na.rm = TRUE)
+max_abs_val = max(abs(min_val), abs(max_val))
+col_fun = colorRamp2(
+    c(-1 * max_abs_val, 0, max_abs_val),
+    c("blue", "white", "red")
+)
 
 ## weights for selected clusters only
 pdf(
@@ -114,11 +123,12 @@ pdf(
     width = (length(my_views) / 4) + 2, height = nrow(view_table) / 4 + 1
 )
 Heatmap(
-    top_gw_value_matrix[rownames(view_table), my_views],
+    top_gw_value_matrix,
     name = "feature\nweights\n(Z-score)",
     cluster_rows = FALSE,
     cluster_columns = FALSE,
-    right_annotation = view_table_row
+    right_annotation = view_table_row,
+    col = col_fun
 )
 dev.off()
 
