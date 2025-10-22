@@ -247,6 +247,10 @@ head(layer_modeling_results$spatialDLPFC$enrichment)
 layer_modeling_results$spatialHPC <- list()
 layer_modeling_results$spatialHPC$enrichment <- read.csv("/dcs04/lieber/lcolladotor/spatialHPC_LIBD4035/spatial_hpc/snRNAseq_hpc/processed-data/revision/sn_enrichment_stats_superfine.csv", row.names=1)
 
+## Franjic & Sestan ERC
+layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
+colnames(layer_modeling_results$sestan_EC$enrichment)
+
 ## ERC Annotated modeling results
 erc_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
