@@ -219,6 +219,28 @@ logFC_Heatmap(dge_data |> filter(cluster %in% my_views),
               order_genes = FALSE,
               row_anno = view_table_anno_row2)
 
+#### gene weights vs logFC ####
+head(gene_weights$Factor3)
+
+factor3_weights <- gene_weights$Factor3 |>
+    rename(gene_id = feature, cluster = ctype, Factor3 = value)
+
+
+dge_data <- dge_data |>
+    left_join(factor3_weights)
+
+dge_data |> select(cluster, gene_name, vlmf_logFC, Factor3)
+
+
+scatter_logFC_v_Factor3 <- dge_data |>
+    filter(cluster %in% my_views) |>
+    ggplot(aes(x = vlmf_logFC, y = Factor3, color = vlmf_adj.P.Val < 0.05)) +
+    geom_point(size = 0.5, alpha = 0.5) +
+    facet_wrap(~cluster) +
+    theme_bw()
+
+ggsave(scatter_logFC_v_Factor3, filename = here(plot_dir, "scatter_logFC_v_Factor3.png"))
+
 #### GO on top genes ####
 library("org.Hs.eg.db")
 library("clusterProfiler")
@@ -243,7 +265,7 @@ gene_weights_GO <- gene_weights$Factor3 |>
     group_by(ctype,weight_pos) |>
     arrange(-abs_value) |>
     mutate(rank = row_number(),
-           GO_group = ifelse(rank <= 25, 
+           GO_group = ifelse(rank <= 50, 
                          ifelse(weight_pos, 
                                 paste0(gsub("\\.", "", ctype), "_F3+"), 
                                 paste0(gsub("\\.", "", ctype), "_F3-")),
