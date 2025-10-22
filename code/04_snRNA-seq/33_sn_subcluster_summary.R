@@ -152,7 +152,7 @@ plot_one_gene <- function(gene){
 apoe_plot <- plot_gene_express(sce, genes = "APOE", 
                                category = "cell_type_anno", 
                                color_pal = cell_type_colors$anno) +
-    labs(x = "Cell Type") +
+    labs(x = "cell type subcluster") +
     coord_flip()
 
 ggsave(apoe_plot, filename = here(plot_dir, "ERC_sn_gene_expres_APOE.png"), width = 4)
