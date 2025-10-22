@@ -150,6 +150,20 @@ n_nuclei_violin <- ggplot(pd, aes(x = SpD, y = CNmask_dark_blue, fill = SpD)) +
 
 ggsave(n_nuclei_violin, filename = here(plot_dir, "ERC_Visium_SpD_violin_n_nuclei.png"), width = 7, height =4)
 
+#### plot select genes ####
+
+rownames(spe) <- rowData(spe)$gene_name
+
+genes <- c("APOE", "PCP4")
+
+walk(c("APOE", "PCP4"), function(g){
+    gene_plot <- plot_gene_express(sce = spe,
+                                   genes = g,
+                                   category = "SpD",
+                                   color_pal = SpD_colors)
+    
+    ggsave(gene_plot, filename = here(plot_dir, sprintf("ERC_Visium_SpD_express_violin_%s.png", g)), height = 4, width = 6)
+})
 
 #### Spot plots for representative sections ####
 
