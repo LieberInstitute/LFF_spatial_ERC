@@ -73,10 +73,14 @@ compare_contrast_stats <- function(dge_tb,
     }
         
     if(risk){
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 2, max.overlaps = 20)
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 3, max.overlaps = 30, force = 10, force_pull = 10)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 2, max.overlaps = 20)
+        stat_scatter <- stat_scatter +
+            geom_text_repel(
+                aes(label = ifelse((DE_class != "None") & (!grepl('^ENSG', gene_name)), gene_name, "")),
+                size = 3, max.overlaps = 30, force = 3, force_pull = 2
+            )
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s.png", datatype, stat)
     }
     

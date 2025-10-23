@@ -232,14 +232,13 @@ if(datatype == "Visium"){
     
 }else if(datatype == "sn_fine"){
     
-    compare_contrast_stats(dge_data_contrast |> filter(cluster == "Oligo.3"), 
+    if(contrast == "Sex"){
+        compare_contrast_stats(dge_data_contrast |> filter(cluster == "Oligo.3"), 
                            datatype = sprintf("%s_%s_%s",contrast, datatype, "Oligo.3"),
                            height = 6, width = 5,
                            contrast_1 = contrast_1,
-                           contrast_2 = contrast_2)
-    
-    if(contrast == "Sex"){
-        
+                           contrast_2 = contrast_2,
+                           bottom_label = TRUE)
         compare_contrast_stats(dge_data_contrast |> filter(cluster == "Astro.4"), 
                                datatype = sprintf("%s_%s_%s",contrast, datatype, "Astro.4"),
                                height = 6, width = 5,
@@ -251,8 +250,14 @@ if(datatype == "Visium"){
                                height = 6, width = 5,
                                contrast_1 = contrast_1,
                                contrast_2 = contrast_2)
-            }
-    
+    } else {
+        compare_contrast_stats(dge_data_contrast |> filter(cluster == "Oligo.3"), 
+                           datatype = sprintf("%s_%s_%s",contrast, datatype, "Oligo.3"),
+                           height = 6, width = 5,
+                           contrast_1 = contrast_1,
+                           contrast_2 = contrast_2)
+    }
+
 }
 
 contrast_levels <- unique(dge_data_contrast$contrast)

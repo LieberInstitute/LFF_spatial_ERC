@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Oct 23 11:31:11 AM EDT 2025
+Thu Oct 23 01:11:30 PM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 23512366
+Job id: 23517465
 Job name: 11_summary_plots_contrast
-Node name: compute-168
+Node name: compute-093
 Task id: 3
 Loading conda_R/4.5
 
@@ -129,8 +129,12 @@ using the `.groups` argument.
  9 Micro.4 carrier_AA     4
 10 Micro.4 carrier_EA     3
 # ℹ 15 more rows
+# A tibble: 1 × 6
+  cluster   cor p_val p_val_adj signif anno     
+  <fct>   <dbl> <dbl>     <dbl> <chr>  <chr>    
+1 Oligo.3 0.469     0         0 *      cor=0.47*
 Warning message:
-ggrepel: 692 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+ggrepel: 678 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
 null device 
           1 
 Error in dge_data_contrast : 
