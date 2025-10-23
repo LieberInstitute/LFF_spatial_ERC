@@ -21,8 +21,8 @@ library("ComplexHeatmap")
 # contrast <- opt$contrast
 
 ## test
-datatype = "sn_broad"
-contrast = "ancestry"
+# datatype = "sn_broad"
+# contrast = "ancestry"
 # contrast = "Sex"
 
 # datatype = "sn_fine"
@@ -372,7 +372,9 @@ if(datatype == "cell_type_fine"){
 }
 
 
-# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
+#                                  contrast = c("Sex", "ancestry")
+#                                  ),
 #                     create_shell = TRUE,
 #                     name = "11_summary_plots_contrast",
 #                     create_script = FALSE)

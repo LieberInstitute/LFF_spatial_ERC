@@ -7,14 +7,17 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-3%20
+#SBATCH --array=1-6%20
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_datatype=(sn_broad sn_fine Visium)
-datatype=${all_datatype[$(( $SLURM_ARRAY_TASK_ID / 1 % 3 ))]}
+datatype=${all_datatype[$(( $SLURM_ARRAY_TASK_ID / 2 % 3 ))]}
+
+all_contrast=(Sex ancestry)
+contrast=${all_contrast[$(( $SLURM_ARRAY_TASK_ID / 1 % 2 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/11_summary_plots_contrast_${datatype}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/11_summary_plots_contrast_${datatype}_${contrast}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -36,7 +39,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 11_summary_plots_contrast.R --datatype ${datatype}
+Rscript 11_summary_plots_contrast.R --datatype ${datatype} --contrast ${contrast}
 
 echo "**** Job ends ****"
 date
