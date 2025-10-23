@@ -17,8 +17,8 @@ library("ComplexHeatmap")
 # )
 # opt <- getopt(scec)
 # 
-# datatype <- opt$datatype
-# contrast <- opt$contrast
+datatype <- opt$datatype
+contrast <- opt$contrast
 
 ## test
 # datatype = "sn_broad"
