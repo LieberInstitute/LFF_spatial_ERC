@@ -8,7 +8,8 @@ compare_contrast_stats <- function(dge_tb,
                                    height = 10,
                                    width = 10,
                                    contrast_1,
-                                   contrast_2){
+                                   contrast_2,
+                                   bottom_label = FALSE){
     
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -48,16 +49,29 @@ compare_contrast_stats <- function(dge_tb,
                                           mY = contrast_2, 
                                           FDR_cut_mX = FDR_cut, 
                                           FDR_cut_mY = FDR_cut, 
-                                          model_name = datatype) +
-        geom_label(
-            data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
-            color = "black",
-            alpha = 0.5,
-            vjust = "inward", 
-            hjust = "inward", 
-            size = 5
-        )
-    
+                                          model_name = datatype)
+    if(bottom_label){
+        stat_scatter <- stat_scatter +
+            geom_label(
+                data = cor, ggplot2::aes(x = Inf, y = -Inf, label = anno),
+                color = "black",
+                alpha = 0.5,
+                vjust = "inward", 
+                hjust = "inward", 
+                size = 5
+            )
+    } else {
+        stat_scatter <- stat_scatter +
+            geom_label(
+                data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
+                color = "black",
+                alpha = 0.5,
+                vjust = "inward", 
+                hjust = "inward", 
+                size = 5
+            )
+    }
+        
     if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 2, max.overlaps = 20)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
@@ -116,7 +130,7 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
         #     size = 2.5
         # ) +
         theme_bw(base_size = 15) +
-        theme(legend.position = "bottom")
+        theme(legend.position = "bottom", legend.text = element_text(size=6))
     
     return(stat_scatter)
     

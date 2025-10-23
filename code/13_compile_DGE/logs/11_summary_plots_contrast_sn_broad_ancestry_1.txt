@@ -1,0 +1,138 @@
+**** Job starts ****
+Thu Oct 23 11:31:11 AM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 23512364
+Job name: 11_summary_plots_contrast
+Node name: compute-168
+Task id: 1
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading objects:
+  cell_type_colors
+# A tibble: 19 × 2
+   ALL_DE_class_cluster     n
+   <chr>                <int>
+ 1 Astro_Down              13
+ 2 Astro_None           18245
+ 3 Astro_Up                62
+ 4 Excit_Down              41
+ 5 Excit_None           26719
+ 6 Excit_Up                31
+ 7 Inhib_Down              19
+ 8 Inhib_None           21813
+ 9 Inhib_Up                 3
+10 Macro_Down               5
+11 Macro_None            2916
+12 Macro_Up                10
+13 Micro_Down               2
+14 Micro_None           14348
+15 OPC_None             17884
+16 Oligo_Down              15
+17 Oligo_None           20997
+18 Oligo_Up               163
+19 Vasc_None             9533
+# A tibble: 25 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro_Down_AA        7
+ 2 Astro_None_AA    18222
+ 3 Astro_None_EA    18320
+ 4 Astro_Up_AA         91
+ 5 Excit_None_AA    25772
+ 6 Excit_None_EA    25772
+ 7 Inhib_None_AA    21076
+ 8 Inhib_None_EA    21076
+ 9 Macro_None_AA     2929
+10 Macro_None_EA     2931
+# ℹ 15 more rows
+`summarise()` has grouped output by 'gene_name'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'gene_name'. You can override using the
+`.groups` argument.
+# A tibble: 7 × 3
+  contrast   cluster     n
+  <chr>      <fct>   <int>
+1 carrier_AA Astro      98
+2 carrier_AA Macro       2
+3 carrier_AA Micro       3
+4 carrier_AA Vasc        1
+5 carrier_EA Micro       1
+6 carrier_EA OPC         1
+7 carrier_EA Vasc        1
+# A tibble: 7 × 3
+  contrast   cluster     n
+  <chr>      <fct>   <int>
+1 carrier_AA Astro      98
+2 carrier_AA Macro       2
+3 carrier_AA Micro       3
+4 carrier_AA Vasc        1
+5 carrier_EA Micro       1
+6 carrier_EA OPC         1
+7 carrier_EA Vasc        1
+Joining with `by = join_by(data_type, cluster, gene_name)`
+`summarise()` has grouped output by 'cluster', 'contrast'. You can override
+using the `.groups` argument.
+# A tibble: 2 × 2
+  contrast       n
+  <chr>      <int>
+1 carrier_AA   104
+2 carrier_EA     3
+# A tibble: 7 × 3
+  cluster contrast       n
+  <fct>   <chr>      <int>
+1 Astro   carrier_AA    98
+2 Macro   carrier_AA     2
+3 Micro   carrier_AA     3
+4 Micro   carrier_EA     1
+5 OPC     carrier_EA     1
+6 Vasc    carrier_AA     1
+7 Vasc    carrier_EA     1
+# A tibble: 1 × 6
+  cluster   cor     p_val p_val_adj signif anno     
+  <fct>   <dbl>     <dbl>     <dbl> <chr>  <chr>    
+1 Astro   0.275 5.11e-314 5.11e-314 *      cor=0.27*
+Warning message:
+ggrepel: 81 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+null device 
+          1 
+Error in dge_data_contrast : 
+  The pipe operator requires a function call as RHS (<input>:33:9)
+Execution halted

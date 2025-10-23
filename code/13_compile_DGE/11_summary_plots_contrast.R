@@ -10,13 +10,13 @@ library("getopt")
 library("ComplexHeatmap")
 
 # Import command-line parameters
-# scec <- matrix(
-#     c("datatype", "d", "1", "character", "Data type",
-#       "contrast", "c", "1", "character", "contrast"),
-#     ncol = 5, byrow = TRUE
-# )
-# opt <- getopt(scec)
-# 
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type",
+      "contrast", "c", "1", "character", "contrast"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
 datatype <- opt$datatype
 contrast <- opt$contrast
 
@@ -198,11 +198,20 @@ source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 
 if(datatype == "Visium"){
     
-    compare_contrast_stats(dge_data_contrast |> filter(cluster == "WM.uf~Sp09D07"), 
-                           datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
-                           height = 5, width = 4,
-                           contrast_1 = contrast_1,
-                           contrast_2 = contrast_2)
+    if (contrast == "ancestry"){
+        compare_contrast_stats(dge_data_contrast |> filter(cluster == "WM.uf~Sp09D07"), 
+                            datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
+                            height = 6, width = 5,
+                            contrast_1 = contrast_1,
+                            contrast_2 = contrast_2)
+    } else {
+        compare_contrast_stats(dge_data_contrast |> filter(cluster == "WM.uf~Sp09D07"), 
+                            datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
+                            height = 6, width = 5,
+                            contrast_1 = contrast_1,
+                            contrast_2 = contrast_2,
+                            bottom_label = TRUE)
+    }
     
 } else if(datatype == "sn_broad"){
     

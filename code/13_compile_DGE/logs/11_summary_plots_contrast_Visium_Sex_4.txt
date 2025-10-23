@@ -1,0 +1,122 @@
+**** Job starts ****
+Thu Oct 23 11:31:11 AM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 23512367
+Job name: 11_summary_plots_contrast
+Node name: compute-168
+Task id: 4
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading objects:
+  SpD_colors
+# A tibble: 18 × 2
+   ALL_DE_class_cluster     n
+   <chr>                <int>
+ 1 Inhib~Sp09D09_Down       2
+ 2 Inhib~Sp09D09_None   12720
+ 3 L1~Sp09D05_Down          1
+ 4 L1~Sp09D05_None      12075
+ 5 L2.3~Sp09D01_None    14006
+ 6 L5~Sp09D03_None      14319
+ 7 L5~Sp09D03_Up            3
+ 8 L6~Sp09D04_Down          6
+ 9 L6~Sp09D04_None      14450
+10 L6~Sp09D04_Up           10
+11 LD~Sp09D02_None      15529
+12 Vasc~Sp09D08_Down       22
+13 Vasc~Sp09D08_None     8984
+14 Vasc~Sp09D08_Up          8
+15 WM.uf~Sp09D07_Down      19
+16 WM.uf~Sp09D07_None    3567
+17 WM.uf~Sp09D07_Up         2
+18 WM~Sp09D06_None       9998
+# A tibble: 21 × 2
+   DE_class_cluster         n
+   <chr>                <int>
+ 1 Inhib~Sp09D09_None_F 11751
+ 2 Inhib~Sp09D09_None_M 11751
+ 3 L1~Sp09D05_None_F    11180
+ 4 L1~Sp09D05_None_M    11180
+ 5 L2-3~Sp09D01_None_F  13502
+ 6 L2-3~Sp09D01_None_M  13502
+ 7 L5~Sp09D03_None_F    13855
+ 8 L5~Sp09D03_None_M    13855
+ 9 L6~Sp09D04_None_F    13384
+10 L6~Sp09D04_None_M    13384
+# ℹ 11 more rows
+`summarise()` has grouped output by 'gene_name'. You can override using the
+`.groups` argument.
+`summarise()` has grouped output by 'gene_name'. You can override using the
+`.groups` argument.
+# A tibble: 2 × 3
+  contrast  cluster           n
+  <chr>     <fct>         <int>
+1 carrier_F WM~Sp09D06        1
+2 carrier_M WM.uf~Sp09D07    91
+# A tibble: 2 × 3
+  contrast  cluster           n
+  <chr>     <fct>         <int>
+1 carrier_F WM~Sp09D06        1
+2 carrier_M WM.uf~Sp09D07    91
+Joining with `by = join_by(data_type, cluster, gene_name)`
+`summarise()` has grouped output by 'cluster', 'contrast'. You can override
+using the `.groups` argument.
+# A tibble: 2 × 2
+  contrast      n
+  <chr>     <int>
+1 carrier_F     1
+2 carrier_M    91
+# A tibble: 2 × 3
+  cluster       contrast      n
+  <fct>         <chr>     <int>
+1 WM.uf~Sp09D07 carrier_M    91
+2 WM~Sp09D06    carrier_F     1
+# A tibble: 1 × 6
+  cluster         cor    p_val p_val_adj signif anno     
+  <fct>         <dbl>    <dbl>     <dbl> <chr>  <chr>    
+1 WM.uf~Sp09D07 0.161 6.14e-19  6.14e-19 *      cor=0.16*
+Warning message:
+ggrepel: 45 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+null device 
+          1 
+Error in dge_data_contrast : 
+  The pipe operator requires a function call as RHS (<input>:33:9)
+Execution halted

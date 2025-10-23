@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=10G
 #SBATCH --job-name=11_summary_plots_contrast
 #SBATCH -c 1
