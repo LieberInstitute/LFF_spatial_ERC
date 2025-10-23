@@ -344,7 +344,19 @@ map2(Blanchard_gene_list, names(Blanchard_gene_list), ~plot_OligoOPC_dotplot(.x,
 
 lit_markers |> filter(cell_type_broad == "Inhib")
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Inhib.pdf")), height = 5, width = 5)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Inhib_logCounts.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Inhib"]|>
+    scDotPlot(features = c(unique(lit_markers |> dplyr::filter(cell_type_broad == "Inhib") |> pull(gene_name)), "PAX6"),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "LitMarker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+               # clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
 sce[, sce$cell_type_broad == "Inhib"]|>
     scDotPlot(features = c(unique(lit_markers |> dplyr::filter(cell_type_broad == "Inhib") |> pull(gene_name)), "PAX6"),
               group = "cell_type_anno",
@@ -384,6 +396,19 @@ sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
     )
 dev.off()
 
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Micro_logCounts.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
+    scDotPlot(features = micro_lit_markers2,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "LitMarker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
 #### Astro sub-types ####
 
 lit_markers |> filter(cell_type_broad == "Astro")
@@ -399,8 +424,21 @@ rowData(sce)$astro_marker <- NULL
 rowData(sce)$astro_marker <- names(Astro_lit_markers)[match(rownames(sce), Astro_lit_markers)] 
 table(rowData(sce)$astro_marker)
 
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_logCount.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Astro"]|>
+    scDotPlot(features = Astro_lit_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Astro" | sce$cell_type_anno == "OPC.5" ]|>
+sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_lit_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
