@@ -55,14 +55,14 @@ compare_contrast_stats <- function(dge_tb,
             alpha = 0.5,
             vjust = "inward", 
             hjust = "inward", 
-            size = 2.5
+            size = 5
         )
     
     if(risk){
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 2, max.overlaps = 20)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 2, max.overlaps = 20)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s.png", datatype, stat)
     }
     
@@ -103,7 +103,6 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
     stat_scatter <- ggplot(data = dge_tb_class, 
                            aes(x = !!sym(statX), y = !!sym(statY), color = DE_class)) +
         geom_point(alpha = 0.5, size = 0.5) +
-        geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 2) +
         geom_abline(linetype = "dashed") +
         scale_color_manual(values = signif_colors) +
         labs(title = model_name, subtitle = paste(mX, "vs.", mY)) + 
@@ -116,7 +115,7 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
         #     hjust = "inward", 
         #     size = 2.5
         # ) +
-        theme_bw() +
+        theme_bw(base_size = 15) +
         theme(legend.position = "bottom")
     
     return(stat_scatter)
