@@ -95,6 +95,26 @@ if(datatype == "sn_fine"){
     
 }
 
+#### v gene vs. n signif ####
+
+
+dge_n_v_fdr <- dge_data_combined |> 
+    group_by(contrast, cluster) |>
+    summarize(n_gene = n(), 
+              n_signif = sum(vlmf_adj.P.Val < 0.05))
+
+dge_n_v_fdr_scatter <- dge_n_v_fdr |> 
+    ggplot(aes(x = n_gene, y = n_signif, color = cluster)) +
+    geom_point() +
+    geom_text_repel(aes(label = cluster)) +
+    scale_color_manual(values = cluster_colors) +
+    facet_wrap(~contrast) +
+    scale_y_log10() +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(dge_n_v_fdr_scatter, filename = here(plot_dir, sprintf("DGE_%s_gene_v_signif_scatter.png", datatype)), width = 10)
+
 #### logFC heatmaps ####
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
