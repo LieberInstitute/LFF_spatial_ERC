@@ -61,6 +61,8 @@ DE_data_signif <- DE_data |> filter(vlmf_adj.P.Val < 0.05)
 DE_data_signif |> count(cluster)
 
 
+DE_data |> filter(grepl("NPTX", gene_name), vlmf_adj.P.Val < 0.05) |> arrange(vlmf_adj.P.Val)
+
 DE_data |> filter(gene_name == "NRXN1") |> arrange(vlmf_adj.P.Val)
 # gene_name cluster   vlmf_t vlmf_adj.P.Val vlmf_logFC
 #     1 NRXN1     Oligo.3     3.27         0.0398      1.15 
@@ -129,7 +131,7 @@ bivariate_data_summary_pass_scatter <- bivariate_data_summary |>
     ggplot(aes(x = mean_morans, y = n_moran_pval_pass, color = n_moran_pval_pass)) +
     geom_point(aes())
 
-bivariate_data_summary |>
+bivariate_data_summary_pass_scatter_log10 <-bivariate_data_summary |>
     ggplot(aes(x = median_morans, y = -log10(max_moran_pval), color = n_moran_pval_pass)) +
     geom_point() +
     geom_hline(yintercept = -log10(0.05))
@@ -165,7 +167,8 @@ bivariate_spot_data |>
 bivariate_SpD_data <- bivariate_spot_data |>
     group_by(pair_id, SpD) |>
     summarise(mean_score = mean(local_score),
-              n = n())
+              n = n()) |>
+    mutate(SpD = factor(SpD, levels = names(SpD_colors)))
 
 
 bivaraite_SpD_score_histo <- bivariate_SpD_data |>
@@ -203,6 +206,7 @@ liana_data |> count(specificity_rank < 0.05, magnitude_rank < 0.05)
 
 summary(liana_data)
 
+## summarize liana data
 liana_data_summary <- liana_data |>
     group_by(source, target, ligand_complex, receptor_complex) |>
     summarise(n_pass_magnitude_rank = sum(magnitude_rank < 0.05),
@@ -517,16 +521,25 @@ LR_DEGS_SpD_bar <- bivariate_SpD_data |>
     filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
     ggplot(aes(y = interaction, x = mean_score, fill = SpD)) +
     geom_col(position = "dodge") +
-    theme_bw()
+    theme_bw() +
+    scale_fill_manual(values = SpD_colors)
 
 ggsave(LR_DEGS_SpD_bar, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_bar.png"))
 
-LR_DEGS_SpD_tile<- bivariate_SpD_data |>
+
+LR_DEGS_list <- LR_DEGS_plot_data |>
+    select(interaction, DEG) |>
+    unique() 
+
+LR_DEGS_SpD_tile <- bivariate_SpD_data |>
     mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
-    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
+    right_join(LR_DEGS_list) |>
+    filter(!is.na(mean_score)) |>
+    mutate(interaction = factor(interaction, levels = levels(LR_DEGS_plot_data3$interaction))) |>
     ggplot(aes(y = interaction, x = SpD, fill = mean_score)) +
     geom_tile() +
     theme_bw() +
+    facet_grid(DEG~., scales = "free_y", space = "free_y") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
 ggsave(LR_DEGS_SpD_tile, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_tile.png"))
