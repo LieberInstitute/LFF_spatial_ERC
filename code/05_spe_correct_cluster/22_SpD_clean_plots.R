@@ -11,6 +11,7 @@ library("jaffelab")
 library("cowplot")
 library("patchwork")
 library("DeconvoBuddies")
+library("ggrepel")
 
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
@@ -234,7 +235,7 @@ walk(c("UMAP", "TSNE"),
 layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
 
 ## Add spatialDLPFC spatial domain annotations to modeling
-dlpfc_anno <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/bayesSpace_layer_annotations.csv") |>
+dlpfc_anno <- read.csv(here("external-data", "spatialDLPFC", "bayesSpace_layer_annotations.csv")) |>
     dplyr::filter(bayesSpace == "k09") |>
     mutate(layer_combo2 = gsub(" ", "~", layer_combo2))
 
@@ -289,6 +290,9 @@ write_csv(anno_summary, file = here(data_dir, "ERC_SpD_spatial_registration_anno
 
 ## save data
 save(cor_layer, anno, file = here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"))
+# load(here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"))
+
+cor_layer$spatialDLPFC
 
 ## reference colors
 load(here("processed-data","00_project_prep", "spatialDLPFC_Data","spatialDLPFC_SpD_colors.Rdata"), verbose = TRUE)
@@ -320,13 +324,85 @@ map(names(cor_layer), function(ref){
     dev.off()
 })
 
-#### plot top markers ####
+#### Spatial Registration supporting plots ####
+
+head(erc_modeling$enrichment)
+
+head(layer_modeling_results$spatialDLPFC$enrichment)
+
+model_results <- layer_modeling_results$spatialDLPFC$enrichment
+
+tstats <-
+    model_results[, grep("[f|t]_stat_", colnames(model_results))]
+colnames(tstats) <-
+    gsub("[f|t]_stat_", "", colnames(tstats))
+top_n <- 100
+
+top_n_index <- unique(as.vector(apply(tstats, 2, function(t) {
+    order(t, decreasing = TRUE)[seq_len(top_n)]
+})))
+## Subset to top n marker genes
+model_results <- model_results[top_n_index, , drop = FALSE]
+tstats <- tstats[top_n_index, , drop = FALSE]
+
+L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5 = `t_stat_L5~Sp09D03`) |>
+    left_join(layer_modeling_results$spatialDLPFC$enrichment |>
+                  filter(ensembl %in% rownames(tstats)) |> 
+                  select(DLPFC_tstat_L5 = `t_stat_L5~Sp09D04`, ensembl, gene)) |>
+    as_tibble()
+
+L5_stat_scatter <- L5_stats |>
+    filter(!is.na(DLPFC_tstat_L5)) |>
+    ggplot(aes(x = DLPFC_tstat_L5, y = ERC_tstat_L5)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    geom_text_repel(aes(label = gene)) +
+    theme_bw()
+
+ggsave(L5_stat_scatter, filename = here(plot_dir, "layer_stat_cor_L5_scatter.png"), height = 4, width = 4)
+
+
+L5_stats |> filter(gene == "PCP4")
+    
+lm("DLPFC_tstat_L5~ERC_tstat_L5", 
+   data = L5_stats |>
+           filter(!is.na(DLPFC_tstat_L5)))
+    
 
 ## load pseuodbulked data
 spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds"))
 
 rownames(spe) <- rowData(spe)$gene_name
 rownames(spe_pb) <- rowData(spe_pb)$gene_name
+
+pb_expres_PCP4 <- plot_gene_express(sce = spe_pb,
+                  genes = "PCP4",
+                  category = "SpD",
+                  color_pal = SpD_colors,
+                  plot_type = "boxplot") +
+    labs(title = "ERC")
+
+ggsave(pb_expres_PCP4, filename = here(plot_dir, "ERC_Visium_SpD_pb_express_boxplot_PCP4.png"), height = 4, width = 4)
+
+
+spe_DLPFC_pb <- fetch_data("spatialDLPFC_Visium_pseudobulk")
+rownames(spe_DLPFC_pb) <- rowData(spe_DLPFC_pb)$gene_name
+
+spe_DLPFC_pb$SpD <- dlpfc_anno$layer_combo2[match(spe_DLPFC_pb$BayesSpace, dlpfc_anno$cluster)]
+
+
+DLPFC_pb_expres_PCP4 <- plot_gene_express(sce = spe_DLPFC_pb,
+                                    genes = "PCP4",
+                                    category = "SpD",
+                                    color_pal = spatialDLPFC_SpD_colors,
+                                    plot_type = "boxplot")+
+    labs(title = "DLPFC")
+
+ggsave(DLPFC_pb_expres_PCP4, filename = here(plot_dir, "DLPFC_Visium_SpD_pb_express_boxplot_PCP4.png"), height = 4, width = 4)
+
+
+
+#### plot top markers ####
 
 top_DEGs <- sig_genes_extract(n = 10,
                               modeling_results = erc_modeling,
