@@ -1,0 +1,212 @@
+## Louise Huuki-Myers, Nov 2025
+## Run Gene Set Enrichment on Contrast DEG data
+
+#### Set up ####
+library("tidyverse")
+library("here")
+library("sessioninfo")
+library("getopt")
+library("spatialLIBD")
+library("jaffelab")
+
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type",
+      "contrast", "c", "1", "character", "Contrast"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
+## test
+# opt$datatype = "sn_broad"
+# opt$datatype = "sn_fine"
+# opt$datatype = "Visium"
+
+# opt$contrast = "ancestry"
+# opt$contrast = "Sex"
+
+data_dir <- here("processed-data", "13_compile_DGE", "12.5_DE_enrichment_contrast")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
+plot_dir <- here("plots", "13_compile_DGE", "12.5_DE_enrichment_contrast")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+load(here("processed-data", "project_colors.Rdata"))
+
+if(opt$datatype == "sn_broad"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$broad
+    cluster_levels <- names(cell_type_colors$broad)
+    
+}else if(opt$datatype == "sn_fine"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
+    
+}else if(opt$datatype == "Visium"){
+    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+    cluster_colors <- SpD_colors
+    cluster_levels <- names(SpD_colors)
+    
+}
+
+cluster_levels <- cluster_levels[cluster_levels != "Other"]
+
+## contrast details
+if(opt$contrast == "ancestry"){
+    dge_dir = "05_compile_DGE_ancestry"
+    contrast_levels <- c("EA", "AA")
+} else if(opt$contrast == "Sex"){
+    dge_dir = "09_compile_DGE_Sex"
+    contrast_levels <- c("F", "M")
+} 
+
+
+## load DE data ##
+DE_data_fn <- here("processed-data", "13_compile_DGE", dge_dir, opt$datatype, sprintf("DGE_results_%s_%s.Rds", opt$contrast, opt$datatype))
+file.exists(DE_data_fn)
+
+DE_data <- readRDS(DE_data_fn)
+
+cluster_levels <- cluster_levels[cluster_levels %in% DE_data$cluster]
+
+DE_data <- DE_data |> mutate(cluster = factor(cluster, levels = cluster_levels))
+DE_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(cluster, contrast)
+
+#### Gene Sets ####
+
+## load Mathys DE data ##
+suppressMessages(source(here("external-data", "Mathys2019", "get_Mathys_DE_data.R")))
+
+## just no vs. path data
+
+Mathys_DE_data_path <- Mathys_DE_data |> 
+    filter(DE_type == "no_v_path") |>
+    mutate(reg = ifelse(IndModel.FC > 0, "up", "down"),
+           DE_ct = ifelse(DEGs.Ind.Mix.models, cell_type, NA),
+           DE_ct_reg = ifelse(DEGs.Ind.Mix.models, paste0(DE_ct, "_", reg), NA))
+
+Mathys_DE_data_path |> dplyr::count(cell_type)
+
+## match counts in Fig 1b
+# Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type)
+# Mathys_DE_data_path |> filter(DEGs.Ind.Mix.models) |> dplyr::count(cell_type, IndModel.FC > 0)
+Mathys_DE_data_path |> dplyr::count(DE_ct_reg)
+
+# DE_ct_reg     n
+# <chr>     <int>
+# 1 Ast_down     32
+# 2 Ast_up       37
+# 3 Ex_down     565
+# 4 Ex_up       191
+# 5 In_down      51
+# 6 In_up         3
+# 7 Mic_down     13
+# 8 Mic_up       22
+# 9 Oli_down     71
+# 10 Oli_up      102
+# 11 Opc_down     18
+# 12 Opc_up       10
+
+mathys_ct_DEGs <- map(splitit(Mathys_DE_data_path$DE_ct), ~Mathys_DE_data_path$gene_name[.x])
+mathys_ct_reg_DEGs <- map(splitit(Mathys_DE_data_path$DE_ct_reg), ~Mathys_DE_data_path$gene_name[.x])
+
+## mathys no vs. early data
+
+Mathys_DE_data_early <- Mathys_DE_data |> 
+    filter(DE_type == "no_v_early") |>
+    mutate(reg = ifelse(IndModel.FC > 0, "up", "down"),
+           DE_ct = ifelse(DEGs.Ind.Mix.models, cell_type, NA),
+           DE_ct_reg = ifelse(DEGs.Ind.Mix.models, paste0(DE_ct, "_", reg), NA))
+
+Mathys_DE_data_early |> dplyr::count(DE_ct_reg)
+
+mathys_early_ct_DEGs <- map(splitit(Mathys_DE_data_early$DE_ct), ~Mathys_DE_data_early$gene_name[.x])
+mathys_early_ct_reg_DEGs <- map(splitit(Mathys_DE_data_early$DE_ct_reg), ~Mathys_DE_data_early$gene_name[.x])
+
+## Grubman data ##
+
+suppressMessages(source(here("external-data", "Grubman2019", "get_Grubman_DE_data.R")))
+
+Grubman_DE_data <- Grubman_DE_data |>
+    mutate(reg = ifelse(LFC > 0, "up", "down"),
+           DE_ct_reg = paste0(cell_type, "_", reg))
+
+Grubman_DE_data |> dplyr::count(DE_ct_reg)
+
+grubman_ct_DEGs <- map(splitit(Grubman_DE_data$cell_type), ~Grubman_DE_data$geneName[.x])
+grubman_ct_reg_DEGs <- map(splitit(Grubman_DE_data$DE_ct_reg), ~Grubman_DE_data$geneName[.x])
+
+## Blanchard data ##
+# suppressMessages(source(here("external-data", "Blanchard2022", "get_Blanchard_data.R")))
+Blanchard_DEG_list <- readRDS(file = here("external-data", "Blanchard2022", "Blanchard_DEG_list.rds"))
+
+
+#### Run Enrichment ####
+
+gene_set_list <- list(Mathys = mathys_ct_DEGs,
+                      Mathys_reg = mathys_ct_reg_DEGs,
+                      Mathys_early = mathys_early_ct_DEGs,
+                      Mathys_early_reg = mathys_early_ct_reg_DEGs,
+                      Grubman = grubman_ct_DEGs,
+                      Grubman_reg = grubman_ct_reg_DEGs,
+                      Blanchard = Blanchard_DEG_list
+)
+
+map_int(gene_set_list[[1]], length)
+
+## source function
+source(here("code", "13_compile_DGE", "DE_gene_set_enrichment.R"))
+
+DE_data <- DE_data |> mutate(contrast_cluster = factor(paste0(cluster, gsub("carrier", "",contrast))))
+DE_data |> dplyr::count(contrast_cluster)
+
+map2(gene_set_list, names(gene_set_list), function(gene_set, name){
+    
+    message("gene set enrichment for: ", name)
+    
+    map_int(gene_set, length) 
+
+    #### DE enrichment ####
+    
+    ## combine reg
+    DE_gse <- DE_gene_set_enrichment(gene_set, DE_data, test_col = "contrast_cluster") |>
+        mutate(gene_set = name)
+    
+    DE_gse |> filter(Pval < 0.1)
+    
+    DE_gse_filter <- DE_gse |> 
+        filter(NumSig > 0) |>
+        mutate(cluster = gsub("_up|_down", "", "test"))
+    
+    DE_gse_filter2 <- DE_gse |>
+        filter(test %in% DE_gse_filter$test)
+    
+    write_csv(DE_gse, file = here(data_dir, sprintf("DE_gene_enrichment_%s_%s.csv", opt$datatype, name)))
+    
+    ## enrichment heatmap
+    pdf_height = 5 + (row(DE_gse_filter2)/10)
+    
+    pdf(here(plot_dir, sprintf("DE_gene_enrichment_contrast_%s_%s_%s.pdf", opt$datatype, opt$contrast, name)), height = pdf_height)
+    print(gene_set_enrichment_plot(DE_gse_filter2))
+    dev.off()
+    
+    return(map_int(gene_set, length) )
+    
+})
+
+
+# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
+#                     create_shell = TRUE,
+#                     name = "12.5_DE_enrichment_contrast",
+#                     create_script = FALSE)
+
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
+
