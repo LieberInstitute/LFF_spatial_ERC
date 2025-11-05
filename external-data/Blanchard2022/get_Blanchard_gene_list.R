@@ -6,6 +6,7 @@ blanchard_gene_annotations <- map(Blanchard_gene_list, ~tibble(gene_name = .x, a
 
 walk2(blanchard_gene_annotations, names(blanchard_gene_annotations), ~write_csv(.x, paste0(.y, "_gene_anno.csv")))
 
+save(Blanchard_gene_list, file = here("external-data", "Blanchard2022","Blanchard_gene_list.Rdata"))
 
 ## combine w/ Wilcoxon test stats
 Blanchard_gene_annotaions <- map_dfr(list.files(pattern = "Fig"), read_csv) |> unique()
