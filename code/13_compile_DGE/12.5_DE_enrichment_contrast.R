@@ -153,6 +153,7 @@ gene_set_list <- list(Mathys = mathys_ct_DEGs,
                       Blanchard = Blanchard_DEG_list
 )
 
+map_int(gene_set_list, length)
 map_int(gene_set_list[[1]], length)
 
 ## source function
@@ -186,8 +187,9 @@ map2(gene_set_list, names(gene_set_list), function(gene_set, name){
     
     ## enrichment heatmap
     pdf_height = 5 + (row(DE_gse_filter2)/10)
+    pdf_width = 5 + (length(unique(DE_gse_filter2$ID))/3)
     
-    pdf(here(plot_dir, sprintf("DE_gene_enrichment_contrast_%s_%s_%s.pdf", opt$datatype, opt$contrast, name)), height = pdf_height)
+    pdf(here(plot_dir, sprintf("DE_gene_enrichment_contrast_%s_%s_%s.pdf", opt$datatype, opt$contrast, name)), height = pdf_height, width = pdf_width)
     print(gene_set_enrichment_plot(DE_gse_filter2))
     dev.off()
     
