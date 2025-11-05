@@ -24,6 +24,7 @@ library("readxl")
 # DE data downloaded from http://adsn.ddnetbio.com "AD vs Control cells within each cell type". LFC cutoff 0.5 (minimum option) FDR cutoff 0.05.
 
 grubman_fn <- list.files(here("external-data", "Grubman2019"), pattern = ".csv", full.names = TRUE)
+grubman_fn <- grubman_fn[grepl("Grubman2019_DEG", basename(grubman_fn))]
 names(grubman_fn) <- gsub("Grubman2019_DEG_|.csv","",basename(grubman_fn))
 
 Grubman_DE_data <- map2_dfr(grubman_fn, names(grubman_fn), ~read_csv(.x, show_col_types = FALSE) |> mutate(cell_type = .y))
