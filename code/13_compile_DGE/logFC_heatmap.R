@@ -93,17 +93,18 @@ logFC_Heatmap <- function(data,
 
 
 
-logFC_Heatmap_contrast <- function(dge_data, 
+logFC_Heatmap_contrast <- function(data_contrast, 
                                    gene_list, 
                                    title, 
                                    h = 4, 
                                    w = 10, 
                                    cluster_col = FALSE,
+                                   cluster_row = FALSE,
                                    flip = FALSE,
                                    save = TRUE, 
                                    order_genes = TRUE){
     
-    dge_data_filter <- dge_data |>
+    dge_data_filter <- data_contrast |>
         filter(gene_name %in% gene_list) |>
         mutate(cluster_contrast = paste0(cluster, gsub("carrier","", contrast))) 
     

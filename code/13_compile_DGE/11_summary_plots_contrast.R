@@ -383,6 +383,58 @@ if(datatype == "cell_type_fine"){
                            gene_list = AD_risk$symbol, 
                            title = sprintf("ADrisk_%s_%s_Oligo", contrast, datatype))
     
+    #### check Blanchard genes in select cell types ####
+    load(here("external-data", "Blanchard2022","Blanchard_gene_list.Rdata"), verbose = TRUE)
+    Blanchard_gene_list <- map(Blanchard_gene_list, ~.x[.x %in% dge_data$gene_name])
+    map_int(Blanchard_gene_list, length)
+    
+    map2(Blanchard_gene_list, names(Blanchard_gene_list),  ~logFC_Heatmap_contrast(data_contrast = dge_data_contrast |> filter(grepl("Oligo", cluster) | cluster == "Astro.3"), 
+                                                                                   gene_list = .x, 
+                                                                                   title = .y, 
+                                                                                   order_genes = TRUE))
+    
+    ## annotations + stats 
+    
+    Blanchard_gene_anno_stats |> filter(gene_name == "PLP1")
+    
+    Blanchard_gene_anno_stats <- read_csv(here("external-data", "Blanchard2022","Blanchard_gene_anno_stats.csv")) |>
+        unique() |>
+        arrange(logFC)
+    
+    Blanchard_gene_anno <- Blanchard_gene_anno_stats |>
+        filter(grp2 %in% c("E34_E33_noAD", "E34_E33_AD")) |>
+        select(gene_name, grp2, anno, logFC) |>
+        pivot_wider(names_from = "grp2", values_from = "logFC") |>
+        column_to_rownames("gene_name")
+    
+    Blanchard_gene_anno |> count(anno)
+    
+    logfc_col_fun = colorRamp2(c(min(Blanchard_gene_anno_stats$logFC), 0, max(Blanchard_gene_anno_stats$logFC)), 
+                               colors = c("blue", "white", "red"))
+    
+    gene_col_ha<- HeatmapAnnotation(
+        df = Blanchard_gene_anno,
+        col = list(anno = c(Cholesterol = "red",
+                            Myelination = "blue",
+                            `Sterol tf` = "yellow"),
+                   E34_E33_AD = logfc_col_fun,
+                   E34_E33_noAD = logfc_col_fun)
+    )
+    
+    
+    logFC_Heatmap(data = dge_data |>
+                      filter(grepl("Oligo", cluster)), 
+                  gene_list = rownames(Blanchard_gene_anno), 
+                  title = "Blancard_anno", 
+                  # cluster_col = TRUE,
+                  order_genes = FALSE,
+                  datatype = datatype,
+                  col_anno = gene_col_ha,
+                  save = TRUE)
+    
+    
+}
+    
 }
 
 
