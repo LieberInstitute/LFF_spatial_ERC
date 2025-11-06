@@ -8,6 +8,7 @@ library("sessioninfo")
 library("getopt")
 library("spatialLIBD")
 library("jaffelab")
+library("readxl")
 
 # Import command-line parameters
 scec <- matrix(
@@ -142,15 +143,26 @@ grubman_ct_reg_DEGs <- map(splitit(Grubman_DE_data$DE_ct_reg), ~Grubman_DE_data$
 Blanchard_DEG_list <- readRDS(file = here("external-data", "Blanchard2022", "Blanchard_DEG_list.rds"))
 
 
+## Louge et al. ##
+
+logue_DE_data <- read_excel(here("external-data", "Logue2024", "Logue2024_SuppTable1.xlsx")) |>
+    mutate(reg = ifelse(L2FC > 0, "up", "down")) |>
+    arrange(L2FC)
+
+logue_reg_DEGs <- map(splitit(logue_DE_data$reg), ~logue_DE_data$Gene[.x])
+
+
 #### Run Enrichment ####
 
-gene_set_list <- list(Mathys = mathys_ct_DEGs,
-                      Mathys_reg = mathys_ct_reg_DEGs,
-                      Mathys_early = mathys_early_ct_DEGs,
-                      Mathys_early_reg = mathys_early_ct_reg_DEGs,
-                      Grubman = grubman_ct_DEGs,
-                      Grubman_reg = grubman_ct_reg_DEGs,
-                      Blanchard = Blanchard_DEG_list
+gene_set_list <- list(
+    Mathys = mathys_ct_DEGs,
+    Mathys_reg = mathys_ct_reg_DEGs,
+    Mathys_early = mathys_early_ct_DEGs,
+    Mathys_early_reg = mathys_early_ct_reg_DEGs,
+    Grubman = grubman_ct_DEGs,
+    Grubman_reg = grubman_ct_reg_DEGs,
+    Blanchard = Blanchard_DEG_list,
+    Logue_reg = logue_reg_DEGs
 )
 
 map_int(gene_set_list, length)
