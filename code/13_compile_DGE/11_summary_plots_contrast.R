@@ -394,9 +394,6 @@ if(datatype == "cell_type_fine"){
                                                                                    order_genes = TRUE))
     
     ## annotations + stats 
-    
-    Blanchard_gene_anno_stats |> filter(gene_name == "PLP1")
-    
     Blanchard_gene_anno_stats <- read_csv(here("external-data", "Blanchard2022","Blanchard_gene_anno_stats.csv")) |>
         unique() |>
         arrange(logFC)
@@ -409,7 +406,7 @@ if(datatype == "cell_type_fine"){
     
     Blanchard_gene_anno |> count(anno)
     
-    logfc_col_fun = colorRamp2(c(min(Blanchard_gene_anno_stats$logFC), 0, max(Blanchard_gene_anno_stats$logFC)), 
+    logfc_col_fun = circlize::colorRamp2(c(min(Blanchard_gene_anno_stats$logFC), 0, max(Blanchard_gene_anno_stats$logFC)), 
                                colors = c("blue", "white", "red"))
     
     gene_col_ha<- HeatmapAnnotation(
@@ -422,20 +419,19 @@ if(datatype == "cell_type_fine"){
     )
     
     
-    logFC_Heatmap(data = dge_data |>
-                      filter(grepl("Oligo", cluster)), 
+    logFC_Heatmap_contrast(data = dge_data_contrast |> filter(grepl("Oligo", cluster)), 
                   gene_list = rownames(Blanchard_gene_anno), 
                   title = "Blancard_anno", 
                   # cluster_col = TRUE,
                   order_genes = FALSE,
-                  datatype = datatype,
+                  # datatype = datatype,
                   col_anno = gene_col_ha,
                   save = TRUE)
     
     
 }
     
-}
+
 
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
