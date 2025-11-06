@@ -102,7 +102,9 @@ logFC_Heatmap_contrast <- function(data_contrast,
                                    cluster_row = FALSE,
                                    flip = FALSE,
                                    save = TRUE, 
-                                   order_genes = TRUE){
+                                   order_genes = TRUE,
+                                   row_anno = NULL,
+                                   col_anno = NULL){
     
     dge_data_filter <- data_contrast |>
         filter(gene_name %in% gene_list) |>
@@ -160,6 +162,8 @@ logFC_Heatmap_contrast <- function(data_contrast,
                   name = "log(FC)",
                   cluster_rows = cluster_row,
                   cluster_columns = cluster_col,
+                  right_annotation = row_anno,
+                  bottom_annotation = col_anno,
                   cell_fun = function(j, i, x, y, width, height, fill) {
                       grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
                   }))
