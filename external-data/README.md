@@ -10,6 +10,6 @@ DE data downloaded from http://adsn.ddnetbio.com "AD vs Control cells within eac
 `OpenTargets` Alzheimer disease associated gene list Downloaded May 21, 2025
  [link](https://platform.opentargets.org/disease/MONDO_0004975/associations)
 
-`Ramsden2015` Supplementary tables from Ramsden et al., 2015 10.1371/journal.pcbi.1004032
+`Ramsden2015` Supplementary tables from Ramsden et al., 2015 [10.1371/journal.pcbi.1004032](https://doi.org/10.1371/journal.pcbi.1004032)
 
-
+`Sadick 2022` Supplemntary tables from Sadick et al. 2022 [10.1016/j.neuron.2022.03.008](https://doi.org/10.1016/j.neuron.2022.03.008)
