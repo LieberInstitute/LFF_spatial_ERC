@@ -222,6 +222,14 @@ oligo_lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
 )
 
 # MBP, BACE1, and APP capable of producing ABeta  Bright/Ranjani
+oligo_lit_markers <- map(oligo_lit_markers, ~.x[.x %in% rownames(sce)])
+
+oligo_lit_markers <- AnnotationDbi::unlist2(oligo_lit_markers)
+
+
+rowData(sce)$oligo_marker <- NULL
+rowData(sce)$oligo_marker <- names(oligo_lit_markers)[match(rownames(sce), oligo_lit_markers)] 
+table(rowData(sce)$oligo_marker)
 
 # oligo_lit_markers2 <- list(OPC = c("PDGFRA", "MEGF11"),
 #                     Oligo = c("OLIG1", "OLIG2"),
@@ -232,20 +240,70 @@ oligo_lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
 # )
 
 
-oligo_lit_markers <- map(oligo_lit_markers, ~.x[.x %in% rownames(sce)])
-
-oligo_lit_markers <- AnnotationDbi::unlist2(oligo_lit_markers)
-
-rowData(sce)$oligo_marker <- NULL
-rowData(sce)$oligo_marker <- names(oligo_lit_markers)[match(rownames(sce), oligo_lit_markers)] 
-table(rowData(sce)$oligo_marker)
-
 pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_lit_alt_colors.pdf"))
 sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_lit_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "oligo_marker",
+              scale = TRUE,
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+## Oligo markers from 
+## 10.3389/fcell.2021.714169
+oligo_lineage_markers <- list(OPC = c("PDGFRA", "CSPG4"),
+                              Oligo_premyelin = c("BMP4", "GPR17"),
+                              Oligo_new = c("TMEM2","PROM1"),
+                              Oligo = c("BCAS1", "ENPP6", "GJC2"),
+                              Oligo_myelin = c("PLP1", "MAG", "MBOP")
+)
+
+oligo_lineage_markers <- map(oligo_lineage_markers, ~.x[.x %in% rownames(sce)])
+
+oligo_lineage_markers <- AnnotationDbi::unlist2(oligo_lineage_markers)
+
+
+rowData(sce)$oligo_lineage_markers <- NULL
+rowData(sce)$oligo_lineage_markers <- names(oligo_lineage_markers)[match(rownames(sce), oligo_lineage_markers)] 
+table(rowData(sce)$oligo_lineage_markers)
+
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors.pdf"))
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+    scDotPlot(features = oligo_lineage_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_lineage_markers",
+              scale = TRUE,
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors_exp.pdf"))
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+    scDotPlot(features = oligo_lineage_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_lineage_markers",
+              scale = FALSE,
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors.pdf"))
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
+    scDotPlot(features = oligo_lineage_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_lineage_markers",
               scale = TRUE,
               # annoColors = list("cell_type_anno" = cell_type_colors$anno),
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
@@ -264,7 +322,7 @@ table(rowData(sce)$oligo_enrich_marker)
 
 pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment_alt_colors.pdf"), width = 5)
 # pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment.pdf"), width = 5)
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC.5"]  |>
     scDotPlot(features = oligo_enrichment_genes$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
