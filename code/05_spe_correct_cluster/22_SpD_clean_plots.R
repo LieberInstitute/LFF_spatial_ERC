@@ -52,10 +52,9 @@ write.csv(SpD_summary, file = here(data_dir, "ERC_Visium_summary_SpD.csv"))
 #### Donor Summary ####
 
 sample_summary <- pd |>
-    group_by(sample_id, round, Visium_slide)  |>
+    group_by(sample_id, round, VNum, Visium_slide)  |>
     summarise(n_spots = n(),
               prop = n_spots/ncol(spe),
-              n_donors = length(unique(sample_id)),
               median_sum_umi = median(sum_umi),
               median_sum_gene = median(sum_gene),
               median_expr_chrM_ratio = median(expr_chrM_ratio))
