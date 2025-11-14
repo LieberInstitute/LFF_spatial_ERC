@@ -15,6 +15,13 @@ supp_tables <- list()
 supp_tables$TableS1 <- read.csv(here("processed-data", "00_project_prep", "05_pathology", "sample_taupathy.csv"))
 
 
+#### Table S2 SRT sample information ####
+
+supp_tables$TableS2 <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "ERC_Visium_summary_sample.csv"), row.names = 1)
+
+
+#### Table S3 SpD Marker Genes ####
+
 ## SpD markers
 load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE)
 
