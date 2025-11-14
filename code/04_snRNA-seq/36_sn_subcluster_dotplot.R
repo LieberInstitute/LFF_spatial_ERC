@@ -259,7 +259,7 @@ oligo_lineage_markers <- list(OPC = c("PDGFRA", "CSPG4"),
                               Oligo_premyelin = c("BMP4", "GPR17"),
                               Oligo_new = c("TMEM2","PROM1"),
                               Oligo = c("BCAS1", "ENPP6", "GJC2"),
-                              Oligo_myelin = c("PLP1", "MAG", "MBOP")
+                              Oligo_myelin = c("PLP1", "MAG", "MOBP")
 )
 
 oligo_lineage_markers <- map(oligo_lineage_markers, ~.x[.x %in% rownames(sce)])
@@ -305,7 +305,18 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
               groupAnno = "cell_type_anno",
               featureAnno = "oligo_lineage_markers",
               scale = TRUE,
-              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors_exp.pdf"))
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
+    scDotPlot(features = oligo_lineage_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_lineage_markers",
+              scale = FALSE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
