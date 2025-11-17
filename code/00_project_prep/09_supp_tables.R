@@ -42,9 +42,9 @@ head(sig_genes)
 dim(sig_genes)
 # [1] 112284     10
 
-marker_stats |> filter(gene_name == "MBP")
-sig_genes |> filter(ensembl == "ENSG00000197971")
-marker_stats |> filter(gene_ensembl == "ENSG00000197971")
+# marker_stats |> filter(gene_name == "MBP")
+# sig_genes |> filter(ensembl == "ENSG00000197971")
+# marker_stats |> filter(gene_ensembl == "ENSG00000197971")
 
 SpD_markers <- sig_genes |> 
     select(SpD.target = test, ensembl, enrichment_stat = stat, enrichment_pval = pval, enrichment_fdr= fdr, enrichment_logFC = logFC) |>
@@ -59,6 +59,17 @@ SpD_markers |> filter(!is.na(enrichment_stat), !is.na(MeanRatio))
 SpD_markers |> filter(gene_name == "MBP")
 
 supp_tables$TableS3 <- SpD_markers
+
+#### Table S4 SpD Differential Proportions ####
+
+supp_tables$TableS4 <- read.csv(here("processed-data", "05_spe_correct_cluster", "26_crumblr_SpD", "SpD_diff_prop_tree_test_APOE_carrier.csv"))
+
+#### Table S5 snRNA-seq sample information ####
+sn_sample_qc <-read.csv(here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
+sn_sample_summary <- read.csv(here("processed-data", "04_snRNA-seq", "33_sn_subcluster_summary", "ERC_sn_subcluster_summary_sample.csv"), row.names = 1)  |>
+    dplyr::rename(BrNum = sample_id)
+
+supp_tables$TableS5 <- sn_sample_qc |> left_join(sn_sample_summary)
 
 ## snRNA-seq sub-cluster metrics
 "processed-data/04_snRNA-seq/28_subcluster_update_sce/ERC_sn_subcluster_info.csv"
