@@ -21,6 +21,8 @@ supp_tables$TableS1 <- read.csv(here("processed-data", "00_project_prep", "05_pa
 
 supp_tables$TableS2 <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "ERC_Visium_summary_sample.csv"), row.names = 1)
 
+## visium info
+read.csv(here("processed-data", "02_build_spe", "sample_info.csv"))
 
 #### Table S3 SpD Marker Genes ####
 
@@ -72,13 +74,55 @@ sn_sample_summary <- read.csv(here("processed-data", "04_snRNA-seq", "33_sn_subc
 supp_tables$TableS5 <- sn_sample_qc |> left_join(sn_sample_summary)
 
 ## snRNA-seq sub-cluster metrics
-"processed-data/04_snRNA-seq/28_subcluster_update_sce/ERC_sn_subcluster_info.csv"
+# read.csv(here("processed-data", "04_snRNA-seq", "33_sn_subcluster_summary", "ERC_sn_subcluster_summary_cell_type.csv"), row.names = 1) 
 
-## visium info
-read.csv(here("processed-data", "02_build_spe", "sample_info.csv"))
+#### Table S6 Cell type subcluster marker genes ####
+
+## cell_tpye_anno markers
+load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio", "marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
+# marker_stats_MeanRatio
+
+erc_sn_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
+sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_pseudobulk-cell_type_anno.rds"))
+
+sig_genes <- sig_genes_extract(
+    modeling_results = erc_sn_modeling["enrichment"],
+    sce_layer = sce_pb,
+    n = nrow(sce_pb),
+    gene_name = "gene_name",
+)
+
+# marker_stats_MeanRatio |> filter(gene_name == "MBP")
+# sig_genes |> filter(ensembl == "ENSG00000197971")
+# marker_stats |> filter(gene_ensembl == "ENSG00000197971")
+
+head(sig_genes)
+dim(sig_genes)
+# [1] 941640     10 TOO BIG keep in sperate file
+
+cell_type_markers <- sig_genes |> 
+    select(cellType.target = test, ensembl, gene_name = gene, enrichment_stat = stat, enrichment_pval = pval, enrichment_fdr= fdr, enrichment_logFC = logFC) |>
+    left_join(marker_stats_MeanRatio |>
+                  select(cellType.target = cellType.target, ensembl = gene_ensembl, gene_name, MeanRatio, MeanRatio.rank, mean.target, cellType.2nd = cellType.2nd, mean.2nd) |>
+                  mutate(cellType.target = as.character(cellType.target))) |>
+    as_tibble()
 
 
-## Stable_sn_crumblr snRNA-seq crumblr results 
+cell_type_markers |> filter(gene_name == "MBP")
+
+#### Table S7 Spot deconvolution results ####
+##TODO
+list.files(here("processed-data", "15_spot_deconvolution", "03_results_RCTD", "cell_type_broad"))
+
+#### Table S8 snRNA-seq cell type differential proportions. ####
+
+supp_tables$TableS8 <- map_dfr(c("APOE_carrier", "Sex", "Age"), 
+    ~read.csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", paste0("sn_diff_prop_tree_test_",.x,".csv"))) |>
+        mutate(test = .x)
+    )
+
+# supp_tables$TableS8 |> dplyr::count(test)
+# supp_tables$TableS8 |> dplyr::count(label)
 
 ## stable_DEG_Visium_GO Visium GO results 
 
