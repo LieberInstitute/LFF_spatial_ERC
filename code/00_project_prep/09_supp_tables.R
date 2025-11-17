@@ -5,7 +5,8 @@ library("tidyverse")
 library("writexl")
 library("here")
 library("sessioninfo")
-library(spatialLIBD)
+library("spatialLIBD")
+library("SingleCellExperiment")
 
 data_dir <- here("processed-data", "00_project_prep", "09_supp_tables")
 if(!dir.exists(data_dir)) dir.create(data_dir)
@@ -28,10 +29,36 @@ load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marke
 # marker_stats
 
 erc_SpD_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "spe_pseudobulk-SpD.rds"))
 
-get_sig_genes
+sig_genes <- sig_genes_extract(
+    modeling_results = erc_SpD_modeling["enrichment"],
+    sce_layer = spe_pb,
+    n = nrow(spe_pb),
+    gene_name = "gene_id",
+)
 
+head(sig_genes)
+dim(sig_genes)
+# [1] 112284     10
 
+marker_stats |> filter(gene_name == "MBP")
+sig_genes |> filter(ensembl == "ENSG00000197971")
+marker_stats |> filter(gene_ensembl == "ENSG00000197971")
+
+SpD_markers <- sig_genes |> 
+    select(SpD.target = test, ensembl, enrichment_stat = stat, enrichment_pval = pval, enrichment_fdr= fdr, enrichment_logFC = logFC) |>
+    mutate(SpD.target = gsub("_", "~", SpD.target)) |>
+    left_join(marker_stats |> 
+                  select(SpD.target = cellType.target, ensembl = gene_ensembl, gene_name, MeanRatio, MeanRatio.rank, mean.target, SpD.2nd = cellType.2nd,  mean.2nd) |> 
+                  mutate(SpD.target = as.character(SpD.target))) |>
+    as_tibble()
+
+SpD_markers |> filter(!is.na(enrichment_stat), !is.na(MeanRatio))
+
+SpD_markers |> filter(gene_name == "MBP")
+
+supp_tables$TableS3 <- SpD_markers
 
 ## snRNA-seq sub-cluster metrics
 "processed-data/04_snRNA-seq/28_subcluster_update_sce/ERC_sn_subcluster_info.csv"
