@@ -160,7 +160,49 @@ rm(combined_data)
 
 #### Table S10, 12, 14 GO over-representation analysis. ####
 
-GO_carrier <- 
+GO_carrier <- here("processed-data", "13_compile_DGE", "02_GO_analysis")
+
+GO_carrier <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "02_GO_analysis", sprintf("GO_compare_clus_%s.rds", .x))))
+
+GO_ancestry <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_compare_clus_ancestry_%s.rds", .x))))
+GO_ancestry <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_results_ancestry_%s.csv", .x))))
+
+GO_sex <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_Sex", sprintf("GO_compare_clus_Sex_%s.rds", .x))))
+
+GO_carrier[[1]] |> dplyr::count(DE_class_cluster)
+
+GO_ancestry[[1]] |> dplyr::count(DE_class_cluster)
+
+GO_sex[[1]] |> dplyr::count(DE_class_cluster)
+
+
+#### Table S15 External dataset DEG enrichment results. ####
+
+# list.files(here("processed-data", "13_compile_DGE", "12.5_DE_enrichment_contrast"), pattern = "sn_fine_Blanchard")
+
+external_data_Blanchard <- read.csv(here("processed-data", "13_compile_DGE", "12_DE_enrichment", "DE_gene_enrichment_sn_fine_Blanchard.csv")) |>
+    mutate(DEG_data = "sn_fine_carrier")
+
+external_data_anc_Blanchard <- read.csv(here("processed-data", "13_compile_DGE", "12.5_DE_enrichment_contrast", "DE_gene_enrichment_sn_fine_Blanchard.csv")) |>
+    mutate(DEG_data = "sn_fine_carrier_anc")
+
+external_data_Grubman <- read.csv(here("processed-data", "13_compile_DGE", "12_DE_enrichment", "DE_gene_enrichment_sn_fine_Grubman_reg.csv")) |> 
+    mutate(gene_set = "Grubman",
+           DEG_data = "sn_fine_carrier")
+
+external_data_anc_Grubman <- read.csv(here("processed-data", "13_compile_DGE", "12.5_DE_enrichment_contrast", "DE_gene_enrichment_sn_fine_Grubman_reg.csv")) |> 
+    mutate(gene_set = "Grubman",
+           DEG_data = "sn_fine_carrier_anc")
+
+
+supp_tables$TableS15 <- do.call("rbind", list(external_data_Blanchard, external_data_anc_Blanchard, external_data_Grubman, external_data_anc_Grubman))
+
+head(supp_tables$TableS15)
+supp_tables$TableS15 |> dplyr::count(gene_set, DEG_data)
+
+#### Table S16 Cell to cell communication results summary. ####
+
+#### Table S17 MOFA results. ####
 
 #### Write table ####
 
