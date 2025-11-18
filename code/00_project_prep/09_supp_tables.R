@@ -61,6 +61,7 @@ SpD_markers |> filter(!is.na(enrichment_stat), !is.na(MeanRatio))
 SpD_markers |> filter(gene_name == "MBP")
 
 supp_tables$TableS03 <- SpD_markers
+rm(SpD_markers)
 
 #### Table S4 SpD Differential Proportions ####
 
@@ -114,10 +115,21 @@ cell_type_markers |> filter(gene_name == "MBP")
 # write_xlsx(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.xlsx")
 
 supp_tables$TableS06 <- cell_type_markers
+rm(cell_type_markers)
 
 #### Table S7 Spot deconvolution results ####
-##TODO
-list.files(here("processed-data", "15_spot_deconvolution", "03_results_RCTD", "cell_type_broad"))
+spe_RCTD <- readRDS(here("processed-data", "15_spot_deconvolution", "03_results_RCTD", "cell_type_broad", "spe_RCTD-cell_type_broad.rds"))
+assayNames(spe_RCTD)
+dim(spe_RCTD)
+
+supp_tables$TableS07 <- t(assay(spe_RCTD, "weights")) |>
+    as.matrix() |>
+    as.data.frame() |>
+    rownames_to_column("key") |>
+    add_column(SpD = spe_RCTD$SpD, .after = 1)
+
+head(supp_tables$TableS07)
+rm(spe_RCTD)
 
 #### Table S8 snRNA-seq cell type differential proportions. ####
 
