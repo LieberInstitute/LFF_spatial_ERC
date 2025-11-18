@@ -8,18 +8,18 @@ library("sessioninfo")
 library("spatialLIBD")
 library("SingleCellExperiment")
 
-data_dir <- here("processed-data", "00_project_prep", "09_supp_tables")
-if(!dir.exists(data_dir)) dir.create(data_dir)
+# data_dir <- here("processed-data", "00_project_prep", "09_supp_tables")
+# if(!dir.exists(data_dir)) dir.create(data_dir)
 
 supp_tables <- list()
 
 #### Table S1 Donor demographics. ####
-supp_tables$TableS1 <- read.csv(here("processed-data", "00_project_prep", "05_pathology", "sample_taupathy.csv"))
+supp_tables$TableS01 <- read.csv(here("processed-data", "00_project_prep", "05_pathology", "sample_taupathy.csv"))
 
 
 #### Table S2 SRT sample information ####
 
-supp_tables$TableS2 <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "ERC_Visium_summary_sample.csv"), row.names = 1)
+supp_tables$TableS02 <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "ERC_Visium_summary_sample.csv"), row.names = 1)
 
 ## visium info
 read.csv(here("processed-data", "02_build_spe", "sample_info.csv"))
@@ -60,18 +60,18 @@ SpD_markers |> filter(!is.na(enrichment_stat), !is.na(MeanRatio))
 
 SpD_markers |> filter(gene_name == "MBP")
 
-supp_tables$TableS3 <- SpD_markers
+supp_tables$TableS03 <- SpD_markers
 
 #### Table S4 SpD Differential Proportions ####
 
-supp_tables$TableS4 <- read.csv(here("processed-data", "05_spe_correct_cluster", "26_crumblr_SpD", "SpD_diff_prop_tree_test_APOE_carrier.csv"))
+supp_tables$TableS04 <- read.csv(here("processed-data", "05_spe_correct_cluster", "26_crumblr_SpD", "SpD_diff_prop_tree_test_APOE_carrier.csv"))
 
 #### Table S5 snRNA-seq sample information ####
 sn_sample_qc <-read.csv(here("processed-data", "04_snRNA-seq", "02_droplet_QC", "erc_sn_sample_QC_summary.csv"))
 sn_sample_summary <- read.csv(here("processed-data", "04_snRNA-seq", "33_sn_subcluster_summary", "ERC_sn_subcluster_summary_sample.csv"), row.names = 1)  |>
     dplyr::rename(BrNum = sample_id)
 
-supp_tables$TableS5 <- sn_sample_qc |> left_join(sn_sample_summary)
+supp_tables$TableS05 <- sn_sample_qc |> left_join(sn_sample_summary)
 
 ## snRNA-seq sub-cluster metrics
 # read.csv(here("processed-data", "04_snRNA-seq", "33_sn_subcluster_summary", "ERC_sn_subcluster_summary_cell_type.csv"), row.names = 1) 
@@ -113,7 +113,7 @@ cell_type_markers |> filter(gene_name == "MBP")
 # write_csv(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.csv")
 # write_xlsx(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.xlsx")
 
-supp_tables$TableS6 <- cell_type_markers
+supp_tables$TableS06 <- cell_type_markers
 
 #### Table S7 Spot deconvolution results ####
 ##TODO
@@ -121,7 +121,7 @@ list.files(here("processed-data", "15_spot_deconvolution", "03_results_RCTD", "c
 
 #### Table S8 snRNA-seq cell type differential proportions. ####
 
-supp_tables$TableS8 <- map_dfr(c("APOE_carrier", "Sex", "Age"), 
+supp_tables$TableS08 <- map_dfr(c("APOE_carrier", "Sex", "Age"), 
     ~read.csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", paste0("sn_diff_prop_tree_test_",.x,".csv"))) |>
         mutate(test = .x)
     )
@@ -152,7 +152,7 @@ combined_data <- pmap(list(carrier = DEG_carrier, anc = DEG_ancestry, sex = DEG_
 
 map(combined_data, ncol)
 
-supp_tables$TableS9 <- combined_data[[1]]
+supp_tables$TableS09 <- combined_data[[1]]
 supp_tables$TableS11 <- combined_data[[2]]
 supp_tables$TableS13 <- combined_data[[3]]
 
@@ -202,12 +202,26 @@ supp_tables$TableS15 |> dplyr::count(gene_set, DEG_data)
 
 #### Table S16 Cell to cell communication results summary. ####
 
+## counts of commonly observed LR pairs by source and target
+
+## LR source-target interactions involving a DEG including mean bivariate score
+
 #### Table S17 MOFA results. ####
+
+# gene expression variance explained
+
+# covariate p-values
+covar <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_associations_df-sn_fine.csv"))
+
+# donor factor scores
 
 #### Write table ####
 
 supp_tables <- supp_tables[sort(names(supp_tables))]
-
+s
+length(supp_tables)
 map(supp_tables, dim)
+
+map_int(supp_tables, nrow)
 
 write_xlsx(supp_tables, path =  "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTables.xlsx")
