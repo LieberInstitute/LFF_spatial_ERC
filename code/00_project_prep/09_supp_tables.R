@@ -78,7 +78,7 @@ supp_tables$TableS5 <- sn_sample_qc |> left_join(sn_sample_summary)
 
 #### Table S6 Cell type subcluster marker genes ####
 
-## cell_tpye_anno markers
+## cell_type_anno markers
 load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio", "marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
 # marker_stats_MeanRatio
 
@@ -110,6 +110,11 @@ cell_type_markers <- sig_genes |>
 
 cell_type_markers |> filter(gene_name == "MBP")
 
+# write_csv(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.csv")
+# write_xlsx(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.xlsx")
+
+supp_tables$TableS6 <- cell_type_markers
+
 #### Table S7 Spot deconvolution results ####
 ##TODO
 list.files(here("processed-data", "15_spot_deconvolution", "03_results_RCTD", "cell_type_broad"))
@@ -121,16 +126,46 @@ supp_tables$TableS8 <- map_dfr(c("APOE_carrier", "Sex", "Age"),
         mutate(test = .x)
     )
 
-# supp_tables$TableS8 |> dplyr::count(test)
-# supp_tables$TableS8 |> dplyr::count(label)
+#### Table S9, 11, 13 differential expression results. ####
+datatypes <- c("Visium", "sn_broad", "sn_fine")
+    
+DEG_carrier <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", .x, sprintf("DGE_results_carrier_%s.Rds", .x))) |> 
+                       dplyr::select(1:20) |>
+                       dplyr::rename_with(~gsub("vlmf", "carrier", .))
+                   )
 
-## stable_DEG_Visium_GO Visium GO results 
+DEG_ancestry <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", .x, sprintf("DGE_results_ancestry_%s.Rds", .x))) |> 
+                        dplyr::select(1:20) |>
+                        dplyr::rename_with(~gsub("vlmf", "ancestry", .))
+                    )
 
-## stable_DEG_sn_GO snRNA-seq GO results - broad
+DEG_Sex <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "09_compile_DGE_Sex", .x, sprintf("DGE_results_Sex_%s.Rds", .x))) |> 
+                   dplyr::select(1:20) |>
+                   dplyr::rename_with(~gsub("vlmf", "sex", .))
+               )
 
-## stable_DEG_sn_fine_GO snRNA-seq GO results - fine
+combined_data <- pmap(list(carrier = DEG_carrier, anc = DEG_ancestry, sex = DEG_Sex), function(carrier, anc, sex){
+    carrier |>
+        left_join(anc) |>
+        left_join(sex)
+})
+
+map(combined_data, ncol)
+
+supp_tables$TableS9 <- combined_data[[1]]
+supp_tables$TableS11 <- combined_data[[2]]
+supp_tables$TableS13 <- combined_data[[3]]
+
+rm(combined_data)
+
+#### Table S10, 12, 14 GO over-representation analysis. ####
+
+GO_carrier <- 
 
 #### Write table ####
+
+supp_tables <- supp_tables[sort(names(supp_tables))]
+
 map(supp_tables, dim)
 
-write_xlsx(supp_tables, path =  here(data_dir, "SuppTables.xlsx"))
+write_xlsx(supp_tables, path =  "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTables.xlsx")
