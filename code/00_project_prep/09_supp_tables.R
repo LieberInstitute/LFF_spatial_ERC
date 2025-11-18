@@ -220,17 +220,28 @@ supp_tables$TableS15 |> dplyr::count(gene_set, DEG_data)
 
 #### Table S17 MOFA results. ####
 
+
 # gene expression variance explained
+gene_weight <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
+supp_tables$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
+
+head(supp_tables$TableS17a)
+dim(supp_tables$TableS17a)
+rm(gene_weight)
 
 # covariate p-values
-covar <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_associations_df-sn_fine.csv"))
+supp_tables$TableS17b <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_associations_df-sn_fine.csv"))
+head(supp_tables$TableS17b)
+dim(supp_tables$TableS17b)
 
 # donor factor scores
+supp_tables$TableS17c <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_df-sn_fine.csv"))
+head(supp_tables$TableS17c)
+dim(supp_tables$TableS17c)
 
 #### Write table ####
 
 supp_tables <- supp_tables[sort(names(supp_tables))]
-s
 length(supp_tables)
 map(supp_tables, dim)
 
