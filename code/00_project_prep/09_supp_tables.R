@@ -172,21 +172,32 @@ rm(combined_data)
 
 #### Table S10, 12, 14 GO over-representation analysis. ####
 
-GO_carrier <- here("processed-data", "13_compile_DGE", "02_GO_analysis")
+GO_carrier <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "02_GO_analysis", sprintf("GO_compare_clus_%s.rds", .x))) |>
+                      mutate(DEG = "carrier", .before = 1))
 
-GO_carrier <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "02_GO_analysis", sprintf("GO_compare_clus_%s.rds", .x))))
+GO_ancestry <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_results_ancestry_%s.csv", .x))) |>
+                       mutate(DEG = "ancestry", .before = 1))
 
-GO_ancestry <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_compare_clus_ancestry_%s.rds", .x))))
-GO_ancestry <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_results_ancestry_%s.csv", .x))))
-
-GO_sex <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_Sex", sprintf("GO_compare_clus_Sex_%s.rds", .x))))
+GO_sex <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_Sex", sprintf("GO_results_Sex_%s.csv", .x)))|>
+                  mutate(DEG = "Sex", .before = 1))
 
 GO_carrier[[1]] |> dplyr::count(DE_class_cluster)
 
-GO_ancestry[[1]] |> dplyr::count(DE_class_cluster)
+GO_ancestry[[3]] |> dplyr::count(DE_classes)
 
 GO_sex[[1]] |> dplyr::count(DE_class_cluster)
 
+combined_GO <- pmap(list(carrier = GO_carrier, anc = GO_ancestry, sex = GO_sex), function(carrier, anc, sex){
+    carrier |>
+        bind_rows(anc) |>
+        bind_rows(sex)
+})
+
+# combined_GO[[1]] |> dplyr::count(DEG, DE_class_cluster, DE_classes)
+
+supp_tables$TableS10 <- combined_GO[[1]]
+supp_tables$TableS12 <- combined_GO[[2]]
+supp_tables$TableS14 <- combined_GO[[3]]
 
 #### Table S15 External dataset DEG enrichment results. ####
 
