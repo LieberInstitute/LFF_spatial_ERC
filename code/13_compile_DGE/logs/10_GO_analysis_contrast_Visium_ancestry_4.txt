@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  4 03:33:12 PM EDT 2025
+Wed Nov 19 06:45:32 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21820279
+Job id: 24337700
 Job name: 10_GO_analysis_contrast
-Node name: compute-146
+Node name: compute-119
 Task id: 4
 Loading conda_R/4.5
 
@@ -16,7 +16,7 @@ Currently Loaded Modules:
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ forcats   1.0.0     ✔ stringr   1.5.2
 ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.1.0     
@@ -125,8 +125,9 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
-5(6):100722
+S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
+W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
+multiomics data. Nature Protocols. 2024, 19(11):3292-3320
 
 Attaching package: ‘clusterProfiler’
 
@@ -173,6 +174,7 @@ This message can be suppressed by:
 Loading objects:
   SpD_colors
 [1] TRUE
+[1] TRUE
 # A tibble: 18 × 3
    cluster       contrast       n
    <fct>         <chr>      <int>
@@ -214,7 +216,7 @@ Loading objects:
 3 WM~Sp09D06    carrier_EA     1
 'select()' returned 1:many mapping between keys and columns
 Warning message:
-In bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID",  :
+In bitr(unique(DE_data_contrast$gene_id), fromType = "ENSEMBL",  :
   5.48% of input gene IDs are fail to map...
 Storing counts in `nn`, as `n` already present in input
 ℹ Use `name = "new_name"` to pick a new name.
@@ -222,265 +224,193 @@ Storing counts in `nn`, as `n` already present in input
 1 1 14454
 2 2   160
 3 3    13
-# A tibble: 22 × 2
-   DE_class_cluster          n
-   <chr>                 <int>
- 1 Inhib~Sp09D09_AA_None 12059
- 2 Inhib~Sp09D09_EA_None 12059
- 3 L1~Sp09D05_AA_None    11524
- 4 L1~Sp09D05_EA_None    11524
- 5 L2-3~Sp09D01_AA_None  13579
- 6 L2-3~Sp09D01_EA_None  13579
- 7 L5~Sp09D03_AA_None    13860
- 8 L5~Sp09D03_EA_None    13860
- 9 L6~Sp09D04_AA_None    13565
-10 L6~Sp09D04_EA_None    13565
-# ℹ 12 more rows
-# A tibble: 18 × 3
+# A tibble: 18 × 2
+   DE_class_cluster           n
+   <chr>                  <int>
+ 1 Inhib~Sp09D09_None_ALL 12513
+ 2 Inhib~Sp09D09_down_ALL     2
+ 3 L1~Sp09D05_None_ALL    11967
+ 4 L1~Sp09D05_down_ALL        1
+ 5 L2-3~Sp09D01_None_ALL  13579
+ 6 L5~Sp09D03_None_ALL    13857
+ 7 L5~Sp09D03_up_ALL          3
+ 8 L6~Sp09D04_None_ALL    13900
+ 9 L6~Sp09D04_down_ALL        5
+10 L6~Sp09D04_up_ALL          9
+11 LD~Sp09D02_None_ALL    14616
+12 Vasc~Sp09D08_None_ALL   8981
+13 Vasc~Sp09D08_down_ALL     21
+14 Vasc~Sp09D08_up_ALL        8
+15 WM-uf~Sp09D07_None_ALL  3565
+16 WM-uf~Sp09D07_down_ALL    19
+17 WM-uf~Sp09D07_up_ALL       2
+18 WM~Sp09D06_None_ALL     9946
+# A tibble: 40 × 2
+   DE_class_cluster           n
+   <chr>                  <int>
+ 1 Inhib~Sp09D09_None_AA  12059
+ 2 Inhib~Sp09D09_None_ALL 12513
+ 3 Inhib~Sp09D09_None_EA  12059
+ 4 Inhib~Sp09D09_down_ALL     2
+ 5 L1~Sp09D05_None_AA     11524
+ 6 L1~Sp09D05_None_ALL    11967
+ 7 L1~Sp09D05_None_EA     11524
+ 8 L1~Sp09D05_down_ALL        1
+ 9 L2-3~Sp09D01_None_AA   13579
+10 L2-3~Sp09D01_None_ALL  13579
+# ℹ 30 more rows
+`summarise()` has grouped output by 'model_type', 'ENTREZID', 'gene_name'. You
+can override using the `.groups` argument.
+# A tibble: 86 × 6
+# Groups:   model_type, ENTREZID, gene_name [80]
+   model_type ENTREZID gene_name cluster       DE_classes                      n
+   <chr>      <chr>    <chr>     <chr>         <chr>                       <int>
+ 1 Specifc    2861     GPR37     WM.uf~Sp09D07 WM-uf~Sp09D07_down_AA, WM-…     2
+ 2 All        10363    HMG20A    Vasc~Sp09D08  Vasc~Sp09D08_up_ALL             1
+ 3 All        10577    NPC2      WM.uf~Sp09D07 WM-uf~Sp09D07_down_ALL          1
+ 4 All        1073     CFL2      Vasc~Sp09D08  Vasc~Sp09D08_down_ALL           1
+ 5 All        1073     CFL2      WM.uf~Sp09D07 WM-uf~Sp09D07_down_ALL          1
+ 6 All        11113    CIT       Vasc~Sp09D08  Vasc~Sp09D08_up_ALL             1
+ 7 All        114792   KLHL32    Vasc~Sp09D08  Vasc~Sp09D08_down_ALL           1
+ 8 All        114800   CCDC85A   L6~Sp09D04    L6~Sp09D04_up_ALL               1
+ 9 All        116173   CMTM5     Vasc~Sp09D08  Vasc~Sp09D08_down_ALL           1
+10 All        124359   CDYL2     L5~Sp09D03    L5~Sp09D03_up_ALL               1
+# ℹ 76 more rows
+# A tibble: 13 × 4
+   model_type cluster       DE_classes                                       n
+   <chr>      <chr>         <chr>                                        <int>
+ 1 All        Inhib~Sp09D09 Inhib~Sp09D09_down_ALL                           2
+ 2 All        L1~Sp09D05    L1~Sp09D05_down_ALL                              1
+ 3 All        L5~Sp09D03    L5~Sp09D03_up_ALL                                3
+ 4 All        L6~Sp09D04    L6~Sp09D04_down_ALL                              5
+ 5 All        L6~Sp09D04    L6~Sp09D04_up_ALL                                9
+ 6 All        Vasc~Sp09D08  Vasc~Sp09D08_down_ALL                           21
+ 7 All        Vasc~Sp09D08  Vasc~Sp09D08_up_ALL                              8
+ 8 All        WM.uf~Sp09D07 WM-uf~Sp09D07_down_ALL                          19
+ 9 All        WM.uf~Sp09D07 WM-uf~Sp09D07_up_ALL                             2
+10 Specifc    WM.uf~Sp09D07 WM-uf~Sp09D07_down_AA                            7
+11 Specifc    WM.uf~Sp09D07 WM-uf~Sp09D07_down_AA, WM-uf~Sp09D07_down_EA     1
+12 Specifc    WM.uf~Sp09D07 WM-uf~Sp09D07_up_AA                              7
+13 Specifc    WM~Sp09D06    WM~Sp09D06_down_EA                               1
+# A tibble: 40 × 2
+   DE_class_cluster           n
+   <chr>                  <int>
+ 1 Inhib~Sp09D09_None_AA  12059
+ 2 Inhib~Sp09D09_None_ALL 12513
+ 3 Inhib~Sp09D09_None_EA  12059
+ 4 Inhib~Sp09D09_down_ALL     2
+ 5 L1~Sp09D05_None_AA     11524
+ 6 L1~Sp09D05_None_ALL    11967
+ 7 L1~Sp09D05_None_EA     11524
+ 8 L1~Sp09D05_down_ALL        1
+ 9 L2-3~Sp09D01_None_AA   13579
+10 L2-3~Sp09D01_None_ALL  13579
+# ℹ 30 more rows
+# A tibble: 27 × 3
    cluster       contrast       n
-   <fct>         <chr>      <int>
- 1 Vasc~Sp09D08  carrier_AA  9010
- 2 Vasc~Sp09D08  carrier_EA  9010
- 3 L1~Sp09D05    carrier_AA 11524
- 4 L1~Sp09D05    carrier_EA 11524
- 5 L2.3~Sp09D01  carrier_AA 13579
- 6 L2.3~Sp09D01  carrier_EA 13579
- 7 LD~Sp09D02    carrier_AA 14488
- 8 LD~Sp09D02    carrier_EA 14488
- 9 Inhib~Sp09D09 carrier_AA 12059
-10 Inhib~Sp09D09 carrier_EA 12059
-11 L5~Sp09D03    carrier_AA 13860
-12 L5~Sp09D03    carrier_EA 13860
-13 L6~Sp09D04    carrier_AA 13565
-14 L6~Sp09D04    carrier_EA 13565
-15 WM.uf~Sp09D07 carrier_AA  3170
-16 WM.uf~Sp09D07 carrier_EA  3170
-17 WM~Sp09D06    carrier_AA  9380
-18 WM~Sp09D06    carrier_EA  9380
-# A tibble: 4 × 2
-  DE_class_cluster          n
-  <chr>                 <int>
-1 WM-uf~Sp09D07_AA_down     8
-2 WM-uf~Sp09D07_AA_up       7
-3 WM-uf~Sp09D07_EA_down     1
-4 WM~Sp09D06_EA_down        1
-# A tibble: 17 × 3
-   gene_name  DE_class_cluster      cluster      
-   <chr>      <chr>                 <fct>        
- 1 SRP9       WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 2 TMEM144    WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 3 CNTNAP4    WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 4 FAM102A    WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 5 GPR37      WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 6 CDK18      WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 7 AC010642.2 WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 8 MRPL27     WM-uf~Sp09D07_AA_down WM.uf~Sp09D07
- 9 NPTX2      WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-10 MAP2       WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-11 CAMKK1     WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-12 ABHD2      WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-13 VSTM2L     WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-14 KCTD16     WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-15 WIF1       WM-uf~Sp09D07_AA_up   WM.uf~Sp09D07
-16 GPR37      WM-uf~Sp09D07_EA_down WM.uf~Sp09D07
-17 PEX14      WM~Sp09D06_EA_down    WM~Sp09D06   
+   <chr>         <chr>      <int>
+ 1 Inhib~Sp09D09 carrier    12515
+ 2 Inhib~Sp09D09 carrier_AA 12059
+ 3 Inhib~Sp09D09 carrier_EA 12059
+ 4 L1~Sp09D05    carrier    11968
+ 5 L1~Sp09D05    carrier_AA 11524
+ 6 L1~Sp09D05    carrier_EA 11524
+ 7 L2.3~Sp09D01  carrier    13579
+ 8 L2.3~Sp09D01  carrier_AA 13579
+ 9 L2.3~Sp09D01  carrier_EA 13579
+10 L5~Sp09D03    carrier    13860
+# ℹ 17 more rows
 # A tibble: 3 × 2
-  DE_class             n
-  <chr>            <int>
-1 0_downEA_DownAA      3
-2 0_upEA_UpAA          3
-3 None            103727
-# A tibble: 2 × 3
-  cluster       DE_class_cluster                  n
-  <fct>         <chr>                         <int>
-1 WM.uf~Sp09D07 WM-uf~Sp09D07_0_downEA_DownAA     3
-2 WM.uf~Sp09D07 WM-uf~Sp09D07_0_upEA_UpAA         3
-Saving 7 x 7 in image
-# A tibble: 6 × 12
-  gene_id         gene_name cluster  vlmf_logFC_AA vlmf_logFC_EA vlmf_P.Value_AA
-  <chr>           <chr>     <fct>            <dbl>         <dbl>           <dbl>
-1 ENSG00000106236 NPTX2     WM.uf~S…         1.93          0.758      0.00000631
-2 ENSG00000164124 TMEM144   WM.uf~S…        -1.73         -1.25       0.0000259 
-3 ENSG00000152910 CNTNAP4   WM.uf~S…        -1.27         -0.739      0.0000364 
-4 ENSG00000078018 MAP2      WM.uf~S…         0.910         0.435      0.0000336 
-5 ENSG00000170775 GPR37     WM.uf~S…        -1.74         -2.57       0.0000937 
-6 ENSG00000132821 VSTM2L    WM.uf~S…         1.11          0.460      0.000153  
-# ℹ 6 more variables: vlmf_P.Value_EA <dbl>, vlmf_adj.P.Val_AA <dbl>,
-#   vlmf_adj.P.Val_EA <dbl>, DE_class <chr>, DE_class_cluster <chr>,
-#   ENTREZID <chr>
-# A tibble: 4 × 3
-  DE_class        `is.na(ENTREZID)`     n
-  <chr>           <lgl>             <int>
-1 0_downEA_DownAA FALSE                 3
-2 0_upEA_UpAA     FALSE                 3
-3 down            FALSE                10
-4 up              FALSE                 7
-# A tibble: 6 × 2
-  DE_class_cluster                  n
-  <chr>                         <int>
-1 WM-uf~Sp09D07_0_downEA_DownAA     3
-2 WM-uf~Sp09D07_0_upEA_UpAA         3
-3 WM-uf~Sp09D07_AA_down             8
-4 WM-uf~Sp09D07_AA_up               7
-5 WM-uf~Sp09D07_EA_down             1
-6 WM~Sp09D06_EA_down                1
+  contrast        n
+  <chr>       <int>
+1 carrier    102994
+2 carrier_AA 100635
+3 carrier_EA 100635
+# A tibble: 13 × 2
+   DE_class_cluster           n
+   <chr>                  <int>
+ 1 Vasc~Sp09D08_down_ALL     21
+ 2 WM-uf~Sp09D07_down_ALL    19
+ 3 L6~Sp09D04_up_ALL          9
+ 4 Vasc~Sp09D08_up_ALL        8
+ 5 WM-uf~Sp09D07_down_AA      8
+ 6 WM-uf~Sp09D07_up_AA        7
+ 7 L6~Sp09D04_down_ALL        5
+ 8 L5~Sp09D03_up_ALL          3
+ 9 Inhib~Sp09D09_down_ALL     2
+10 WM-uf~Sp09D07_up_ALL       2
+11 L1~Sp09D05_down_ALL        1
+12 WM-uf~Sp09D07_down_EA      1
+13 WM~Sp09D06_down_EA         1
+# A tibble: 87 × 3
+   gene_name DE_class_cluster       cluster      
+   <chr>     <chr>                  <chr>        
+ 1 INPP1     Inhib~Sp09D09_down_ALL Inhib~Sp09D09
+ 2 PRC1      Inhib~Sp09D09_down_ALL Inhib~Sp09D09
+ 3 GATD3A    L1~Sp09D05_down_ALL    L1~Sp09D05   
+ 4 CDYL2     L5~Sp09D03_up_ALL      L5~Sp09D03   
+ 5 FAM153CP  L5~Sp09D03_up_ALL      L5~Sp09D03   
+ 6 NPTX2     L5~Sp09D03_up_ALL      L5~Sp09D03   
+ 7 UGT8      L6~Sp09D04_down_ALL    L6~Sp09D04   
+ 8 CD9       L6~Sp09D04_down_ALL    L6~Sp09D04   
+ 9 ZP3       L6~Sp09D04_down_ALL    L6~Sp09D04   
+10 ANKRD13A  L6~Sp09D04_down_ALL    L6~Sp09D04   
+# ℹ 77 more rows
 Universe n genes: 14792
-                DE_class_cluster ONTOLOGY  n
-1  WM-uf~Sp09D07_0_downEA_DownAA       BP 30
-2  WM-uf~Sp09D07_0_downEA_DownAA       MF  9
-3      WM-uf~Sp09D07_0_upEA_UpAA       BP 15
-4      WM-uf~Sp09D07_0_upEA_UpAA       CC 13
-5      WM-uf~Sp09D07_0_upEA_UpAA       MF  2
-6          WM-uf~Sp09D07_AA_down       CC  2
-7          WM-uf~Sp09D07_AA_down       MF  7
-8            WM-uf~Sp09D07_AA_up       CC  9
-9            WM-uf~Sp09D07_AA_up       MF 16
-10         WM-uf~Sp09D07_EA_down       BP 31
-11         WM-uf~Sp09D07_EA_down       CC  2
-12         WM-uf~Sp09D07_EA_down       MF 13
-13            WM~Sp09D06_EA_down       BP 32
-14            WM~Sp09D06_EA_down       CC  6
-15            WM~Sp09D06_EA_down       MF  8
-null device 
-          1 
-[1] DE_class_cluster n               
-<0 rows> (or 0-length row.names)
-null device 
-          1 
-null device 
-          1 
-                        Cluster is.na(qvalue) qvalue < 0.05 Count == 1  n
-1 WM-uf~Sp09D07_0_downEA_DownAA         FALSE          TRUE       TRUE 39
-2     WM-uf~Sp09D07_0_upEA_UpAA         FALSE          TRUE       TRUE 30
-3         WM-uf~Sp09D07_AA_down         FALSE          TRUE       TRUE  9
-4           WM-uf~Sp09D07_AA_up         FALSE          TRUE      FALSE  1
-5           WM-uf~Sp09D07_AA_up         FALSE          TRUE       TRUE 24
-6         WM-uf~Sp09D07_EA_down          TRUE            NA       TRUE 46
-7            WM~Sp09D06_EA_down          TRUE            NA       TRUE 46
-2025-09-04 15:34:49.805505 - CC
---WM-uf~Sp09D07_0_upEA_UpAA (13)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_AA_down (2)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_AA_up (9)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-2025-09-04 15:35:08.33624 - BP
---WM-uf~Sp09D07_0_downEA_DownAA (30)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_0_upEA_UpAA (15)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-2025-09-04 15:36:11.985437 - MF
---WM-uf~Sp09D07_0_downEA_DownAA (9)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_0_upEA_UpAA (2)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_AA_down (7)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_AA_up (16)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-null device 
-          1 
-$CC
-                      parentTerm  n
-1                   axon hillock 20
-2    signal recognition particle  2
-3 microtubule associated complex  1
-4          sperm plasma membrane  1
-
-$BP
-                                                  parentTerm  n
-1             positive regulation of amine metabolic process 10
-2                   regulation of synaptic vesicle transport  9
-3                              dopamine biosynthetic process  8
-4 positive regulation of vesicle transport along microtubule  4
-5          regulation of synaptic transmission, dopaminergic  4
-6                 locomotion involved in locomotory behavior  3
-
-$MF
-                                                                                     parentTerm
-1 G protein-coupled receptor activity involved in regulation of postsynaptic membrane potential
-2                                                              monoacylglycerol lipase activity
-3                                                                neuropeptide receptor activity
-4                                                             nuclear steroid receptor activity
-5                                                                         Hsp70 protein binding
-6                                               carbohydrate transmembrane transporter activity
-  n
-1 4
-2 4
-3 4
-4 3
-5 2
-6 2
-
-$CC
-                  term n
-1      apical dendrite 2
-2         axon hillock 2
-3 axon initial segment 2
-4       basal dendrite 2
-5   dendrite cytoplasm 2
-6    dendrite terminus 2
-
-$BP
-                                                                       term n
-1 adenylate cyclase-inhibiting G protein-coupled receptor signaling pathway 1
-2                                                amine biosynthetic process 1
-3                                                   amine metabolic process 1
-4                         anterograde neuronal dense core vesicle transport 1
-5                                    anterograde synaptic vesicle transport 1
-6                                       biogenic amine biosynthetic process 1
-
-$MF
-                                             term n
-1 carbohydrate transmembrane transporter activity 2
-2                            dystroglycan binding 2
-3                            neuropeptide binding 2
-4                  neuropeptide receptor activity 2
-5                             tau protein binding 2
-6                                  7S RNA binding 1
-
-                    Cluster          DE_class_cluster         ID
-1       WM-uf~Sp09D07_AA_up       WM-uf~Sp09D07_AA_up GO:0005516
-2 WM-uf~Sp09D07_0_upEA_UpAA WM-uf~Sp09D07_0_upEA_UpAA GO:0043203
-3 WM-uf~Sp09D07_0_upEA_UpAA WM-uf~Sp09D07_0_upEA_UpAA GO:0097441
-4 WM-uf~Sp09D07_0_upEA_UpAA WM-uf~Sp09D07_0_upEA_UpAA GO:1990635
-5 WM-uf~Sp09D07_0_upEA_UpAA WM-uf~Sp09D07_0_upEA_UpAA GO:0044294
-6 WM-uf~Sp09D07_0_upEA_UpAA WM-uf~Sp09D07_0_upEA_UpAA GO:0044292
-            Description GeneRatio   BgRatio RichFactor FoldEnrichment    zScore
-1    calmodulin binding       2/7 177/13066 0.01129944        21.0912  6.230627
-2          axon hillock       1/3   6/13239 0.16666667       735.5000 27.091416
-3        basal dendrite       1/3   6/13239 0.16666667       735.5000 27.091416
-4     proximal dendrite       1/3   7/13239 0.14285714       630.4286 25.077034
-5 dendritic growth cone       1/3   9/13239 0.11111111       490.3333 22.107497
-6     dendrite terminus       1/3  13/13239 0.07692308       339.4615 18.380621
-       pvalue   p.adjust      qvalue      geneID Count ONTOLOGY   op
-1 0.003664510 0.02430917 0.007311029 MAP2/CAMKK1     2       MF TRUE
-2 0.001359106 0.01070053 0.002145470        MAP2     1       CC TRUE
-3 0.001359106 0.01070053 0.002145470        MAP2     1       CC TRUE
-4 0.001585504 0.01070053 0.002145470        MAP2     1       CC TRUE
-5 0.002038197 0.01070053 0.002145470        MAP2     1       CC TRUE
-6 0.002943172 0.01236132 0.002478461        MAP2     1       CC TRUE
-Error in (function (cond)  : 
-  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
+                                     DE_classes ONTOLOGY  n
+1                        Inhib~Sp09D09_down_ALL       BP 17
+2                        Inhib~Sp09D09_down_ALL       CC  8
+3                        Inhib~Sp09D09_down_ALL       MF  8
+4                             L5~Sp09D03_up_ALL       BP  4
+5                             L5~Sp09D03_up_ALL       MF  6
+6                           L6~Sp09D04_down_ALL       BP 57
+7                           L6~Sp09D04_down_ALL       MF  5
+8                             L6~Sp09D04_up_ALL       BP 12
+9                         Vasc~Sp09D08_down_ALL       BP 10
+10                        Vasc~Sp09D08_down_ALL       MF  4
+11                          Vasc~Sp09D08_up_ALL       BP 15
+12                          Vasc~Sp09D08_up_ALL       CC  6
+13                        WM-uf~Sp09D07_down_AA       CC  2
+14                        WM-uf~Sp09D07_down_AA       MF  5
+15 WM-uf~Sp09D07_down_AA, WM-uf~Sp09D07_down_EA       BP 31
+16 WM-uf~Sp09D07_down_AA, WM-uf~Sp09D07_down_EA       CC  2
+17 WM-uf~Sp09D07_down_AA, WM-uf~Sp09D07_down_EA       MF 13
+18                       WM-uf~Sp09D07_down_ALL       BP 11
+19                          WM-uf~Sp09D07_up_AA       CC  9
+20                          WM-uf~Sp09D07_up_AA       MF 16
+21                         WM-uf~Sp09D07_up_ALL       BP 91
+22                         WM-uf~Sp09D07_up_ALL       CC 24
+23                         WM-uf~Sp09D07_up_ALL       MF  5
+24                           WM~Sp09D06_down_EA       BP 32
+25                           WM~Sp09D06_down_EA       CC  6
+26                           WM~Sp09D06_down_EA       MF  8
+Error in `map2()`:
+ℹ In index: 1.
+ℹ With name: CC.
+Caused by error in `filter()`:
+ℹ In argument: `!grepl("0", DE_class_cluster)`.
 Caused by error in `h()`:
-! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
-Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
+! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'DE_class_cluster' not found
+Backtrace:
+     ▆
+  1. ├─purrr::walk2(...)
+  2. │ └─purrr::map2(.x, .y, .f, ..., .progress = .progress)
+  3. │   └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
+  4. │     ├─purrr:::with_indexed_errors(...)
+  5. │     │ └─base::withCallingHandlers(...)
+  6. │     ├─purrr:::call_with_cleanup(...)
+  7. │     └─global .f(.x[[i]], .y[[i]], ...)
+  8. │       ├─dplyr::filter(gr@compareClusterResult, !grepl("0", DE_class_cluster))
+  9. │       └─dplyr:::filter.data.frame(gr@compareClusterResult, !grepl("0", DE_class_cluster))
+ 10. │         └─dplyr:::filter_rows(.data, dots, by)
+ 11. │           └─dplyr:::filter_eval(...)
+ 12. │             ├─base::withCallingHandlers(...)
+ 13. │             └─mask$eval_all_filter(dots, env_filter)
+ 14. │               └─dplyr (local) eval()
+ 15. ├─BiocGenerics::grepl("0", DE_class_cluster)
+ 16. ├─base::.handleSimpleError(...)
+ 17. │ └─base (local) h(simpleError(msg, call))
+ 18. └─base::.handleSimpleError(...)
+ 19.   └─dplyr (local) h(simpleError(msg, call))
+ 20.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
 Execution halted

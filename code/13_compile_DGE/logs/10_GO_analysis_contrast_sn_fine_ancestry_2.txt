@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  4 03:33:12 PM EDT 2025
+Wed Nov 19 06:45:32 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21820277
+Job id: 24337698
 Job name: 10_GO_analysis_contrast
-Node name: compute-108
+Node name: compute-119
 Task id: 2
 Loading conda_R/4.5
 
@@ -16,7 +16,7 @@ Currently Loaded Modules:
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ forcats   1.0.0     ✔ stringr   1.5.2
 ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.1.0     
@@ -125,10 +125,8 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
-clusterProfiler: an R package for comparing biological themes among
-gene clusters. OMICS: A Journal of Integrative Biology. 2012,
-16(5):284-287
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
@@ -175,6 +173,7 @@ This message can be suppressed by:
 Loading objects:
   cell_type_colors
 [1] TRUE
+[1] TRUE
 # A tibble: 70 × 3
    cluster contrast       n
    <fct>   <chr>      <int>
@@ -217,7 +216,7 @@ Loading objects:
 # ℹ 15 more rows
 'select()' returned 1:many mapping between keys and columns
 Warning message:
-In bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID",  :
+In bitr(unique(DE_data_contrast$gene_id), fromType = "ENSEMBL",  :
   21.22% of input gene IDs are fail to map...
 Storing counts in `nn`, as `n` already present in input
 ℹ Use `name = "new_name"` to pick a new name.
@@ -227,623 +226,292 @@ Storing counts in `nn`, as `n` already present in input
 3 3    28
 4 4     3
 5 5     1
-# A tibble: 102 × 2
+# A tibble: 61 × 2
    DE_class_cluster     n
    <chr>            <int>
- 1 Astro-1_AA_None  14918
- 2 Astro-1_AA_down      3
- 3 Astro-1_AA_up       15
- 4 Astro-1_EA_None  14933
- 5 Astro-1_EA_down      3
- 6 Astro-2_AA_None   9627
- 7 Astro-2_AA_down      3
- 8 Astro-2_EA_None   9630
- 9 Astro-3_AA_None  10172
-10 Astro-3_AA_up        1
-# ℹ 92 more rows
-# A tibble: 70 × 3
+ 1 Astro-1_None_ALL 14928
+ 2 Astro-1_down_ALL     3
+ 3 Astro-1_up_ALL       5
+ 4 Astro-2_None_ALL  9575
+ 5 Astro-2_down_ALL    46
+ 6 Astro-2_up_ALL       9
+ 7 Astro-3_None_ALL 10699
+ 8 Astro-3_down_ALL    18
+ 9 Astro-3_up_ALL       5
+10 Astro-4_None_ALL  7856
+# ℹ 51 more rows
+# A tibble: 163 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro-1_None_AA  14918
+ 2 Astro-1_None_ALL 14928
+ 3 Astro-1_None_EA  14933
+ 4 Astro-1_down_AA      3
+ 5 Astro-1_down_ALL     3
+ 6 Astro-1_down_EA      3
+ 7 Astro-1_up_AA       15
+ 8 Astro-1_up_ALL       5
+ 9 Astro-2_None_AA   9627
+10 Astro-2_None_ALL  9575
+# ℹ 153 more rows
+`summarise()` has grouped output by 'model_type', 'ENTREZID', 'gene_name'. You
+can override using the `.groups` argument.
+# A tibble: 2,046 × 6
+# Groups:   model_type, ENTREZID, gene_name [1,950]
+   model_type ENTREZID gene_name cluster DE_classes                           n
+   <chr>      <chr>    <chr>     <fct>   <chr>                            <int>
+ 1 Specifc    10160    FARP1     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 2 Specifc    10161    LPAR6     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 3 Specifc    160335   TMTC2     Oligo.3 Oligo-3_down_AA, Oligo-3_down_EA     2
+ 4 Specifc    1607     DGKB      Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 5 Specifc    166614   DCLK2     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 6 Specifc    1809     DPYSL3    Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 7 Specifc    22873    DZIP1     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 8 Specifc    2353     FOS       Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 9 Specifc    26031    OSBPL3    Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+10 Specifc    2670     GFAP      Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+# ℹ 2,036 more rows
+# A tibble: 60 × 4
+   model_type cluster DE_classes           n
+   <chr>      <fct>   <chr>            <int>
+ 1 All        Astro.1 Astro-1_down_ALL     3
+ 2 All        Astro.1 Astro-1_up_ALL       5
+ 3 All        Astro.2 Astro-2_down_ALL    46
+ 4 All        Astro.2 Astro-2_up_ALL       9
+ 5 All        Astro.3 Astro-3_down_ALL    18
+ 6 All        Astro.3 Astro-3_up_ALL       5
+ 7 All        Macro   Macro_down_ALL       5
+ 8 All        Macro   Macro_up_ALL        10
+ 9 All        Micro.1 Micro-1_up_ALL       1
+10 All        Micro.2 Micro-2_down_ALL     1
+# ℹ 50 more rows
+# A tibble: 8 × 4
+  model_type cluster DE_classes                           n
+  <chr>      <fct>   <chr>                            <int>
+1 All        Oligo.3 Oligo-3_down_ALL                   323
+2 All        Oligo.3 Oligo-3_up_ALL                     670
+3 Specifc    Oligo.3 Oligo-3_down_AA                    151
+4 Specifc    Oligo.3 Oligo-3_down_AA, Oligo-3_down_EA     2
+5 Specifc    Oligo.3 Oligo-3_down_EA                     50
+6 Specifc    Oligo.3 Oligo-3_up_AA                      355
+7 Specifc    Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA        20
+8 Specifc    Oligo.3 Oligo-3_up_EA                      153
+# A tibble: 163 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro-1_None_AA  14918
+ 2 Astro-1_None_ALL 14928
+ 3 Astro-1_None_EA  14933
+ 4 Astro-1_down_AA      3
+ 5 Astro-1_down_ALL     3
+ 6 Astro-1_down_EA      3
+ 7 Astro-1_up_AA       15
+ 8 Astro-1_up_ALL       5
+ 9 Astro-2_None_AA   9627
+10 Astro-2_None_ALL  9575
+# ℹ 153 more rows
+# A tibble: 105 × 3
    cluster contrast       n
    <fct>   <chr>      <int>
- 1 Astro.1 carrier_AA 14936
- 2 Astro.1 carrier_EA 14936
- 3 Astro.2 carrier_AA  9630
- 4 Astro.2 carrier_EA  9630
- 5 Astro.3 carrier_AA 10173
- 6 Astro.3 carrier_EA 10173
- 7 Astro.4 carrier_AA  7856
- 8 Astro.4 carrier_EA  7856
- 9 Astro.5 carrier_AA  1772
-10 Astro.5 carrier_EA  1772
-# ℹ 60 more rows
-# A tibble: 32 × 2
-   DE_class_cluster        n
-   <chr>               <int>
- 1 Astro-1_AA_down         3
- 2 Astro-1_AA_up          15
- 3 Astro-1_EA_down         3
- 4 Astro-2_AA_down         3
- 5 Astro-3_AA_up           1
- 6 Excit-L5-1_EA_up        1
- 7 Excit-L6_CT_AA_down     1
- 8 Excit-L6_CT_AA_up       1
- 9 Macro_AA_up             2
-10 Micro-1_AA_down         3
-# ℹ 22 more rows
-# A tibble: 862 × 3
+ 1 Astro.1 carrier    14936
+ 2 Astro.1 carrier_AA 14936
+ 3 Astro.1 carrier_EA 14936
+ 4 Astro.2 carrier     9630
+ 5 Astro.2 carrier_AA  9630
+ 6 Astro.2 carrier_EA  9630
+ 7 Astro.3 carrier    10722
+ 8 Astro.3 carrier_AA 10173
+ 9 Astro.3 carrier_EA 10173
+10 Astro.4 carrier     7856
+# ℹ 95 more rows
+# A tibble: 3 × 2
+  contrast        n
+  <chr>       <int>
+1 carrier    368240
+2 carrier_AA 363389
+3 carrier_EA 363389
+# A tibble: 58 × 2
+   DE_class_cluster      n
+   <chr>             <int>
+ 1 Oligo-3_up_ALL      670
+ 2 Oligo-3_up_AA       375
+ 3 Oligo-3_down_ALL    323
+ 4 Oligo-3_up_EA       173
+ 5 Oligo-3_down_AA     153
+ 6 Oligo-3_down_EA      52
+ 7 Astro-2_down_ALL     46
+ 8 Oligo-5_up_ALL       46
+ 9 Vasc-Endo_down_EA    21
+10 Astro-3_down_ALL     18
+# ℹ 48 more rows
+# A tibble: 2,068 × 3
    gene_name       DE_class_cluster cluster
    <chr>           <chr>            <fct>  
- 1 ENSG00000273507 Astro-1_AA_down  Astro.1
- 2 TCTN1           Astro-1_AA_down  Astro.1
- 3 PNLDC1          Astro-1_AA_down  Astro.1
- 4 PLPPR4          Astro-1_AA_up    Astro.1
- 5 LINC00951       Astro-1_AA_up    Astro.1
- 6 SIDT2           Astro-1_AA_up    Astro.1
- 7 KCNC2           Astro-1_AA_up    Astro.1
- 8 KCNH1           Astro-1_AA_up    Astro.1
- 9 ELAVL2          Astro-1_AA_up    Astro.1
-10 NYAP2           Astro-1_AA_up    Astro.1
-# ℹ 852 more rows
-# A tibble: 5 × 2
-  DE_class             n
-  <chr>            <int>
-1 0_downEA_DownAA     71
-2 0_downEA_UpAA        7
-3 0_upEA_DownAA        4
-4 0_upEA_UpAA        198
-5 None            401362
-# A tibble: 17 × 3
-   cluster     DE_class_cluster              n
-   <fct>       <chr>                     <int>
- 1 Astro.1     Astro-1_0_upEA_UpAA          10
- 2 Astro.3     Astro-3_0_upEA_DownAA         1
- 3 Macro       Macro_0_upEA_UpAA             1
- 4 Micro.1     Micro-1_0_downEA_UpAA         1
- 5 Micro.1     Micro-1_0_upEA_UpAA           7
- 6 Micro.4     Micro-4_0_downEA_DownAA       1
- 7 Micro.4     Micro-4_0_upEA_DownAA         1
- 8 Micro.4     Micro-4_0_upEA_UpAA           1
- 9 OPC.4       OPC-4_0_upEA_DownAA           1
-10 Oligo.1     Oligo-1_0_upEA_UpAA           3
-11 Oligo.3     Oligo-3_0_downEA_DownAA      67
-12 Oligo.3     Oligo-3_0_downEA_UpAA         6
-13 Oligo.3     Oligo-3_0_upEA_DownAA         1
-14 Oligo.3     Oligo-3_0_upEA_UpAA         175
-15 Vasc.Endo   Vasc-Endo_0_downEA_DownAA     1
-16 Vasc.VLMC   Vasc-VLMC_0_downEA_DownAA     2
-17 Excit.L6_CT Excit-L6_CT_0_upEA_UpAA       1
-Saving 7 x 7 in image
-# A tibble: 280 × 12
-   gene_id         gene_name cluster vlmf_logFC_AA vlmf_logFC_EA vlmf_P.Value_AA
-   <chr>           <chr>     <fct>           <dbl>         <dbl>           <dbl>
- 1 ENSG00000117600 PLPPR4    Astro.1         2.04          0.895      0.00000185
- 2 ENSG00000226070 LINC00951 Astro.1         1.53          0.675      0.00000453
- 3 ENSG00000229618 ENSG0000… Astro.1         2.32          1.14       0.00000822
- 4 ENSG00000166006 KCNC2     Astro.1         1.89          1.06       0.0000154 
- 5 ENSG00000143473 KCNH1     Astro.1         1.48          0.503      0.0000197 
- 6 ENSG00000107105 ELAVL2    Astro.1         1.22          0.624      0.0000203 
- 7 ENSG00000144460 NYAP2     Astro.1         2.24          1.28       0.00000944
- 8 ENSG00000187189 TSPYL4    Astro.1         0.927         0.619      0.0000329 
- 9 ENSG00000122584 NXPH1     Astro.1         1.50          0.883      0.0000444 
-10 ENSG00000142408 CACNG8    Astro.1         1.72          0.637      0.0000426 
-# ℹ 270 more rows
-# ℹ 6 more variables: vlmf_P.Value_EA <dbl>, vlmf_adj.P.Val_AA <dbl>,
-#   vlmf_adj.P.Val_EA <dbl>, DE_class <chr>, DE_class_cluster <chr>,
-#   ENTREZID <chr>
-# A tibble: 10 × 3
-   DE_class        `is.na(ENTREZID)`     n
-   <chr>           <lgl>             <int>
- 1 0_downEA_DownAA FALSE                67
- 2 0_downEA_DownAA TRUE                  4
- 3 0_downEA_UpAA   FALSE                 6
- 4 0_downEA_UpAA   TRUE                  1
- 5 0_upEA_DownAA   FALSE                 2
- 6 0_upEA_DownAA   TRUE                  2
- 7 0_upEA_UpAA     FALSE               191
- 8 0_upEA_UpAA     TRUE                  7
- 9 down            FALSE               247
-10 up              FALSE               615
-# A tibble: 49 × 2
-   DE_class_cluster              n
-   <chr>                     <int>
- 1 Astro-1_0_upEA_UpAA          10
- 2 Astro-1_AA_down               3
- 3 Astro-1_AA_up                15
- 4 Astro-1_EA_down               3
- 5 Astro-2_AA_down               3
- 6 Astro-3_0_upEA_DownAA         1
- 7 Astro-3_AA_up                 1
- 8 Excit-L5-1_EA_up              1
- 9 Excit-L6_CT_0_upEA_UpAA       1
-10 Excit-L6_CT_AA_down           1
-11 Excit-L6_CT_AA_up             1
-12 Macro_0_upEA_UpAA             1
-13 Macro_AA_up                   2
-14 Micro-1_0_downEA_UpAA         1
-15 Micro-1_0_upEA_UpAA           7
-16 Micro-1_AA_down               3
-17 Micro-1_AA_up                13
-18 Micro-1_EA_up                 1
-19 Micro-3_EA_up                 4
-20 Micro-4_0_downEA_DownAA       1
-21 Micro-4_0_upEA_DownAA         1
-22 Micro-4_0_upEA_UpAA           1
-23 Micro-4_AA_up                 2
-24 Micro-4_EA_down               1
-25 Micro-4_EA_up                 2
-26 OPC-1_AA_up                   1
-27 OPC-3_EA_up                   1
-28 OPC-4_0_upEA_DownAA           1
-29 OPC-4_AA_down                 2
-30 Oligo-1_0_upEA_UpAA           3
-31 Oligo-1_AA_down               1
-32 Oligo-1_AA_up                 5
-33 Oligo-2_EA_up                 2
-34 Oligo-3_0_downEA_DownAA      67
-35 Oligo-3_0_downEA_UpAA         6
-36 Oligo-3_0_upEA_DownAA         1
-37 Oligo-3_0_upEA_UpAA         175
-38 Oligo-3_AA_down             153
-39 Oligo-3_AA_up               375
-40 Oligo-3_EA_down              52
-41 Oligo-3_EA_up               173
-42 Oligo-5_EA_up                 1
-43 Vasc-Endo_0_downEA_DownAA     1
-44 Vasc-Endo_AA_down             1
-45 Vasc-Endo_EA_down            21
-46 Vasc-Endo_EA_up              14
-47 Vasc-VLMC_0_downEA_DownAA     2
-48 Vasc-VLMC_AA_down             3
-49 Vasc-VLMC_EA_up               1
+ 1 ENSG00000273507 Astro-1_down_AA  Astro.1
+ 2 TCTN1           Astro-1_down_AA  Astro.1
+ 3 PNLDC1          Astro-1_down_AA  Astro.1
+ 4 GOLGA6L10       Astro-1_down_ALL Astro.1
+ 5 GOLGA6L10       Astro-1_down_ALL Astro.1
+ 6 GOLGA6L10       Astro-1_down_ALL Astro.1
+ 7 GOLGA6L10       Astro-1_down_EA  Astro.1
+ 8 GOLGA6L10       Astro-1_down_EA  Astro.1
+ 9 GOLGA6L10       Astro-1_down_EA  Astro.1
+10 PLPPR4          Astro-1_up_AA    Astro.1
+# ℹ 2,058 more rows
 Universe n genes: 19093
-            DE_class_cluster ONTOLOGY   n
-1        Astro-1_0_upEA_UpAA       BP  17
-2        Astro-1_0_upEA_UpAA       CC  32
-3        Astro-1_0_upEA_UpAA       MF  18
-4            Astro-1_AA_down       BP  40
-5            Astro-1_AA_down       CC   2
-6            Astro-1_AA_down       MF  10
-7              Astro-1_AA_up       BP  26
-8              Astro-1_AA_up       CC  37
-9              Astro-1_AA_up       MF  31
-10             Astro-3_AA_up       BP  10
-11             Astro-3_AA_up       CC   7
-12             Astro-3_AA_up       MF   3
-13       Excit-L6_CT_AA_down       BP 105
-14       Excit-L6_CT_AA_down       CC   6
-15       Excit-L6_CT_AA_down       MF  19
-16         Macro_0_upEA_UpAA       BP  54
-17         Macro_0_upEA_UpAA       CC  15
-18         Macro_0_upEA_UpAA       MF  11
-19               Macro_AA_up       BP 181
-20               Macro_AA_up       CC  17
-21               Macro_AA_up       MF   6
-22       Micro-1_0_upEA_UpAA       BP  53
-23       Micro-1_0_upEA_UpAA       CC  23
-24       Micro-1_0_upEA_UpAA       MF  45
-25           Micro-1_AA_down       BP  51
-26           Micro-1_AA_down       CC   7
-27           Micro-1_AA_down       MF   7
-28             Micro-1_AA_up       BP  34
-29             Micro-1_AA_up       CC  39
-30             Micro-1_AA_up       MF  61
-31             Micro-3_EA_up       BP  46
-32             Micro-3_EA_up       CC  19
-33             Micro-3_EA_up       MF  25
-34       Micro-4_0_upEA_UpAA       BP  71
-35       Micro-4_0_upEA_UpAA       CC   7
-36       Micro-4_0_upEA_UpAA       MF   5
-37             Micro-4_AA_up       BP  71
-38             Micro-4_AA_up       CC   7
-39             Micro-4_AA_up       MF   5
-40           Micro-4_EA_down       BP  75
-41           Micro-4_EA_down       CC  20
-42           Micro-4_EA_down       MF   3
-43             Micro-4_EA_up       BP  26
-44             Micro-4_EA_up       CC   2
-45             Micro-4_EA_up       MF   7
-46               OPC-3_EA_up       BP   4
-47               OPC-3_EA_up       MF   3
-48       OPC-4_0_upEA_DownAA       BP  33
-49       OPC-4_0_upEA_DownAA       CC   2
-50       OPC-4_0_upEA_DownAA       MF   6
-51             OPC-4_AA_down       BP  38
-52             OPC-4_AA_down       CC   2
-53             OPC-4_AA_down       MF   3
-54       Oligo-1_0_upEA_UpAA       BP  37
-55       Oligo-1_0_upEA_UpAA       CC  16
-56       Oligo-1_0_upEA_UpAA       MF   5
-57             Oligo-1_AA_up       CC  19
-58             Oligo-1_AA_up       MF  10
-59             Oligo-2_EA_up       BP  17
-60   Oligo-3_0_downEA_DownAA       CC   3
-61     Oligo-3_0_downEA_UpAA       BP 126
-62     Oligo-3_0_downEA_UpAA       CC   8
-63     Oligo-3_0_downEA_UpAA       MF  50
-64     Oligo-3_0_upEA_DownAA       BP  21
-65     Oligo-3_0_upEA_DownAA       CC   2
-66     Oligo-3_0_upEA_DownAA       MF   4
-67       Oligo-3_0_upEA_UpAA       BP  29
-68       Oligo-3_0_upEA_UpAA       CC  35
-69             Oligo-3_AA_up       BP 135
-70             Oligo-3_AA_up       CC  56
-71             Oligo-3_AA_up       MF  14
-72             Oligo-3_EA_up       BP 164
-73             Oligo-3_EA_up       CC  15
-74             Oligo-3_EA_up       MF   4
-75             Oligo-5_EA_up       BP 153
-76             Oligo-5_EA_up       CC  13
-77             Oligo-5_EA_up       MF  32
-78 Vasc-Endo_0_downEA_DownAA       BP  57
-79 Vasc-Endo_0_downEA_DownAA       CC   5
-80 Vasc-Endo_0_downEA_DownAA       MF  14
-81         Vasc-Endo_AA_down       BP  57
-82         Vasc-Endo_AA_down       CC   5
-83         Vasc-Endo_AA_down       MF  14
-84           Vasc-Endo_EA_up       CC  11
-85 Vasc-VLMC_0_downEA_DownAA       BP   6
-86 Vasc-VLMC_0_downEA_DownAA       MF   6
-87         Vasc-VLMC_AA_down       BP  13
-88         Vasc-VLMC_AA_down       CC   5
-89         Vasc-VLMC_AA_down       MF  12
-90           Vasc-VLMC_EA_up       BP  27
-91           Vasc-VLMC_EA_up       CC   1
-92           Vasc-VLMC_EA_up       MF   6
-null device 
-          1 
-         DE_class_cluster   n
-1           Astro-1_AA_up  11
-2           Micro-1_AA_up  17
-3 Oligo-3_0_downEA_DownAA   1
-4     Oligo-3_0_upEA_UpAA  47
-5           Oligo-3_AA_up 173
-6           Oligo-3_EA_up 129
-null device 
-          1 
-null device 
-          1 
-null device 
-          1 
-                     Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
-1        Astro-1_0_upEA_UpAA         FALSE          TRUE      FALSE  37
-2        Astro-1_0_upEA_UpAA         FALSE          TRUE       TRUE  30
-3            Astro-1_AA_down         FALSE          TRUE      FALSE   1
-4            Astro-1_AA_down         FALSE          TRUE       TRUE  39
-5            Astro-1_AA_down          TRUE            NA       TRUE  12
-6              Astro-1_AA_up         FALSE          TRUE      FALSE  71
-7              Astro-1_AA_up         FALSE          TRUE       TRUE  23
-8              Astro-3_AA_up          TRUE            NA       TRUE  20
-9        Excit-L6_CT_AA_down          TRUE            NA       TRUE 130
-10         Macro_0_upEA_UpAA          TRUE            NA       TRUE  80
-11               Macro_AA_up         FALSE          TRUE      FALSE   3
-12               Macro_AA_up         FALSE          TRUE       TRUE 201
-13       Micro-1_0_upEA_UpAA         FALSE          TRUE      FALSE  54
-14       Micro-1_0_upEA_UpAA         FALSE          TRUE       TRUE  67
-15           Micro-1_AA_down         FALSE          TRUE      FALSE   1
-16           Micro-1_AA_down         FALSE          TRUE       TRUE  64
-17             Micro-1_AA_up         FALSE          TRUE      FALSE 101
-18             Micro-1_AA_up         FALSE          TRUE       TRUE  33
-19             Micro-3_EA_up         FALSE          TRUE      FALSE   2
-20             Micro-3_EA_up         FALSE          TRUE       TRUE  88
-21       Micro-4_0_upEA_UpAA          TRUE            NA       TRUE  83
-22             Micro-4_AA_up          TRUE            NA       TRUE  83
-23           Micro-4_EA_down          TRUE            NA       TRUE  98
-24             Micro-4_EA_up          TRUE            NA       TRUE  35
-25       Oligo-1_0_upEA_UpAA         FALSE          TRUE       TRUE  58
-26             Oligo-1_AA_up         FALSE          TRUE      FALSE  11
-27             Oligo-1_AA_up         FALSE          TRUE       TRUE  18
-28             Oligo-2_EA_up          TRUE            NA       TRUE  17
-29   Oligo-3_0_downEA_DownAA         FALSE          TRUE      FALSE   3
-30     Oligo-3_0_downEA_UpAA         FALSE          TRUE      FALSE  97
-31     Oligo-3_0_downEA_UpAA         FALSE          TRUE       TRUE  87
-32     Oligo-3_0_upEA_DownAA          TRUE            NA       TRUE  27
-33       Oligo-3_0_upEA_UpAA         FALSE          TRUE      FALSE  64
-34             Oligo-3_AA_up         FALSE          TRUE      FALSE 205
-35             Oligo-3_EA_up         FALSE          TRUE      FALSE 183
-36             Oligo-5_EA_up          TRUE            NA       TRUE 198
-37               OPC-3_EA_up          TRUE            NA       TRUE   7
-38       OPC-4_0_upEA_DownAA          TRUE            NA       TRUE  41
-39             OPC-4_AA_down         FALSE          TRUE       TRUE  41
-40             OPC-4_AA_down          TRUE            NA       TRUE   2
-41 Vasc-Endo_0_downEA_DownAA          TRUE            NA       TRUE  76
-42         Vasc-Endo_AA_down          TRUE            NA       TRUE  76
-43           Vasc-Endo_EA_up         FALSE          TRUE      FALSE  11
-44 Vasc-VLMC_0_downEA_DownAA          TRUE            NA       TRUE  12
-45         Vasc-VLMC_AA_down         FALSE          TRUE      FALSE   1
-46         Vasc-VLMC_AA_down         FALSE          TRUE       TRUE  17
-47         Vasc-VLMC_AA_down          TRUE            NA      FALSE   1
-48         Vasc-VLMC_AA_down          TRUE            NA       TRUE  11
-49           Vasc-VLMC_EA_up          TRUE            NA       TRUE  34
-2025-09-04 15:45:53.695269 - CC
---Astro-1_0_upEA_UpAA (32)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro-1_AA_up (37)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (17)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_0_upEA_UpAA (23)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_down (7)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_up (39)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-3_EA_up (19)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-1_0_upEA_UpAA (16)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-1_AA_up (19)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_0_downEA_DownAA (3)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_0_downEA_UpAA (8)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_0_upEA_UpAA (35)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_AA_up (56)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_EA_up (15)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Vasc-Endo_EA_up (11)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Vasc-VLMC_AA_down (5)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-2025-09-04 15:48:47.484092 - BP
---Astro-1_0_upEA_UpAA (17)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro-1_AA_down (40)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro-1_AA_up (26)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (181)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_0_upEA_UpAA (53)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_down (51)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_up (34)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-3_EA_up (46)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-1_0_upEA_UpAA (37)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_0_downEA_UpAA (126)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_0_upEA_UpAA (29)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_AA_up (135)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_EA_up (164)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---OPC-4_AA_down (38)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Vasc-VLMC_AA_down (13)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-2025-09-04 16:08:17.458505 - MF
---Astro-1_0_upEA_UpAA (18)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro-1_AA_up (31)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (6)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_0_upEA_UpAA (45)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_down (7)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_up (61)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro-3_EA_up (25)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-1_0_upEA_UpAA (5)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-1_AA_up (10)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_0_downEA_UpAA (50)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_AA_up (14)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Oligo-3_EA_up (4)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---OPC-4_AA_down (3)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-Warning messages:
-1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for CC
-2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 6 terms that were not found in orgdb for BP
-3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for MF
-4: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for MF
-5: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for MF
-null device 
-          1 
-$CC
-                            parentTerm  n
-1                    synaptic membrane 44
-2               cation channel complex 30
-3 postsynaptic specialization membrane 23
-4                         neuron spine 15
-5       monoatomic ion channel complex 13
-6            exocytic vesicle membrane 12
-
-$BP
-                              parentTerm  n
-1               response to amyloid-beta 32
-2              muscle tissue development 21
-3            signal release from synapse 20
-4 regulation of trans-synaptic signaling 19
-5                       piRNA processing 16
-6      regulatory T cell differentiation 16
-
-$MF
-                                                                                             parentTerm
-1                                                                        voltage-gated channel activity
-2                                                                                gated channel activity
-3                                                              histone H2AK9 acetyltransferase activity
-4                                                                           glutamate receptor activity
-5                                                          delayed rectifier potassium channel activity
-6 ligand-gated monoatomic ion channel activity involved in regulation of presynaptic membrane potential
-   n
-1 44
-2 27
-3 26
-4 25
-5 15
-6 11
-
-$CC
-                         term n
-1          asymmetric synapse 7
-2    neuron to neuron synapse 7
-3        postsynaptic density 7
-4 postsynaptic specialization 7
-5        presynaptic membrane 7
-6           synaptic membrane 7
-
-$BP
-                                                term n
-1 regulation of synaptic transmission, glutamatergic 6
-2               synaptic transmission, glutamatergic 6
-3       modulation of chemical synaptic transmission 5
-4             regulation of trans-synaptic signaling 5
-5      regulation of postsynaptic membrane potential 4
-6                  regulation of synaptic plasticity 4
-
-$MF
-                                          term n
-1                             channel activity 5
-2 metal ion transmembrane transporter activity 5
-3           monoatomic cation channel activity 5
-4              monoatomic ion channel activity 5
-5   passive transmembrane transporter activity 5
-6                       gated channel activity 4
-
-        Cluster DE_class_cluster         ID
-1 Oligo-3_AA_up    Oligo-3_AA_up GO:0050804
-2 Oligo-3_AA_up    Oligo-3_AA_up GO:0099177
-3 Oligo-3_AA_up    Oligo-3_AA_up GO:0043025
-4 Oligo-3_AA_up    Oligo-3_AA_up GO:0097060
-5 Oligo-3_AA_up    Oligo-3_AA_up GO:0061564
-6 Oligo-3_AA_up    Oligo-3_AA_up GO:0023061
-                                   Description GeneRatio   BgRatio RichFactor
-1 modulation of chemical synaptic transmission    48/326 474/14318 0.10126582
-2       regulation of trans-synaptic signaling    48/326 475/14318 0.10105263
-3                           neuronal cell body    46/346 472/15105 0.09745763
-4                            synaptic membrane    36/346 434/15105 0.08294931
-5                             axon development    33/326 483/14318 0.06832298
-6                               signal release    32/326 430/14318 0.07441860
-  FoldEnrichment    zScore       pvalue     p.adjust       qvalue
-1       4.447620 11.651254 1.850965e-18 3.827522e-15 3.459475e-15
-2       4.438256 11.632281 2.018735e-18 3.827522e-15 3.459475e-15
-3       4.254617 10.999166 6.570842e-17 2.799179e-14 2.330920e-14
-4       3.621241  8.483547 2.290101e-11 4.877915e-09 4.061916e-09
-5       3.000762  6.827699 1.795627e-08 3.242389e-06 2.930607e-06
-6       3.268483  7.290291 3.868462e-09 1.047800e-06 9.470459e-07
-                                                                                                                                                                                                                                                                                                 geneID
-1 STX1A/CAMK2A/JPH4/TSPOAP1/SORCS3/DNM1/GRIN1/BAIAP2/VGF/NXPH1/SYT4/CAMK2B/SEPTIN5/JPH3/ADGRB1/GFAP/GRM5/STXBP1/SLC8A2/CNR1/LGI1/CLSTN3/IQSEC2/SNAP25/NETO1/LRP8/FRRS1L/CX3CL1/CPLX1/VPS13A/CACNA1B/CPLX2/DBN1/MCTP1/SYT5/PLCB1/SYT13/EFNB3/RIMS3/KAT2A/YWHAG/BAIAP3/NCDN/CBLN2/MAPK8IP2/CAMKV/SYP/NRG3
-2 STX1A/CAMK2A/JPH4/TSPOAP1/SORCS3/DNM1/GRIN1/BAIAP2/VGF/NXPH1/SYT4/CAMK2B/SEPTIN5/JPH3/ADGRB1/GFAP/GRM5/STXBP1/SLC8A2/CNR1/LGI1/CLSTN3/IQSEC2/SNAP25/NETO1/LRP8/FRRS1L/CX3CL1/CPLX1/VPS13A/CACNA1B/CPLX2/DBN1/MCTP1/SYT5/PLCB1/SYT13/EFNB3/RIMS3/KAT2A/YWHAG/BAIAP3/NCDN/CBLN2/MAPK8IP2/CAMKV/SYP/NRG3
-3        PTPRN/GPM6A/ENO2/UCHL1/SLC12A5/ATP2B2/ENC1/BAIAP2/VGF/SLC2A3/SYT4/UNC5A/GRIP2/RNF112/GRM5/INPP5F/FLNA/OLFM1/NRSN1/SLC8A2/SNAP25/LRP8/HSP90AB1/CX3CL1/SV2A/CPLX1/VPS13A/CACNA1B/KCNIP4/ASTN1/TAC1/CPLX2/KCNC1/PLXDC1/GRIP1/SYT5/MAP2/RTN4R/CAPN2/TUBB3/SEZ6L2/RAP1GAP/NCDN/GFRA1/MAPK8IP2/SORL1
-4                                                                        CADM3/GPM6A/SLC12A5/ATP2B2/SORCS3/DNM1/GRIN1/BAIAP2/GRIP2/GRM5/STXBP1/SLC6A7/SNAP91/NRCAM/CNR1/CLSTN3/SNAP25/GABRB3/NETO1/LRP8/DBN1/ERC2/KCNC1/ELFN2/FARP1/GRIP1/ADAM23/SCN2A/EFNB3/CACNA2D3/RIMS3/KCTD16/DGKB/SUSD4/PDE2A/SYP
-5                                                                                      EMB/UCHL1/TNFRSF21/ARHGEF25/BAIAP2/UNC5A/B4GAT1/EPHA10/ADGRB1/SLIT1/KIFC2/STXBP1/INPP5F/KALRN/FLNA/PAK3/OLFM1/NRCAM/CNR1/LGI1/SNAP25/FOXG1/UNC5D/TRAK1/DCLK1/MAP2/BCL11B/RTN4R/EFNB3/TUBB3/BRSK2/B4GALT6/CNTNAP1
-6                                                                                                          STX1A/CAMK2A/PTPRN/RAPGEF4/DOC2A/HRH3/TSPOAP1/SYNGR3/VGF/SYT4/SEPTIN5/STXBP1/PDE8B/CNR1/SNPH/NNAT/SNAP25/SV2A/CPLX1/CPLX2/ERC2/CRY2/PPARG/MCTP1/SYT5/PLCB1/SYT13/RIMS3/BRSK2/BAIAP3/SYP/PCLO
-  Count ONTOLOGY    op
-1    48       BP FALSE
-2    48       BP FALSE
-3    46       CC FALSE
-4    36       CC FALSE
-5    33       BP FALSE
-6    32       BP FALSE
-Error in (function (cond)  : 
-  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
+                          DE_classes ONTOLOGY   n
+1                    Astro-1_down_AA       BP  40
+2                    Astro-1_down_AA       CC   2
+3                    Astro-1_down_AA       MF  10
+4                      Astro-1_up_AA       BP  26
+5                      Astro-1_up_AA       CC  37
+6                      Astro-1_up_AA       MF  31
+7                     Astro-1_up_ALL       BP   8
+8                     Astro-1_up_ALL       CC   5
+9                     Astro-1_up_ALL       MF   6
+10                    Astro-2_up_ALL       MF  16
+11                  Astro-3_down_ALL       BP   7
+12                  Astro-3_down_ALL       CC   2
+13                  Astro-3_down_ALL       MF  23
+14                     Astro-3_up_AA       BP  10
+15                     Astro-3_up_AA       CC   7
+16                     Astro-3_up_AA       MF   3
+17                    Astro-3_up_ALL       BP  54
+18                    Astro-3_up_ALL       CC   8
+19                    Astro-3_up_ALL       MF  15
+20             Excit-L2_5-1_down_ALL       CC   2
+21             Excit-L2_5-1_down_ALL       MF  22
+22               Excit-L2_5-2_up_ALL       BP  13
+23               Excit-L2_5-2_up_ALL       CC   8
+24               Excit-L5-2_down_ALL       BP  66
+25               Excit-L5-2_down_ALL       CC  12
+26               Excit-L5-2_down_ALL       MF  25
+27                 Excit-L5-2_up_ALL       BP  21
+28                 Excit-L5-2_up_ALL       CC  25
+29                 Excit-L5-2_up_ALL       MF  10
+30               Excit-L6_CT_down_AA       BP 105
+31               Excit-L6_CT_down_AA       CC   6
+32               Excit-L6_CT_down_AA       MF  19
+33                Inhib-Sst_down_ALL       BP   1
+34                Inhib-Sst_down_ALL       CC   5
+35                Inhib-Sst_down_ALL       MF   1
+36                Inhib-Vip_down_ALL       BP   2
+37                Inhib-Vip_down_ALL       CC   1
+38                    Macro_down_ALL       BP 335
+39                    Macro_down_ALL       CC  14
+40                    Macro_down_ALL       MF  18
+41                       Macro_up_AA       BP 181
+42                       Macro_up_AA       CC  17
+43                       Macro_up_AA       MF   6
+44                      Macro_up_ALL       MF  10
+45                   Micro-1_down_AA       BP  51
+46                   Micro-1_down_AA       CC   7
+47                   Micro-1_down_AA       MF   7
+48                     Micro-1_up_AA       BP  34
+49                     Micro-1_up_AA       CC  39
+50                     Micro-1_up_AA       MF  61
+51                    Micro-1_up_ALL       BP   5
+52                    Micro-1_up_ALL       CC   3
+53                    Micro-1_up_ALL       MF  18
+54                  Micro-2_down_ALL       BP  20
+55                    Micro-3_up_ALL       BP  26
+56                    Micro-3_up_ALL       CC   1
+57                    Micro-3_up_ALL       MF   6
+58                     Micro-3_up_EA       BP  46
+59                     Micro-3_up_EA       CC  19
+60                     Micro-3_up_EA       MF  25
+61                   Micro-4_down_EA       BP  75
+62                   Micro-4_down_EA       CC  20
+63                   Micro-4_down_EA       MF   3
+64                     Micro-4_up_AA       BP  71
+65                     Micro-4_up_AA       CC   7
+66                     Micro-4_up_AA       MF   5
+67                    Micro-4_up_ALL       BP   2
+68                    Micro-4_up_ALL       CC  10
+69                     Micro-4_up_EA       BP  26
+70                     Micro-4_up_EA       CC   2
+71                     Micro-4_up_EA       MF   7
+72                       OPC-3_up_EA       BP   4
+73                       OPC-3_up_EA       MF   3
+74                     OPC-4_down_AA       BP  38
+75                     OPC-4_down_AA       CC   2
+76                     OPC-4_down_AA       MF   3
+77                     Oligo-1_up_AA       CC  19
+78                     Oligo-1_up_AA       MF  10
+79                     Oligo-2_up_EA       BP  17
+80  Oligo-3_down_AA, Oligo-3_down_EA       BP  10
+81  Oligo-3_down_AA, Oligo-3_down_EA       CC   1
+82  Oligo-3_down_AA, Oligo-3_down_EA       MF  10
+83                  Oligo-3_down_ALL       BP   5
+84                  Oligo-3_down_ALL       CC   8
+85                  Oligo-3_down_ALL       MF   2
+86                     Oligo-3_up_AA       BP 141
+87                     Oligo-3_up_AA       CC  55
+88                     Oligo-3_up_AA       MF  15
+89      Oligo-3_up_AA, Oligo-3_up_EA       BP  71
+90      Oligo-3_up_AA, Oligo-3_up_EA       CC   2
+91      Oligo-3_up_AA, Oligo-3_up_EA       MF   3
+92                    Oligo-3_up_ALL       BP 298
+93                    Oligo-3_up_ALL       CC  90
+94                    Oligo-3_up_ALL       MF  62
+95                     Oligo-3_up_EA       BP  59
+96                     Oligo-3_up_EA       CC  10
+97                     Oligo-3_up_EA       MF   2
+98                  Oligo-5_down_ALL       CC   3
+99                  Oligo-5_down_ALL       MF  16
+100                   Oligo-5_up_ALL       BP 104
+101                   Oligo-5_up_ALL       CC   3
+102                    Oligo-5_up_EA       BP 153
+103                    Oligo-5_up_EA       CC  13
+104                    Oligo-5_up_EA       MF  32
+105                Vasc-Endo_down_AA       BP  57
+106                Vasc-Endo_down_AA       CC   5
+107                Vasc-Endo_down_AA       MF  14
+108               Vasc-Endo_down_ALL       BP  57
+109               Vasc-Endo_down_ALL       CC   5
+110               Vasc-Endo_down_ALL       MF  14
+111                 Vasc-Endo_up_ALL       BP  29
+112                 Vasc-Endo_up_ALL       CC   8
+113                 Vasc-Endo_up_ALL       MF   6
+114                  Vasc-Endo_up_EA       CC  11
+115                Vasc-VLMC_down_AA       BP  13
+116                Vasc-VLMC_down_AA       CC   5
+117                Vasc-VLMC_down_AA       MF  12
+118               Vasc-VLMC_down_ALL       BP  10
+119               Vasc-VLMC_down_ALL       MF  16
+120                 Vasc-VLMC_up_ALL       BP 308
+121                 Vasc-VLMC_up_ALL       CC   2
+122                 Vasc-VLMC_up_ALL       MF  10
+123                  Vasc-VLMC_up_EA       BP  27
+124                  Vasc-VLMC_up_EA       CC   1
+125                  Vasc-VLMC_up_EA       MF   6
+Error in `map2()`:
+ℹ In index: 1.
+ℹ With name: CC.
+Caused by error in `filter()`:
+ℹ In argument: `!grepl("0", DE_class_cluster)`.
 Caused by error in `h()`:
-! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
-Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
+! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'DE_class_cluster' not found
+Backtrace:
+     ▆
+  1. ├─purrr::walk2(...)
+  2. │ └─purrr::map2(.x, .y, .f, ..., .progress = .progress)
+  3. │   └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
+  4. │     ├─purrr:::with_indexed_errors(...)
+  5. │     │ └─base::withCallingHandlers(...)
+  6. │     ├─purrr:::call_with_cleanup(...)
+  7. │     └─global .f(.x[[i]], .y[[i]], ...)
+  8. │       ├─dplyr::filter(gr@compareClusterResult, !grepl("0", DE_class_cluster))
+  9. │       └─dplyr:::filter.data.frame(gr@compareClusterResult, !grepl("0", DE_class_cluster))
+ 10. │         └─dplyr:::filter_rows(.data, dots, by)
+ 11. │           └─dplyr:::filter_eval(...)
+ 12. │             ├─base::withCallingHandlers(...)
+ 13. │             └─mask$eval_all_filter(dots, env_filter)
+ 14. │               └─dplyr (local) eval()
+ 15. ├─BiocGenerics::grepl("0", DE_class_cluster)
+ 16. ├─base::.handleSimpleError(...)
+ 17. │ └─base (local) h(simpleError(msg, call))
+ 18. └─base::.handleSimpleError(...)
+ 19.   └─dplyr (local) h(simpleError(msg, call))
+ 20.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
 Execution halted

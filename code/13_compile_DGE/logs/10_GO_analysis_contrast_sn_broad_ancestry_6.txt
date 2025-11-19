@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  4 03:33:12 PM EDT 2025
+Wed Nov 19 06:45:32 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21820275
+Job id: 24337696
 Job name: 10_GO_analysis_contrast
-Node name: compute-146
+Node name: compute-119
 Task id: 6
 Loading conda_R/4.5
 
@@ -16,7 +16,7 @@ Currently Loaded Modules:
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ forcats   1.0.0     ✔ stringr   1.5.2
 ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.1.0     
@@ -125,10 +125,10 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
-clusterProfiler: an R package for comparing biological themes among
-gene clusters. OMICS: A Journal of Integrative Biology. 2012,
-16(5):284-287
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
+X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
+enrichment tool for interpreting omics data. The Innovation. 2021,
+2(3):100141
 
 Attaching package: ‘clusterProfiler’
 
@@ -175,6 +175,7 @@ This message can be suppressed by:
 Loading objects:
   cell_type_colors
 [1] TRUE
+[1] TRUE
 # A tibble: 16 × 3
    cluster contrast       n
    <fct>   <chr>      <int>
@@ -218,7 +219,7 @@ Loading objects:
 7 Vasc    carrier_EA     1
 'select()' returned 1:many mapping between keys and columns
 Warning message:
-In bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID",  :
+In bitr(unique(DE_data_contrast$gene_id), fromType = "ENSEMBL",  :
   25.23% of input gene IDs are fail to map...
 Storing counts in `nn`, as `n` already present in input
 ℹ Use `name = "new_name"` to pick a new name.
@@ -228,334 +229,220 @@ Storing counts in `nn`, as `n` already present in input
 3 3    32
 4 4     4
 5 5     2
-# A tibble: 25 × 2
+# A tibble: 19 × 2
    DE_class_cluster     n
    <chr>            <int>
- 1 Astro_AA_None    15799
- 2 Astro_AA_down        5
- 3 Astro_AA_up         87
- 4 Astro_EA_None    15891
- 5 Excit_AA_None    19841
- 6 Excit_EA_None    19841
- 7 Inhib_AA_None    17437
- 8 Inhib_EA_None    17437
- 9 Macro_AA_None     2909
-10 Macro_AA_up          2
-# ℹ 15 more rows
-# A tibble: 16 × 3
+ 1 Astro_None_ALL   15822
+ 2 Astro_down_ALL      10
+ 3 Astro_up_ALL        59
+ 4 Excit_None_ALL   19992
+ 5 Excit_down_ALL      38
+ 6 Excit_up_ALL        29
+ 7 Inhib_None_ALL   17838
+ 8 Inhib_down_ALL      19
+ 9 Inhib_up_ALL         3
+10 Macro_None_ALL    2896
+11 Macro_down_ALL       5
+12 Macro_up_ALL        10
+13 Micro_None_ALL   13309
+14 Micro_down_ALL       2
+15 OPC_None_ALL     15555
+16 Oligo_None_ALL   17679
+17 Oligo_down_ALL      14
+18 Oligo_up_ALL       157
+19 Vasc_None_ALL     9240
+# A tibble: 44 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro_None_AA    15799
+ 2 Astro_None_ALL   15822
+ 3 Astro_None_EA    15891
+ 4 Astro_down_AA        5
+ 5 Astro_down_ALL      10
+ 6 Astro_up_AA         87
+ 7 Astro_up_ALL        59
+ 8 Excit_None_AA    19841
+ 9 Excit_None_ALL   19992
+10 Excit_None_EA    19841
+# ℹ 34 more rows
+`summarise()` has grouped output by 'model_type', 'ENTREZID', 'gene_name'. You
+can override using the `.groups` argument.
+# A tibble: 447 × 6
+# Groups:   model_type, ENTREZID, gene_name [434]
+   model_type ENTREZID  gene_name   cluster DE_classes         n
+   <chr>      <chr>     <chr>       <chr>   <chr>          <int>
+ 1 All        100128164 FHL1P1      Astro   Astro_down_ALL     1
+ 2 All        100170841 EPOP        Astro   Astro_up_ALL       1
+ 3 All        100233209 PCED1B-AS1  Oligo   Oligo_up_ALL       1
+ 4 All        100507582 BHLHE40-AS1 Oligo   Oligo_up_ALL       1
+ 5 All        100874369 CACNA1C     Oligo   Oligo_up_ALL       1
+ 6 All        1016      CDH18       Astro   Astro_up_ALL       1
+ 7 All        101927459 LINC01608   Inhib   Inhib_down_ALL     1
+ 8 All        101927667 LINC01535   Astro   Astro_down_ALL     1
+ 9 All        101928893 LINC01094   Oligo   Oligo_up_ALL       1
+10 All        101929215 THBS4-AS1   Oligo   Oligo_up_ALL       1
+# ℹ 437 more rows
+# A tibble: 20 × 4
+   model_type cluster DE_classes         n
+   <chr>      <chr>   <chr>          <int>
+ 1 All        Astro   Astro_down_ALL    10
+ 2 All        Astro   Astro_up_ALL      59
+ 3 All        Excit   Excit_down_ALL    38
+ 4 All        Excit   Excit_up_ALL      29
+ 5 All        Inhib   Inhib_down_ALL    19
+ 6 All        Inhib   Inhib_up_ALL       3
+ 7 All        Macro   Macro_down_ALL     5
+ 8 All        Macro   Macro_up_ALL      10
+ 9 All        Micro   Micro_down_ALL     2
+10 All        Oligo   Oligo_down_ALL    14
+11 All        Oligo   Oligo_up_ALL     157
+12 Specifc    Astro   Astro_down_AA      5
+13 Specifc    Astro   Astro_up_AA       87
+14 Specifc    Macro   Macro_up_AA        2
+15 Specifc    Micro   Micro_down_AA      2
+16 Specifc    Micro   Micro_up_AA        1
+17 Specifc    Micro   Micro_up_EA        1
+18 Specifc    OPC     OPC_up_EA          1
+19 Specifc    Vasc    Vasc_down_AA       1
+20 Specifc    Vasc    Vasc_up_EA         1
+# A tibble: 44 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro_None_AA    15799
+ 2 Astro_None_ALL   15822
+ 3 Astro_None_EA    15891
+ 4 Astro_down_AA        5
+ 5 Astro_down_ALL      10
+ 6 Astro_up_AA         87
+ 7 Astro_up_ALL        59
+ 8 Excit_None_AA    19841
+ 9 Excit_None_ALL   19992
+10 Excit_None_EA    19841
+# ℹ 34 more rows
+# A tibble: 24 × 3
    cluster contrast       n
-   <fct>   <chr>      <int>
- 1 Astro   carrier_AA 15891
- 2 Astro   carrier_EA 15891
- 3 Oligo   carrier_AA 17850
- 4 Oligo   carrier_EA 17850
- 5 OPC     carrier_AA 15194
- 6 OPC     carrier_EA 15194
- 7 Macro   carrier_AA  2911
- 8 Macro   carrier_EA  2911
- 9 Micro   carrier_AA 13311
-10 Micro   carrier_EA 13311
-11 Vasc    carrier_AA  8565
-12 Vasc    carrier_EA  8565
-13 Excit   carrier_AA 19841
-14 Excit   carrier_EA 19841
-15 Inhib   carrier_AA 17437
-16 Inhib   carrier_EA 17437
-# A tibble: 9 × 2
-  DE_class_cluster     n
-  <chr>            <int>
-1 Astro_AA_down        5
-2 Astro_AA_up         87
-3 Macro_AA_up          2
-4 Micro_AA_down        2
-5 Micro_AA_up          1
-6 Micro_EA_up          1
-7 OPC_EA_up            1
-8 Vasc_AA_down         1
-9 Vasc_EA_up           1
-# A tibble: 101 × 3
-   gene_name       DE_class_cluster cluster
-   <chr>           <chr>            <fct>  
- 1 ENSG00000273507 Astro_AA_down    Astro  
- 2 ADGRF3          Astro_AA_down    Astro  
- 3 TCTN1           Astro_AA_down    Astro  
- 4 ENSG00000251574 Astro_AA_down    Astro  
- 5 HORMAD2-AS1     Astro_AA_down    Astro  
- 6 PLPPR4          Astro_AA_up      Astro  
- 7 RXFP1           Astro_AA_up      Astro  
- 8 TSPYL4          Astro_AA_up      Astro  
- 9 MEIS3           Astro_AA_up      Astro  
-10 SYT5            Astro_AA_up      Astro  
-# ℹ 91 more rows
+   <chr>   <chr>      <int>
+ 1 Astro   carrier    15891
+ 2 Astro   carrier_AA 15891
+ 3 Astro   carrier_EA 15891
+ 4 Excit   carrier    20059
+ 5 Excit   carrier_AA 19841
+ 6 Excit   carrier_EA 19841
+ 7 Inhib   carrier    17860
+ 8 Inhib   carrier_AA 17437
+ 9 Inhib   carrier_EA 17437
+10 Macro   carrier     2911
+# ℹ 14 more rows
 # A tibble: 3 × 2
-  DE_class             n
-  <chr>            <int>
-1 0_downEA_DownAA      2
-2 0_upEA_UpAA         70
-3 None            131544
-# A tibble: 4 × 3
-  cluster DE_class_cluster          n
-  <fct>   <chr>                 <int>
-1 Astro   Astro_0_downEA_DownAA     1
-2 Astro   Astro_0_upEA_UpAA        69
-3 Macro   Macro_0_upEA_UpAA         1
-4 Micro   Micro_0_downEA_DownAA     1
-Saving 7 x 7 in image
-# A tibble: 72 × 12
-   gene_id         gene_name cluster vlmf_logFC_AA vlmf_logFC_EA vlmf_P.Value_AA
-   <chr>           <chr>     <fct>           <dbl>         <dbl>           <dbl>
- 1 ENSG00000117600 PLPPR4    Astro           1.91          0.774     0.000000381
- 2 ENSG00000171509 RXFP1     Astro           2.04          0.812     0.000000395
- 3 ENSG00000187189 TSPYL4    Astro           1.01          0.506     0.00000315 
- 4 ENSG00000105419 MEIS3     Astro           2.05          0.801     0.00000259 
- 5 ENSG00000129990 SYT5      Astro           2.06          0.738     0.00000289 
- 6 ENSG00000198300 PEG3      Astro           0.890         0.425     0.00000469 
- 7 ENSG00000125851 PCSK2     Astro           1.93          0.907     0.00000771 
- 8 ENSG00000221890 NPTXR     Astro           1.05          0.738     0.00000861 
- 9 ENSG00000229618 ENSG0000… Astro           2.25          1.20      0.0000110  
-10 ENSG00000226070 LINC00951 Astro           1.43          0.696     0.0000109  
-# ℹ 62 more rows
-# ℹ 6 more variables: vlmf_P.Value_EA <dbl>, vlmf_adj.P.Val_AA <dbl>,
-#   vlmf_adj.P.Val_EA <dbl>, DE_class <chr>, DE_class_cluster <chr>,
-#   ENTREZID <chr>
-# A tibble: 5 × 3
-  DE_class        `is.na(ENTREZID)`     n
-  <chr>           <lgl>             <int>
-1 0_downEA_DownAA FALSE                 2
-2 0_upEA_UpAA     FALSE                68
-3 0_upEA_UpAA     TRUE                  2
-4 down            FALSE                 8
-5 up              FALSE                93
-# A tibble: 13 × 2
-   DE_class_cluster          n
-   <chr>                 <int>
- 1 Astro_0_downEA_DownAA     1
- 2 Astro_0_upEA_UpAA        69
- 3 Astro_AA_down             5
- 4 Astro_AA_up              87
- 5 Macro_0_upEA_UpAA         1
- 6 Macro_AA_up               2
- 7 Micro_0_downEA_DownAA     1
- 8 Micro_AA_down             2
- 9 Micro_AA_up               1
-10 Micro_EA_up               1
-11 OPC_EA_up                 1
-12 Vasc_AA_down              1
-13 Vasc_EA_up                1
+  contrast        n
+  <chr>       <int>
+1 carrier    112677
+2 carrier_AA 111000
+3 carrier_EA 111000
+# A tibble: 20 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Oligo_up_ALL       157
+ 2 Astro_up_AA         87
+ 3 Astro_up_ALL        59
+ 4 Excit_down_ALL      38
+ 5 Excit_up_ALL        29
+ 6 Inhib_down_ALL      19
+ 7 Oligo_down_ALL      14
+ 8 Astro_down_ALL      10
+ 9 Macro_up_ALL        10
+10 Astro_down_AA        5
+11 Macro_down_ALL       5
+12 Inhib_up_ALL         3
+13 Macro_up_AA          2
+14 Micro_down_AA        2
+15 Micro_down_ALL       2
+16 Micro_up_AA          1
+17 Micro_up_EA          1
+18 OPC_up_EA            1
+19 Vasc_down_AA         1
+20 Vasc_up_EA           1
+# A tibble: 447 × 3
+   gene_name       DE_class_cluster cluster
+   <chr>           <chr>            <chr>  
+ 1 ENSG00000273507 Astro_down_AA    Astro  
+ 2 ADGRF3          Astro_down_AA    Astro  
+ 3 TCTN1           Astro_down_AA    Astro  
+ 4 ENSG00000251574 Astro_down_AA    Astro  
+ 5 HORMAD2-AS1     Astro_down_AA    Astro  
+ 6 ENSG00000286739 Astro_down_ALL   Astro  
+ 7 CEDORA          Astro_down_ALL   Astro  
+ 8 GOLGA6L10       Astro_down_ALL   Astro  
+ 9 GOLGA6L10       Astro_down_ALL   Astro  
+10 GOLGA6L10       Astro_down_ALL   Astro  
+# ℹ 437 more rows
 Universe n genes: 20605
-        DE_class_cluster ONTOLOGY   n
-1  Astro_0_downEA_DownAA       BP   2
-2  Astro_0_downEA_DownAA       MF   1
-3      Astro_0_upEA_UpAA       BP  56
-4      Astro_0_upEA_UpAA       CC  33
-5      Astro_0_upEA_UpAA       MF  22
-6          Astro_AA_down       BP  22
-7          Astro_AA_down       CC   2
-8          Astro_AA_down       MF   1
-9            Astro_AA_up       BP  78
-10           Astro_AA_up       CC  44
-11           Astro_AA_up       MF  39
-12     Macro_0_upEA_UpAA       BP  54
-13     Macro_0_upEA_UpAA       CC  15
-14     Macro_0_upEA_UpAA       MF  11
-15           Macro_AA_up       BP 187
-16           Macro_AA_up       CC  18
-17           Macro_AA_up       MF   6
-18 Micro_0_downEA_DownAA       BP   8
-19 Micro_0_downEA_DownAA       MF   4
-20         Micro_AA_down       BP  24
-21         Micro_AA_down       MF   7
-22           Micro_AA_up       CC   1
-23             OPC_EA_up       BP   4
-24             OPC_EA_up       MF   3
-25          Vasc_AA_down       BP  55
-26          Vasc_AA_down       CC   5
-27          Vasc_AA_down       MF  14
-28            Vasc_EA_up       BP 242
-29            Vasc_EA_up       MF  39
-null device 
-          1 
-   DE_class_cluster  n
-1 Astro_0_upEA_UpAA 51
-2       Astro_AA_up 86
-null device 
-          1 
-null device 
-          1 
-                 Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
-1  Astro_0_downEA_DownAA          TRUE            NA       TRUE   3
-2      Astro_0_upEA_UpAA         FALSE          TRUE      FALSE 111
-3          Astro_AA_down         FALSE          TRUE       TRUE  22
-4          Astro_AA_down          TRUE            NA       TRUE   3
-5            Astro_AA_up         FALSE          TRUE      FALSE 161
-6      Macro_0_upEA_UpAA          TRUE            NA       TRUE  80
-7            Macro_AA_up         FALSE          TRUE      FALSE   3
-8            Macro_AA_up         FALSE          TRUE       TRUE 208
-9  Micro_0_downEA_DownAA          TRUE            NA       TRUE  12
-10         Micro_AA_down         FALSE          TRUE       TRUE  31
-11           Micro_AA_up          TRUE            NA       TRUE   1
-12             OPC_EA_up          TRUE            NA       TRUE   7
-13          Vasc_AA_down          TRUE            NA       TRUE  74
-14            Vasc_EA_up          TRUE            NA       TRUE 281
-2025-09-04 15:35:55.316497 - CC
---Astro_0_upEA_UpAA (33)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro_AA_up (44)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (18)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-2025-09-04 15:36:20.107466 - BP
---Astro_0_upEA_UpAA (56)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro_AA_down (22)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro_AA_up (78)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (187)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro_AA_down (24)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-2025-09-04 15:40:41.221646 - MF
---Astro_0_upEA_UpAA (22)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Astro_AA_up (39)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (6)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
---Micro_AA_down (7)--
-preparing gene to GO mapping data...
-preparing IC data...
-'select()' returned 1:many mapping between keys and columns
-Warning messages:
-1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 2 terms that were not found in orgdb for MF
-2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 4 terms that were not found in orgdb for MF
-3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for MF
-null device 
-          1 
-$CC
-                             parentTerm  n
-1                     synaptic membrane 22
-2        monoatomic ion channel complex 16
-3                     transport vesicle 14
-4 ionotropic glutamate receptor complex  7
-5            neuron projection terminus  7
-6                            perikaryon  4
-
-$BP
-                                                                      parentTerm
-1                                                       response to amyloid-beta
-2 neurotransmitter receptor localization to postsynaptic specialization membrane
-3                                         regulation of trans-synaptic signaling
-4                                                                         memory
-5                                              regulatory T cell differentiation
-6                                                                      ovulation
-   n
-1 33
-2 19
-3 18
-4 17
-5 16
-6 14
-
-$MF
-                                    parentTerm  n
-1 metal ion transmembrane transporter activity 34
-2                  beta-galactosidase activity  4
-3                  calcium ion sensor activity  4
-4                   channel regulator activity  4
-5                       GABA receptor activity  3
-6       calcium-dependent phospholipid binding  3
-
-$CC
-                             term n
-1 AMPA glutamate receptor complex 2
-2           GABA receptor complex 2
-3              GABA-ergic synapse 2
-4              asymmetric synapse 2
-5                   axon terminus 2
-6          cation channel complex 2
-
-$BP
-                                                                       term n
-1                                             actin filament-based movement 2
-2                                           actin-mediated cell contraction 2
-3                                                          action potential 2
-4 adenylate cyclase-activating G protein-coupled receptor signaling pathway 2
-5 adenylate cyclase-modulating G protein-coupled receptor signaling pathway 2
-6                                      anterograde axonal protein transport 2
-
-$MF
-                                    term n
-1                 GABA receptor activity 2
-2            calcium ion sensor activity 2
-3 calcium-dependent phospholipid binding 2
-4                       channel activity 2
-5             channel regulator activity 2
-6                       clathrin binding 2
-
-            Cluster  DE_class_cluster         ID
-1       Astro_AA_up       Astro_AA_up GO:0097060
-2       Astro_AA_up       Astro_AA_up GO:0050804
-3       Astro_AA_up       Astro_AA_up GO:0099177
-4       Astro_AA_up       Astro_AA_up GO:0045211
-5 Astro_0_upEA_UpAA Astro_0_upEA_UpAA GO:0097060
-6       Astro_AA_up       Astro_AA_up GO:0099572
-                                   Description GeneRatio   BgRatio RichFactor
-1                            synaptic membrane     21/77 442/15849 0.04751131
-2 modulation of chemical synaptic transmission     19/76 482/14992 0.03941909
-3       regulation of trans-synaptic signaling     19/76 483/14992 0.03933747
-4                        postsynaptic membrane     17/77 313/15849 0.05431310
-5                            synaptic membrane     16/59 442/15849 0.03619910
-6                  postsynaptic specialization     16/77 392/15849 0.04081633
-  FoldEnrichment   zScore       pvalue     p.adjust       qvalue
-1       9.779309 13.07982 1.337073e-15 2.807853e-13 1.857827e-13
-2       7.775934 10.79332 2.139289e-12 1.313430e-09 1.115154e-09
-3       7.759834 10.77921 2.218631e-12 1.313430e-09 1.115154e-09
-4      11.179329 12.70899 1.154140e-13 1.211847e-11 8.018238e-12
-5       9.724059 11.37085 3.735250e-12 6.835507e-10 4.521618e-10
-6       8.401272 10.36755 4.994480e-11 3.496136e-09 2.313233e-09
-                                                                                                                               geneID
-1 PLPPR4/SYT7/NETO1/RGS7BP/KCNA3/PCDH8/CNR1/GABBR2/CACNG8/SCN2A/DNM1/TAMALIN/GRIN1/SLC12A5/GABRB3/GABRB2/CDH9/KCNC2/NSG2/CACNG3/NETO2
-2               PLPPR4/SYT5/SYT7/NETO1/PCDH8/CNR1/CACNG8/SLC4A10/SLC8A2/DNM1/GRIN1/YWHAG/CNTN4/SEPTIN5/NXPH1/PLK2/CBLN4/DLGAP2/CACNG3
-3               PLPPR4/SYT5/SYT7/NETO1/PCDH8/CNR1/CACNG8/SLC4A10/SLC8A2/DNM1/GRIN1/YWHAG/CNTN4/SEPTIN5/NXPH1/PLK2/CBLN4/DLGAP2/CACNG3
-4                      PLPPR4/NETO1/RGS7BP/KCNA3/PCDH8/GABBR2/CACNG8/TAMALIN/GRIN1/SLC12A5/GABRB3/GABRB2/CDH9/KCNC2/NSG2/CACNG3/NETO2
-5                                   PLPPR4/SYT7/NETO1/RGS7BP/KCNA3/CNR1/GABBR2/CACNG8/SCN2A/DNM1/SLC12A5/GABRB2/CDH9/KCNC2/NSG2/NETO2
-6                            PLPPR4/NETO1/RGS7BP/CACNG8/SLC8A2/TAMALIN/GRIN1/PAK3/SLC12A5/GABRB3/GABRB2/DLGAP2/SYN2/NSG2/CACNG3/NETO2
-  Count ONTOLOGY    op
-1    21       CC FALSE
-2    19       BP FALSE
-3    19       BP FALSE
-4    17       CC FALSE
-5    16       CC  TRUE
-6    16       CC FALSE
-Error in (function (cond)  : 
-  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
+       DE_classes ONTOLOGY   n
+1   Astro_down_AA       BP  22
+2   Astro_down_AA       CC   2
+3   Astro_down_AA       MF   1
+4  Astro_down_ALL       BP   7
+5  Astro_down_ALL       MF  11
+6     Astro_up_AA       BP  78
+7     Astro_up_AA       CC  44
+8     Astro_up_AA       MF  39
+9    Astro_up_ALL       BP  47
+10   Astro_up_ALL       CC  33
+11   Astro_up_ALL       MF  16
+12 Inhib_down_ALL       BP   3
+13   Inhib_up_ALL       BP  21
+14   Inhib_up_ALL       CC   3
+15   Inhib_up_ALL       MF  12
+16 Macro_down_ALL       BP 333
+17 Macro_down_ALL       CC  13
+18 Macro_down_ALL       MF  18
+19    Macro_up_AA       BP 187
+20    Macro_up_AA       CC  18
+21    Macro_up_AA       MF   6
+22   Macro_up_ALL       MF  17
+23  Micro_down_AA       BP  24
+24  Micro_down_AA       MF   7
+25 Micro_down_ALL       BP  16
+26 Micro_down_ALL       MF   7
+27    Micro_up_AA       CC   1
+28      OPC_up_EA       BP   4
+29      OPC_up_EA       MF   3
+30 Oligo_down_ALL       CC   2
+31   Oligo_up_ALL       BP  24
+32   Oligo_up_ALL       CC  16
+33   Oligo_up_ALL       MF   1
+34   Vasc_down_AA       BP  55
+35   Vasc_down_AA       CC   5
+36   Vasc_down_AA       MF  14
+37     Vasc_up_EA       BP 242
+38     Vasc_up_EA       MF  39
+Error in `map2()`:
+ℹ In index: 1.
+ℹ With name: CC.
+Caused by error in `filter()`:
+ℹ In argument: `!grepl("0", DE_class_cluster)`.
 Caused by error in `h()`:
-! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
-Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
+! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'DE_class_cluster' not found
+Backtrace:
+     ▆
+  1. ├─purrr::walk2(...)
+  2. │ └─purrr::map2(.x, .y, .f, ..., .progress = .progress)
+  3. │   └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
+  4. │     ├─purrr:::with_indexed_errors(...)
+  5. │     │ └─base::withCallingHandlers(...)
+  6. │     ├─purrr:::call_with_cleanup(...)
+  7. │     └─global .f(.x[[i]], .y[[i]], ...)
+  8. │       ├─dplyr::filter(gr@compareClusterResult, !grepl("0", DE_class_cluster))
+  9. │       └─dplyr:::filter.data.frame(gr@compareClusterResult, !grepl("0", DE_class_cluster))
+ 10. │         └─dplyr:::filter_rows(.data, dots, by)
+ 11. │           └─dplyr:::filter_eval(...)
+ 12. │             ├─base::withCallingHandlers(...)
+ 13. │             └─mask$eval_all_filter(dots, env_filter)
+ 14. │               └─dplyr (local) eval()
+ 15. ├─BiocGenerics::grepl("0", DE_class_cluster)
+ 16. ├─base::.handleSimpleError(...)
+ 17. │ └─base (local) h(simpleError(msg, call))
+ 18. └─base::.handleSimpleError(...)
+ 19.   └─dplyr (local) h(simpleError(msg, call))
+ 20.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
 Execution halted
