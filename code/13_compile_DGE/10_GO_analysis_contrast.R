@@ -110,6 +110,8 @@ DE_entrez_contrast <- DE_data_contrast |>
            model_type = "Specifc") |>
     bind_rows(DE_entrez)
 
+DE_entrez_contrast |> count(DE_class_cluster)
+
 
 DE_entrez_contrast_summary <- DE_entrez_contrast |> 
     group_by(model_type, ENTREZID, gene_name, cluster) |> 
@@ -120,8 +122,10 @@ DE_entrez_contrast_summary <- DE_entrez_contrast |>
 DE_entrez_contrast_summary |> arrange(-n)
 
 DE_entrez_contrast_summary |> ungroup() |> count(model_type, cluster, DE_classes) 
-DE_entrez_contrast_summary |> ungroup() |> count(model_type, cluster, DE_classes)  |> filter(cluster == "Oligo.3")
 
+if(opt$datatype == "sn_fine"){
+    DE_entrez_contrast_summary |> ungroup() |> count(model_type, cluster, DE_classes)  |> filter(cluster == "Oligo.3")
+}
     
 DE_entrez_contrast |> count(DE_class_cluster)
 DE_entrez_contrast |> count(cluster, contrast)
@@ -129,36 +133,38 @@ DE_entrez_contrast |> count(contrast)
 DE_entrez_contrast |> filter(!grepl("None", DE_class)) |> count(DE_class_cluster) |> arrange(-n)
 DE_entrez_contrast |> filter(!grepl("None", DE_class))  |> arrange(DE_class_cluster) |> select(gene_name, DE_class_cluster, cluster)
 
+# some genes have multiple entrez matches
+# DE_entrez_contrast |> filter(gene_name == "GOLGA6L10", cluster == "Astro") |> select(gene_name, gene_id, vlmf_adj.P.Val, DE_class_cluster, cluster, ENTREZID) |> unique()
 
 #### Check contrast directions ####
 
-pval_contrast <- paste0("vlmf_P.Value_", contrast_levels)
-pval_adj_contrast <- paste0("vlmf_adj.P.Val_", contrast_levels)
-lfc_contrast <- paste0("vlmf_logFC_", contrast_levels)
+# pval_contrast <- paste0("vlmf_P.Value_", contrast_levels)
+# pval_adj_contrast <- paste0("vlmf_adj.P.Val_", contrast_levels)
+# lfc_contrast <- paste0("vlmf_logFC_", contrast_levels)
 
-DE_entrez_contrast_op <- DE_data_contrast |>
-    select(gene_id, gene_name, cluster, contrast, vlmf_logFC, vlmf_P.Value, vlmf_adj.P.Val) |>
-    mutate(contrast = gsub("carrier_", "", contrast)) |>
-    pivot_wider(names_from = "contrast", values_from = c("vlmf_logFC", "vlmf_P.Value", "vlmf_adj.P.Val")) |>
-    mutate(DE_class = case_when(!!sym(lfc_contrast[[1]]) > 0 & ## up F or AA
-                                    !!sym(pval_contrast[[1]]) < 0.10 & 
-                                    !!sym(lfc_contrast[[2]]) < 0 & 
-                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_up%s_Down%s", contrast_levels[[1]], contrast_levels[[2]]),
-                                !!sym(lfc_contrast[[1]]) > 0 & ## both UP
-                                    !!sym(pval_contrast[[1]]) < 0.10 & 
-                                    !!sym(lfc_contrast[[2]]) > 0 & 
-                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_up%s_Up%s", contrast_levels[[1]], contrast_levels[[2]]),
-                                !!sym(lfc_contrast[[1]]) < 0 & ## down F or EA
-                                    !!sym(pval_contrast[[1]]) < 0.10 & 
-                                    !!sym(lfc_contrast[[2]]) > 0 & 
-                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_down%s_Up%s", contrast_levels[[1]], contrast_levels[[2]]),
-                                !!sym(lfc_contrast[[1]]) < 0 & ## both Down
-                                    !!sym(pval_contrast[[1]]) < 0.10 & 
-                                    !!sym(lfc_contrast[[2]]) < 0 & 
-                                    !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_down%s_Down%s", contrast_levels[[1]], contrast_levels[[2]]),
-                                TRUE ~ "None"),
-           DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class)) |>
-    left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many")
+# DE_entrez_contrast_op <- DE_data_contrast |>
+#     select(gene_id, gene_name, cluster, contrast, vlmf_logFC, vlmf_P.Value, vlmf_adj.P.Val) |>
+#     mutate(contrast = gsub("carrier_", "", contrast)) |>
+#     pivot_wider(names_from = "contrast", values_from = c("vlmf_logFC", "vlmf_P.Value", "vlmf_adj.P.Val")) |>
+#     mutate(DE_class = case_when(!!sym(lfc_contrast[[1]]) > 0 & ## up F or AA
+#                                     !!sym(pval_contrast[[1]]) < 0.10 & 
+#                                     !!sym(lfc_contrast[[2]]) < 0 & 
+#                                     !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_up%s_Down%s", contrast_levels[[1]], contrast_levels[[2]]),
+#                                 !!sym(lfc_contrast[[1]]) > 0 & ## both UP
+#                                     !!sym(pval_contrast[[1]]) < 0.10 & 
+#                                     !!sym(lfc_contrast[[2]]) > 0 & 
+#                                     !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_up%s_Up%s", contrast_levels[[1]], contrast_levels[[2]]),
+#                                 !!sym(lfc_contrast[[1]]) < 0 & ## down F or EA
+#                                     !!sym(pval_contrast[[1]]) < 0.10 & 
+#                                     !!sym(lfc_contrast[[2]]) > 0 & 
+#                                     !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_down%s_Up%s", contrast_levels[[1]], contrast_levels[[2]]),
+#                                 !!sym(lfc_contrast[[1]]) < 0 & ## both Down
+#                                     !!sym(pval_contrast[[1]]) < 0.10 & 
+#                                     !!sym(lfc_contrast[[2]]) < 0 & 
+#                                     !!sym(pval_adj_contrast[[2]]) < 0.05 ~ sprintf("0_down%s_Down%s", contrast_levels[[1]], contrast_levels[[2]]),
+#                                 TRUE ~ "None"),
+#            DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class)) |>
+#     left_join(entrez_search, by = c("gene_id" = "ENSEMBL"), relationship = "many-to-many")
 
 
 # DE_entrez_contrast_op |> count(!!sym(pval_contrast[[1]]) < 0.10,
@@ -166,20 +172,20 @@ DE_entrez_contrast_op <- DE_data_contrast |>
 #                       !!sym(lfc_contrast[[2]]) < 0,
 #                       !!sym(pval_adj_contrast[[2]]) < 0.05)
 
-DE_entrez_contrast_op |> count(DE_class)
-
-DE_entrez_contrast_op |> filter(DE_class != "None") |> count(cluster, DE_class_cluster)
-
-DE_opp_tile <- DE_entrez_contrast_op |>
-    count(cluster, DE_class) |>
-    ggplot(aes(x = DE_class, y = cluster, fill = n)) +
-    geom_tile() +
-    geom_text(aes(label = n, color = DE_class)) +
-    theme_bw()
-
-ggsave(DE_opp_tile, filename = here(plot_dir, "DEG_opposite_contrast_tile.png"))
-
-DE_entrez_contrast_op |> filter(DE_class != "None")
+# DE_entrez_contrast_op |> count(DE_class)
+# 
+# DE_entrez_contrast_op |> filter(DE_class != "None") |> count(cluster, DE_class_cluster)
+# 
+# DE_opp_tile <- DE_entrez_contrast_op |>
+#     count(cluster, DE_class) |>
+#     ggplot(aes(x = DE_class, y = cluster, fill = n)) +
+#     geom_tile() +
+#     geom_text(aes(label = n, color = DE_class)) +
+#     theme_bw()
+# 
+# ggsave(DE_opp_tile, filename = here(plot_dir, "DEG_opposite_contrast_tile.png"))
+# 
+# DE_entrez_contrast_op |> filter(DE_class != "None")
 
 # DE_entrez_contrast |> filter(gene_name == "FOXO3") |> select(gene_name, contrast, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC) |> arrange(vlmf_adj.P.Val)
 
@@ -219,8 +225,7 @@ saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s_%s.rds", opt$cont
 # go_result <- readRDS(here(data_dir, sprintf("GO_result_%s_%s.rds", opt$contrast, opt$datatype)))
 
 # convert to table
-compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y)) |>
-    mutate(op = grepl("0", Cluster))
+compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y)) 
 compare_clus |> count(DE_classes, ONTOLOGY)
 
 # Save 
