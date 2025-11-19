@@ -215,8 +215,10 @@ supp_tables$TableS15 |> dplyr::count(gene_set, DEG_data)
 #### Table S16 Cell to cell communication results summary. ####
 
 ## counts of commonly observed LR pairs by source and target
+supp_tables$TableS16a <- read.csv(here("processed-data", "17_cell_cell_comm", "10_LR_DEG_check", "Liana_source_target_counts_sn_fine.csv"))
 
 ## LR source-target interactions involving a DEG including mean bivariate score
+supp_tables$TableS16b <- read.csv(here("processed-data", "17_cell_cell_comm", "10_LR_DEG_check", "Liana_LR_DEGs_sn_fine.csv"))
 
 #### Table S17 MOFA results. ####
 
