@@ -244,13 +244,13 @@ write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s_%s.csv", op
 pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 12)
 walk2(go_result, names(go_result), function(gr, ont){
     
-    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster))
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_classes))
     
     if(nrow(gr@compareClusterResult) == 0) return(NULL)
     
     print(
         dotplot(gr, 
-                x = "DE_class_cluster", 
+                x = "DE_classes", 
                 showCategory = 4, 
                 label_format = 60)  +
             ggtitle(paste("GO Enrichment:", ont)) +
@@ -261,18 +261,18 @@ walk2(go_result, names(go_result), function(gr, ont){
 dev.off()
 
 ## plot terms w/ 2+ genes
-compare_clus |> filter(Count >= 2) |> count(DE_class_cluster)
+compare_clus |> filter(Count >= 2) |> count(DE_classes)
 
 pdf(file = here(plot_dir, sprintf("GO_dotplot_2plus_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
 walk2(go_result, names(go_result), function(gr, ont){
     
-    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 5)
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_classes), Count >= 5)
     
     if(nrow(gr@compareClusterResult) == 0) return(NULL)
     
     print(
         dotplot(gr, 
-                x = "DE_class_cluster", 
+                x = "DE_classes", 
                 showCategory = 5, 
                 label_format = 60)  +
             ggtitle(paste("GO Enrichment:", ont, "2+ genes")) +
@@ -283,18 +283,18 @@ walk2(go_result, names(go_result), function(gr, ont){
 dev.off()
 
 ## plot terms w/ 5+ genes
-compare_clus |> filter(Count >= 5) |> count(DE_class_cluster)
+compare_clus |> filter(Count >= 5) |> count(DE_classes)
 
 pdf(file = here(plot_dir, sprintf("GO_dotplot_5plus_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
 walk2(go_result, names(go_result), function(gr, ont){
     
-    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 5)
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_classes), Count >= 5)
     
     if(nrow(gr@compareClusterResult) == 0) return(NULL)
     
     print(
         dotplot(gr, 
-                x = "DE_class_cluster", 
+                x = "DE_classes", 
                 showCategory = 5, 
                 label_format = 60)  +
             ggtitle(paste("GO Enrichment:", ont, "5+ genes")) +
@@ -305,26 +305,26 @@ walk2(go_result, names(go_result), function(gr, ont){
 dev.off()
 
 ## opposite DEGs
-pdf(file = here(plot_dir, sprintf("GO_dotplot_opposite_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
-walk2(go_result, names(go_result), function(gr, ont){
-    
-    gr@compareClusterResult <- gr@compareClusterResult |> 
-        filter(grepl("0", DE_class_cluster), Count >= 2) |>
-        mutate(DE_class_cluster = gsub("_0_", ": ", DE_class_cluster))
-    
-    if(nrow(gr@compareClusterResult) == 0) return(NULL)
-    
-    print(
-        dotplot(gr, 
-                x = "DE_class_cluster", 
-                showCategory = 5, 
-                label_format = 60)  +
-            ggtitle(paste("GO Enrichment:", ont, "opposite, 2+ genes")) +
-            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-    )
-    
-})
-dev.off()
+# pdf(file = here(plot_dir, sprintf("GO_dotplot_opposite_%s_%s.pdf", opt$contrast, opt$datatype)), width = 10, height = 10)
+# walk2(go_result, names(go_result), function(gr, ont){
+#     
+#     gr@compareClusterResult <- gr@compareClusterResult |> 
+#         filter(grepl("0", DE_classes), Count >= 2) |>
+#         mutate(DE_class_cluster = gsub("_0_", ": ", DE_class_cluster))
+#     
+#     if(nrow(gr@compareClusterResult) == 0) return(NULL)
+#     
+#     print(
+#         dotplot(gr, 
+#                 x = "DE_class_cluster", 
+#                 showCategory = 5, 
+#                 label_format = 60)  +
+#             ggtitle(paste("GO Enrichment:", ont, "opposite, 2+ genes")) +
+#             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+#     )
+#     
+# })
+# dev.off()
 
 #### sn fine data - by cell type ####
 if(opt$datatype == "sn_fine"){
