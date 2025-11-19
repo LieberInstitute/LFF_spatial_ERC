@@ -297,6 +297,11 @@ source_target_counts <- liana_data_summary |>
     group_by(target) |>
     mutate(p_source = n/sum(n))
 
+source_target_counts |> arrange(-n)
+
+## save out source target counts
+write.csv(source_target_counts, file = here(data_dir, sprintf("Liana_source_target_counts_%s.csv", opt$datatype)))
+
 LR_count_tile <- source_target_counts |>
     ggplot(aes(x = target, y = source, fill = n)) +
     geom_tile() +
@@ -394,12 +399,14 @@ if(opt$datatype == "sn_fine"){
 
 LR_DEGS <- liana_data_summary |> 
     filter(n_pass_magnitude_rank > 20) |>
-    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC))|>
-    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC)) |>
-    mutate(L_DEG = ligand_adj.P.Val < 0.05,
-           R_DEG = receptor_adj.P.Val < 0.05)
+    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_DEG_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC), 
+              by = join_by(source, ligand_complex))|>
+    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_DEG_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC),
+              by = join_by(target, receptor_complex)) |>
+    mutate(L_DEG = ligand_DEG_adj.P.Val < 0.05,
+           R_DEG = receptor_DEG_adj.P.Val < 0.05)
 
-LR_DEGS |> filter(is.na(R_DEG)) |> select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG)
+LR_DEGS |> filter(is.na(R_DEG)) |> select(source, target, ligand_complex, receptor_complex, ligand_DEG_adj.P.Val, receptor_DEG_adj.P.Val, L_DEG, R_DEG)
 
 LR_DEGS |> ungroup() |> count(L_DEG, R_DEG)
 
@@ -413,7 +420,7 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
         filter(ligand_complex == "NRXN1",
                receptor_complex == "NLGN1") |> 
         # filter(target == "Oligo.3") |>
-        select(source, target, ligand_complex, receptor_complex, ligand_adj.P.Val, receptor_adj.P.Val, L_DEG, R_DEG, mean_mean)
+        select(source, target, ligand_complex, receptor_complex, ligand_DEG_adj.P.Val, receptor_DEG_adj.P.Val, L_DEG, R_DEG, mean_mean)
     
     ## log FC heatmap
     
@@ -556,10 +563,10 @@ liana_data_summary |>
 
 LR_risk <- liana_data_summary |> 
     filter(n_pass_magnitude_rank > 20 & (ligand_complex %in% AD_risk$symbol | receptor_complex %in% AD_risk$symbol)) |>
-    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC))|>
-    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC)) |>
-    mutate(L_DEG = ligand_adj.P.Val < 0.05,
-           R_DEG = receptor_adj.P.Val < 0.05,
+    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_DEG_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC))|>
+    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_DEG_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC)) |>
+    mutate(L_DEG = ligand_DEG_adj.P.Val < 0.05,
+           R_DEG = receptor_DEG_adj.P.Val < 0.05,
            L_risk = ligand_complex %in% AD_risk$symbol ,
            R_risk = receptor_complex %in% AD_risk$symbol,
            interaction = paste(ligand_complex, "->", receptor_complex)) |>
@@ -657,6 +664,24 @@ LR_DEGS_SpD_tile<- bivariate_SpD_data |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
 ggsave(LR_DEGS_SpD_tile, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_tile.png"))
+
+
+#### Export LR DEG data ####
+
+bivariate_wide <- bivariate_SpD_data |>
+    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
+    separate(SpD, sep = "~", into = c("Layer", "SpD")) |>
+    ungroup() |>
+    select(interaction, Layer, mean_score) |>
+    pivot_wider(names_from = "Layer", values_from = "mean_score", names_prefix = "bivairate_mean_")
+
+## export LR DEG data
+LR_DEGS_export <- LR_DEGS |>
+    mutate(interaction = paste(ligand_complex, "->", receptor_complex), .before = 3) |>
+    filter(L_DEG | R_DEG) |>
+    left_join(bivariate_wide)
+
+write_csv(LR_DEGS_export, file = here(data_dir, sprintf("Liana_LR_DEGs_%s.csv", opt$datatype)))
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
 #                     create_shell = TRUE,
