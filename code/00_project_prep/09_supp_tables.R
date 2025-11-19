@@ -220,7 +220,6 @@ supp_tables$TableS15 |> dplyr::count(gene_set, DEG_data)
 
 #### Table S17 MOFA results. ####
 
-
 # gene expression variance explained
 gene_weight <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
 supp_tables$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
@@ -247,4 +246,15 @@ map(supp_tables, dim)
 
 map_int(supp_tables, nrow)
 
+message(Sys.time(), " - Write XLSX")
 write_xlsx(supp_tables, path =  "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTables.xlsx")
+
+message(Sys.time(), " - Done")
+
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
