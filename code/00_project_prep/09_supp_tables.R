@@ -181,11 +181,9 @@ GO_ancestry <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE",
 GO_sex <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_Sex", sprintf("GO_results_Sex_%s.csv", .x)))|>
                   mutate(DEG = "Sex", .before = 1))
 
-GO_carrier[[1]] |> dplyr::count(DE_class_cluster)
+# GO_carrier[[1]] |> dplyr::count(DE_class_cluster)
 
-GO_ancestry[[3]] |> dplyr::count(DE_classes)
-
-GO_sex[[1]] |> dplyr::count(DE_class_cluster)
+# GO_ancestry[[3]] |> dplyr::count(DE_classes)
 
 combined_GO <- pmap(list(carrier = GO_carrier, anc = GO_ancestry, sex = GO_sex), function(carrier, anc, sex){
     carrier |>
