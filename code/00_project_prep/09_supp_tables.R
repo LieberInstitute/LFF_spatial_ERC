@@ -12,6 +12,7 @@ library("SingleCellExperiment")
 # if(!dir.exists(data_dir)) dir.create(data_dir)
 
 supp_tables <- list()
+supp_tables_big <- list()
 
 #### Table S1 Donor demographics. ####
 supp_tables$TableS01 <- read.csv(here("processed-data", "00_project_prep", "05_pathology", "sample_taupathy.csv"))
@@ -60,7 +61,7 @@ SpD_markers |> filter(!is.na(enrichment_stat), !is.na(MeanRatio))
 
 SpD_markers |> filter(gene_name == "MBP")
 
-supp_tables$TableS03 <- SpD_markers
+supp_tables_big$TableS03 <- SpD_markers
 rm(SpD_markers)
 
 #### Table S4 SpD Differential Proportions ####
@@ -114,7 +115,7 @@ cell_type_markers |> filter(gene_name == "MBP")
 # write_csv(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.csv")
 # write_xlsx(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.xlsx")
 
-supp_tables$TableS06 <- cell_type_markers
+supp_tables_big$TableS06 <- cell_type_markers
 rm(cell_type_markers)
 
 #### Table S7 Spot deconvolution results ####
@@ -122,7 +123,7 @@ spe_RCTD <- readRDS(here("processed-data", "15_spot_deconvolution", "03_results_
 assayNames(spe_RCTD)
 dim(spe_RCTD)
 
-supp_tables$TableS07 <- t(assay(spe_RCTD, "weights")) |>
+supp_tables_big$TableS07 <- t(assay(spe_RCTD, "weights")) |>
     as.matrix() |>
     as.data.frame() |>
     rownames_to_column("key") |>
@@ -164,9 +165,9 @@ combined_data <- pmap(list(carrier = DEG_carrier, anc = DEG_ancestry, sex = DEG_
 
 map(combined_data, ncol)
 
-supp_tables$TableS09 <- combined_data[[1]]
-supp_tables$TableS11 <- combined_data[[2]]
-supp_tables$TableS13 <- combined_data[[3]]
+supp_tables_big$TableS09 <- combined_data[[1]]
+supp_tables_big$TableS11 <- combined_data[[2]]
+supp_tables_big$TableS13 <- combined_data[[3]]
 
 rm(combined_data)
 
@@ -233,7 +234,7 @@ supp_tables$TableS16b <- read.csv(here("processed-data", "17_cell_cell_comm", "1
 
 # gene expression variance explained
 gene_weight <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
-supp_tables$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
+supp_tables_big$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
 
 head(supp_tables$TableS17a)
 dim(supp_tables$TableS17a)
@@ -259,6 +260,24 @@ map_int(supp_tables, nrow)
 
 message(Sys.time(), " - Write XLSX")
 write_xlsx(supp_tables, path =  "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTables.xlsx")
+
+message(Sys.time(), " - Done")
+
+## write large tables to individual csv files
+length(supp_tables_big)
+map(supp_tables_big, dim)
+
+map_int(supp_tables_big, nrow)
+
+message(Sys.time(), " - Write big tables CSV")
+
+walk2(supp_tables_big, names(supp_tables_big), 
+      ~write_csv(.x, sprintf("/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable_%s.csv", 
+                             gsub("TableS", "",.y))
+      )
+      )
+      
+
 
 message(Sys.time(), " - Done")
 
