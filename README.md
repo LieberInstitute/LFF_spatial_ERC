@@ -1,5 +1,34 @@
-# LFF_spatial_ERC
-LFF_spatial_ERC
+# LFF Spatial ERC
+
+# Overview
+
+Welcome to the `LFF_spatial_ERC` project! 🧠
+
+In this work we built a transcriptional profile of the human entorhinal
+cortex (ERC) with single nucleus RNA sequencing (snRNA-seq) and spatially
+resolved transcriptomics (SRT) from 31 neurotypical post-mortem donors with 
+diverse risk for Alzheimer's disease (AD). SRT data was generated with 10x 
+Genomics Visium, snRNA-seq was generated with 10x Genomics Chromium. 
+
+We then assessed changes in gene expression associated with risk of AD by 
+APOE carrier status (E2+ vs. E4+), as well as APOE changes specific to ancestry 
+groups (African ancestry or European ancestry), and sex. 
+
+This work is being was performed by members of [Leonardo
+Collado-Torres](http://lcolladotor.github.io/), [Kristen
+Maynard](https://www.libd.org/team/kristen-maynard-phd/), and [Keri
+Martinowich](https://www.libd.org/team/keri-martinowich-phd/), teams at the
+[Lieber Institute for Brain Development](libd.org) as well as Mina Ryten's group
+from [UK DRI Cambridge](https://rytenlab.com/RytenLab/About). 
+
+Thank you for your interest in our work!
+
+## Study Design
+<img src="http://research.libd.org/LFF_spatial_ERC/img/ERC experiment V2.png" width="1000px" align="left" />
+
+## Internal
+
+JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
 
 
 ## Interactive Websites
@@ -15,19 +44,13 @@ We provide the following interactive websites to explore the ERC data:
 - 🔭 [LFF_ERC_Visium](https://interactive.libd.org/LFF_ERC_spatialLIBD-app/):
     Visium data for 31 samples post-QC w/ clustering and modeling results
     
-<!-- - 🔭 [LFF_ERC_Visium_QC](https://libd.shinyapps.io/LFF_ERC_Visium_QC/):
-    Visium data for 31 samples pre-QC drops (including out-tissue spots) -->
+- 🔭 [LFF_ERC_Visium_QC](https://libd.shinyapps.io/LFF_ERC_Visium_QC/):
+    Visium data for 31 samples pre-QC drops (including out-tissue spots)
     
 - 👀 [iSEE](https://interactive.libd.org/LFF_ERC_iSEE-app/):
     snRNA-seq data for 31 samples
     
 ## Main Data
-
-### Data Availability  
-
-The spatial and single nucleus sequencing data has been uploaded to GEO under accession numbers [GSE307990](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE307990) and [GSE308007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE308007) respectively. 
-
-A public Globus endpoint has been created and R objects necessary to create the apps locally are found on the [globus]() page.
 
 ### snRNA-seq
 
