@@ -26,18 +26,11 @@ Thank you for your interest in our work!
 ## Study Design
 <img src="http://research.libd.org/LFF_spatial_ERC/img/ERC experiment V2.png" width="1000px" align="left" />
 
-## Internal
-
-JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
-
+Schematic depicting cohort composition stratified across APOE 
+genotype, sex, and ancestry as well as experimental design for generation of 
+snRNA-seq and SRT data from postmortem human ERC tissue. 
 
 ## Interactive Websites
-
-All of these interactive websites are powered by open source software,
-namely:
-
-- 🔭 [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w)
-- 👀 [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
 
 We provide the following interactive websites to explore the ERC data:
 
@@ -49,10 +42,31 @@ We provide the following interactive websites to explore the ERC data:
     
 - 👀 [iSEE](https://interactive.libd.org/LFF_ERC_iSEE-app/):
     snRNA-seq data for 31 samples
-    
-## Main Data
 
-### snRNA-seq
+All of these interactive websites are powered by open source software,
+namely:
+
+- 🔭 [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) See [spatialLIBD website](https://research.libd.org/spatialLIBD/) for more information
+- 👀 [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
+
+## Citing our work
+
+Please cite our pre-print [10.1126/science.adh1938](https://doi.org/10.1101/2025.11.20.689483)
+if you use data from this project.
+
+`TODO add citation when pre-print posts`
+
+Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
+
+`TODO add citation when pre-print posts`
+    
+## Internal
+
+JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
+
+### Main Data
+
+#### snRNA-seq
 
 **SingleCellExperiment** 
 
@@ -82,7 +96,7 @@ cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_p
 **Sample ID table**
 `processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
-### Visium
+#### Visium
 
 **SpatialExperiment**
 
@@ -118,3 +132,6 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 `processed-data/02_build_spe/sample_info.csv`
 
+
+
+<script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=288&t=n&d=Bh6nY5iydLVTKEEP1j9OciyA69GplP0R5EC0Or6nFLU'></script>
