@@ -51,14 +51,14 @@ namely:
 
 ## Citing our work
 
-Please cite this [10.1126/science.adh1938](https://doi.org/10.1101/2025.11.20.689483)
+Please cite our pre-print [10.1126/science.adh1938](https://doi.org/10.1101/2025.11.20.689483)
 if you use data from this project.
 
-TODO add citation when pre-print posts
+`TODO add citation when pre-print posts`
 
 Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
 
-TODO add citation when pre-print posts
+`TODO add citation when pre-print posts`
     
 ## Internal
 
