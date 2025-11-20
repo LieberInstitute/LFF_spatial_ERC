@@ -26,6 +26,7 @@ Thank you for your interest in our work!
 ## Study Design
 <img src="http://research.libd.org/LFF_spatial_ERC/img/ERC experiment V2.png" width="1000px" align="left" />
 
+Image upload test
 
 ## Internal
 
