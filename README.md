@@ -1,5 +1,30 @@
-# LFF_spatial_ERC
-LFF_spatial_ERC
+# LFF Spatial ERC
+
+# Overview
+
+Welcome to the `LFF_spatial_ERC` project! 🧠
+
+In this work we built a transcriptional profile of the human entorhinal
+cortex (ERC) with single nucleus RNA sequencing (snRNA-seq) and spatially
+resolved transcriptomics (SRT) from 31 neurotypical post-mortem donors with 
+diverse risk for Alzheimer's disease (AD). SRT data was generated with 10x 
+Genomics Visium, snRNA-seq was generated with 10x Genomics Chromium. 
+
+We then assessed changes in gene expression associated with risk of AD by 
+APOE carrier status (E2+ vs. E4+), as well as APOE changes specific to ancestry 
+groups (African ancestry or European ancestry), and sex. 
+
+This work is being was performed by members of [Leonardo
+Collado-Torres](http://lcolladotor.github.io/), [Kristen
+Maynard](https://www.libd.org/team/kristen-maynard-phd/), and [Keri
+Martinowich](https://www.libd.org/team/keri-martinowich-phd/), teams at the
+[Lieber Institute for Brain Development](libd.org) as well as Mina Ryten's group
+from [UK DRI Cambridge](https://rytenlab.com/RytenLab/About). 
+
+Thank you for your interest in our work!
+
+## Study Design
+<img src="http://research.libd.org/LFF_spatial_ERC/img/ERC experiment V2.png" width="1000px" align="left" />
 
 ## Internal
 
