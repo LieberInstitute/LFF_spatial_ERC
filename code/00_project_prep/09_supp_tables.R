@@ -257,6 +257,10 @@ length(supp_tables)
 map(supp_tables, dim)
 
 map_int(supp_tables, nrow)
+# TableS01  TableS02  TableS04  TableS05  TableS08  TableS10  TableS12  TableS14 
+# 31        31        17        31       225      1077      3435      9829 
+# TableS15 TableS16a TableS16b TableS17b TableS17c 
+# 4620       601        75        49       210 
 
 message(Sys.time(), " - Write XLSX")
 write_xlsx(supp_tables, path =  "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTables.xlsx")
@@ -268,6 +272,8 @@ length(supp_tables_big)
 map(supp_tables_big, dim)
 
 map_int(supp_tables_big, nrow)
+# TableS03  TableS06  TableS07  TableS09  TableS11  TableS13 TableS17a 
+# 112284    941640    122152    105721    132819    402317    218639
 
 message(Sys.time(), " - Write big tables CSV")
 
