@@ -120,3 +120,6 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 `processed-data/02_build_spe/sample_info.csv`
 
+
+<script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=Bh6nY5iydLVTKEEP1j9OciyA69GplP0R5EC0Or6nFLU&cl=ffffff&w=a"></script>
+
