@@ -26,13 +26,6 @@ Thank you for your interest in our work!
 ## Study Design
 <img src="http://research.libd.org/LFF_spatial_ERC/img/ERC experiment V2.png" width="1000px" align="left" />
 
-Image upload test
-
-## Internal
-
-JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
-
-
 ## Interactive Websites
 
 All of these interactive websites are powered by open source software,
@@ -52,9 +45,13 @@ We provide the following interactive websites to explore the ERC data:
 - 👀 [iSEE](https://interactive.libd.org/LFF_ERC_iSEE-app/):
     snRNA-seq data for 31 samples
     
-## Main Data
+## Internal
 
-### snRNA-seq
+JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
+
+### Main Data
+
+#### snRNA-seq
 
 **SingleCellExperiment** 
 
@@ -84,7 +81,7 @@ cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_p
 **Sample ID table**
 `processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
-### Visium
+#### Visium
 
 **SpatialExperiment**
 
