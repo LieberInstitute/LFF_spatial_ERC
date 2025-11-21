@@ -112,9 +112,9 @@ R objects with both the counts and logcounts can be
 downloaded through the fetch_data() function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) 
 v1.23.1 or newer. 
 
-Source code is under the MIT License and permanently archived on Zenodo. The 
-GitHub repository includes log files with specific software versions used for 
-each analysis
+Source code is under the MIT License and permanently archived on 
+[Zenodo](https://zenodo.org/records/17108408). The GitHub repository includes 
+log files with specific software versions used for each analysis.
 
 ## Funding
 
