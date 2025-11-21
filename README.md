@@ -21,7 +21,7 @@ Collado-Torres](http://lcolladotor.github.io/), [Kristen
 Maynard](https://www.libd.org/team/kristen-maynard-phd/), and [Keri
 Martinowich](https://www.libd.org/team/keri-martinowich-phd/), teams at the
 [Lieber Institute for Brain Development](libd.org) as well as Mina Ryten's group
-from [UK DRI Cambridge](https://rytenlab.com/RytenLab/About). 
+from [UK DRI Cambridge](https://rytenlab.com/). 
 
 Thank you for your interest in our work!
 
@@ -97,15 +97,16 @@ Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
 
 ## Data & Code avalibility 
 
-Data and code for this project are available on [github](https://github.com/LieberInstitute/LFF_spatial_ERC).
+Data and code for this project are available on [Github](https://github.com/LieberInstitute/LFF_spatial_ERC).
 
 Organization of code, data, and plots follows our team's [project template](https://github.com/LieberInstitute/template_project).
 
 Raw data generated as a part of this study have been deposited on the Gene 
-Expression Omnibus (GEO) with accession numbers GSE307990 and GSE308007.
+Expression Omnibus (GEO) with accession numbers GSE307990 [(SRT data)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE307990) 
+and GSE308007 [(snRNA-seq data)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GGSE308007).
 
 Processed data files (R objects) used to make the interactive apps (logcounts only) 
-can be found on our [Globus Endpoints](https://research.libd.org/globus/) under the 
+can be found on our [Globus Endpoints](https://research.libd.org/globus/jhpce_LFF_ERC/index.html) under the 
 heading `jhpce#LFF_ERC`. 
 
 R objects with both the counts and logcounts can be 
@@ -129,40 +130,36 @@ and the [Lieber Institute for Brain Development](https://www.libd.org/).
 
 **SingleCellExperiment** 
 
-project path: `"processed-data/sce_objects/sce_ERC_subcluster"`
-
-Not on github due to size (36G)
+* project path: `"processed-data/sce_objects/sce_ERC_subcluster"` (Not on github due to large file size: 36G)
 
 ```
 ## Load HD5F sce
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 # class: SingleCellExperiment 
 # dim: 38606 122004
-
 ```
 
-**Pseudobulked snRNA-seq**
+**Input files**
 
-cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+* FASTQ: `raw-data/FASTQ_snRNAseq`
 
-cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+* Sample ID table: `processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
-**FASTQ**
 
-`raw-data/FASTQ_snRNAseq`
+**Pseudobulked snRNA-seq data**
 
-**Sample ID table**
-`processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
+* cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+
+* cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+
 
 ### SRT/Visium
 
 **SpatialExperiment**
 
-project path: `"processed-data/spe_objects/spe_ERC_annotated"`
+* project path: `"processed-data/spe_objects/spe_ERC_annotated"`
 
-pre-QC version: `processed-data/spe_objects/spe_raw.rds`
-
-Not on github due to size (4G)
+* pre-QC version: `processed-data/spe_objects/spe_raw.rds` (Not on github due to large file size: 4G)
 
 ```
 ## Load HD5F spe
@@ -172,21 +169,19 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 ```
 
+**Input files**
+
+* FASTQ: `raw-data/FASTQ`
+
+* Images: `raw-data/FASTQ/Images`
+
+* SAMPLE ID table: `processed-data/02_build_spe/sample_info.csv`
+
+
 **Pseudobulked Visium data**
 
 `processed-data/09_pseudoBulkDGE_Visium/01_pseudobulk_data_Visium/spe_pseudo_DGE.RDS`
 
-**FASTQ** 
-
-`raw-data/FASTQ`
-
-**Images**
-
-`raw-data/FASTQ/Images`
-
-**SAMPLE ID table**
-
-`processed-data/02_build_spe/sample_info.csv`
 
 ## Internal
 
