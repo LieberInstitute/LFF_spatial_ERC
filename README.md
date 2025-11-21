@@ -102,7 +102,8 @@ Data and code for this project are available on [github](https://github.com/Lieb
 Organization of code, data, and plots follows our team's [project template](https://github.com/LieberInstitute/template_project).
 
 Raw data generated as a part of this study have been deposited on the Gene 
-Expression Omnibus (GEO) with accession numbers GSE307990 and GSE308007.
+Expression Omnibus (GEO) with accession numbers GSE307990 [(SRT data)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE307990) 
+and GSE308007 [(snRNA-seq data)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GGSE308007).
 
 Processed data files (R objects) used to make the interactive apps (logcounts only) 
 can be found on our [Globus Endpoints](https://research.libd.org/globus/) under the 
