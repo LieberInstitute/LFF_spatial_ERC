@@ -1,6 +1,8 @@
 # LFF Spatial ERC
 
-# Overview
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17108407.svg)](https://doi.org/10.5281/zenodo.17108407)
+
+## Overview
 
 Welcome to the `LFF_spatial_ERC` project! 🧠
 
@@ -104,7 +106,9 @@ Expression Omnibus (GEO) with accession numbers GSE307990 and GSE308007.
 
 Processed data files (R objects) used to make the interactive apps (logcounts only) 
 can be found on our [Globus Endpoints](https://research.libd.org/globus/) under the 
-heading `jhpce#LFF_ERC`. R objects with both the counts and logcounts can be 
+heading `jhpce#LFF_ERC`. 
+
+R objects with both the counts and logcounts can be 
 downloaded through the fetch_data() function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) 
 v1.23.1 or newer. 
 
@@ -140,6 +144,7 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 **Pseudobulked snRNA-seq**
 
 cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+
 cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
 
 **FASTQ**
