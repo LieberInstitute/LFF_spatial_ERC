@@ -154,6 +154,8 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 
 * cell type broad pseudobulk: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
 
+* cell type broad modeling: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_subcluster_pseudobulk-cell_type_broad.rds`
+
 
 ### SRT/Visium
 
