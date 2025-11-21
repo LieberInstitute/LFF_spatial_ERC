@@ -146,11 +146,15 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 * Sample ID table: `processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
 
-**Pseudobulked snRNA-seq data**
+**Pseudobulked snRNA-seq & modeling data**
 
-* cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+* cell type subcluster pseudobulk: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
 
-* cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+* cell type subcluster modeling: `processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_modeling_results-cell_type_anno.rds"`
+
+* cell type broad pseudobulk: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+
+* cell type broad modeling: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_subcluster_pseudobulk-cell_type_broad.rds`
 
 
 ### SRT/Visium
@@ -178,9 +182,11 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 * SAMPLE ID table: `processed-data/02_build_spe/sample_info.csv`
 
 
-**Pseudobulked Visium data**
+**Pseudobulked Visium & Modeling data**
 
-`processed-data/09_pseudoBulkDGE_Visium/01_pseudobulk_data_Visium/spe_pseudo_DGE.RDS`
+* pseudobulk: `processed-data/05_spe_correct_cluster/20_model_pseudobulk_anno/spe_pseudobulk-SpD.rds` 
+
+* modeling data: `processed-data/05_spe_correct_cluster/20_model_pseudobulk_anno/modeling_results-SpD.rds`
 
 
 ## Internal
