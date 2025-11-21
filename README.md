@@ -11,7 +11,7 @@ diverse risk for Alzheimer's disease (AD). SRT data was generated with 10x
 Genomics Visium, snRNA-seq was generated with 10x Genomics Chromium. 
 
 We then assessed changes in gene expression associated with risk of AD by 
-APOE carrier status (E2+ vs. E4+), as well as APOE changes specific to ancestry 
+APOE carrier status (E2+ vs. E4+), as well as *APOE* changes specific to ancestry 
 groups (African ancestry or European ancestry), and sex. 
 
 This work is being was performed by members of [Leonardo
@@ -26,7 +26,7 @@ Thank you for your interest in our work!
 ## Study Design
 <img src="http://research.libd.org/LFF_spatial_ERC/img/ERC experiment V2.png" width="1000px" align="left" />
 
-Schematic depicting cohort composition stratified across APOE 
+Schematic depicting cohort composition stratified across *APOE* 
 genotype, sex, and ancestry as well as experimental design for generation of 
 snRNA-seq and SRT data from postmortem human ERC tissue. 
 
@@ -103,8 +103,8 @@ Raw data generated as a part of this study have been deposited on the Gene
 Expression Omnibus (GEO) with accession numbers GSE307990 and GSE308007.
 
 Processed data files (R objects) used to make the interactive apps (logcounts only) 
-can be found on https://research.libd.org/globus/ under the 
-heading jhpce#LFF_ERC. R objects with both the counts and logcounts can be 
+can be found on our [Globus Endpoints](https://research.libd.org/globus/) under the 
+heading `jhpce#LFF_ERC`. R objects with both the counts and logcounts can be 
 downloaded through the fetch_data() function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) 
 v1.23.1 or newer. 
 
@@ -112,7 +112,14 @@ Source code is under the MIT License and permanently archived on Zenodo. The
 GitHub repository includes log files with specific software versions used for 
 each analysis
 
-### Main Data
+## Funding
+
+This project was supported thanks to the Carol and Gene Ludwig Award for 
+Neurodegeneration Research (DRW) from the [Ludwig Famiy Foundation](https://www.ludwigfamilyfoundation.org/) 
+and the [Lieber Institute for Brain Development](https://www.libd.org/).
+
+
+## Main Data
 
 ### snRNA-seq
 
@@ -142,7 +149,7 @@ cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_p
 **Sample ID table**
 `processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
-#### Visium
+### SRT/Visium
 
 **SpatialExperiment**
 
@@ -181,7 +188,9 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 JHPCE location: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/`
 
 snRNA-seq main data JHPCE path: `"/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/sce_objects/sce_ERC_subcluster"`
+
 SRT main data JHPCE path: `/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/spe_objects/spe_ERC_annotated`
+
 
 
 <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=288&t=n&d=Bh6nY5iydLVTKEEP1j9OciyA69GplP0R5EC0Or6nFLU'></script>
