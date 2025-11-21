@@ -92,7 +92,6 @@ Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
     year={2025}, 
     month={Nov}}
     
-```    
 
 ## Data & Code avalibility 
 
