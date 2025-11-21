@@ -130,40 +130,36 @@ and the [Lieber Institute for Brain Development](https://www.libd.org/).
 
 **SingleCellExperiment** 
 
-project path: `"processed-data/sce_objects/sce_ERC_subcluster"`
-
-Not on github due to size (36G)
+* project path: `"processed-data/sce_objects/sce_ERC_subcluster"` (Not on github due to large file size: 36G)
 
 ```
 ## Load HD5F sce
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 # class: SingleCellExperiment 
 # dim: 38606 122004
-
 ```
+
+** Input files **
+
+* FASTQ: `raw-data/FASTQ_snRNAseq`
+
+* Sample ID table: `processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
+
 
 **Pseudobulked snRNA-seq**
 
-cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+* cell type fine: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
 
-cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+* cell type broad: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
 
-**FASTQ**
-
-`raw-data/FASTQ_snRNAseq`
-
-**Sample ID table**
-`processed-data/04_snRNA-seq/erc_sn_sample_info.csv`
 
 ### SRT/Visium
 
 **SpatialExperiment**
 
-project path: `"processed-data/spe_objects/spe_ERC_annotated"`
+* project path: `"processed-data/spe_objects/spe_ERC_annotated"`
 
-pre-QC version: `processed-data/spe_objects/spe_raw.rds`
-
-Not on github due to size (4G)
+* pre-QC version: `processed-data/spe_objects/spe_raw.rds` (Not on github due to large file size: 4G)
 
 ```
 ## Load HD5F spe
@@ -173,21 +169,19 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "spe
 
 ```
 
+** Input files **
+
+* FASTQ: `raw-data/FASTQ`
+
+* Images: `raw-data/FASTQ/Images`
+
+* SAMPLE ID table: `processed-data/02_build_spe/sample_info.csv`
+
+
 **Pseudobulked Visium data**
 
 `processed-data/09_pseudoBulkDGE_Visium/01_pseudobulk_data_Visium/spe_pseudo_DGE.RDS`
 
-**FASTQ** 
-
-`raw-data/FASTQ`
-
-**Images**
-
-`raw-data/FASTQ/Images`
-
-**SAMPLE ID table**
-
-`processed-data/02_build_spe/sample_info.csv`
 
 ## Internal
 
