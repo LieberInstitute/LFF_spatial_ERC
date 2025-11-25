@@ -148,13 +148,13 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here::here("processed-data", "sce
 
 **Pseudobulked snRNA-seq & modeling data**
 
-* cell type subcluster pseudobulk: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_anno.RDS`
+* cell type subcluster pseudobulk: `processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_pseudobulk-cell_type_anno.rds`
 
 * cell type subcluster modeling: `processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_modeling_results-cell_type_anno.rds"`
 
-* cell type broad pseudobulk: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_pseudo_DGE-cell_type_broad.RDS`
+* cell type broad pseudobulk: `processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_pseudobulk-cell_type_broad.rds`
 
-* cell type broad modeling: `processed-data/08_pseudoBulkDGE_sn/01_pseudobulk_data_sn/sce_subcluster_pseudobulk-cell_type_broad.rds`
+* cell type broad modeling: `processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_modeling_results-cell_type_broad.rds`
 
 
 ### SRT/Visium
