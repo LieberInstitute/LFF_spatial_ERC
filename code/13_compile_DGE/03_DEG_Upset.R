@@ -68,7 +68,7 @@ print(upset(fromList(c(DEGs_signif_list$sn_broad, DEGs_signif_list$Visium)),
             nsets = 10))
 dev.off()
 
-## single cell broad vd. fine
+## single cell broad vs. fine
 
 pdf(here(plot_dir, "DEG_Upset_sn_broad_v_fine.pdf"))
 print(upset(fromList(c(DEGs_signif_list$sn_broad, DEGs_signif_list$sn_fine)),
@@ -120,6 +120,8 @@ DEG_count_data_type_bar <- DEG_count |>
           legend.position = "None")
 
 ggsave(DEG_count_data_type_bar, filename = here(plot_dir, "DEG_count_data_type_bar.png"))
+
+ggsave(DEG_count_data_type_bar, filename = here(plot_dir, "DEG_count_data_type_bar_small.png"), height = 3, width = 6)
 
 
 #### contrast data ####
