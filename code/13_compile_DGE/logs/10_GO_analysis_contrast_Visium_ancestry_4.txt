@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 06:45:32 AM EST 2025
+Wed Nov 19 10:39:46 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337700
+Job id: 24337997
 Job name: 10_GO_analysis_contrast
-Node name: compute-119
+Node name: compute-106
 Task id: 4
 Loading conda_R/4.5
 
@@ -125,9 +125,8 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
@@ -384,33 +383,227 @@ Universe n genes: 14792
 24                           WM~Sp09D06_down_EA       BP 32
 25                           WM~Sp09D06_down_EA       CC  6
 26                           WM~Sp09D06_down_EA       MF  8
-Error in `map2()`:
-ℹ In index: 1.
-ℹ With name: CC.
-Caused by error in `filter()`:
-ℹ In argument: `!grepl("0", DE_class_cluster)`.
+null device 
+          1 
+              DE_classes  n
+1    L6~Sp09D04_down_ALL 20
+2  Vasc~Sp09D08_down_ALL 14
+3 WM-uf~Sp09D07_down_ALL 11
+4    WM-uf~Sp09D07_up_AA  1
+null device 
+          1 
+[1] DE_classes n         
+<0 rows> (or 0-length row.names)
+null device 
+          1 
+                                        Cluster is.na(qvalue) qvalue < 0.05
+1                        Inhib~Sp09D09_down_ALL         FALSE          TRUE
+2                        Inhib~Sp09D09_down_ALL          TRUE            NA
+3                             L5~Sp09D03_up_ALL         FALSE          TRUE
+4                             L5~Sp09D03_up_ALL          TRUE            NA
+5                           L6~Sp09D04_down_ALL         FALSE          TRUE
+6                           L6~Sp09D04_down_ALL         FALSE          TRUE
+7                             L6~Sp09D04_up_ALL         FALSE          TRUE
+8                         Vasc~Sp09D08_down_ALL         FALSE          TRUE
+9                           Vasc~Sp09D08_up_ALL         FALSE          TRUE
+10                        WM-uf~Sp09D07_down_AA         FALSE          TRUE
+11 WM-uf~Sp09D07_down_AA, WM-uf~Sp09D07_down_EA          TRUE            NA
+12                       WM-uf~Sp09D07_down_ALL         FALSE          TRUE
+13                          WM-uf~Sp09D07_up_AA         FALSE          TRUE
+14                          WM-uf~Sp09D07_up_AA         FALSE          TRUE
+15                         WM-uf~Sp09D07_up_ALL         FALSE          TRUE
+16                         WM-uf~Sp09D07_up_ALL          TRUE            NA
+17                           WM~Sp09D06_down_EA          TRUE            NA
+   Count == 1   n
+1        TRUE  25
+2        TRUE   8
+3        TRUE   6
+4        TRUE   4
+5       FALSE  20
+6        TRUE  42
+7        TRUE  12
+8       FALSE  14
+9        TRUE  21
+10       TRUE   7
+11       TRUE  46
+12      FALSE  11
+13      FALSE   1
+14       TRUE  24
+15       TRUE 115
+16       TRUE   5
+17       TRUE  46
+2025-11-19 10:43:40.261231 - CC
+--Inhib~Sp09D09_down_ALL (8)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc~Sp09D08_up_ALL (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_down_AA (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_up_AA (9)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_up_ALL (24)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-11-19 10:44:28.74775 - BP
+--Inhib~Sp09D09_down_ALL (17)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--L6~Sp09D04_down_ALL (57)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--L6~Sp09D04_up_ALL (12)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc~Sp09D08_down_ALL (10)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc~Sp09D08_up_ALL (15)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_down_ALL (11)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_up_ALL (91)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-11-19 10:50:31.703481 - MF
+--L5~Sp09D03_up_ALL (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--L6~Sp09D04_down_ALL (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc~Sp09D08_down_ALL (4)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_down_AA (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--WM-uf~Sp09D07_up_AA (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+null device 
+          1 
+$CC
+                                     parentTerm  n
+1                                basal dendrite 12
+2                                  axon hillock  8
+3                   junctional membrane complex  5
+4                       mitotic spindle midzone  5
+5                            dendrite cytoplasm  4
+6 asymmetric, glutamatergic, excitatory synapse  2
+
+$BP
+                                parentTerm  n
+1 regulation of synaptic vesicle transport 15
+2             anterograde axonal transport 13
+3        regulation of microtubule binding 11
+4       glucose mediated signaling pathway 10
+5                 spindle midzone assembly 10
+6    negative regulation of axon extension  9
+
+$MF
+                                                                                     parentTerm
+1 G protein-coupled receptor activity involved in regulation of postsynaptic membrane potential
+2                                                                          dipeptidase activity
+3                                                              monoacylglycerol lipase activity
+4                                                                    methylated histone binding
+5                                                             nuclear steroid receptor activity
+6                                                      cyclin-dependent protein kinase activity
+  n
+1 4
+2 4
+3 4
+4 3
+5 3
+6 2
+
+$CC
+                  term n
+1 axon initial segment 3
+2      apical dendrite 2
+3         axon hillock 2
+4       basal dendrite 2
+5   dendrite cytoplasm 2
+6    dendrite terminus 2
+
+$BP
+                                                   term n
+1                                     axon ensheathment 3
+2                               ensheathment of neurons 3
+3                                           myelination 3
+4           axon ensheathment in central nervous system 2
+5              cellular anatomical entity morphogenesis 2
+6 cellular component assembly involved in morphogenesis 2
+
+$MF
+                                                                                           term
+1                                                                                7S RNA binding
+2                                          G protein-coupled neurotransmitter receptor activity
+3 G protein-coupled receptor activity involved in regulation of postsynaptic membrane potential
+4                                                            UDP-galactosyltransferase activity
+5                                                                           Wnt-protein binding
+6                                                                       acetylesterase activity
+  n
+1 1
+2 1
+3 1
+4 1
+5 1
+6 1
+
+                 Cluster             DE_classes         ID
+1 WM-uf~Sp09D07_down_ALL WM-uf~Sp09D07_down_ALL GO:0042552
+2 WM-uf~Sp09D07_down_ALL WM-uf~Sp09D07_down_ALL GO:0007272
+3 WM-uf~Sp09D07_down_ALL WM-uf~Sp09D07_down_ALL GO:0008366
+4  Vasc~Sp09D08_down_ALL  Vasc~Sp09D08_down_ALL GO:0008233
+5  Vasc~Sp09D08_down_ALL  Vasc~Sp09D08_down_ALL GO:0048709
+6  Vasc~Sp09D08_down_ALL  Vasc~Sp09D08_down_ALL GO:0042552
+                      Description GeneRatio   BgRatio RichFactor FoldEnrichment
+1                     myelination      4/19 146/12606 0.02739726      18.177361
+2         ensheathment of neurons      4/19 148/12606 0.02702703      17.931721
+3               axon ensheathment      4/19 148/12606 0.02702703      17.931721
+4              peptidase activity      4/19 364/13066 0.01098901       7.556969
+5 oligodendrocyte differentiation      3/17 101/12606 0.02970297      22.025626
+6                     myelination      3/17 146/12606 0.02054795      15.236906
+    zScore       pvalue   p.adjust      qvalue                 geneID Count
+1 8.110749 5.845773e-05 0.01187678 0.008911367      MAG/KLK6/MYRF/CD9     4
+2 8.049982 6.164416e-05 0.01187678 0.008911367      MAG/KLK6/MYRF/CD9     4
+3 8.049982 6.164416e-05 0.01187678 0.008911367      MAG/KLK6/MYRF/CD9     4
+4 4.841656 1.647847e-03 0.02801340 0.016478473 FOLH1/KLK6/CAPN3/CNDP1     4
+5 7.795932 3.128605e-04 0.04032848 0.029273108        GPR17/MAL/CNTN2     3
+6 6.358187 9.187038e-04 0.04032848 0.029273108         MAL/KLK6/CNTN2     3
+  ONTOLOGY
+1       BP
+2       BP
+3       BP
+4       MF
+5       BP
+6       BP
+Error in (function (cond)  : 
+  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
 Caused by error in `h()`:
-! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'DE_class_cluster' not found
-Backtrace:
-     ▆
-  1. ├─purrr::walk2(...)
-  2. │ └─purrr::map2(.x, .y, .f, ..., .progress = .progress)
-  3. │   └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
-  4. │     ├─purrr:::with_indexed_errors(...)
-  5. │     │ └─base::withCallingHandlers(...)
-  6. │     ├─purrr:::call_with_cleanup(...)
-  7. │     └─global .f(.x[[i]], .y[[i]], ...)
-  8. │       ├─dplyr::filter(gr@compareClusterResult, !grepl("0", DE_class_cluster))
-  9. │       └─dplyr:::filter.data.frame(gr@compareClusterResult, !grepl("0", DE_class_cluster))
- 10. │         └─dplyr:::filter_rows(.data, dots, by)
- 11. │           └─dplyr:::filter_eval(...)
- 12. │             ├─base::withCallingHandlers(...)
- 13. │             └─mask$eval_all_filter(dots, env_filter)
- 14. │               └─dplyr (local) eval()
- 15. ├─BiocGenerics::grepl("0", DE_class_cluster)
- 16. ├─base::.handleSimpleError(...)
- 17. │ └─base (local) h(simpleError(msg, call))
- 18. └─base::.handleSimpleError(...)
- 19.   └─dplyr (local) h(simpleError(msg, call))
- 20.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
+Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
 Execution halted

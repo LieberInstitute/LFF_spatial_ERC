@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 06:45:32 AM EST 2025
+Wed Nov 19 10:39:46 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337696
+Job id: 24337993
 Job name: 10_GO_analysis_contrast
-Node name: compute-119
+Node name: compute-106
 Task id: 6
 Loading conda_R/4.5
 
@@ -125,10 +125,8 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
@@ -416,33 +414,259 @@ Universe n genes: 20605
 36   Vasc_down_AA       MF  14
 37     Vasc_up_EA       BP 242
 38     Vasc_up_EA       MF  39
-Error in `map2()`:
-ℹ In index: 1.
-ℹ With name: CC.
-Caused by error in `filter()`:
-ℹ In argument: `!grepl("0", DE_class_cluster)`.
+null device 
+          1 
+      DE_classes   n
+1 Astro_down_ALL   3
+2    Astro_up_AA 161
+3   Astro_up_ALL  96
+4 Inhib_down_ALL   3
+5 Macro_down_ALL  46
+6    Macro_up_AA   3
+7   Macro_up_ALL   3
+8 Oligo_down_ALL   2
+9   Oligo_up_ALL  41
+null device 
+          1 
+    DE_classes  n
+1  Astro_up_AA 86
+2 Astro_up_ALL 31
+3 Oligo_up_ALL 34
+null device 
+          1 
+          Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
+1   Astro_down_AA         FALSE          TRUE       TRUE  22
+2   Astro_down_AA          TRUE            NA       TRUE   3
+3  Astro_down_ALL          TRUE            NA      FALSE   3
+4  Astro_down_ALL          TRUE            NA       TRUE  15
+5     Astro_up_AA         FALSE          TRUE      FALSE 161
+6    Astro_up_ALL         FALSE          TRUE      FALSE  96
+7  Inhib_down_ALL         FALSE          TRUE      FALSE   3
+8    Inhib_up_ALL         FALSE          TRUE       TRUE  36
+9  Macro_down_ALL         FALSE          TRUE      FALSE  46
+10 Macro_down_ALL         FALSE          TRUE       TRUE 318
+11    Macro_up_AA         FALSE          TRUE      FALSE   3
+12    Macro_up_AA         FALSE          TRUE       TRUE 208
+13   Macro_up_ALL         FALSE          TRUE      FALSE   3
+14   Macro_up_ALL         FALSE          TRUE       TRUE  14
+15  Micro_down_AA         FALSE          TRUE       TRUE  31
+16 Micro_down_ALL         FALSE          TRUE       TRUE  16
+17 Micro_down_ALL          TRUE            NA       TRUE   7
+18    Micro_up_AA          TRUE            NA       TRUE   1
+19 Oligo_down_ALL         FALSE          TRUE      FALSE   2
+20   Oligo_up_ALL         FALSE          TRUE      FALSE  41
+21      OPC_up_EA          TRUE            NA       TRUE   7
+22   Vasc_down_AA          TRUE            NA       TRUE  74
+23     Vasc_up_EA          TRUE            NA       TRUE 281
+2025-11-19 10:45:44.848918 - CC
+--Astro_up_AA (44)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro_up_ALL (33)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Inhib_up_ALL (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (13)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_AA (18)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo_down_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo_up_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-11-19 10:46:57.627343 - BP
+--Astro_down_AA (22)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro_up_AA (78)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro_up_ALL (47)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Inhib_down_ALL (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Inhib_up_ALL (21)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (333)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_AA (187)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro_down_AA (24)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro_down_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo_up_ALL (24)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-11-19 11:01:01.083167 - MF
+--Astro_up_AA (39)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro_up_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Inhib_up_ALL (12)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (18)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_AA (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_ALL (17)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro_down_AA (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo_up_ALL (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+In addition: Warning messages:
+1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for BP
+2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 4 terms that were not found in orgdb for MF
+3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+4: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+null device 
+          1 
+$CC
+                             parentTerm  n
+1                     synaptic membrane 28
+2        monoatomic ion channel complex 15
+3 ionotropic glutamate receptor complex  7
+4            neuron projection terminus  7
+5                     transport vesicle  7
+6                            perikaryon  5
+
+$BP
+                                                          parentTerm  n
+1                                           response to amyloid-beta 33
+2                 substrate-dependent cell migration, cell extension 30
+3                         parasympathetic nervous system development 24
+4 G protein-coupled purinergic nucleotide receptor signaling pathway 21
+5                negative regulation of cell projection organization 20
+6                             protein localization to early endosome 19
+
+$MF
+                                     parentTerm  n
+1  metal ion transmembrane transporter activity 24
+2    passive transmembrane transporter activity 13
+3 G protein-coupled adenosine receptor activity  9
+4                        GABA receptor activity  4
+5                   beta-galactosidase activity  4
+6                    channel regulator activity  4
+
+$CC
+                                  term n
+1        postsynaptic density membrane 3
+2                postsynaptic membrane 3
+3 postsynaptic specialization membrane 3
+4                    synaptic membrane 3
+5                GABA receptor complex 2
+6              GABA-A receptor complex 2
+
+$BP
+                                                                       term n
+1 adenylate cyclase-modulating G protein-coupled receptor signaling pathway 3
+2                                                        neuron recognition 3
+3                                                          synapse assembly 3
+4                                                          action potential 2
+5 adenylate cyclase-activating G protein-coupled receptor signaling pathway 2
+6                                      anterograde axonal protein transport 2
+
+$MF
+                                          term n
+1 G-protein beta/gamma-subunit complex binding 2
+2                       GABA receptor activity 2
+3                     GABA-A receptor activity 2
+4     GABA-gated chloride ion channel activity 2
+5                             channel activity 2
+6  chloride transmembrane transporter activity 2
+
+       Cluster   DE_classes         ID
+1  Astro_up_AA  Astro_up_AA GO:0097060
+2 Oligo_up_ALL Oligo_up_ALL GO:0031012
+3 Oligo_up_ALL Oligo_up_ALL GO:0030312
+4  Astro_up_AA  Astro_up_AA GO:0050804
+5  Astro_up_AA  Astro_up_AA GO:0099177
+6  Astro_up_AA  Astro_up_AA GO:0045211
+                                   Description GeneRatio   BgRatio RichFactor
+1                            synaptic membrane     21/77 442/15849 0.04751131
+2                         extracellular matrix    21/144 477/15849 0.04402516
+3             external encapsulating structure    21/144 478/15849 0.04393305
+4 modulation of chemical synaptic transmission     19/76 482/14992 0.03941909
+5       regulation of trans-synaptic signaling     19/76 483/14992 0.03933747
+6                        postsynaptic membrane     17/77 313/15849 0.05431310
+  FoldEnrichment    zScore       pvalue     p.adjust       qvalue
+1       9.779309 13.079816 1.337073e-15 2.807853e-13 1.857827e-13
+2       4.845519  8.165795 2.103669e-09 3.057176e-07 2.436546e-07
+3       4.835382  8.153067 2.183697e-09 3.057176e-07 2.436546e-07
+4       7.775934 10.793315 2.139289e-12 1.313430e-09 1.115154e-09
+5       7.759834 10.779206 2.218631e-12 1.313430e-09 1.115154e-09
+6      11.179329 12.708986 1.154140e-13 1.211847e-11 8.018238e-12
+                                                                                                                                          geneID
+1            CDH9/CACNG3/CNR1/TAMALIN/DNM1/GABRB2/GABRB3/GRIN1/KCNA3/KCNC2/RGS7BP/PCDH8/NSG2/SLC12A5/CACNG8/SCN2A/NETO2/NETO1/SYT7/GABBR2/PLPPR4
+2 LRRN2/ELFN2/COL6A1/COL11A1/CSPG4/CTSB/AEBP1/ADAMTS19/ANXA1/ANXA11/LAMA5/COL5A3/EGFL7/PDGFB/PLSCR1/ADAMTS9/LINGO3/WNT7A/ADAMTS10/ADAMTS3/SPOCK2
+3 LRRN2/ELFN2/COL6A1/COL11A1/CSPG4/CTSB/AEBP1/ADAMTS19/ANXA1/ANXA11/LAMA5/COL5A3/EGFL7/PDGFB/PLSCR1/ADAMTS9/LINGO3/WNT7A/ADAMTS10/ADAMTS3/SPOCK2
+4                          CACNG3/PLK2/CNR1/CBLN4/CNTN4/DNM1/GRIN1/NXPH1/PCDH8/SEPTIN5/SLC4A10/CACNG8/SLC8A2/SYT5/YWHAG/NETO1/SYT7/DLGAP2/PLPPR4
+5                          CACNG3/PLK2/CNR1/CBLN4/CNTN4/DNM1/GRIN1/NXPH1/PCDH8/SEPTIN5/SLC4A10/CACNG8/SLC8A2/SYT5/YWHAG/NETO1/SYT7/DLGAP2/PLPPR4
+6                                 CDH9/CACNG3/TAMALIN/GABRB2/GABRB3/GRIN1/KCNA3/KCNC2/RGS7BP/PCDH8/NSG2/SLC12A5/CACNG8/NETO2/NETO1/GABBR2/PLPPR4
+  Count ONTOLOGY
+1    21       CC
+2    21       CC
+3    21       CC
+4    19       BP
+5    19       BP
+6    17       CC
+Error in (function (cond)  : 
+  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
 Caused by error in `h()`:
-! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'DE_class_cluster' not found
-Backtrace:
-     ▆
-  1. ├─purrr::walk2(...)
-  2. │ └─purrr::map2(.x, .y, .f, ..., .progress = .progress)
-  3. │   └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
-  4. │     ├─purrr:::with_indexed_errors(...)
-  5. │     │ └─base::withCallingHandlers(...)
-  6. │     ├─purrr:::call_with_cleanup(...)
-  7. │     └─global .f(.x[[i]], .y[[i]], ...)
-  8. │       ├─dplyr::filter(gr@compareClusterResult, !grepl("0", DE_class_cluster))
-  9. │       └─dplyr:::filter.data.frame(gr@compareClusterResult, !grepl("0", DE_class_cluster))
- 10. │         └─dplyr:::filter_rows(.data, dots, by)
- 11. │           └─dplyr:::filter_eval(...)
- 12. │             ├─base::withCallingHandlers(...)
- 13. │             └─mask$eval_all_filter(dots, env_filter)
- 14. │               └─dplyr (local) eval()
- 15. ├─BiocGenerics::grepl("0", DE_class_cluster)
- 16. ├─base::.handleSimpleError(...)
- 17. │ └─base (local) h(simpleError(msg, call))
- 18. └─base::.handleSimpleError(...)
- 19.   └─dplyr (local) h(simpleError(msg, call))
- 20.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
+Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
 Execution halted

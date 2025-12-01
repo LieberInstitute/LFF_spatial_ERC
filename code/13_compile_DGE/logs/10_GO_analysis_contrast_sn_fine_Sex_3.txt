@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 06:45:32 AM EST 2025
+Wed Nov 19 10:39:46 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337699
+Job id: 24337996
 Job name: 10_GO_analysis_contrast
-Node name: compute-119
+Node name: compute-106
 Task id: 3
 Loading conda_R/4.5
 
@@ -125,10 +125,9 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141
+S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
+W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
+multiomics data. Nature Protocols. 2024, 19(11):3292-3320
 
 Attaching package: ‘clusterProfiler’
 
@@ -491,33 +490,576 @@ Universe n genes: 18450
 131      Vasc-VLMC_up_ALL       MF  10
 132        Vasc-VLMC_up_M       BP   1
 133        Vasc-VLMC_up_M       CC   4
-Error in `map2()`:
-ℹ In index: 1.
-ℹ With name: CC.
-Caused by error in `filter()`:
-ℹ In argument: `!grepl("0", DE_class_cluster)`.
+null device 
+          1 
+              DE_classes   n
+1         Astro-1_up_ALL   2
+2       Astro-2_down_ALL   5
+3         Astro-2_up_ALL   1
+4       Astro-3_down_ALL  12
+5         Astro-3_down_M  11
+6         Astro-3_up_ALL  13
+7           Astro-4_up_F  24
+8  Excit-L2_5-1_down_ALL   4
+9      Excit-L2_5-1_up_M   5
+10   Excit-L2_5-2_down_M   1
+11   Excit-L5-2_down_ALL  71
+12       Excit-L5-2_up_M  19
+13        Macro_down_ALL  50
+14          Macro_down_M  46
+15          Macro_up_ALL   4
+16            Macro_up_M   1
+17        Micro-4_up_ALL  11
+18      Oligo-3_down_ALL  11
+19        Oligo-3_down_M  15
+20        Oligo-3_up_ALL 444
+21          Oligo-3_up_M 636
+22      Oligo-5_down_ALL   2
+23        Oligo-5_down_M   2
+24        Oligo-5_up_ALL 109
+25          Oligo-5_up_M 173
+26      Vasc-Endo_down_M   1
+27        Vasc-Endo_up_M  55
+28      Vasc-VLMC_down_M   1
+29        Vasc-VLMC_up_M   5
+null device 
+          1 
+            DE_classes   n
+1       Astro-3_down_M   4
+2  Excit-L5-2_down_ALL  56
+3       Micro-4_up_ALL   1
+4     Oligo-3_down_ALL   9
+5       Oligo-3_down_M  15
+6       Oligo-3_up_ALL 400
+7         Oligo-3_up_M 598
+8       Oligo-5_up_ALL  47
+9         Oligo-5_up_M 104
+10      Vasc-Endo_up_M  20
+11      Vasc-VLMC_up_M   3
+null device 
+          1 
+null device 
+          1 
+                 Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
+1         Astro-1_up_ALL         FALSE          TRUE      FALSE   2
+2         Astro-1_up_ALL         FALSE          TRUE       TRUE  17
+3       Astro-2_down_ALL         FALSE          TRUE      FALSE   5
+4         Astro-2_up_ALL         FALSE          TRUE      FALSE   1
+5         Astro-2_up_ALL         FALSE          TRUE       TRUE  15
+6       Astro-3_down_ALL         FALSE          TRUE      FALSE  12
+7       Astro-3_down_ALL         FALSE          TRUE       TRUE  19
+8         Astro-3_down_M         FALSE          TRUE      FALSE  11
+9         Astro-3_up_ALL         FALSE          TRUE      FALSE  13
+10        Astro-3_up_ALL         FALSE          TRUE       TRUE  65
+11          Astro-3_up_M         FALSE          TRUE       TRUE 180
+12          Astro-4_up_F         FALSE          TRUE      FALSE  24
+13          Astro-4_up_F         FALSE          TRUE       TRUE 115
+14 Excit-L2_5-1_down_ALL         FALSE          TRUE      FALSE   4
+15 Excit-L2_5-1_down_ALL         FALSE          TRUE       TRUE  20
+16     Excit-L2_5-1_up_M         FALSE          TRUE      FALSE   5
+17     Excit-L2_5-1_up_M         FALSE          TRUE       TRUE   5
+18   Excit-L2_5-2_down_M         FALSE          TRUE      FALSE   1
+19   Excit-L2_5-2_down_M         FALSE          TRUE       TRUE  52
+20   Excit-L2_5-2_down_M          TRUE            NA       TRUE   6
+21   Excit-L2_5-2_up_ALL          TRUE            NA       TRUE  21
+22     Excit-L2_5-2_up_M          TRUE            NA       TRUE  16
+23   Excit-L5-2_down_ALL         FALSE          TRUE      FALSE  71
+24   Excit-L5-2_down_ALL         FALSE          TRUE       TRUE  32
+25     Excit-L5-2_down_M         FALSE          TRUE       TRUE  92
+26     Excit-L5-2_up_ALL         FALSE          TRUE       TRUE  46
+27     Excit-L5-2_up_ALL          TRUE            NA       TRUE  10
+28       Excit-L5-2_up_M         FALSE          TRUE      FALSE  19
+29       Excit-L5-2_up_M         FALSE          TRUE       TRUE   2
+30    Inhib-Pvalb_down_M          TRUE            NA       TRUE  66
+31      Inhib-Pvalb_up_M          TRUE            NA       TRUE  32
+32    Inhib-Sst_down_ALL         FALSE          TRUE       TRUE   5
+33    Inhib-Sst_down_ALL          TRUE            NA       TRUE   2
+34      Inhib-Vip_down_M          TRUE            NA       TRUE   7
+35        Macro_down_ALL         FALSE          TRUE      FALSE  50
+36        Macro_down_ALL         FALSE          TRUE       TRUE 318
+37          Macro_down_M         FALSE          TRUE      FALSE  46
+38          Macro_down_M         FALSE          TRUE       TRUE 303
+39          Macro_up_ALL         FALSE          TRUE      FALSE   4
+40          Macro_up_ALL         FALSE          TRUE       TRUE  13
+41            Macro_up_F          TRUE            NA       TRUE  28
+42            Macro_up_M         FALSE          TRUE      FALSE   1
+43            Macro_up_M         FALSE          TRUE       TRUE  13
+44        Micro-1_down_M          TRUE            NA       TRUE   7
+45        Micro-1_up_ALL          TRUE            NA       TRUE  26
+46      Micro-2_down_ALL          TRUE            NA       TRUE  20
+47        Micro-3_up_ALL          TRUE            NA       TRUE  33
+48          Micro-3_up_M          TRUE            NA       TRUE  33
+49        Micro-4_down_M          TRUE            NA       TRUE  28
+50        Micro-4_up_ALL         FALSE          TRUE      FALSE  11
+51        Micro-4_up_ALL         FALSE          TRUE       TRUE   1
+52          Micro-4_up_F          TRUE            NA       TRUE 103
+53          Micro-4_up_M          TRUE            NA       TRUE  45
+54          Oligo-1_up_F          TRUE            NA       TRUE   8
+55          Oligo-2_up_M          TRUE            NA       TRUE  23
+56      Oligo-3_down_ALL         FALSE          TRUE      FALSE  11
+57        Oligo-3_down_M         FALSE          TRUE      FALSE  15
+58        Oligo-3_up_ALL         FALSE          TRUE      FALSE 444
+59          Oligo-3_up_M         FALSE          TRUE      FALSE 636
+60        Oligo-4_down_M          TRUE            NA       TRUE   9
+61      Oligo-5_down_ALL         FALSE          TRUE      FALSE   2
+62      Oligo-5_down_ALL         FALSE          TRUE       TRUE  17
+63        Oligo-5_down_M         FALSE          TRUE      FALSE   2
+64        Oligo-5_up_ALL         FALSE          TRUE      FALSE 109
+65          Oligo-5_up_M         FALSE          TRUE      FALSE 173
+66          OPC-5_down_F          TRUE            NA       TRUE 243
+67            OPC-5_up_F         FALSE          TRUE       TRUE 118
+68            OPC-5_up_F          TRUE            NA       TRUE   5
+69    Vasc-Endo_down_ALL          TRUE            NA       TRUE  77
+70      Vasc-Endo_down_M         FALSE          TRUE      FALSE   1
+71      Vasc-Endo_up_ALL          TRUE            NA       TRUE  43
+72        Vasc-Endo_up_M         FALSE          TRUE      FALSE  55
+73    Vasc-VLMC_down_ALL         FALSE          TRUE       TRUE  16
+74    Vasc-VLMC_down_ALL          TRUE            NA       TRUE  10
+75      Vasc-VLMC_down_M         FALSE          TRUE      FALSE   1
+76      Vasc-VLMC_up_ALL          TRUE            NA       TRUE 320
+77        Vasc-VLMC_up_M         FALSE          TRUE      FALSE   5
+2025-11-19 10:55:44.025278 - CC
+--Astro-1_up_ALL (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_down_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_down_M (4)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_ALL (8)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_M (31)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-1_down_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-1_up_M (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-2_down_M (8)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_ALL (12)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_M (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_up_ALL (25)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_up_M (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Inhib-Sst_down_ALL (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (14)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_M (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-4_up_ALL (10)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_ALL (8)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_M (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_ALL (89)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_M (124)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_down_ALL (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_down_M (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_ALL (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_M (9)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--OPC-5_up_F (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-Endo_up_M (21)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-VLMC_up_M (4)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-11-19 11:00:18.887354 - BP
+--Astro-1_up_ALL (8)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_down_ALL (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_down_M (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_ALL (51)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_M (138)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-4_up_F (102)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-1_up_M (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+In addition: Warning message:
+In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for BP
+--Excit-L2_5-2_down_M (45)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_ALL (66)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_M (77)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_up_ALL (21)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_up_M (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (336)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_M (318)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-4_up_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_ALL (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_M (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_ALL (292)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_M (385)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_ALL (103)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_M (159)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--OPC-5_up_F (115)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-Endo_up_M (28)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-VLMC_down_M (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+In addition: Warning messages:
+1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for BP
+2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 2 terms that were not found in orgdb for BP
+3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 2 terms that were not found in orgdb for BP
+--Vasc-VLMC_up_M (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+2025-11-19 11:36:40.835499 - MF
+--Astro-1_up_ALL (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-2_down_ALL (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-2_up_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_down_ALL (23)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_ALL (19)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_M (11)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-4_up_F (37)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-1_down_ALL (22)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-1_up_M (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_ALL (25)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_M (10)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (18)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_M (25)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_ALL (15)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_M (14)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_M (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+In addition: Warning messages:
+1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 2 terms that were not found in orgdb for MF
+2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 7 terms that were not found in orgdb for MF
+--Oligo-3_up_ALL (63)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_M (127)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_down_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_ALL (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_M (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-Endo_down_M (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+In addition: Warning messages:
+1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 3 terms that were not found in orgdb for MF
+2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 5 terms that were not found in orgdb for MF
+3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+--Vasc-Endo_up_M (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-VLMC_down_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+null device 
+          1 
+$CC
+                        parentTerm  n
+1                synaptic membrane 49
+2                       filopodium 25
+3 external encapsulating structure 22
+4        exocytic vesicle membrane 21
+5           cation channel complex 19
+6               neuronal cell body 13
+
+$BP
+                                                                  parentTerm  n
+1                         substrate-dependent cell migration, cell extension 57
+2                                       facial nerve structural organization 47
+3 positive regulation of Wnt signaling pathway, planar cell polarity pathway 42
+4    positive regulation of plasma membrane bounded cell projection assembly 40
+5                                                      aldosterone secretion 38
+6                                               regulation of system process 31
+
+$MF
+                                      parentTerm  n
+1   metal ion transmembrane transporter activity 50
+2 transmembrane receptor protein kinase activity 23
+3   nucleoside-triphosphatase regulator activity 19
+4  G protein-coupled adenosine receptor activity 15
+5            phosphoric ester hydrolase activity 15
+6       histone H3K37 methyltransferase activity 14
+
+$CC
+                   term n
+1    cell-cell junction 7
+2             main axon 6
+3    neuronal cell body 6
+4 postsynaptic membrane 6
+5     adherens junction 5
+6  membrane microdomain 5
+
+$BP
+                                            term n
+1 positive regulation of cell-substrate adhesion 7
+2          regulation of cell-substrate adhesion 7
+3           positive regulation of cell adhesion 6
+4    positive regulation of cell-matrix adhesion 6
+5             regulation of cell-matrix adhesion 6
+6                       regulation of chemotaxis 6
+
+$MF
+                                                                     term n
+1                                               GTPase regulator activity 4
+2                                                     coreceptor activity 4
+3                                            extracellular matrix binding 4
+4 extracellular matrix structural constituent conferring tensile strength 4
+5                                               glycosaminoglycan binding 4
+6                                                         heparin binding 4
+
+       Cluster   DE_classes         ID
+1 Oligo-3_up_M Oligo-3_up_M GO:0050804
+2 Oligo-3_up_M Oligo-3_up_M GO:0099177
+3 Oligo-3_up_M Oligo-3_up_M GO:0031012
+4 Oligo-3_up_M Oligo-3_up_M GO:0030312
+5 Oligo-3_up_M Oligo-3_up_M GO:0097060
+6 Oligo-3_up_M Oligo-3_up_M GO:0043235
+                                   Description GeneRatio   BgRatio RichFactor
+1 modulation of chemical synaptic transmission    84/966 459/13809  0.1830065
+2       regulation of trans-synaptic signaling    84/966 460/13809  0.1826087
+3                         extracellular matrix   79/1011 438/14564  0.1803653
+4             external encapsulating structure   79/1011 439/14564  0.1799544
+5                            synaptic membrane   76/1011 410/14564  0.1853659
+6                             receptor complex   71/1011 340/14564  0.2088235
+  FoldEnrichment    zScore       pvalue     p.adjust       qvalue
+1       2.616084  9.657181 1.590389e-16 5.368953e-13 4.401912e-13
+2       2.610397  9.634035 1.819367e-16 5.368953e-13 4.401912e-13
+3       2.598259  9.275941 2.179467e-15 3.535799e-13 2.583740e-13
+4       2.592341  9.252462 2.485623e-15 3.535799e-13 2.583740e-13
+5       2.670295  9.369767 1.650449e-15 3.535799e-13 2.583740e-13
+6       3.008216 10.233453 2.155514e-17 1.226488e-14 8.962402e-15
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     geneID
+1 CACNG3/BAIAP2/ADCY1/NRG3/FAM107A/LZTS1/PRRT2/CHRM1/ADCY8/GRIN3A/LRRK2/CNR1/CBLN2/DNM1/EGFR/EPHA4/EPHA7/SORCS3/VPS13A/PLCB1/SYNE1/SLC7A11/FRRS1L/RNF19A/MYOF/GFAP/NSG1/CACNG4/GRIA1/GRIK1/GRIK3/ABR/GRIN2B/GRM5/GRM7/GUCY1A1/NXPH1/HTR2A/KCNB1/KCNK2/KCNQ3/SHISA6/MEF2C/UNC13C/ATP1A2/ROR2/SYBU/SLC4A10/JPH3/ADGRB1/SYT13/DLGAP3/BCR/CX3CL1/LRRC4/SNAP25/STX1A/STXBP1/SYT4/TNR/TRIO/VGF/CACNA1A/CACNA1B/LRP8/CACNB4/MCTP1/CLMP/CAMK2A/CAMK2B/CAMK2G/NETO1/PPFIA3/BSN/SYT12/LGI1/DLGAP2/DLGAP1/CACNA2D2/NRXN1/HOMER1/AKAP12/CLSTN3/ARHGAP44
+2 CACNG3/BAIAP2/ADCY1/NRG3/FAM107A/LZTS1/PRRT2/CHRM1/ADCY8/GRIN3A/LRRK2/CNR1/CBLN2/DNM1/EGFR/EPHA4/EPHA7/SORCS3/VPS13A/PLCB1/SYNE1/SLC7A11/FRRS1L/RNF19A/MYOF/GFAP/NSG1/CACNG4/GRIA1/GRIK1/GRIK3/ABR/GRIN2B/GRM5/GRM7/GUCY1A1/NXPH1/HTR2A/KCNB1/KCNK2/KCNQ3/SHISA6/MEF2C/UNC13C/ATP1A2/ROR2/SYBU/SLC4A10/JPH3/ADGRB1/SYT13/DLGAP3/BCR/CX3CL1/LRRC4/SNAP25/STX1A/STXBP1/SYT4/TNR/TRIO/VGF/CACNA1A/CACNA1B/LRP8/CACNB4/MCTP1/CLMP/CAMK2A/CAMK2B/CAMK2G/NETO1/PPFIA3/BSN/SYT12/LGI1/DLGAP2/DLGAP1/CACNA2D2/NRXN1/HOMER1/AKAP12/CLSTN3/ARHGAP44
+3                    GPC6/LRRN2/ELFN2/LRRC3B/CLU/COL1A2/COL4A1/COL4A2/COL4A3/COL4A4/COL5A1/EMID1/COL6A1/COL6A3/COL11A1/COL12A1/COL15A1/EGFLAM/COL26A1/NCAN/CSPG4/RTN4RL1/CTSB/LINGO2/FREM1/DCN/BMPER/ADAMTS17/ECM2/EFNA5/A2M/ELN/F3/FBLN1/FBLN2/GPC5/FN1/FLRT2/ABI3BP/SNED1/ANGPT1/LAMA1/ANXA11/IGFBP7/ITGB4/LAMA4/LAMA5/LAMB1/LAMC1/NID1/COL5A3/ANGPTL4/SERPINB9/SRGN/ADAMTS9/PTPRZ1/NTN4/SDC2/SMOC2/TGFB2/THBS1/TIMP3/TNR/TNXB/VEGFA/PXDN/MMP28/THSD4/ITIH5/COL18A1/COLEC12/COL21A1/ADAMTS10/CRISPLD2/COL27A1/COL23A1/NTN1/ADAMTS3/SPOCK2
+4                    GPC6/LRRN2/ELFN2/LRRC3B/CLU/COL1A2/COL4A1/COL4A2/COL4A3/COL4A4/COL5A1/EMID1/COL6A1/COL6A3/COL11A1/COL12A1/COL15A1/EGFLAM/COL26A1/NCAN/CSPG4/RTN4RL1/CTSB/LINGO2/FREM1/DCN/BMPER/ADAMTS17/ECM2/EFNA5/A2M/ELN/F3/FBLN1/FBLN2/GPC5/FN1/FLRT2/ABI3BP/SNED1/ANGPT1/LAMA1/ANXA11/IGFBP7/ITGB4/LAMA4/LAMA5/LAMB1/LAMC1/NID1/COL5A3/ANGPTL4/SERPINB9/SRGN/ADAMTS9/PTPRZ1/NTN4/SDC2/SMOC2/TGFB2/THBS1/TIMP3/TNR/TNXB/VEGFA/PXDN/MMP28/THSD4/ITIH5/COL18A1/COLEC12/COL21A1/ADAMTS10/CRISPLD2/COL27A1/COL23A1/NTN1/ADAMTS3/SPOCK2
+5                                                       CDH9/FARP1/CACNG3/BAIAP2/ADCY1/PTPRT/PRRT2/CHRM1/ADCY8/ELFN2/GRIN3A/CNR1/LRFN5/GSG1L/LINGO2/DGKB/DNM1/EGFR/EPHA4/SORCS3/IGSF9B/SYNE1/GRIP1/FLRT2/GABRA6/GABRB3/GAD2/ERC2/NSG1/CACNG4/GPM6A/GRIA1/GRIK1/GRIK3/GRIN2B/GRM5/GRM7/HTR2A/HCN1/KCNA3/KCNB1/KCNC2/KCNC4/KCNJ3/KCNK2/SHISA6/RGS7BP/UNC13C/NRCAM/ATP2B2/PALM/PDE2A/CNTN5/CACNA2D3/TENM2/KCTD16/CADM3/LRRC4/ITSN1/SLC1A2/SLC6A7/SNAP25/SNTA1/STXBP1/UTRN/CACNA1C/LRP8/CLMP/GRIP2/NETO1/ITGA8/LIN7A/NRP1/CACNA2D2/NRXN1/CLSTN3
+6                                                                                 PLXNC1/RAMP1/CACNG3/MERTK/GRIN3A/ADCYAP1R1/OLFM3/EGFR/EPS8/ITGA11/PLA2R1/PLXNB2/GABRA6/GABRB3/CACNG4/GRIA1/GRIK1/GRIK3/GRIN2B/GRM7/HTR2A/IL4R/IL6R/IL12RB2/ITGA6/ITGA1/ITGA4/ITGA7/ITGA9/ITGAL/ITGAX/ITGB4/SHISA6/BMAL1/LYN/SMAD3/NOTCH2/NTRK3/ROR2/DDR2/OLR1/NT5DC3/PDGFRB/PLXNA2/APBB1IP/PPARG/AXL/PRLR/BMAL2/PLXDC1/KCTD16/PTPRB/PTPRN2/SDCBP/BMPR2/CAPRIN2/TFRC/TGFBR2/TGFBR3/TNFRSF1B/TRAF3/LRP8/ADGRV1/ITGA8/SKAP1/NRP1/OSMR/CD247/OLFM2/CD44/ARNT2
+  Count ONTOLOGY
+1    84       BP
+2    84       BP
+3    79       CC
+4    79       CC
+5    76       CC
+6    71       CC
+Error in (function (cond)  : 
+  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
 Caused by error in `h()`:
-! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'DE_class_cluster' not found
-Backtrace:
-     ▆
-  1. ├─purrr::walk2(...)
-  2. │ └─purrr::map2(.x, .y, .f, ..., .progress = .progress)
-  3. │   └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
-  4. │     ├─purrr:::with_indexed_errors(...)
-  5. │     │ └─base::withCallingHandlers(...)
-  6. │     ├─purrr:::call_with_cleanup(...)
-  7. │     └─global .f(.x[[i]], .y[[i]], ...)
-  8. │       ├─dplyr::filter(gr@compareClusterResult, !grepl("0", DE_class_cluster))
-  9. │       └─dplyr:::filter.data.frame(gr@compareClusterResult, !grepl("0", DE_class_cluster))
- 10. │         └─dplyr:::filter_rows(.data, dots, by)
- 11. │           └─dplyr:::filter_eval(...)
- 12. │             ├─base::withCallingHandlers(...)
- 13. │             └─mask$eval_all_filter(dots, env_filter)
- 14. │               └─dplyr (local) eval()
- 15. ├─BiocGenerics::grepl("0", DE_class_cluster)
- 16. ├─base::.handleSimpleError(...)
- 17. │ └─base (local) h(simpleError(msg, call))
- 18. └─base::.handleSimpleError(...)
- 19.   └─dplyr (local) h(simpleError(msg, call))
- 20.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
+Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
 Execution halted
