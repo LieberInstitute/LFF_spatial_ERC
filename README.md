@@ -117,7 +117,7 @@ Source code is under the MIT License and permanently archived on
 [Zenodo](https://zenodo.org/records/17108408). The GitHub repository includes 
 log files with specific software versions used for each analysis.
 
-### Instaliations and Requirements 
+### Installation and Requirements 
 
 All software versions are listed in log files. The R session information was 
 automatically generated with `sessioninfo::session_info()`.
