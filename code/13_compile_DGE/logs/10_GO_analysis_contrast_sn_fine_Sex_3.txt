@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 10:39:46 AM EST 2025
+Mon Dec  1 10:51:45 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337996
+Job id: 25209386
 Job name: 10_GO_analysis_contrast
-Node name: compute-106
+Node name: compute-144
 Task id: 3
 Loading conda_R/4.5
 
@@ -618,7 +618,7 @@ null device
 75      Vasc-VLMC_down_M         FALSE          TRUE      FALSE   1
 76      Vasc-VLMC_up_ALL          TRUE            NA       TRUE 320
 77        Vasc-VLMC_up_M         FALSE          TRUE      FALSE   5
-2025-11-19 10:55:44.025278 - CC
+2025-12-01 11:03:45.597348 - CC
 --Astro-1_up_ALL (5)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -731,7 +731,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-11-19 11:00:18.887354 - BP
+2025-12-01 11:07:12.982153 - BP
 --Astro-1_up_ALL (8)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -845,7 +845,7 @@ preparing gene to GO mapping data...
 preparing IC data...
 Error in hclust(as.dist(1 - simMatrix)) : 
   must have n >= 2 objects to cluster
-2025-11-19 11:36:40.835499 - MF
+2025-12-01 11:35:24.34678 - MF
 --Astro-1_up_ALL (6)--
 preparing gene to GO mapping data...
 preparing IC data...

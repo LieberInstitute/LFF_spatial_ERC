@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 10:39:46 AM EST 2025
+Mon Dec  1 10:51:45 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337994
+Job id: 25209384
 Job name: 10_GO_analysis_contrast
-Node name: compute-106
+Node name: compute-168
 Task id: 1
 Loading conda_R/4.5
 
@@ -125,10 +125,9 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
-clusterProfiler: an R package for comparing biological themes among
-gene clusters. OMICS: A Journal of Integrative Biology. 2012,
-16(5):284-287
+S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
+W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
+multiomics data. Nature Protocols. 2024, 19(11):3292-3320
 
 Attaching package: ‘clusterProfiler’
 
@@ -453,7 +452,7 @@ null device
 25     Oligo_up_M         FALSE          TRUE      FALSE 474
 26    Vasc_down_M         FALSE          TRUE      FALSE   2
 27      Vasc_up_M         FALSE          TRUE      FALSE   1
-2025-11-19 10:46:54.47816 - CC
+2025-12-01 10:56:00.217371 - CC
 --Astro_up_ALL (35)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -504,7 +503,7 @@ preparing gene to GO mapping data...
 preparing IC data...
 Error in hclust(as.dist(1 - simMatrix)) : 
   must have n >= 2 objects to cluster
-2025-11-19 10:48:43.653971 - BP
+2025-12-01 10:57:02.887081 - BP
 --Astro_up_ALL (48)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -542,7 +541,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-11-19 11:06:46.457341 - MF
+2025-12-01 11:07:14.119289 - MF
 --Astro_up_ALL (16)--
 preparing gene to GO mapping data...
 preparing IC data...

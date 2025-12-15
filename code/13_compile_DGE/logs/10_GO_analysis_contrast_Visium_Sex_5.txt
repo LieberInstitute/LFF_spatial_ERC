@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 10:39:46 AM EST 2025
+Mon Dec  1 10:51:45 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337998
+Job id: 25209388
 Job name: 10_GO_analysis_contrast
-Node name: compute-106
+Node name: compute-116
 Task id: 5
 Loading conda_R/4.5
 
@@ -125,8 +125,10 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
-5(6):100722
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
+X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
+enrichment tool for interpreting omics data. The Innovation. 2021,
+2(3):100141
 
 Attaching package: ‘clusterProfiler’
 
@@ -404,7 +406,7 @@ null device
 12   WM-uf~Sp09D07_up_ALL          TRUE            NA       TRUE   5
 13     WM-uf~Sp09D07_up_M         FALSE          TRUE      FALSE   1
 14        WM~Sp09D06_up_F          TRUE            NA       TRUE 219
-2025-11-19 10:43:40.260368 - CC
+2025-12-01 10:55:59.464402 - CC
 --Inhib~Sp09D09_down_ALL (8)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -426,7 +428,7 @@ preparing gene to GO mapping data...
 preparing IC data...
 Error in hclust(as.dist(1 - simMatrix)) : 
   must have n >= 2 objects to cluster
-2025-11-19 10:44:23.610485 - BP
+2025-12-01 10:56:46.295272 - BP
 --Inhib~Sp09D09_down_ALL (3)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -455,7 +457,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-11-19 10:50:21.936499 - MF
+2025-12-01 11:03:32.741923 - MF
 --L5~Sp09D03_up_ALL (6)--
 preparing gene to GO mapping data...
 preparing IC data...

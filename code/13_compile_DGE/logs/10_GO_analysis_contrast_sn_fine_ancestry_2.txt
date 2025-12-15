@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Nov 19 10:39:46 AM EST 2025
+Mon Dec  1 10:51:45 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 24337995
+Job id: 25209385
 Job name: 10_GO_analysis_contrast
-Node name: compute-106
+Node name: compute-114
 Task id: 2
 Loading conda_R/4.5
 
@@ -125,10 +125,8 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
@@ -609,7 +607,7 @@ null device
 72               Vasc-VLMC_down_ALL          TRUE            NA       TRUE  10
 73                 Vasc-VLMC_up_ALL          TRUE            NA       TRUE 320
 74                  Vasc-VLMC_up_EA          TRUE            NA       TRUE  34
-2025-11-19 10:55:35.382501 - CC
+2025-12-01 11:24:16.511821 - CC
 --Astro-1_up_AA (37)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -711,7 +709,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-11-19 10:59:43.332042 - BP
+2025-12-01 11:34:09.988632 - BP
 --Astro-1_down_AA (40)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -804,7 +802,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-11-19 11:29:31.887081 - MF
+2025-12-01 12:47:39.891734 - MF
 --Astro-1_up_AA (31)--
 preparing gene to GO mapping data...
 preparing IC data...
