@@ -12,6 +12,7 @@ library("SingleCellExperiment")
 # if(!dir.exists(data_dir)) dir.create(data_dir)
 
 supp_tables <- list()
+supp_tables_big <- list()
 
 #### Table S1 Donor demographics. ####
 supp_tables$TableS01 <- read.csv(here("processed-data", "00_project_prep", "05_pathology", "sample_taupathy.csv"))
@@ -60,7 +61,7 @@ SpD_markers |> filter(!is.na(enrichment_stat), !is.na(MeanRatio))
 
 SpD_markers |> filter(gene_name == "MBP")
 
-supp_tables$TableS03 <- SpD_markers
+supp_tables_big$TableS03 <- SpD_markers
 rm(SpD_markers)
 
 #### Table S4 SpD Differential Proportions ####
@@ -114,7 +115,7 @@ cell_type_markers |> filter(gene_name == "MBP")
 # write_csv(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.csv")
 # write_xlsx(cell_type_markers, "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable6_cell_type_marker.xlsx")
 
-supp_tables$TableS06 <- cell_type_markers
+supp_tables_big$TableS06 <- cell_type_markers
 rm(cell_type_markers)
 
 #### Table S7 Spot deconvolution results ####
@@ -122,7 +123,7 @@ spe_RCTD <- readRDS(here("processed-data", "15_spot_deconvolution", "03_results_
 assayNames(spe_RCTD)
 dim(spe_RCTD)
 
-supp_tables$TableS07 <- t(assay(spe_RCTD, "weights")) |>
+supp_tables_big$TableS07 <- t(assay(spe_RCTD, "weights")) |>
     as.matrix() |>
     as.data.frame() |>
     rownames_to_column("key") |>
@@ -164,29 +165,38 @@ combined_data <- pmap(list(carrier = DEG_carrier, anc = DEG_ancestry, sex = DEG_
 
 map(combined_data, ncol)
 
-supp_tables$TableS09 <- combined_data[[1]]
-supp_tables$TableS11 <- combined_data[[2]]
-supp_tables$TableS13 <- combined_data[[3]]
+supp_tables_big$TableS09 <- combined_data[[1]]
+supp_tables_big$TableS11 <- combined_data[[2]]
+supp_tables_big$TableS13 <- combined_data[[3]]
 
 rm(combined_data)
 
 #### Table S10, 12, 14 GO over-representation analysis. ####
 
-GO_carrier <- here("processed-data", "13_compile_DGE", "02_GO_analysis")
+GO_carrier <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "02_GO_analysis", sprintf("GO_compare_clus_%s.rds", .x))) |>
+                      mutate(DEG = "carrier", .before = 1))
 
-GO_carrier <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "02_GO_analysis", sprintf("GO_compare_clus_%s.rds", .x))))
+GO_ancestry <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_results_ancestry_%s.csv", .x))) |>
+                       mutate(DEG = "ancestry", .before = 1))
 
-GO_ancestry <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_compare_clus_ancestry_%s.rds", .x))))
-GO_ancestry <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_ancestry", sprintf("GO_results_ancestry_%s.csv", .x))))
+GO_sex <- map(datatypes, ~read.csv(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_Sex", sprintf("GO_results_Sex_%s.csv", .x)))|>
+                  mutate(DEG = "Sex", .before = 1))
 
-GO_sex <- map(datatypes, ~readRDS(here("processed-data", "13_compile_DGE", "10_GO_analysis_contrast", "GO_Sex", sprintf("GO_compare_clus_Sex_%s.rds", .x))))
+# GO_carrier[[1]] |> dplyr::count(DE_class_cluster)
 
-GO_carrier[[1]] |> dplyr::count(DE_class_cluster)
+# GO_ancestry[[3]] |> dplyr::count(DE_classes)
 
-GO_ancestry[[1]] |> dplyr::count(DE_class_cluster)
+combined_GO <- pmap(list(carrier = GO_carrier, anc = GO_ancestry, sex = GO_sex), function(carrier, anc, sex){
+    carrier |>
+        bind_rows(anc) |>
+        bind_rows(sex)
+})
 
-GO_sex[[1]] |> dplyr::count(DE_class_cluster)
+# combined_GO[[1]] |> dplyr::count(DEG, DE_class_cluster, DE_classes)
 
+supp_tables$TableS10 <- combined_GO[[1]]
+supp_tables$TableS12 <- combined_GO[[2]]
+supp_tables$TableS14 <- combined_GO[[3]]
 
 #### Table S15 External dataset DEG enrichment results. ####
 
@@ -224,7 +234,7 @@ supp_tables$TableS16b <- read.csv(here("processed-data", "17_cell_cell_comm", "1
 
 # gene expression variance explained
 gene_weight <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
-supp_tables$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
+supp_tables_big$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
 
 head(supp_tables$TableS17a)
 dim(supp_tables$TableS17a)
@@ -247,9 +257,33 @@ length(supp_tables)
 map(supp_tables, dim)
 
 map_int(supp_tables, nrow)
+# TableS01  TableS02  TableS04  TableS05  TableS08  TableS10  TableS12  TableS14 
+# 31        31        17        31       225      1077      3435      9829 
+# TableS15 TableS16a TableS16b TableS17b TableS17c 
+# 4620       601        75        49       210 
 
 message(Sys.time(), " - Write XLSX")
 write_xlsx(supp_tables, path =  "/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTables.xlsx")
+
+message(Sys.time(), " - Done")
+
+## write large tables to individual csv files
+length(supp_tables_big)
+map(supp_tables_big, dim)
+
+map_int(supp_tables_big, nrow)
+# TableS03  TableS06  TableS07  TableS09  TableS11  TableS13 TableS17a 
+# 112284    941640    122152    105721    132819    402317    218639
+
+message(Sys.time(), " - Write big tables CSV")
+
+walk2(supp_tables_big, names(supp_tables_big), 
+      ~write_csv(.x, sprintf("/Users/louise.huuki/Library/CloudStorage/OneDrive-LieberInstituteforBrainDevelopment/LFF_ERC_paper/SuppTables/SuppTable_%s.csv", 
+                             gsub("TableS", "",.y))
+      )
+      )
+      
+
 
 message(Sys.time(), " - Done")
 
