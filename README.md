@@ -117,6 +117,17 @@ Source code is under the MIT License and permanently archived on
 [Zenodo](https://zenodo.org/records/17108408). The GitHub repository includes 
 log files with specific software versions used for each analysis.
 
+### Installation and Requirements 
+
+All software versions are listed in log files. The R session information was 
+automatically generated with `sessioninfo::session_info()`.
+
+The code repo can be downloaded via `git clone` to a normal desktop, this may 
+take up to an hour given it's size.
+
+NOTE this code is specialized for this project's data, and will need to be 
+adapted to run on other datasets.
+
 ## Funding
 
 This project was supported thanks to the Carol and Gene Ludwig Award for 
