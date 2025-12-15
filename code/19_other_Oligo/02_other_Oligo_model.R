@@ -6,18 +6,15 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 library("spatialLIBD")
-library("scater")
-library("scran")
-library("scry")
+library("scDotPlot")
 
 data_dir <- here("processed-data", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "13_compile_DGE", "02_other_Oligo_model")
+plot_dir <- here("plots", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 dataset <- "spatialDLPFC"
-k <- 20
 
 #### Get Oligo data ####
 
@@ -30,23 +27,23 @@ if(dataset == "spatialDLPFC"){
         file.path(tempdir(), "sce_DLPFC_annotated")
     )
     
-    table(sce$dataset_hc)
-    table(sce$dataset_layer == "Oligo")
+    table(sce$cellType_hc)
+    table(sce$cellType_layer == "Oligo")
     
-    sce <- sce[,!is.na(sce$dataset_layer)]
+    sce <- sce[,!is.na(sce$cellType_layer)]
     
     ## subset to Oligos
-    sce <- sce[,sce$dataset_layer == "Oligo"]
+    sce <- sce[,sce$cellType_layer == "Oligo"]
     
-    sce$dataset_hc <- droplevels(sce$dataset_hc)
-    table(sce$dataset_hc)
+    sce$cellType_hc <- droplevels(sce$cellType_hc)
+    table(sce$cellType_hc)
     
     sce$sample_id <- sce$BrNum
     
-    dataset_covars <- c("Position", "age", "sex")
+    dataset_covars <- c("age", "sex") # including 'Position' throws error 
 }
 
-load(here("processed-data", "19_other_Oligo", "02_other_Oligo_model", sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", 30, dataset)))
+load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", 30, dataset)))
 
 identical(sce$key, cluster_tab$key)
 
@@ -85,7 +82,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
 }
 
-sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_subtype-%s.rds", dataset)))
+sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s.rds", dataset)))
 
 top_enrichment_genes <- sig_genes_extract(
     n = 10,
@@ -98,25 +95,72 @@ top_enrichment_genes <- sig_genes_extract(
 
 write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", dataset)), row.names = FALSE)
 
-## all signif
-top100_enrichment_genes <- sig_genes_extract(
-    n = 100,
-    modeling_results = modeling_results,
-    model_type = "enrichment",
-    reverse = FALSE,
-    sce_layer = sce_pseudo,
-    gene_name = "gene_name"
+#### Register with ERC Oligo subclusters ####
+
+erc_oligo_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "modeling_results_subtype-Oligo.rds"))
+
+cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
+                            modeling_results = erc_oligo_modeling,
+                            model_type = "enrichment",
+                            top_n = 100)
+
+pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s.pdf", dataset)))
+layer_stat_cor_plot(cor_layer)
+dev.off()
+
+
+#### Dot plots ####
+rowData(sce)$Marker <- NULL
+rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
+table(rowData(sce)$Marker)
+
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_dotplot_enrichment.pdf", dataset)))
+sce |>
+    scDotPlot(features = top_enrichment_genes$gene,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "Marker",
+              scale = TRUE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+## Oligo lit markers
+lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
+                    Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
+                    premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
+                    myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG")
+                    # disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
+                    # AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
 )
 
-top100_enrichment_genes <- top100_enrichment_genes |>
-    # filter(fdr < 0.05) |> 
-    arrange(fdr) |>
-    group_by(test) |>
-    mutate(rank = row_number()) |>
-    arrange(test)
+lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
+lit_markers <- AnnotationDbi::unlist2(lit_markers)
 
-top100_enrichment_genes |> filter(fdr < 0.05)  |> count(test)
+rowData(sce)$litMarker <- NULL
+rowData(sce)$litMarker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
+table(rowData(sce)$litMarker)
 
-write.csv(top100_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top100_%s.csv", dataset)), row.names = FALSE)
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_dotplot_lit.pdf", dataset)))
+sce |>
+    scDotPlot(features = lit_markers,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "litMarker",
+              scale = TRUE,
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+## ERC Oligo markers
+
+here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo")
 
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
