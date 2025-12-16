@@ -182,7 +182,7 @@ save(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_
 
 ## Add to sce data & create color pal
 sce$Oligo_anno <- cluster_tab$cluster_anno
-other_oligo_colors <- create_cell_colors(sort(unique(sce$Oligo_anno)), palette_name == "gg")
+other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
 
 # hpc_Oligo.5 hpc_Oligo.2 hpc_Oligo.4 hpc_Oligo.3 hpc_Oligo.1 
 # "#3BB273"   "#FF56AF"   "#663894"   "#F57A00"   "#D2B037" 
@@ -234,7 +234,7 @@ tsne_plot <- my_plot_reduced_dim(sce,
 if(opt$dataset == "spatialDLPFC"){
     
     table(sce$Oligo_anno, sce$cellType_hc)
-    
+    jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$cellType_hc)
     
 } else if(opt$dataset == "spatialHPC"){
     
