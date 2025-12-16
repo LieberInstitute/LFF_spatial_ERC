@@ -215,7 +215,7 @@ sce <- runTSNE(sce, dimred = "HARMONY")
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-my_plot_reduced_dim(sce,
+tsne_plot <- my_plot_reduced_dim(sce,
                     prefix = "other_Oligo",
                     dimred = "TSNE",
                     my_var = "Oligo_anno",
