@@ -12,6 +12,7 @@ library("scry")
 library("DeconvoBuddies")
 library("bluster")
 library("ComplexHeatmap")
+library("getopt")
 
 data_dir <- here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -22,8 +23,8 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # Import command-line parameters
 scec <- matrix(
     c("dataset", "d", "1", "character", "dataset",
-      "k", "k", "2", "int", "k metric for cluster",
-      "ds_short", "ds", "1", "character", "dataset short name"),
+      "k", "k", "2", "integer", "k metric for cluster",
+      "ds_short", "ds", "3", "character", "dataset short name"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -181,7 +182,7 @@ save(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_
 
 ## Add to sce data & create color pal
 sce$Oligo_anno <- cluster_tab$cluster_anno
-other_oligo_colors <- create_cell_colors(unique(sce$Oligo_anno))
+other_oligo_colors <- create_cell_colors(sort(unique(sce$Oligo_anno)))
 
 # hpc_Oligo.5 hpc_Oligo.2 hpc_Oligo.4 hpc_Oligo.3 hpc_Oligo.1 
 # "#3BB273"   "#FF56AF"   "#663894"   "#F57A00"   "#D2B037" 
@@ -224,7 +225,8 @@ my_plot_reduced_dim(sce,
                     facet = FALSE,
                     plot_dir_rd = plot_dir,
                     verbose = TRUE, 
-                    add_label = TRUE)
+                    add_label = TRUE,
+                    color_pal = other_oligo_colors)
 
 
 #### compare vs. previous clusters ####
