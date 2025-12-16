@@ -60,7 +60,7 @@ if(opt$dataset == "spatialDLPFC"){
     
     dataset_covars <- c("age", "sex") # including 'Position' throws error 
     
-    if(cluster == "o3"){
+    if(opt$cluster == "o3"){
         ## original 3 Oligo clusters from cellType_hc
         sce$Oligo_anno <- paste0("dlpfc_", gsub("_0",".", sce$cellType_hc))
         
