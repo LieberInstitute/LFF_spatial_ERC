@@ -98,7 +98,7 @@ if(!"Oligo_anno" %in% colnames(colData(sce))) {
     sce$Oligo_anno <- cluster_tab$cluster_anno
 }
 
-other_oligo_colors <- create_cell_colors(sort(unique(sce$Oligo_anno)))
+other_oligo_colors <- create_cell_colors(sort(unique(sce$Oligo_anno)), palette_name == "gg")
 
 #### run cell type specific modeling ####
 modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
