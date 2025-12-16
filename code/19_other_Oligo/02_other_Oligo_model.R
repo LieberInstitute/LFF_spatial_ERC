@@ -26,8 +26,8 @@ opt <- getopt(scec)
 
 ## test
 # opt <- list()
-# opt$dataset <- "spatialHPC"
-# opt$cluster <- "k20"
+# opt$dataset <- "spatialDLPFC"
+# opt$cluster <- "k30"
 
 message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster)
 
@@ -104,7 +104,7 @@ other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno
 modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 
-remodel = FALSE
+remodel = TRUE
 
 if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
@@ -160,16 +160,19 @@ anno <- annotate_registered_clusters(
     cutoff_merge_ratio = 0.1
 )
 
+## save data
+cor_layer_anno <- list(cor_layer = cor_layer, anno = anno)
+write_rds(cor_layer_anno, file = here(data_dir, sprintf("other_Oligo_cor_layer_anno_%s_%s.Rds", opt$dataset, opt$cluster)))
+
+## layer stat cor plot
+rownames(cor_layer)[!rownames(cor_layer) %in% names(other_oligo_colors)]
+
 pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s-%s.pdf", opt$dataset, opt$cluster)))
 layer_stat_cor_plot(cor_layer,
                     query_colors = other_oligo_colors,
                     reference_colors = Oligo_OPC_colors,
                     annotation = anno)
 dev.off()
-
-## save data
-cor_layer_anno <- list(cor_layer = cor_layer, anno = anno)
-write_rds(cor_layer_anno, file = here(data_dir, sprintf("other_Oligo_cor_layer_anno_%s_%s.Rds", opt$dataset, opt$cluster)))
 
 #### Dot plots ####
 rowData(sce)$Marker <- NULL
