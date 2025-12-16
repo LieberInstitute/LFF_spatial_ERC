@@ -7,6 +7,7 @@ library("here")
 library("sessioninfo")
 library("spatialLIBD")
 library("scDotPlot")
+library("DeconvoBuddies")
 
 data_dir <- here("processed-data", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -15,7 +16,8 @@ plot_dir <- here("plots", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 dataset <- "spatialDLPFC"
-
+cluster <- "o3"
+    
 #### Get Oligo data ####
 
 if(dataset == "spatialDLPFC"){
@@ -41,19 +43,25 @@ if(dataset == "spatialDLPFC"){
     sce$sample_id <- sce$BrNum
     
     dataset_covars <- c("age", "sex") # including 'Position' throws error 
+    
+    if(cluster == "o3"){
+        ## original 3 Oligo clusters from cellType_hc
+        sce$Oligo_anno <- paste0("dlpfc_", gsub("_0",".", sce$cellType_hc))
+        
+    }
 }
 
-load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", 30, dataset)))
+if(cluster == "k30"){
+    load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", 30, dataset)))
+    identical(sce$key, cluster_tab$key)
+    sce$Oligo_anno <- cluster_tab$cluster_anno
+}
 
-identical(sce$key, cluster_tab$key)
-
-sce$Oligo_anno <- cluster_tab$cluster_anno
-
-table(sce$Oligo_anno)
+other_oligo_colors <- create_cell_colors(unique(sce$Oligo_anno))
 
 #### run cell type specific modeling ####
-modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s.rds", dataset))
-pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s.rds", dataset))
+modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", dataset, cluster))
+pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", dataset, cluster))
 
 remodel = FALSE
 
@@ -96,6 +104,7 @@ top_enrichment_genes <- sig_genes_extract(
 write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", dataset)), row.names = FALSE)
 
 #### Register with ERC Oligo subclusters ####
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
 
 erc_oligo_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "modeling_results_subtype-Oligo.rds"))
 
@@ -105,7 +114,9 @@ cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
                             top_n = 100)
 
 pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s.pdf", dataset)))
-layer_stat_cor_plot(cor_layer)
+layer_stat_cor_plot(cor_layer,
+                    query_colors = other_oligo_colors,
+                    reference_colors = Oligo_OPC_colors)
 dev.off()
 
 
@@ -114,12 +125,24 @@ rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
 
-pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_dotplot_enrichment.pdf", dataset)))
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_enrichment.pdf", dataset, cluster)))
 sce |>
     scDotPlot(features = top_enrichment_genes$gene,
               group = "Oligo_anno",
               groupAnno = "Oligo_anno",
               featureAnno = "Marker",
+              annoColors = list("Oligo_anno" = other_oligo_colors,
+                                "Marker" = other_oligo_colors),
+              scale = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+sce |>
+    scDotPlot(features = top_enrichment_genes$gene,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "Marker",
+              annoColors = list("Oligo_anno" = other_oligo_colors,
+                                "Marker" = other_oligo_colors),
               scale = TRUE,
               clusterRows = FALSE,
               groupLegends = FALSE)
@@ -128,7 +151,7 @@ dev.off()
 ## Oligo lit markers
 lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
                     Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
-                    premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
+                    premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9", "ENPP6"),
                     myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG")
                     # disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
                     # AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
@@ -141,21 +164,31 @@ rowData(sce)$litMarker <- NULL
 rowData(sce)$litMarker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
 table(rowData(sce)$litMarker)
 
-pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_dotplot_lit.pdf", dataset)))
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_lit.pdf", dataset, cluster)))
 sce |>
     scDotPlot(features = lit_markers,
               group = "Oligo_anno",
               groupAnno = "Oligo_anno",
               featureAnno = "litMarker",
               scale = TRUE,
-              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("Oligo_anno" = other_oligo_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = lit_markers,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "litMarker",
+              scale = FALSE,
+              annoColors = list("Oligo_anno" = other_oligo_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
 dev.off()
 
 ## ERC Oligo markers
 
-here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo")
+list.fihere("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo")
 
 
 ## Reproducibility information
