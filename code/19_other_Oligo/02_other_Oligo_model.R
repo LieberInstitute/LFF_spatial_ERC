@@ -8,6 +8,7 @@ library("sessioninfo")
 library("spatialLIBD")
 library("scDotPlot")
 library("DeconvoBuddies")
+library("getopt")
 
 data_dir <- here("processed-data", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -16,20 +17,26 @@ plot_dir <- here("plots", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 # Import command-line parameters
-# scec <- matrix(
-#     c("datatype", "d", "1", "character", "Data type"),
-#     ncol = 5, byrow = TRUE
-# )
-# opt <- getopt(scec)
+scec <- matrix(
+    c("dataset", "d", "1", "character", "dataset",
+      "cluster", "c", "2", "character", "clustering data"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
 
-dataset <- "spatialDLPFC"
-cluster <- "k30"
+## test
+opt <- list()
+opt$dataset <- "spatialHPC"
+opt$cluster <- "k20"
 
-message(Sys.time(), " - Data:",  dataset, ", Cluster: ", cluster)
+message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster)
+
+# list.files(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster"))
     
 #### Get Oligo data ####
 
-if(dataset == "spatialDLPFC"){
+if(opt$dataset == "spatialDLPFC"){
+    # opt$ds_short <- "dlpfc"
     
     ## get DLPFC snRNA-seq data
     sce_path_zip <- fetch_data("spatialDLPFC_snRNAseq")
@@ -58,19 +65,44 @@ if(dataset == "spatialDLPFC"){
         sce$Oligo_anno <- paste0("dlpfc_", gsub("_0",".", sce$cellType_hc))
         
     }
+} else if(opt$dataset == "spatialHPC"){
+    
+    library("ExperimentHub")
+    
+    ehub <- ExperimentHub()
+    
+    ## Load the HPC dataset
+    myfiles <- query(ehub, "humanHippocampus2024")
+    
+    sce <- myfiles[["EH9606"]]
+    
+    table(sce$broad.cell.class)
+    # Neuron  Micro  Astro  Oligo  Other 
+    # 52000   3940   4298   6787   8386 
+    
+    ## subset to Oligos
+    sce <- sce[,sce$broad.cell.class == "Oligo"]
+    sce$superfine.cell.class <- droplevels(sce$superfine.cell.class)
+    
+    table(sce$superfine.cell.class)
+    # Oligo.1 Oligo.2 
+    # 3694    3093
+    
+    sce$sample_id <- sce$brnum
+    dataset_covars <- c("age", "sex")
 }
 
-if(cluster == "k30"){
-    load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", 30, dataset)))
+if(!"Oligo_anno" %in% colnames(colData(sce))) {
+    load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_%s_subclusters_%s.Rdata", opt$cluster, opt$dataset)))
     identical(sce$key, cluster_tab$key)
     sce$Oligo_anno <- cluster_tab$cluster_anno
 }
 
-other_oligo_colors <- create_cell_colors(unique(sce$Oligo_anno))
+other_oligo_colors <- create_cell_colors(sort(unique(sce$Oligo_anno)))
 
 #### run cell type specific modeling ####
-modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", dataset, cluster))
-pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", dataset, cluster))
+modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
+pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 
 remodel = FALSE
 
@@ -99,7 +131,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
 }
 
-sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s.rds", dataset)))
+sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster)))
 
 top_enrichment_genes <- sig_genes_extract(
     n = 10,
@@ -110,7 +142,7 @@ top_enrichment_genes <- sig_genes_extract(
     gene_name = "gene_name"
 )
 
-write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", dataset)), row.names = FALSE)
+write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s_%s.csv", opt$dataset, opt$cluster)), row.names = FALSE)
 
 #### Register with ERC Oligo subclusters ####
 load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
@@ -122,19 +154,29 @@ cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
                             model_type = "enrichment",
                             top_n = 100)
 
-pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s-%s.pdf", dataset, cluster)))
+anno <- annotate_registered_clusters(
+    cor_stats_layer = cor_layer,
+    confidence_threshold = 0.5,
+    cutoff_merge_ratio = 0.1
+)
+
+pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s-%s.pdf", opt$dataset, opt$cluster)))
 layer_stat_cor_plot(cor_layer,
                     query_colors = other_oligo_colors,
-                    reference_colors = Oligo_OPC_colors)
+                    reference_colors = Oligo_OPC_colors,
+                    annotation = anno)
 dev.off()
 
+## save data
+cor_layer_anno <- list(cor_layer = cor_layer, anno = anno)
+write_rds(cor_layer_anno, file = here(data_dir, sprintf("other_Oligo_cor_layer_anno_%s_%s.Rds", opt$dataset, opt$cluster)))
 
 #### Dot plots ####
 rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
 
-pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_enrichment.pdf", dataset, cluster)))
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_enrichment.pdf", opt$dataset, opt$cluster)))
 sce |>
     scDotPlot(features = top_enrichment_genes$gene,
               group = "Oligo_anno",
@@ -173,7 +215,7 @@ rowData(sce)$litMarker <- NULL
 rowData(sce)$litMarker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
 table(rowData(sce)$litMarker)
 
-pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_lit.pdf", dataset, cluster)))
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_lit.pdf", opt$dataset, opt$cluster)))
 sce |>
     scDotPlot(features = lit_markers,
               group = "Oligo_anno",
@@ -197,7 +239,7 @@ dev.off()
 
 ## ERC Oligo markers
 
-list.files(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo"))
+# list.files(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo"))
 
 erc_oligo_enrich <- read.csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_enrichment_top10_Oligo.csv"), row.names = 1)
 
@@ -205,7 +247,7 @@ rowData(sce)$ERC_Oligo <- NULL
 rowData(sce)$ERC_Oligo <- erc_oligo_enrich$test[match(rownames(sce), erc_oligo_enrich$gene)] 
 table(rowData(sce)$ERC_Oligo)
 
-pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_ERC_Oligo_enrich.pdf", dataset, cluster)))
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_ERC_Oligo_enrich.pdf", opt$dataset, opt$cluster)))
 sce |>
     scDotPlot(features = erc_oligo_enrich$gene,
               group = "Oligo_anno",
