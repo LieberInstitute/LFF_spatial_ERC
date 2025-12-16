@@ -15,8 +15,17 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "19_other_Oligo", "02_other_Oligo_model")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+# Import command-line parameters
+# scec <- matrix(
+#     c("datatype", "d", "1", "character", "Data type"),
+#     ncol = 5, byrow = TRUE
+# )
+# opt <- getopt(scec)
+
 dataset <- "spatialDLPFC"
-cluster <- "o3"
+cluster <- "k30"
+
+message(Sys.time(), " - Data:",  dataset, ", Cluster: ", cluster)
     
 #### Get Oligo data ####
 
@@ -188,7 +197,37 @@ dev.off()
 
 ## ERC Oligo markers
 
-list.fihere("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo")
+list.files(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo"))
+
+erc_oligo_enrich <- read.csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_enrichment_top10_Oligo.csv"), row.names = 1)
+
+rowData(sce)$ERC_Oligo <- NULL
+rowData(sce)$ERC_Oligo <- erc_oligo_enrich$test[match(rownames(sce), erc_oligo_enrich$gene)] 
+table(rowData(sce)$ERC_Oligo)
+
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_ERC_Oligo_enrich.pdf", dataset, cluster)))
+sce |>
+    scDotPlot(features = erc_oligo_enrich$gene,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "ERC_Oligo",
+              annoColors = list("Oligo_anno" = other_oligo_colors,
+                                "ERC_Oligo" = Oligo_OPC_colors),
+              scale = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+sce |>
+    scDotPlot(features = erc_oligo_enrich$gene,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "ERC_Oligo",
+              annoColors = list("Oligo_anno" = other_oligo_colors,
+                                "ERC_Oligo" = Oligo_OPC_colors),
+              scale = TRUE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
 
 
 ## Reproducibility information
