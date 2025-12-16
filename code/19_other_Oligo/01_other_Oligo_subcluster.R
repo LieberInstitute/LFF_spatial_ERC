@@ -187,12 +187,47 @@ other_oligo_colors <- create_cell_colors(unique(sce$Oligo_anno))
 # "#3BB273"   "#FF56AF"   "#663894"   "#F57A00"   "#D2B037" 
 
 #### Quality checks ####
+pd <- as.data.frame(colData(sce))
+
+colnames(pd)
+
+qc_violin_plot_all <- pd |> 
+    select(Oligo_anno, sum, detected, subsets_Mito_percent, doubletScore)  |>
+    pivot_longer(!c(Oligo_anno), names_to = "metric") |>
+    mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "doubletScore"))) |>
+    ggplot() +
+    geom_violin(aes(x = Oligo_anno, y = value, fill = Oligo_anno), 
+                draw_quantiles = c(0.25, 0.5, 0.75),
+                scale = "width") +
+    scale_fill_manual(values = other_oligo_colors) +
+    theme_bw() +
+    facet_grid(metric~., scales = "free") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+
+ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("other_Oligo_%s_k%i_QCmetricViolin.png", opt$dataset, opt$k)))
 
 
 #### Reduced dim plots ####
 
+message(Sys.time(), " - running TSNE")
+sce <- runTSNE(sce, dimred = "HARMONY")
 
-#### vs. previous clusters ####
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+my_plot_reduced_dim(sce,
+                    prefix = "other_Oligo",
+                    dimred = "TSNE",
+                    my_var = "Oligo_anno",
+                    var_type = "cat",
+                    save_plot = TRUE,
+                    suffix = sprintf("%s_k%i", opt$dataset, opt$k),
+                    facet = FALSE,
+                    plot_dir_rd = plot_dir,
+                    verbose = TRUE, 
+                    add_label = TRUE)
+
+
+#### compare vs. previous clusters ####
 
 if(opt$dataset == "spatialDLPFC"){
     
@@ -203,8 +238,6 @@ if(opt$dataset == "spatialDLPFC"){
     
     table(sce$Oligo_anno, sce$superfine.cell.class)
     jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$superfine.cell.class)
-    
-    
     
 }
 
