@@ -25,9 +25,9 @@ scec <- matrix(
 opt <- getopt(scec)
 
 ## test
-opt <- list()
-opt$dataset <- "spatialHPC"
-opt$cluster <- "k20"
+# opt <- list()
+# opt$dataset <- "spatialHPC"
+# opt$cluster <- "k20"
 
 message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster)
 
