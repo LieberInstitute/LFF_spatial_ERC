@@ -113,7 +113,7 @@ cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
                             model_type = "enrichment",
                             top_n = 100)
 
-pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s.pdf", dataset)))
+pdf(here(plot_dir, sprintf("other_Oligo_layer_stat_cor-%s-%s.pdf", dataset, cluster)))
 layer_stat_cor_plot(cor_layer,
                     query_colors = other_oligo_colors,
                     reference_colors = Oligo_OPC_colors)
