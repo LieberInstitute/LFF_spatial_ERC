@@ -24,7 +24,8 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 scec <- matrix(
     c("dataset", "d", "1", "character", "dataset",
       "k", "k", "2", "integer", "k metric for cluster",
-      "ds_short", "ds", "3", "character", "dataset short name"),
+      "ds_short", "ds", "3", "character", "dataset short name",
+      "opc", "o", "4", "logical", "dataset short name"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -33,6 +34,7 @@ opt <- getopt(scec)
 # opt$dataset <- "spatialHPC"
 # opt$k <- 20
 # opt$ds_short <- "hpc"
+# opt$opc <- TRUE
 
 message(Sys.time(), " - Data:",  opt$dataset, ", k: ", opt$k)
 
@@ -49,11 +51,19 @@ if(opt$dataset == "spatialDLPFC"){
     
     table(sce$cellType_hc)
     table(sce$cellType_layer == "Oligo")
+    table(sce$cellType_layer == "OPC")
     
     sce <- sce[,!is.na(sce$cellType_layer)]
     
-    ## subset to Oligos
-    sce <- sce[,sce$cellType_layer == "Oligo"]
+    if(opt$opc){
+        ## subset to Oligos & OPC
+        sce <- sce[,sce$cellType_layer %in% c("Oligo", "OPC")]
+        
+        opt$dataset <- paste0(opt$dataset, "_OPC")
+    } else {
+        ## subset to just Oligos
+        sce <- sce[,sce$cellType_layer == "Oligo"]
+    }
     
     sce$cellType_hc <- droplevels(sce$cellType_hc)
     table(sce$cellType_hc)
