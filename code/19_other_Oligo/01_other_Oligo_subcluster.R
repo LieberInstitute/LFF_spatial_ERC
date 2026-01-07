@@ -31,12 +31,17 @@ scec <- matrix(
 opt <- getopt(scec)
 
 # opt <- list()
+
+# opt$dataset <- "spatialDLPFC"
+# opt$ds_short <- "dlpfc"
+
 # opt$dataset <- "spatialHPC"
-# opt$k <- 20
 # opt$ds_short <- "hpc"
+
+# opt$k <- 10
 # opt$opc <- TRUE
 
-message(Sys.time(), " - Data:",  opt$dataset, ", k: ", opt$k)
+message(Sys.time(), " - Data:",  opt$dataset, ", k: ", opt$k, " Include OPC: ", opt$opc)
 
 #### Get Oligo data ####
 
@@ -55,17 +60,20 @@ if(opt$dataset == "spatialDLPFC"){
     
     sce <- sce[,!is.na(sce$cellType_layer)]
     
+    sce$cellType_broad <- sce$cellType_layer
+    
     if(opt$opc){
         ## subset to Oligos & OPC
         sce <- sce[,sce$cellType_layer %in% c("Oligo", "OPC")]
         
-        opt$dataset <- paste0(opt$dataset, "_OPC")
+        opt$dataset <- paste0(opt$dataset, "_wOPC")
     } else {
         ## subset to just Oligos
         sce <- sce[,sce$cellType_layer == "Oligo"]
     }
     
     sce$cellType_hc <- droplevels(sce$cellType_hc)
+    sce$cellType_broad <- droplevels(sce$cellType_broad)
     table(sce$cellType_hc)
     
     sce$sample_id <- sce$BrNum
@@ -171,20 +179,35 @@ message(Sys.time(), " - running walktrap")
 clusters <- igraph::cluster_walktrap(snn.gr)$membership
 table(clusters)
 
-cluster_anno <- stack(table(clusters)) |>
-    dplyr::rename(n = values, cluster = ind) |>
-    arrange(-n) |>
-    mutate(cluster_anno = paste0(opt$ds_short, "_Oligo.", row_number()))
+if(opt$opc){
+    table(clusters, sce$cellType_broad)
+    
+    cluster_anno <- as.data.frame(table(clusters, sce$cellType_broad)) |>
+        pivot_wider(names_from = "Var2", values_from = "Freq") |>
+        mutate(oligo_ratio = Oligo/OPC,
+               cell_type = ifelse(oligo_ratio >1, "Oligo", "OPC"),
+               n = Oligo + OPC) |>
+        dplyr::rename(cluster = clusters) |>
+        group_by(cell_type) |>
+        arrange(cell_type, -n) |>
+        mutate(cluster_anno = paste0(opt$ds_short, "_", cell_type,".", row_number()))
+    
+} else {
+    
+    cluster_anno <- stack(table(clusters)) |>
+        dplyr::rename(n = values, cluster = ind) |>
+        arrange(-n) |>
+        mutate(cluster_anno = paste0(opt$ds_short, "_Oligo.", row_number()))
+    
+}
+
 
 cluster_tab <- data.frame(key = sce$key, 
                           cluster = clusters, 
                           cluster_anno = cluster_anno$cluster_anno[match(clusters, cluster_anno$cluster)])
-
 head(cluster_tab)
 
 table(cluster_tab$cluster_anno)
-
-
 
 ## save cluster_tab data
 message(Sys.time() , " - saving data")
@@ -217,7 +240,6 @@ qc_violin_plot_all <- pd |>
 
 ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("other_Oligo_%s_k%i_QCmetricViolin.png", opt$dataset, opt$k)))
 
-
 #### Reduced dim plots ####
 
 message(Sys.time(), " - running TSNE")
@@ -238,10 +260,35 @@ tsne_plot <- my_plot_reduced_dim(sce,
                     add_label = TRUE,
                     color_pal = other_oligo_colors)
 
+tsne_plot_sum_umi <- my_plot_reduced_dim(sce,
+                    prefix = "other_Oligo",
+                    dimred = "TSNE",
+                    my_var = "sum",
+                    var_type = "con",
+                    save_plot = TRUE,
+                    suffix = sprintf("%s_k%i", opt$dataset, opt$k),
+                    facet = FALSE,
+                    plot_dir_rd = plot_dir,
+                    verbose = TRUE, 
+                    add_label = TRUE)
+
 
 #### compare vs. previous clusters ####
 
 if(opt$dataset == "spatialDLPFC"){
+    
+    tsne_plot_og <- my_plot_reduced_dim(sce,
+                                             prefix = "other_Oligo",
+                                             dimred = "TSNE",
+                                             my_var = "cellType_hc",
+                                             var_type = "cat",
+                                             save_plot = TRUE,
+                                             suffix = sprintf("%s_k%i", opt$dataset, opt$k),
+                                             facet = FALSE,
+                                             plot_dir_rd = plot_dir,
+                                             verbose = TRUE, 
+                                             add_label = TRUE)
+    
     
     table(sce$Oligo_anno, sce$cellType_hc)
     jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$cellType_hc)
@@ -263,6 +310,9 @@ Heatmap(jacc.mat,
         )
 
 dev.off()
+
+#### trajectory ####
+
 
 ## Reproducibility information
 print("Reproducibility information:")
