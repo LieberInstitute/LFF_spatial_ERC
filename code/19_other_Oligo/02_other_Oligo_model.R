@@ -19,17 +19,19 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # Import command-line parameters
 scec <- matrix(
     c("dataset", "d", "1", "character", "dataset",
-      "cluster", "c", "2", "character", "clustering data"),
+      "cluster", "c", "2", "character", "clustering data",
+      "opc", "o", "4", "logical", "dataset short name"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
 
 ## test
-# opt <- list()
-# opt$dataset <- "spatialDLPFC"
-# opt$cluster <- "k30"
+opt <- list()
+opt$dataset <- "spatialDLPFC"
+opt$cluster <- "k10"
+opt$opc = TRUE
 
-message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster)
+message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster, " Include OPC: ", opt$opc)
 
 # list.files(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster"))
     
@@ -50,8 +52,15 @@ if(opt$dataset == "spatialDLPFC"){
     
     sce <- sce[,!is.na(sce$cellType_layer)]
     
-    ## subset to Oligos
-    sce <- sce[,sce$cellType_layer == "Oligo"]
+    if(opt$opc){
+        ## subset to Oligos & OPC
+        sce <- sce[,sce$cellType_layer %in% c("Oligo", "OPC")]
+        
+        opt$dataset <- paste0(opt$dataset, "_wOPC")
+    } else {
+        ## subset to just Oligos
+        sce <- sce[,sce$cellType_layer == "Oligo"]
+    }
     
     sce$cellType_hc <- droplevels(sce$cellType_hc)
     table(sce$cellType_hc)
@@ -274,6 +283,7 @@ sce |>
 dev.off()
 
 
+slurmjobs::job_single('02_other_Oligo_model', create_shell = TRUE, memory = '25G', command = "Rscript 02_other_Oligo_model --dataset spatialDLPFC --cluster k10 --opc TRUE")
 
 ## Reproducibility information
 print("Reproducibility information:")
