@@ -123,6 +123,8 @@ if(opt$dataset == "spatialDLPFC"){
         sce <- sce[,sce$cellType_broad == "Oligo"]
     }
     
+    sce$sample_id <- sce$brain
+    
 }
 
 table(sce$cellType_fine)
