@@ -124,7 +124,7 @@ if(opt$dataset == "spatialDLPFC"){
     }
     
     sce$sample_id <- sce$brain
-    
+    sce$doubletScore <- sce$scDblFinder.score
 }
 
 table(sce$cellType_fine)
