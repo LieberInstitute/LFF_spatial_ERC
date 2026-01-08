@@ -62,6 +62,7 @@ if(opt$dataset == "spatialDLPFC"){
     sce <- sce[,!is.na(sce$cellType_layer)]
     
     sce$cellType_broad <- sce$cellType_layer
+    sce$cellType_fine <- sce$cellType_hc
     
     if(opt$opc){
         ## subset to Oligos & OPC
@@ -73,9 +74,8 @@ if(opt$dataset == "spatialDLPFC"){
         sce <- sce[,sce$cellType_layer == "Oligo"]
     }
     
-    sce$cellType_hc <- droplevels(sce$cellType_hc)
+    sce$cellType_fine <- droplevels(sce$cellType_fine)
     sce$cellType_broad <- droplevels(sce$cellType_broad)
-    table(sce$cellType_hc)
     
     sce$sample_id <- sce$BrNum
     
@@ -103,7 +103,29 @@ if(opt$dataset == "spatialDLPFC"){
     # 3694    3093
     
     sce$sample_id <- sce$brnum
+} else if(opt$dataset == "spatialdACC"){
+   load("/dcs04/lieber/marmaypag/spatialdACC_LIBD4125/spatialdACC/processed-data/snRNA-seq/05_azimuth/sce_azimuth.Rdata", verbose = TRUE)
+    #sce
+    colData(sce)
+    
+    table(sce$cellType_azimuth)
+    
+    sce$cellType_broad <- sce$cellType_azimuth
+    sce$cellType_fine <- sce$cellType_azimuth
+    
+    if(opt$opc){
+        ## subset to Oligos & OPC
+        sce <- sce[,sce$cellType_broad %in% c("Oligo", "OPC")]
+        
+        opt$dataset <- paste0(opt$dataset, "_wOPC")
+    } else {
+        ## subset to just Oligos
+        sce <- sce[,sce$cellType_broad == "Oligo"]
+    }
+    
 }
+
+table(sce$cellType_fine)
 
 #### GLM PCA ####
 set.seed(425)
@@ -284,30 +306,23 @@ tsne_plot_sum_umi <- my_plot_reduced_dim(sce,
 
 #### compare vs. previous clusters ####
 
-if(opt$dataset == "spatialDLPFC"){
     
-    tsne_plot_og <- my_plot_reduced_dim(sce,
-                                             prefix = "other_Oligo",
-                                             dimred = "TSNE",
-                                             my_var = "cellType_hc",
-                                             var_type = "cat",
-                                             save_plot = TRUE,
-                                             suffix = sprintf("%s_k%i", opt$dataset, opt$k),
-                                             facet = FALSE,
-                                             plot_dir_rd = plot_dir,
-                                             verbose = TRUE, 
-                                             add_label = TRUE)
-    
-    
-    table(sce$Oligo_anno, sce$cellType_hc)
-    jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$cellType_hc)
-    
-} else if(opt$dataset == "spatialHPC"){
-    
-    table(sce$Oligo_anno, sce$superfine.cell.class)
-    jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$superfine.cell.class)
-    
-}
+tsne_plot_og <- my_plot_reduced_dim(sce,
+                                    prefix = "other_Oligo",
+                                    dimred = "TSNE",
+                                    my_var = "cellType_fine",
+                                    var_type = "cat",
+                                    save_plot = TRUE,
+                                    suffix = sprintf("%s_k%i", opt$dataset, opt$k),
+                                    facet = FALSE,
+                                    plot_dir_rd = plot_dir,
+                                    verbose = TRUE, 
+                                    add_label = TRUE)
+
+
+table(sce$Oligo_anno, sce$cellType_hc)
+jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$cellType_fine)
+
 
 ## plot jaccard matrix
 pdf(here(plot_dir, sprintf("other_Oligo_%s_k%i_jaccmat.pdf",opt$dataset, opt$k)))
@@ -370,7 +385,8 @@ tsne_pseudotime <- my_plot_reduced_dim(sce,
 
 ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno_%s_k%i_trajectory_pseudotime.png", opt$dataset, opt$k)))
 
-# slurmjobs::job_single('01_other_Oligo_subcluster', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster --dataset spatialDLPFC --k 10 --opc TRUE")
+# slurmjobs::job_single('01_other_Oligo_subcluster', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster.R --dataset spatialDLPFC --ds_short dlpfc --k 10 --opc TRUE")
+# slurmjobs::job_single('01_other_Oligo_subcluster_dacc', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster.R --dataset spatialdACC --ds_short dacc --k 10 --opc TRUE")
 
 
 ## Reproducibility information
