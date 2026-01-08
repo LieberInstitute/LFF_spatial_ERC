@@ -251,12 +251,14 @@ other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno
 #### Quality checks ####
 pd <- as.data.frame(colData(sce))
 
+pd$log10_sum <- log10(pd$sum)
+
 colnames(pd)
 
 qc_violin_plot_all <- pd |> 
     select(Oligo_anno, sum, detected, subsets_Mito_percent, doubletScore)  |>
     pivot_longer(!c(Oligo_anno), names_to = "metric") |>
-    mutate(metric = factor(metric, levels = c("sum", "detected", "subsets_Mito_percent", "doubletScore"))) |>
+    mutate(metric = factor(metric, levels = c("log10_sum", "detected", "subsets_Mito_percent", "doubletScore"))) |>
     ggplot() +
     geom_violin(aes(x = Oligo_anno, y = value, fill = Oligo_anno), 
                 draw_quantiles = c(0.25, 0.5, 0.75),
@@ -385,7 +387,7 @@ tsne_pseudotime <- my_plot_reduced_dim(sce,
 
 ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno_%s_k%i_trajectory_pseudotime.png", opt$dataset, opt$k)))
 
-# slurmjobs::job_single('01_other_Oligo_subcluster', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster.R --dataset spatialDLPFC --ds_short dlpfc --k 10 --opc TRUE")
+# slurmjobs::job_single('01_other_Oligo_subcluster_dlpfc', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster.R --dataset spatialDLPFC --ds_short dlpfc --k 10 --opc TRUE")
 # slurmjobs::job_single('01_other_Oligo_subcluster_dacc', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster.R --dataset spatialdACC --ds_short dacc --k 10 --opc TRUE")
 
 
