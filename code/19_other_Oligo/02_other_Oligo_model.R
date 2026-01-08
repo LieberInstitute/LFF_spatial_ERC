@@ -26,10 +26,10 @@ scec <- matrix(
 opt <- getopt(scec)
 
 ## test
-opt <- list()
-opt$dataset <- "spatialDLPFC"
-opt$cluster <- "k10"
-opt$opc = TRUE
+# opt <- list()
+# opt$dataset <- "spatialDLPFC"
+# opt$cluster <- "k10"
+# opt$opc = TRUE
 
 message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster, " Include OPC: ", opt$opc)
 
@@ -101,11 +101,14 @@ if(opt$dataset == "spatialDLPFC"){
     dataset_covars <- c("age", "sex")
 }
 
+## add cluster annotations
 if(!"Oligo_anno" %in% colnames(colData(sce))) {
     load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_%s_subclusters_%s.Rdata", opt$cluster, opt$dataset)))
     identical(sce$key, cluster_tab$key)
     sce$Oligo_anno <- cluster_tab$cluster_anno
 }
+
+table(sce$Oligo_anno)
 
 other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
 
