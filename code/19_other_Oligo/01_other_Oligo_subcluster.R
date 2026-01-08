@@ -13,6 +13,7 @@ library("DeconvoBuddies")
 library("bluster")
 library("ComplexHeatmap")
 library("getopt")
+library("TSCAN")
 
 data_dir <- here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -213,6 +214,11 @@ table(cluster_tab$cluster_anno)
 message(Sys.time() , " - saving data")
 save(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", opt$k, opt$dataset)))
 
+## add existing cluster annotations
+# load(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster", sprintf("walktrap_snn_k%i_subclusters_%s.Rdata", opt$k, opt$dataset)))
+# identical(sce$key, cluster_tab$key)
+# sce$Oligo_anno <- cluster_tab$cluster_anno
+
 ## Add to sce data & create color pal
 sce$Oligo_anno <- cluster_tab$cluster_anno
 other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
@@ -244,6 +250,9 @@ ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("other_Oligo_%s_k%i
 
 message(Sys.time(), " - running TSNE")
 sce <- runTSNE(sce, dimred = "HARMONY")
+## save
+tsne_data <- reducedDim(sce, "TSNE")
+write_rds(tsne_data, file = here(data_dir, sprintf("TSNE_k%02d_subclusters_%s.Rds", opt$k, opt$dataset)))
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
@@ -311,7 +320,57 @@ Heatmap(jacc.mat,
 
 dev.off()
 
-#### trajectory ####
+#### Trajectory analysis ####
+message(Sys.time(),  " - Trajectory Anlaysis")
+by.cluster <- aggregateAcrossCells(sce, ids=sce$Oligo_anno)
+centroids <- reducedDim(by.cluster, "HARMONY")
+
+# Set clusters=NULL as we have already aggregated above.
+mst <- createClusterMST(centroids, clusters=NULL)
+mst
+
+line.data <- reportEdges(by.cluster, mst=mst, clusters=NULL, use.dimred="TSNE")
+
+tsne_edge <- my_plot_reduced_dim(sce,
+                                 prefix = "other_Oligo",
+                                 dimred = "TSNE",
+                                 my_var = "Oligo_anno",
+                                 var_type = "cat",
+                                 save_plot = FALSE,
+                                 suffix = sprintf("%s_k%i_traj_edge", opt$dataset, opt$k),
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_edge, filename = here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno_%s_k%i_trajectory.png", opt$dataset, opt$k)))
+
+
+colLabels(sce) <- sce$Oligo_anno
+
+map.tscan <- mapCellsToEdges(sce, mst=mst, use.dimred="HARMONY")
+tscan.pseudo <- orderCells(map.tscan, mst)
+head(tscan.pseudo)
+
+sce$pseudotime <- averagePseudotime(tscan.pseudo) 
+
+tsne_pseudotime <- my_plot_reduced_dim(sce,
+                                       prefix = "other_Oligo",
+                                       dimred = "TSNE",
+                                       my_var = "pseudotime",
+                                       var_type = "con",
+                                       save_plot = FALSE,
+                                       suffix = data,
+                                       facet = FALSE,
+                                       plot_dir_rd = plot_dir,
+                                       verbose = TRUE, 
+                                       add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno_%s_k%i_trajectory_pseudotime.png", opt$dataset, opt$k)))
+
+slurmjobs::job_single('01_other_Oligo_subcluster', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster --dataset spatialDLPFC --cluster k10 --opc TRUE")
 
 
 ## Reproducibility information
