@@ -309,8 +309,7 @@ tsne_plot_sum_umi <- my_plot_reduced_dim(sce,
 
 
 #### compare vs. previous clusters ####
-
-    
+message(Sys.time(), " - Check previous clusters")
 tsne_plot_og <- my_plot_reduced_dim(sce,
                                     prefix = "other_Oligo",
                                     dimred = "TSNE",
@@ -324,7 +323,7 @@ tsne_plot_og <- my_plot_reduced_dim(sce,
                                     add_label = TRUE)
 
 
-table(sce$Oligo_anno, sce$cellType_hc)
+table(sce$Oligo_anno, sce$cellType_fine)
 jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$cellType_fine)
 
 
