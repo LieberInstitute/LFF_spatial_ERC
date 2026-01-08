@@ -370,7 +370,7 @@ tsne_pseudotime <- my_plot_reduced_dim(sce,
 
 ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno_%s_k%i_trajectory_pseudotime.png", opt$dataset, opt$k)))
 
-slurmjobs::job_single('01_other_Oligo_subcluster', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster --dataset spatialDLPFC --cluster k10 --opc TRUE")
+# slurmjobs::job_single('01_other_Oligo_subcluster', create_shell = TRUE, memory = '25G', command = "Rscript 01_other_Oligo_subcluster --dataset spatialDLPFC --k 10 --opc TRUE")
 
 
 ## Reproducibility information
