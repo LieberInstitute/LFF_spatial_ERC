@@ -123,6 +123,9 @@ if(opt$dataset == "spatialDLPFC"){
     
     sce$sample_id <- sce$brain
     sce$doubletScore <- sce$scDblFinder.score
+    
+    ## no covars based on https://github.com/LieberInstitute/spatialdACC/blob/591c01ec9ca448a84242f80957af363f57b058d2/code/12_spatial_registration/azimuth_spatial_registration.R#L16-L25
+    dataset_covars <- NULL
 }
 
 
