@@ -1,0 +1,235 @@
+**** Job starts ****
+Thu Jan  8 02:04:22 PM EST 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 26276313
+Job name: 01_other_Oligo_subcluster
+Node name: compute-153
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.6.0
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.2.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following object is masked from ‘package:dplyr’:
+
+    count
+
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following object is masked from ‘package:lubridate’:
+
+    as.difftime
+
+The following object is masked from ‘package:dplyr’:
+
+    explain
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
+The following objects are masked from ‘package:dplyr’:
+
+    first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:lubridate’:
+
+    %within%
+
+The following objects are masked from ‘package:dplyr’:
+
+    collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
+
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: scuttle
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading required package: TrajectoryUtils
+
+Attaching package: ‘TrajectoryUtils’
+
+The following object is masked from ‘package:scran’:
+
+    createClusterMST
+
+
+Attaching package: ‘TSCAN’
+
+The following objects are masked from ‘package:scran’:
+
+    createClusterMST, quickPseudotime, testPseudotime
+
+2026-01-08 14:04:39.283051 - Data:spatialDLPFC, k: 10 Include OPC: TRUE
+2026-01-08 14:04:40.505956 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b784aaf67_sce_DLPFC_annotated.zip%3Fdl%3D1
+2026-01-08 14:04:56.277046 - Load saved HARMONY PCs
+2026-01-08 14:04:56.500987 - running buildSNNGraph: k =10
+2026-01-08 14:05:13.260653 - running walktrap
+clusters
+   1    2    3    4    5    6    7    8    9   10 
+1706   58  678  510 3417 3465 1069  231 1473  227 
+                            key cluster cluster_anno
+1 AAACCCACAAGGTCTT-1_Br2720_mid       6     _Oligo.1
+2 AAACCCATCAAAGACA-1_Br2720_mid       1       _OPC.1
+3 AAACCCATCATTGCGA-1_Br2720_mid       5     _Oligo.2
+4 AAACGCTCACCCTGAG-1_Br2720_mid       1       _OPC.1
+5 AAAGAACCACAGTGAG-1_Br2720_mid       1       _OPC.1
+6 AAAGAACTCGGCTATA-1_Br2720_mid       1       _OPC.1
+
+_Oligo.1 _Oligo.2 _Oligo.3 _Oligo.4 _Oligo.5 _Oligo.6 _Oligo.7 _Oligo.8 
+    3465     3417     1473     1069      678      510      231      227 
+_Oligo.9   _OPC.1 
+      58     1706 
+2026-01-08 14:11:21.901408 - saving data
+Creating gg palette for 10 broad cell types
+ [1] "Sample"                "Barcode"               "key"                  
+ [4] "SAMPLE_ID"             "pos"                   "BrNum"                
+ [7] "round"                 "Position"              "age"                  
+[10] "sex"                   "diagnosis"             "sum"                  
+[13] "detected"              "subsets_Mito_sum"      "subsets_Mito_detected"
+[16] "subsets_Mito_percent"  "total"                 "high_mito"            
+[19] "low_sum"               "low_detected"          "discard_auto"         
+[22] "doubletScore"          "prelimCluster"         "collapsedCluster"     
+[25] "kmeans"                "sizeFactor"            "cellType_broad_k"     
+[28] "cellType_k"            "cellType_broad_hc"     "cellType_hc"          
+[31] "cellType_layer"        "layer_annotation"      "cellType_broad"       
+[34] "sample_id"             "Oligo_anno"           
+Saving 7 x 7 in image
+2026-01-08 14:11:23.957841 - running TSNE
+other_Oligo_TSNE-Oligo_anno-spatialDLPFC_wOPC_k10.png - Saving 7 x 7 in image
+other_Oligo_TSNE-sum-spatialDLPFC_wOPC_k10.png - Saving 7 x 7 in image
+Error: object 'jacc.mat' not found
+Execution halted
