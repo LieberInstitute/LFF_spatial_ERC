@@ -186,6 +186,42 @@ layer_stat_cor_plot(cor_layer,
                     annotation = anno)
 dev.off()
 
+#### Register with ERC Oligo + OPC subclusters ####
+
+if(opt$opc){
+    erc_oligoOPC_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "modeling_results_subtype-OligoOPC.rds"))
+    
+    cor_layer_oligoOPC <- layer_stat_cor(stats = modeling_results$enrichment,
+                                         modeling_results = erc_oligoOPC_modeling,
+                                         model_type = "enrichment",
+                                         top_n = 100)
+    
+    anno_oligoOPC <- annotate_registered_clusters(
+        cor_stats_layer = cor_layer_oligoOPC,
+        confidence_threshold = 0.5,
+        cutoff_merge_ratio = 0.1
+    )
+    
+    ## save data
+    cor_layer_anno <- list(cor_layer = cor_layer_oligoOPC, anno = anno_oligoOPC)
+    write_rds(cor_layer_anno, file = here(data_dir, sprintf("other_OligoOPC_cor_layer_anno_%s_%s.Rds", opt$dataset, opt$cluster)))
+    
+    ## layer stat cor plot
+    # rownames(cor_layer_oligoOPC)[!rownames(cor_layer_oligoOPC) %in% names(other_oligo_colors)]
+    all(rownames(cor_layer_oligoOPC) %in% names(other_oligo_colors))
+    
+    Oligo_OPC_colors2 <- Oligo_OPC_colors[!grepl("OPC", names(Oligo_OPC_colors))]
+    Oligo_OPC_colors2 <- c(Oligo_OPC_colors2, OPC = "#D2B037")
+    
+    pdf(here(plot_dir, sprintf("other_OligoOPC_layer_stat_cor-%s-%s.pdf", opt$dataset, opt$cluster)))
+    layer_stat_cor_plot(cor_layer_oligoOPC,
+                        query_colors = other_oligo_colors,
+                        reference_colors = Oligo_OPC_colors2,
+                        annotation = anno_oligoOPC
+                        )
+    dev.off()
+}
+
 #### Dot plots ####
 rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
