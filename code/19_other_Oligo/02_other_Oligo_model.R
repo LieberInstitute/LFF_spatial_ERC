@@ -20,7 +20,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 scec <- matrix(
     c("dataset", "d", "1", "character", "dataset",
       "cluster", "c", "2", "character", "clustering data",
-      "opc", "o", "4", "logical", "dataset short name"),
+      "opc", "o", "4", "logical", "include OPCs"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -28,10 +28,11 @@ opt <- getopt(scec)
 ## test
 # opt <- list()
 # opt$dataset <- "spatialDLPFC"
-# opt$cluster <- "k10"
+# opt$dataset <- "spatialdACC"
+# opt$cluster <- "k20"
 # opt$opc = TRUE
 
-message(Sys.time(), " - Data:",  opt$dataset, ", Cluster: ", opt$cluster, " Include OPC: ", opt$opc)
+message(Sys.time(), " - Data: ",  opt$dataset, ", Cluster: ", opt$cluster, " Include OPC: ", opt$opc)
 
 # list.files(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster"))
     
@@ -99,7 +100,31 @@ if(opt$dataset == "spatialDLPFC"){
     
     sce$sample_id <- sce$brnum
     dataset_covars <- c("age", "sex")
+} else if(opt$dataset == "spatialdACC"){
+   
+    load("/dcs04/lieber/marmaypag/spatialdACC_LIBD4125/spatialdACC/processed-data/snRNA-seq/05_azimuth/sce_azimuth.Rdata", verbose = TRUE)
+    #sce
+    # colData(sce)
+    
+    # table(sce$cellType_azimuth)
+    
+    sce$cellType_broad <- sce$cellType_azimuth
+    sce$cellType_fine <- sce$cellType_azimuth
+    
+    if(opt$opc){
+        ## subset to Oligos & OPC
+        sce <- sce[,sce$cellType_broad %in% c("Oligo", "OPC")]
+        
+        opt$dataset <- paste0(opt$dataset, "_wOPC")
+    } else {
+        ## subset to just Oligos
+        sce <- sce[,sce$cellType_broad == "Oligo"]
+    }
+    
+    sce$sample_id <- sce$brain
+    sce$doubletScore <- sce$scDblFinder.score
 }
+
 
 ## add cluster annotations
 if(!"Oligo_anno" %in% colnames(colData(sce))) {
@@ -107,6 +132,9 @@ if(!"Oligo_anno" %in% colnames(colData(sce))) {
     identical(sce$key, cluster_tab$key)
     sce$Oligo_anno <- cluster_tab$cluster_anno
 }
+
+## flatten OPC subclusters to just OPCs
+sce$Oligo_anno <- gsub("OPC.[0-9]","OPC", sce$Oligo_anno)
 
 table(sce$Oligo_anno)
 
@@ -322,7 +350,7 @@ sce |>
 dev.off()
 
 
-slurmjobs::job_single('02_other_Oligo_model', create_shell = TRUE, memory = '25G', command = "Rscript 02_other_Oligo_model --dataset spatialDLPFC --cluster k10 --opc TRUE")
+# slurmjobs::job_single('02_other_Oligo_model_dacc', create_shell = TRUE, memory = '25G', command = "Rscript 02_other_Oligo_model.R --dataset spatialdACC --cluster k20 --opc TRUE")
 
 ## Reproducibility information
 print("Reproducibility information:")
