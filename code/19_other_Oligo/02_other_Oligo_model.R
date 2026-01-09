@@ -32,6 +32,8 @@ opt <- getopt(scec)
 # opt$cluster <- "k20"
 # opt$opc = TRUE
 
+opt$opc <- as.logical(opt$opc)
+
 message(Sys.time(), " - Data: ",  opt$dataset, ", Cluster: ", opt$cluster, " Include OPC: ", opt$opc)
 
 # list.files(here("processed-data", "19_other_Oligo", "01_other_Oligo_subcluster"))
@@ -126,6 +128,9 @@ if(opt$dataset == "spatialDLPFC"){
     
     ## no covars based on https://github.com/LieberInstitute/spatialdACC/blob/591c01ec9ca448a84242f80957af363f57b058d2/code/12_spatial_registration/azimuth_spatial_registration.R#L16-L25
     dataset_covars <- NULL
+    
+    ## missing logcounts
+    sce <- scuttle::logNormCounts(sce)
 }
 
 
@@ -147,7 +152,7 @@ other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno
 modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 
-remodel = TRUE
+remodel = FALSE
 
 if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
@@ -188,6 +193,8 @@ top_enrichment_genes <- sig_genes_extract(
 write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s_%s.csv", opt$dataset, opt$cluster)), row.names = FALSE)
 
 #### Register with ERC Oligo subclusters ####
+message(Sys.time(), " - Register vs. ERC Oligo")
+
 load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
 
 erc_oligo_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "modeling_results_subtype-Oligo.rds"))
@@ -218,7 +225,7 @@ layer_stat_cor_plot(cor_layer,
 dev.off()
 
 #### Register with ERC Oligo + OPC subclusters ####
-
+message(Sys.time(), " - Register vs. ERC Oligo + OPC")
 if(opt$opc){
     erc_oligoOPC_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "modeling_results_subtype-OligoOPC.rds"))
     
@@ -258,9 +265,13 @@ rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
 
-pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_enrichment.pdf", opt$dataset, opt$cluster)))
+top_genes_plot <- unique(top_enrichment_genes$gene[top_enrichment_genes$gene %in% rownames(sce)])
+
+all(top_genes_plot %in% rownames(sce))
+
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_enrichment.pdf", opt$dataset, opt$cluster)), height = 10)
 sce |>
-    scDotPlot(features = top_enrichment_genes$gene,
+    scDotPlot(features = top_genes_plot,
               group = "Oligo_anno",
               groupAnno = "Oligo_anno",
               featureAnno = "Marker",
@@ -270,7 +281,7 @@ sce |>
               clusterRows = FALSE,
               groupLegends = FALSE)
 sce |>
-    scDotPlot(features = top_enrichment_genes$gene,
+    scDotPlot(features = top_genes_plot,
               group = "Oligo_anno",
               groupAnno = "Oligo_anno",
               featureAnno = "Marker",
