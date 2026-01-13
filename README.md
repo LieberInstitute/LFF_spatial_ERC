@@ -113,6 +113,8 @@ R objects with both the counts and logcounts can be
 downloaded through the [fetch_data()](https://research.libd.org/spatialLIBD/reference/fetch_data.html) 
 function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) v1.23.1 or newer. 
 
+**Access data with spatialLIBD**
+
 ```
 ## SRT data
 spe_erc_path <- fetch_data(type = "LFF_spatial_ERC_SRT")
