@@ -117,7 +117,7 @@ function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) v1.2
 
 ```
 ## SRT data
-spe_erc_path <- fetch_data(type = "LFF_spatial_ERC_SRT")
+spe_erc_path <- spatialLIBD::fetch_data(type = "LFF_spatial_ERC_SRT")
 spe_erc_path <- unzip(spe_erc_path, exdir = tempdir())
 spe_erc <- HDF5Array::loadHDF5SummarizedExperiment(
   file.path(tempdir(), "spe_ERC_annotated")
@@ -127,7 +127,7 @@ spe_erc
 # lobstr::obj_size(spe_erc) 3.20 GB
 
 ## SCE data
-sce_erc_path <- fetch_data(type = "LFF_spatial_ERC_snRNAseq")
+sce_erc_path <- spatialLIBD::fetch_data(type = "LFF_spatial_ERC_snRNAseq")
 sce_erc_path <- unzip(sce_erc_path, exdir = tempdir())
 sce_erc <- HDF5Array::loadHDF5SummarizedExperiment(
   file.path(tempdir(), "sce_ERC_subcluster")
