@@ -110,8 +110,30 @@ can be found on our [Globus Endpoints](https://research.libd.org/globus/jhpce_LF
 heading `jhpce#LFF_ERC`. 
 
 R objects with both the counts and logcounts can be 
-downloaded through the fetch_data() function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) 
-v1.23.1 or newer. 
+downloaded through the [fetch_data()](https://research.libd.org/spatialLIBD/reference/fetch_data.html) 
+function from [spatialLIBD website](https://research.libd.org/spatialLIBD/) v1.23.1 or newer. 
+
+```
+## SRT data
+spe_erc_path <- fetch_data(type = "LFF_spatial_ERC_SRT")
+spe_erc_path <- unzip(spe_erc_path, exdir = tempdir())
+spe_erc <- HDF5Array::loadHDF5SummarizedExperiment(
+  file.path(tempdir(), "spe_ERC_annotated")
+)
+spe_erc
+# dim: 30494 122202
+# lobstr::obj_size(spe_erc) 3.20 GB
+
+## SCE data
+sce_erc_path <- fetch_data(type = "LFF_spatial_ERC_snRNAseq")
+sce_erc_path <- unzip(sce_erc_path, exdir = tempdir())
+sce_erc <- HDF5Array::loadHDF5SummarizedExperiment(
+  file.path(tempdir(), "sce_ERC_subcluster")
+)
+sce_erc
+# dim: 38606 122004
+# lobstr::obj_size(sce_erc) 258.20 MB
+```
 
 Source code is under the MIT License and permanently archived on 
 [Zenodo](https://zenodo.org/records/17108408). The GitHub repository includes 
