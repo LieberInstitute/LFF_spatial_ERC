@@ -16,7 +16,7 @@ library("RcppML")
 data_dir <- here("processed-data", "20_NMF", "01_runNMF")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-# plot_dir <- here("plots", "01_NMF", "01_NMF")
+# plot_dir <- here("plots", "20_NMF", "01_runNMF")
 # if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
