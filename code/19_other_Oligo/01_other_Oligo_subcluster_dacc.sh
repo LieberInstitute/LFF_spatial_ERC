@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 01_other_Oligo_subcluster.R --dataset spatialdACC --ds_short dacc --k 10 --opc TRUE
+Rscript 01_other_Oligo_subcluster.R --dataset spatialdACC --ds_short dacc --k 20 --opc TRUE
 
 echo "**** Job ends ****"
 date
