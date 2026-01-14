@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=300G
 #SBATCH --job-name=01_runNMF
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
