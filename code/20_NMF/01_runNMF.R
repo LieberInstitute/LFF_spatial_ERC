@@ -5,7 +5,6 @@
 #### Set up ####
 
 library("singlet")
-# library("Seurat")
 library("dplyr")
 library("ggplot2")
 library("sessioninfo")
