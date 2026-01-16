@@ -3,7 +3,7 @@
 #SBATCH --mem=200G
 #SBATCH --job-name=00_NMF_cross_validate
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 3-00:00:00
 #SBATCH -o logs/00_NMF_cross_validate.txt
 #SBATCH -e logs/00_NMF_cross_validate.txt
 #SBATCH --mail-type=ALL

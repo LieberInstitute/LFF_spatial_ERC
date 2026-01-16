@@ -29,7 +29,7 @@ message(Sys.time(), " - Run cross_validate_nmf")
 
 cvnmf <- cross_validate_nmf(
     logcounts(sce),   
-    ranks=c(5,10,20, 30, 40, 50, 75, 100,125),
+    ranks=c(5,10,20, 30, 40, 50, 75, 100, 125),
     n_replicates = 3,
     tol = 1e-03,
     maxit = 100,
