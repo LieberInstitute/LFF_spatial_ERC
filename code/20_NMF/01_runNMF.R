@@ -28,7 +28,7 @@ assay(sce,'logcounts')[1:5, 1:5]
 message(Sys.time(), " - Run NMF")
 options(RcppML.threads=4)
 x <- RcppML::nmf(assay(sce,'logcounts'),
-                 k=75,
+                 k=66,
                  tol = 1e-06,
                  maxit = 1000,
                  verbose = T,
