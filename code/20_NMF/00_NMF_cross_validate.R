@@ -20,6 +20,9 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 
 assay(sce,'logcounts')
 
+## Drop Br1289
+sce <- sce[, sce$BrNum != "Br1289"]
+
 ## logcounts to sparse matrix
 message(Sys.time(), " - logcounts to sparse matrix")
 logcounts(sce) <- as(logcounts(sce), "sparseMatrix")

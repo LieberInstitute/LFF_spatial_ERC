@@ -24,6 +24,9 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 
 assay(sce,'logcounts')[1:5, 1:5]
 
+## Drop Br1289
+sce <- sce[, sce$BrNum != "Br1289"]
+
 ## Run NMF
 message(Sys.time(), " - Run NMF")
 options(RcppML.threads=4)
