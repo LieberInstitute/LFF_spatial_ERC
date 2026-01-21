@@ -1,12 +1,11 @@
 **** Job starts ****
-Wed Jan 14 03:15:27 PM EST 2026
+Tue Jan 20 11:25:16 AM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 26751638
+Job id: 26992607
 Job name: 01_runNMF
-Node name: compute-168
+Node name: compute-159
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -177,7 +176,7 @@ The following object is masked from ‘package:SeuratObject’:
 
     Assays
 
-2026-01-14 15:15:39.069081 - Load HDF5 sce
+2026-01-20 11:25:27.018187 - Load HDF5 sce
 <5 x 5> DelayedMatrix object of type "double":
                 [,1] [,2] [,3] [,4] [,5]
 ENSG00000290825    0    0    0    0    0
@@ -185,12 +184,12 @@ ENSG00000243485    0    0    0    0    0
 ENSG00000237613    0    0    0    0    0
 ENSG00000290826    0    0    0    0    0
 ENSG00000186092    0    0    0    0    0
-2026-01-14 15:15:45.554239 - Run NMF
-2026-01-14 20:49:10.442283 - Done NMF...Saving
+2026-01-20 11:26:30.968141 - Run NMF
+2026-01-20 15:36:14.781496 - Done NMF...Saving
 [1] "Reproducibility information:"
-[1] "2026-01-14 20:49:16 EST"
+[1] "2026-01-20 15:36:18 EST"
      user    system   elapsed 
-39554.739    52.487 20027.389 
+28944.449   123.781 15061.342 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -201,7 +200,7 @@ ENSG00000186092    0    0    0    0    0
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-01-14
+ date     2026-01-20
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -356,4 +355,4 @@ ENSG00000186092    0    0    0    0    0
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jan 14 08:49:17 PM EST 2026
+Tue Jan 20 03:36:19 PM EST 2026
