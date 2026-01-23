@@ -39,6 +39,11 @@ sce$cell_type_anno <- factor(sce$cell_type_anno)
 table(sce$cell_type_anno)
 
 cell_type_colors <- metadata(sce)$cell_type_colors
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
+# Oligo_OPC_colors
+
+Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
+
 
 #### AD risk gene dotplot ####
 
@@ -53,7 +58,7 @@ sce |>
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = TRUE,
               groupLegends = FALSE)
 dev.off()
@@ -99,7 +104,7 @@ plot_marker_express_ALL(
     anno_col = "MeanRatio.anno",
     gene_col = "gene",
     cellType_col = "cell_type_anno",
-    color_pal = cell_type_colors$anno,
+    color_pal = Oligo_OPC_colors,
     plot_points = FALSE
 )
 
@@ -115,7 +120,7 @@ sce |>
               groupAnno = "cell_type_anno",
               featureAnno = "Marker",
               scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
                                 "Marker" = cell_type_colors$anno),
               clusterRows = FALSE,
               groupLegends = FALSE)
@@ -202,8 +207,8 @@ sce |>
               groupAnno = "cell_type_anno",
               featureAnno = "Marker",
               scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno,
-                                "Marker" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                "Marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
 dev.off()
@@ -384,7 +389,7 @@ if(celltype == "Oligo"){
                   groupAnno = "cell_type_anno",
                   featureAnno = "Grubman_Oligo",
                   scale = TRUE,
-                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  annoColors = list("cell_type_anno" = Oligo_OPC_colors),
                   clusterRows = FALSE,
                   groupLegends = FALSE)
     dev.off()
@@ -458,139 +463,91 @@ dev.off()
 
 # disease associated 
 #### Cell type checks ####
-#### Oligo ####
-if(celltype == "Oligo"){
-    
-    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
-    lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
-                          Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
-                          premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
-                          myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
-                          disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
-                          AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
-                          )
-                        
-    
-    lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
-    
-    plot_marker_express_List(
-        sce,
-        gene_list = lit_markers,
-        cellType_col = "cell_type_anno",
-        pdf_fn = here(plot_dir, "sn_violin_lit_markers.pdf"),
-        color_pal = cell_type_colors$anno
-    )
-    
-    ## Bernie genes of interest
-    oligo_bernie_genes <- plot_gene_express(
-        sce,
-        genes = c("PSEN1", "NCSTN"),
-        category = "cell_type_anno",
-        color_pal = cell_type_colors$anno
-    )
-    
-    ggsave(oligo_bernie_genes, filename = here(plot_dir, "sn_violin_Oligo_check.png"))
-    
-    
-    ## oligo marker dot plot
-    lit_markers <- AnnotationDbi::unlist2(lit_markers)
-    
-    rowData(sce)$Marker <- NULL
-    rowData(sce)$Marker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
-    table(rowData(sce)$Marker)
-    
-    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
-    sce |>
-        scDotPlot(features = lit_markers,
-                  group = "cell_type_anno",
-                  groupAnno = "cell_type_anno",
-                  featureAnno = "Marker",
-                  scale = TRUE,
-                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
-                  clusterRows = FALSE,
-                  groupLegends = FALSE)
-    dev.off()
-    
-} else if(celltype == "Astro"){
-    
-    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
-    lit_markers <- list(disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
-                        AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
-    )
-    
-    
-    lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
-    
-    plot_marker_express_List(
-        sce,
-        gene_list = lit_markers,
-        cellType_col = "cell_type_anno",
-        pdf_fn = here(plot_dir, "sn_violin_lit_markers.pdf"),
-        color_pal = cell_type_colors$anno
-    )
-    
 
-    ## lit gene dot plot
-    lit_markers <- AnnotationDbi::unlist2(lit_markers)
-    
-    rowData(sce)$Marker <- NULL
-    rowData(sce)$Marker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
-    table(rowData(sce)$Marker)
-    
-    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
-    sce |>
-        scDotPlot(features = lit_markers,
-                  group = "cell_type_anno",
-                  groupAnno = "cell_type_anno",
-                  featureAnno = "Marker",
-                  scale = TRUE,
-                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
-                  clusterRows = FALSE,
-                  groupLegends = FALSE)
-    dev.off()
-    
-}else if(celltype == "Micro"){
-    
-    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
-    lit_markers <- list(disease_associated = c("TREM2"), #https://doi.org/10.1038/s41593-025-01873-x
-                        inflamation = c("NLPR3")) 
-    
-    lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
-    
-    plot_marker_express_List(
-        sce,
-        gene_list = lit_markers,
-        cellType_col = "cell_type_anno",
-        pdf_fn = here(plot_dir, sprintf("sn_violin_%s_markers.pdf", celltype)),
-        color_pal = cell_type_colors$anno
-    )
-    
-    # ## oligo marker dot plot
-    # lit_markers <- AnnotationDbi::unlist2(lit_markers)
-    # 
-    # rowData(sce)$Marker <- NULL
-    # rowData(sce)$Marker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
-    # table(rowData(sce)$Marker)
-    # 
-    # pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
-    # sce |>
-    #     scDotPlot(features = lit_markers,
-    #               group = "cell_type_anno",
-    #               groupAnno = "cell_type_anno",
-    #               featureAnno = "Marker",
-    #               scale = TRUE,
-    #               annoColors = list("cell_type_anno" = cell_type_colors$anno),
-    #               clusterRows = FALSE,
-    #               groupLegends = FALSE)
-    # dev.off()
-    # 
-}
+## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
+lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
+                    Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
+                    premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
+                    myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
+                    disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
+                    AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+)
+
+
+lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
+
+plot_marker_express_List(
+    sce,
+    gene_list = lit_markers,
+    cellType_col = "cell_type_anno",
+    pdf_fn = here(plot_dir, "sn_violin_lit_markers_OligoOPC.pdf"),
+    color_pal = Oligo_OPC_colors
+)
+
+## Bernie genes of interest
+oligo_bernie_genes <- plot_gene_express(
+    sce,
+    genes = c("PSEN1", "NCSTN"),
+    category = "cell_type_anno",
+    color_pal = Oligo_OPC_colors
+)
+
+ggsave(oligo_bernie_genes, filename = here(plot_dir, "sn_violin_PSEN1_NCSTN_OligoOPC_check.png"))
+
+
+## oligo marker dot plot
+lit_markers <- AnnotationDbi::unlist2(lit_markers)
+
+rowData(sce)$Marker <- NULL
+rowData(sce)$Marker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
+table(rowData(sce)$Marker)
+
+pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_lit.pdf", celltype)))
+sce |>
+    scDotPlot(features = lit_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "Marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+gene_list_ADRB <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
+all(gene_list_ADRB %in% rownames(sce))
+
+oligo_ADRB_expression <- plot_gene_express(
+    sce,
+    genes = gene_list_ADRB,
+    category = "cell_type_anno",
+    color_pal = Oligo_OPC_colors
+)
+
+ggsave(oligo_ADRB_expression, filename = here(plot_dir, "sn_violin_ADRB_gene_OligoOPC_check.png"))
+
+
+pdf(here(plot_dir, "sn_dotplot_ADRB_gene_OligoOPC.pdf"))
+sce |>
+    scDotPlot(features = gene_list_ADRB,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+sce |>
+    scDotPlot(features = gene_list_ADRB,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+dev.off()
 
 
 # slurmjobs::job_single('35.5_sn_subcluster_marker_modeling_OligoOPC', create_shell = TRUE, memory = '25G', command = "Rscript 35.5_sn_subcluster_marker_modeling_OligoOPC.R")
-
-# slurmjobs::job_loop(loops = list(celltype = c("Astro", "Micro", "Endo", "OPC", "Vasc", "Excit", "Inhib")), create_shell = TRUE, name = "35.5_sn_subcluster_marker_modeling_OligoOPC", create_script = FALSE)
-
 
 ## Reproducibility information
 print("Reproducibility information:")
