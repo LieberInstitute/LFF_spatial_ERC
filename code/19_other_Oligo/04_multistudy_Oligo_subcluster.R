@@ -34,6 +34,31 @@ table(sce$cell_type_fine)
 
 sce$dataset <- "ERC"
 
+coldata_keep <- c("Barcode", 
+                  "sample_id",
+                  "dataset",
+                  # "chromium_id", 
+                  "BrNum", 
+                  "Sex", 
+                  "Age",
+                  # "Diagnosis", 
+                  # "Rin",
+                  "sum", 
+                  "detected", 
+                  "subsets_Mito_sum", 
+                  "subsets_Mito_detected", 
+                  "subsets_Mito_percent", 
+                  "total", 
+                  # "scDblFinder.sample", 
+                  # "scDblFinder.class",
+                  "scDblFinder.score",
+                  "cell_type_broad",
+                  "cell_type_fine")
+
+colData(sce) <- colData(sce)[, coldata_keep]
+
+assay(sce, "binomial_deviance_residuals") <- NULL
+
 #### Load spatialDLPFC ####
 message(Sys.time(), " - Load DLPFC sce")
 
@@ -45,6 +70,7 @@ sce_dlpfc <- HDF5Array::loadHDF5SummarizedExperiment(
 )
 message("DLPFC n nuc: ", ncol(sce_dlpfc), ", n gene:", nrow(sce))
 
+## cell types
 sce_dlpfc$cell_type_broad <- as.character(sce_dlpfc$cellType_layer)
 sce_dlpfc <- sce_dlpfc[,sce_dlpfc$cell_type_broad %in% c("Oligo", "OPC")]
 table(sce_dlpfc$cell_type_broad)
@@ -52,51 +78,122 @@ table(sce_dlpfc$cell_type_broad)
 sce_dlpfc$cell_type_fine <- as.character(sce_dlpfc$cellType_hc)
 table(sce_dlpfc$cell_type_fine)
 
+## modify colData
+# colnames(colData(sce_dlpfc))[colnames(colData(sce_dlpfc)) %in% coldata_keep]
+
+sce_dlpfc$scDblFinder.score <- sce_dlpfc$doubletScore
+sce_dlpfc$sample_id <- sce_dlpfc$SAMPLE_ID
+sce_dlpfc$Age <- sce_dlpfc$age
+sce_dlpfc$Sex <- sce_dlpfc$sex
+sce_dlpfc$dataset <- "dlpfc"
+
+all(coldata_keep %in% colnames(colData(sce_dlpfc)))
+# coldata_keep[!coldata_keep %in% colnames(colData(sce_dlpfc))]
+
+colData(sce_dlpfc) <- colData(sce_dlpfc)[, coldata_keep]
+
 ## modify rowData
 rownames(sce_dlpfc) <- rowData(sce_dlpfc)$gene_id
-rowData(sce_dlpfc)$binomial_deviance <- NULL
 
 common_genes <- intersect(rownames(sce), rownames(sce_dlpfc))
 message("common genes: ", length(common_genes))
 
 sce <- sce[common_genes,]
 sce_dlpfc <- sce_dlpfc[common_genes,]
+identical(rownames(sce_dlpfc), rownames(sce))
 
-cbind(sce, sce_dlpfc)
+# rowData(sce_dlpfc) <- rowData(sce)
 
-rowRanges(sce)
-rowRanges(sce_dlpfc)
+rowRanges(sce_dlpfc) <- NULL 
+
+sce_rd <- rowData(sce)
+sce_rr <- rowRanges(sce)
+
+rowRanges(sce) <- NULL 
+
+sce <- cbind(sce, sce_dlpfc)
+
+rowData(sce) <- sce_rd
+rownames(sce) <- rownames(sce_rd)
+
+rm(sce_dlpfc)
     
-} else if(opt$dataset == "spatialHPC"){
-    
-    library(ExperimentHub)
-    
-    ehub <- ExperimentHub()
-    
-    ## Load the HPC dataset
-    myfiles <- query(ehub, "humanHippocampus2024")
-    
-    sce <- myfiles[["EH9606"]]
-    
-    table(sce$broad.cell.class)
-    # Neuron  Micro  Astro  Oligo  Other 
-    # 52000   3940   4298   6787   8386 
-    
-    ## subset to Oligos
-    sce <- sce[,sce$broad.cell.class == "Oligo"]
-    sce$superfine.cell.class <- droplevels(sce$superfine.cell.class)
-    
-    table(sce$superfine.cell.class)
-    # Oligo.1 Oligo.2 
-    # 3694    3093
-    
-    sce$sample_id <- sce$brnum
-}
+#### Load spatialHPC ####
+message(Sys.time(), " - Load HPC sce")
+
+library(ExperimentHub)
+ehub <- ExperimentHub()
+
+## Load the HPC dataset
+myfiles <- query(ehub, "humanHippocampus2024")
+sce_hpc <- myfiles[["EH9606"]]
+
+message("HPC n nuc: ", ncol(sce_hpc), ", n gene:", nrow(sce_hpc))
+
+## cell types
+sce_hpc$cell_type_broad <- as.character(sce_hpc$broad.cell.class)
+sce_hpc <- sce_hpc[,sce_hpc$cell_type_broad %in% c("Oligo", "OPC")]
+
+## subset to Oligos
+sce_hpc$cell_type_fine <- as.character(sce_hpc$superfine.cell.class)
+
+table(sce_hpc$cell_type_fine)
+# Oligo.1 Oligo.2 
+# 3694    3093
+
+## modify colData
+# colnames(colData(sce_hpc))[colnames(colData(sce_hpc)) %in% coldata_keep]
+
+sce_hpc$BrNum <- sce_hpc$brnum
+sce_hpc$scDblFinder.score <- sce_hpc$doubletScore
+sce_hpc$sample_id <- sce_hpc$Sample
+sce_hpc$Age <- sce_hpc$age
+sce_hpc$Sex <- sce_hpc$sex
+sce_hpc$dataset <- "hpc"
+
+all(coldata_keep %in% colnames(colData(sce_hpc)))
+# coldata_keep[!coldata_keep %in% colnames(colData(sce_hpc))]
+
+colData(sce_hpc) <- colData(sce_hpc)[, coldata_keep]
+
+## modify rowData
+rownames(sce_hpc) <- rowData(sce_hpc)$gene_id
+
+common_genes <- intersect(rownames(sce), rownames(sce_hpc))
+message("common genes: ", length(common_genes))
+
+sce <- sce[common_genes,]
+sce_hpc <- sce_hpc[common_genes,]
+identical(rownames(sce_hpc), rownames(sce))
+
+rowRanges(sce_hpc) <- NULL 
+rowData(sce_hpc) <- rowData(sce)
+
+sce_rd <- rowData(sce)
+
+## match assays
+assay(sce, "logcounts") <- NULL
+assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
+
+assay(sce_hpc, "logcounts") <- NULL
+assay(sce_hpc, "counts") <- as(assay(sce_hpc, "counts"), "Matrix")
+
+sce <- cbind(sce, sce_hpc)
+
+rm(sce_hpc)
+
+#### Combined Oligo Data ####
+
+table(sce$dataset)
+
+table(sce$cell_type_broad, sce$dataset)
+table(sce$cell_type_fine, sce$dataset)
+
 
 #### GLM PCA ####
 set.seed(425)
 
-harmony_file <- here(data_dir, sprintf("subcluster_HARMONY_pca_%s.rdata", opt$dataset))
+harmony_file <- here(data_dir, "multistudy_Oligo_HARMONY_pca.rdata"))
 
 if(file.exists(harmony_file)){
     message(Sys.time(), " - Load saved HARMONY PCs")
@@ -106,7 +203,9 @@ if(file.exists(harmony_file)){
     
     message(Sys.time(), " - running Deviance Feat. Selection")
     sce <- scry::devianceFeatureSelection(sce,
-                                          assay = "counts", fam = "binomial", sorted = F,
+                                          assay = "counts", 
+                                          fam = "binomial", 
+                                          sorted = F,
                                           batch = as.factor(sce$round)
     )
     
@@ -260,6 +359,8 @@ Heatmap(jacc.mat,
         )
 
 dev.off()
+
+# slurmjobs::job_single('04_multistudy_Oligo_subcluster', create_shell = TRUE, memory = '100G', command = "Rscript 04_multistudy_Oligo_subcluster.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
