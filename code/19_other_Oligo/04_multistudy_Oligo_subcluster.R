@@ -87,6 +87,9 @@ sce_dlpfc$Age <- sce_dlpfc$age
 sce_dlpfc$Sex <- sce_dlpfc$sex
 sce_dlpfc$dataset <- "dlpfc"
 
+br_n10 <- as.data.frame(unique(colData(sce_dlpfc)[,c("BrNum","Age", "Sex")]))
+rownames(br_n10) <- br_n10$BrNum
+
 all(coldata_keep %in% colnames(colData(sce_dlpfc)))
 # coldata_keep[!coldata_keep %in% colnames(colData(sce_dlpfc))]
 
@@ -178,22 +181,83 @@ assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
 assay(sce_hpc, "logcounts") <- NULL
 assay(sce_hpc, "counts") <- as(assay(sce_hpc, "counts"), "Matrix")
 
-sce <- cbind(sce, sce_hpc)
+sce_all <- cbind(sce, sce_hpc)
 
 rm(sce_hpc)
 
+#### Load dACC data ####
+load("/dcs04/lieber/marmaypag/spatialdACC_LIBD4125/spatialdACC/processed-data/snRNA-seq/05_azimuth/sce_azimuth.Rdata", verbose = TRUE)
+message("dacc n nuc: ", ncol(sce), ", n gene:", nrow(sce))
+
+## cell types
+sce$cell_type_broad <- as.character(sce$cellType_azimuth)
+sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
+
+## subset to Oligos
+sce$cell_type_fine <- as.character(sce$cellType_azimuth)
+
+table(sce$cell_type_fine)
+# Oligo.1 Oligo.2 
+# 3694    3093
+
+## modify colData
+# colnames(colData(sce))[colnames(colData(sce)) %in% coldata_keep]
+
+sce$BrNum <- sce$brain
+sce$sample_id <- sce$Sample
+
+all(sce$BrNum %in% br_n10$BrNum)
+
+sce$Age <- br_n10[sce$BrNum,"Age"]
+sce$Sex <- br_n10[sce$BrNum,"Sex"]
+sce$dataset <- "dacc"
+
+all(coldata_keep %in% colnames(colData(sce)))
+# coldata_keep[!coldata_keep %in% colnames(colData(sce))]
+
+colData(sce) <- colData(sce)[, coldata_keep]
+
+## modify rowData
+rownames(sce) <- rowData(sce)$gene_id
+
+common_genes <- intersect(rownames(sce_all), rownames(sce))
+message("common genes: ", length(common_genes))
+
+sce_all <- sce_all[common_genes,]
+sce <- sce[common_genes,]
+identical(rownames(sce_all), rownames(sce))
+
+rowRanges(sce) <- NULL 
+rowData(sce) <- rowData(sce_all)
+
+sce_rd <- rowData(sce_all)
+
+## match assays
+assay(sce, "logcounts") <- NULL
+assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
+
+
+## combine 
+sce <- cbind(sce_all, sce)
+
+rowData(sce)
 #### Combined Oligo Data ####
+
+message("ALL data n nuc: ", ncol(sce), ", n gene:", nrow(sce))
 
 table(sce$dataset)
 
 table(sce$cell_type_broad, sce$dataset)
 table(sce$cell_type_fine, sce$dataset)
 
+sce$cell_type_dataset <- paste0(sce$cell_type_broad, "_",sce$dataset)
+
+table(sce$cell_type_dataset)
 
 #### GLM PCA ####
 set.seed(425)
 
-harmony_file <- here(data_dir, "multistudy_Oligo_HARMONY_pca.rdata"))
+harmony_file <- here(data_dir, "multistudy_Oligo_HARMONY_pca.rdata")
 
 if(file.exists(harmony_file)){
     message(Sys.time(), " - Load saved HARMONY PCs")
@@ -206,11 +270,11 @@ if(file.exists(harmony_file)){
                                           assay = "counts", 
                                           fam = "binomial", 
                                           sorted = F,
-                                          batch = as.factor(sce$round)
+                                          batch = as.factor(sce$dataset)
     )
     
     ## plot biononial deviance distribution
-    pdf(here(plot_dir, sprintf("sn_reprocess_binomial_deviance_%s.pdf", opt$dataset)))
+    pdf(here(plot_dir, "multistudy_Oligo_binomial_deviance.pdf"))
     plot(sort(rowData(sce)$binomial_deviance, decreasing = T),
          type = "l", xlab = "ranked genes",
          ylab = "binomial deviance", main = "Feature Selection with Deviance"
@@ -238,6 +302,25 @@ if(file.exists(harmony_file)){
                   BSPARAM = BiocSingular::IrlbaParam()
     )
     
+    ## un-corrected TSNE 
+    message(Sys.time(), " - running TSNE")
+    sce <- runTSNE(sce, dimred = "HARMONY")
+    
+    source(here("code", "utils", "my_plot_reduced_dim.R"))
+    
+    tsne_plot <- my_plot_reduced_dim(sce,
+                                     prefix = "other_Oligo",
+                                     dimred = "TSNE",
+                                     my_var = "Oligo_anno",
+                                     var_type = "cat",
+                                     save_plot = TRUE,
+                                     suffix = sprintf("%s_k%i", opt$dataset, opt$k),
+                                     facet = FALSE,
+                                     plot_dir_rd = plot_dir,
+                                     verbose = TRUE, 
+                                     add_label = TRUE,
+                                     color_pal = other_oligo_colors)
+    
     #### Batch Correction ####
     message(Sys.time(), " - HARMONY Correction")
     
@@ -246,7 +329,7 @@ if(file.exists(harmony_file)){
     reducedDim(sce, "PCA") <- reducedDim(sce, "GLMPCA_approx")
     
     message("running Harmony - ", Sys.time())
-    sce <- harmony::RunHarmony(sce, group.by.vars = "sample_id", verbose = TRUE)
+    sce <- harmony::RunHarmony(sce, group.by.vars = "dataset", verbose = TRUE)
     
     ## Remove redundant PCA
     reducedDim(sce, "PCA") <- NULL
