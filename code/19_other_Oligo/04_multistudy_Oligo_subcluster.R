@@ -240,7 +240,9 @@ assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
 ## combine 
 sce <- cbind(sce_all, sce)
 
-rowData(sce)
+rm(sce_all)
+# rowData(sce)
+
 #### Combined Oligo Data ####
 
 message("ALL data n nuc: ", ncol(sce), ", n gene:", nrow(sce))
