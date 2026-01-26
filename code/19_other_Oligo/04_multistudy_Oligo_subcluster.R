@@ -306,17 +306,16 @@ if(file.exists(harmony_file)){
     
     ## un-corrected TSNE 
     message(Sys.time(), " - running TSNE")
-    sce <- runTSNE(sce, dimred = "HARMONY")
+    sce <- runTSNE(sce, dimred = "PCA")
     
     source(here("code", "utils", "my_plot_reduced_dim.R"))
     
     tsne_plot <- my_plot_reduced_dim(sce,
-                                     prefix = "other_Oligo",
+                                     prefix = "Multistudy_Oligo",
                                      dimred = "TSNE",
-                                     my_var = "Oligo_anno",
+                                     my_var = "cell_type_dataset",
                                      var_type = "cat",
                                      save_plot = TRUE,
-                                     suffix = sprintf("%s_k%i", opt$dataset, opt$k),
                                      facet = FALSE,
                                      plot_dir_rd = plot_dir,
                                      verbose = TRUE, 
