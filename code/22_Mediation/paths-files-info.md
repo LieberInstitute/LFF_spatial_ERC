@@ -41,8 +41,8 @@
 
 ### **A. Oligodendrocyte (Oligo.3) DEGs (Carrier Model)**
 **File Paths (Relative to project root `LFF_spatial_ERC`):**
-*   **CSV:** `processed-data/13_compile_DGE/01_compile_DGE/sn_fine/DGE_results_carrier_sn_fine.csv`
-*   **RDS:** `processed-data/13_compile_DGE/01_compile_DGE/sn_fine/DGE_results_carrier_sn_fine.rds`
+*   **RDS:** `processed-data/13_compile_DGE/01_compile_DGE/sn_fine/DGE_results_carrier_sn_fine.Rds`
+*   **CSV:** `processed-data/13_compile_DGE/01_compile_DGE/sn_fine/vlmf_model_summary_sn_fine.csv`
 
 **Description & Comments:**
 *   **Louise:** These files contain the fine-resolution single-nucleus differential gene expression results.
