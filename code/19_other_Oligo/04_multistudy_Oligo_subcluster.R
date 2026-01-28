@@ -14,10 +14,10 @@ library("bluster")
 library("ComplexHeatmap")
 library("ExperimentHub")
 
-data_dir <- here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster.R")
+data_dir <- here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "19_other_Oligo", "04_multistudy_Oligo_subcluster.R")
+plot_dir <- here("plots", "19_other_Oligo", "04_multistudy_Oligo_subcluster")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 
