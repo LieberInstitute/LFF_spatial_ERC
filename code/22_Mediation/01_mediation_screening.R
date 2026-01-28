@@ -137,7 +137,7 @@ med_degs <- NULL ## placeholder for the selected mediator DEGs, gene metadata
 med_expr <- NULL ## placeholder for the mediator gene expression data (logcounts)
 ## these should be loaded depending on mediation type
 
-if (opt$mediation == "erc_astro") {
+if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DEGs
   degs_fn <- file.path(ddir, "13_compile_DGE/01_compile_DGE/sn_fine", "DGE_results_carrier_sn_fine.Rds")
   pdge <- readRDS(degs_fn)
   med_degs <- as.data.table(pdge)[
@@ -149,8 +149,17 @@ if (opt$mediation == "erc_astro") {
   med_degs[, run := sprintf("%s|%s|%s", cluster, gene_id, gene_name)]
   med_degs[, iter := .I]
 
-  ## Prepare mediator expression (med_gene_id x BrNum) from sce_pb logcounts
+  ## only for this mediation scenario, the mediator expression is in the same sce_pb object
+  ## prepare mediator expression matrix (med_gene_id x BrNum) from sce_pb logcounts
   med_brnums_all <- unique(as.character(colData(sce_pb)$BrNum))
+  ## > head(erc_deg_summary)
+  #    V1     cell_type_broad  cluster   model   n_genes   nDEGs_FDR05   nUP   nDown
+  #   <int>       <char>       <char>   <char>     <int>      <int>     <int>  <int>
+  #1:  1         Astro        Astro.1   carrier   16867         7         5     2
+  #2:  2         Astro        Astro.2   carrier    9994        58        10    48
+  #3:  3         Astro        Astro.3   carrier   11282        23         5    18
+
+  ## Note: for Astro.1 cluster, only 29 out of 30 donors had enough expression data
   med_expr <- matrix(NA_real_, nrow = nrow(med_degs), ncol = length(med_brnums_all))
   rownames(med_expr) <- med_degs$med_gene_id
   colnames(med_expr) <- med_brnums_all
@@ -180,7 +189,6 @@ if (opt$mediation == "erc_astro") {
       med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
       message(Sys.time(), sprintf(" - test test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
   }
-
   message(Sys.time(), sprintf(" - ERC Astro DEGs for mediation: %i", nrow(med_degs)))
 }
 
