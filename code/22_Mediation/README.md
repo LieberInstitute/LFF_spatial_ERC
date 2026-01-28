@@ -29,7 +29,7 @@ A key practical enabler is the 24 donors overlap between the ERC and LC studies 
 **2. Design 2 (Blue):**
 **Cross-region LC astrocyte-domain mediators => ERC Oligo.3 outcomes (n = 24 overlap donors)**
 * **X:** APOE (E4+ vs E2+)
-* **M:** APOE-associated DEGs from the **LC astrocyte spatial domain** (astro/proximity signal near LC neurons?)
+* **M:** APOE-associated DEGs from the **LC astrocyte spatial domain** (astro/proximity signal near LC neurons?) (use their expression as mediators)
 * **Y:** ERC Oligo.3 outcomes
 * **Goal:** a more focused LC=>ERC hypothesis: APOE-driven astro changes in LC relate to (or mediate) APOE-driven Oligo.3 changes in ERC.
 
