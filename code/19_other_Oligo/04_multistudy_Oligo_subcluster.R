@@ -12,12 +12,14 @@ library("scry")
 library("DeconvoBuddies")
 library("bluster")
 library("ComplexHeatmap")
+library("ExperimentHub")
 
 data_dir <- here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster.R")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 plot_dir <- here("plots", "19_other_Oligo", "04_multistudy_Oligo_subcluster.R")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
 
 ### Load ERC data ####
 message(Sys.time(), " - Load ERC sce")
@@ -32,7 +34,7 @@ table(sce$cell_type_broad)
 sce$cell_type_fine <- as.character(sce$cell_type_anno)
 table(sce$cell_type_fine)
 
-sce$dataset <- "ERC"
+sce$dataset <- "erc"
 
 coldata_keep <- c("Barcode", 
                   "sample_id",
@@ -57,7 +59,23 @@ coldata_keep <- c("Barcode",
 
 colData(sce) <- colData(sce)[, coldata_keep]
 
-assay(sce, "binomial_deviance_residuals") <- NULL
+## add dataset to barcode
+colnames(sce) <- paste0(sce$dataset, "_", sce$Barcode)
+head(colnames(sce))
+
+## start base for combining data
+
+all_counts <- assay(sce, "counts")
+all_counts[1:5, 1:5]
+# colnames(all_counts) <- colnames(sce)
+
+all_colData <- colData(sce)
+
+all_rowData <- rowData(sce)
+
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
+identical(rownames(all_counts), rownames(all_rowData))
 
 #### Load spatialDLPFC ####
 message(Sys.time(), " - Load DLPFC sce")
@@ -93,38 +111,30 @@ rownames(br_n10) <- br_n10$BrNum
 all(coldata_keep %in% colnames(colData(sce_dlpfc)))
 # coldata_keep[!coldata_keep %in% colnames(colData(sce_dlpfc))]
 
-colData(sce_dlpfc) <- colData(sce_dlpfc)[, coldata_keep]
+## add dataset to barcode
+colnames(sce_dlpfc) <- paste0(sce_dlpfc$dataset, "_", colnames(sce_dlpfc))
+head(colnames(sce_dlpfc))
 
 ## modify rowData
 rownames(sce_dlpfc) <- rowData(sce_dlpfc)$gene_id
 
-common_genes <- intersect(rownames(sce), rownames(sce_dlpfc))
+common_genes <- intersect(rownames(all_counts), rownames(sce_dlpfc))
 message("common genes: ", length(common_genes))
 
-sce <- sce[common_genes,]
-sce_dlpfc <- sce_dlpfc[common_genes,]
-identical(rownames(sce_dlpfc), rownames(sce))
+## combine data
 
-# rowData(sce_dlpfc) <- rowData(sce)
+all_counts <- cbind(all_counts[common_genes,], assay(sce_dlpfc, "counts")[common_genes,])
+all_colData <- rbind(all_colData, colData(sce_dlpfc)[, coldata_keep])
 
-rowRanges(sce_dlpfc) <- NULL 
 
-sce_rd <- rowData(sce)
-sce_rr <- rowRanges(sce)
-
-rowRanges(sce) <- NULL 
-
-sce <- cbind(sce, sce_dlpfc)
-
-rowData(sce) <- sce_rd
-rownames(sce) <- rownames(sce_rd)
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
 
 rm(sce_dlpfc)
     
 #### Load spatialHPC ####
 message(Sys.time(), " - Load HPC sce")
 
-library(ExperimentHub)
 ehub <- ExperimentHub()
 
 ## Load the HPC dataset
@@ -159,29 +169,25 @@ all(coldata_keep %in% colnames(colData(sce_hpc)))
 
 colData(sce_hpc) <- colData(sce_hpc)[, coldata_keep]
 
+## add dataset to barcode
+colnames(sce_hpc) <- paste0(sce_hpc$dataset, "_", colnames(sce_hpc))
+head(colnames(sce_hpc))
+
+
 ## modify rowData
 rownames(sce_hpc) <- rowData(sce_hpc)$gene_id
 
 common_genes <- intersect(rownames(sce), rownames(sce_hpc))
 message("common genes: ", length(common_genes))
 
-sce <- sce[common_genes,]
-sce_hpc <- sce_hpc[common_genes,]
-identical(rownames(sce_hpc), rownames(sce))
+## combine data
+all_counts <- cbind(as(all_counts[common_genes,], "Matrix"), 
+                    assay(sce_hpc, "counts")[common_genes,])
 
-rowRanges(sce_hpc) <- NULL 
-rowData(sce_hpc) <- rowData(sce)
+all_colData <- rbind(all_colData, colData(sce_hpc)[, coldata_keep])
 
-sce_rd <- rowData(sce)
-
-## match assays
-assay(sce, "logcounts") <- NULL
-assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
-
-assay(sce_hpc, "logcounts") <- NULL
-assay(sce_hpc, "counts") <- as(assay(sce_hpc, "counts"), "Matrix")
-
-sce_all <- cbind(sce, sce_hpc)
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
 
 rm(sce_hpc)
 
@@ -213,37 +219,25 @@ sce$Sex <- br_n10[sce$BrNum,"Sex"]
 sce$dataset <- "dacc"
 
 all(coldata_keep %in% colnames(colData(sce)))
-# coldata_keep[!coldata_keep %in% colnames(colData(sce))]
 
-colData(sce) <- colData(sce)[, coldata_keep]
+## add dataset to barcode
+colnames(sce) <- paste0(sce$dataset, "_", colnames(sce))
+head(colnames(sce))
 
-## modify rowData
-rownames(sce) <- rowData(sce)$gene_id
+## combine data
+all_counts <- cbind(all_counts[common_genes,],
+                    assay(sce, "counts")[common_genes,])
 
-common_genes <- intersect(rownames(sce_all), rownames(sce))
-message("common genes: ", length(common_genes))
+all_colData <- rbind(all_colData, colData(sce)[, coldata_keep])
 
-sce_all <- sce_all[common_genes,]
-sce <- sce[common_genes,]
-identical(rownames(sce_all), rownames(sce))
-
-rowRanges(sce) <- NULL 
-rowData(sce) <- rowData(sce_all)
-
-sce_rd <- rowData(sce_all)
-
-## match assays
-assay(sce, "logcounts") <- NULL
-assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
-
-
-## combine 
-sce <- cbind(sce_all, sce)
-
-rm(sce_all)
-# rowData(sce)
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
 
 #### Combined Oligo Data ####
+
+sce <- SingleCellExperiment(assay = list(counts = all_counts),
+                            colData = all_colData,
+                            rowData = all_rowData[common_genes,])
 
 message("ALL data n nuc: ", ncol(sce), ", n gene:", nrow(sce))
 
@@ -255,6 +249,9 @@ table(sce$cell_type_fine, sce$dataset)
 sce$cell_type_dataset <- paste0(sce$cell_type_broad, "_",sce$dataset)
 
 table(sce$cell_type_dataset)
+
+## rm unneeded data
+rm(all_counts)
 
 #### GLM PCA ####
 set.seed(425)
