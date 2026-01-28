@@ -31,7 +31,7 @@ sce <- sce[, sce$BrNum != "Br1289"]
 message(Sys.time(), " - Run NMF")
 options(RcppML.threads=4)
 x <- RcppML::nmf(assay(sce,'logcounts'),
-                 k=66,
+                 k=50,
                  tol = 1e-06,
                  maxit = 1000,
                  verbose = T,
