@@ -73,9 +73,10 @@ all_colData <- colData(sce)
 
 all_rowData <- rowData(sce)
 
-identical(ncol(all_counts), nrow(all_colData))
-identical(colnames(all_counts), rownames(all_colData))
-identical(rownames(all_counts), rownames(all_rowData))
+message("Start All data")
+message("n nuc matches: ", identical(ncol(all_counts), nrow(all_colData)))
+message("colnames match: ", identical(colnames(all_counts), rownames(all_colData)))
+message("rownames match: ", identical(rownames(all_counts), rownames(all_rowData)))
 
 #### Load spatialDLPFC ####
 message(Sys.time(), " - Load DLPFC sce")
@@ -122,13 +123,13 @@ common_genes <- intersect(rownames(all_counts), rownames(sce_dlpfc))
 message("common genes: ", length(common_genes))
 
 ## combine data
-
+message("merge DLPFC data")
 all_counts <- cbind(all_counts[common_genes,], assay(sce_dlpfc, "counts")[common_genes,])
 all_colData <- rbind(all_colData, colData(sce_dlpfc)[, coldata_keep])
 
 
-identical(ncol(all_counts), nrow(all_colData))
-identical(colnames(all_counts), rownames(all_colData))
+message("n nuc matches: ", identical(ncol(all_counts), nrow(all_colData)))
+message("colnames match: ", identical(colnames(all_counts), rownames(all_colData)))
 
 rm(sce_dlpfc)
     
@@ -177,17 +178,18 @@ head(colnames(sce_hpc))
 ## modify rowData
 rownames(sce_hpc) <- rowData(sce_hpc)$gene_id
 
-common_genes <- intersect(rownames(sce), rownames(sce_hpc))
+common_genes <- intersect(rownames(all_counts), rownames(sce_hpc))
 message("common genes: ", length(common_genes))
 
 ## combine data
+message("merge HPC data")
 all_counts <- cbind(as(all_counts[common_genes,], "Matrix"), 
                     assay(sce_hpc, "counts")[common_genes,])
 
 all_colData <- rbind(all_colData, colData(sce_hpc)[, coldata_keep])
 
-identical(ncol(all_counts), nrow(all_colData))
-identical(colnames(all_counts), rownames(all_colData))
+message("n nuc matches: ", identical(ncol(all_counts), nrow(all_colData)))
+message("colnames match: ", identical(colnames(all_counts), rownames(all_colData)))
 
 rm(sce_hpc)
 
@@ -224,17 +226,24 @@ all(coldata_keep %in% colnames(colData(sce)))
 colnames(sce) <- paste0(sce$dataset, "_", colnames(sce))
 head(colnames(sce))
 
+## modify rowData
+rownames(sce) <- rowData(sce)$gene_id
+
+common_genes <- intersect(rownames(all_counts), rownames(sce))
+message("common genes: ", length(common_genes))
+
 ## combine data
+message("merge dacc data")
 all_counts <- cbind(all_counts[common_genes,],
                     assay(sce, "counts")[common_genes,])
 
 all_colData <- rbind(all_colData, colData(sce)[, coldata_keep])
 
-identical(ncol(all_counts), nrow(all_colData))
-identical(colnames(all_counts), rownames(all_colData))
+message("n nuc matches: ", identical(ncol(all_counts), nrow(all_colData)))
+message("colnames match: ", identical(colnames(all_counts), rownames(all_colData)))
 
 #### Combined Oligo Data ####
-
+message(Sys.time(), " - Build Multi-Study Oligo SCE")
 sce <- SingleCellExperiment(assay = list(counts = all_counts),
                             colData = all_colData,
                             rowData = all_rowData[common_genes,])
