@@ -301,6 +301,9 @@ if(file.exists(harmony_file)){
     
     hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:5000]
     
+    ## get logCounts
+    sce <- logNormCounts(sce)
+    
     message(Sys.time(), " - running PCA")
     sce <- scater::runPCA(sce,
                   exprs_values = "binomial_deviance_residuals",
