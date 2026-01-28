@@ -12,12 +12,14 @@ library("scry")
 library("DeconvoBuddies")
 library("bluster")
 library("ComplexHeatmap")
+library("ExperimentHub")
 
 data_dir <- here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster.R")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 plot_dir <- here("plots", "19_other_Oligo", "04_multistudy_Oligo_subcluster.R")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
 
 ### Load ERC data ####
 message(Sys.time(), " - Load ERC sce")
@@ -32,7 +34,7 @@ table(sce$cell_type_broad)
 sce$cell_type_fine <- as.character(sce$cell_type_anno)
 table(sce$cell_type_fine)
 
-sce$dataset <- "ERC"
+sce$dataset <- "erc"
 
 coldata_keep <- c("Barcode", 
                   "sample_id",
@@ -57,7 +59,23 @@ coldata_keep <- c("Barcode",
 
 colData(sce) <- colData(sce)[, coldata_keep]
 
-assay(sce, "binomial_deviance_residuals") <- NULL
+## add dataset to barcode
+colnames(sce) <- paste0(sce$dataset, "_", sce$Barcode)
+head(colnames(sce))
+
+## start base for combining data
+
+all_counts <- assay(sce, "counts")
+all_counts[1:5, 1:5]
+# colnames(all_counts) <- colnames(sce)
+
+all_colData <- colData(sce)
+
+all_rowData <- rowData(sce)
+
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
+identical(rownames(all_counts), rownames(all_rowData))
 
 #### Load spatialDLPFC ####
 message(Sys.time(), " - Load DLPFC sce")
@@ -93,38 +111,30 @@ rownames(br_n10) <- br_n10$BrNum
 all(coldata_keep %in% colnames(colData(sce_dlpfc)))
 # coldata_keep[!coldata_keep %in% colnames(colData(sce_dlpfc))]
 
-colData(sce_dlpfc) <- colData(sce_dlpfc)[, coldata_keep]
+## add dataset to barcode
+colnames(sce_dlpfc) <- paste0(sce_dlpfc$dataset, "_", colnames(sce_dlpfc))
+head(colnames(sce_dlpfc))
 
 ## modify rowData
 rownames(sce_dlpfc) <- rowData(sce_dlpfc)$gene_id
 
-common_genes <- intersect(rownames(sce), rownames(sce_dlpfc))
+common_genes <- intersect(rownames(all_counts), rownames(sce_dlpfc))
 message("common genes: ", length(common_genes))
 
-sce <- sce[common_genes,]
-sce_dlpfc <- sce_dlpfc[common_genes,]
-identical(rownames(sce_dlpfc), rownames(sce))
+## combine data
 
-# rowData(sce_dlpfc) <- rowData(sce)
+all_counts <- cbind(all_counts[common_genes,], assay(sce_dlpfc, "counts")[common_genes,])
+all_colData <- rbind(all_colData, colData(sce_dlpfc)[, coldata_keep])
 
-rowRanges(sce_dlpfc) <- NULL 
 
-sce_rd <- rowData(sce)
-sce_rr <- rowRanges(sce)
-
-rowRanges(sce) <- NULL 
-
-sce <- cbind(sce, sce_dlpfc)
-
-rowData(sce) <- sce_rd
-rownames(sce) <- rownames(sce_rd)
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
 
 rm(sce_dlpfc)
     
 #### Load spatialHPC ####
 message(Sys.time(), " - Load HPC sce")
 
-library(ExperimentHub)
 ehub <- ExperimentHub()
 
 ## Load the HPC dataset
@@ -159,29 +169,25 @@ all(coldata_keep %in% colnames(colData(sce_hpc)))
 
 colData(sce_hpc) <- colData(sce_hpc)[, coldata_keep]
 
+## add dataset to barcode
+colnames(sce_hpc) <- paste0(sce_hpc$dataset, "_", colnames(sce_hpc))
+head(colnames(sce_hpc))
+
+
 ## modify rowData
 rownames(sce_hpc) <- rowData(sce_hpc)$gene_id
 
 common_genes <- intersect(rownames(sce), rownames(sce_hpc))
 message("common genes: ", length(common_genes))
 
-sce <- sce[common_genes,]
-sce_hpc <- sce_hpc[common_genes,]
-identical(rownames(sce_hpc), rownames(sce))
+## combine data
+all_counts <- cbind(as(all_counts[common_genes,], "Matrix"), 
+                    assay(sce_hpc, "counts")[common_genes,])
 
-rowRanges(sce_hpc) <- NULL 
-rowData(sce_hpc) <- rowData(sce)
+all_colData <- rbind(all_colData, colData(sce_hpc)[, coldata_keep])
 
-sce_rd <- rowData(sce)
-
-## match assays
-assay(sce, "logcounts") <- NULL
-assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
-
-assay(sce_hpc, "logcounts") <- NULL
-assay(sce_hpc, "counts") <- as(assay(sce_hpc, "counts"), "Matrix")
-
-sce_all <- cbind(sce, sce_hpc)
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
 
 rm(sce_hpc)
 
@@ -213,37 +219,25 @@ sce$Sex <- br_n10[sce$BrNum,"Sex"]
 sce$dataset <- "dacc"
 
 all(coldata_keep %in% colnames(colData(sce)))
-# coldata_keep[!coldata_keep %in% colnames(colData(sce))]
 
-colData(sce) <- colData(sce)[, coldata_keep]
+## add dataset to barcode
+colnames(sce) <- paste0(sce$dataset, "_", colnames(sce))
+head(colnames(sce))
 
-## modify rowData
-rownames(sce) <- rowData(sce)$gene_id
+## combine data
+all_counts <- cbind(all_counts[common_genes,],
+                    assay(sce, "counts")[common_genes,])
 
-common_genes <- intersect(rownames(sce_all), rownames(sce))
-message("common genes: ", length(common_genes))
+all_colData <- rbind(all_colData, colData(sce)[, coldata_keep])
 
-sce_all <- sce_all[common_genes,]
-sce <- sce[common_genes,]
-identical(rownames(sce_all), rownames(sce))
-
-rowRanges(sce) <- NULL 
-rowData(sce) <- rowData(sce_all)
-
-sce_rd <- rowData(sce_all)
-
-## match assays
-assay(sce, "logcounts") <- NULL
-assay(sce, "counts") <- as(assay(sce, "counts"), "Matrix")
-
-
-## combine 
-sce <- cbind(sce_all, sce)
-
-rm(sce_all)
-# rowData(sce)
+identical(ncol(all_counts), nrow(all_colData))
+identical(colnames(all_counts), rownames(all_colData))
 
 #### Combined Oligo Data ####
+
+sce <- SingleCellExperiment(assay = list(counts = all_counts),
+                            colData = all_colData,
+                            rowData = all_rowData[common_genes,])
 
 message("ALL data n nuc: ", ncol(sce), ", n gene:", nrow(sce))
 
@@ -255,6 +249,9 @@ table(sce$cell_type_fine, sce$dataset)
 sce$cell_type_dataset <- paste0(sce$cell_type_broad, "_",sce$dataset)
 
 table(sce$cell_type_dataset)
+
+## rm unneeded data
+rm(all_counts)
 
 #### GLM PCA ####
 set.seed(425)
@@ -296,7 +293,7 @@ if(file.exists(harmony_file)){
     hdgs <- rownames(sce)[order(rowData(sce)$binomial_deviance, decreasing = T)][1:5000]
     
     message(Sys.time(), " - running PCA")
-    sce <- runPCA(sce,
+    sce <- scater::runPCA(sce,
                   exprs_values = "binomial_deviance_residuals",
                   subset_row = hdgs,
                   ncomponents = 100,
@@ -342,9 +339,11 @@ if(file.exists(harmony_file)){
 
 #### SNN + Walktrap cluster ####
 
+k = 20
+
 ## Build SNN graph
-message(Sys.time(), " - running buildSNNGraph: k =", opt$k)
-snn.gr <- buildSNNGraph(sce, k = opt$k, use.dimred = "HARMONY")
+message(Sys.time(), " - running buildSNNGraph: k =", k)
+snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY")
 
 ## Run walk trap clustering
 message(Sys.time(), " - running walktrap")
@@ -354,7 +353,9 @@ table(clusters)
 cluster_anno <- stack(table(clusters)) |>
     dplyr::rename(n = values, cluster = ind) |>
     arrange(-n) |>
-    mutate(cluster_anno = paste0(opt$ds_short, "_Oligo.", row_number()))
+    mutate(cluster_anno = paste0("multi_Oligo.", row_number()))
+
+write.csv(cluster_anno, file = here(data_dir, "Multistudy_Oligo_cluster_annotation.csv"))
 
 cluster_tab <- data.frame(key = sce$key, 
                           cluster = clusters, 
@@ -364,18 +365,13 @@ head(cluster_tab)
 
 table(cluster_tab$cluster_anno)
 
-
-
 ## save cluster_tab data
 message(Sys.time() , " - saving data")
-save(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_%s.Rdata", opt$k, opt$dataset)))
+save(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_Multistudy_Oligo.Rdata", k)))
 
 ## Add to sce data & create color pal
 sce$Oligo_anno <- cluster_tab$cluster_anno
 other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
-
-# hpc_Oligo.5 hpc_Oligo.2 hpc_Oligo.4 hpc_Oligo.3 hpc_Oligo.1 
-# "#3BB273"   "#FF56AF"   "#663894"   "#F57A00"   "#D2B037" 
 
 #### Quality checks ####
 pd <- as.data.frame(colData(sce))
@@ -395,7 +391,7 @@ qc_violin_plot_all <- pd |>
     facet_grid(metric~., scales = "free") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
-ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("other_Oligo_%s_k%i_QCmetricViolin.png", opt$dataset, opt$k)))
+ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("other_Oligo_%s_k%i_QCmetricViolin.png", "Multistudy_Oligo", k)))
 
 
 #### Reduced dim plots ####
@@ -411,7 +407,7 @@ tsne_plot <- my_plot_reduced_dim(sce,
                     my_var = "Oligo_anno",
                     var_type = "cat",
                     save_plot = TRUE,
-                    suffix = sprintf("%s_k%i", opt$dataset, opt$k),
+                    suffix = sprintf("mulristudy_Oligo_k%i", k),
                     facet = FALSE,
                     plot_dir_rd = plot_dir,
                     verbose = TRUE, 
@@ -419,30 +415,6 @@ tsne_plot <- my_plot_reduced_dim(sce,
                     color_pal = other_oligo_colors)
 
 
-#### compare vs. previous clusters ####
-
-if(opt$dataset == "spatialDLPFC"){
-    
-    table(sce$Oligo_anno, sce$cellType_hc)
-    jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$cellType_hc)
-    
-} else if(opt$dataset == "spatialHPC"){
-    
-    table(sce$Oligo_anno, sce$superfine.cell.class)
-    jacc.mat <- linkClustersMatrix(sce$Oligo_anno, sce$superfine.cell.class)
-    
-}
-
-## plot jaccard matrix
-pdf(here(plot_dir, sprintf("other_Oligo_%s_k%i_jaccmat.pdf",opt$dataset, opt$k)))
-Heatmap(jacc.mat,
-        name = "correspondence",
-        col = c("black", viridisLite::plasma(100)),
-        na_col = "black",
-        column_title = sprintf("%s, k%i", opt$dataset, opt$k)
-        )
-
-dev.off()
 
 # slurmjobs::job_single('04_multistudy_Oligo_subcluster', create_shell = TRUE, memory = '100G', command = "Rscript 04_multistudy_Oligo_subcluster.R")
 
