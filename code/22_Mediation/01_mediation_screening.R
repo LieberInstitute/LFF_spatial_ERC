@@ -18,6 +18,7 @@ library("BiocParallel")
 library("here")
 library("getopt")
 library("sessioninfo")
+library("qs2")
 
 # Helpers
 md5_string <- function(x) {
@@ -39,6 +40,9 @@ baseline_formula_str <- "0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_r
 mediation_formula_str <- paste(baseline_formula_str, "+ med_vec")
 baseline_formula <- as.formula(paste("~", baseline_formula_str))
 mediation_formula <- as.formula(paste("~", mediation_formula_str))
+
+# Use single baseline (max donors) for all comparisons instead of separate baselines per donor set
+forceSingleBaseline <- TRUE
 
 build_design <- function(sample_df, formula_obj, batch_col, med_vec = NULL) {
     sample_df <- as.data.frame(sample_df)
@@ -190,6 +194,15 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
       message(Sys.time(), sprintf(" - test test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
   }
   message(Sys.time(), sprintf(" - ERC Astro DEGs for mediation: %i", nrow(med_degs)))
+  # fwrite med_degs and med_expr for "erc_astro" mediation in out_dir if they do not exist
+  fn_med_degs <- file.path(out_dir, "med_degs.qs2")
+  fn_med_expr <- file.path(out_dir, "med_expr.qs2")
+  if (!file.exists(fn_med_degs)) {
+      qs_save(med_degs, fn_med_degs)
+  }
+  if (!file.exists(fn_med_expr)) {
+      qs_save(med_expr, fn_med_expr)
+  }
 }
 
 if (is.null(med_degs) || is.null(med_expr)) {
@@ -210,11 +223,17 @@ baseline_des <- model.matrix(
 baseline_des <- as.data.frame(baseline_des)
 
 ## Filter low expression genes once (baseline design)
-dge_base <- edgeR::calcNormFactors(dge_base)
-keep <- edgeR::filterByExpr(dge_base, design = baseline_des)
-dge_base <- dge_base[keep, , keep.lib.sizes = FALSE]
-dge_base <- edgeR::calcNormFactors(dge_base)
-
+fn_dge_base <- file.path(out_dir, "dge_base.qs2")
+if (file.exists(fn_dge_base)) {
+    dge_base <- qs_read(fn_dge_base)
+} else {
+  dge_base <- edgeR::calcNormFactors(dge_base)
+  keep <- edgeR::filterByExpr(dge_base, design = baseline_des)
+  dge_base <- dge_base[keep, , keep.lib.sizes = FALSE]
+  dge_base <- edgeR::calcNormFactors(dge_base)
+  ## save the file as qs2 for faster loading next time
+  qs_save(dge_base, fn_dge_base)
+}
 run_one <- function(i) {
     med_row <- med_degs[i] ## mediator row to use as covariate
     gene_id <- as.character(med_row$gene_id)
@@ -350,6 +369,18 @@ if (nrow(run_info_dt) < 1) {
 ## Unique donor sets
 donor_sets <- unique(run_info_dt[, .(donor_key, donor_str, donors)], by = "donor_key")
 
+if (forceSingleBaseline) {
+    # Find the donor set with maximum donors
+    max_idx <- which.max(sapply(donor_sets$donors, length))
+    donor_sets_to_run <- donor_sets[max_idx]
+    single_baseline_key <- donor_sets_to_run$donor_key
+    message(Sys.time(), sprintf(" - Using single baseline with %d donors (forceSingleBaseline=TRUE)",
+                                 length(donor_sets_to_run$donors[[1]])))
+} else {
+    donor_sets_to_run <- donor_sets
+    single_baseline_key <- NULL
+}
+
 run_baseline <- function(donor_key, donors, donor_str) {
     out_file <- file.path(baseline_dir, sprintf("baseline_%s.tab.gz", donor_key))
     out_fdr_file <- file.path(baseline_dir, sprintf("baseline_%s.fdr05.tab.gz", donor_key))
@@ -417,8 +448,8 @@ run_baseline <- function(donor_key, donors, donor_str) {
 }
 
 baseline_results <- BiocParallel::bplapply(
-    seq_len(nrow(donor_sets)),
-    function(i) run_baseline(donor_sets$donor_key[i], donor_sets$donors[[i]], donor_sets$donor_str[i]),
+    seq_len(nrow(donor_sets_to_run)),
+    function(i) run_baseline(donor_sets_to_run$donor_key[i], donor_sets_to_run$donors[[i]], donor_sets_to_run$donor_str[i]),
     BPPARAM = bpparam
 )
 baseline_results <- Filter(Negate(is.null), baseline_results)
@@ -430,6 +461,14 @@ if (length(baseline_results) < 1) {
 baseline_dt <- data.table::rbindlist(baseline_results, fill = TRUE)
 baseline_map <- setNames(lapply(baseline_results, function(x) x$sig_genes[[1]]),
                          vapply(baseline_results, `[[`, character(1), "donor_key"))
+
+# When forceSingleBaseline=TRUE, map all donor_keys to the single baseline
+if (forceSingleBaseline && !is.null(single_baseline_key)) {
+    single_baseline_genes <- baseline_map[[single_baseline_key]]
+    for (dk in donor_sets$donor_key) {
+        baseline_map[[dk]] <- single_baseline_genes
+    }
+}
 
 data.table::fwrite(
     baseline_dt[, .(donor_key, donor_str, n_donors, out_file)],
@@ -485,13 +524,13 @@ summary_list <- lapply(seq_len(nrow(run_info_dt)), function(i) {
     writeLines(gained_labels, con = gain_file)
 
     data.table::data.table(
-        run = run_row$run_label,
+        mediation_run = run_row$run_label,
         donor_key = run_row$donor_key,
         n_donors = run_row$n_donors,
-        baseline_n_degs = length(base_genes),
-        mediated_n_degs = length(med_genes),
-        n_lost = length(lost),
-        n_gained = length(gained),
+        baselineDEGs = length(base_genes),
+        mediationDEGs = length(med_genes),
+        loss = length(lost),
+        gain = length(gained),
         loss_file = loss_file,
         gain_file = gain_file
     )

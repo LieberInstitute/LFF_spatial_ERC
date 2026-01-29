@@ -9,6 +9,7 @@ library(SingleCellExperiment)
 library(data.table)
 library(ggplot2)
 library(dplyr)
+library(here)
 ddir <- here("processed-data")
 ```
 
@@ -59,6 +60,10 @@ degs[gene_name %in% degs[duplicated(degs$gene_name)]$gene_name, .(gene_name, gen
 #3:    GABBR2 ENSG00000136928 Astro.3
 #4:    ZNF536 ENSG00000198597 Astro.3
 
+### Show the same for Oligo.3:
+odegs <- as.data.table(pdge)[grepl("^Oligo", cluster) & vlmf_adj.P.Val < 0.05 & contrast=='carrier',
+   .(cluster, gene_id, gene_name, gene_type, vlmf_logFC, vlmf_AveExpr, vlmf_t, vlmf_P.Value, vlmf_adj.P.Val, cell_type_broad)]
+
 ```
 
 
@@ -100,5 +105,299 @@ GRanges object with 88 ranges and 6 metadata columns:
   ENSG00000117600     chr1   99264292-99309590      + |   HAVANA     gene ENSG00000117600           14      PLPPR4 protein_coding
   ENSG00000226070     chr6   40344346-40387194      - |   HAVANA     gene ENSG00000226070            2   LINC00951         lncRNA
   ENSG00000101298    chr20     1266280-1309328      + |   HAVANA     gene ENSG00000101298           15        SNPH protein_coding
+
+```
+
+
+### Comparison boxplots BEFORE vs AFTER mediation
+
+LEFT panel (Baseline): E2 vs E4 boxplots showing Oligo.3 gene expression before adding the mediator (Astro PLP1) as a covariate. The expression values are "cleaned" using jaffelab::cleaningY to remove effects of nuisance covariates (Sex, Age, Anc_Afr, pseudo_expr_chrM_ratio) while preserving the APOE effect.
+
+RIGHT panel (After mediation): E2 vs E4 boxplots showing the same outcome gene expression, but now cleaned to remove both nuisance covariates AND the mediator gene expression. If the mediator explains part of the APOE→Oligo.3 effect, the E2 vs E4 difference should shrink.
+
+How cleaningY(y, mod, P) works:
+Fits y = mod %*% beta (full model)
+Returns y - (effects from columns P+1 to end)
+With P=4, preserves APOE columns (1-4), removes covariate effects
+Input data needed:
+Outcome expression matrix (y_logcpm): logCPM from edgeR::cpm(dge_base, log=TRUE) for Oligo.3
+Mediator expression vector: From med_expr[med_gene_id, ] aligned to outcome samples
+Design matrices:
+Baseline: ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio
+Mediation: same + med_vec
+Sample metadata: dge_base$samples$APOE_syn to group E2.E2 vs E3.E4/E4.E4
+Verified calculation (FOS gene + PLP1 mediator):
+Baseline E4-E2 difference: 1.995 logCPM
+After PLP1 mediation: 1.744 logCPM
+12.6% reduction in APOE effect
+
+
+```{r erc_astro plots}
+library(qs2)
+library(ggplot2)
+library(tidyr)
+
+## assumes 01_mediation_screen.R was already run for this scenario
+## load med_degs and med_expr for out-erc_astro
+
+cdir <- here("code")
+out_dt <- file.path(cdir, "22_Mediation", "out-erc_astro")
+fn_med_degs <- file.path(out_dt, "med_degs.qs2")
+fn_med_expr <- file.path(out_dt, "med_expr.qs2")
+med_degs <- qs_read(fn_med_degs)
+med_expr <- qs_read(fn_med_expr)
+baseline_dir <- file.path(out_dt, "baseline")
+fn_dge_base <- file.path(out_dt, "dge_base.qs2")
+dge_base <- qs_read(fn_dge_base)
+
+
+
+single_baseline_key="80c146156f90daa41a2eef910b7d1c83"
+baseline_file <- file.path(baseline_dir, sprintf("baseline_%s.tab.gz", single_baseline_key))
+baseline_results_dt <- data.table::fread(baseline_file)
+
+
+APOE_carrier_colors_dark <- c(`E2+`="#3B918B", `E4+`="#B7522A")
+APOE_carrier_colors <- c(`E2+`="#51B8B1", `E4+`="#D97D59")
+
+plotMedComp <- function(outcome_gene,
+                           mediator_gene,
+                           dge_base = NULL,
+                           med_degs = NULL,
+                           med_expr = NULL,
+                           n_apoe_cols = 4) {
+    # Check for required objects in parent environment if not provided
+    if (is.null(dge_base)) {
+        if (!exists("dge_base", envir = parent.frame())) {
+            stop("dge_base must be provided or exist in the calling environment.")
+        }
+        dge_base <- get("dge_base", envir = parent.frame())
+    }
+    if (is.null(med_degs)) {
+        if (!exists("med_degs", envir = parent.frame())) {
+            stop("med_degs must be provided or exist in the calling environment.")
+        }
+        med_degs <- get("med_degs", envir = parent.frame())
+    }
+    if (is.null(med_expr)) {
+        if (!exists("med_expr", envir = parent.frame())) {
+            stop("med_expr must be provided or exist in the calling environment.")
+        }
+        med_expr <- get("med_expr", envir = parent.frame())
+    }
+
+    baseline_formula_str <- "0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio"
+    mediation_formula_str <- paste(baseline_formula_str, "+ med_vec")
+    baseline_formula <- as.formula(paste("~", baseline_formula_str))
+    mediation_formula <- as.formula(paste("~", mediation_formula_str))
+
+    if (!exists("baseline_results_dt", envir = parent.frame())) {
+        stop("baseline_results_dt must be loaded in the environment.")
+    }
+    baseline_results_dt <- get("baseline_results_dt", envir = parent.frame())
+
+    if (!exists("out_dt", envir = parent.frame())) {
+        stop("out_dt must be loaded in the environment.")
+    }
+    out_dt <- get("out_dt", envir = parent.frame())
+
+    mediator_cluster <- NULL
+    mediator_gene_name <- mediator_gene
+    if (grepl(":", mediator_gene, fixed = TRUE)) {
+        parts <- strsplit(mediator_gene, ":", fixed = TRUE)[[1]]
+        mediator_cluster <- parts[1]
+        mediator_gene_name <- parts[2]
+    }
+
+    med_rows <- med_degs[gene_name == mediator_gene_name]
+    if (!is.null(mediator_cluster)) {
+        med_rows <- med_rows[cluster == mediator_cluster]
+    }
+    if (nrow(med_rows) == 0) {
+        stop("Mediator gene not found: ", mediator_gene)
+    }
+    if (nrow(med_rows) > 1) {
+        warning(sprintf(
+            "Multiple matches for mediator gene '%s' found in clusters: %s. Using last match; use 'cluster:gene' to disambiguate.",
+            mediator_gene,
+            paste(unique(med_rows$cluster), collapse = ", ")
+        ))
+    }
+    med_row <- med_rows[nrow(med_rows)]
+
+    run_label <- sprintf("%s|%s|%s", med_row$cluster, med_row$gene_id, med_row$gene_name)
+    file_label <- gsub("\\|", "_", run_label)
+    mediation_file <- file.path(out_dt, sprintf("%02d_%s.tab.gz", med_row$iter, file_label))
+    mediation_results_dt <- data.table::fread(mediation_file)
+
+    # 1. Get mediator info
+    med_gid <- med_row$med_gene_id
+    med_cluster <- as.character(med_row$cluster)
+
+    # 2. Resolve outcome gene name -> gene_id
+    if (is.null(dge_base$genes) || !("gene_name" %in% colnames(dge_base$genes))) {
+        stop("dge_base$genes must contain a gene_name column.")
+    }
+    matches <- rownames(dge_base$genes)[dge_base$genes$gene_name == outcome_gene]
+    if (length(matches) == 0) stop("Outcome gene not found in dge_base: ", outcome_gene)
+    out_gid <- matches[1]
+    out_gname <- outcome_gene
+
+    # 3. Get outcome expression (logCPM)
+    y_logcpm <- edgeR::cpm(dge_base, log = TRUE)
+    y_mat <- matrix(y_logcpm[out_gid, ], nrow = 1)
+    rownames(y_mat) <- out_gid
+    colnames(y_mat) <- colnames(y_logcpm)
+
+    # 4. Align mediator to outcome samples
+    dge_brnum <- gsub("_Oligo\\.3$", "", colnames(dge_base))
+    med_vec_aligned <- med_expr[med_gid, dge_brnum]
+
+    # 5. Build design matrices
+    baseline_mod <- model.matrix(baseline_formula, data = dge_base$samples)
+
+    sample_df_med <- dge_base$samples
+    sample_df_med$med_vec <- med_vec_aligned
+    mediation_mod <- model.matrix(mediation_formula, data = sample_df_med)
+
+    # 6. Apply cleaningY (preserve APOE, remove covariates)
+    y_cleaned_baseline <- jaffelab::cleaningY(y_mat, baseline_mod, P = n_apoe_cols)
+    y_cleaned_mediation <- jaffelab::cleaningY(y_mat, mediation_mod, P = n_apoe_cols)
+
+    # 7. Create plot data frame
+    apoe_status <- dge_base$samples$APOE_syn
+    carrier_group <- ifelse(apoe_status %in% c("E2.E2", "E2.E3"), "E2+",
+                        ifelse(apoe_status %in% c("E3.E4", "E4.E4"), "E4+", "other"))
+
+    plot_df <- data.frame(
+        BrNum = dge_brnum,
+        carrier_group = carrier_group,
+        baseline_cleaned = as.numeric(y_cleaned_baseline[1, ]),
+        mediation_cleaned = as.numeric(y_cleaned_mediation[1, ])
+    )
+
+    plot_df <- plot_df[plot_df$carrier_group %in% c("E2+", "E4+"), ]
+
+    model_labels <- c(
+        sprintf("Baseline\n(no %s)", mediator_gene),
+        sprintf("After %s\n(%s) adjustment", mediator_gene, med_cluster)
+    )
+
+    plot_long <- plot_df |>
+        tidyr::pivot_longer(
+            cols = c(baseline_cleaned, mediation_cleaned),
+            names_to = "model",
+            values_to = "expression"
+        ) |>
+        dplyr::mutate(
+            model = factor(model,
+                           levels = c("baseline_cleaned", "mediation_cleaned"),
+                           labels = model_labels)
+        )
+
+    annotation_df <- NULL
+    if (!is.null(baseline_results_dt) && !is.null(mediation_results_dt)) {
+        base_row <- baseline_results_dt[outcome_gene_id == out_gid, , drop = FALSE]
+        med_row <- mediation_results_dt[outcome_gene_id == out_gid, , drop = FALSE]
+        base_row <- if (nrow(base_row) > 0) base_row[1, ] else NULL
+        med_row <- if (nrow(med_row) > 0) med_row[1, ] else NULL
+
+        fdr_base <- if (!is.null(base_row) && "adj.P.Val" %in% names(base_row)) base_row$adj.P.Val else NA_real_
+        tvar_base <- if (!is.null(base_row) && "t" %in% names(base_row)) base_row$t else NA_real_
+        fdr_med <- if (!is.null(med_row) && "adj.P.Val" %in% names(med_row)) med_row$adj.P.Val else NA_real_
+        tvar_med <- if (!is.null(med_row) && "t" %in% names(med_row)) med_row$t else NA_real_
+
+        y_max <- max(plot_long$expression, na.rm = TRUE)
+        y_min <- min(plot_long$expression, na.rm = TRUE)
+        y_fixed <- y_max + pmax(0.08 * (y_max - y_min), 0.2)
+
+        # Format FDR values: use fixed decimal notation for values >= 1e-4
+        format_fdr <- function(fdr) {
+            if (is.na(fdr)) return("NA")
+            if (fdr >= 1e-4) {
+                sprintf("%.5f", fdr)
+            } else {
+                sprintf("%.2e", fdr)
+            }
+        }
+
+        annotation_df <- dplyr::tibble(
+            model = factor(model_labels, levels = model_labels),
+            label = c(
+                sprintf("FDR: %s\nt: %.2f", format_fdr(fdr_base), tvar_base),
+                sprintf("FDR: %s\nt: %.2f", format_fdr(fdr_med), tvar_med)
+            ),
+            y = y_fixed
+        )
+    }
+
+    ggplot(plot_long, aes(x = carrier_group, y = expression, fill = carrier_group,
+                        color = carrier_group)) +
+        geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+        geom_jitter(width = 0.2, size = 2, alpha = 0.8) +
+        facet_wrap(~model) +
+        scale_fill_manual(values = APOE_carrier_colors) +
+        scale_color_manual(values = APOE_carrier_colors_dark) +
+        labs(
+            title = sprintf("%s (%s) Expression: E2+ vs E4+ Carriers",
+                            out_gname, out_gid),
+            subtitle = sprintf("Mediator: %s expression from %s cluster",
+                               mediator_gene, med_cluster),
+            x = "APOE Carrier Status",
+            y = "Covariate-adjusted Expression (logCPM)",
+            fill = "Carrier"
+        ) +
+        {
+            if (!is.null(annotation_df)) {
+                ggplot2::geom_text(
+                    data = annotation_df,
+                    ggplot2::aes(x = 1.5, y = y, label = label),
+                    inherit.aes = FALSE,
+                    size = 3.5
+                )
+            }
+        } +
+        theme_bw(base_size = 14) +
+        theme(
+            legend.position = "none",
+            strip.text = element_text(size = 12, face = "bold")
+        ) +
+        coord_cartesian(clip = "off")
+}
+
+
+p <- plotMedComp(outcome_gene = "FOS", mediator_gene = "PLP1")
+print(p)
+```
+
+```{r plots plots plots}
+dnr=c('PLP1', 'MAG', 'MAL', 'MBP', 'SOX10', 'OPALIN')
+upr=c('FOS', 'TLR2', 'STAT1', 'STAT4')
+alldegs=c(dnr, upr)
+medgenes=c('PLP1', 'MBP', 'OPALIN')
+pdf_dir <- out_dt
+pdf_files <- file.path(pdf_dir, sprintf("mediator_%s.pdf", medgenes))
+
+plot_one_mediator <- function(mediator_gene, outcome_genes, out_file) {
+    grDevices::pdf(out_file, width = 11, height = 8.5, onefile = TRUE)
+    on.exit(grDevices::dev.off(), add = TRUE)
+
+    for (outcome_gene in outcome_genes) {
+        p <- plotMedComp(outcome_gene = outcome_gene, mediator_gene = mediator_gene)
+        print(p)
+    }
+
+    invisible(out_file)
+}
+
+pdf_out <- mapply(
+    plot_one_mediator,
+    mediator_gene = medgenes,
+    out_file = pdf_files,
+    MoreArgs = list(outcome_genes = alldegs),
+    SIMPLIFY = FALSE
+)
+
+pdf_out
 
 ```
