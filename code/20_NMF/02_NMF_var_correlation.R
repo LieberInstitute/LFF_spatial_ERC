@@ -30,9 +30,9 @@ nmf <- readRDS(here("processed-data", "20_NMF", "01_runNMF", "ERC_sn_nmf.RDS"))
 class(nmf)
 
 #### Explore nmf ####
-## 66 factors
+## 50 factors
 dim(nmf@h)
-# 66 122004
+# 50 116198
 
 #### Technical Vars ####
 # data<-as.data.frame(sce$BrNum)
@@ -49,7 +49,6 @@ head(tech_var_mod)
 tech_var_mod <- as.data.frame(tech_var_mod)
 tech_var_mod[,"(Intercept)"] <- NULL
 
-colnames(tech_var_mod) <- gsub("BrNumBr", "Br", colnames(tech_var_mod))
 colnames(tech_var_mod) <- gsub("roundround", "round", colnames(tech_var_mod))
 
 nmf_tech_cor <- cor(t(nmf@h), tech_var_mod)
@@ -69,19 +68,16 @@ nmf_anno_tech_var <- annotate_registered_clusters(
 )
 
 nmf_anno_tech_var |> filter(layer_confidence == "good")
+#   cluster layer_confidence          layer_label
+# 1    nmf2             good             detected
+# 2    nmf7             good         sum/detected
+# 3   nmf13             good         detected/sum
+# 4   nmf15             good             detected
+# 5   nmf17             good             detected
+# 6   nmf25             good         sum/detected
+# 7   nmf36             good           exp_round3
+# 8   nmf45             good subsets_Mito_percent
 
-#    cluster layer_confidence          layer_label
-# 1     nmf1             good             detected
-# 2     nmf4             good         sum/detected
-# 3    nmf10             good         detected/sum
-# 4    nmf12             good             detected
-# 5    nmf17             good             detected
-# 6    nmf19             good             detected
-# 7    nmf30             good         sum/detected
-# 8    nmf31             good         detected/sum
-# 9    nmf37             good                 SexM
-# 10   nmf51             good                 SexM
-# 11   nmf53             good subsets_Mito_percent
 
 #### Demographic Vars ####
 
@@ -109,7 +105,6 @@ nmf_anno_demo_var <- annotate_registered_clusters(
 nmf_anno_demo_var |> filter(layer_confidence == "good")
 
 #### BrNum ####
-
 BrNum_var_mod <- model.matrix(~BrNum, colData(sce))
 head(BrNum_var_mod)
 
@@ -205,6 +200,10 @@ nmf_annotation <- data.frame(nmf = rownames(nmf@h))|>
     left_join(nmf_anno_cellType_var |> 
                   filter(layer_confidence == "good") |> 
                   select(nmf = cluster, cellType = layer_label))
+
+#### Find Marker ####
+
+
 
 
 
