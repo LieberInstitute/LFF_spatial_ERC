@@ -29,7 +29,7 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 
 ## Drop Br1289
 sce <- sce[, sce$BrNum != "Br1289"]
-spe <- spe[, sce$BrNum != "Br1289"]
+spe <- spe[, spe$BrNum != "Br1289"]
 
 #### NMF data ####
 nmf <- readRDS(here("processed-data", "20_NMF", "01_runNMF", "ERC_sn_nmf.RDS"))
