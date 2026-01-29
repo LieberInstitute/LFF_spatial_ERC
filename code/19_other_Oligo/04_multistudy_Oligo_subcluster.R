@@ -13,6 +13,7 @@ library("DeconvoBuddies")
 library("bluster")
 library("ComplexHeatmap")
 library("ExperimentHub")
+library("HDF5Array")
 
 data_dir <- here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -313,6 +314,8 @@ if(file.exists(harmony_file)){
                   BSPARAM = BiocSingular::IrlbaParam()
     )
     
+    reducedDimNames(sce)
+    
     ## un-corrected TSNE 
     message(Sys.time(), " - running TSNE")
     sce <- runTSNE(sce, dimred = "PCA")
@@ -384,6 +387,13 @@ save(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_
 ## Add to sce data & create color pal
 sce$Oligo_anno <- cluster_tab$cluster_anno
 other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
+
+
+#### Save data ####
+
+sce$metadata$colors <- other_oligo_colors
+
+saveHDF5SummarizedExperiment(sce, dir = here(data_dir, "sce_multistudy_Oligo"), replace=TRUE)
 
 #### Quality checks ####
 pd <- as.data.frame(colData(sce))
