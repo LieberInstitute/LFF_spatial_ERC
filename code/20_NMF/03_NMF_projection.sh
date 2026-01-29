@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=200G
+#SBATCH --mem=150G
 #SBATCH --job-name=03_NMF_projection
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
