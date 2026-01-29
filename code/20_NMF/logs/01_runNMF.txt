@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Jan 20 11:25:16 AM EST 2026
+Wed Jan 28 01:23:37 PM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 26992607
+Job id: 27127910
 Job name: 01_runNMF
-Node name: compute-159
+Node name: compute-122
 Task id: 
 Loading conda_R/4.5
 
@@ -176,7 +176,7 @@ The following object is masked from ‘package:SeuratObject’:
 
     Assays
 
-2026-01-20 11:25:27.018187 - Load HDF5 sce
+2026-01-28 13:23:51.482029 - Load HDF5 sce
 <5 x 5> DelayedMatrix object of type "double":
                 [,1] [,2] [,3] [,4] [,5]
 ENSG00000290825    0    0    0    0    0
@@ -184,12 +184,12 @@ ENSG00000243485    0    0    0    0    0
 ENSG00000237613    0    0    0    0    0
 ENSG00000290826    0    0    0    0    0
 ENSG00000186092    0    0    0    0    0
-2026-01-20 11:26:30.968141 - Run NMF
-2026-01-20 15:36:14.781496 - Done NMF...Saving
+2026-01-28 13:23:59.522226 - Run NMF
+2026-01-29 07:38:24.726687 - Done NMF...Saving
 [1] "Reproducibility information:"
-[1] "2026-01-20 15:36:18 EST"
-     user    system   elapsed 
-28944.449   123.781 15061.342 
+[1] "2026-01-29 07:38:29 EST"
+      user     system    elapsed 
+129693.605    104.201  65690.984 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -200,7 +200,7 @@ ENSG00000186092    0    0    0    0    0
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-01-20
+ date     2026-01-29
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -231,8 +231,8 @@ ENSG00000186092    0    0    0    0    0
  fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
  fastmatch              1.1-6     2024-12-23 [2] CRAN (R 4.5.0)
  fgsea                  1.34.2    2025-07-13 [1] Bioconductor 3.21 (R 4.5.0)
- fitdistrplus           1.2-4     2025-07-03 [1] CRAN (R 4.5.0)
- future                 1.68.0    2025-11-17 [1] CRAN (R 4.5.0)
+ fitdistrplus           1.2-5     2026-01-22 [1] CRAN (R 4.5.0)
+ future                 1.69.0    2026-01-16 [1] CRAN (R 4.5.0)
  future.apply           1.20.1    2025-12-09 [1] CRAN (R 4.5.0)
  generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
  GenomeInfoDb         * 1.44.3    2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
@@ -323,11 +323,11 @@ ENSG00000186092    0    0    0    0    0
  spam                   2.11-3    2026-01-08 [1] CRAN (R 4.5.0)
  SparseArray            1.8.1     2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
  spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
- spatstat.explore       3.6-0     2025-11-22 [1] CRAN (R 4.5.0)
- spatstat.geom          3.6-1     2025-11-20 [1] CRAN (R 4.5.0)
- spatstat.random        3.4-3     2025-11-21 [1] CRAN (R 4.5.0)
+ spatstat.explore       3.7-0     2026-01-22 [1] CRAN (R 4.5.0)
+ spatstat.geom          3.7-0     2026-01-20 [1] CRAN (R 4.5.0)
+ spatstat.random        3.4-4     2026-01-21 [1] CRAN (R 4.5.0)
  spatstat.sparse        3.1-0     2024-06-21 [2] CRAN (R 4.5.0)
- spatstat.univar        3.1-5     2025-11-17 [1] CRAN (R 4.5.0)
+ spatstat.univar        3.1-6     2026-01-17 [1] CRAN (R 4.5.0)
  spatstat.utils         3.2-1     2026-01-10 [1] CRAN (R 4.5.0)
  statmod                1.5.1     2025-10-09 [1] CRAN (R 4.5.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
@@ -343,7 +343,7 @@ ENSG00000186092    0    0    0    0    0
  vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.5.0)
  viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.5.0)
  withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
- xfun                   0.55      2025-12-16 [1] CRAN (R 4.5.0)
+ xfun                   0.56      2026-01-18 [1] CRAN (R 4.5.0)
  xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.5.0)
  XVector                0.48.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  zoo                    1.8-15    2025-12-15 [1] CRAN (R 4.5.0)
@@ -355,4 +355,4 @@ ENSG00000186092    0    0    0    0    0
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jan 20 03:36:19 PM EST 2026
+Thu Jan 29 07:38:30 AM EST 2026
