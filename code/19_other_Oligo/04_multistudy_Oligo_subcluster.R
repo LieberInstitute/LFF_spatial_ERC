@@ -331,8 +331,7 @@ if(file.exists(harmony_file)){
                                      facet = FALSE,
                                      plot_dir_rd = plot_dir,
                                      verbose = TRUE, 
-                                     add_label = TRUE,
-                                     color_pal = other_oligo_colors)
+                                     add_label = TRUE)
     
     #### Batch Correction ####
     message(Sys.time(), " - HARMONY Correction")
