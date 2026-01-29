@@ -318,7 +318,7 @@ if(file.exists(harmony_file)){
     
     ## un-corrected TSNE 
     message(Sys.time(), " - running TSNE")
-    sce <- runTSNE(sce, dimred = "PCA")
+    sce <- runTSNE(sce, dimred = "GLMPCA_approx")
     
     source(here("code", "utils", "my_plot_reduced_dim.R"))
     
