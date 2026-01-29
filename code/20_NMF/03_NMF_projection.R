@@ -19,7 +19,11 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
 
-## spatial data
+## snRNA-seq
+message(Sys.time(), " - Load HDF5 sce")
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
+
+## spatail data
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 
@@ -57,7 +61,7 @@ proj <- apply(proj,1,function(x){x/sum(x)})
 
 saveRDS(proj, file = here(data_dir, "ECR_nmf_projection.Rds"))
 
-# slurmjobs::job_single('03_NMF_projection', create_shell = TRUE, memory = '200G', command = "Rscript 03_NMF_projection.R")
+# slurmjobs::job_single('03_NMF_projection', create_shell = TRUE, memory = '200G', command = "Rscript 04_multistudy_Oligo_subcluster.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
@@ -65,5 +69,3 @@ Sys.time()
 proc.time()
 options(width = 120)
 session_info()
-
-
