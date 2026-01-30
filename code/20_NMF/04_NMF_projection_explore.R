@@ -23,7 +23,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # message(Sys.time(), " - Load HDF5 sce")
 # sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 
-## spatail data
+## spatial data
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 
