@@ -367,10 +367,15 @@ clusters <- igraph::cluster_walktrap(snn.gr)$membership
 table(clusters)
 
 message(Sys.time(), " - done walktrap")
-cluster_anno <- stack(table(clusters)) |>
-    dplyr::rename(n = values, cluster = ind) |>
-    arrange(-n) |>
-    mutate(cluster_anno = paste0("multi_Oligo.", row_number()))
+cluster_anno <- as.data.frame(table(clusters, sce$cell_type_broad)) |>
+    pivot_wider(names_from = "Var2", values_from = "Freq") |>
+    mutate(oligo_ratio = Oligo/OPC,
+           cell_type = ifelse(oligo_ratio >1, "Oligo", "OPC"),
+           n = Oligo + OPC) |>
+    dplyr::rename(cluster = clusters) |>
+    group_by(cell_type) |>
+    arrange(cell_type, -n) |>
+    mutate(cluster_anno = paste0(opt$ds_short, "_", cell_type,".", row_number()))
 
 write.csv(cluster_anno, file = here(data_dir, "Multistudy_Oligo_cluster_annotation.csv"))
 
