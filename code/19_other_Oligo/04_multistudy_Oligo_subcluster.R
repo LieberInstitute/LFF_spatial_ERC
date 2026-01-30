@@ -243,6 +243,8 @@ all_colData <- rbind(all_colData, colData(sce)[, coldata_keep])
 message("n nuc matches: ", identical(ncol(all_counts), nrow(all_colData)))
 message("colnames match: ", identical(colnames(all_counts), rownames(all_colData)))
 
+sce$key <- colnames(sce)
+
 #### Combined Oligo Data ####
 message(Sys.time(), " - Build Multi-Study Oligo SCE")
 sce <- SingleCellExperiment(assay = list(counts = all_counts),
@@ -353,7 +355,7 @@ if(file.exists(harmony_file)){
 
 #### SNN + Walktrap cluster ####
 
-k = 20
+k = 30
 
 ## Build SNN graph
 message(Sys.time(), " - running buildSNNGraph: k =", k)
@@ -364,6 +366,7 @@ message(Sys.time(), " - running walktrap")
 clusters <- igraph::cluster_walktrap(snn.gr)$membership
 table(clusters)
 
+message(Sys.time(), " - done walktrap")
 cluster_anno <- stack(table(clusters)) |>
     dplyr::rename(n = values, cluster = ind) |>
     arrange(-n) |>
