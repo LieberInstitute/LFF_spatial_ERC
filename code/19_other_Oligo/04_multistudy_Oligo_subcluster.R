@@ -366,7 +366,7 @@ message(Sys.time(), " - running walktrap")
 clusters <- igraph::cluster_walktrap(snn.gr)$membership
 table(clusters)
 
-saveRDS(clusters,here(data_dir, "Multistudy_Oligo_cluster.Rds"))
+saveRDS(clusters, file = here(data_dir, "Multistudy_Oligo_cluster.Rds"))
 
 message(Sys.time(), " - done walktrap")
 cluster_anno <- as.data.frame(table(clusters, sce$cell_type_broad)) |>
