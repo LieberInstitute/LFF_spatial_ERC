@@ -355,7 +355,7 @@ if(file.exists(harmony_file)){
 
 #### SNN + Walktrap cluster ####
 
-k = 30
+k = 50
 
 ## Build SNN graph
 message(Sys.time(), " - running buildSNNGraph: k =", k)
@@ -365,6 +365,8 @@ snn.gr <- buildSNNGraph(sce, k = k, use.dimred = "HARMONY")
 message(Sys.time(), " - running walktrap")
 clusters <- igraph::cluster_walktrap(snn.gr)$membership
 table(clusters)
+
+saveRDS(clusters,here(data_dir, "Multistudy_Oligo_cluster.Rds"))
 
 message(Sys.time(), " - done walktrap")
 cluster_anno <- as.data.frame(table(clusters, sce$cell_type_broad)) |>
