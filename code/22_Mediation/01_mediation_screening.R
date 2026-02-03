@@ -96,6 +96,19 @@ read_run_info <- function(file) {
     )
 }
 
+write_fdr_table <- function(dt, file) {
+    ## write empty gzip with header when no rows to avoid corrupt gzip output
+    if (nrow(dt) < 1) {
+        con <- gzfile(file, "wt")
+        on.exit(close(con), add = TRUE)
+        if (ncol(dt) > 0) {
+            writeLines(paste(names(dt), collapse = "\t"), con = con, useBytes = TRUE)
+        }
+        return(invisible(NULL))
+    }
+    data.table::fwrite(dt, file = file, sep = "\t", compress = "gzip")
+}
+
 # Import command-line parameters
 medopt <- matrix(
     c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm"),
@@ -111,11 +124,12 @@ if (opt$mediation != "erc_astro") {
     stop(sprintf("Mediation type '%s' is not implemented yet (only 'erc_astro' is supported).", opt$mediation))
 }
 
-workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
-if (is.na(workers) || workers < 1) workers <- 1
+#workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
+#if (is.na(workers) || workers < 1) workers <- 1
+workers = 10
 
 test_rows <- integer(0)
-#test_rows <- c(1,10,50)
+#test_rows <- c(1,10,50) ## change and uncomment to test specific mediator rows
 if (length(test_rows) > 0) {
         message("Mediation test rows provided: ", paste(test_rows, collapse = ", "))
 }
@@ -241,20 +255,29 @@ run_one <- function(i) {
     run_label <- as.character(med_row$run)
     med_gene_id <- as.character(med_row$med_gene_id)
     file_label <- gsub("\\|", "_", run_label)
-    out_file <- file.path(out_dir, sprintf("%02d_%s.tab.gz", i, file_label))
-    out_fdr_file <- sub("\\.tab\\.gz$", ".fdr05.tab.gz", out_file)
+    out_file <- file.path(out_dir, sprintf("%02d_%s.tab.gz", i, file_label)) ## topTable for carrier contrast
+    out_Mfile <- file.path(out_dir, sprintf("%02d_%s.M.tab.gz", i, file_label)) ## topTable for med_vec contrast
+    out_fdr_file <- sub("\\.tab\\.gz$", ".fdr05.tab.gz", out_file) ## carrier contrast FDR<0.05
+    out_Mfdr_file <- sub("\\.tab\\.gz$", ".fdr05.tab.gz", out_Mfile) ## med_vec contrast FDR<0.05
     run_info_file <- file.path(out_dir, sprintf("%02d_%s.txt", i, file_label))
-    if (file.exists(out_file) && file.exists(run_info_file)) {
+    if (file.exists(out_file) && file.exists(out_Mfile) && file.exists(run_info_file)) {
         cached <- read_run_info(run_info_file)
         if (!is.null(cached)) {
+            ## backfill missing fdr outputs for cached runs
             if (!file.exists(out_fdr_file)) {
                 tt_cached <- data.table::fread(out_file)
                 tt_fdr <- tt_cached[adj.P.Val < 0.05]
-                data.table::fwrite(tt_fdr, file = out_fdr_file, sep = "\t", compress = "gzip")
+                write_fdr_table(tt_fdr, out_fdr_file)
+            }
+            if (!file.exists(out_Mfdr_file)) {
+                ttM_cached <- data.table::fread(out_Mfile)
+                ttM_fdr <- ttM_cached[adj.P.Val < 0.05]
+                write_fdr_table(ttM_fdr, out_Mfdr_file)
             }
             message(Sys.time(), sprintf(" - Using cached run: %s", out_file))
             return(list(
                 out_file = out_file,
+                out_Mfile = out_Mfile,
                 run_label = cached$run_label,
                 med_gene_id = cached$med_gene_id,
                 gene_id = cached$gene_id,
@@ -309,8 +332,10 @@ run_one <- function(i) {
         sample.weights = TRUE
     )
 
+    ## add identity contrast for the med_vec coefficient alongside carrier
     cont <- makeContrasts(
         carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+        med_vec = med_vec,
         levels = des
     )
 
@@ -323,9 +348,19 @@ run_one <- function(i) {
               n_donors = length(common_donors))]
     setcolorder(tt, c("run", "cluster", "contrast", "outcome_gene_id", "n_donors",
                       setdiff(names(tt), c("run", "cluster", "contrast", "outcome_gene_id", "n_donors"))))
+    ## mediator contrast table
+    ttM <- topTable(v.swt.fit.e, coef = "med_vec", number = Inf, adjust.method = "BH")
+    ttM <- as.data.table(ttM, keep.rownames = "outcome_gene_id")
+    ttM[, `:=`(run = run_label, cluster = out_clus, contrast = "med_vec",
+               n_donors = length(common_donors))]
+    setcolorder(ttM, c("run", "cluster", "contrast", "outcome_gene_id", "n_donors",
+                       setdiff(names(ttM), c("run", "cluster", "contrast", "outcome_gene_id", "n_donors"))))
 
+    ## write carrier and mediator results plus fdr-filtered subsets
     data.table::fwrite(tt, file = out_file, sep = "\t", compress = "gzip")
-    data.table::fwrite(tt[adj.P.Val < 0.05], file = out_fdr_file, sep = "\t", compress = "gzip")
+    write_fdr_table(tt[adj.P.Val < 0.05], out_fdr_file)
+    data.table::fwrite(ttM, file = out_Mfile, sep = "\t", compress = "gzip")
+    write_fdr_table(ttM[adj.P.Val < 0.05], out_Mfdr_file)
 
     write_run_info(run_info_file, list(
         run_label = run_label,
@@ -342,6 +377,7 @@ run_one <- function(i) {
 
     list(
         out_file = out_file,
+        out_Mfile = out_Mfile,
         run_label = run_label,
         med_gene_id = med_gene_id,
         gene_id = gene_id,
@@ -495,44 +531,65 @@ out_gene_map <- unique(out_gene_map, by = "outcome_gene_id")
 
 summary_list <- lapply(seq_len(nrow(run_info_dt)), function(i) {
     run_row <- run_info_dt[i]
+    ## read carrier and mediator results for step 3 evaluation
     tt <- data.table::fread(run_row$out_file)
-    med_genes <- tt[adj.P.Val < 0.05, outcome_gene_id]
+    ttM <- data.table::fread(run_row$out_Mfile)
+    carrier_sig <- tt[adj.P.Val < 0.05, outcome_gene_id]
+    med_sig <- ttM[adj.P.Val < 0.05, outcome_gene_id]
     base_genes <- baseline_map[[run_row$donor_key]]
     if (is.null(base_genes)) {
         stop(sprintf("Missing baseline for donor_key %s", run_row$donor_key))
     }
-    lost <- setdiff(base_genes, med_genes)
-    gained <- setdiff(med_genes, base_genes)
+    ## step 3b attenuation and step 3a mediator significance (baseline-only)
+    lost <- setdiff(base_genes, carrier_sig)
+    gained <- setdiff(carrier_sig, base_genes)
+    attenuated <- lost
+    step3a_genes <- intersect(med_sig, base_genes)
+    mediated <- intersect(attenuated, med_sig)
 
     lost_dt <- out_gene_map[J(lost), on = "outcome_gene_id"]
     gained_dt <- out_gene_map[J(gained), on = "outcome_gene_id"]
+    mediated_dt <- out_gene_map[J(mediated), on = "outcome_gene_id"]
     lost_labels <- ifelse(is.na(lost_dt$outcome_gene_name) | lost_dt$outcome_gene_name == "",
                           lost_dt$outcome_gene_id,
                           paste0(lost_dt$outcome_gene_id, "|", lost_dt$outcome_gene_name))
     gained_labels <- ifelse(is.na(gained_dt$outcome_gene_name) | gained_dt$outcome_gene_name == "",
                             gained_dt$outcome_gene_id,
                             paste0(gained_dt$outcome_gene_id, "|", gained_dt$outcome_gene_name))
+    mediated_labels <- ifelse(is.na(mediated_dt$outcome_gene_name) | mediated_dt$outcome_gene_name == "",
+                              mediated_dt$outcome_gene_id,
+                              paste0(mediated_dt$outcome_gene_id, "|", mediated_dt$outcome_gene_name))
 
     file_label <- gsub("\\|", "_", run_row$run_label)
     loss_file <- file.path(out_dir, sprintf("%s.loss.txt", file_label))
     gain_file <- file.path(out_dir, sprintf("%s.gain.txt", file_label))
+    mediated_file <- file.path(out_dir, sprintf("%s.mediated.txt", file_label))
     lost_labels <- sort(as.character(lost_labels))
     gained_labels <- sort(as.character(gained_labels))
+    mediated_labels <- sort(as.character(mediated_labels))
     lost_labels <- lost_labels[!is.na(lost_labels)]
     gained_labels <- gained_labels[!is.na(gained_labels)]
+    mediated_labels <- mediated_labels[!is.na(mediated_labels)]
+    ## write per-run gene lists
     writeLines(lost_labels, con = loss_file)
     writeLines(gained_labels, con = gain_file)
+    writeLines(mediated_labels, con = mediated_file)
 
     data.table::data.table(
         mediation_run = run_row$run_label,
         donor_key = run_row$donor_key,
         n_donors = run_row$n_donors,
         baselineDEGs = length(base_genes),
-        mediationDEGs = length(med_genes),
+        mediationCarrierDEGs = length(carrier_sig), ## carrier-significant outcome genes after adding mediator
+        mediationMDEGs = length(med_sig), ## mediator-significant outcome genes in joint model
+        medSigBaselineDEGs = length(step3a_genes), ## mediator-significant genes restricted to baseline DEG set
+        mediated_n = length(mediated),
+        pass_both = length(mediated) > 0,
         loss = length(lost),
         gain = length(gained),
         loss_file = loss_file,
-        gain_file = gain_file
+        gain_file = gain_file,
+        mediated_file = mediated_file
     )
 })
 
