@@ -86,6 +86,18 @@ Xenium_hBrain |> dplyr::count(Annotation) |> print(n = 28)
 # 27 VLMC                           18
 # 28 Vip                             2
 
+
+AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv"))
+
+Xenium_hBrain |> dplyr::filter(Genes %in% AD_risk$symbol) |> select(Genes, Annotation, cell_type_anno)
+# Genes  Annotation                  cell_type_anno
+# <chr>  <chr>                       <chr>         
+# 1 APP    Broad                       NA            
+# 2 SORCS1 L5 ET                       Excit.L5      
+# 3 PSEN2  Glioblastoma (Cancer cells) NA            
+# 4 APOE   Microglia-PVM               NA            
+# 5 PSEN1  Oligodendrocyte             NA  
+
 #### dotplot of panel on cell_type_anno ####
 
 rowData(sce)$Xenium <- NULL
@@ -268,5 +280,7 @@ spe |>
               groupLegends = FALSE
     ) 
 dev.off()
+
+
 
 
