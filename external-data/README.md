@@ -2,6 +2,8 @@
 
 `Allen_Brain_Mouse_cortex_hippo`
 
+`AD_Knowledge_Portal` Downloaded `Oligodendroyte.rds` from https://www.synapse.org/Synapse:syn52368918 Feb 4, 2026
+
 `Grubman2019` Supplementary tables from Grubman et al., 2019 [10.1038/s41593-019-0539-4](https://doi.org/10.1038/s41593-019-0539-4)
 DE data downloaded from http://adsn.ddnetbio.com "AD vs Control cells within each cell type". LFC cutoff 0.5 (minimum option) FDR cutoff 0.05.
 
