@@ -195,6 +195,7 @@ message("colnames match: ", identical(colnames(all_counts), rownames(all_colData
 rm(sce_hpc)
 
 #### Load dACC data ####
+message(Sys.time(), " - Load dACC sce")
 load("/dcs04/lieber/marmaypag/spatialdACC_LIBD4125/spatialdACC/processed-data/snRNA-seq/05_azimuth/sce_azimuth.Rdata", verbose = TRUE)
 message("dacc n nuc: ", ncol(sce), ", n gene:", nrow(sce))
 
@@ -246,6 +247,9 @@ message("colnames match: ", identical(colnames(all_counts), rownames(all_colData
 sce$key <- colnames(sce)
 
 #### Combined Oligo Data ####
+message(Sys.time(), " - counts to dgCMatrix")
+all_counts <- as(all_counts, "dgCMatrix")
+
 message(Sys.time(), " - Build Multi-Study Oligo SCE")
 sce <- SingleCellExperiment(assay = list(counts = all_counts),
                             colData = all_colData,
@@ -313,7 +317,7 @@ sce <- scater::runPCA(sce,
 
 reducedDimNames(sce)
 
-## un-corrected TSNE 
+#### un-corrected TSNE  ####
 message(Sys.time(), " - running TSNE")
 sce <- runTSNE(sce, dimred = "GLMPCA_approx")
 
@@ -324,16 +328,17 @@ tsne_plot <- my_plot_reduced_dim(sce,
                                  dimred = "TSNE",
                                  my_var = "cell_type_dataset",
                                  var_type = "cat",
+                                 suffix = "uncorrected",
                                  save_plot = TRUE,
                                  facet = FALSE,
                                  plot_dir_rd = plot_dir,
                                  verbose = TRUE, 
                                  add_label = TRUE)
 
-TSNE_uncorrected <- reducedDims(sce, "TSNE")
+TSNE_uncorrected <- reducedDim(sce, "TSNE")
 saveRDS(TSNE_uncorrected, file = here(data_dir, "Multistudy_Oligo_TSNE_uncorrected.Rds"))
 
-#### Batch Correction ####
+#### HARMONY Batch Correction ####
 message(Sys.time(), " - HARMONY Correction")
 
 ## Run harmony
@@ -351,7 +356,7 @@ subtype_HARMONY <- reducedDim(sce, "HARMONY")
 save(subtype_HARMONY, file = harmony_file)
 
 
-#### Reduced dim plots ####
+#### HARMONY Corrected TSNE ####
 
 message(Sys.time(), " - running TSNE")
 sce <- runTSNE(sce, dimred = "HARMONY")
@@ -360,17 +365,16 @@ sce <- runTSNE(sce, dimred = "HARMONY")
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 tsne_plot <- my_plot_reduced_dim(sce,
-                                 prefix = "other_Oligo",
+                                 prefix = "Multistudy_Oligo",
                                  dimred = "TSNE",
-                                 my_var = "Oligo_anno",
+                                 my_var = "cell_type_dataset",
                                  var_type = "cat",
+                                 suffix = "HARMONY",
                                  save_plot = TRUE,
-                                 suffix = sprintf("mulristudy_Oligo_k%i", k),
                                  facet = FALSE,
                                  plot_dir_rd = plot_dir,
                                  verbose = TRUE, 
-                                 add_label = TRUE,
-                                 color_pal = other_oligo_colors)
+                                 add_label = TRUE)
 
 #### Save data ####
 message(Sys.time(), " - Save HDF5 Data")
