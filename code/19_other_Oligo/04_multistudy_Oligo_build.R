@@ -381,6 +381,36 @@ message(Sys.time(), " - Save HDF5 Data")
 saveHDF5SummarizedExperiment(sce, dir = here(data_dir, "sce_multistudy_Oligo"), replace=TRUE)
 
 
+#### plot more TSNE plots ####
+
+walk(c("dataset", "BrNum", "Sex"), 
+                      ~my_plot_reduced_dim(sce,
+                                 prefix = "Multistudy_Oligo",
+                                 dimred = "TSNE",
+                                 my_var = .x,
+                                 var_type = "cat",
+                                 suffix = "HARMONY",
+                                 save_plot = TRUE,
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE))
+
+
+walk(c("Age", "Sum", "scDblFinder.score", "subsets_Mito_percent"), 
+     ~my_plot_reduced_dim(sce,
+                          prefix = "Multistudy_Oligo",
+                          dimred = "TSNE",
+                          my_var = .x,
+                          var_type = "con",
+                          suffix = "HARMONY",
+                          save_plot = TRUE,
+                          facet = FALSE,
+                          plot_dir_rd = plot_dir,
+                          verbose = TRUE, 
+                          add_label = TRUE))
+
+
 # slurmjobs::job_single('04_multistudy_Oligo_build', create_shell = TRUE, memory = '100G', command = "Rscript 04_multistudy_Oligo_build.R")
 
 ## Reproducibility information
