@@ -1,6 +1,5 @@
 ## Louise Huuki-Myers, Jan 2026
-## Explore existing pannel, build custom list
-
+## Explore existing panel
 
 #### Set up ####
 library("tidyverse")
@@ -34,7 +33,7 @@ rownames(spe) <- rowData(spe)$gene_name
 
 SpD_colors <- metadata(spe)$SpD_colors
 
-#### Explore Xenium data ####
+#### load and annotate Xenium base panel ####
 Xenium_annotation <- read_xlsx(here(data_dir, "Xenium_hBrain_annotation.xlsx"))
 Xenium_annotation |> dplyr::count(cell_type_class)
 
@@ -87,7 +86,7 @@ Xenium_hBrain |> dplyr::count(Annotation) |> print(n = 28)
 # 27 VLMC                           18
 # 28 Vip                             2
 
-## dotplot of panel on cell_type_anno
+#### dotplot of panel on cell_type_anno ####
 
 rowData(sce)$Xenium <- NULL
 rowData(sce)$Xenium <- Xenium_hBrain$anno[match(rownames(sce), Xenium_hBrain$Genes)] 
@@ -129,30 +128,6 @@ walk(xenium_list,
         print())
 dev.off()
 
-
-#### cell type modeling ####
-## Global Enrichment 
-enrichment_stats_top <- read_csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv")) |>
-    dplyr::rename(Genes = ensembl)
-
-non_unique <- enrichment_stats_top |> count(ensembl) |> filter(n != 1) |> pull(ensembl)
-
-enrichment_stats_top |> inner_join(Xenium_hBrain)
-
-enrichment_stats_top |> filter(Genes %in% Xenium_hBrain$Genes)
-
-
-#### Oligo modeling ####
-
-load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
-
-marker_stats_top <- marker_stats_MeanRatio |>
-    filter(MeanRatio.rank <= 5, MeanRatio > 1) |>
-    arrange(cellType.target)
-
-marker_stats_top |> filter(gene %in% Xenium_hBrain$Genes)
-
-
 #### Plot on Visium Data ####
 
 rowData(spe)$Xenium <- NULL
@@ -173,6 +148,125 @@ walk(xenium_list,
                    groupLegends = FALSE
          ) |>
          print())
+dev.off()
+
+#### Cell Type Enrichment ####
+
+enrichment_stats_top <- read_csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv")) |>
+    dplyr::rename(Genes = ensembl)
+
+non_unique <- enrichment_stats_top |> count(ensembl) |> filter(n != 1) |> pull(ensembl)
+
+enrichment_stats_top |> inner_join(Xenium_hBrain)
+
+enrichment_stats_top |> filter(Genes %in% Xenium_hBrain$Genes)
+
+enrichment_stats_select <- enrichment_stats_top |> 
+    filter(cell_type_anno %in% c("Astro.1", "Astro.2", "Astro.3",
+                                 "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5")
+           ) |> 
+    dplyr::rename(gene_name = Genes)|>
+    inner_join(rowData(sce) |> as.data.frame()) |> 
+    filter(gene_name != "ENSG00000272076") ## top gene for several astros
+
+enrichment_stats_select |> dplyr::count(cell_type_anno, gene_type)
+
+enrichment_stats_select |> filter(gene_type == "protein_coding")
+
+rowData(sce)$enrichment <- NULL
+rowData(sce)$enrichment <- enrichment_stats_select$cell_type_anno[match(rownames(sce), enrichment_stats_select$gene_name)] 
+table(rowData(sce)$enrichment)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_enrichment_select.pdf")), height = 11, width = 8)
+sce |>
+    scDotPlot(features = enrichment_stats_select$gene_name,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "enrichment",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "enrichment" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+dev.off()
+
+#### Single Cell MeanRatio ####
+
+load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
+
+marker_stats_top <- marker_stats_MeanRatio |>
+    filter(MeanRatio.rank <= 10, MeanRatio > 1) |>
+    arrange(cellType.target)
+
+## 11 top5 genes overla
+mean_ratio_xenium_overlap <- marker_stats_top |> 
+    inner_join(Xenium_hBrain |> 
+                   dplyr::rename(gene = Genes)) |>  
+    select(gene, cellType.target, MeanRatio, MeanRatio.rank, Annotation, cell_type_anno) |>
+    arrange(cellType.target) 
+
+mean_ratio_xenium_overlap |> print(n = 21)
+
+marker_stats_select <- marker_stats_top |> 
+    filter(MeanRatio.rank <= 5) |>
+    filter(cellType.target %in% c("Astro.1", "Astro.2", "Astro.3",
+                                 "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
+                                 "Excit.L5.2", "Excit.L2_5.1")
+    )
+
+marker_stats_select |> dplyr::count(cellType.target)
+
+rowData(sce)$MeanRatio <- NULL
+rowData(sce)$MeanRatio <- as.character(marker_stats_select$cellType.target)[match(rownames(sce), marker_stats_select$gene)] 
+table(rowData(sce)$MeanRatio)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_select.pdf")), height = 11, width = 8)
+sce |>
+    scDotPlot(features = marker_stats_select$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "MeanRatio",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "MeanRatio" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+dev.off()
+
+
+#### Genes of Interest ####
+
+gene_list_ADRB <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
+all(gene_list_ADRB %in% rownames(sce))
+
+genes_other <- c("RELN")
+
+genes_of_interest <- c(gene_list_ADRB, genes_other)
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_genes_of_interest.pdf")), height = 7, width = 8)
+sce |>
+    scDotPlot(features = genes_of_interest,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+dev.off()
+
+pdf(here(plot_dir, sprintf("SpD_dotplot_genes_of_interest.pdf")), height = 7, width = 8)
+spe |>
+    scDotPlot(features = genes_of_interest,
+              group = "SpD",
+              groupAnno = "SpD",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = SpD_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
 dev.off()
 
 
