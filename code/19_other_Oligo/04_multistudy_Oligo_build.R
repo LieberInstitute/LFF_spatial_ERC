@@ -379,10 +379,13 @@ tsne_plot <- my_plot_reduced_dim(sce,
                                  add_label = TRUE)
 
 #### Save data ####
-message(Sys.time(), " - Save HDF5 Data")
-saveHDF5SummarizedExperiment(sce, dir = here(data_dir, "sce_multistudy_Oligo"), replace=TRUE)
+# message(Sys.time(), " - Save HDF5 Data")
+# saveHDF5SummarizedExperiment(sce, dir = here(data_dir, "sce_multistudy_Oligo"), replace=TRUE)
 
+message(Sys.time(), " - Save sce Data")
+saveRDS(sce, file = here(data_dir, "sce_multistudy_Oligo.Rds"))
 
+message(Sys.time(), " - Done save")
 #### plot more TSNE plots ####
 
 walk(c("dataset", "BrNum", "Sex"), 
