@@ -244,8 +244,6 @@ all_colData <- rbind(all_colData, colData(sce)[, coldata_keep])
 message("n nuc matches: ", identical(ncol(all_counts), nrow(all_colData)))
 message("colnames match: ", identical(colnames(all_counts), rownames(all_colData)))
 
-sce$key <- colnames(sce)
-
 #### Combined Oligo Data ####
 message(Sys.time(), " - counts to dgCMatrix")
 all_counts <- as(all_counts, "dgCMatrix")
@@ -255,9 +253,13 @@ sce <- SingleCellExperiment(assay = list(counts = all_counts),
                             colData = all_colData,
                             rowData = all_rowData[common_genes,])
 
+sce$key <- colnames(sce)
+sce$sample_id <- paste0(sce$dataset, "_", sce$sample_id)
+
 message("ALL data n nuc: ", ncol(sce), ", n gene:", nrow(sce))
 
 table(sce$dataset)
+table(sce$sample_id)
 
 table(sce$cell_type_broad, sce$dataset)
 table(sce$cell_type_fine, sce$dataset)
@@ -346,7 +348,7 @@ message(Sys.time(), " - HARMONY Correction")
 reducedDim(sce, "PCA") <- reducedDim(sce, "GLMPCA_approx")
 
 message("running Harmony - ", Sys.time())
-sce <- harmony::RunHarmony(sce, group.by.vars = "dataset", verbose = TRUE)
+sce <- harmony::RunHarmony(sce, group.by.vars = "sample_id", verbose = TRUE)
 
 ## Remove redundant PCA
 reducedDim(sce, "PCA") <- NULL
