@@ -27,11 +27,11 @@ opt <- getopt(scec)
 message("Run clustering with k=", opt$k)
 
 #### Load multi-study oligo SCE ####
-# message(Sys.time(), " - Load HDF5 sce") ## loads in 3s
-# sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo"))
+message(Sys.time(), " - Load HDF5 sce") ## loads in 3s
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo"))
 
-message(Sys.time(), " - Load Rds sce") ## 
-sce <- readRDS(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo.Rds"))
+# message(Sys.time(), " - Load Rds sce") ## 
+# sce <- readRDS(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo.Rds"))
 
 #### SNN + Walktrap cluster ####
 set.seed(2526)
