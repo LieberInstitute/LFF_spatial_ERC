@@ -1,0 +1,263 @@
+---
+title: "LC data exploration"
+## format: html
+---
+
+```{r}
+library(edgeR)
+library(SingleCellExperiment)
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(here)
+ddir <- here("processed-data")
+mdir <- here("processed-data", "22_Mediation")
+```
+
+
+
+```{r LC data exploration}
+lcdir <- here('code', '22_Mediation', 'LC-processed-data')
+## on JHPCE, this should be a symlink to /dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC/processed-data
+internal_ref_lc_pb <- file.path(lcdir, "shared_internal_ref", "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+if (!file.exists(internal_ref_lc_pb)) {
+    ## on JHPCE directly
+    internal_ref_lc_pb <- file.path("/dcs05/lieber/marmaypag/LFF_spatialLC_LIBD4140/LFF_spatial_LC",
+              "shared_internal_ref", "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+    stopifnot(file.exists(internal_ref_lc_pb))
+}
+## LC astrocytes
+flc <- file.path(lcdir, '12_DEanalyses_removedsampsAndFinalNMseg',"02b-voomLmFit_objs_and_DE_tables_LabSex_LabE2vE4_LabSingleGenos_LabAnces_LabAncesE4E2_noMixClusts_YRIcontAndCat_JUL2025.RDS")
+lclst <- readRDS(flc)
+## Bernie/Leo said:
+## multi-layered list containing differential expression (DE) analysis inputs, intermediates, and
+## result tables.The DGE tables you need are located within the object at:
+## thisRds$cont_ances$E2E4label$detabs[c("LC_E4vE2","Astro_E4vE2")]
+## these results control for genomic ancestry as a continuous measure
+
+## For "Blue" design we look at the "Astro_E4vE2" table (DEGs from the LC astrocyte spatial domain)
+detabs <- lclst$cont_ances$E2E4label$detabs
+lca_dge <- detabs$Astro_E4vE2
+lc_dge <- detabs$LC_E4vE2
+
+cat("Total genes tested in Astro/LC domains:", nrow(lc_dge), "\n") # 7729
+
+## LC Astro DEGs (FDR < 0.05) for the Blue design
+lca_degs <- lca_dge[adj.P.Val < 0.05]
+cat("LC Astro domain DEGs (FDR<0.05):", nrow(lca_degs), "\n\n")  # 191
+#dim(lc_astro_degs)
+lc_degs <- lc_dge[adj.P.Val < 0.05]
+cat("LC domain DEGs (FDR<0.05):", nrow(lc_degs), "\n") # 182
+
+if (!dir.exists(mdir)) dir.create(mdir, recursive = TRUE)
+## save full DGE tables for later:
+f_lc_dge <- file.path(mdir, "LC_E4vE2_DGEout_Bernie.rds")
+saveRDS(lc_dge, f_lc_dge)
+f_lc_astro_dge <- file.path(mdir, "LC_Astro_E4vE2_DGEout_Bernie.rds")
+saveRDS(lca_dge, f_lc_astro_dge)
+
+lcdgel <- lclst$cont_ances$E2E4label$dgel
+samples_meta <- lcdgel$samples
+
+meta_dt <- as.data.table(samples_meta)
+## collapse by brnum: collect unique values for each column into a list
+meta_collapsed <- meta_dt[, lapply(.SD, function(x) list(unique(x))), by = brnum]
+## filter columns where every element has length 1
+consistent_cols <- sapply(meta_collapsed, function(col) all(lengths(col) == 1))
+## subset to keep only those columns with unique values per brnum
+meta_final <- meta_collapsed[, ..consistent_cols]
+## unlist the columns to get back primitive types (instead of lists)
+meta_final <- meta_final[, lapply(.SD, unlist)]
+## identify columns where there is only 1 unique value across the entire dataset
+single_val_cols <- sapply(meta_final, function(col) length(unique(col)) <= 1)
+## remove these, no information
+meta_final <- meta_final[, !..single_val_cols]
+#     brnum   APOE Ancestry    Sex   Age   Rin         YRI geno_group APOlargeGrp
+#    <char> <char>   <char> <char> <num> <num>       <num>     <char>      <char>
+# 1: Br1039  E4hom       AA      F 51.45   8.6 0.702526009    F_E4hom          E4
+# 2: Br5854  E2het       AA      M 68.38   9.0 0.587382094    M_E2het          E2
+# 3: Br1691  E4hom       AA      F 46.53   8.5 0.796535558    F_E4hom          E4
+# 4: Br2305  E4hom       AA      F 54.88   8.0 0.844023189    F_E4hom          E4
+# 5: Br6263  E4het       AA      F 50.73   7.0 0.893353128    F_E4het          E4
+
+# add APOE_syn to meta_final to match ERC metadata
+meta_final[, APOE_syn := fifelse(APOE == "E2hom", "E2.E2",
+                           fifelse(APOE == "E2het", "E2.E3",
+                           fifelse(APOE == "E4het", "E3.E4",
+                           fifelse(APOE == "E4hom", "E4.E4", NA_character_))))]
+meta_final[, APOE_syn := factor(APOE_syn, levels = c("E2.E2", "E2.E3", "E3.E4", "E4.E4"))]
+setnames(meta_final, "brnum", "BrNum")
+setkey(meta_final, BrNum)
+```
+
+The LC dataset contains 5 spatial domains, each analyzed separately for APOE E4 vs E2 differential expression:
+* Astro (77 samples, 30 donors) - LC astrocyte domain (blue design)
+* LC (73 samples, 29 donors) - LC neuronal domain (orange design)
+* ACHE_SERT_LC_WM (77 samples, 30 donors)
+* ACHE_SERT_Npep (73 samples, 29 donors)
+* Oligo_Astro (77 samples, 30 donors)
+
+```{r  better to just load Bernie's pseudobulked by donor data}
+if (!dir.exists(mdir)) dir.create(mdir, recursive = TRUE)
+f_astro_pbcounts <- file.path(mdir, 'lc_astro_pseudobulk_counts_by_donor.rds')
+f_lc_pbcounts <- file.path(mdir, 'lc_lc_pseudobulk_counts_by_donor.rds')
+if (file.exists(f_astro_pbcounts) && file.exists(f_lc_pbcounts)) {
+    dgl_astro <- readRDS(f_astro_pbcounts)
+    dgl_lc <- readRDS(f_lc_pbcounts)
+} else {
+  # read Bernie's DGEList with pseudobulk counts by donor:
+  dgel_pb <- readRDS(internal_ref_lc_pb) ## DGEList
+  #dim(dgel_pb$counts) # 29802 x 268
+  ## only pull astro:
+  dgl_astro <- dgel_pb[, grepl('^Astro_Br', colnames(dgel_pb))]
+  #dim(dgl_astro$counts) # 29802 x 30 --> no gene expression filtering
+  colnames(dgl_astro) <- sub('^Astro_', '', colnames(dgl_astro))
+  ## now LC domain:
+  dgl_lc <- dgel_pb[, grepl('^LC_Br', colnames(dgel_pb))]
+  #dim(dgl_lc$counts) # 29802 x 29 --> grepl('^LC_', colnames(dgel_lc))
+  ## no gene expression filtering
+  colnames(dgl_lc) <- sub('^LC_', '', colnames(dgl_lc))
+  ## drop all metadata except lib.size and group, bind and match by BrNum to rownames
+  df <- cbind(dgl_lc$samples[, c("lib.size", "group"), drop = FALSE],
+             as.data.frame(meta_final)[match(rownames(dgl_lc$samples), meta_final$BrNum), ])
+  stopifnot(!any(is.na(df$BrNum)))
+  dgl_lc$samples <- df
+  ## do the same for astro:
+  df <- cbind(dgl_astro$samples[, c("lib.size", "group"), drop = FALSE],
+             as.data.frame(meta_final)[match(rownames(dgl_astro$samples), meta_final$BrNum), ])
+  stopifnot(!any(is.na(df$BrNum)))
+  dgl_astro$samples <- df
+  ## if we are here, everything succeeded
+  saveRDS(dgl_lc, f_lc_pbcounts)
+  saveRDS(dgl_astro, f_astro_pbcounts)
+}
+```
+
+```{r quick DGE with the donor-level pseudobulk counts}
+## to check against Bernie's MODEL 2 in lc astro domain (lc_degs)
+
+br_oc <- fread(file.path(mdir, "brnum_metadata_ERC_Oligo3_n30.tab"))
+brovl <- intersect(br_oc$BrNum, dgl_astro$samples$BrNum)
+dge <- edgeR::calcNormFactors(dgl_astro[, brovl])
+
+dge$samples$APOlargeGrp <- ifelse(dge$samples$APOE %in% c("E2hom","E2het"), "E2", "E4")
+stopifnot(length(unique(dge$samples$APOlargeGrp)) == 2)
+dge$samples$APOlargeGrp <- factor(dge$samples$APOlargeGrp)
+
+#des <- model.matrix(~0 + APOlargeGrp + Sex + Age + YRI, data = dge$samples)
+des <- model.matrix(~0 + APOE_syn + Sex + Age + YRI, data = dge$samples)
+colnames(des) <- gsub("_syn", "_", colnames(des)) ## just to match mediation design matrix column names
+keep <- edgeR::filterByExpr(dge, design = des)
+dge <- dge[keep, , keep.lib.sizes = FALSE]
+dge <- edgeR::calcNormFactors(dge)
+
+## fit (no donor blocking; one sample per donor)
+v.swt <- voomLmFit(dge, design = des, adaptive.span = TRUE, sample.weights = TRUE)
+#trast <- makeContrasts(E4vE2 = APOlargeGrpE4 - APOlargeGrpE2, levels = des)
+trast <- makeContrasts(
+        carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+        levels = des
+    )
+v.swt.fit <- contrasts.fit(v.swt, contrasts = trast)
+v.swt.fit.e <- eBayes(v.swt.fit, robust = TRUE)
+
+# topTable
+tt <- topTable(v.swt.fit.e, coef = "carrier", number = Inf, adjust.method = "BH")
+ttsig <- subset(tt, adj.P.Val < 0.05)
+summary(tt$adj.P.Val)
+## 0 DEGs at FDR < 0.1
+```
+
+
+
+```{r SKIP}
+names(lclst$cont_ances$E2E4label$voomLFt$EList)
+# E contains the expression matrix
+E_mat <- lclst$cont_ances$E2E4label$voomLFt$EList$E
+cat("Expression matrix dimensions:", dim(E_mat), "\n")
+cat("Genes x Samples\n\n")
+# Look at sample names (columns)
+cat("Sample names (first 20):\n")
+head(colnames(E_mat), 20)
+## the raw counts seem to be in the dgel slot:
+counts <- lclst$cont_ances$E2E4label$dgel$counts
+## Bernie said these are already pseudo-bulked by tissue sections (but not by donor)
+# head(colnames(counts))
+#[1] "ACHE_SERT_LC_WM_V13B23_284_A1s1" "ACHE_SERT_LC_WM_V13B23_284_A1s2" "ACHE_SERT_LC_WM_V13B23_284_B1s1" "ACHE_SERT_LC_WM_V13B23_284_B1s2" "ACHE_SERT_LC_WM_V13B23_284_C1s1"
+#[6] "ACHE_SERT_LC_WM_V13B23_284_C1s2"
+#> tail(colnames(counts))
+#[1] "Oligo_Astro_V13M06_404_B1s1" "Oligo_Astro_V13M06_404_B1s2" "Oligo_Astro_V13M06_404_C1s1" "Oligo_Astro_V13M06_404_C1s2" "Oligo_Astro_V13M06_404_D1s1" "Oligo_Astro_V13M06_404_D1s2"
+￼
+## these are actually spots-data pseudo-bulked per tissue section!
+## so we still need to aggregate spots per donor if we want donor-level expression
+
+## check targets (sample metadata) to understand the domains
+targets <- lclst$cont_ances$E2E4label$voomLFt$targets
+cat("Targets columns:\n")
+names(targets)
+## extract domain prefixes from the sample/row names
+unique(sub("_V1.*", "", rownames(targets)))
+## [1] "ACHE_SERT_LC_WM" "ACHE_SERT_Npep"  "Astro"  "LC"  "Oligo_Astro"
+
+# the domains are here! Let's count samples per domain
+domain_prefix <- sub("_V1.*", "", rownames(targets))
+table(domain_prefix)
+#domain_prefix
+#ACHE_SERT_LC_WM  ACHE_SERT_Npep           Astro              LC     Oligo_Astro
+#             77              73              77              73              77
+
+# So the expression matrix contains ALL domains together
+# DGE was run per domain, that's why there are separate DE tables
+# for the Blue design, we need the "Astro"  domain DEGs
+# identify which samples belong to the Astro domain
+astro_idx <- which(domain_prefix == "Astro")
+cat("Number of Astro domain samples:", length(astro_idx), "\n") #77
+## Check how many donors in Astro
+astro_targets <- targets[astro_idx, , drop = FALSE]
+cat("Unique donors in Astro domain:", length(unique(astro_targets$brnum)), "\n") # 30
+
+## aggregate counts by donor:
+astro_counts <- counts[, astro_idx]
+sce_astro <- SingleCellExperiment(
+    assays = list(counts = astro_counts),
+    colData = astro_targets
+)
+sce_astro_pb <- scuttle::aggregateAcrossCells(
+    sce_astro, ids = sce_astro$brnum,
+    statistics = "sum",     # Sum counts
+    use.assay.type = "counts"
+)
+
+```
+
+
+
+```{r LC NM DEGs}
+#-------------------
+## LC NM DEGs
+flcnm <- file.path(lcdir,'11-LCNMspots_NMmetric_LMMed_by_geneLogcounts_3apoeFactorizations.RDS')
+lcnm <- readRDS(flcnm)
+## Bernie/Leo said:
+## This analysis looks at NM pixel intensity controlling for APOE (E4 vs E2 carrier status).
+## nested list, relevant tabular results are at: dat$E4carrierYN$Intensity_NM
+## this table contains coefficients, test stats, and raw Linear Mixed Model (LMM) P-values.
+## filter for genes using `dat<-dat[gene_name==variable]`.
+## P-values are in columns `fdr_gene` (FDR corrected) and `bonf_gene` (Bonferroni corrected).
+## Directionality: a negative coefficient value means higher expression is associated with
+## darker (stronger) neuromelanin.
+## a positive value is associated with lighter (weaker) neuromelanin
+nmde <- lcnm$E4carrierYN$Intensity_NM
+head(nmde)
+#    gene_name           variable          coef var_group      Chisq    Df          p   logLik        NMvar  fdr_gene bonf_gene
+#       <char>             <char>         <num>    <char>      <num> <num>      <num>    <num>       <char>     <num>     <num>
+#1: AL627309.1                Age -0.0008325735      <NA> 2.79784674     1 0.09439099       NA Intensity_NM        NA        NA
+#2: AL627309.1          E4carrier  0.0021525016       Yes 0.06818055     1 0.79400455       NA Intensity_NM        NA        NA
+#3: AL627309.1                Sex  0.0134432022         M 1.80510644     1 0.17909637       NA Intensity_NM        NA        NA
+#4: AL627309.1                YRI -0.0174276148      <NA> 2.09719395     1 0.14756974       NA Intensity_NM        NA        NA
+#5: AL627309.1         AL627309.1 -0.0328991393      <NA> 1.12685349     1 0.28844749       NA Intensity_NM 0.7095595         1
+#6: AL627309.1 LRTvs_no_gene_coef            NA      <NA> 1.11132716     1 0.29179364 4933.237 Intensity_NM        NA        NA
+
+## nrow(nmde[gene_name==variable][fdr_gene<0.05])
+## [1] 809
+nmde <- copy(nmde)[gene_name==variable]
+```

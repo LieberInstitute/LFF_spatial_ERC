@@ -2,7 +2,7 @@
 
 We discussed a practical "mediation analysis" workflow to connect APOE genotype (E4 vs E2 carrier status) to ERC Oligo.3 expression phenotypes (DGE outcome), through potential mediation/attenuation from Locus Coeruleus (LC) gene expression (LC spatial domain neuromelanin NM-linked signals, and LC astrocytes domain).
 
-A key practical enabler is the 24 donors overlap between the ERC and LC studies supporting this cross-region mediation modeling.
+A key practical enabler is the 21 donors overlap between the ERC and LC studies supporting this cross-region mediation modeling.
 
 ### Key concepts (operational "mediation" screening)
 
@@ -17,13 +17,13 @@ A key practical enabler is the 24 donors overlap between the ERC and LC studies 
 For the 3 mediation designs discussed, `X` and `Y` remain the same. The designs differ by mediator pool and donor set.
 
 #### 1. Design 1 (Orange):
- Cross-region LC domain / NM-driven mediators => ERC Oligo.3 outcomes (n = 24 overlap donors)
+ Cross-region LC domain / NM-driven mediators => ERC Oligo.3 outcomes (n = 21 overlap donors)
  * M: expression of LC spatial-domain gene features:
    - APOE-associated LC domain DEGs (NM+/NM- DEGs + NM-intensity-associated)
  Goal: test whether LC state/NM-linked biology can explain part of the APOE signal seen in ERC Oligo.3.
 
 #### 2. Design 2 (Blue):
- Cross-region LC astrocyte-domain mediators => ERC Oligo.3 outcomes (n = 24 overlap donors)
+ Cross-region LC astrocyte-domain mediators => ERC Oligo.3 outcomes (n = 21 overlap donors)
  * M: expression of APOE-associated DEGs from the LC astrocyte spatial domain
  Goal: a more focused LC=>ERC hypothesis: APOE-driven astro changes in LC relate to (or mediate) APOE-driven Oligo.3 changes in ERC.
 
@@ -81,10 +81,10 @@ The base design formula for the Oligo.3 cell type differential gene analysis (Y~
 `APOE_syn` is a factor with these levels and distributions in the ScE colData():
 
 ```
-> table(colData(sce_pb)$APOE_syn)
+> table(colData(dge_base)$APOE_syn)
 
 E2.E2 E2.E3 E3.E4 E4.E4
-  162   252   289   180
+  6     8     10    6
 ```
 
 The APOE contrast is defined like this:

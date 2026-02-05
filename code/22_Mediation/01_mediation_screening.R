@@ -115,13 +115,13 @@ medopt <- matrix(
     ncol = 5, byrow = TRUE
 )
 opt <- tryCatch(getopt(medopt), error = function(e) list())
-if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "erc_astro"
+if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
 
 if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm"))) {
     stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm")
 }
-if (opt$mediation != "erc_astro") {
-    stop(sprintf("Mediation type '%s' is not implemented yet (only 'erc_astro' is supported).", opt$mediation))
+if (opt$mediation == "lc_nm") {
+    stop(sprintf("Mediation type '%s' is not implemented yet.", opt$mediation))
 }
 
 #workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
@@ -138,6 +138,7 @@ message(Sys.time(), sprintf(" - Mediation type = %s (workers = %i)", opt$mediati
 
 #### Paths ####
 ddir <- here("processed-data")
+mdir <- here("processed-data", "22_Mediation")
 
 pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn", "sce_pseudo_DGE-cell_type_anno.RDS")
 
@@ -150,6 +151,20 @@ dir.create(baseline_dir, recursive = TRUE, showWarnings = FALSE)
 sce_pb <- readRDS(pb_fn)
 ## always drop Br1289
 sce_pb <- sce_pb[, sce_pb$BrNum != "Br1289"]
+
+#### Outcome cluster setup (same for every scenario) ####
+## we can use dge_base colData() for all donor metadata
+
+out_clus <- "Oligo.3"
+batch <- "exp_round"
+dge_base <- sce_pb[, sce_pb$registration_variable == out_clus]
+donor_meta <- as.data.frame(colData(dge_base))
+baseline_des <- model.matrix(
+    baseline_formula,
+    data = donor_meta
+)
+baseline_des <- as.data.frame(baseline_des)
+
 
 med_degs <- NULL ## placeholder for the selected mediator DEGs, gene metadata
 med_expr <- NULL ## placeholder for the mediator gene expression data (logcounts)
@@ -217,6 +232,97 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
   if (!file.exists(fn_med_expr)) {
       qs_save(med_expr, fn_med_expr)
   }
+} else if (opt$mediation == "lc_astro") { ## "blue" design 2: Mediator = LC Astro DEGs from LC spatial domains
+    ## Load LC Astro DEGs (FDR < 0.05)
+    f_lca_dge <- file.path(mdir, "LC_Astro_E4vE2_DGEout_Bernie.rds")
+    if (!file.exists(f_lca_dge)) {
+        stop(sprintf("LC Astro DEG file not found: %s", f_lca_dge))
+    }
+    lca_dge <- as.data.table(readRDS(f_lca_dge))
+    med_degs <- lca_dge[adj.P.Val < 0.05]
+    if (nrow(med_degs) < 1) {
+        stop("No LC Astro DEGs with FDR < 0.05 found.")
+    }
+    ## Standardize column names and add required fields
+    med_degs[, cluster := "LCAstro"]
+    med_degs[, med_gene_id := paste0("LCAstro|", gene_id)]
+    med_degs[, run := sprintf("LCAstro|%s|%s", gene_id, gene_name)]
+    med_degs[, iter := .I]
+    setorder(med_degs, gene_id)
+    message(Sys.time(), sprintf(" - LC Astro DEGs for mediation: %i", nrow(med_degs)))
+
+    ## Load LC Astro pseudobulk counts (DGEList)
+    f_lca_pbcounts <- file.path(mdir, "lc_astro_pseudobulk_counts_by_donor.rds")
+    if (!file.exists(f_lca_pbcounts)) {
+        stop(sprintf("LC Astro pseudobulk counts file not found: %s", f_lca_pbcounts))
+    }
+    dgl_lca <- readRDS(f_lca_pbcounts)
+
+    ## Determine overlapping donors between LC Astro and ERC Oligo.3 outcome
+    lca_brnums <- colnames(dgl_lca)
+    erc_brnums <- as.character(donor_meta$BrNum)
+    common_donors <- intersect(lca_brnums, erc_brnums)
+    if (length(common_donors) < 10) {
+        stop(sprintf("Too few overlapping donors between LC Astro and ERC Oligo.3: %d", length(common_donors)))
+    }
+    message(Sys.time(), sprintf(" - LC-ERC overlapping donors: %d", length(common_donors)))
+
+    ## Subset LC counts to overlapping donors and filter by expression
+    dgl_lca <- dgl_lca[, common_donors]
+    ## Build design matrix for filtering using subsetted donor_meta
+    lca_donor_meta <- donor_meta[donor_meta$BrNum %in% common_donors, ]
+    lca_donor_meta <- lca_donor_meta[match(common_donors, lca_donor_meta$BrNum), ]
+    lca_design <- model.matrix(baseline_formula, data = lca_donor_meta)
+
+    ## Filter and normalize LC counts
+    dgl_lca <- edgeR::calcNormFactors(dgl_lca)
+    keep_lca <- edgeR::filterByExpr(dgl_lca, design = lca_design)
+    dgl_lca <- dgl_lca[keep_lca, , keep.lib.sizes = FALSE]
+    dgl_lca <- edgeR::calcNormFactors(dgl_lca)
+
+    ## Compute log-CPM
+    lca_logcpm <- edgeR::cpm(dgl_lca, log = TRUE)
+
+    ## Check for missing DEGs in filtered counts
+    gene_ids <- as.character(med_degs$gene_id)
+    missing_ids <- setdiff(gene_ids, rownames(lca_logcpm))
+    if (length(missing_ids) > 0) {
+        warning(sprintf("Dropping %d LC Astro DEGs not in filtered counts: %s",
+                        length(missing_ids), paste(head(missing_ids, 5), collapse = ", ")))
+        med_degs <- med_degs[!(gene_id %in% missing_ids)]
+        gene_ids <- as.character(med_degs$gene_id)
+    }
+    if (nrow(med_degs) < 1) {
+        stop("No LC Astro DEGs remaining after filtering.")
+    }
+
+    ## Build med_expr matrix (med_gene_id x BrNum)
+    med_expr <- lca_logcpm[gene_ids, , drop = FALSE]
+    rownames(med_expr) <- med_degs$med_gene_id
+
+    ## Apply test_rows if specified
+    if (length(test_rows) > 0) {
+        if (any(test_rows < 1 | test_rows > nrow(med_degs))) {
+            stop(sprintf("test_rows has out-of-range indices. Valid range: 1..%d", nrow(med_degs)))
+        }
+        med_degs <- med_degs[test_rows]
+        med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
+        message(Sys.time(), sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
+    }
+
+    ## Cache med_degs and med_expr
+    fn_med_degs <- file.path(out_dir, "med_degs.qs2")
+    fn_med_expr <- file.path(out_dir, "med_expr.qs2")
+    if (!file.exists(fn_med_degs)) {
+        qs_save(med_degs, fn_med_degs)
+    }
+    if (!file.exists(fn_med_expr)) {
+        qs_save(med_expr, fn_med_expr)
+    }
+
+} else if (opt$mediation == "lc_nm") { ## "orange" design, with NM data
+} else {
+  stop(sprintf("Mediation type '%s' not implemented yet.", opt$mediation))
 }
 
 if (is.null(med_degs) || is.null(med_expr)) {
@@ -226,15 +332,6 @@ if (nrow(med_degs) < 1) {
     stop(sprintf("No mediator genes found for mediation type '%s'.", opt$mediation))
 }
 
-#### Outcome cluster setup (same for every scenario) ####
-out_clus <- "Oligo.3"
-batch <- "exp_round"
-dge_base <- sce_pb[, sce_pb$registration_variable == out_clus]
-baseline_des <- model.matrix(
-    baseline_formula,
-    data = colData(dge_base)
-)
-baseline_des <- as.data.frame(baseline_des)
 
 ## Filter low expression genes once (baseline design)
 fn_dge_base <- file.path(out_dir, "dge_base.qs2")
@@ -248,6 +345,7 @@ if (file.exists(fn_dge_base)) {
   ## save the file as qs2 for faster loading next time
   qs_save(dge_base, fn_dge_base)
 }
+
 run_one <- function(i) {
     med_row <- med_degs[i] ## mediator row to use as covariate
     gene_id <- as.character(med_row$gene_id)
@@ -390,7 +488,8 @@ run_one <- function(i) {
     )
 }
 
-message(Sys.time(), " - Cluster-specific astro mediators")
+message(Sys.time(), sprintf(" - Starting %d workers for %d %s mediation runs",
+                                               workers, nrow(med_degs), opt$mediation))
 bpparam <- BiocParallel::MulticoreParam(workers = workers)
 run_results <- BiocParallel::bplapply(seq_len(nrow(med_degs)), run_one, BPPARAM = bpparam)
 run_results <- Filter(Negate(is.null), run_results)

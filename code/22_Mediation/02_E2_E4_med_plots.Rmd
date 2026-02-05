@@ -14,6 +14,7 @@ ddir <- here("processed-data")
 ```
 
 
+
 ```{r erc_astro plots}
 library(qs2)
 library(ggplot2)
@@ -249,6 +250,28 @@ p <- plotMedComp(outcome_gene = "FOS", mediator_gene = "PLP1")
 print(p)
 ```
 
+### Comparison boxplots BEFORE vs AFTER mediation
+
+LEFT panel (Baseline): E2 vs E4 boxplots showing Oligo.3 gene expression before adding the mediator (Astro PLP1) as a covariate. The expression values are "cleaned" using jaffelab::cleaningY to remove effects of nuisance covariates (Sex, Age, Anc_Afr, pseudo_expr_chrM_ratio) while preserving the APOE effect.
+
+RIGHT panel (After mediation): E2 vs E4 boxplots showing the same outcome gene expression, but now cleaned to remove both nuisance covariates AND the mediator gene expression. If the mediator explains part of the APOE→Oligo.3 effect, the E2 vs E4 difference should shrink.
+
+How cleaningY(y, mod, P) works:
+Fits y = mod %*% beta (full model)
+Returns y - (effects from columns P+1 to end)
+With P=4, preserves APOE columns (1-4), removes covariate effects
+Input data needed:
+Outcome expression matrix (y_logcpm): logCPM from edgeR::cpm(dge_base, log=TRUE) for Oligo.3
+Mediator expression vector: From med_expr[med_gene_id, ] aligned to outcome samples
+Design matrices:
+Baseline: ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio
+Mediation: same + med_vec
+Sample metadata: dge_base$samples$APOE_syn to group E2.E2 vs E3.E4/E4.E4
+Verified calculation (FOS gene + PLP1 mediator):
+Baseline E4-E2 difference: 1.995 logCPM
+After PLP1 mediation: 1.744 logCPM
+12.6% reduction in APOE effect
+
 ```{r plots in PDFs for specific genes - ERC Astro case}
 dnr=c('PLP1', 'MAG', 'MAL', 'MBP', 'SOX10', 'OPALIN')
 upr=c('FOS', 'TLR2', 'STAT1', 'STAT4')
@@ -278,5 +301,9 @@ pdf_out <- mapply(
 )
 
 pdf_out
+
+```
+
+```{r}
 
 ```
