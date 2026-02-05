@@ -3,7 +3,7 @@
 #SBATCH --mem=400G
 #SBATCH --job-name=04_multistudy_Oligo_subcluster
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 2-00:00:00
 #SBATCH -o logs/04_multistudy_Oligo_subcluster.txt
 #SBATCH -e logs/04_multistudy_Oligo_subcluster.txt
 #SBATCH --mail-type=ALL
