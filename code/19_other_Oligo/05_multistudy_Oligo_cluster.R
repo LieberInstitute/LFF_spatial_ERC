@@ -24,7 +24,7 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
-messsage("Run clustering with k=", opt$k)
+message("Run clustering with k=", opt$k)
 
 #### Load multi-study oligo SCE ####
 # message(Sys.time(), " - Load HDF5 sce") ## loads in 3s
