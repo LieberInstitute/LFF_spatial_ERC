@@ -1,12 +1,11 @@
 **** Job starts ****
-Wed Feb  4 12:45:27 PM EST 2026
+Thu Feb  5 10:40:07 AM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 27561413
+Job id: 27610844
 Job name: 04_multistudy_Oligo_build
-Node name: compute-174
+Node name: compute-176
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -243,7 +242,7 @@ The following object is masked from ‘package:rhdf5’:
 
     h5ls
 
-2026-02-04 12:45:36.467867 - Load ERC sce
+2026-02-05 10:40:18.534483 - Load ERC sce
 ERC n nuc: 122004, n gene: 38606
 
 Oligo   OPC 
@@ -265,8 +264,8 @@ Start All data
 n nuc matches: TRUE
 colnames match: TRUE
 rownames match: TRUE
-2026-02-04 12:45:41.820555 - Load DLPFC sce
-2026-02-04 12:45:43.311428 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b784aaf67_sce_DLPFC_annotated.zip%3Fdl%3D1
+2026-02-05 10:40:25.26329 - Load DLPFC sce
+2026-02-05 10:40:26.990788 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b784aaf67_sce_DLPFC_annotated.zip%3Fdl%3D1
 DLPFC n nuc: 77604, n gene:38606
 
 Oligo   OPC 
@@ -282,7 +281,7 @@ common genes: 36300
 merge DLPFC data
 n nuc matches: TRUE
 colnames match: TRUE
-2026-02-04 12:45:53.279339 - Load HPC sce
+2026-02-05 10:40:41.181126 - Load HPC sce
 see ?humanHippocampus2024 and browseVignettes('humanHippocampus2024') for documentation
 loading from cache
 HPC n nuc: 75411, n gene:36601
@@ -297,7 +296,7 @@ common genes: 36300
 merge HPC data
 n nuc matches: TRUE
 colnames match: TRUE
-2026-02-04 12:48:53.578081 - Load dACC sce
+2026-02-05 10:43:30.377777 - Load dACC sce
 Loading objects:
   sce
 dacc n nuc: 35161, n gene:34866
@@ -313,12 +312,57 @@ common genes: 34589
 merge dacc data
 n nuc matches: TRUE
 colnames match: TRUE
-2026-02-04 12:49:00.756806 - counts to dgCMatrix
-2026-02-04 12:49:00.756968 - Build Multi-Study Oligo SCE
+2026-02-05 10:43:40.321538 - counts to dgCMatrix
+2026-02-05 10:43:40.321726 - Build Multi-Study Oligo SCE
 ALL data n nuc: 94418, n gene:34589
 
  dacc dlpfc   erc   hpc 
 15341 12834 59456  6787 
+
+dacc_10c_dACC_SVB  dacc_1c_dACC_MRV  dacc_2c_dACC_MRV  dacc_3c_dACC_MRV 
+             2880              1505              1489              1688 
+ dacc_4c_dACC_MRV  dacc_5c_dACC_SVB  dacc_6c_dACC_SVB  dacc_7c_dACC_SVB 
+              932              1115              1070              1937 
+ dacc_8c_dACC_SVB  dacc_9c_dACC_SVB       dlpfc_10c_k       dlpfc_11c_k 
+             1191              1534               530               569 
+      dlpfc_12c_k       dlpfc_13c_k       dlpfc_14c_k       dlpfc_15c_k 
+              808               378               891               310 
+      dlpfc_16c_k       dlpfc_17c_k       dlpfc_18c_k        dlpfc_1c-k 
+              489              1056              1866               746 
+       dlpfc_2c-k        dlpfc_3c-k        dlpfc_4c_k        dlpfc_5c_k 
+              731                30               200               284 
+       dlpfc_6c_k        dlpfc_7c_k        dlpfc_8c_k        dlpfc_9c_k 
+             1381               380              1281               403 
+     dlpfc_round0        erc_Br1039        erc_Br1289        erc_Br1556 
+              501              2174              2721              2362 
+       erc_Br1691        erc_Br1706        erc_Br2305        erc_Br2582 
+              924              1815              1788              1650 
+       erc_Br3974        erc_Br5161        erc_Br5212        erc_Br5276 
+             1011              1746              3384              1283 
+       erc_Br5367        erc_Br5415        erc_Br5426        erc_Br5460 
+             1903              2803              1745              1367 
+       erc_Br5517        erc_Br5529        erc_Br5599        erc_Br5634 
+             1639              2500              1381              2559 
+       erc_Br5712        erc_Br5832        erc_Br5854        erc_Br5941 
+             2066              2022              2219              2163 
+       erc_Br6085        erc_Br6098        erc_Br6161        erc_Br6263 
+              898              1231              1501              2526 
+       erc_Br6321        erc_Br6423        erc_Br6476        erc_Br6538 
+             1021              3819              1407              1828 
+      hpc_10c-scp       hpc_11c-scp       hpc_12c-scp       hpc_13c-scp 
+              576               133               637               136 
+      hpc_14c-scp       hpc_15c-scp       hpc_16c-scp       hpc_18c-scp 
+              481                 6               214               425 
+      hpc_19c-scp        hpc_1c-scp       hpc_20c-scp       hpc_21c-scp 
+              140               422               161                81 
+      hpc_22c-scp       hpc_23c-scp       hpc_24c-scp       hpc_25c-scp 
+              451               185               176                46 
+      hpc_26c-scp       hpc_27c-scp        hpc_2c-scp       hpc_32c-scp 
+              294                66               104               286 
+      hpc_33c-scp       hpc_36c-scp       hpc_37c-scp       hpc_38c-scp 
+               25              1129               245               349 
+      hpc_39c-scp 
+               19 
        
          dacc dlpfc   erc   hpc
   Oligo 13256 10894 44281  6787
@@ -345,10 +389,10 @@ ALL data n nuc: 94418, n gene:34589
       13256       10894       44281        6787        2085        1940 
     OPC_erc 
       15175 
-2026-02-04 12:49:00.82217 - running Deviance Feat. Selection
+2026-02-05 10:43:40.450235 - running Deviance Feat. Selection
 null device 
           1 
-2026-02-04 12:49:46.295708 - running nullResiduals
+2026-02-05 10:44:54.549591 - running nullResiduals
 Warning messages:
 1: In asMethod(object) :
   sparse->dense coercion: allocating vector of size 24.3 GiB
@@ -359,12 +403,12 @@ Warning messages:
 4: In asMethod(object) :
   sparse->dense coercion: allocating vector of size 24.3 GiB
 5: In g({ : NaNs produced
-2026-02-04 12:52:28.894564 - running PCA
+2026-02-05 10:50:20.854745 - running PCA
 [1] "GLMPCA_approx"
-2026-02-04 13:00:42.891569 - running TSNE
+2026-02-05 10:58:57.355581 - running TSNE
 Multistudy_Oligo_TSNE-cell_type_dataset-uncorrected.png - Saving 7 x 7 in image
-2026-02-04 13:13:37.210843 - HARMONY Correction
-running Harmony - 2026-02-04 13:13:37.22315
+2026-02-05 11:08:39.602085 - HARMONY Correction
+running Harmony - 2026-02-05 11:08:39.622456
 Transposing data matrix
 Initializing state using k-means centroids initialization
 Harmony 1/10
@@ -381,209 +425,64 @@ Harmony 2/10
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-Harmony converged after 2 iterations
-2026-02-04 13:14:57.807185 - running TSNE
+Harmony 3/10
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Harmony converged after 3 iterations
+2026-02-05 11:10:22.591943 - running TSNE
 Multistudy_Oligo_TSNE-cell_type_dataset-HARMONY.png - Saving 7 x 7 in image
-2026-02-04 13:27:19.395249 - Save HDF5 Data
-[1] "Reproducibility information:"
-[1] "2026-02-04 13:50:31 EST"
-    user   system  elapsed 
-3684.980   73.508 3903.131 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.5.0 Patched (2025-05-21 r88220)
- os       Rocky Linux 9.4 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2026-02-04
- pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
- quarto   NA
-
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package              * version   date (UTC) lib source
- abind                * 1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
- AnnotationDbi          1.70.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- AnnotationHub        * 3.16.1    2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
- attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
- beachmat               2.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
- benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
- benchmarkmeData        1.0.4     2020-04-23 [2] CRAN (R 4.5.0)
- Biobase              * 2.68.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocFileCache        * 2.16.2    2025-08-27 [1] Bioconductor 3.21 (R 4.5.0)
- BiocGenerics         * 0.54.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocIO                 1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocManager            1.30.27   2025-11-14 [1] CRAN (R 4.5.0)
- BiocNeighbors          2.2.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocParallel           1.42.2    2025-09-14 [1] Bioconductor 3.21 (R 4.5.0)
- BiocSingular           1.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocVersion            3.21.1    2024-10-29 [2] Bioconductor 3.21 (R 4.5.0)
- Biostrings             2.76.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.6.0-1   2025-01-16 [2] CRAN (R 4.5.0)
- bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
- blob                   1.2.4     2023-03-17 [2] CRAN (R 4.5.0)
- bluster              * 1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.5.0)
- cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
- circlize               0.4.16    2024-02-20 [2] CRAN (R 4.5.0)
- cli                    3.6.5     2025-04-23 [2] CRAN (R 4.5.0)
- clue                   0.3-66    2024-11-13 [2] CRAN (R 4.5.0)
- cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
- codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
- colorspace             2.1-1     2024-07-26 [2] CRAN (R 4.5.0)
- ComplexHeatmap       * 2.24.1    2025-06-25 [1] Bioconductor 3.21 (R 4.5.0)
- config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
- cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
- crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
- curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
- data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
- DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.5.0)
- dbplyr               * 2.5.1     2025-09-10 [1] CRAN (R 4.5.0)
- DeconvoBuddies       * 1.1.3     2025-07-07 [1] Github (LieberInstitute/DeconvoBuddies@cb26e36)
- DelayedArray         * 0.34.1    2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
- DelayedMatrixStats     1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
- digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
- doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
- dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.5.0)
- dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.5.0)
- DT                     0.34.0    2025-09-02 [1] CRAN (R 4.5.0)
- edgeR                  4.6.3     2025-07-09 [1] Bioconductor 3.21 (R 4.5.0)
- ExperimentHub        * 2.16.1    2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
- farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
- fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
- filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
- forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.5.0)
- foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
- generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
- GenomeInfoDb         * 1.44.3    2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
- GenomeInfoDbData       1.2.14    2025-05-21 [2] Bioconductor
- GenomicAlignments      1.44.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- GenomicRanges        * 1.60.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- GetoptLong             1.0.5     2020-12-15 [2] CRAN (R 4.5.0)
- ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.5.0)
- ggplot2              * 4.0.1     2025-11-14 [1] CRAN (R 4.5.0)
- ggrepel                0.9.6     2024-09-07 [2] CRAN (R 4.5.0)
- GlobalOptions          0.1.2     2020-06-10 [2] CRAN (R 4.5.0)
- glue                   1.8.0     2024-09-30 [2] CRAN (R 4.5.0)
- golem                  0.5.1     2024-08-27 [2] CRAN (R 4.5.0)
- gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
- gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
- h5mread              * 1.0.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- harmony                1.2.3     2024-11-27 [2] CRAN (R 4.5.0)
- HDF5Array            * 1.36.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- here                 * 1.0.2     2025-09-15 [1] CRAN (R 4.5.0)
- hms                    1.1.3     2023-03-21 [2] CRAN (R 4.5.0)
- htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
- htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
- httpuv                 1.6.16    2025-04-16 [2] CRAN (R 4.5.0)
- httr                   1.4.7     2023-08-15 [2] CRAN (R 4.5.0)
- humanHippocampus2024 * 1.0.0     2025-04-17 [1] Bioconductor 3.21 (R 4.5.0)
- igraph                 2.2.1     2025-10-27 [1] CRAN (R 4.5.0)
- IRanges              * 2.42.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.5.0)
- iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
- jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
- jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
- KEGGREST               1.48.1    2025-06-22 [1] Bioconductor 3.21 (R 4.5.0)
- labeling               0.4.3     2023-08-29 [2] CRAN (R 4.5.0)
- later                  1.4.5     2026-01-08 [1] CRAN (R 4.5.0)
- lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
- lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.5.0)
- lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
- limma                  3.64.3    2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
- locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
- lubridate            * 1.9.4     2024-12-08 [2] CRAN (R 4.5.0)
- magick                 2.9.0     2025-09-08 [1] CRAN (R 4.5.0)
- magrittr               2.0.4     2025-09-12 [1] CRAN (R 4.5.0)
- Matrix               * 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
- MatrixGenerics       * 1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
- memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
- metapod                1.16.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
- otel                   0.2.0     2025-08-29 [1] CRAN (R 4.5.0)
- paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.5.0)
- pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
- pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
- plotly                 4.12.0    2026-01-24 [1] CRAN (R 4.5.0)
- png                    0.1-8     2022-11-29 [2] CRAN (R 4.5.0)
- promises               1.5.0     2025-11-01 [1] CRAN (R 4.5.0)
- purrr                * 1.2.1     2026-01-09 [1] CRAN (R 4.5.0)
- R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
- rafalib                1.0.4     2025-04-08 [1] CRAN (R 4.5.0)
- ragg                   1.5.0     2025-09-02 [1] CRAN (R 4.5.0)
- rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.5.0)
- RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp                   1.1.1     2026-01-10 [1] CRAN (R 4.5.0)
- RCurl                  1.98-1.17 2025-03-22 [2] CRAN (R 4.5.0)
- readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.5.0)
- rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
- restfulr               0.0.16    2025-06-27 [1] CRAN (R 4.5.0)
- rhdf5                * 2.52.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- rhdf5filters           1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- Rhdf5lib               1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- RhpcBLASctl            0.23-42   2023-02-11 [2] CRAN (R 4.5.0)
- rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
- rlang                  1.1.7     2026-01-09 [1] CRAN (R 4.5.0)
- rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
- Rsamtools              2.24.1    2025-09-07 [1] Bioconductor 3.21 (R 4.5.0)
- RSQLite                2.4.5     2025-11-30 [1] CRAN (R 4.5.0)
- rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
- rtracklayer            1.68.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- Rtsne                  0.17      2023-12-07 [2] CRAN (R 4.5.0)
- S4Arrays             * 1.8.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
- S4Vectors            * 0.46.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- S7                     0.2.1     2025-11-14 [1] CRAN (R 4.5.0)
- sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
- ScaledMatrix           1.16.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
- scater               * 1.36.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scran                * 1.36.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scry                 * 1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scuttle              * 1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.5.0)
- shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
- shiny                  1.12.1    2025-12-09 [1] CRAN (R 4.5.0)
- shinyWidgets           0.9.0     2025-02-21 [2] CRAN (R 4.5.0)
- SingleCellExperiment * 1.30.1    2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
- SparseArray          * 1.8.1     2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
- sparseMatrixStats      1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- SpatialExperiment    * 1.18.1    2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
- spatialLIBD          * 1.21.5    2025-09-10 [1] Github (LieberInstitute/spatialLIBD@95dd3a1)
- statmod                1.5.1     2025-10-09 [1] CRAN (R 4.5.0)
- stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
- stringr              * 1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
- SummarizedExperiment * 1.38.1    2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
- systemfonts            1.3.1     2025-10-01 [1] CRAN (R 4.5.0)
- textshaping            1.0.4     2025-10-10 [1] CRAN (R 4.5.0)
- tibble               * 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
- tidyr                * 1.3.2     2025-12-19 [1] CRAN (R 4.5.0)
- tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
- tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.5.0)
- timechange             0.3.0     2024-01-18 [2] CRAN (R 4.5.0)
- tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.5.0)
- UCSC.utils             1.4.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.5.0)
- vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
- viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
- viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.5.0)
- withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
- XML                    3.99-0.20 2025-11-08 [1] CRAN (R 4.5.0)
- xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.5.0)
- XVector                0.48.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- yaml                   2.3.12    2025-12-10 [1] CRAN (R 4.5.0)
-
- [1] /users/lhuuki/R/4.5
- [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
- * ── Packages attached to the search path.
-
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Wed Feb  4 01:50:32 PM EST 2026
+2026-02-05 11:20:33.402637 - Save sce Data
+2026-02-05 11:34:35.666899 - Done save
+Multistudy_Oligo_TSNE-dataset-HARMONY.png - Saving 7 x 7 in image
+Multistudy_Oligo_TSNE-BrNum-HARMONY.png - Saving 7 x 7 in image
+Multistudy_Oligo_TSNE-Sex-HARMONY.png - Saving 7 x 7 in image
+Multistudy_Oligo_TSNE-Age-HARMONY.png - Saving 7 x 7 in image
+Multistudy_Oligo_TSNE-Sum-HARMONY.png - Saving 7 x 7 in image
+Error in `map()`:
+ℹ In index: 2.
+Caused by error in `geom_point()`:
+! Problem while computing aesthetics.
+ℹ Error occurred in the 1st layer.
+Caused by error:
+! object 'Sum' not found
+Backtrace:
+     ▆
+  1. ├─purrr::walk(...)
+  2. │ └─purrr::map(.x, .f, ..., .progress = .progress)
+  3. │   └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
+  4. │     ├─purrr:::with_indexed_errors(...)
+  5. │     │ └─base::withCallingHandlers(...)
+  6. │     ├─purrr:::call_with_cleanup(...)
+  7. │     └─global .f(.x[[i]], ...)
+  8. │       └─global my_plot_reduced_dim(...)
+  9. │         └─ggplot2::ggsave(rd_plot, filename = here(plot_dir_rd, plot_name))
+ 10. │           └─base::lapply(plot, grid.draw)
+ 11. │             ├─grid (local) FUN(X[[i]], ...)
+ 12. │             └─ggplot2 (local) `grid.draw.ggplot2::ggplot`(X[[i]], ...)
+ 13. │               ├─base::print(x)
+ 14. │               └─ggplot2 (local) `print.ggplot2::ggplot`(x)
+ 15. │                 ├─ggplot2::ggplot_build(x)
+ 16. │                 └─ggplot2 (local) `ggplot_build.ggplot2::ggplot`(x)
+ 17. │                   └─ggplot2:::by_layer(...)
+ 18. │                     ├─rlang::try_fetch(...)
+ 19. │                     │ ├─base::tryCatch(...)
+ 20. │                     │ │ └─base (local) tryCatchList(expr, classes, parentenv, handlers)
+ 21. │                     │ │   └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])
+ 22. │                     │ │     └─base (local) doTryCatch(return(expr), name, parentenv, handler)
+ 23. │                     │ └─base::withCallingHandlers(...)
+ 24. │                     └─ggplot2 (local) f(l = layers[[i]], d = data[[i]])
+ 25. │                       └─l$compute_aesthetics(d, plot)
+ 26. │                         └─ggplot2 (local) compute_aesthetics(..., self = self)
+ 27. │                           └─ggplot2:::eval_aesthetics(aesthetics, data)
+ 28. │                             └─base::lapply(aesthetics, eval_tidy, data = data, env = env)
+ 29. │                               └─rlang (local) FUN(X[[i]], ...)
+ 30. └─base::.handleSimpleError(`<fn>`, "object 'Sum' not found", base::quote(NULL))
+ 31.   └─rlang (local) h(simpleError(msg, call))
+ 32.     └─handlers[[1L]](cnd)
+ 33.       └─cli::cli_abort(...)
+ 34.         └─rlang::abort(...)
+Execution halted
