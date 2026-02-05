@@ -379,11 +379,11 @@ tsne_plot <- my_plot_reduced_dim(sce,
                                  add_label = TRUE)
 
 #### Save data ####
-# message(Sys.time(), " - Save HDF5 Data")
-# saveHDF5SummarizedExperiment(sce, dir = here(data_dir, "sce_multistudy_Oligo"), replace=TRUE)
+message(Sys.time(), " - Save HDF5 Data")
+saveHDF5SummarizedExperiment(sce, dir = here(data_dir, "sce_multistudy_Oligo"), replace=TRUE)
 
-message(Sys.time(), " - Save sce Data")
-saveRDS(sce, file = here(data_dir, "sce_multistudy_Oligo.Rds"))
+# message(Sys.time(), " - Save sce Data")
+# saveRDS(sce, file = here(data_dir, "sce_multistudy_Oligo.Rds"))
 
 message(Sys.time(), " - Done save")
 #### plot more TSNE plots ####
@@ -401,8 +401,21 @@ walk(c("dataset", "BrNum", "Sex"),
                                  verbose = TRUE, 
                                  add_label = TRUE))
 
+walk(c("dataset"), 
+     ~my_plot_reduced_dim(sce,
+                          prefix = "Multistudy_Oligo",
+                          dimred = "TSNE",
+                          my_var = .x,
+                          var_type = "cat",
+                          suffix = "HARMONY",
+                          save_plot = TRUE,
+                          facet = TRUE,
+                          plot_dir_rd = plot_dir,
+                          verbose = TRUE, 
+                          add_label = TRUE))
 
-walk(c("Age", "Sum", "scDblFinder.score", "subsets_Mito_percent"), 
+
+walk(c("Age", "sum", "scDblFinder.score", "subsets_Mito_percent"), 
      ~my_plot_reduced_dim(sce,
                           prefix = "Multistudy_Oligo",
                           dimred = "TSNE",
