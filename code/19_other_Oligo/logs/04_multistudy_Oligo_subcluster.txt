@@ -1,0 +1,377 @@
+**** Job starts ****
+Mon Feb  2 05:27:38 PM EST 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 27399586
+Job name: 04_multistudy_Oligo_subcluster
+Node name: compute-169
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.6.0
+✔ ggplot2   4.0.1     ✔ tibble    3.3.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following object is masked from ‘package:dplyr’:
+
+    count
+
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following object is masked from ‘package:lubridate’:
+
+    as.difftime
+
+The following object is masked from ‘package:dplyr’:
+
+    explain
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
+The following objects are masked from ‘package:dplyr’:
+
+    first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:lubridate’:
+
+    %within%
+
+The following objects are masked from ‘package:dplyr’:
+
+    collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
+
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: scuttle
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading required package: AnnotationHub
+Loading required package: BiocFileCache
+Loading required package: dbplyr
+
+Attaching package: ‘dbplyr’
+
+The following objects are masked from ‘package:dplyr’:
+
+    ident, sql
+
+
+Attaching package: ‘AnnotationHub’
+
+The following object is masked from ‘package:Biobase’:
+
+    cache
+
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following object is masked from ‘package:purrr’:
+
+    simplify
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: h5mread
+Loading required package: rhdf5
+
+Attaching package: ‘h5mread’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+2026-02-02 17:27:50.632632 - Load ERC sce
+ERC n nuc: 122004, n gene: 38606
+
+Oligo   OPC 
+44281 15175 
+
+Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
+  12519   12010    8587    6911    4254    4815    4009    3932    1961     458 
+[1] "erc_AAACCCAAGTTGGAGC-1_Br6476" "erc_AAACGAACACAATCTG-1_Br6476"
+[3] "erc_AAACGCTCACGTCTCT-1_Br6476" "erc_AAACGCTGTTCAGGTT-1_Br6476"
+[5] "erc_AAAGAACAGACATCAA-1_Br6476" "erc_AAAGAACTCCTCAGAA-1_Br6476"
+<5 x 5> DelayedMatrix object of type "double":
+                erc_AAACCCAAGTTGGAGC-1_Br6476 ... erc_AAAGAACAGACATCAA-1_Br6476
+ENSG00000290825                             0   .                             0
+ENSG00000243485                             0   .                             0
+ENSG00000237613                             0   .                             0
+ENSG00000290826                             0   .                             0
+ENSG00000186092                             0   .                             0
+Start All data
+n nuc matches: TRUE
+colnames match: TRUE
+rownames match: TRUE
+2026-02-02 17:27:59.073707 - Load DLPFC sce
+2026-02-02 17:28:00.90813 loading file /users/lhuuki/.cache/R/BiocFileCache/3bc2b784aaf67_sce_DLPFC_annotated.zip%3Fdl%3D1
+DLPFC n nuc: 77604, n gene:38606
+
+Oligo   OPC 
+10894  1940 
+
+Oligo_01 Oligo_02 Oligo_03      OPC 
+    1868     4732     4294     1940 
+[1] TRUE
+[1] "dlpfc_1_AAACCCACAAGGTCTT-1" "dlpfc_1_AAACCCATCAAAGACA-1"
+[3] "dlpfc_1_AAACCCATCATTGCGA-1" "dlpfc_1_AAACGCTCACCCTGAG-1"
+[5] "dlpfc_1_AAAGAACCACAGTGAG-1" "dlpfc_1_AAAGAACTCGGCTATA-1"
+common genes: 36300
+merge DLPFC data
+n nuc matches: TRUE
+colnames match: TRUE
+2026-02-02 17:28:14.65009 - Load HPC sce
+see ?humanHippocampus2024 and browseVignettes('humanHippocampus2024') for documentation
+loading from cache
+HPC n nuc: 75411, n gene:36601
+
+Oligo.1 Oligo.2 
+   3694    3093 
+[1] TRUE
+[1] "hpc_1_AAACCCACAACGATCT-1" "hpc_1_AAACGAACACAAAGTA-1"
+[3] "hpc_1_AAACGAACAGGGACTA-1" "hpc_1_AAACGCTGTAACGTTC-1"
+[5] "hpc_1_AAAGGTATCCTCATAT-1" "hpc_1_AAAGTCCAGTCCCAAT-1"
+common genes: 36300
+merge HPC data
+n nuc matches: TRUE
+colnames match: TRUE
+Loading objects:
+  sce
+dacc n nuc: 35161, n gene:34866
+
+Oligo   OPC 
+13256  2085 
+[1] TRUE
+[1] TRUE
+[1] "dacc_1_AAACCCAAGCTGACAG-1" "dacc_1_AAACCCAGTGGATGAC-1"
+[3] "dacc_1_AAACCCAGTTTCTTAC-1" "dacc_1_AAACCCATCCATTGCC-1"
+[5] "dacc_1_AAACGAACACTGATTG-1" "dacc_1_AAACGCTAGTATAGAC-1"
+common genes: 34589
+merge dacc data
+n nuc matches: TRUE
+colnames match: TRUE
+2026-02-02 17:32:43.275896 - Build Multi-Study Oligo SCE
+ALL data n nuc: 94418, n gene:34589
+
+ dacc dlpfc   erc   hpc 
+15341 12834 59456  6787 
+       
+         dacc dlpfc   erc   hpc
+  Oligo 13256 10894 44281  6787
+  OPC    2085  1940 15175     0
+          
+            dacc dlpfc   erc   hpc
+  Oligo    13256     0     0     0
+  Oligo_01     0  1868     0     0
+  Oligo_02     0  4732     0     0
+  Oligo_03     0  4294     0     0
+  Oligo.1      0     0 12519  3694
+  Oligo.2      0     0 12010  3093
+  Oligo.3      0     0  8587     0
+  Oligo.4      0     0  6911     0
+  Oligo.5      0     0  4254     0
+  OPC       2085  1940     0     0
+  OPC.1        0     0  4815     0
+  OPC.2        0     0  4009     0
+  OPC.3        0     0  3932     0
+  OPC.4        0     0  1961     0
+  OPC.5        0     0   458     0
+
+ Oligo_dacc Oligo_dlpfc   Oligo_erc   Oligo_hpc    OPC_dacc   OPC_dlpfc 
+      13256       10894       44281        6787        2085        1940 
+    OPC_erc 
+      15175 
+2026-02-02 17:32:43.40044 - Load saved HARMONY PCs
+2026-02-02 17:32:44.003933 - running buildSNNGraph: k =50
+2026-02-02 17:36:45.751525 - running walktrap
+clusters
+    1     2     3     4     5     6     7     8     9    10    11    12    13 
+  627 22462    98   344  6627   190  2633 14334   306  2722  1059 19760   263 
+   14    15    16    17    18    19    20    21    22    23    24    25    26 
+  116  1867   567  2038  4445   476   643    66  2976  1375  2533    85    89 
+   27    28    29    30    31    32    33    34    35    36    37    38    39 
+  577   142  1865   499    53   106   225    33   323    58   426   653   138 
+   40    41    42    43 
+  102   135   121   261 
+2026-02-04 08:39:51.459711 - done walktrap
+Error in `mutate()`:
+ℹ In argument: `cluster_anno = paste0(opt$ds_short, "_", cell_type, ".",
+  row_number())`.
+ℹ In group 1: `cell_type = "OPC"`.
+Caused by error:
+! object 'opt' not found
+Backtrace:
+     ▆
+  1. ├─dplyr::mutate(...)
+  2. ├─dplyr:::mutate.data.frame(...)
+  3. │ └─dplyr:::mutate_cols(.data, dplyr_quosures(...), by)
+  4. │   ├─base::withCallingHandlers(...)
+  5. │   └─dplyr:::mutate_col(dots[[i]], data, mask, new_columns)
+  6. │     └─mask$eval_all_mutate(quo)
+  7. │       └─dplyr (local) eval()
+  8. ├─base::paste0(opt$ds_short, "_", cell_type, ".", row_number())
+  9. └─base::.handleSimpleError(`<fn>`, "object 'opt' not found", base::quote(NULL))
+ 10.   └─dplyr (local) h(simpleError(msg, call))
+ 11.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+Execution halted
