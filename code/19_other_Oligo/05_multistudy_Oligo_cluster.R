@@ -1,3 +1,24 @@
+## Louise Huuki-Myers, Feb 2026
+## Cluster Multi-study Oligo
+
+#### Set up ####
+
+library("SingleCellExperiment")
+library("HDF5Array")
+library("tidyverse")
+library("here")
+library("sessioninfo")
+
+data_dir <- here("processed-data", "19_other_Oligo", "05_multistudy_Oligo_cluster")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
+plot_dir <- here("plots", "19_other_Oligo", "05_multistudy_Oligo_cluster")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+#### Load multi-study oligo SCE ####
+message(Sys.time(), " - Load HDF5 sce")
+sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo"))
+
 
 
 #### SNN + Walktrap cluster ####
@@ -15,10 +36,15 @@ table(clusters)
 
 saveRDS(clusters, file = here(data_dir, "Multistudy_Oligo_cluster.Rds"))
 
+# clusters <- readRDS(file = here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster", "Multistudy_Oligo_cluster.Rds"))
+
+table(clusters)
+
 # clust.50 <- clusterCells(sce, use.dimred="HARMONY", BLUSPARAM=NNGraphParam(k=50))
 # table(clust.50)
 
 message(Sys.time(), " - done walktrap")
+
 cluster_anno <- as.data.frame(table(clusters, sce$cell_type_broad)) |>
     pivot_wider(names_from = "Var2", values_from = "Freq") |>
     mutate(oligo_ratio = Oligo/OPC,
@@ -27,7 +53,7 @@ cluster_anno <- as.data.frame(table(clusters, sce$cell_type_broad)) |>
     dplyr::rename(cluster = clusters) |>
     group_by(cell_type) |>
     arrange(cell_type, -n) |>
-    mutate(cluster_anno = paste0(opt$ds_short, "_", cell_type,".", row_number()))
+    mutate(cluster_anno = paste0("multi_", cell_type,".", row_number()))
 
 write.csv(cluster_anno, file = here(data_dir, "Multistudy_Oligo_cluster_annotation.csv"))
 
