@@ -354,8 +354,8 @@ sce <- harmony::RunHarmony(sce, group.by.vars = "sample_id", verbose = TRUE)
 reducedDim(sce, "PCA") <- NULL
 
 ## save HARMONY dims
-subtype_HARMONY <- reducedDim(sce, "HARMONY")
-save(subtype_HARMONY, file = harmony_file)
+# subtype_HARMONY <- reducedDim(sce, "HARMONY")
+# save(subtype_HARMONY, file = harmony_file)
 
 
 #### HARMONY Corrected TSNE ####
