@@ -20,6 +20,10 @@ library("getopt")
 library("sessioninfo")
 library("qs2")
 
+
+# FDRthr=0.05
+FDRthr=0.1 ## loosen for screening
+
 # Helpers
 md5_string <- function(x) {
     tf <- tempfile()
@@ -129,7 +133,7 @@ if (opt$mediation == "lc_nm") {
 workers = 10
 
 test_rows <- integer(0)
-#test_rows <- c(1,10,50) ## change and uncomment to test specific mediator rows
+#test_rows <- c(1,10,20) ## change and uncomment to test specific mediator rows
 if (length(test_rows) > 0) {
         message("Mediation test rows provided: ", paste(test_rows, collapse = ", "))
 }
@@ -157,8 +161,8 @@ sce_pb <- sce_pb[, sce_pb$BrNum != "Br1289"]
 
 out_clus <- "Oligo.3"
 batch <- "exp_round"
-dge_base <- sce_pb[, sce_pb$registration_variable == out_clus]
-donor_meta <- as.data.frame(colData(dge_base))
+sce_base <- sce_pb[, sce_pb$registration_variable == out_clus]
+donor_meta <- as.data.frame(colData(sce_base))
 baseline_des <- model.matrix(
     baseline_formula,
     data = donor_meta
@@ -257,8 +261,10 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
         stop(sprintf("LC Astro pseudobulk counts file not found: %s", f_lca_pbcounts))
     }
     dgl_lca <- readRDS(f_lca_pbcounts)
-
     ## Determine overlapping donors between LC Astro and ERC Oligo.3 outcome
+    ## after leave-one-out testing, let's drop BR5529 from dgl_lca
+    dgl_lca <- dgl_lca[, !colnames(dgl_lca) %in% "Br5529"] ## or also "Br6423"
+    #dgl_lca <- dgl_lca[, !colnames(dgl_lca) %in% c("Br5529", "Br6423")]
     lca_brnums <- colnames(dgl_lca)
     erc_brnums <- as.character(donor_meta$BrNum)
     common_donors <- intersect(lca_brnums, erc_brnums)
@@ -307,7 +313,8 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
         }
         med_degs <- med_degs[test_rows]
         med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
-        message(Sys.time(), sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
+        message(Sys.time(),
+             sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
     }
 
     ## Cache med_degs and med_expr
@@ -319,7 +326,6 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
     if (!file.exists(fn_med_expr)) {
         qs_save(med_expr, fn_med_expr)
     }
-
 } else if (opt$mediation == "lc_nm") { ## "orange" design, with NM data
 } else {
   stop(sprintf("Mediation type '%s' not implemented yet.", opt$mediation))
@@ -332,19 +338,17 @@ if (nrow(med_degs) < 1) {
     stop(sprintf("No mediator genes found for mediation type '%s'.", opt$mediation))
 }
 
+## subset dge_base to the column names in med_expr -- the actual donors to keep
+dge_base <- sce_base[, sce_base$BrNum %in% colnames(med_expr)]
 
 ## Filter low expression genes once (baseline design)
 fn_dge_base <- file.path(out_dir, "dge_base.qs2")
-if (file.exists(fn_dge_base)) {
-    dge_base <- qs_read(fn_dge_base)
-} else {
-  dge_base <- edgeR::calcNormFactors(dge_base)
-  keep <- edgeR::filterByExpr(dge_base, design = baseline_des)
-  dge_base <- dge_base[keep, , keep.lib.sizes = FALSE]
-  dge_base <- edgeR::calcNormFactors(dge_base)
-  ## save the file as qs2 for faster loading next time
-  qs_save(dge_base, fn_dge_base)
-}
+dge_base <- edgeR::calcNormFactors(dge_base)
+keep <- edgeR::filterByExpr(dge_base, design = baseline_des)
+dge_base <- dge_base[keep, , keep.lib.sizes = FALSE]
+dge_base <- edgeR::calcNormFactors(dge_base)
+## save the file as qs2
+qs_save(dge_base, fn_dge_base)
 
 run_one <- function(i) {
     med_row <- med_degs[i] ## mediator row to use as covariate
@@ -355,8 +359,9 @@ run_one <- function(i) {
     file_label <- gsub("\\|", "_", run_label)
     out_file <- file.path(out_dir, sprintf("%02d_%s.tab.gz", i, file_label)) ## topTable for carrier contrast
     out_Mfile <- file.path(out_dir, sprintf("%02d_%s.M.tab.gz", i, file_label)) ## topTable for med_vec contrast
-    out_fdr_file <- sub("\\.tab\\.gz$", ".fdr05.tab.gz", out_file) ## carrier contrast FDR<0.05
-    out_Mfdr_file <- sub("\\.tab\\.gz$", ".fdr05.tab.gz", out_Mfile) ## med_vec contrast FDR<0.05
+    sufdr <- stringr::str_split_1(as.character(FDRthr), "\\.")[[2]]
+    out_fdr_file <- sub("\\.tab\\.gz$", sprintf(".fdr%s.tab.gz", sufdr), out_file) ## carrier contrast FDR<0.05
+    out_Mfdr_file <- sub("\\.tab\\.gz$", sprintf(".fdr%s.tab.gz", sufdr), out_Mfile) ## med_vec contrast FDR<0.05
     run_info_file <- file.path(out_dir, sprintf("%02d_%s.txt", i, file_label))
     if (file.exists(out_file) && file.exists(out_Mfile) && file.exists(run_info_file)) {
         cached <- read_run_info(run_info_file)
@@ -364,12 +369,12 @@ run_one <- function(i) {
             ## backfill missing fdr outputs for cached runs
             if (!file.exists(out_fdr_file)) {
                 tt_cached <- data.table::fread(out_file)
-                tt_fdr <- tt_cached[adj.P.Val < 0.05]
+                tt_fdr <- tt_cached[adj.P.Val < FDRthr]
                 write_fdr_table(tt_fdr, out_fdr_file)
             }
             if (!file.exists(out_Mfdr_file)) {
                 ttM_cached <- data.table::fread(out_Mfile)
-                ttM_fdr <- ttM_cached[adj.P.Val < 0.05]
+                ttM_fdr <- ttM_cached[adj.P.Val < FDRthr]
                 write_fdr_table(ttM_fdr, out_Mfdr_file)
             }
             message(Sys.time(), sprintf(" - Using cached run: %s", out_file))
@@ -456,9 +461,9 @@ run_one <- function(i) {
 
     ## write carrier and mediator results plus fdr-filtered subsets
     data.table::fwrite(tt, file = out_file, sep = "\t", compress = "gzip")
-    write_fdr_table(tt[adj.P.Val < 0.05], out_fdr_file)
+    write_fdr_table(tt[adj.P.Val < FDRthr], out_fdr_file)
     data.table::fwrite(ttM, file = out_Mfile, sep = "\t", compress = "gzip")
-    write_fdr_table(ttM[adj.P.Val < 0.05], out_Mfdr_file)
+    write_fdr_table(ttM[adj.P.Val < FDRthr], out_Mfdr_file)
 
     write_run_info(run_info_file, list(
         run_label = run_label,
@@ -518,13 +523,14 @@ if (forceSingleBaseline) {
 
 run_baseline <- function(donor_key, donors, donor_str) {
     out_file <- file.path(baseline_dir, sprintf("baseline_%s.tab.gz", donor_key))
-    out_fdr_file <- file.path(baseline_dir, sprintf("baseline_%s.fdr05.tab.gz", donor_key))
+    sufdr <- stringr::str_split_1(as.character(FDRthr), "\\.")[[2]]
+    out_fdr_file <- file.path(baseline_dir, sprintf("baseline_%s.fdr%s.tab.gz", donor_key, sufdr))
     if (file.exists(out_file)) {
         message(Sys.time(), sprintf(" - Using cached baseline: %s", out_file))
         tt <- data.table::fread(out_file)
-        baseline_sig <- tt[adj.P.Val < 0.05, outcome_gene_id]
+        baseline_sig <- tt[adj.P.Val < FDRthr, outcome_gene_id]
         if (!file.exists(out_fdr_file)) {
-            data.table::fwrite(tt[adj.P.Val < 0.05], file = out_fdr_file, sep = "\t", compress = "gzip")
+            data.table::fwrite(tt[adj.P.Val < FDRthr], file = out_fdr_file, sep = "\t", compress = "gzip")
         }
         return(list(
             donor_key = donor_key,
@@ -570,9 +576,9 @@ run_baseline <- function(donor_key, donors, donor_str) {
                       setdiff(names(tt), c("run", "cluster", "contrast", "outcome_gene_id", "n_donors", "donor_key"))))
 
     data.table::fwrite(tt, file = out_file, sep = "\t", compress = "gzip")
-    data.table::fwrite(tt[adj.P.Val < 0.05], file = out_fdr_file, sep = "\t", compress = "gzip")
+    data.table::fwrite(tt[adj.P.Val < FDRthr], file = out_fdr_file, sep = "\t", compress = "gzip")
 
-    baseline_sig <- tt[adj.P.Val < 0.05, outcome_gene_id]
+    baseline_sig <- tt[adj.P.Val < FDRthr, outcome_gene_id]
     list(
         donor_key = donor_key,
         donor_str = donor_str,
@@ -633,8 +639,8 @@ summary_list <- lapply(seq_len(nrow(run_info_dt)), function(i) {
     ## read carrier and mediator results for step 3 evaluation
     tt <- data.table::fread(run_row$out_file)
     ttM <- data.table::fread(run_row$out_Mfile)
-    carrier_sig <- tt[adj.P.Val < 0.05, outcome_gene_id]
-    med_sig <- ttM[adj.P.Val < 0.05, outcome_gene_id]
+    carrier_sig <- tt[adj.P.Val < FDRthr, outcome_gene_id]
+    med_sig <- ttM[adj.P.Val < FDRthr, outcome_gene_id]
     base_genes <- baseline_map[[run_row$donor_key]]
     if (is.null(base_genes)) {
         stop(sprintf("Missing baseline for donor_key %s", run_row$donor_key))
