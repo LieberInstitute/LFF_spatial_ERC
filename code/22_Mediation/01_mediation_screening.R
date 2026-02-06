@@ -21,8 +21,8 @@ library("sessioninfo")
 library("qs2")
 
 
-# FDRthr=0.05
-FDRthr=0.1 ## loosen for screening
+FDRthr=0.05
+## FDRthr=0.1 ## loosen for screening
 
 # Helpers
 md5_string <- function(x) {
