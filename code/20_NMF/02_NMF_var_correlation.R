@@ -127,6 +127,8 @@ demo_anno <- sample_info |>
     select(BrNum, APOE, Ancestry, Sex, Age) |>
     column_to_rownames("BrNum")
 
+demo_anno <- demo_anno[colnames(nmf_BrNum_cor), ]
+
 demo_anno_col_ha <- HeatmapAnnotation(df = demo_anno,
                                       col = list(APOE = APOE_genotype_colors,
                                                  Sex = sex_colors,
