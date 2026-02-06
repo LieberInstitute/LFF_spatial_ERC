@@ -51,7 +51,7 @@ table(clusters)
 
 saveRDS(clusters, file = here(data_dir, sprintf("Multistudy_Oligo_cluster_k%i.Rds", opt$k)))
 
-# clusters <- readRDS(file = here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_subcluster", "Multistudy_Oligo_cluster.Rds"))
+# clusters <- readRDS(file = here(data_dir, sprintf("Multistudy_Oligo_cluster_k%i.Rds", opt$k)))
 
 table(clusters)
 
@@ -60,15 +60,15 @@ table(clusters)
 
 message(Sys.time(), " - done walktrap")
 
-#### kmeans clustering #### 
-opt$k = 7
-km <- kmeans(
-    reducedDim(sce, "HARMONY"),
-    centers = opt$k
-)
-table(km$cluster, sce$cell_type_broad)
-table(km$cluster, sce$dataset)
-clusters <- km$cluster
+# #### kmeans clustering #### 
+# opt$k = 7
+# km <- kmeans(
+#     reducedDim(sce, "HARMONY"),
+#     centers = opt$k
+# )
+# table(km$cluster, sce$cell_type_broad)
+# table(km$cluster, sce$dataset)
+# clusters <- km$cluster
 
 #### Annotate clusters ####
 cluster_anno <- as.data.frame(table(clusters, sce$cell_type_broad)) |>
@@ -93,6 +93,7 @@ head(cluster_tab)
 
 table(cluster_tab$cluster_anno)
 
+
 #### save cluster_tab data ####
 message(Sys.time() , " - saving data")
 write_rds(cluster_tab, file = here(data_dir, sprintf("walktrap_snn_k%02d_subclusters_Multistudy_Oligo.Rds", opt$k)))
@@ -108,6 +109,9 @@ pd <- as.data.frame(colData(sce))
 
 colnames(pd)
 
+cell_class_cutoffs <- read_csv(here("processed-data", "04_snRNA-seq", "09_cluster_QC","ERC_sn_cell_class_cutoffs.csv")) |>
+    filter(cell_type_class == "glia")
+
 qc_violin_plot_all <- pd |> 
     select(Oligo_anno, sum, detected, subsets_Mito_percent, scDblFinder.score)  |>
     pivot_longer(!c(Oligo_anno), names_to = "metric") |>
@@ -116,12 +120,14 @@ qc_violin_plot_all <- pd |>
     geom_violin(aes(x = Oligo_anno, y = value, fill = Oligo_anno), 
                 draw_quantiles = c(0.25, 0.5, 0.75),
                 scale = "width") +
-    scale_fill_manual(values = other_oligo_colors) +
+    scale_fill_manual(values = other_oligo_colors)+
+    geom_hline(data = cell_class_cutoffs, aes(yintercept = cutoff), color = "blue", linetype = "dashed") +
     theme_bw() +
     facet_grid(metric~., scales = "free") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None") 
 
-ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("Multistudy_Oligo_k%i_QCmetricViolin.png", opt$k)))
+ggsave(qc_violin_plot_all, filename = here(plot_dir, sprintf("Multistudy_Oligo_k%i_QCmetricViolin.png", opt$k)), width = 9)
 
 
 #### Reduced dim plots ####
@@ -139,8 +145,39 @@ tsne_plot <- my_plot_reduced_dim(sce,
                                  plot_dir_rd = plot_dir,
                                  verbose = TRUE, 
                                  add_label = TRUE,
-                                 color_pal = other_oligo_colors)
+                                 color_pal = other_oligo_colors) +
+    theme(legend.position = "None")
 
+ggsave(tsne_plot, filename = here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno-multistudy_Oligo_k%i.png", opt$k)))
+
+#### Reduced dim plots  - filter to clusters w/ 800+ nuc ####
+
+## examine clsuters w/ over 800 nuc
+# length(unique(sce$sample_id)) #85
+
+cluster_keep <- cluster_anno |> filter(n > 800)
+
+sce <- sce[,sce$Oligo_anno %in% cluster_keep$cluster_anno]
+
+other_oligo_colors <- DeconvoBuddies::create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
+
+message(Sys.time(), " - Plot TSNE")
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+tsne_plot <- my_plot_reduced_dim(sce,
+                                 prefix = "other_Oligo",
+                                 dimred = "TSNE",
+                                 my_var = "Oligo_anno",
+                                 var_type = "cat",
+                                 save_plot = TRUE,
+                                 suffix = sprintf("multistudy_Oligo_k%i_filter", opt$k),
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE,
+                                 color_pal = other_oligo_colors) 
+
+# ggsave(tsne_plot, filename = here(plot_dir, sprintf("other_Oligo_TSNE-Oligo_anno-multistudy_Oligo_k%i_filter.png", opt$k)))
 
 #### plot markers ####
 
