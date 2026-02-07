@@ -72,7 +72,7 @@ For the 3 mediation designs discussed, `X` and `Y` remain the same. The designs 
     - **Step 3b ( X -> Y attenuation):** The effect of APOE on the outcome should lose significance (indicating the effect was "mediated" by M).
         - **Threshold:** APOE coefficient **FDR >= 0.05** (i.e., statistically indistinguishable from 0).
 
-### Practical (R) notes
+### Statistical models/design notes
 
 The base design formula for the Oligo.3 cell type differential gene analysis (Y~ X + covariates) on the pseudobulk SingleCellExperiment (ScE) object `spe_pb`:
 
@@ -87,10 +87,28 @@ E2.E2 E2.E3 E3.E4 E4.E4
   6     8     10    6
 ```
 
-The APOE contrast is defined like this:
+The APOE "carrier" contrast is defined as a weighted average:
 ```
  makeContrasts(carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)", ...)
 ```
 We add M as a covariate to this initial Y ~ X design formula by extracting a `med_vec` numeric vector with the gene expression for the candidate mediator genes (which are significant DEGs in other DGE analyses), so the formula for Step 3. becomes:
 
 ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio + med_vec
+
+#### LC "Astro" domain DGE
+LC spatial data is used to identify differential expression in various spatial domains due to the APOE genotype. We use the DEGs determined there as candidate mediation genes.
+
+However the DGE model differs in LC data from the ERC one:
+
+* Model formula: ~0 + Astro_E2E4 + Sex + Age + YRI
+      where Astro_E2E4 = Astro_APOlargeGrp
+* APOE encoding: APOlargeGrp is binary: E2 if E2hom/E2het, else E4
+* Contrast (Astro domain): Astro_E4 - Astro_E2
+    this is a simple binary E4-E2 contrast within the Astro domain
+* the spots are not pseudobulked by donor, but by tissue sections; with ~2.5 sections per donor (resulting in 77 samples for the 30 donors); sections are considered biological replicates so voomLmFit() was used with blocking by donor
+
+#### Key model differences
+
+* APOE contrast: ERC uses a 4‑level genotype model with a weighted carrier contrast; but LC uses a binary carrier grouping.
+* Covariates: ERC includes `Anc_Afr` and `pseudo_expr_chrM_ratio`; LC uses `YRI` instead of `Anc_Afr` (same values) but no `pseudo_expr_chrM_ratio`.
+* Ancestry term: YRI (LC) is a continuous African ancestry measure; Anc_Afr (ERC) is the analogous African ancestry covariate (same as YRI in these data).

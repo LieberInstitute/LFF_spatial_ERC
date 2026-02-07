@@ -10,6 +10,8 @@ library(data.table)
 library(ggplot2)
 library(dplyr)
 library(here)
+library(qs2)
+library(scuttle)
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
 ```
@@ -97,7 +99,7 @@ The LC dataset contains 5 spatial domains, each analyzed separately for APOE E4 
 * ACHE_SERT_Npep (73 samples, 29 donors)
 * Oligo_Astro (77 samples, 30 donors)
 
-```{r  better to just load Bernie's pseudobulked by donor data}
+```{r better to just load Bernie's pseudobulked by donor data}
 if (!dir.exists(mdir)) dir.create(mdir, recursive = TRUE)
 f_astro_pbcounts <- file.path(mdir, 'lc_astro_pseudobulk_counts_by_donor.rds')
 f_lc_pbcounts <- file.path(mdir, 'lc_lc_pseudobulk_counts_by_donor.rds')
@@ -167,6 +169,110 @@ ttsig <- subset(tt, adj.P.Val < 0.05)
 summary(tt$adj.P.Val)
 ## 0 DEGs at FDR < 0.1
 ```
+
+```{r Bernie's LC Astro DEG model for E4 vs E2}
+dgel <- readRDS(file.path(lcdir,"12_DEanalyses_removedsampsAndFinalNMseg",
+                                "01a-DGElist_allClust_10spotmin_NOfilt.RDS"))
+### to avoid any issues, replace "Br6119(re-dis)" with "Br6119" in the samples tables
+dgel$samples$brnum[dgel$samples$brnum=="Br6119(re-dis)"] <- "Br6119"
+### rather than adjust for lib.size, now we will drop the clusters making that necessary because they are of limited interest / mixed cell types: Vascular, Oligo_complex, Oligo, Astro_Oligo
+newsamp <- dgel$samples
+newsamp <- newsamp[!(newsamp$label %in% c("Vascular","Oligo_Complex","Oligo","Astro_Oligo")),]
+newmat <- dgel$counts[,rownames(newsamp)]
+newmat <- newmat[rowSums(newmat)>0,]
+newg <- dgel$genes[rownames(newmat),]
+## remove old dgelist
+rm(dgel)
+## make new dgelist from the subsetted data above
+dgel <- DGEList(counts=newmat,samples=newsamp,genes=newg)
+rm(newmat,newsamp,newg)
+## edgeR's not going to like the decimals if the label names carried any, so remove them just in case
+dgel$samples$label <-  gsub(x=dgel$samples$label,pattern="\\.",replacement="")
+rownames(dgel$samples) <- gsub(x=rownames(dgel$samples),pattern="\\.",replacement="")
+colnames(dgel$counts) <- gsub(x=colnames(dgel$counts),pattern="\\.",replacement="")
+```
+
+```{r Bernie MODEL 2 for LC astro DEGs E4 vs E2}
+dgelE2E4 <- dgel
+dgelE2E4$samples$APOlargeGrp <- ifelse(dgelE2E4$samples$APOE %in% c("E2hom", "E2het"), yes = "E2", no = "E4")
+stopifnot(length(unique(dgelE2E4$samples$APOlargeGrp)) == 2)
+dgelE2E4$samples$label_E2E4 <- paste0(dgelE2E4$samples$label, "_", dgelE2E4$samples$APOlargeGrp)
+f_lc_dgel_flt <- file.path(lcdir, "LC_dgel_exprflt_normfactor_counts.qs2")
+des <- model.matrix(~0 + label_E2E4 + Sex + Age + YRI, data = dgelE2E4$samples)
+colnames(des) <- gsub(x = colnames(des), pattern = "label_E2E4", replacement = "")
+# [1] "ACHE_SERT_LC_WM_E2" "ACHE_SERT_LC_WM_E4" "ACHE_SERT_Npep_E2"  "ACHE_SERT_Npep_E4"
+# "Astro_E2"           "Astro_E4"           "LC_E2"              "LC_E4"              "Oligo_Astro_E2"
+# [10] "Oligo_Astro_E4"     "SexM"               "Age"                "YRI"
+# Filter using the design specified
+## write filtered data with norm factors for later use
+if (file.exists(f_lc_dgel_flt)) {
+   dgelflt <- qs_read(f_lc_dgel_flt)
+} else {
+   dgelE2E4 <- edgeR::normLibSizes(dgelE2E4)
+   keep <- filterByExpr.DGEList(dgelE2E4, design = des)
+   dgelflt <- dgelE2E4[keep, , keep.lib.sizes = FALSE]
+   dgelflt <- edgeR::normLibSizes(dgelflt)
+   dgelflt$design <- des
+   dgelflt$logCPM <- edgeR::cpm(dgelflt, log = TRUE)
+   ## can I add the cleanedY matrix here for later use? (for logCPM and design, protecting )
+   qs_save(dgelflt, f_lc_dgel_flt)
+}
+
+
+```
+
+
+
+```{r SKIP perform voomLmFit across all labels}
+# define contrasts to pass to makeContrasts (we have to do it this way due to
+# environment weirdness with parallelization)
+contrasts_list <- list()
+for (current_label in unique(dgelflt$samples$label)) {
+    contrast_name <- paste0(current_label, "_E4vE2")
+    contrast_formula <- paste0(current_label, "_E4 - ", current_label, "_E2")
+
+    new_contrast <- list(contrast_formula)
+    names(new_contrast) <- contrast_name
+    contrasts_list <- c(contrasts_list, new_contrast)
+}
+trastmat <- do.call(makeContrasts, c(contrasts_list, list(levels = des)))
+## voom augmented with counts and logCPM for later use in plotting and cleaningY
+fvoom <- file.path(lcdir, 'dgelE2E4_voomLmFit_object_MODEL2_with_counts.qs2')
+if (!file.exists(fvoom)) {
+   ## let's drop our previously stored design
+   dgelflt$design <- NULL
+   v.swt <- voomLmFit(dgelflt, design = des, block = as.factor(dgelflt$samples$brnum),
+                   adaptive.span = TRUE, sample.weights = TRUE)
+   ## add the counts and logCPM back to the voomLmFit object for later use
+   v.swt$counts <- dgelflt$counts
+   v.swt$logCPM <- dgelflt$logCPM
+   v.swt$trasts <- trastmat
+   qs_save(v.swt, fvoom)
+} else {
+   v.swt <- qs_read(fvoom)
+}
+
+
+
+v.swt.fit <- contrasts.fit(v.swt, contrasts = trastmat)
+v.swt.fit.e <- eBayes(v.swt.fit, robust = TRUE)
+
+## get only the Astro E4vE2 DEGs:
+astro_dge <- topTable(v.swt.fit.e,  coef = "Astro_E4vE2",
+                      number = Inf,  adjust.method = "BH")
+## get top all tables
+E2E4label_detabs <- lapply(colnames(v.swt.fit), FUN = function(t) {
+    as.data.table(topTable(v.swt.fit.e, coef = t, number = Inf, adjust.method = "BH"))
+})
+names(E2E4label_detabs) <- colnames(trastmat)
+## to extract Astro E4vE2 DEGs:
+astro_tt <- E2E4label_detabs[["Astro_E4vE2"]]
+#keeplist <- list(voomLFt = v.swt, trastsFit = v.swt.fit, eBay = v.swt.fit.e,
+#                 dgel = dgelE2E4, trasts = trastmat, detabs = E2E4label_detabs)
+
+```
+
+
 
 
 

@@ -210,7 +210,10 @@ plotMedComp <- function(outcome_gene,
     out_gid <- matches[1]
     out_gname <- outcome_gene
 
-    ## get outcome expression (logCPM)
+    ## get outcome expression (logCPM) - we'll clean this with cleaningY for the plots
+    ## NOTE: we can also use voom-transformed values to be more consistent with the model statistics
+    ##   but logCPM is more interpretable and the relative differences should be preserved
+    ##   after voom transformation, so we'll use logCPM here for cleaningY and plotting
     y_logcpm <- edgeR::cpm(dge_base, log = TRUE)
     y_mat <- matrix(y_logcpm[out_gid, ], nrow = 1)
     rownames(y_mat) <- out_gid
