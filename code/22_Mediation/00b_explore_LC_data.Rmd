@@ -251,8 +251,7 @@ if (!file.exists(fvoom)) {
 } else {
    v.swt <- qs_read(fvoom)
 }
-
-
+## TODO: extract/prep/add cleanedY data for the Astro E4vE2 contrast for later use in plotting
 
 v.swt.fit <- contrasts.fit(v.swt, contrasts = trastmat)
 v.swt.fit.e <- eBayes(v.swt.fit, robust = TRUE)

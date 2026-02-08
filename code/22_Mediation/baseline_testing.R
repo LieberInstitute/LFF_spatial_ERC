@@ -101,7 +101,8 @@ opt_spec <- matrix(
         "sweeps", "s", "1", "integer", "Number of random sweeps (default=3)",
         "seed", "r", "1", "integer", "Random seed for sweeps (default=20260205)",
         "sweep_targets", "t", "1", "character", "Comma-separated target donor sizes for sweep mode (default=20,19,18,17,16,15)",
-        "workers", "w", "1", "integer", "Workers for outlier scans (default=8)"
+        "workers", "w", "1", "integer", "Workers for outlier scans (default=8)",
+        "leave2_mode", "l", "1", "character", "Outlier leave-two strategy: exhaustive|conditional (default=exhaustive)"
     ),
     ncol = 5, byrow = TRUE
 )
@@ -112,9 +113,13 @@ sweep_seed <- if (is.null(opt$seed) || is.na(opt$seed)) 20260205L else as.intege
 sweep_targets_str <- if (is.null(opt$sweep_targets) || is.na(opt$sweep_targets)) "20,19,18,17,16,15" else as.character(opt$sweep_targets)
 sweep_target_ns <- as.integer(strsplit(gsub("\\s+", "", sweep_targets_str), ",", fixed = FALSE)[[1]])
 workers <- if (is.null(opt$workers) || is.na(opt$workers)) 8L else as.integer(opt$workers)
+leave2_mode <- if (is.null(opt$leave2_mode) || is.na(opt$leave2_mode)) "exhaustive" else tolower(as.character(opt$leave2_mode))
 
 if (!(run_mode %in% c("stepdown", "sweep", "both", "outlier", "all"))) {
     stop("Invalid --mode. Use one of: stepdown, sweep, both, outlier, all")
+}
+if (!(leave2_mode %in% c("exhaustive", "conditional"))) {
+    stop("Invalid --leave2_mode. Use one of: exhaustive, conditional")
 }
 if (is.na(n_sweeps) || n_sweeps < 1) stop("--sweeps must be >= 1")
 if (is.na(sweep_seed)) stop("--seed must be an integer")
@@ -128,7 +133,7 @@ if (any(diff(sweep_target_ns) >= 0)) {
 do_stepdown <- run_mode %in% c("stepdown", "both", "all")
 do_sweep <- run_mode %in% c("sweep", "both", "all")
 do_outlier <- run_mode %in% c("outlier", "all")
-message(Sys.time(), sprintf(" - Run mode: %s (stepdown=%s, sweep=%s, outlier=%s)", run_mode, do_stepdown, do_sweep, do_outlier))
+message(Sys.time(), sprintf(" - Run mode: %s (stepdown=%s, sweep=%s, outlier=%s, leave2_mode=%s)", run_mode, do_stepdown, do_sweep, do_outlier, leave2_mode))
 
 #### Paths ####
 ddir <- here("processed-data")
@@ -138,8 +143,8 @@ pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn", 
 
 out_dir <- here("code", "22_Mediation", "out-dge-test")
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
-baseline_dir <- file.path(out_dir, "baseline")
-dir.create(baseline_dir, recursive = TRUE, showWarnings = FALSE)
+baseline_root <- file.path(out_dir, "baseline")
+dir.create(baseline_root, recursive = TRUE, showWarnings = FALSE)
 plots_dir <- file.path(out_dir, "plots")
 dir.create(plots_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -149,22 +154,34 @@ sce_pb <- readRDS(pb_fn)
 sce_pb <- sce_pb[, sce_pb$BrNum != "Br1289"]
 
 #### Outcome cluster setup (same for every scenario) ####
-## we can use dge_base colData() for all donor metadata
+## donor metadata from sce_base is reused across runs
 
 out_clus <- "Oligo.3"
 batch <- "exp_round"
 sce_base <- sce_pb[, sce_pb$registration_variable == out_clus]
 
 donor_meta <- as.data.frame(colData(sce_base))
+sample_dt_all <- unique(as.data.table(donor_meta))
+full_donors <- sort(unique(as.character(sample_dt_all$BrNum)))
 
 baseline_formula_str <- "0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio"
 baseline_formula <- as.formula(paste("~", baseline_formula_str))
-
-baseline_des <- model.matrix(
-    baseline_formula,
-    data = donor_meta
+carrier_contrast_expr <- "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)"
+analysis_cache_version <- "v20260208_subset_design_filter_norm"
+cache_context <- paste(
+    analysis_cache_version,
+    out_clus,
+    batch,
+    baseline_formula_str,
+    carrier_contrast_expr,
+    "drop_Br1289=TRUE",
+    "voomLmFit(sample.weights=TRUE,adaptive.span=TRUE)",
+    sep = "|"
 )
-baseline_des <- as.data.frame(baseline_des)
+cache_namespace <- md5_string(cache_context)
+baseline_dir <- file.path(baseline_root, cache_namespace)
+dir.create(baseline_dir, recursive = TRUE, showWarnings = FALSE)
+message(Sys.time(), sprintf(" - Baseline cache namespace: %s", cache_namespace))
 
 
 ## LC Astro data
@@ -185,16 +202,13 @@ dgl_lca <- readRDS(f_lca_pbcounts)
 ## Determine overlapping donors between LC Astro and ERC Oligo.3 outcome
 lca_brnums <- colnames(dgl_lca)
 erc_brnums <- as.character(donor_meta$BrNum)
-common_donors_21 <- intersect(lca_brnums, erc_brnums)
+overlap_donors <- intersect(lca_brnums, erc_brnums)
 
 message(Sys.time(), sprintf(" - ERC Oligo.3 donors: %d", length(unique(erc_brnums))))
 message(Sys.time(), sprintf(" - LC Astro donors: %d", length(unique(lca_brnums))))
-message(Sys.time(), sprintf(" - Common donors: %d", length(common_donors_21)))
+message(Sys.time(), sprintf(" - Overlapping donors: %d", length(overlap_donors)))
 
 ## Match baseline filtering from 01_mediation_screening.R
-#fn_dge_base <- file.path(out_dir, "dge_base.qs2")
-#qs_save(dge_base, fn_dge_base)
-# message(Sys.time(), sprintf(" - Saved filtered dge_base cache: %s", fn_dge_base))
 
 build_design <- function(sample_df, formula_obj, batch_col, med_vec = NULL) {
     sample_df <- as.data.frame(sample_df)
@@ -212,26 +226,37 @@ build_design <- function(sample_df, formula_obj, batch_col, med_vec = NULL) {
 }
 
 run_baseline <- function(donor_key, donors, donor_str) {
+    donors <- sort(unique(as.character(donors)))
+    donor_str <- paste(donors, collapse = ",")
+    donor_key <- md5_string(donor_str)
+
     out_file <- file.path(baseline_dir, sprintf("baseline_%s.tab.gz", donor_key))
     out_fdr_file <- file.path(baseline_dir, sprintf("baseline_%s.fdr05.tab.gz", donor_key))
 
     out_brnum <- as.character(sce_base$BrNum)
-    common_donors <- intersect(out_brnum, donors)
+    common_donors <- donors[donors %in% out_brnum]
     if (length(common_donors) < 10) {
         warning(sprintf("Too few common donors (%d) for baseline %s", length(common_donors), donor_key))
         return(NULL)
     }
-    ## subset dge_base to common donors
-    dge_base <- edgeR::calcNormFactors(sce_base[, sce_base$BrNum %in% common_donors])
-    keep <- edgeR::filterByExpr(dge_base, design = baseline_des)
-    dge_base <- dge_base[keep, , keep.lib.sizes = FALSE]
-    dge_base <- edgeR::calcNormFactors(dge_base)
-
-
-    dge_sub <- dge_base[, out_brnum %in% common_donors]
+    sample_idx <- match(common_donors, out_brnum)
+    sample_idx <- sample_idx[!is.na(sample_idx)]
+    sce_sub <- sce_base[, sample_idx]
+    dge_sub <- edgeR::calcNormFactors(sce_sub)
     design_obj <- build_design(dge_sub$samples, baseline_formula, batch)
     des <- design_obj$design
     sample_df <- design_obj$sample_df
+
+    keep <- edgeR::filterByExpr(dge_sub, design = des)
+    dge_sub <- dge_sub[keep, , keep.lib.sizes = FALSE]
+    dge_sub <- edgeR::calcNormFactors(dge_sub)
+
+    if (nrow(des) != ncol(dge_sub)) {
+        stop(sprintf(
+            "Design/sample mismatch for donor_key %s: design rows=%d but dge samples=%d",
+            donor_key, nrow(des), ncol(dge_sub)
+        ))
+    }
 
     req_cols <- c("APOE_E2.E2", "APOE_E2.E3", "APOE_E3.E4", "APOE_E4.E4")
     missing_cols <- setdiff(req_cols, colnames(des))
@@ -258,14 +283,15 @@ run_baseline <- function(donor_key, donors, donor_str) {
         )
 
         cont <- makeContrasts(
-            carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+            contrasts = carrier_contrast_expr,
             levels = des
         )
+        colnames(cont) <- "carrier"
 
         v.swt.fit <- contrasts.fit(v.swt, contrasts = cont)
         v.swt.fit.e <- eBayes(v.swt.fit)
 
-        tt <- topTable(v.swt.fit.e, coef = "carrier", number = Inf, adjust.method = "BH")
+        tt <- topTable(v.swt.fit.e, coef = 1, number = Inf, adjust.method = "BH")
         tt <- as.data.table(tt, keep.rownames = "outcome_gene_id")
         tt[, `:=`(run = sprintf("baseline|%s", donor_key), cluster = out_clus, contrast = "carrier",
                   n_donors = length(common_donors), donor_key = donor_key)]
@@ -308,8 +334,7 @@ run_baseline <- function(donor_key, donors, donor_str) {
 }
 
 if (do_stepdown) {
-full_donors <- unique(as.character(dge_base$samples$BrNum))
-common_donors <- full_donors[full_donors %in% common_donors_21]
+common_donors <- full_donors[full_donors %in% overlap_donors]
 erc_only_donors <- full_donors[!(full_donors %in% common_donors)]
 
 if (length(erc_only_donors) != 9) {
@@ -433,7 +458,6 @@ data.table::fwrite(
     sep = "\t"
 )
 
-sample_dt_all <- as.data.table(dge_base$samples)
 run_full <- baseline_dt[step == min(step)][1]
 run_21 <- baseline_dt[step == max(step)][1]
 donors_full <- strsplit(run_full$donor_str, ",", fixed = TRUE)[[1]]
@@ -745,8 +769,7 @@ message(Sys.time(), sprintf(" - Wrote plot index: %s", file.path(out_dir, "run10
 }
 
 if (do_sweep) {
-    full_donors <- unique(as.character(dge_base$samples$BrNum))
-    donors21 <- full_donors[full_donors %in% common_donors_21]
+    donors21 <- full_donors[full_donors %in% overlap_donors]
     if (length(donors21) != 21) {
         stop(sprintf("Expected 21 overlap donors for sweep mode, found %d", length(donors21)))
     }
@@ -754,7 +777,7 @@ if (do_sweep) {
         stop(sprintf("--sweep_targets out of range for 21 donors: %s", paste(sweep_target_ns, collapse = ",")))
     }
 
-    sample21 <- as.data.table(dge_base$samples)[BrNum %in% donors21]
+    sample21 <- copy(sample_dt_all[BrNum %in% donors21])
     sample21[, carrier_group := apoe_to_carrier(APOE_syn)]
     base_e2_prop <- mean(sample21$carrier_group == "E2_carrier", na.rm = TRUE)
 
@@ -932,12 +955,11 @@ if (do_sweep) {
 }
 
 if (do_outlier) {
-    full_donors <- unique(as.character(dge_base$samples$BrNum))
-    donors21 <- full_donors[full_donors %in% common_donors_21]
+    donors21 <- full_donors[full_donors %in% overlap_donors]
     if (length(donors21) != 21) {
         stop(sprintf("Expected 21 overlap donors for outlier mode, found %d", length(donors21)))
     }
-    sample21 <- as.data.table(dge_base$samples)[BrNum %in% donors21]
+    sample21 <- copy(sample_dt_all[BrNum %in% donors21])
     sample21[, carrier_group := apoe_to_carrier(APOE_syn)]
     sample21 <- unique(sample21[, .(BrNum, APOE_syn, carrier_group, Sex, Age, Anc_Afr, pseudo_expr_chrM_ratio, exp_round)])
 
@@ -970,6 +992,7 @@ if (do_outlier) {
             donor_key = rr$donor_key,
             donor_str = rr$donor_str,
             n_deg_fdr05 = rr$n_deg_fdr05,
+            deg_delta_vs_21 = rr$n_deg_fdr05 - ref21$n_deg_fdr05,
             min_p = rr$min_p,
             min_fdr = rr$min_fdr,
             n_E2_carrier = rr$n_E2_carrier,
@@ -987,51 +1010,102 @@ if (do_outlier) {
     data.table::fwrite(l1_dt, out_l1_file, sep = "\t")
 
     best1 <- l1_dt[1]
-    donors20_best <- setdiff(donors21, best1$drop1)
     message(Sys.time(), sprintf(" - Best single donor drop: %s (DEGs=%d, minFDR=%.4g)", best1$drop1, best1$n_deg_fdr05, best1$min_fdr))
 
-    ## second-drop conditional scan from best 20 set (20 -> 19)
-    l2_plan <- data.table::data.table(
-        drop2 = donors20_best,
-        donors = lapply(donors20_best, function(d) setdiff(donors20_best, d))
-    )
-    l2_res <- BiocParallel::bplapply(seq_len(nrow(l2_plan)), function(i) {
-        d2 <- l2_plan$drop2[i]
-        donors_i <- l2_plan$donors[[i]]
-        info <- make_donor_key(donors_i)
-        rr <- run_baseline(info$donor_key, info$donors, info$donor_str)
-        if (is.null(rr)) return(NULL)
-        dm <- sample21[BrNum == d2]
-        dropped <- sort(c(best1$drop1, d2))
-        data.table::data.table(
-            n_start = 21L,
-            n_donors = 19L,
-            drop1 = best1$drop1,
-            drop2 = d2,
-            dropped_pair = paste(dropped, collapse = ","),
-            drop2_apoe = as.character(dm$APOE_syn[1]),
-            drop2_carrier = as.character(dm$carrier_group[1]),
-            donor_key = rr$donor_key,
-            donor_str = rr$donor_str,
-            n_deg_fdr05 = rr$n_deg_fdr05,
-            min_p = rr$min_p,
-            min_fdr = rr$min_fdr,
-            n_E2_carrier = rr$n_E2_carrier,
-            n_E4_carrier = rr$n_E4_carrier,
-            out_file = rr$out_file,
-            out_fdr_file = rr$out_fdr_file
+    if (leave2_mode == "conditional") {
+        donors20_best <- setdiff(donors21, best1$drop1)
+        l2_plan <- data.table::data.table(
+            drop2 = donors20_best,
+            donors = lapply(donors20_best, function(d) setdiff(donors20_best, d))
         )
-    }, BPPARAM = bpp)
+        l2_res <- BiocParallel::bplapply(seq_len(nrow(l2_plan)), function(i) {
+            d2 <- l2_plan$drop2[i]
+            donors_i <- l2_plan$donors[[i]]
+            info <- make_donor_key(donors_i)
+            rr <- run_baseline(info$donor_key, info$donors, info$donor_str)
+            if (is.null(rr)) return(NULL)
+            dm <- sample21[BrNum == d2]
+            dropped <- sort(c(best1$drop1, d2))
+            data.table::data.table(
+                n_start = 21L,
+                n_donors = 19L,
+                drop1 = best1$drop1,
+                drop2 = d2,
+                dropped_pair = paste(dropped, collapse = ","),
+                drop2_apoe = as.character(dm$APOE_syn[1]),
+                drop2_carrier = as.character(dm$carrier_group[1]),
+                donor_key = rr$donor_key,
+                donor_str = rr$donor_str,
+                n_deg_fdr05 = rr$n_deg_fdr05,
+                deg_delta_vs_21 = rr$n_deg_fdr05 - ref21$n_deg_fdr05,
+                min_p = rr$min_p,
+                min_fdr = rr$min_fdr,
+                n_E2_carrier = rr$n_E2_carrier,
+                n_E4_carrier = rr$n_E4_carrier,
+                out_file = rr$out_file,
+                out_fdr_file = rr$out_fdr_file
+            )
+        }, BPPARAM = bpp)
+        out_l2_file <- file.path(out_dir, "outlier_scan_leave2_from_best20.tsv")
+        l2_label <- "conditional leave-two from best20"
+    } else {
+        l2_pairs <- utils::combn(donors21, 2, simplify = FALSE)
+        l2_plan <- data.table::rbindlist(lapply(l2_pairs, function(pair) {
+            pair <- sort(pair)
+            data.table::data.table(
+                drop1 = pair[1],
+                drop2 = pair[2],
+                dropped_pair = paste(pair, collapse = ","),
+                donors = list(setdiff(donors21, pair))
+            )
+        }), fill = TRUE)
+        l2_res <- BiocParallel::bplapply(seq_len(nrow(l2_plan)), function(i) {
+            d1 <- l2_plan$drop1[i]
+            d2 <- l2_plan$drop2[i]
+            donors_i <- l2_plan$donors[[i]]
+            info <- make_donor_key(donors_i)
+            rr <- run_baseline(info$donor_key, info$donors, info$donor_str)
+            if (is.null(rr)) return(NULL)
+            dm1 <- sample21[BrNum == d1]
+            dm2 <- sample21[BrNum == d2]
+            data.table::data.table(
+                n_start = 21L,
+                n_donors = 19L,
+                drop1 = d1,
+                drop2 = d2,
+                dropped_pair = l2_plan$dropped_pair[i],
+                drop1_apoe = as.character(dm1$APOE_syn[1]),
+                drop1_carrier = as.character(dm1$carrier_group[1]),
+                drop2_apoe = as.character(dm2$APOE_syn[1]),
+                drop2_carrier = as.character(dm2$carrier_group[1]),
+                donor_key = rr$donor_key,
+                donor_str = rr$donor_str,
+                n_deg_fdr05 = rr$n_deg_fdr05,
+                deg_delta_vs_21 = rr$n_deg_fdr05 - ref21$n_deg_fdr05,
+                min_p = rr$min_p,
+                min_fdr = rr$min_fdr,
+                n_E2_carrier = rr$n_E2_carrier,
+                n_E4_carrier = rr$n_E4_carrier,
+                out_file = rr$out_file,
+                out_fdr_file = rr$out_fdr_file
+            )
+        }, BPPARAM = bpp)
+        out_l2_file <- file.path(out_dir, "outlier_scan_leave2_21to19_exhaustive.tsv")
+        l2_label <- "exhaustive leave-two (21->19)"
+    }
     l2_res <- Filter(Negate(is.null), l2_res)
-    if (length(l2_res) < 1) stop("No conditional leave-two runs completed.")
+    if (length(l2_res) < 1) stop("No leave-two runs completed.")
     l2_dt <- data.table::rbindlist(l2_res, fill = TRUE)
-    setorder(l2_dt, -n_deg_fdr05, min_fdr, min_p, drop2)
+    setorder(l2_dt, -n_deg_fdr05, min_fdr, min_p, drop1, drop2)
 
-    out_l2_file <- file.path(out_dir, "outlier_scan_leave2_from_best20.tsv")
     data.table::fwrite(l2_dt, out_l2_file, sep = "\t")
 
     best2 <- l2_dt[1]
     message(Sys.time(), sprintf(" - Best donor pair: %s (DEGs=%d, minFDR=%.4g)", best2$dropped_pair, best2$n_deg_fdr05, best2$min_fdr))
+    l1_max_deg <- max(l1_dt$n_deg_fdr05, na.rm = TRUE)
+    l2_max_deg <- max(l2_dt$n_deg_fdr05, na.rm = TRUE)
+    l1_top_max <- l1_dt[n_deg_fdr05 == l1_max_deg]
+    l2_top_max <- l2_dt[n_deg_fdr05 == l2_max_deg]
 
     ## gene-level comparison: best 19-donor run vs 21 baseline
     tt21 <- data.table::fread(ref21$out_file)
@@ -1065,13 +1139,14 @@ if (do_outlier) {
     fn_p_l1 <- file.path(plots_dir, "10_outlier_scan_leave1_deg.png")
     ggsave(fn_p_l1, p_l1, width = 8.2, height = 6.5, dpi = 140)
 
-    p_l2 <- ggplot(l2_dt, aes(x = reorder(drop2, n_deg_fdr05), y = n_deg_fdr05, fill = drop2_carrier)) +
+    l2_plot_dt <- l2_dt[1:min(.N, 50)]
+    p_l2 <- ggplot(l2_plot_dt, aes(x = reorder(dropped_pair, n_deg_fdr05), y = n_deg_fdr05, fill = drop2_carrier)) +
         geom_col() +
         coord_flip() +
         theme_bw(base_size = 11) +
         labs(
-            title = sprintf("Conditional leave-two scan from best 20-donor set (drop1=%s)", best1$drop1),
-            x = "Second dropped donor",
+            title = sprintf("Leave-two scan (21 -> 19): top %d donor pairs (%s)", nrow(l2_plot_dt), leave2_mode),
+            x = "Dropped donor pair",
             y = "DEGs (FDR<0.05)",
             fill = "Carrier group"
         )
@@ -1082,15 +1157,28 @@ if (do_outlier) {
     out_report <- file.path(out_dir, "outlier_scan_report.txt")
     con <- file(out_report, "wt")
     writeLines(sprintf("Outlier donor scan report (%s)", Sys.time()), con)
-    writeLines(sprintf("Mode=%s ; workers=%d", run_mode, workers), con)
+    writeLines(sprintf("Mode=%s ; workers=%d ; leave2_mode=%s", run_mode, workers, leave2_mode), con)
+    writeLines(sprintf("Baseline cache namespace: %s", cache_namespace), con)
     writeLines(sprintf("21-donor baseline: DEGs=%d ; minFDR=%.6f ; donor_key=%s", ref21$n_deg_fdr05, ref21$min_fdr, ref21$donor_key), con)
     writeLines("", con)
+    writeLines("Scope clarification:", con)
+    writeLines("  - This outlier report summarizes only 21-overlap leave-one (21->20) and leave-two (21->19) scans.", con)
+    writeLines("  - Any 30-donor plots/files in out-dge-test/plots come from stepdown diagnostics and are separate from this outlier scan.", con)
+    writeLines("", con)
     writeLines("Top leave-one-out results (21->20):", con)
-    lines <- capture.output(print(l1_dt[1:min(.N, 10), .(drop1, drop1_apoe, drop1_carrier, n_deg_fdr05, min_fdr)]))
+    lines <- capture.output(print(l1_dt[1:min(.N, 10), .(drop1, drop1_apoe, drop1_carrier, n_deg_fdr05, deg_delta_vs_21, min_fdr)]))
     writeLines(paste0("  ", lines), con)
     writeLines("", con)
-    writeLines("Top conditional leave-two results from best 20-donor set (20->19):", con)
-    lines <- capture.output(print(l2_dt[1:min(.N, 10), .(drop1, drop2, dropped_pair, n_deg_fdr05, min_fdr)]))
+    writeLines(sprintf("Top %s results:", l2_label), con)
+    lines <- capture.output(print(l2_dt[1:min(.N, 10), .(drop1, drop2, dropped_pair, n_deg_fdr05, deg_delta_vs_21, min_fdr)]))
+    writeLines(paste0("  ", lines), con)
+    writeLines("", con)
+    writeLines(sprintf("Leave-one-out max DEG count: %d", l1_max_deg), con)
+    lines <- capture.output(print(l1_top_max[, .(drop1, drop1_apoe, n_deg_fdr05, deg_delta_vs_21, min_fdr)]))
+    writeLines(paste0("  ", lines), con)
+    writeLines("", con)
+    writeLines(sprintf("Leave-two max DEG count: %d (%s)", l2_max_deg, l2_label), con)
+    lines <- capture.output(print(l2_top_max[, .(drop1, drop2, dropped_pair, n_deg_fdr05, deg_delta_vs_21, min_fdr)]))
     writeLines(paste0("  ", lines), con)
     writeLines("", con)
     writeLines(sprintf("Best single donor to drop: %s (%s), DEGs=%d, minFDR=%.6f",
@@ -1109,9 +1197,9 @@ if (do_outlier) {
     close(con)
 
     message(Sys.time(), " - Outlier scan summary (top 10 leave-one-out):")
-    print(l1_dt[1:min(.N, 10), .(drop1, drop1_apoe, n_deg_fdr05, min_fdr)])
-    message(Sys.time(), " - Outlier scan summary (top 10 leave-two from best20):")
-    print(l2_dt[1:min(.N, 10), .(drop1, drop2, n_deg_fdr05, min_fdr)])
+    print(l1_dt[1:min(.N, 10), .(drop1, drop1_apoe, n_deg_fdr05, deg_delta_vs_21, min_fdr)])
+    message(Sys.time(), sprintf(" - Outlier scan summary (top 10 %s):", l2_label))
+    print(l2_dt[1:min(.N, 10), .(drop1, drop2, dropped_pair, n_deg_fdr05, deg_delta_vs_21, min_fdr)])
     message(Sys.time(), sprintf(" - Wrote outlier report: %s", out_report))
 }
 
