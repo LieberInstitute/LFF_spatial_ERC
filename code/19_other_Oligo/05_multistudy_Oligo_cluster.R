@@ -279,6 +279,8 @@ dev.off()
 #                                  create_shell = TRUE,
 #                                  create_script = FALSE)
 
+# slurmjobs::array_submit(name = "05_multistudy_Oligo_cluster", task_ids = 2, submit = TRUE)
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
