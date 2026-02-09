@@ -346,7 +346,7 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
     dgl_lca <- dgl_lca[keep_lca, , keep.lib.sizes = FALSE]
     dgl_lca <- edgeR::calcNormFactors(dgl_lca)
 
-    ## Compute log-CPM
+    ## compute log-CPM - will be used for the mediation vector
     lca_logcpm <- edgeR::cpm(dgl_lca, log = TRUE)
 
     ## Check for missing DEGs in filtered counts
@@ -365,7 +365,6 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
     ## Build med_expr matrix (med_gene_id x BrNum)
     med_expr <- lca_logcpm[gene_ids, , drop = FALSE]
     rownames(med_expr) <- med_degs$med_gene_id
-
     ## Apply test_rows if specified
     if (length(test_rows) > 0) {
         if (any(test_rows < 1 | test_rows > nrow(med_degs))) {
