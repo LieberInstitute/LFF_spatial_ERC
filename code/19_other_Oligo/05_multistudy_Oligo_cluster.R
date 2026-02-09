@@ -162,7 +162,6 @@ sce <- sce[,sce$Oligo_anno %in% cluster_keep$cluster_anno]
 other_oligo_colors <- DeconvoBuddies::create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
 
 message(Sys.time(), " - Plot TSNE")
-source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 tsne_plot <- my_plot_reduced_dim(sce,
                                  prefix = "other_Oligo",
