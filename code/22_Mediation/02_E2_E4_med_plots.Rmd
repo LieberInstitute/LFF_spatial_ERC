@@ -5,9 +5,14 @@ title: "Plot mediation screening results"
 
 ```{r}
 library(edgeR)
+library(limma)
 library(SingleCellExperiment)
 library(data.table)
 library(ggplot2)
+if (!requireNamespace("ggh4x", quietly = TRUE)) {
+    stop("Package `ggh4x` is required for panel-specific facet strip colors. Install with: install.packages('ggh4x')")
+}
+library(ggh4x)
 library(dplyr)
 library(here)
 ddir <- here("processed-data")
@@ -19,14 +24,74 @@ ddir <- here("processed-data")
 library(qs2)
 library(ggplot2)
 library(tidyr)
-## assumes 01_mediation_screen.R was already run for this scenario
+## assumes 01_mediation_screen.R was already run for the scenarios here, to use the output directories
 cdir <- here("code")
+`%||%` <- function(x, y) if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
 
-loadMedData <- function(out_dir, src_expr = NULL) {
-    if (!is.null(src_expr)) {
-        stop("loadMedData(src_expr=...) is not implemented yet.")
+md5_string <- function(x) {
+    tf <- tempfile()
+    on.exit(unlink(tf), add = TRUE)
+    writeLines(x, con = tf, useBytes = TRUE)
+    as.character(tools::md5sum(tf)[1])
+}
+
+validate_med_expr_src <- function(med_expr_src) {
+    if (is.null(med_expr_src)) return(NULL)
+    if (!is.list(med_expr_src)) {
+        stop("`med_expr_src` must be a list with at least `kind` and `path`.")
     }
+    kind <- as.character(med_expr_src$kind %||% "")
+    path <- as.character(med_expr_src$path %||% "")
+    meta <- med_expr_src$meta %||% list()
+    if (!kind %in% c("erc_sce", "lc_sp_astro")) {
+        stop("`med_expr_src$kind` must be one of: erc_sce, lc_sp_astro")
+    }
+    if (!nzchar(path)) {
+        stop("`med_expr_src$path` must be a non-empty path.")
+    }
+    if (!file.exists(path)) {
+        stop("`med_expr_src$path` does not exist: ", path)
+    }
+    if (!is.list(meta)) {
+        stop("`med_expr_src$meta` must be a list when provided.")
+    }
+    list(
+        kind = kind,
+        path = normalizePath(path, winslash = "/", mustWork = TRUE),
+        meta = meta
+    )
+}
 
+read_med_expr_src <- function(med_expr_src) {
+    if (is.null(med_expr_src)) return(NULL)
+    src_path <- as.character(med_expr_src$path)
+    ## auto-detect serialized object format by file extension
+    if (grepl("\\.qs2$", src_path, ignore.case = TRUE)) {
+        return(qs_read(src_path))
+    }
+    readRDS(src_path)
+}
+
+file_fingerprint <- function(path) {
+    info <- file.info(path)
+    if (nrow(info) < 1 || is.na(info$size[1]) || is.na(info$mtime[1])) {
+        return(sprintf("%s|missing", normalizePath(path, winslash = "/", mustWork = FALSE)))
+    }
+    sprintf(
+        "%s|%s|%s",
+        normalizePath(path, winslash = "/", mustWork = FALSE),
+        as.character(info$size[1]),
+        format(info$mtime[1], tz = "UTC", usetz = TRUE)
+    )
+}
+
+ensure_ggh4x <- function() {
+    if (!requireNamespace("ggh4x", quietly = TRUE)) {
+        stop("Package `ggh4x` is required for panel-specific facet strip colors. Install with: install.packages('ggh4x')")
+    }
+}
+
+loadMedData <- function(out_dir, med_expr_src = NULL) {
     pth <- list(
         out = out_dir,
         base_dir = file.path(out_dir, "baseline"),
@@ -92,13 +157,26 @@ loadMedData <- function(out_dir, src_expr = NULL) {
     cfg$base_f <- as.formula(paste("~", cfg$base_str))
     cfg$med_f <- as.formula(paste("~", cfg$med_str))
 
+    med_expr_src <- validate_med_expr_src(med_expr_src)
+    src <- list(
+        med_expr_src = med_expr_src,
+        src_obj = read_med_expr_src(med_expr_src)
+    )
+
+    cfg <- c(cfg, list(
+        apoe_levels = c("E2.E2", "E2.E3", "E3.E4", "E4.E4"),
+        carrier_contrast = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+        erc_batch_col = "exp_round"
+    ))
+
     pd <- list(
         pth = pth,
         dt = list(md = md, mi = mi, bi = bi, br = br),
         obj = list(dge = dge),
         mat = list(y_lcpm = edgeR::cpm(dge, log = TRUE), m_expr = me),
         key = list(gmap = gmap, brnum = brnum, grp = grp),
-        cfg = cfg
+        cfg = cfg,
+        src = src
     )
     pd
 }
@@ -108,13 +186,49 @@ loadMedData <- function(out_dir, src_expr = NULL) {
 
 ```{r load mediation data}
 ## loading ERC Astro mediation data
-pd <- loadMedData(file.path(cdir, "22_Mediation", "out-erc_astro"))
+erc_src_sce <- file.path(ddir, "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn", "sce_pseudo_DGE-cell_type_anno.RDS")
+pd <- loadMedData(
+    file.path(cdir, "22_Mediation", "out-erc_astro"),
+    med_expr_src = list(kind = "erc_sce", path = erc_src_sce)
+)
 ```
 
 
 ```{r plot function and test}
 APOE_carrier_colors_dark <- c(`E2+`="#3B918B", `E4+`="#B7522A")
 APOE_carrier_colors <- c(`E2+`="#51B8B1", `E4+`="#D97D59")
+
+carrier_group_from_apoe <- function(apoe_syn) {
+    ap <- as.character(apoe_syn)
+    ifelse(ap %in% c("E2.E2", "E2.E3"), "E2+",
+        ifelse(ap %in% c("E3.E4", "E4.E4"), "E4+", "other")
+    )
+}
+
+format_fdr <- function(fdr) {
+    if (is.na(fdr)) return("NA")
+    if (fdr >= 1e-4) sprintf("%.5f", fdr) else sprintf("%.2e", fdr)
+}
+
+format_tstat <- function(tval) {
+    if (is.na(tval)) return("NA")
+    sprintf("%.2f", tval)
+}
+
+extract_gene_stats <- function(dt, gene_id, gene_col = "outcome_gene_id") {
+    if (is.null(dt) || !is.data.frame(dt) || nrow(dt) < 1 || !(gene_col %in% names(dt))) {
+        return(list(fdr = NA_real_, t = NA_real_))
+    }
+    hit_idx <- which(as.character(dt[[gene_col]]) == gene_id)
+    if (length(hit_idx) < 1) {
+        return(list(fdr = NA_real_, t = NA_real_))
+    }
+    row <- dt[hit_idx[1], ]
+    list(
+        fdr = if ("adj.P.Val" %in% names(row)) as.numeric(row$adj.P.Val[[1]]) else NA_real_,
+        t = if ("t" %in% names(row)) as.numeric(row$t[[1]]) else NA_real_
+    )
+}
 
 resolve_mediator_row <- function(mg, md) {
     mg_cl <- NULL
@@ -146,8 +260,534 @@ resolve_mediator_row <- function(mg, md) {
     rs[nrow(rs)]
 }
 
-plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_apoe_cols = 4L) {
+resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label) {
+    mf <- character(0)
+    if (!is.null(dt_mi) && nrow(dt_mi) > 0 &&
+        all(c("iter", "med_gene_id", "out_file") %in% names(dt_mi))) {
+        idx <- dt_mi[iter == it & med_gene_id == mgid]
+        if (nrow(idx) > 0) mf <- idx$out_file[1]
+    }
+    if (length(mf) < 1 || !file.exists(mf)) {
+        mf <- file.path(pd$pth$out, sprintf("%03d_%s.tab.gz", it, file_label))
+    }
+    if (!file.exists(mf)) {
+        cands <- list.files(pd$pth$out, pattern = sprintf("_%s\\.tab\\.gz$", file_label), full.names = TRUE)
+        if (length(cands) > 1) {
+            finfo <- file.info(cands)
+            cands <- cands[order(finfo$mtime, decreasing = TRUE)]
+        }
+        mf <- cands[1]
+    }
+    if (is.na(mf) || !nzchar(mf) || !file.exists(mf)) {
+        stop("Mediation results file not found for mediator run label: ", file_label)
+    }
+    mf
+}
+
+get_precomputed_med_stats <- function(mr) {
+    fdr_cols <- c("vlmf_adj.P.Val", "adj.P.Val")
+    t_cols <- c("vlmf_t", "t")
+    fdr_col <- fdr_cols[fdr_cols %in% names(mr)][1]
+    t_col <- t_cols[t_cols %in% names(mr)][1]
+    list(
+        fdr = if (!is.na(fdr_col)) as.numeric(mr[[fdr_col]][1]) else NA_real_,
+        t = if (!is.na(t_col)) as.numeric(mr[[t_col]][1]) else NA_real_
+    )
+}
+
+get_source_object_for_kind <- function(pd, required_kind) {
+    src_cfg <- pd$src$med_expr_src %||% NULL
+    if (is.null(src_cfg)) {
+        stop("No `med_expr_src` configured in plot data. Call loadMedData(..., med_expr_src=list(kind=..., path=...)).")
+    }
+    if (!identical(as.character(src_cfg$kind), as.character(required_kind))) {
+        stop(sprintf("`med_expr_src$kind` is '%s' but '%s' is required for this operation.", src_cfg$kind, required_kind))
+    }
+    src_obj <- pd$src$src_obj %||% NULL
+    if (!is.null(src_obj)) return(src_obj)
+    if (!file.exists(src_cfg$path)) {
+        stop("Source object path not found: ", src_cfg$path)
+    }
+    read_med_expr_src(src_cfg)
+}
+
+build_med_source_context_erc <- function(mr, pd, brnum_use, med_vec_use, n_ap) {
+    sce_src <- get_source_object_for_kind(pd, "erc_sce")
+    mcl <- as.character(mr$cluster)
+    cl_idx <- as.character(SummarizedExperiment::colData(sce_src)$registration_variable) == mcl
+    if (!any(cl_idx)) {
+        stop("Cluster not found in source ERC SCE: ", mcl)
+    }
+    cl_sce <- sce_src[, cl_idx]
+    cl_smp <- as.data.frame(SummarizedExperiment::colData(cl_sce))
+    cl_smp$BrNum <- as.character(cl_smp$BrNum)
+    if (anyDuplicated(cl_smp$BrNum)) {
+        stop("Duplicate BrNum entries found in source ERC SCE for cluster: ", mcl)
+    }
+    ord <- match(brnum_use, cl_smp$BrNum)
+    if (anyNA(ord)) {
+        miss <- brnum_use[is.na(ord)]
+        stop(sprintf("Missing cluster samples for %s, first missing donor(s): %s",
+                     mcl, paste(head(miss, 5), collapse = ", ")))
+    }
+    cl_smp <- cl_smp[ord, , drop = FALSE]
+    cl_smp$APOE_syn <- factor(as.character(cl_smp$APOE_syn), levels = pd$cfg$apoe_levels)
+    cl_smp$Sex <- droplevels(factor(cl_smp$Sex))
+    mod_step2 <- model.matrix(pd$cfg$base_f, data = cl_smp)
+
+    m_mat <- matrix(med_vec_use, nrow = 1, dimnames = list(as.character(mr$gene_id), brnum_use))
+    m_clean <- jaffelab::cleaningY(m_mat, mod_step2, P = n_ap)
+    data.frame(
+        BrNum = brnum_use,
+        carrier_group = carrier_group_from_apoe(cl_smp$APOE_syn),
+        med_cleaned = as.numeric(m_clean[1, ])
+    )
+}
+
+build_med_source_context_outcome <- function(mr, brnum_use, med_vec_use, smp, n_ap, mod_b) {
+    m_mat <- matrix(med_vec_use, nrow = 1, dimnames = list(as.character(mr$gene_id), brnum_use))
+    m_clean <- jaffelab::cleaningY(m_mat, mod_b, P = n_ap)
+    data.frame(
+        BrNum = brnum_use,
+        carrier_group = carrier_group_from_apoe(smp$APOE_syn),
+        med_cleaned = as.numeric(m_clean[1, ])
+    )
+}
+
+resolve_lc_donor_pb_path <- function(pd) {
+    src_cfg <- pd$src$med_expr_src %||% NULL
+    if (is.null(src_cfg) || !identical(as.character(src_cfg$kind), "lc_sp_astro")) {
+        stop("LC donor pseudobulk path resolution requires `med_expr_src$kind='lc_sp_astro'`.")
+    }
+    meta <- src_cfg$meta %||% list()
+    cand <- character(0)
+    if (!is.null(meta$donor_pb_path) && nzchar(as.character(meta$donor_pb_path))) {
+        cand <- c(cand, as.character(meta$donor_pb_path))
+    }
+    ## try known default donor-pseudobulk source paths before failing
+    cand <- c(
+        cand,
+        file.path(here("processed-data"), "22_Mediation", "lc_astro_pseudobulk_counts_by_donor.rds"),
+        file.path(dirname(src_cfg$path), "shared_internal_ref", "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS"),
+        file.path(here("code"), "22_Mediation", "LC-processed-data", "shared_internal_ref", "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+    )
+    cand <- unique(cand[nzchar(cand)])
+    cand_hit <- cand[file.exists(cand)]
+    if (length(cand_hit) < 1L) {
+        stop(
+            "Could not find LC donor-pseudobulk counts for recalc. ",
+            "Provide `med_expr_src$meta$donor_pb_path` (e.g., .../lc_astro_pseudobulk_counts_by_donor.rds ",
+            "or .../shared_internal_ref/DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS)."
+        )
+    }
+    normalizePath(cand_hit[1], winslash = "/", mustWork = TRUE)
+}
+
+read_by_ext <- function(path) {
+    ## support both rds and qs2 serialized files
+    if (grepl("\\.qs2$", path, ignore.case = TRUE)) {
+        return(qs_read(path))
+    }
+    readRDS(path)
+}
+
+pick_lc_gene_row <- function(mr, logcpm, genes_df = NULL) {
+    gid <- as.character(mr$gene_id)
+    gnm <- as.character(mr$gene_name)
+    if (gid %in% rownames(logcpm)) return(gid)
+    if (!is.null(genes_df) && "gene_id" %in% names(genes_df) && !is.null(rownames(genes_df))) {
+        map <- rownames(genes_df)[as.character(genes_df$gene_id) == gid]
+        if (length(map) > 0 && map[1] %in% rownames(logcpm)) return(map[1])
+    }
+    if (!is.null(genes_df) && "gene_name" %in% names(genes_df) && !is.null(rownames(genes_df))) {
+        map <- rownames(genes_df)[as.character(genes_df$gene_name) == gnm]
+        map <- map[map %in% rownames(logcpm)]
+        if (length(map) > 0) return(map[1])
+    }
+    NA_character_
+}
+
+build_med_source_context_lc_precomputed <- function(mr, pd, n_ap = 2L) {
+    src_obj <- get_source_object_for_kind(pd, "lc_sp_astro")
+    if (is.null(src_obj$logCPM) || is.null(src_obj$targets)) {
+        stop("LC source object must contain `logCPM` and `targets` for precomputed panel-3 plotting.")
+    }
+    logcpm <- src_obj$logCPM
+    targets <- as.data.frame(src_obj$targets)
+    if (!("label" %in% names(targets))) {
+        stop("LC source `targets` is missing `label` column.")
+    }
+
+    ## subset to Astro tissue-section samples from the original LC model context
+    astro_idx <- as.character(targets$label) == "Astro"
+    if (!any(astro_idx)) {
+        stop("No Astro section samples found in LC source `targets$label`.")
+    }
+    astro_targets <- targets[astro_idx, , drop = FALSE]
+    astro_cols <- colnames(logcpm)[astro_idx]
+    astro_targets$label_E2E4 <- factor(as.character(astro_targets$label_E2E4))
+    astro_targets$Sex <- droplevels(factor(astro_targets$Sex))
+
+    ## residualize section-level mediator expression while preserving Astro E2/E4 effects
+    mod_step2 <- model.matrix(~0 + label_E2E4 + Sex + Age + YRI, data = astro_targets)
+    colnames(mod_step2) <- gsub("^label_E2E4", "", colnames(mod_step2))
+    if (!all(c("Astro_E2", "Astro_E4") %in% colnames(mod_step2))) {
+        stop("LC Astro section design does not contain expected APOE columns `Astro_E2` and `Astro_E4`.")
+    }
+
+    gene_row <- pick_lc_gene_row(mr, logcpm, src_obj$genes %||% NULL)
+    if (is.na(gene_row) || !nzchar(gene_row)) {
+        stop(sprintf("Mediator %s (%s) not found in LC source logCPM matrix.",
+                     as.character(mr$gene_name), as.character(mr$gene_id)))
+    }
+    med_vec <- as.numeric(logcpm[gene_row, astro_cols])
+    m_mat <- matrix(med_vec, nrow = 1, dimnames = list(as.character(mr$gene_id), astro_cols))
+    m_clean <- jaffelab::cleaningY(m_mat, mod_step2, P = as.integer(n_ap))
+
+    brnum <- as.character(astro_targets$brnum %||% rep(NA_character_, nrow(astro_targets)))
+    brnum[is.na(brnum) | !nzchar(brnum)] <- astro_cols[is.na(brnum) | !nzchar(brnum)]
+    ap_large <- as.character(astro_targets$APOlargeGrp %||% NA_character_)
+    if (length(ap_large) != nrow(astro_targets) || all(is.na(ap_large))) {
+        ap_large <- ifelse(grepl("_E2$", as.character(astro_targets$label_E2E4)), "E2",
+                           ifelse(grepl("_E4$", as.character(astro_targets$label_E2E4)), "E4", NA_character_))
+    }
+    grp <- ifelse(ap_large == "E2", "E2+",
+                  ifelse(ap_large == "E4", "E4+", "other"))
+    data.frame(
+        BrNum = brnum,
+        carrier_group = grp,
+        med_cleaned = as.numeric(m_clean[1, ])
+    )
+}
+
+get_med_source_context <- function(mr, pd, brnum_use, med_vec_use, n_ap, smp, mod_b, med_mode_eff) {
+    src_cfg <- pd$src$med_expr_src %||% NULL
+    if (is.null(src_cfg)) {
+        return(build_med_source_context_outcome(mr, brnum_use, med_vec_use, smp, n_ap, mod_b))
+    }
+    src_kind <- as.character(src_cfg$kind)
+    if (src_kind=="erc_sce") {
+        return(build_med_source_context_erc(mr, pd, brnum_use, med_vec_use, n_ap))
+    }
+    if (src_kind == "lc_sp_astro") {
+        ## route LC panel-3 points by mode: section-level for precomputed/both, donor-level for recalc
+        if (med_mode_eff %in% c("precomputed", "both")) {
+            return(build_med_source_context_lc_precomputed(mr, pd, n_ap = 2L))
+        }
+        return(build_med_source_context_outcome(mr, brnum_use, med_vec_use, smp, n_ap, mod_b))
+    }
+    stop("Unsupported med_expr source kind: ", src_kind)
+}
+
+med_cache_key_erc <- function(pd, cluster) {
+    src_cfg <- pd$src$med_expr_src %||% NULL
+    if (is.null(src_cfg) || !identical(as.character(src_cfg$kind), "erc_sce")) {
+        stop("Cannot build ERC Step-2 cache key without `med_expr_src` kind='erc_sce'.")
+    }
+    info <- file.info(src_cfg$path)
+    if (nrow(info) < 1 || is.na(info$size[1]) || is.na(info$mtime[1])) {
+        stop("Cannot stat ERC source path for cache key: ", src_cfg$path)
+    }
+    key_txt <- paste(
+        c(
+            "erc_med_exact_full_cluster",
+            normalizePath(src_cfg$path, winslash = "/", mustWork = FALSE),
+            as.character(info$size[1]),
+            format(info$mtime[1], tz = "UTC", usetz = TRUE),
+            as.character(cluster),
+            as.character(pd$cfg$base_str),
+            as.character(pd$cfg$carrier_contrast),
+            as.character(pd$cfg$erc_batch_col),
+            as.character(utils::packageVersion("edgeR")),
+            as.character(utils::packageVersion("limma"))
+        ),
+        collapse = "\n"
+    )
+    md5_string(key_txt)
+}
+
+get_or_compute_erc_cluster_dge <- function(cluster, pd, med_cache_dir) {
+    if (!dir.exists(med_cache_dir)) dir.create(med_cache_dir, recursive = TRUE, showWarnings = FALSE)
+    cache_file <- file.path(
+        med_cache_dir,
+        sprintf("erc_med_%s.qs2", gsub("[^A-Za-z0-9._-]", "_", as.character(cluster)))
+    )
+    cache_key <- med_cache_key_erc(pd, cluster)
+    if (file.exists(cache_file)) {
+        cached <- tryCatch(qs_read(cache_file), error = function(e) NULL)
+        if (is.list(cached) && identical(cached$cache_key %||% "", cache_key) &&
+            is.data.frame(cached$table)) {
+            return(data.table::as.data.table(cached$table))
+        }
+    }
+
+    sce_src <- get_source_object_for_kind(pd, "erc_sce")
+    cl_idx <- as.character(SummarizedExperiment::colData(sce_src)$registration_variable) == cluster
+    if (!any(cl_idx)) {
+        stop("Cluster not found in ERC source SCE for recalc: ", cluster)
+    }
+    dge <- sce_src[, cl_idx]
+    smp <- as.data.frame(SummarizedExperiment::colData(dge))
+    smp$APOE_syn <- factor(as.character(smp$APOE_syn), levels = pd$cfg$apoe_levels)
+    smp$Sex <- droplevels(factor(smp$Sex))
+
+    des <- model.matrix(pd$cfg$base_f, data = smp)
+    des <- as.data.frame(des)
+    colnames(des) <- gsub(colnames(des), pattern = "_syn", replacement = "_")
+
+    dge <- edgeR::calcNormFactors(dge)
+    keep <- edgeR::filterByExpr(dge, design = des)
+    dge <- dge[keep, , keep.lib.sizes = FALSE]
+    dge <- edgeR::calcNormFactors(dge)
+    ## report the exact dataset used when recomputing mediator dge
+    message(sprintf(
+        "[med-recalc][erc] cluster=%s samples=%d rows=%d model=%s",
+        as.character(cluster), ncol(dge), nrow(dge), as.character(pd$cfg$base_f)
+    ))
+
+    batch_col <- as.character(pd$cfg$erc_batch_col %||% "exp_round")
+    if (!(batch_col %in% colnames(dge$samples))) {
+        stop("Batch column not found in ERC source dge$samples: ", batch_col)
+    }
+    v.swt <- edgeR::voomLmFit(
+        dge,
+        design = des,
+        block = as.factor(dge$samples[[batch_col]]),
+        adaptive.span = TRUE,
+        sample.weights = TRUE
+    )
+
+    cont <- limma::makeContrasts(
+        contrasts = pd$cfg$carrier_contrast,
+        levels = des
+    )
+    colnames(cont) <- "carrier"
+    fit <- limma::eBayes(limma::contrasts.fit(v.swt, contrasts = cont))
+    tt <- limma::topTable(fit, coef = 1, number = Inf, adjust.method = "BH")
+    tt$gene_id <- rownames(tt)
+    tt <- data.table::as.data.table(tt)
+    if (!is.null(dge$genes) && "gene_name" %in% colnames(dge$genes)) {
+        gnm <- as.character(dge$genes$gene_name)
+        names(gnm) <- rownames(dge$genes)
+        tt[, gene_name := unname(gnm[gene_id])]
+    }
+
+    qs_save(list(
+        cache_key = cache_key,
+        cluster = as.character(cluster),
+        created_at = format(Sys.time(), tz = "UTC", usetz = TRUE),
+        table = tt
+    ), cache_file)
+    tt
+}
+
+get_recalc_med_stats_erc <- function(mr, pd, med_cache_dir) {
+    tt <- get_or_compute_erc_cluster_dge(
+        cluster = as.character(mr$cluster),
+        pd = pd,
+        med_cache_dir = med_cache_dir
+    )
+    hit <- tt[gene_id == as.character(mr$gene_id)]
+    if (nrow(hit) < 1 && "gene_name" %in% names(tt)) {
+        hit <- tt[gene_name == as.character(mr$gene_name)]
+    }
+    if (nrow(hit) < 1) {
+        warning(sprintf("Step-2 recalc could not find mediator %s (%s) in cluster %s.",
+                        as.character(mr$gene_name), as.character(mr$gene_id), as.character(mr$cluster)))
+        return(list(fdr = NA_real_, t = NA_real_))
+    }
+    list(
+        fdr = as.numeric(hit$adj.P.Val[[1]]),
+        t = as.numeric(hit$t[[1]])
+    )
+}
+
+med_cache_key_lc <- function(pd, donor_pb_path, brnum_use) {
+    ## encode source, donor set, and model settings to invalidate stale LC recalc caches
+    key_txt <- paste(
+        c(
+            "lc_med_donor_recalc",
+            file_fingerprint(donor_pb_path),
+            paste(sort(unique(as.character(brnum_use))), collapse = ","),
+            "~0 + APOE_syn + Sex + Age + YRI",
+            as.character(pd$cfg$carrier_contrast),
+            as.character(utils::packageVersion("edgeR")),
+            as.character(utils::packageVersion("limma"))
+        ),
+        collapse = "\n"
+    )
+    md5_string(key_txt)
+}
+
+extract_lc_astro_donor_counts <- function(dgl) {
+    astro_cols <- grep("^Astro_", colnames(dgl), value = TRUE)
+    if (length(astro_cols) > 0) {
+        out <- dgl[, astro_cols, keep.lib.sizes = FALSE]
+        colnames(out) <- sub("^Astro_", "", astro_cols)
+        return(out)
+    }
+    smp <- dgl$samples
+    if (!is.null(smp) && "label" %in% names(smp) && any(as.character(smp$label) == "Astro")) {
+        astro_idx <- as.character(smp$label) == "Astro"
+        out <- dgl[, astro_idx, keep.lib.sizes = FALSE]
+        if ("brnum" %in% names(out$samples) && !all(is.na(out$samples$brnum))) {
+            colnames(out) <- as.character(out$samples$brnum)
+        }
+        return(out)
+    }
+    stop("Could not resolve Astro donor columns in LC donor-pseudobulk DGEList.")
+}
+
+build_lc_recalc_table <- function(pd, donor_pb_path, brnum_use) {
+    ## load donor-pseudobulk LC counts and retain Astro domain donors used in this mediator plot
+    dgl <- read_by_ext(donor_pb_path)
+    if (!inherits(dgl, "DGEList")) {
+        stop("LC donor-pseudobulk source must load to an edgeR `DGEList`: ", donor_pb_path)
+    }
+    dge <- extract_lc_astro_donor_counts(dgl)
+
+    if (anyDuplicated(colnames(dge))) {
+        dups <- unique(colnames(dge)[duplicated(colnames(dge))])
+        stop("Duplicate donor columns detected in LC donor-pseudobulk counts: ",
+             paste(head(dups, 5), collapse = ", "))
+    }
+    miss <- setdiff(brnum_use, colnames(dge))
+    if (length(miss) > 0) {
+        stop("Missing donor(s) in LC donor-pseudobulk counts, first missing: ",
+             paste(head(miss, 5), collapse = ", "))
+    }
+    dge <- dge[, brnum_use, keep.lib.sizes = FALSE]
+
+    ## build donor metadata from outcome dge sample table, mapping Anc_Afr to YRI where needed
+    smp_ref <- as.data.frame(pd$obj$dge$samples)
+    smp_ref$BrNum <- as.character(pd$key$brnum)
+    ord <- match(brnum_use, smp_ref$BrNum)
+    if (anyNA(ord)) {
+        stop("Could not align one or more LC donor(s) to outcome sample metadata for recalc.")
+    }
+    smp <- smp_ref[ord, , drop = FALSE]
+    smp$APOE_syn <- factor(as.character(smp$APOE_syn), levels = pd$cfg$apoe_levels)
+    smp$Sex <- droplevels(factor(smp$Sex))
+    smp$YRI <- as.numeric(smp$YRI %||% smp$Anc_Afr)
+    if (anyNA(smp$YRI)) {
+        stop("Missing ancestry values when constructing LC recalc design (`YRI`).")
+    }
+    des <- model.matrix(~0 + APOE_syn + Sex + Age + YRI, data = smp)
+    des <- as.data.frame(des)
+    colnames(des) <- gsub(colnames(des), pattern = "_syn", replacement = "_")
+
+    ## run donor-level LC recalc DGE under the carrier contrast used in mediation models
+    dge <- edgeR::calcNormFactors(dge)
+    keep <- edgeR::filterByExpr(dge, design = des)
+    dge <- dge[keep, , keep.lib.sizes = FALSE]
+    dge <- edgeR::calcNormFactors(dge)
+    ## report the exact donor-level dataset used when recomputing lc mediator dge
+    message(sprintf(
+        "[med-recalc][lc] donors=%d rows=%d model=%s",
+        ncol(dge), nrow(dge), "~0 + APOE_syn + Sex + Age + YRI"
+    ))
+    v.swt <- edgeR::voomLmFit(dge, design = des, adaptive.span = TRUE, sample.weights = TRUE)
+    cont <- limma::makeContrasts(contrasts = pd$cfg$carrier_contrast, levels = des)
+    colnames(cont) <- "carrier"
+    fit <- limma::eBayes(limma::contrasts.fit(v.swt, contrasts = cont))
+    tt <- limma::topTable(fit, coef = 1, number = Inf, adjust.method = "BH")
+    tt$gene_id <- rownames(tt)
+    tt <- data.table::as.data.table(tt)
+    if (!is.null(dge$genes) && "gene_name" %in% colnames(dge$genes)) {
+        gnm <- as.character(dge$genes$gene_name)
+        names(gnm) <- rownames(dge$genes)
+        tt[, gene_name := unname(gnm[gene_id])]
+    }
+    tt
+}
+
+get_or_compute_lc_donor_dge <- function(pd, brnum_use, med_cache_dir) {
+    if (!dir.exists(med_cache_dir)) dir.create(med_cache_dir, recursive = TRUE, showWarnings = FALSE)
+
+    donor_pb_path <- resolve_lc_donor_pb_path(pd)
+    donor_key <- md5_string(paste(sort(unique(as.character(brnum_use))), collapse = ","))
+    cache_file <- file.path(med_cache_dir, sprintf("lc_med_%s.qs2", donor_key))
+    cache_key <- med_cache_key_lc(pd, donor_pb_path, brnum_use)
+    if (file.exists(cache_file)) {
+        cached <- tryCatch(qs_read(cache_file), error = function(e) NULL)
+        if (is.list(cached) && identical(cached$cache_key %||% "", cache_key) &&
+            is.data.frame(cached$table)) {
+            return(data.table::as.data.table(cached$table))
+        }
+    }
+
+    tt <- build_lc_recalc_table(pd, donor_pb_path, brnum_use)
+    qs_save(list(
+        cache_key = cache_key,
+        donor_pb_path = donor_pb_path,
+        donors = as.character(brnum_use),
+        created_at = format(Sys.time(), tz = "UTC", usetz = TRUE),
+        table = tt
+    ), cache_file)
+    tt
+}
+
+get_recalc_med_stats_lc <- function(mr, pd, brnum_use, med_cache_dir) {
+    tt <- get_or_compute_lc_donor_dge(
+        pd = pd,
+        brnum_use = brnum_use,
+        med_cache_dir = med_cache_dir
+    )
+    hit <- tt[gene_id == as.character(mr$gene_id)]
+    if (nrow(hit) < 1 && "gene_name" %in% names(tt)) {
+        hit <- tt[gene_name == as.character(mr$gene_name)]
+    }
+    if (nrow(hit) < 1) {
+        warning(sprintf("LC recalc could not find mediator %s (%s).",
+                        as.character(mr$gene_name), as.character(mr$gene_id)))
+        return(list(fdr = NA_real_, t = NA_real_))
+    }
+    list(
+        fdr = as.numeric(hit$adj.P.Val[[1]]),
+        t = as.numeric(hit$t[[1]])
+    )
+}
+
+get_recalc_med_stats <- function(mr, pd, med_cache_dir, brnum_use = NULL) {
+    src_cfg <- pd$src$med_expr_src %||% NULL
+    src_kind <- if (is.null(src_cfg)) "" else as.character(src_cfg$kind)
+    if (identical(src_kind, "erc_sce")) {
+        return(get_recalc_med_stats_erc(mr, pd, med_cache_dir))
+    }
+    if (identical(src_kind, "lc_sp_astro")) {
+        if (is.null(brnum_use) || length(brnum_use) < 2L) {
+            stop("LC recalc requires the mediator donor set (`brnum_use`) from the current plot.")
+        }
+        return(get_recalc_med_stats_lc(mr, pd, brnum_use, med_cache_dir))
+    }
+    stop("Step-2 recalc currently requires `med_expr_src=list(kind=\"erc_sce\", path=...)`.")
+}
+
+build_med_label <- function(mode_eff, pre_stats, rec_stats) {
+    if (mode_eff == "precomputed") {
+        return(sprintf("FDR: %s\nt: %s", format_fdr(pre_stats$fdr), format_tstat(pre_stats$t)))
+    }
+    if (mode_eff == "recalc") {
+        return(sprintf("Recalc FDR: %s\nRecalc t: %s", format_fdr(rec_stats$fdr), format_tstat(rec_stats$t)))
+    }
+    paste(
+        sprintf("Recalc FDR: %s", format_fdr(rec_stats$fdr)),
+        sprintf("Recalc t: %s", format_tstat(rec_stats$t)),
+        sprintf("Precalc FDR: %s", format_fdr(pre_stats$fdr)),
+        sprintf("Precalc t: %s", format_tstat(pre_stats$t)),
+        sep = "\n"
+    )
+}
+
+plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_apoe_cols = 4L,
+                        med_stats_mode = c("precomputed", "recalc", "both"),
+                        med_cache_dir = NULL) {
     if (is.null(pd) || !is.list(pd)) stop("`pd` must be a plotData list from loadMedData().")
+    ensure_ggh4x()
+    med_stats_mode <- match.arg(med_stats_mode)
+    if (is.null(med_cache_dir) || !nzchar(med_cache_dir)) {
+        med_cache_dir <- file.path(pd$pth$out, "plot_cache")
+    }
 
     dge <- pd$obj$dge
     dt_md <- pd$dt$md
@@ -168,29 +808,9 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     it <- as.integer(mr$iter)
     mgid <- as.character(mr$med_gene_id)
     mcl <- as.character(mr$cluster)
+    med_mode_eff <- med_stats_mode
 
-    mf <- character(0)
-    if (!is.null(dt_mi) && nrow(dt_mi) > 0 &&
-        all(c("iter", "med_gene_id", "out_file") %in% names(dt_mi))) {
-        idx <- dt_mi[iter == it & med_gene_id == mgid]
-        if (nrow(idx) > 0) {
-            mf <- idx$out_file[1]
-        }
-    }
-    if (length(mf) < 1 || !file.exists(mf)) {
-        mf <- file.path(pd$pth$out, sprintf("%03d_%s.tab.gz", it, f_lb))
-    }
-    if (!file.exists(mf)) {
-        cands <- list.files(pd$pth$out, pattern = sprintf("_%s\\.tab\\.gz$", f_lb), full.names = TRUE)
-        if (length(cands) > 1) {
-            finfo <- file.info(cands)
-            cands <- cands[order(finfo$mtime, decreasing = TRUE)]
-        }
-        mf <- cands[1]
-    }
-    if (is.na(mf) || !nzchar(mf) || !file.exists(mf)) {
-        stop("Mediation results file not found for mediator: ", mediator_gene)
-    }
+    mf <- resolve_mediator_results_file(pd, dt_mi, it, mgid, f_lb)
     dt_mr <- data.table::fread(mf)
 
     if (!mgid %in% rownames(m_expr)) {
@@ -204,37 +824,49 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     }
     out_gid <- ghit$gene_id[1]
 
-    y_mat <- matrix(y_lcpm[out_gid, ], nrow = 1)
-    rownames(y_mat) <- out_gid
-    colnames(y_mat) <- colnames(y_lcpm)
-
-    med_vec <- as.numeric(m_expr[mgid, brnum])
-    if (anyNA(med_vec)) {
-        stop("Found NA values in mediator vector for: ", mgid)
+    med_all <- as.numeric(m_expr[mgid, brnum])
+    keep_idx <- which(!is.na(med_all))
+    if (length(keep_idx) < 2L) {
+        stop("Too few non-NA mediator values available for plotting: ", mgid)
     }
+    brnum_use <- brnum[keep_idx]
+    grp_use <- grp[keep_idx]
+    med_vec <- med_all[keep_idx]
 
-    mod_b <- model.matrix(base_f, data = dge$samples)
-    smp <- dge$samples
-    smp$med_vec <- med_vec
-    mod_m <- model.matrix(med_f, data = smp)
+    y_mat <- matrix(y_lcpm[out_gid, keep_idx], nrow = 1)
+    rownames(y_mat) <- out_gid
+    colnames(y_mat) <- brnum_use
+
+    smp <- as.data.frame(dge$samples[keep_idx, , drop = FALSE])
+    smp$APOE_syn <- factor(as.character(smp$APOE_syn), levels = pd$cfg$apoe_levels)
+    smp$Sex <- droplevels(factor(smp$Sex))
+    mod_b <- model.matrix(base_f, data = smp)
+    smp_m <- smp
+    smp_m$med_vec <- med_vec
+    mod_m <- model.matrix(med_f, data = smp_m)
 
     yb <- jaffelab::cleaningY(y_mat, mod_b, P = n_ap)
     ym <- jaffelab::cleaningY(y_mat, mod_m, P = n_ap)
 
+    med_df <- get_med_source_context(
+        mr = mr, pd = pd, brnum_use = brnum_use, med_vec_use = med_vec,
+        n_ap = n_ap, smp = smp, mod_b = mod_b, med_mode_eff = med_mode_eff
+    )
+
     plot_df <- data.frame(
-        BrNum = brnum,
-        carrier_group = grp,
+        BrNum = brnum_use,
+        carrier_group = grp_use,
         baseline_cleaned = as.numeric(yb[1, ]),
         med_cleaned = as.numeric(ym[1, ])
     )
-    plot_df <- plot_df[plot_df$carrier_group %in% c("E2+", "E4+"), ]
 
     mdl_labs <- c(
-        sprintf("Baseline\n(no %s)", mediator_gene),
-        sprintf("After %s adjustment", mediator_gene)
+        "Outcome (baseline)",
+        "Outcome (adjusted)",
+        "Mediator (source context)"
     )
 
-    plot_long <- plot_df |>
+    plot_long_xy <- plot_df |>
         tidyr::pivot_longer(
             cols = c(baseline_cleaned, med_cleaned),
             names_to = "model",
@@ -242,69 +874,87 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         ) |>
         dplyr::mutate(model = factor(model,
              levels = c("baseline_cleaned", "med_cleaned"),
-             labels = mdl_labs)
+             labels = mdl_labs[1:2])
         )
-    anno <- NULL
-    if (!is.null(dt_br) && !is.null(dt_mr)) {
-        br_row <- dt_br[outcome_gene_id == out_gid, , drop = FALSE]
-        mr_row <- dt_mr[outcome_gene_id == out_gid, , drop = FALSE]
-        br_row <- if (nrow(br_row) > 0) br_row[1, ] else NULL
-        mr_row <- if (nrow(mr_row) > 0) mr_row[1, ] else NULL
+    plot_long_step2 <- med_df |>
+        dplyr::transmute(BrNum = BrNum, carrier_group = carrier_group,
+                         model = mdl_labs[3], expression = med_cleaned)
+    ## report how many samples are plotted in the mediator panel for this run
+    panel3_n <- plot_long_step2 |>
+        dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+        nrow()
+    message(sprintf(
+        "[plotMedComp] mediator panel samples=%d mode=%s cluster=%s",
+        panel3_n, med_mode_eff, as.character(mr$cluster)
+    ))
+    plot_long <- dplyr::bind_rows(plot_long_xy, plot_long_step2) |>
+        dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+        dplyr::mutate(model = factor(as.character(model), levels = mdl_labs))
 
-        fdr_b <- if (!is.null(br_row) && "adj.P.Val" %in% names(br_row)) br_row$adj.P.Val else NA_real_
-        t_b <- if (!is.null(br_row) && "t" %in% names(br_row)) br_row$t else NA_real_
-        fdr_m <- if (!is.null(mr_row) && "adj.P.Val" %in% names(mr_row)) mr_row$adj.P.Val else NA_real_
-        t_m <- if (!is.null(mr_row) && "t" %in% names(mr_row)) mr_row$t else NA_real_
-
-        y_max <- max(plot_long$expression, na.rm = TRUE)
-        y_min <- min(plot_long$expression, na.rm = TRUE)
-        y_fixed <- y_max + pmax(0.08 * (y_max - y_min), 0.2)
-
-        format_fdr <- function(fdr) {
-            if (is.na(fdr)) return("NA")
-            if (fdr >= 1e-4) {
-                sprintf("%.5f", fdr)
-            } else {
-                sprintf("%.2e", fdr)
-            }
-        }
-        anno <- dplyr::tibble(
-            model = factor(mdl_labs, levels = mdl_labs),
-            label = c(
-                sprintf("FDR: %s\nt: %.2f", format_fdr(fdr_b), t_b),
-                sprintf("FDR: %s\nt: %.2f", format_fdr(fdr_m), t_m)
-            ),
-            y = y_fixed
+    br_stats <- extract_gene_stats(dt_br, gene_id = out_gid, gene_col = "outcome_gene_id")
+    mr_stats <- extract_gene_stats(dt_mr, gene_id = out_gid, gene_col = "outcome_gene_id")
+    med_pre <- get_precomputed_med_stats(mr)
+    med_recalc <- NULL
+    if (med_mode_eff %in% c("recalc", "both")) {
+        med_recalc <- get_recalc_med_stats(
+            mr = mr, pd = pd, med_cache_dir = med_cache_dir,
+            brnum_use = brnum_use
         )
     }
-    subtitle <- fifelse(med_region == "ERC",
-        sprintf("Mediator: %s expression from %s %s cluster", mediator_gene, med_region, mcl),
-        ## LC:
-        sprintf("Mediator: %s expression from %s spatial domain", mediator_gene, mcl)
+    med_lab <- build_med_label(med_mode_eff, med_pre, med_recalc)
+
+    y_max <- max(plot_long$expression, na.rm = TRUE)
+    y_min <- min(plot_long$expression, na.rm = TRUE)
+    y_fixed <- y_max + pmax(0.08 * (y_max - y_min), 0.2)
+    anno <- dplyr::tibble(
+        model = factor(mdl_labs, levels = mdl_labs),
+        label = c(
+            sprintf("FDR: %s\nt: %s", format_fdr(br_stats$fdr), format_tstat(br_stats$t)),
+            sprintf("FDR: %s\nt: %s", format_fdr(mr_stats$fdr), format_tstat(mr_stats$t)),
+            med_lab
+        ),
+        y = y_fixed
     )
+
+    src_cfg <- pd$src$med_expr_src %||% NULL
+    src_desc <- if (is.null(src_cfg)) {
+        sprintf("Source context: %s", mcl)
+    } else if (as.character(src_cfg$kind) == "erc_sce") {
+        mcl <- paste0("ERC ",mcl)
+        sprintf("Source context: %s cluster", mcl)
+    } else if (as.character(src_cfg$kind) == "lc_sp_astro") {
+        mcl <- sub("LC", "LC ", mcl) ## LCAstro -> LC Astro for better readability
+        sprintf("Source context: %s spatial domain", mcl)
+    } else {
+        sprintf("Source context: %s", mcl)
+    }
+    strip_fills <- rep("#d1d1d1ff", length(mdl_labs))
+    if (length(strip_fills) >= 3) strip_fills[3] <- "#b0c8e2ff"
     ggplot(plot_long, aes(x = carrier_group, y = expression, fill = carrier_group,
                         color = carrier_group)) +
         geom_boxplot(alpha = 0.7, outlier.shape = NA) +
         geom_jitter(width = 0.2, size = 2, alpha = 0.8) +
-        facet_wrap(~model) +
+        ggh4x::facet_wrap2(
+            ~model,
+            strip = ggh4x::strip_themed(
+                background_x = ggh4x::elem_list_rect(fill = strip_fills, colour = NA)
+            )
+        ) +
         scale_fill_manual(values = APOE_carrier_colors) +
         scale_color_manual(values = APOE_carrier_colors_dark) +
-        labs( title = sprintf("%s (%s) Expression: E2+ vs E4+ Carriers",
-                            og, out_gid),
-            subtitle = subtitle,
+        labs( title = sprintf("Outcome: ERC Oligo.3 %s | Mediator: %s %s", og, mcl, mediator_gene),
+            ## subtitle = src_desc,
             x = "APOE Carrier Status",
             y = "Covariate-adjusted Expression (logCPM)",
             fill = "Carrier"
         ) +
         {
-            if (!is.null(anno)) {
-                ggplot2::geom_text(
-                    data = anno,
-                    ggplot2::aes(x = 1.5, y = y, label = label),
-                    inherit.aes = FALSE,
-                    size = 3.5
-                )
-            }
+            ggplot2::geom_text(
+                data = anno,
+                ggplot2::aes(x = 1.5, y = y, label = label),
+                inherit.aes = FALSE,
+                size = 3.5
+            )
         } +
         theme_bw(base_size = 14) +
         theme( legend.position = "none",
@@ -317,11 +967,13 @@ p <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd)
 print(p)
 ```
 
-### Comparison boxplots BEFORE vs AFTER mediation
+### Comparison boxplots
 
-LEFT panel (Baseline): E2 vs E4 boxplots showing Oligo.3 gene expression before adding the mediator (Astro PLP1) as a covariate. The expression values are "cleaned" using jaffelab::cleaningY to remove effects of nuisance covariates (Sex, Age, Anc_Afr, pseudo_expr_chrM_ratio) while preserving the APOE effect.
+LEFT panel: outcome expression before mediator adjustment.
 
-RIGHT panel (After mediation): E2 vs E4 boxplots showing the same outcome gene expression, but now cleaned to remove both nuisance covariates AND the mediator gene expression. If the mediator explains part of the APOE→Oligo.3 effect, the E2 vs E4 difference should shrink.
+MIDDLE panel: outcome expression after mediator adjustment.
+
+RIGHT panel: mediator expression in its source context. The header strip is light blue to mark the different context.
 
 How cleaningY(y, mod, P) works:
 Fits y = mod %*% beta (full model)
@@ -338,13 +990,31 @@ Input data needed:
 
 ```{r LC mediation data load and plot}
 ## loading LC mediation data
- pd_lc <- loadMedData(file.path(cdir, "22_Mediation", "out-lc_astro"))
- plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc, med_region = "LC")
+ lc_src_voom <- file.path(cdir, "22_Mediation", "LC-processed-data", "dgelE2E4_voomLmFit_object_MODEL2.qs2")
+ lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
+                              "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+ pd_lc <- loadMedData(
+     file.path(cdir, "22_Mediation", "out-lc_astro"),
+     med_expr_src = list(
+         kind = "lc_sp_astro",
+         path = lc_src_voom,
+         meta = list(donor_pb_path = lc_src_donor_pb)
+     )
+ )
+plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "recalc")
+
 print(plc)
 ```
 
 
+```{r LC Astro mediator DGE stats using original tissue-section expression data, without donor-pseudobulk}
+plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "precomputed")
 
+print(plc)
+
+```
 
 
 

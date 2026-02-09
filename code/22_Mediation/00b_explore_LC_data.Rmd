@@ -170,7 +170,7 @@ summary(tt$adj.P.Val)
 ## 0 DEGs at FDR < 0.1
 ```
 
-```{r Bernie's LC Astro DEG model for E4 vs E2}
+```{r Bernie's LC Astro APOE DGE model}
 dgel <- readRDS(file.path(lcdir,"12_DEanalyses_removedsampsAndFinalNMseg",
                                 "01a-DGElist_allClust_10spotmin_NOfilt.RDS"))
 ### to avoid any issues, replace "Br6119(re-dis)" with "Br6119" in the samples tables
@@ -223,7 +223,7 @@ if (file.exists(f_lc_dgel_flt)) {
 
 
 
-```{r SKIP perform voomLmFit across all labels}
+```{r Bernie's DGE voomLmFit across all labels}
 # define contrasts to pass to makeContrasts (we have to do it this way due to
 # environment weirdness with parallelization)
 contrasts_list <- list()
