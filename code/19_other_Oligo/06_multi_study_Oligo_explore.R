@@ -11,6 +11,10 @@ library("getopt")
 library("bluster")
 library("ComplexHeatmap")
 library("spatialLIBD")
+library("scDotPlot")
+library("scater")
+library("scran")
+library("TSCAN")
 
 data_dir <- here("processed-data", "19_other_Oligo", "06_multistudy_Oligo_explore")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -31,6 +35,7 @@ message("load cluster data k=", opt$k)
 #### Load multi-study oligo SCE ####
 message(Sys.time(), " - Load HDF5 sce") ## loads in 3s
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo"))
+rownames(sce) <- rowData(sce)$gene_name
 
 ## cluster tab
 cluster_tab <- readRDS(here("processed-data", "19_other_Oligo", "05_multistudy_Oligo_cluster", sprintf("walktrap_snn_k%02d_subclusters_Multistudy_Oligo.Rds", opt$k)))
@@ -50,6 +55,7 @@ cluster_keep <- cluster_anno |> filter(n > 800)
 sce <- sce[,sce$Oligo_anno %in% cluster_keep$cluster_anno]
 other_oligo_colors <- DeconvoBuddies::create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
 
+table(sce[,sce$dataset == "erc"]$Oligo_anno, sce[,sce$dataset == "erc"]$cell_type_fine)
 
 #### compare to original clustering ####
 message(Sys.time(), " - Jaccard matrix heatmap")
@@ -186,6 +192,8 @@ write_rds(cor_layer_anno, file = here(data_dir, sprintf("multistudy_Oligo_cor_la
 # rownames(cor_layer_oligoOPC)[!rownames(cor_layer_oligoOPC) %in% names(other_oligo_colors)]
 all(rownames(cor_layer_oligoOPC) %in% names(other_oligo_colors))
 
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
+
 Oligo_OPC_colors2 <- Oligo_OPC_colors[!grepl("OPC", names(Oligo_OPC_colors))]
 Oligo_OPC_colors2 <- c(Oligo_OPC_colors2, OPC = "#D2B037")
 
@@ -206,7 +214,7 @@ top_genes_plot <- unique(top_enrichment_genes$gene[top_enrichment_genes$gene %in
 
 all(top_genes_plot %in% rownames(sce))
 
-pdf(here(plot_dir, sprintf("multistudy_Oligo_%s_%s_dotplot_enrichment.pdf", opt$dataset, opt$cluster)), height = 10)
+pdf(here(plot_dir, sprintf("multistudy_Oligo_k%i_dotplot_enrichment.pdf", opt$k)), height = 12)
 sce |>
     scDotPlot(features = top_genes_plot,
               group = "Oligo_anno",
@@ -227,7 +235,69 @@ sce |>
               scale = TRUE,
               clusterRows = FALSE,
               groupLegends = FALSE)
+sce |>
+    scDotPlot(features = top_genes_plot,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "Marker",
+              annoColors = list("Oligo_anno" = other_oligo_colors,
+                                "Marker" = other_oligo_colors),
+              scale = TRUE,
+              clusterRows = TRUE,
+              groupLegends = FALSE)
 dev.off()
+
+#### Trajectory analysis ####
+message(Sys.time(),  " - Trajectory Anlaysis")
+by.cluster <- scater::aggregateAcrossCells(sce, ids=sce$Oligo_anno)
+centroids <- reducedDim(by.cluster, "HARMONY")
+
+# Set clusters=NULL as we have already aggregated above.
+mst <- TSCAN::createClusterMST(centroids, clusters=NULL)
+mst
+
+line.data <- reportEdges(by.cluster, mst=mst, clusters=NULL, use.dimred="TSNE")
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+tsne_edge <- my_plot_reduced_dim(sce,
+                                 prefix = "multistudy_Oligo",
+                                 dimred = "TSNE",
+                                 my_var = "Oligo_anno",
+                                 var_type = "cat",
+                                 save_plot = FALSE,
+                                 suffix = sprintf("k%i_traj_edge", opt$k),
+                                 facet = FALSE,
+                                 plot_dir_rd = plot_dir,
+                                 verbose = TRUE, 
+                                 add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_edge, filename = here(plot_dir, sprintf("multistudy_Oligo_TSNE-Oligo_anno_k%i_trajectory.png", opt$k)))
+
+
+colLabels(sce) <- sce$Oligo_anno
+
+map.tscan <- mapCellsToEdges(sce, mst=mst, use.dimred="HARMONY")
+tscan.pseudo <- orderCells(map.tscan, mst)
+head(tscan.pseudo)
+
+sce$pseudotime <- averagePseudotime(tscan.pseudo) 
+
+tsne_pseudotime <- my_plot_reduced_dim(sce,
+                                       prefix = "multistudy_Oligo",
+                                       dimred = "TSNE",
+                                       my_var = "pseudotime",
+                                       var_type = "con",
+                                       save_plot = FALSE,
+                                       suffix = data,
+                                       facet = FALSE,
+                                       plot_dir_rd = plot_dir,
+                                       verbose = TRUE, 
+                                       add_label = TRUE) + 
+    geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
+
+ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("multistudy_Oligo_TSNE-Oligo_anno_k%i_trajectory_pseudotime.png", opt$k)))
+
 
 # slurmjobs::job_loop(loops = list(k = c("10", "20", "30")),
 #                                  name = "06_multistudy_Oligo_explore",
