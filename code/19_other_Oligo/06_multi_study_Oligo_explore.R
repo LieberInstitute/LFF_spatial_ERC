@@ -42,7 +42,10 @@ cluster_tab <- readRDS(here("processed-data", "19_other_Oligo", "05_multistudy_O
 # table(cluster_tab$cluster_anno)
 
 sce$Oligo_anno <- cluster_tab$cluster_anno
+sce$Oligo_broad <- gsub("multi_|.[0-9]+","", sce$Oligo_anno)
 
+table(sce$Oligo_broad, sce$cell_type_broad)
+    
 table(sce[,sce$dataset == "erc"]$Oligo_anno, sce[,sce$dataset == "erc"]$cell_type_fine)
 
 #### Reduced dim plots  - filter to clusters w/ 800+ nuc ####
@@ -56,6 +59,36 @@ sce <- sce[,sce$Oligo_anno %in% cluster_keep$cluster_anno]
 other_oligo_colors <- DeconvoBuddies::create_cell_colors(cell_types = sort(unique(sce$Oligo_anno)), palette_name = "gg")
 
 table(sce[,sce$dataset == "erc"]$Oligo_anno, sce[,sce$dataset == "erc"]$cell_type_fine)
+
+#### proportions ####
+
+oligo_type_prop <- colData(sce) |>
+    as.data.frame() |>
+    group_by(dataset, Oligo_broad, Oligo_anno) |>
+    summarize(n = n()) |>
+    group_by(dataset, Oligo_broad) |>
+    mutate(prop = n/sum(n))
+
+n_nuclei_barplot <- oligo_type_prop |>
+    ggplot(aes(x = dataset, y = n, fill = Oligo_anno)) +
+    geom_col() + 
+    geom_text(aes(label = n), position = position_stack(vjust = 0.5), size = 2) +
+    facet_wrap(~Oligo_broad) +
+    scale_fill_manual(values = other_oligo_colors) +
+    theme_bw()
+
+ggsave(n_nuclei_barplot, filename = here(plot_dir, "multistudy_Oligo_n_barplot.png"))
+
+prop_barplot <- oligo_type_prop |>
+    ggplot(aes(x = dataset, y = prop, fill = Oligo_anno)) +
+    geom_col() + 
+    geom_text(aes(label = round(prop, 2)), position = position_stack(vjust = 0.5), size = 2) +
+    facet_wrap(~Oligo_broad) +
+    scale_fill_manual(values = other_oligo_colors)+
+    theme_bw()
+
+ggsave(prop_barplot, filename = here(plot_dir, "multistudy_Oligo_prop_barplot.png"))
+
 
 #### compare to original clustering ####
 message(Sys.time(), " - Jaccard matrix heatmap")
@@ -206,6 +239,57 @@ layer_stat_cor_plot(cor_layer_oligoOPC,
 dev.off()
 
 #### Dot plots ####
+
+
+## Oligo lit markers 2.0
+lit_markers <- consensus_marker_sets <- list(
+    OPC = c("PDGFRA", "PTPRZ1", "CSPG4", "VCAN", "CNR1", "COL14A1"),
+    NFOL = c("GPR17", "BMP4", "CD9", "TMEM2", "ARPC1B"),
+    MOL = c("OPALIN", "MOBP", "MAL", "PLP1", "APOD", "SEPP1", "S100B"),
+    Reactive_OL = c("C4B", "SERPINA3N", "CD74", "STAT1", "IRF7","IL33", "BST2", "IFIT1")
+)
+
+lit_markers <- map(lit_markers, ~.x[.x %in% rownames(sce)])
+lit_markers <- AnnotationDbi::unlist2(lit_markers)
+
+rowData(sce)$litMarker <- NULL
+rowData(sce)$litMarker <- names(lit_markers)[match(rownames(sce), lit_markers)] 
+table(rowData(sce)$litMarker)
+
+pdf(here(plot_dir, sprintf("Multistudy_Oligo_subtype_k%i_dotplot_lit2.pdf", opt$k)))
+sce |>
+    scDotPlot(features = lit_markers,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "litMarker",
+              scale = TRUE,
+              annoColors = list("Oligo_anno" = other_oligo_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = lit_markers,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "litMarker",
+              scale = TRUE,
+              annoColors = list("Oligo_anno" = other_oligo_colors),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = lit_markers,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "litMarker",
+              scale = FALSE,
+              annoColors = list("Oligo_anno" = other_oligo_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+dev.off()
+
+
 rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
@@ -297,6 +381,33 @@ tsne_pseudotime <- my_plot_reduced_dim(sce,
     geom_line(data=line.data, mapping=aes(x=TSNE1, y=TSNE2, group=edge), color = "black")
 
 ggsave(tsne_pseudotime, filename =here(plot_dir, sprintf("multistudy_Oligo_TSNE-Oligo_anno_k%i_trajectory_pseudotime.png", opt$k)))
+
+#### Hierarchial clustering ####
+by.cluster <- logNormCounts(by.cluster)
+# Error in .local(x, ...) : size factors should be positive
+
+## Perform hierarchical clustering
+message(Sys.time(), " - Cluster Again")
+dist.clusCollapsed <- dist(t(counts(by.cluster)))
+tree.clusCollapsed <- hclust(dist.clusCollapsed, "ward.D2")
+
+dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
+
+# Print for future reference
+pdf(here(plot_dir, "multistudy_Oligo_dend.pdf"), height = 4)
+par(cex = 0.6, font = 2)
+
+## cell type colors on leaves & branches
+dend |> 
+    # set("leaves_col", cell_type_colors$anno[labels(dend)]) |> 
+    # set("leaves_cex", 2) |> 
+    # set("leaves_pch", 19) |> 
+    # set("branches_k_color", k = 7,
+    #     value = cell_type_colors$broad[c("Inhib", "Excit", "Micro", "Vasc", "Oligo", "Astro", "OPC")]) |>
+    plot()
+
+# abline(v = 500, lty = 2)
+dev.off()
 
 
 # slurmjobs::job_loop(loops = list(k = c("10", "20", "30")),
