@@ -294,7 +294,7 @@ get_source_object_for_kind <- function(pd, required_kind) {
     if (is.null(src_cfg)) {
         stop("No `med_expr_src` configured in plot data. Call loadMedData(..., med_expr_src=list(kind=..., path=...)).")
     }
-    if (!identical(as.character(src_cfg$kind), as.character(required_kind))) {
+    if (as.character(src_cfg$kind) != as.character(required_kind)) {
         stop(sprintf("`med_expr_src$kind` is '%s' but '%s' is required for this operation.", src_cfg$kind, required_kind))
     }
     src_obj <- pd$src$src_obj %||% NULL
@@ -350,7 +350,7 @@ build_med_source_context_outcome <- function(mr, brnum_use, med_vec_use, smp, n_
 
 resolve_lc_donor_pb_path <- function(pd) {
     src_cfg <- pd$src$med_expr_src %||% NULL
-    if (is.null(src_cfg) || !identical(as.character(src_cfg$kind), "lc_sp_astro")) {
+    if (is.null(src_cfg) || as.character(src_cfg$kind) != "lc_sp_astro") {
         stop("LC donor pseudobulk path resolution requires `med_expr_src$kind='lc_sp_astro'`.")
     }
     meta <- src_cfg$meta %||% list()
@@ -475,7 +475,7 @@ get_med_source_context <- function(mr, pd, brnum_use, med_vec_use, n_ap, smp, mo
 
 med_cache_key_erc <- function(pd, cluster) {
     src_cfg <- pd$src$med_expr_src %||% NULL
-    if (is.null(src_cfg) || !identical(as.character(src_cfg$kind), "erc_sce")) {
+    if (is.null(src_cfg) || as.character(src_cfg$kind) != "erc_sce") {
         stop("Cannot build ERC Step-2 cache key without `med_expr_src` kind='erc_sce'.")
     }
     info <- file.info(src_cfg$path)
@@ -772,6 +772,7 @@ build_med_label <- function(mode_eff, pre_stats, rec_stats) {
         sep = "\n"
     )
 }
+library(ggplot2)
 
 plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_apoe_cols = 4L,
                         med_stats_mode = c("precomputed", "recalc", "both"),
@@ -857,8 +858,8 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         mdl_labs <- c(
             "Outcome (baseline)",
             "Outcome (adjusted)",
-            "Mediator (orig DGE)",
-            "Mediator (retest DGE)"
+            "Mediator (original)",
+            "Mediator (re-tested)"
         )
     } else {
         mdl_labs <- c(
@@ -867,7 +868,6 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
             "Mediator (source context)"
         )
     }
-
     plot_long_xy <- plot_df |>
         tidyr::pivot_longer(
             cols = c(baseline_cleaned, med_cleaned),
@@ -940,7 +940,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     if (med_mode_eff == "both") {
         med_labels <- c(
             sprintf("FDR: %s\nt: %s", format_fdr(med_pre$fdr), format_tstat(med_pre$t)),
-            sprintf("Recalc FDR: %s\nRecalc t: %s", format_fdr(med_recalc$fdr), format_tstat(med_recalc$t))
+            sprintf("FDR: %s\nt: %s", format_fdr(med_recalc$fdr), format_tstat(med_recalc$t))
         )
     } else {
         med_labels <- build_med_label(med_mode_eff, med_pre, med_recalc)
@@ -948,7 +948,13 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
 
     y_max <- max(plot_long$expression, na.rm = TRUE)
     y_min <- min(plot_long$expression, na.rm = TRUE)
-    y_fixed <- y_max + pmax(0.08 * (y_max - y_min), 0.2)
+    y_fixed <- y_max + pmax(0.12 * (y_max - y_min), 0.35)
+    panel_tag_df <- dplyr::tibble(
+        model = factor(mdl_labs, levels = mdl_labs),
+        panel_tag = LETTERS[seq_along(mdl_labs)],
+        carrier_group = "E2+",
+        y_tag = Inf
+    )
     anno <- dplyr::tibble(
         model = factor(mdl_labs, levels = mdl_labs),
         label = c(
@@ -977,16 +983,29 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     } else if (length(strip_fills) >= 3) {
         strip_fills[3] <- "#b0c8e2"
     }
+
+    out_rng <- range(plot_long$expression[plot_long$model %in% mdl_labs[1:2]], na.rm = TRUE)
+    med_rng <- range(plot_long$expression[plot_long$model %in% mdl_labs[3:length(mdl_labs)]], na.rm = TRUE)
+    ## add explicit top headroom per y-scale group for FDR/t annotations
+    out_span <- diff(out_rng)
+    med_span <- diff(med_rng)
+    out_rng_pad <- c(out_rng[1], out_rng[2] + pmax(0.15 * out_span, 0.35))
+    med_rng_pad <- c(med_rng[1], med_rng[2] + pmax(0.15 * med_span, 0.35))
+
     ggplot(plot_long, aes(x = carrier_group, y = expression, fill = carrier_group,
                         color = carrier_group)) +
-        geom_boxplot(alpha = 0.7, outlier.shape = NA) +
-        geom_jitter(width = 0.2, size = 2, alpha = 0.8) +
+        geom_boxplot(alpha = 0.7, outlier.shape = NA, linewidth = 0.3) +
+        geom_jitter(width = 0.2, size = 2, alpha = 0.6) +
         ggh4x::facet_wrap2(
             ~model,
-            nrow = rows,
+            nrow = rows, scales = "free_y",
             strip = ggh4x::strip_themed(
                 background_x = ggh4x::elem_list_rect(fill = strip_fills, colour = NA)
             )
+        ) + ggh4x::facetted_pos_scales(
+          y = c(replicate(2, scale_y_continuous(limits = out_rng_pad), simplify = FALSE),
+                replicate(length(mdl_labs) - 2, scale_y_continuous(limits = med_rng_pad), simplify = FALSE)
+          )
         ) +
         scale_fill_manual(values = APOE_carrier_colors) +
         scale_color_manual(values = APOE_carrier_colors_dark) +
@@ -996,23 +1015,53 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
             y = "Covariate-adjusted Expression (logCPM)",
             fill = "Carrier"
         ) +
-        {
-            ggplot2::geom_text(
+            geom_text(
                 data = anno,
-                ggplot2::aes(x = 1.5, y = y, label = label),
+                aes(x = 1.5, y = Inf, label = label),
                 inherit.aes = FALSE,
-                size = 3.5
+                size = 3.5, vjust = 1.2
+          ) +
+        {
+            geom_text(
+                data = panel_tag_df,
+                aes(x = carrier_group, y = y_tag, label = panel_tag),
+                inherit.aes = FALSE,
+                position = position_nudge(x = -0.7),
+                size = 9,
+                fontface = "bold",
+                color = "black",
+                hjust = 1.2,
+                vjust = -0.65
             )
         } +
-        theme_bw(base_size = 14) +
+        coord_cartesian(clip = "off") +
+        theme_bw(base_size = 13) +
         theme( legend.position = "none",
-            strip.text = element_text(size = 12, face = "bold")
+            ## title positioning:
+            plot.title = element_text(margin = margin(b = 14)),
+            strip.text = element_text(size = 10, face = "bold"),
+            ## ticks:
+            axis.text.x = element_text(size = 11, color = "grey40", face="bold"),
+            axis.text.y = element_text(size = 11, color = "grey20"),
+            ## axis titles:
+            axis.title.x = element_text(size = 12,  margin = margin(t = 13)),
+            axis.title.y = element_text(size = 12, color = "black"),
+            panel.spacing.x = grid::unit(26, "pt"),
+            panel.spacing.y = grid::unit(26, "pt"),
+            panel.border = element_rect(color = "grey40", fill = NA, linewidth = 0.4),
+            plot.margin = margin(t = 20, r = 12, b = 12, l = 12)
         ) # +  coord_cartesian(clip = "off")
 }
 
 #p <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd, med_region = "LC")
-p <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd)
-print(p)
+#p <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd, med_stats_mode = "both")
+#print(p)
+## load below the LC data first:
+plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "both")
+
+print(plc)
+
 ```
 
 ### Comparison boxplots
@@ -1061,7 +1110,9 @@ plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
                     med_region = "LC", med_stats_mode = "both")
 
 print(plc)
+```
 
+```{r}
 plc2row <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
                     med_region = "LC", med_stats_mode = "both", rows = 2)
 
