@@ -85,12 +85,6 @@ file_fingerprint <- function(path) {
     )
 }
 
-ensure_ggh4x <- function() {
-    if (!requireNamespace("ggh4x", quietly = TRUE)) {
-        stop("Package `ggh4x` is required for panel-specific facet strip colors. Install with: install.packages('ggh4x')")
-    }
-}
-
 loadMedData <- function(out_dir, med_expr_src = NULL) {
     pth <- list(
         out = out_dir,
@@ -781,10 +775,14 @@ build_med_label <- function(mode_eff, pre_stats, rec_stats) {
 
 plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_apoe_cols = 4L,
                         med_stats_mode = c("precomputed", "recalc", "both"),
-                        med_cache_dir = NULL) {
+                        med_cache_dir = NULL, rows = 1L) {
     if (is.null(pd) || !is.list(pd)) stop("`pd` must be a plotData list from loadMedData().")
-    ensure_ggh4x()
     med_stats_mode <- match.arg(med_stats_mode)
+    if (length(rows) != 1L || is.na(rows) || !is.numeric(rows) ||
+        (rows %% 1 != 0) || !(as.integer(rows) %in% c(1L, 2L))) {
+        stop("`rows` must be a scalar integer in {1, 2}.")
+    }
+    rows <- as.integer(rows)
     if (is.null(med_cache_dir) || !nzchar(med_cache_dir)) {
         med_cache_dir <- file.path(pd$pth$out, "plot_cache")
     }
@@ -848,11 +846,6 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     yb <- jaffelab::cleaningY(y_mat, mod_b, P = n_ap)
     ym <- jaffelab::cleaningY(y_mat, mod_m, P = n_ap)
 
-    med_df <- get_med_source_context(
-        mr = mr, pd = pd, brnum_use = brnum_use, med_vec_use = med_vec,
-        n_ap = n_ap, smp = smp, mod_b = mod_b, med_mode_eff = med_mode_eff
-    )
-
     plot_df <- data.frame(
         BrNum = brnum_use,
         carrier_group = grp_use,
@@ -860,11 +853,20 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         med_cleaned = as.numeric(ym[1, ])
     )
 
-    mdl_labs <- c(
-        "Outcome (baseline)",
-        "Outcome (adjusted)",
-        "Mediator (source context)"
-    )
+    if (med_mode_eff == "both") {
+        mdl_labs <- c(
+            "Outcome (baseline)",
+            "Outcome (adjusted)",
+            "Mediator (orig DGE)",
+            "Mediator (retest DGE)"
+        )
+    } else {
+        mdl_labs <- c(
+            "Outcome (baseline)",
+            "Outcome (adjusted)",
+            "Mediator (source context)"
+        )
+    }
 
     plot_long_xy <- plot_df |>
         tidyr::pivot_longer(
@@ -876,20 +878,54 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
              levels = c("baseline_cleaned", "med_cleaned"),
              labels = mdl_labs[1:2])
         )
-    plot_long_step2 <- med_df |>
-        dplyr::transmute(BrNum = BrNum, carrier_group = carrier_group,
-                         model = mdl_labs[3], expression = med_cleaned)
-    ## report how many samples are plotted in the mediator panel for this run
-    panel3_n <- plot_long_step2 |>
-        dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
-        nrow()
-    message(sprintf(
-        "[plotMedComp] mediator panel samples=%d mode=%s cluster=%s",
-        panel3_n, med_mode_eff, as.character(mr$cluster)
-    ))
-    plot_long <- dplyr::bind_rows(plot_long_xy, plot_long_step2) |>
-        dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
-        dplyr::mutate(model = factor(as.character(model), levels = mdl_labs))
+    if (med_mode_eff == "both") {
+        med_df_orig <- get_med_source_context(
+            mr = mr, pd = pd, brnum_use = brnum_use, med_vec_use = med_vec,
+            n_ap = n_ap, smp = smp, mod_b = mod_b, med_mode_eff = "precomputed"
+        )
+        med_df_retest <- build_med_source_context_outcome(
+            mr = mr, brnum_use = brnum_use, med_vec_use = med_vec, smp = smp,
+            n_ap = n_ap, mod_b = mod_b
+        )
+        plot_long_med_orig <- med_df_orig |>
+            dplyr::transmute(BrNum = BrNum, carrier_group = carrier_group,
+                             model = mdl_labs[3], expression = med_cleaned)
+        plot_long_med_retest <- med_df_retest |>
+            dplyr::transmute(BrNum = BrNum, carrier_group = carrier_group,
+                             model = mdl_labs[4], expression = med_cleaned)
+        panel3_n <- plot_long_med_orig |>
+            dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+            nrow()
+        panel4_n <- plot_long_med_retest |>
+            dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+            nrow()
+        message(sprintf(
+            "[plotMedComp] mediator panel samples orig=%d retest=%d mode=%s cluster=%s",
+            panel3_n, panel4_n, med_mode_eff, as.character(mr$cluster)
+        ))
+        plot_long <- dplyr::bind_rows(plot_long_xy, plot_long_med_orig, plot_long_med_retest) |>
+            dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+            dplyr::mutate(model = factor(as.character(model), levels = mdl_labs))
+    } else {
+        med_df <- get_med_source_context(
+            mr = mr, pd = pd, brnum_use = brnum_use, med_vec_use = med_vec,
+            n_ap = n_ap, smp = smp, mod_b = mod_b, med_mode_eff = med_mode_eff
+        )
+        plot_long_step2 <- med_df |>
+            dplyr::transmute(BrNum = BrNum, carrier_group = carrier_group,
+                             model = mdl_labs[3], expression = med_cleaned)
+        ## report how many samples are plotted in the mediator panel for this run
+        panel3_n <- plot_long_step2 |>
+            dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+            nrow()
+        message(sprintf(
+            "[plotMedComp] mediator panel samples=%d mode=%s cluster=%s",
+            panel3_n, med_mode_eff, as.character(mr$cluster)
+        ))
+        plot_long <- dplyr::bind_rows(plot_long_xy, plot_long_step2) |>
+            dplyr::filter(carrier_group %in% c("E2+", "E4+")) |>
+            dplyr::mutate(model = factor(as.character(model), levels = mdl_labs))
+    }
 
     br_stats <- extract_gene_stats(dt_br, gene_id = out_gid, gene_col = "outcome_gene_id")
     mr_stats <- extract_gene_stats(dt_mr, gene_id = out_gid, gene_col = "outcome_gene_id")
@@ -901,7 +937,14 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
             brnum_use = brnum_use
         )
     }
-    med_lab <- build_med_label(med_mode_eff, med_pre, med_recalc)
+    if (med_mode_eff == "both") {
+        med_labels <- c(
+            sprintf("FDR: %s\nt: %s", format_fdr(med_pre$fdr), format_tstat(med_pre$t)),
+            sprintf("Recalc FDR: %s\nRecalc t: %s", format_fdr(med_recalc$fdr), format_tstat(med_recalc$t))
+        )
+    } else {
+        med_labels <- build_med_label(med_mode_eff, med_pre, med_recalc)
+    }
 
     y_max <- max(plot_long$expression, na.rm = TRUE)
     y_min <- min(plot_long$expression, na.rm = TRUE)
@@ -911,7 +954,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         label = c(
             sprintf("FDR: %s\nt: %s", format_fdr(br_stats$fdr), format_tstat(br_stats$t)),
             sprintf("FDR: %s\nt: %s", format_fdr(mr_stats$fdr), format_tstat(mr_stats$t)),
-            med_lab
+            med_labels
         ),
         y = y_fixed
     )
@@ -928,14 +971,19 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     } else {
         sprintf("Source context: %s", mcl)
     }
-    strip_fills <- rep("#d1d1d1ff", length(mdl_labs))
-    if (length(strip_fills) >= 3) strip_fills[3] <- "#b0c8e2ff"
+    strip_fills <- rep("#d1d1d1", length(mdl_labs))
+    if (med_mode_eff == "both") {
+        strip_fills[c(3, 4)] <- "#b0c8e2"
+    } else if (length(strip_fills) >= 3) {
+        strip_fills[3] <- "#b0c8e2"
+    }
     ggplot(plot_long, aes(x = carrier_group, y = expression, fill = carrier_group,
                         color = carrier_group)) +
         geom_boxplot(alpha = 0.7, outlier.shape = NA) +
         geom_jitter(width = 0.2, size = 2, alpha = 0.8) +
         ggh4x::facet_wrap2(
             ~model,
+            nrow = rows,
             strip = ggh4x::strip_themed(
                 background_x = ggh4x::elem_list_rect(fill = strip_fills, colour = NA)
             )
@@ -1010,9 +1058,15 @@ print(plc)
 
 ```{r LC Astro mediator DGE stats using original tissue-section expression data, without donor-pseudobulk}
 plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
-                    med_region = "LC", med_stats_mode = "precomputed")
+                    med_region = "LC", med_stats_mode = "both")
 
 print(plc)
+
+plc2row <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "both", rows = 2)
+
+print(plc2row)
+
 
 ```
 
