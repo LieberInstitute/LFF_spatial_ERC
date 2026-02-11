@@ -241,7 +241,7 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
 
 
 
-compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
+compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype, text = TRUE, save = TRUE){
 
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -291,7 +291,10 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
             size = 2.5
         )
 
-    if(risk){
+    if(!text){
+        stat_scatter <- stat_scatter 
+        plot_fn = sprintf("ancestry_%s_stat_scatter_%s_noText.png", datatype, stat)
+    } else if(risk){
         stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
@@ -299,10 +302,13 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s.png", datatype, stat)
     }
 
-
-    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+    if(save){
+        ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+        return(cor)
+    } else {
+        return(stat_scatter)
+    }
     
-    return(cor)
 }
 
 compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
@@ -389,6 +395,15 @@ if(opt$datatype == "sn_fine"){
     #         filter(grepl(.x, cluster)) |>
     #         compare_stats_scatter(datatype = paste0(opt$datatype, "_", .x),
     #                               risk = TRUE))
+    
+    
+    ## no text version for Oligo.3
+    
+    scater_o3_noText <- vlmf_data_tb |>
+        filter(cluster == "Oligo.3") |>
+        compare_contrast_stats(datatype = paste0(opt$datatype, "_Oligo.3"), text = FALSE, save = FALSE)
+    
+    ggsave(scater_o3_noText, filename = here(plot_dir, "ancestry_sn_fine_Oligo.3_stat_scatter_t_noText.png"))
 
     
 } else {
