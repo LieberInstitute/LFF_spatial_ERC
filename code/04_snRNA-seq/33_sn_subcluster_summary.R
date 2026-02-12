@@ -202,8 +202,11 @@ walk(c("UMAP", "TSNE"),
                           prefix = "ERC_sn_subcluster",
                           var_type = "cat",
                           dimred = .x,
-                          my_var = "cell_type_broad",
-                          color_pal = cell_type_colors$broad))
+                          my_var = "cell_type_anno",
+                          facet = TRUE,
+                          color_pal = cell_type_colors$anno))
+
+
 
 walk(c("UMAP", "TSNE"),
      ~my_plot_reduced_dim(sce,
@@ -212,5 +215,19 @@ walk(c("UMAP", "TSNE"),
                           dimred = .x,
                           my_var = "APOE_carrier",
                           color_pal = APOE_carrier_colors))
+
+## Identify Oligo.3
+
+sce$Oligo.3 <- sce$cell_type_anno == "Oligo.3"
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "Oligo.3",
+                          color_pal = c(`TRUE` = cell_type_colors$anno[["Oligo.3"]], `FALSE` = "grey50"))
+)
+
 
 
