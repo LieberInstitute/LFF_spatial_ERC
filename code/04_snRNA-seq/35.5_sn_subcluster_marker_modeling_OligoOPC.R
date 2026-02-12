@@ -30,6 +30,7 @@ rownames(sce) <- rowData(sce)$gene_name
 ## subset sce
 sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
 
+sce$cell_type_anno2 <- sce$cell_type_anno ## keep
 sce$cell_type_anno <- as.character(sce$cell_type_anno)
 
 ## flatten OPC subtypes
@@ -41,7 +42,7 @@ table(sce$cell_type_anno)
 cell_type_colors <- metadata(sce)$cell_type_colors
 load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
 # Oligo_OPC_colors
-
+Oligo_OPC_colors2 <- Oligo_OPC_colors
 Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
 
 
@@ -514,22 +515,42 @@ sce |>
               groupLegends = FALSE)
 dev.off()
 
-gene_list_ADRB <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
-all(gene_list_ADRB %in% rownames(sce))
 
-oligo_ADRB_expression <- plot_gene_express(
+#### NE Genes ####
+NE_receptor_genes <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
+all(NE_receptor_genes %in% rownames(sce))
+
+oligo_NE_receptor_expression <- plot_gene_express(
     sce,
-    genes = gene_list_ADRB,
+    genes = NE_receptor_genes,
     category = "cell_type_anno",
     color_pal = Oligo_OPC_colors
 )
 
-ggsave(oligo_ADRB_expression, filename = here(plot_dir, "sn_violin_ADRB_gene_OligoOPC_check.png"))
+ggsave(oligo_NE_receptor_expression, filename = here(plot_dir, "sn_violin_NE_receptor_gene_OligoOPC_check.png"))
 
 
-pdf(here(plot_dir, "sn_dotplot_ADRB_gene_OligoOPC.pdf"))
+## By carrier status 
+sce$cell_type_carrier <- paste(sce$cell_type_anno2, sce$APOE_carrier)
+table(sce$cell_type_carrier)
+
+Oligo_carrier_colors <- Oligo_OPC_colors2[rep(names(Oligo_OPC_colors2), each = 2)]
+names(Oligo_carrier_colors) <- paste(names(Oligo_carrier_colors), rep(levels(sce$APOE_carrier), length(Oligo_OPC_colors2)))
+
+oligo_NE_receptor_expression_carrier <- plot_gene_express(
+    sce[,grepl("Oligo|OPC.5", sce$cell_type_anno2)],
+    genes = c("ADRA1A","ADRA1B","ADRB1"),
+    category = "cell_type_carrier",
+    color_pal = Oligo_carrier_colors,
+    ncol = 1
+) 
+
+ggsave(oligo_NE_receptor_expression_carrier, filename = here(plot_dir, "sn_violin_NE_receptor_gene_OligoOPC_carrier.png"))
+
+
+pdf(here(plot_dir, "sn_dotplot_NE_receptor_gene_OligoOPC.pdf"))
 sce |>
-    scDotPlot(features = gene_list_ADRB,
+    scDotPlot(features = NE_receptor_genes,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               scale = FALSE,
@@ -537,7 +558,7 @@ sce |>
               clusterRows = TRUE,
               groupLegends = FALSE)
 sce |>
-    scDotPlot(features = gene_list_ADRB,
+    scDotPlot(features = NE_receptor_genes,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               scale = TRUE,
