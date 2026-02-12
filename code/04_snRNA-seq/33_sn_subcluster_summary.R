@@ -202,8 +202,11 @@ walk(c("UMAP", "TSNE"),
                           prefix = "ERC_sn_subcluster",
                           var_type = "cat",
                           dimred = .x,
-                          my_var = "cell_type_broad",
-                          color_pal = cell_type_colors$broad))
+                          my_var = "cell_type_anno",
+                          facet = TRUE,
+                          color_pal = cell_type_colors$anno))
+
+
 
 walk(c("UMAP", "TSNE"),
      ~my_plot_reduced_dim(sce,
