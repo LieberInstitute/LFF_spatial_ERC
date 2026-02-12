@@ -236,3 +236,93 @@ Run clustering with k=30
 2026-02-09 11:54:38.837565 - Load HDF5 sce
 2026-02-09 11:54:43.94837 - running buildSNNGraph: k =30
 2026-02-09 12:03:37.380962 - running walktrap
+clusters
+    1     2     3     4     5     6     7     8     9    10    11    12    13 
+ 5980  3359 28412    47  1282    89    86   817   103    98   462  1220   214 
+   14    15    16    17    18    19    20    21    22    23    24    25    26 
+  149  6189   173   313   222  1825    61    88    43  2604   149    40 21926 
+   27    28    29    30    31    32    33    34    35    36    37    38    39 
+  480  4187    47   128   330   247    51   165    52   746   146  9802    18 
+   40    41    42    43    44    45    46 
+  205    46   671   185   895    22    44 
+clusters
+    1     2     3     4     5     6     7     8     9    10    11    12    13 
+ 5980  3359 28412    47  1282    89    86   817   103    98   462  1220   214 
+   14    15    16    17    18    19    20    21    22    23    24    25    26 
+  149  6189   173   313   222  1825    61    88    43  2604   149    40 21926 
+   27    28    29    30    31    32    33    34    35    36    37    38    39 
+  480  4187    47   128   330   247    51   165    52   746   146  9802    18 
+   40    41    42    43    44    45    46 
+  205    46   671   185   895    22    44 
+2026-02-11 05:13:03.044157 - done walktrap
+                            key cluster  cluster_anno
+1 erc_AAACCCAAGTTGGAGC-1_Br6476       3 multi_Oligo.1
+2 erc_AAACGAACACAATCTG-1_Br6476      15   multi_OPC.1
+3 erc_AAACGCTCACGTCTCT-1_Br6476      36   multi_OPC.6
+4 erc_AAACGCTGTTCAGGTT-1_Br6476       3 multi_Oligo.1
+5 erc_AAAGAACAGACATCAA-1_Br6476      44 multi_Oligo.7
+6 erc_AAAGAACTCCTCAGAA-1_Br6476       1   multi_OPC.2
+
+   multi_Mix.1    multi_Mix.2    multi_Mix.3  multi_Oligo.1 multi_Oligo.10 
+           165             86             61          28412            480 
+multi_Oligo.11 multi_Oligo.12 multi_Oligo.13 multi_Oligo.14 multi_Oligo.15 
+           462            330            313            247            222 
+multi_Oligo.16 multi_Oligo.17 multi_Oligo.18 multi_Oligo.19  multi_Oligo.2 
+           205            185            173            149          21926 
+multi_Oligo.20 multi_Oligo.21 multi_Oligo.22 multi_Oligo.23 multi_Oligo.24 
+           149            146            128            103             98 
+multi_Oligo.25 multi_Oligo.26 multi_Oligo.27 multi_Oligo.28 multi_Oligo.29 
+            89             52             51             47             46 
+ multi_Oligo.3  multi_Oligo.4  multi_Oligo.5  multi_Oligo.6  multi_Oligo.7 
+          9802           4187           2604           1825            895 
+ multi_Oligo.8  multi_Oligo.9    multi_OPC.1   multi_OPC.10   multi_OPC.11 
+           817            671           6189             44             43 
+  multi_OPC.12   multi_OPC.13   multi_OPC.14    multi_OPC.2    multi_OPC.3 
+            40             22             18           5980           3359 
+   multi_OPC.4    multi_OPC.5    multi_OPC.6    multi_OPC.7    multi_OPC.8 
+          1282           1220            746            214             88 
+   multi_OPC.9 
+            47 
+2026-02-11 05:13:03.227865 - saving data
+Creating gg palette for 46 broad cell types
+ [1] "Barcode"               "sample_id"             "dataset"              
+ [4] "BrNum"                 "Sex"                   "Age"                  
+ [7] "sum"                   "detected"              "subsets_Mito_sum"     
+[10] "subsets_Mito_detected" "subsets_Mito_percent"  "total"                
+[13] "scDblFinder.score"     "cell_type_broad"       "cell_type_fine"       
+[16] "key"                   "cell_type_dataset"     "sizeFactor"           
+[19] "Oligo_anno"           
+Rows: 8 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): cell_type_class, metric, cutoff_anno
+dbl (3): median, mad, cutoff
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Warning message:
+The `draw_quantiles` argument of `geom_violin()` is deprecated as of ggplot2
+4.0.0.
+ℹ Please use the `quantiles.linetype` argument instead. 
+Saving 9 x 7 in image
+2026-02-11 05:13:10.745435 - Plot TSNE
+other_Oligo_TSNE-Oligo_anno-multistudy_Oligo_k30.png - Saving 7 x 7 in image
+Saving 7 x 7 in image
+Creating gg palette for 13 broad cell types
+2026-02-11 05:13:13.011348 - Plot TSNE
+other_Oligo_TSNE-Oligo_anno-multistudy_Oligo_k30_filter.png - Saving 7 x 7 in image
+
+myelinating_Oligo             Oligo               OPC   premyelin_Oligo 
+                3                 6                 4                 6 
+Warning messages:
+1: `aes_()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`
+ℹ The deprecated feature was likely used in the ggtree package.
+  Please report the issue at <https://github.com/YuLab-SMU/ggtree/issues>. 
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Error: unexpected end of input
+Execution halted
