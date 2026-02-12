@@ -401,7 +401,8 @@ if(opt$datatype == "sn_fine"){
     
     scater_o3_noText <- vlmf_data_tb |>
         filter(cluster == "Oligo.3") |>
-        compare_contrast_stats(datatype = paste0(opt$datatype, "_Oligo.3"), text = FALSE, save = FALSE)
+        compare_contrast_stats(datatype = paste0(opt$datatype, "_Oligo.3"), text = FALSE, save = FALSE) +
+        geom_point(size = 1)
     
     ggsave(scater_o3_noText, filename = here(plot_dir, "ancestry_sn_fine_Oligo.3_stat_scatter_t_noText.png"))
 
