@@ -37,7 +37,7 @@ if(datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
-}else if(opt$datatype == "sn_fine"){
+}else if(datatype == "sn_fine"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
@@ -68,7 +68,8 @@ custom_volcano <- function(data,
                            lfc_col = "vlmf_logFC", 
                            model_name = "carrier",
                            save = TRUE,
-                           save_size = 4){
+                           save_size = 4,
+                           text = TRUE){
     
     # define colors
     signif_colors <- c("purple", "blue", "red")
@@ -88,7 +89,9 @@ custom_volcano <- function(data,
         labs(title = clus) +
         theme(legend.position = "right")
     
-    if(nrow(data) > 1000){
+    if(!text){
+        ## dont add text
+    } else if(nrow(data) > 1000){
         volcano <- volcano + 
             # geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) 
             geom_text_repel(aes(label = ifelse(!!sym(fdr_col) < FDR_cut, gene_name, "")), size = 1.5) 
@@ -103,6 +106,15 @@ custom_volcano <- function(data,
 
 ## plot volcanos
 walk(unique(dge_data$cluster), ~custom_volcano(dge_data, clus = .x))
+
+
+if(dataset == "sn_fine"){
+    vol_o3 <- custom_volcano(dge_data, clus = "Oligo.3", save = FALSE, text = FALSE) +
+        geom_point(size = 1)
+    ggsave(vol_o3, 
+           filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_simple.png", datatype, "carrier", "Oligo.3")), 
+           height = 4, width = 4)
+}
 
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
