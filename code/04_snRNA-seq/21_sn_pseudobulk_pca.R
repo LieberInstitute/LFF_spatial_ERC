@@ -194,7 +194,7 @@ ggsave(pca_elbow, filename = here(plot_dir, sprintf("sn_pseudobulk-%s-%s-PCA_elb
 
 pd_select <- colData(sce_pb_select) |>
     as.data.frame() |>
-    select(sample_id, APOE, APOE_carrier, Sex, Age, Ancestry, Anc_Afr, cell_type_anno, ncells, exp_round, seq_round) |>
+    select(sample_id, APOE, APOE_carrier, Sex, Age, Ancestry, Anc_Afr, ncells, exp_round, seq_round, pseudo_sum_umi, pseudo_expr_chrM_ratio) |>
     rownames_to_column("pseudobulk_sample")
 
 samples_of_interest <- c("Br5529","Br6423", "Br3974", "Br6263")
@@ -205,11 +205,11 @@ pca_wide <- cbind(pd_select, pca)  |>
 ## explore cor
 
 pd_long_num <- pd_select |>
-    select(pseudobulk_sample, Age,  Anc_Afr,  ncells) |>
+    select(pseudobulk_sample, Age,  Anc_Afr,  ncells, pseudo_sum_umi, pseudo_expr_chrM, pseudo_expr_chrM_ratio) |>
     pivot_longer(!pseudobulk_sample, names_to = "var_num", values_to = "value_num")
 
 pd_long_cat <- pd_select |>
-    select(pseudobulk_sample, APOE, Sex, Ancestry, cell_type_anno, exp_round, seq_round) |>
+    select(pseudobulk_sample, APOE, Sex, Ancestry, APOE_carrier, exp_round, seq_round) |>
     pivot_longer(!pseudobulk_sample, names_to = "var_cat", values_to = "value_cat")
 
 pca_long <- reshape2::melt(pca) |>
@@ -229,9 +229,30 @@ pca_vs_num_cor <- pca_cor |>
     geom_tile() +
     geom_text(aes(label = round(cor, 2)), size = 2) +
     theme_bw() +
-    scale_fill_gradient2() 
+    scale_fill_gradient2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(pca_vs_num_cor, filename = here(plot_dir , sprintf("sn_pseudobulk-%s-pca_vs_num_cor.png", opt$name)), height = 4, width = 4)
+ggsave(pca_vs_num_cor, filename = here(plot_dir , sprintf("sn_pseudobulk-%s-%s-pca_vs_num_cor.png", opt$name, select_ct)), height = 4, width = 4)
+
+## anova on cat variables
+df_aov <- pca_long |>
+    group_by(PCA, var_cat) |>
+    do(aov = broom::tidy(aov(pca_value ~ value_cat, data = .)))|>
+    unnest(aov) |>
+    filter(term == "value_cat") |>
+    mutate(FDR = p.adjust(p.value, method = "fdr"))
+
+df_aov |> count(FDR < 0.001)
+
+## plot anova p-values
+pca_vs_cat_aov <- df_aov |>
+    ggplot(aes(x = var_cat, y = PCA, fill = -log10(p.value))) +
+    geom_tile() +
+    # geom_text(aes(label = round(cor, 2)), size = 2) +
+    theme_bw() +
+    scale_fill_viridis()
+
+ggsave(pca_vs_cat_aov, filename = here(plot_dir, sprintf("sn_pseudobulk-%s-%s-pca_vs_cat_aov.png", opt$name, select_ct)))
 
 
 ## select scatter 
@@ -239,10 +260,10 @@ ggsave(pca_vs_num_cor, filename = here(plot_dir , sprintf("sn_pseudobulk-%s-pca_
 library(ggrepel)
 
 PC1_PC2_scatter <- pca_wide |>
-    ggplot(aes(x = PC1, y = PC2, color = APOE, shape = Sex)) +
+    ggplot(aes(x = PC1, y = PC2, color = APOE_carrier, shape = Sex, size = ncells)) +
     geom_point() +
-    geom_text_repel(aes(label = sample_id, color = sample_oi)) +
-    scale_color_manual(values = c(APOE_genotype_colors, `TRUE` = "red") ) +
+    geom_text_repel(aes(label = sample_id, color = sample_oi), size = 2) +
+    scale_color_manual(values = c(APOE_carrier_colors, `TRUE` = "red") ) +
     theme_bw()
 
 ggsave(PC1_PC2_scatter, filename = here(plot_dir , sprintf("sn_pseudobulk-%s-%s-PC1_vs_PC2.png", opt$name, select_ct)))
@@ -281,6 +302,33 @@ walk2(c("APOE", "Sex", "Ancestry", "sample_oi"), list(APOE_genotype_colors, sex_
 #           ggsave(gg_pca_plot, filename = here(plot_dir, sprintf("sn_pseudobulk-%s-%s-pca_ggpair_%s.png", opt$name, select_ct, var)), height = 10, width = 10)
 #           
 #       })
+
+
+pca_value_scatter <- pca_long |>
+    mutate(pseudobulk_sample = gsub(paste0("_", select_ct),"", pseudobulk_sample),
+           sample_oi = pseudobulk_sample %in% samples_of_interest) |>
+    ggplot(aes(x = pca_value, y = value_num, color = sample_oi)) +
+    geom_point() +
+    scale_color_manual(values = c(`TRUE` = "red")) +
+    # geom_text_repel(aes(label = ifelse(sample_oi, pseudobulk_sample, "")), size = 1) +
+    facet_grid(var_num~PCA, scales = "free_y") +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(pca_value_scatter, filename = here(plot_dir, sprintf("sn_pseudobulk-%s-%s-pca_num_scatter.png", opt$name, select_ct)), height = 10, width = 15)
+
+
+#### number of cells & chrM ####
+
+pb_ncell_sum_scatter <- pd_select |>
+    mutate(sample_oi = sample_id %in% samples_of_interest) |>
+    ggplot(aes(ncells, pseudo_sum_umi, color = APOE_carrier, shape = Sex)) +
+    geom_point(size = 1.5)  +
+    geom_text_repel(aes(label = sample_id, color = sample_oi), size = 2) +
+    scale_color_manual(values = c(APOE_carrier_colors, `TRUE` = "red") ) +
+    theme_bw()
+
+ggsave(pb_ncell_sum_scatter, filename = here(plot_dir, sprintf("sn_pseudobulk-%s-%s-ncell_umi_scatter.png", opt$name, select_ct)))
 
 
 # slurmjobs::job_single('21_sn_pseudobulk_pca', create_shell = TRUE, memory = '10G', command = "Rscript 21_sn_pseudobulk_pca.R")
