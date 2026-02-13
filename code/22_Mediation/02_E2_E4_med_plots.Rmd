@@ -185,6 +185,19 @@ pd <- loadMedData(
     file.path(cdir, "22_Mediation", "out-erc_astro"),
     med_expr_src = list(kind = "erc_sce", path = erc_src_sce)
 )
+## loading LC mediation data if you have the memory
+ lc_src_voom <- file.path(cdir, "22_Mediation", "LC-processed-data", "dgelE2E4_voomLmFit_object_MODEL2.qs2")
+ lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
+                              "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+ pd_lc <- loadMedData(
+     file.path(cdir, "22_Mediation", "out-lc_astro"),
+     med_expr_src = list(
+         kind = "lc_sp_astro",
+         path = lc_src_voom,
+         meta = list(donor_pb_path = lc_src_donor_pb)
+     )
+ )
+
 ```
 
 
@@ -776,7 +789,7 @@ library(ggplot2)
 
 plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_apoe_cols = 4L,
                         med_stats_mode = c("precomputed", "recalc", "both"),
-                        med_cache_dir = NULL, rows = 1L) {
+                        med_cache_dir = NULL, rows = 1L, start_letter = "A") {
     if (is.null(pd) || !is.list(pd)) stop("`pd` must be a plotData list from loadMedData().")
     med_stats_mode <- match.arg(med_stats_mode)
     if (length(rows) != 1L || is.na(rows) || !is.numeric(rows) ||
@@ -949,12 +962,22 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     y_max <- max(plot_long$expression, na.rm = TRUE)
     y_min <- min(plot_long$expression, na.rm = TRUE)
     y_fixed <- y_max + pmax(0.12 * (y_max - y_min), 0.35)
-    panel_tag_df <- dplyr::tibble(
-        model = factor(mdl_labs, levels = mdl_labs),
-        panel_tag = LETTERS[seq_along(mdl_labs)],
-        carrier_group = "E2+",
-        y_tag = Inf
-    )
+    panel_tag_df <- NULL
+    if (!is.null(start_letter)) {
+        if (length(start_letter) != 1L || is.na(start_letter) || !nzchar(start_letter)) {
+            stop("`start_letter` must be NULL or a single non-empty character.")
+        }
+        start_idx <- match(toupper(substr(start_letter, 1, 1)), LETTERS)
+        if (is.na(start_idx)) {
+            stop("`start_letter` must be NULL or a letter A-Z.")
+        }
+        panel_tag_df <- dplyr::tibble(
+            model = factor(mdl_labs, levels = mdl_labs),
+            panel_tag = LETTERS[start_idx + seq_along(mdl_labs) - 1],
+            carrier_group = "E2+",
+            y_tag = Inf
+        )
+    }
     anno <- dplyr::tibble(
         model = factor(mdl_labs, levels = mdl_labs),
         label = c(
@@ -1022,17 +1045,19 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
                 size = 3.5, vjust = 1.2
           ) +
         {
-            geom_text(
-                data = panel_tag_df,
-                aes(x = carrier_group, y = y_tag, label = panel_tag),
-                inherit.aes = FALSE,
-                position = position_nudge(x = -0.7),
-                size = 9,
-                fontface = "bold",
-                color = "black",
-                hjust = 1.2,
-                vjust = -0.65
-            )
+            if (!is.null(panel_tag_df)) {
+                geom_text(
+                    data = panel_tag_df,
+                    aes(x = carrier_group, y = y_tag, label = panel_tag),
+                    inherit.aes = FALSE,
+                    position = position_nudge(x = -0.7),
+                    size = 9,
+                    fontface = "bold",
+                    color = "black",
+                    hjust = 1.2,
+                    vjust = -0.65
+                )
+            }
         } +
         coord_cartesian(clip = "off") +
         theme_bw(base_size = 13) +
@@ -1057,10 +1082,22 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
 #p <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd, med_stats_mode = "both")
 #print(p)
 ## load below the LC data first:
+
 plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
-                    med_region = "LC", med_stats_mode = "both")
+                    med_region = "LC", med_stats_mode = "both", start_letter="A", rows=1)
 
 print(plc)
+ggsave(filename = file.path(here("plots/22_Mediation"), "LC_MMD2_SLC1A3_mediation_1row_ABCD_14x6.svg"), plot = plc,
+           width = 14, height = 6, units = "in")
+
+
+plc2r <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "both", start_letter="A", rows=2)
+
+print(plc2r)
+ggsave(filename = file.path(here("plots/22_Mediation"), "LC_MMD2_SLC1A3_mediation_2row_ABCD_7x10.svg"), plot = plc2r,
+       width = 7, height = 10, units = "in")
+
 
 ```
 
@@ -1086,7 +1123,7 @@ Input data needed:
 
 
 ```{r LC mediation data load and plot}
-## loading LC mediation data
+## loading LC mediation data if you haven't done it above
  lc_src_voom <- file.path(cdir, "22_Mediation", "LC-processed-data", "dgelE2E4_voomLmFit_object_MODEL2.qs2")
  lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
                               "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
