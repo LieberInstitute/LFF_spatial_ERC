@@ -15,6 +15,7 @@ if (!requireNamespace("ggh4x", quietly = TRUE)) {
 library(ggh4x)
 library(dplyr)
 library(here)
+here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 ```
 

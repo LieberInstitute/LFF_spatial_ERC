@@ -3,22 +3,57 @@
 ## Louise Huuki-Myers & Bernie Mulvey, June 2025
 ## adapting for mediation screening by Geo Pertea, January 2026
 ##
-## We implement 3 mediation screening scenarios for the carrier status -> Oligo 3. gene expression regression:
+## We should implement 3 mediation screening scenarios for the carrier status -> Oligo 3. gene expression regression:
 ## what changes is the gene expression data used in each scenario:
-# 1. APOE-associated LC domain DEGs (NM+/- and NM intensity DEGs)
-# 2. APOE-associated DEGs from the LC astrocyte spatial domain analysis
-# 3. APOE-associated ERC Astrocyte DEGs
+# 1. APOE-associated LC domain DEGs (NM+/- and NM intensity DEGs) (orange design)
+# 2. APOE-associated DEGs from the LC astrocyte spatial domain analysis (blue design)
+# 3. APOE-associated ERC Astrocyte DEGs (green design)
 
-library("data.table")
-library("edgeR")
-library("limma")
-library("SingleCellExperiment")
-library("SummarizedExperiment")
-library("BiocParallel")
-library("here")
 library("getopt")
-library("sessioninfo")
-library("qs2")
+
+# Define usage message function
+show_usage <- function() {
+    cat("Usage: Rscript 01_mediation_screening.R [OPTIONS]\n")
+    cat("\nOptions:\n")
+    cat("  -m, --mediation <type>  Mediation type: erc_astro, lc_astro, lc_nm\n")
+    cat("                          (default: lc_astro)\n")
+    cat("  -h, --help              Show this help message and exit\n")
+    cat("\nEnvironment Variables:\n")
+    cat("  MEDIATION_WORKERS       Number of parallel workers (default: 10)\n")
+    cat("  MEDIATION_OUTDIR        Output directory (default: out-<mediation>)\n")
+    cat("  MEDIATION_TEST_ROWS     Comma-separated test row indices\n")
+    cat("\nExamples:\n")
+    cat("  Rscript 01_mediation_screening.R -m erc_astro\n")
+    cat("  Rscript 01_mediation_screening.R --mediation lc_astro\n")
+    invisible(NULL)
+}
+
+# Import command-line parameters
+medopt <- matrix(
+    c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm",
+      "help",      "h", "0", "logical",   "Show help message"),
+    ncol = 5, byrow = TRUE
+)
+opt <- tryCatch(getopt(medopt), error = function(e) list())
+
+# Check for help flag first
+if (!is.null(opt$help) && opt$help) {
+    show_usage()
+    quit(status = 0)
+}
+
+# Load remaining libraries with suppressed startup messages
+suppressPackageStartupMessages({
+    library("data.table")
+    library("edgeR")
+    library("limma")
+    library("SingleCellExperiment")
+    library("SummarizedExperiment")
+    library("BiocParallel")
+    library("here")
+    library("sessioninfo")
+    library("qs2")
+})
 
 
 FDRthr=0.05
@@ -28,8 +63,18 @@ medSelFDR <- 0.05
 drop_donors_global <- c("Br1289")
 drop_donors_lc <- character(0)
 
-# Helpers
-`%||%` <- function(x, y) {
+# Set default and validate mediation type
+if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
+
+if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm"))) {
+    stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm")
+}
+if (opt$mediation == "lc_nm") {
+    stop(sprintf("Mediation type '%s' is not implemented yet.", opt$mediation))
+}
+
+## null-coalescing function:
+`%|%` <- function(x, y) {
     if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
 }
 
@@ -127,20 +172,20 @@ read_run_info <- function(file) {
     vals <- vapply(kv, function(x) paste(x[-1], collapse = ": "), character(1))
     out <- as.list(vals)
     names(out) <- keys
-    out$run_label <- as.character(out$run_label %||% out$run %||% "")
-    out$donor_str <- as.character(out$donor_str %||% out$donors %||% "")
+    out$run_label <- as.character(out$run_label %|% out$run %|% "")
+    out$donor_str <- as.character(out$donor_str %|% out$donors %|% "")
     out$donors <- if (nzchar(out$donor_str)) strsplit(out$donor_str, ",", fixed = TRUE)[[1]] else character(0)
-    out$n_donors <- as.integer(out$n_donors %||% NA_character_)
-    out$n_outcome_genes <- as.integer(out$n_outcome_genes %||% NA_character_)
-    out$iter <- as.integer(out$iter %||% NA_character_)
+    out$n_donors <- as.integer(out$n_donors %|% NA_character_)
+    out$n_outcome_genes <- as.integer(out$n_outcome_genes %|% NA_character_)
+    out$iter <- as.integer(out$iter %|% NA_character_)
     out
 }
 
 cache_matches <- function(cached, expected) {
     if (is.null(cached)) return(FALSE)
     for (nm in names(expected)) {
-        cached_val <- as.character(cached[[nm]] %||% "")
-        expected_val <- as.character(expected[[nm]] %||% "")
+        cached_val <- as.character(cached[[nm]] %|% "")
+        expected_val <- as.character(expected[[nm]] %|% "")
         if (!identical(cached_val, expected_val)) return(FALSE)
     }
     TRUE
@@ -167,28 +212,13 @@ write_nonempty_lines <- function(lines, file) {
     TRUE
 }
 
-# Import command-line parameters
-medopt <- matrix(
-    c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm"),
-    ncol = 5, byrow = TRUE
-)
-opt <- tryCatch(getopt(medopt), error = function(e) list())
-if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
-
-if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm"))) {
-    stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm")
-}
-if (opt$mediation == "lc_nm") {
-    stop(sprintf("Mediation type '%s' is not implemented yet.", opt$mediation))
-}
-
 #workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
 #if (is.na(workers) || workers < 1) workers <- 1
 workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
 if (is.na(workers) || workers < 1) workers <- 10L
 
 parse_int_csv <- function(x) {
-    x <- trimws(as.character(x %||% ""))
+    x <- trimws(as.character(x %|% ""))
     if (!nzchar(x)) return(integer(0))
     toks <- strsplit(x, ",", fixed = TRUE)[[1]]
     toks <- trimws(toks)
@@ -210,6 +240,7 @@ if (length(test_rows) > 0) {
 message(Sys.time(), sprintf(" - Mediation type = %s (workers = %i)", opt$mediation, workers))
 
 #### Paths ####
+here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
 

@@ -12,6 +12,7 @@ library(dplyr)
 library(here)
 library(qs2)
 library(scuttle)
+here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
 ```
@@ -292,7 +293,7 @@ counts <- lclst$cont_ances$E2E4label$dgel$counts
 #[6] "ACHE_SERT_LC_WM_V13B23_284_C1s2"
 #> tail(colnames(counts))
 #[1] "Oligo_Astro_V13M06_404_B1s1" "Oligo_Astro_V13M06_404_B1s2" "Oligo_Astro_V13M06_404_C1s1" "Oligo_Astro_V13M06_404_C1s2" "Oligo_Astro_V13M06_404_D1s1" "Oligo_Astro_V13M06_404_D1s2"
-￼
+
 ## these are actually spots-data pseudo-bulked per tissue section!
 ## so we still need to aggregate spots per donor if we want donor-level expression
 
