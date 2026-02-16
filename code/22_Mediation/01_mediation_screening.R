@@ -15,7 +15,7 @@ library("getopt")
 show_usage <- function() {
     cat("Usage: Rscript 01_mediation_screening.R [OPTIONS]\n")
     cat("\nOptions:\n")
-    cat("  -m, --mediation <type>  Mediation type: erc_astro, lc_astro, lc_nm\n")
+    cat("  -m, --mediation <type>  Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int\n")
     cat("                          (default: lc_astro)\n")
     cat("  -h, --help              Show this help message and exit\n")
     cat("\nEnvironment Variables:\n")
@@ -30,7 +30,7 @@ show_usage <- function() {
 
 # Import command-line parameters
 medopt <- matrix(
-    c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm",
+    c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int",
       "help",      "h", "0", "logical",   "Show help message"),
     ncol = 5, byrow = TRUE
 )
@@ -66,11 +66,8 @@ drop_donors_lc <- character(0)
 # Set default and validate mediation type
 if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
 
-if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm"))) {
-    stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm")
-}
-if (opt$mediation == "lc_nm") {
-    stop(sprintf("Mediation type '%s' is not implemented yet.", opt$mediation))
+if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm", "lc_nm_int"))) {
+    stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm, lc_nm_int")
 }
 
 ## null-coalescing function:
@@ -406,7 +403,92 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
         message(Sys.time(),
              sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
     }
-} else if (opt$mediation == "lc_nm") { ## "orange" design, with NM data
+} else if (opt$mediation %in% c("lc_nm", "lc_nm_int")) { ## "orange" design, with NM data
+    orange_files <- switch(
+        opt$mediation,
+        lc_nm = list(
+            med_degs = file.path(mdir, "LC_NMposneg_DEGs_for_mediation.rds"),
+            med_expr = file.path(mdir, "LC_NMposneg_logcpm_for_mediation.rds")
+        ),
+        lc_nm_int = list(
+            med_degs = file.path(mdir, "LC_NMintensity_DEGs_for_mediation.rds"),
+            med_expr = file.path(mdir, "LC_NMintensity_logcpm_for_mediation.rds")
+        )
+    )
+    f_lc_step2 <- file.path(mdir, "LC_E4vE2_DGEout_Bernie.rds")
+    required_files <- c(orange_files$med_degs, orange_files$med_expr, f_lc_step2)
+    missing_files <- required_files[!file.exists(required_files)]
+    if (length(missing_files) > 0) {
+        stop(sprintf("Missing required orange-design input file(s): %s",
+                     paste(missing_files, collapse = ", ")))
+    }
+    run_input_files <- c(run_input_files, required_files)
+
+    med_degs <- as.data.table(readRDS(orange_files$med_degs))
+    med_expr <- readRDS(orange_files$med_expr)
+    if (!is.matrix(med_expr)) {
+        med_expr <- as.matrix(med_expr)
+    }
+
+    ## Baron & Kenny Step 2 enforcement: keep only NM mediators that are also LC APOE DEGs.
+    lc_step2 <- as.data.table(readRDS(f_lc_step2))
+    if (!all(c("gene_id", "adj.P.Val") %in% names(lc_step2))) {
+        stop(sprintf("Step 2 table missing required columns in file: %s", f_lc_step2))
+    }
+    step2_ids <- unique(as.character(lc_step2[adj.P.Val < medSelFDR, gene_id]))
+    med_degs <- med_degs[as.character(gene_id) %in% step2_ids]
+    if (nrow(med_degs) < 1) {
+        stop(sprintf("No %s mediators remain after Step 2 intersection (LC_E4vE2 adj.P.Val < %.4f).",
+                     opt$mediation, medSelFDR))
+    }
+
+    req_cols <- c("cluster", "gene_id", "gene_name")
+    if (!all(req_cols %in% names(med_degs))) {
+        stop(sprintf("Orange med_degs is missing required columns: %s",
+                     paste(setdiff(req_cols, names(med_degs)), collapse = ", ")))
+    }
+    med_degs[, `:=`(
+        cluster = as.character(cluster),
+        gene_id = as.character(gene_id),
+        gene_name = as.character(gene_name)
+    )]
+    if (!("med_gene_id" %in% names(med_degs))) {
+        med_degs[, med_gene_id := paste0(cluster, "|", gene_id)]
+    } else {
+        med_degs[, med_gene_id := as.character(med_gene_id)]
+    }
+
+    ## keep LC donor drops consistent with lc_astro so baseline uses the same donor set logic
+    drop_donors_lc <- c("Br5529", "Br6423")
+    common_donors <- setdiff(intersect(colnames(med_expr), as.character(donor_meta$BrNum)), drop_donors_lc)
+    if (length(common_donors) < 10) {
+        stop(sprintf("Too few overlapping donors between %s mediators and ERC Oligo.3: %d",
+                     opt$mediation, length(common_donors)))
+    }
+    message(Sys.time(), sprintf(" - LC-ERC overlapping donors: %d", length(common_donors)))
+    med_expr <- med_expr[, common_donors, drop = FALSE]
+
+    missing_med_ids <- setdiff(med_degs$med_gene_id, rownames(med_expr))
+    if (length(missing_med_ids) > 0) {
+        warning(sprintf("Dropping %d %s mediator rows missing in med_expr, first examples: %s",
+                        length(missing_med_ids), opt$mediation,
+                        paste(head(missing_med_ids, 5), collapse = ", ")))
+        med_degs <- med_degs[!(med_gene_id %in% missing_med_ids)]
+    }
+    if (nrow(med_degs) < 1) {
+        stop(sprintf("No %s mediators remain after med_expr row matching.", opt$mediation))
+    }
+    med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
+
+    if (length(test_rows) > 0) {
+        if (any(test_rows < 1 | test_rows > nrow(med_degs))) {
+            stop(sprintf("test_rows has out-of-range indices. Valid range: 1..%d", nrow(med_degs)))
+        }
+        med_degs <- med_degs[test_rows]
+        med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
+        message(Sys.time(),
+                sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
+    }
 } else {
   stop(sprintf("Mediation type '%s' not implemented yet.", opt$mediation))
 }
