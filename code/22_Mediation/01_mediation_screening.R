@@ -3,22 +3,57 @@
 ## Louise Huuki-Myers & Bernie Mulvey, June 2025
 ## adapting for mediation screening by Geo Pertea, January 2026
 ##
-## We implement 3 mediation screening scenarios for the carrier status -> Oligo 3. gene expression regression:
+## We should implement 3 mediation screening scenarios for the carrier status -> Oligo 3. gene expression regression:
 ## what changes is the gene expression data used in each scenario:
-# 1. APOE-associated LC domain DEGs (NM+/- and NM intensity DEGs)
-# 2. APOE-associated DEGs from the LC astrocyte spatial domain analysis
-# 3. APOE-associated ERC Astrocyte DEGs
+# 1. APOE-associated LC domain DEGs (NM+/- and NM intensity DEGs) (orange design)
+# 2. APOE-associated DEGs from the LC astrocyte spatial domain analysis (blue design)
+# 3. APOE-associated ERC Astrocyte DEGs (green design)
 
-library("data.table")
-library("edgeR")
-library("limma")
-library("SingleCellExperiment")
-library("SummarizedExperiment")
-library("BiocParallel")
-library("here")
 library("getopt")
-library("sessioninfo")
-library("qs2")
+
+# Define usage message function
+show_usage <- function() {
+    cat("Usage: Rscript 01_mediation_screening.R [OPTIONS]\n")
+    cat("\nOptions:\n")
+    cat("  -m, --mediation <type>  Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int\n")
+    cat("                          (default: lc_astro)\n")
+    cat("  -h, --help              Show this help message and exit\n")
+    cat("\nEnvironment Variables:\n")
+    cat("  MEDIATION_WORKERS       Number of parallel workers (default: 10)\n")
+    cat("  MEDIATION_OUTDIR        Output directory (default: out-<mediation>)\n")
+    cat("  MEDIATION_TEST_ROWS     Comma-separated test row indices\n")
+    cat("\nExamples:\n")
+    cat("  Rscript 01_mediation_screening.R -m erc_astro\n")
+    cat("  Rscript 01_mediation_screening.R --mediation lc_astro\n")
+    invisible(NULL)
+}
+
+# Import command-line parameters
+medopt <- matrix(
+    c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int",
+      "help",      "h", "0", "logical",   "Show help message"),
+    ncol = 5, byrow = TRUE
+)
+opt <- tryCatch(getopt(medopt), error = function(e) list())
+
+# Check for help flag first
+if (!is.null(opt$help) && opt$help) {
+    show_usage()
+    quit(status = 0)
+}
+
+# Load remaining libraries with suppressed startup messages
+suppressPackageStartupMessages({
+    library("data.table")
+    library("edgeR")
+    library("limma")
+    library("SingleCellExperiment")
+    library("SummarizedExperiment")
+    library("BiocParallel")
+    library("here")
+    library("sessioninfo")
+    library("qs2")
+})
 
 
 FDRthr=0.05
@@ -28,8 +63,15 @@ medSelFDR <- 0.05
 drop_donors_global <- c("Br1289")
 drop_donors_lc <- character(0)
 
-# Helpers
-`%||%` <- function(x, y) {
+# Set default and validate mediation type
+if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
+
+if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm", "lc_nm_int"))) {
+    stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm, lc_nm_int")
+}
+
+## null-coalescing function:
+`%|%` <- function(x, y) {
     if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
 }
 
@@ -127,20 +169,20 @@ read_run_info <- function(file) {
     vals <- vapply(kv, function(x) paste(x[-1], collapse = ": "), character(1))
     out <- as.list(vals)
     names(out) <- keys
-    out$run_label <- as.character(out$run_label %||% out$run %||% "")
-    out$donor_str <- as.character(out$donor_str %||% out$donors %||% "")
+    out$run_label <- as.character(out$run_label %|% out$run %|% "")
+    out$donor_str <- as.character(out$donor_str %|% out$donors %|% "")
     out$donors <- if (nzchar(out$donor_str)) strsplit(out$donor_str, ",", fixed = TRUE)[[1]] else character(0)
-    out$n_donors <- as.integer(out$n_donors %||% NA_character_)
-    out$n_outcome_genes <- as.integer(out$n_outcome_genes %||% NA_character_)
-    out$iter <- as.integer(out$iter %||% NA_character_)
+    out$n_donors <- as.integer(out$n_donors %|% NA_character_)
+    out$n_outcome_genes <- as.integer(out$n_outcome_genes %|% NA_character_)
+    out$iter <- as.integer(out$iter %|% NA_character_)
     out
 }
 
 cache_matches <- function(cached, expected) {
     if (is.null(cached)) return(FALSE)
     for (nm in names(expected)) {
-        cached_val <- as.character(cached[[nm]] %||% "")
-        expected_val <- as.character(expected[[nm]] %||% "")
+        cached_val <- as.character(cached[[nm]] %|% "")
+        expected_val <- as.character(expected[[nm]] %|% "")
         if (!identical(cached_val, expected_val)) return(FALSE)
     }
     TRUE
@@ -167,28 +209,13 @@ write_nonempty_lines <- function(lines, file) {
     TRUE
 }
 
-# Import command-line parameters
-medopt <- matrix(
-    c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm"),
-    ncol = 5, byrow = TRUE
-)
-opt <- tryCatch(getopt(medopt), error = function(e) list())
-if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
-
-if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm"))) {
-    stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm")
-}
-if (opt$mediation == "lc_nm") {
-    stop(sprintf("Mediation type '%s' is not implemented yet.", opt$mediation))
-}
-
 #workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
 #if (is.na(workers) || workers < 1) workers <- 1
 workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
 if (is.na(workers) || workers < 1) workers <- 10L
 
 parse_int_csv <- function(x) {
-    x <- trimws(as.character(x %||% ""))
+    x <- trimws(as.character(x %|% ""))
     if (!nzchar(x)) return(integer(0))
     toks <- strsplit(x, ",", fixed = TRUE)[[1]]
     toks <- trimws(toks)
@@ -210,6 +237,7 @@ if (length(test_rows) > 0) {
 message(Sys.time(), sprintf(" - Mediation type = %s (workers = %i)", opt$mediation, workers))
 
 #### Paths ####
+here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
 
@@ -375,7 +403,92 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
         message(Sys.time(),
              sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
     }
-} else if (opt$mediation == "lc_nm") { ## "orange" design, with NM data
+} else if (opt$mediation %in% c("lc_nm", "lc_nm_int")) { ## "orange" design, with NM data
+    orange_files <- switch(
+        opt$mediation,
+        lc_nm = list(
+            med_degs = file.path(mdir, "LC_NMposneg_DEGs_for_mediation.rds"),
+            med_expr = file.path(mdir, "LC_NMposneg_logcpm_for_mediation.rds")
+        ),
+        lc_nm_int = list(
+            med_degs = file.path(mdir, "LC_NMintensity_DEGs_for_mediation.rds"),
+            med_expr = file.path(mdir, "LC_NMintensity_logcpm_for_mediation.rds")
+        )
+    )
+    f_lc_step2 <- file.path(mdir, "LC_E4vE2_DGEout_Bernie.rds")
+    required_files <- c(orange_files$med_degs, orange_files$med_expr, f_lc_step2)
+    missing_files <- required_files[!file.exists(required_files)]
+    if (length(missing_files) > 0) {
+        stop(sprintf("Missing required orange-design input file(s): %s",
+                     paste(missing_files, collapse = ", ")))
+    }
+    run_input_files <- c(run_input_files, required_files)
+
+    med_degs <- as.data.table(readRDS(orange_files$med_degs))
+    med_expr <- readRDS(orange_files$med_expr)
+    if (!is.matrix(med_expr)) {
+        med_expr <- as.matrix(med_expr)
+    }
+
+    ## Baron & Kenny Step 2 enforcement: keep only NM mediators that are also LC APOE DEGs.
+    lc_step2 <- as.data.table(readRDS(f_lc_step2))
+    if (!all(c("gene_id", "adj.P.Val") %in% names(lc_step2))) {
+        stop(sprintf("Step 2 table missing required columns in file: %s", f_lc_step2))
+    }
+    step2_ids <- unique(as.character(lc_step2[adj.P.Val < medSelFDR, gene_id]))
+    med_degs <- med_degs[as.character(gene_id) %in% step2_ids]
+    if (nrow(med_degs) < 1) {
+        stop(sprintf("No %s mediators remain after Step 2 intersection (LC_E4vE2 adj.P.Val < %.4f).",
+                     opt$mediation, medSelFDR))
+    }
+
+    req_cols <- c("cluster", "gene_id", "gene_name")
+    if (!all(req_cols %in% names(med_degs))) {
+        stop(sprintf("Orange med_degs is missing required columns: %s",
+                     paste(setdiff(req_cols, names(med_degs)), collapse = ", ")))
+    }
+    med_degs[, `:=`(
+        cluster = as.character(cluster),
+        gene_id = as.character(gene_id),
+        gene_name = as.character(gene_name)
+    )]
+    if (!("med_gene_id" %in% names(med_degs))) {
+        med_degs[, med_gene_id := paste0(cluster, "|", gene_id)]
+    } else {
+        med_degs[, med_gene_id := as.character(med_gene_id)]
+    }
+
+    ## keep LC donor drops consistent with lc_astro so baseline uses the same donor set logic
+    drop_donors_lc <- c("Br5529", "Br6423")
+    common_donors <- setdiff(intersect(colnames(med_expr), as.character(donor_meta$BrNum)), drop_donors_lc)
+    if (length(common_donors) < 10) {
+        stop(sprintf("Too few overlapping donors between %s mediators and ERC Oligo.3: %d",
+                     opt$mediation, length(common_donors)))
+    }
+    message(Sys.time(), sprintf(" - LC-ERC overlapping donors: %d", length(common_donors)))
+    med_expr <- med_expr[, common_donors, drop = FALSE]
+
+    missing_med_ids <- setdiff(med_degs$med_gene_id, rownames(med_expr))
+    if (length(missing_med_ids) > 0) {
+        warning(sprintf("Dropping %d %s mediator rows missing in med_expr, first examples: %s",
+                        length(missing_med_ids), opt$mediation,
+                        paste(head(missing_med_ids, 5), collapse = ", ")))
+        med_degs <- med_degs[!(med_gene_id %in% missing_med_ids)]
+    }
+    if (nrow(med_degs) < 1) {
+        stop(sprintf("No %s mediators remain after med_expr row matching.", opt$mediation))
+    }
+    med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
+
+    if (length(test_rows) > 0) {
+        if (any(test_rows < 1 | test_rows > nrow(med_degs))) {
+            stop(sprintf("test_rows has out-of-range indices. Valid range: 1..%d", nrow(med_degs)))
+        }
+        med_degs <- med_degs[test_rows]
+        med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
+        message(Sys.time(),
+                sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
+    }
 } else {
   stop(sprintf("Mediation type '%s' not implemented yet.", opt$mediation))
 }

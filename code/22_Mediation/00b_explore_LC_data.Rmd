@@ -12,6 +12,7 @@ library(dplyr)
 library(here)
 library(qs2)
 library(scuttle)
+here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
 ```
@@ -44,10 +45,10 @@ lc_dge <- detabs$LC_E4vE2
 
 cat("Total genes tested in Astro/LC domains:", nrow(lc_dge), "\n") # 7729
 
-## LC Astro DEGs (FDR < 0.05) for the Blue design
+## LC "Astro" domain DEGs (FDR < 0.05) for the Blue design
 lca_degs <- lca_dge[adj.P.Val < 0.05]
 cat("LC Astro domain DEGs (FDR<0.05):", nrow(lca_degs), "\n\n")  # 191
-#dim(lc_astro_degs)
+## "LC" domain DEGS for the "Orange" design (FDR < 0.05, X->M Step2 testing)
 lc_degs <- lc_dge[adj.P.Val < 0.05]
 cat("LC domain DEGs (FDR<0.05):", nrow(lc_degs), "\n") # 182
 
@@ -292,7 +293,7 @@ counts <- lclst$cont_ances$E2E4label$dgel$counts
 #[6] "ACHE_SERT_LC_WM_V13B23_284_C1s2"
 #> tail(colnames(counts))
 #[1] "Oligo_Astro_V13M06_404_B1s1" "Oligo_Astro_V13M06_404_B1s2" "Oligo_Astro_V13M06_404_C1s1" "Oligo_Astro_V13M06_404_C1s2" "Oligo_Astro_V13M06_404_D1s1" "Oligo_Astro_V13M06_404_D1s2"
-￼
+
 ## these are actually spots-data pseudo-bulked per tissue section!
 ## so we still need to aggregate spots per donor if we want donor-level expression
 
@@ -337,32 +338,315 @@ sce_astro_pb <- scuttle::aggregateAcrossCells(
 
 
 
-```{r LC NM DEGs}
-#-------------------
-## LC NM DEGs
-flcnm <- file.path(lcdir,'11-LCNMspots_NMmetric_LMMed_by_geneLogcounts_3apoeFactorizations.RDS')
-lcnm <- readRDS(flcnm)
-## Bernie/Leo said:
-## This analysis looks at NM pixel intensity controlling for APOE (E4 vs E2 carrier status).
-## nested list, relevant tabular results are at: dat$E4carrierYN$Intensity_NM
-## this table contains coefficients, test stats, and raw Linear Mixed Model (LMM) P-values.
-## filter for genes using `dat<-dat[gene_name==variable]`.
-## P-values are in columns `fdr_gene` (FDR corrected) and `bonf_gene` (Bonferroni corrected).
-## Directionality: a negative coefficient value means higher expression is associated with
-## darker (stronger) neuromelanin.
-## a positive value is associated with lighter (weaker) neuromelanin
-nmde <- lcnm$E4carrierYN$Intensity_NM
-head(nmde)
-#    gene_name           variable          coef var_group      Chisq    Df          p   logLik        NMvar  fdr_gene bonf_gene
-#       <char>             <char>         <num>    <char>      <num> <num>      <num>    <num>       <char>     <num>     <num>
-#1: AL627309.1                Age -0.0008325735      <NA> 2.79784674     1 0.09439099       NA Intensity_NM        NA        NA
-#2: AL627309.1          E4carrier  0.0021525016       Yes 0.06818055     1 0.79400455       NA Intensity_NM        NA        NA
-#3: AL627309.1                Sex  0.0134432022         M 1.80510644     1 0.17909637       NA Intensity_NM        NA        NA
-#4: AL627309.1                YRI -0.0174276148      <NA> 2.09719395     1 0.14756974       NA Intensity_NM        NA        NA
-#5: AL627309.1         AL627309.1 -0.0328991393      <NA> 1.12685349     1 0.28844749       NA Intensity_NM 0.7095595         1
-#6: AL627309.1 LRTvs_no_gene_coef            NA      <NA> 1.11132716     1 0.29179364 4933.237 Intensity_NM        NA        NA
+```{r LC NM DEGs - exploration and preparation for orange design}
+## ============================================================================
+## LC NM-related DEGs for the "Orange" Design (Design 1)
+## ============================================================================
+##
+## The orange design tests whether LC neuromelanin (NM)-linked biology mediates
+## the APOE effect on ERC Oligo.3 gene expression.
+##
+## There are TWO distinct NM-related DEG sources, each from a different analysis:
+##
+## --- Source 1: NM+/NM- binary DEGs (04- file) ---
+## File: 04-LCNMpos_vs_LCNMneg_DE.txt
+## Code: 04-LCNMpos_vsNMneg_DE.Rmd (in LFF_spatial_LC repo)
+## Model: limma/voom DGE on pseudobulked counts (per donor x NM-status section)
+##   gene_expr ~ NM_status(+/-) + Sex + APOE + Age + YRI  [blocked by donor]
+##   Contrast: LC_NMpos - LC_NMneg
+## Tests: which genes are differentially expressed between NM+ and NM- spots
+## logFC > 0 => higher in NM+ spots; logFC < 0 => higher in NM- spots
+## These are standard limma topTable results (columns: gene_id, logFC, adj.P.Val, etc.)
+##
+## --- Source 2: NM-metric LMM DEGs (11- file) ---
+## File: 11-LCNMspots_NMmetric_LMMed_by_geneLogcounts_3apoeFactorizations.RDS
+## Code: 11-LMM_spotlogcounts_to_NMmetrics_gene_as_covar.Rmd (in LFF_spatial_LC repo)
+## Model: for each gene g, at individual spot level on LC NM+ spots only:
+##   NM_metric ~ gene_expr(g) + Age + Sex + YRI + APOE + (1|donor) + (1|donor:capture) + (1|donor:capture:sample)
+## Test: LRT - does adding gene_expr improve model fit for predicting NM metric?
+## Two NM metrics: Intensity_NM (pixel intensity, continuous) and Prop_NM (proportion, continuous)
+## Three APOE factorizations: E4carrierYN (binary), E4copiesOrderedFact, PerGeno
+## We use E4carrierYN (binary carrier) to align with our mediation X variable.
+## Directionality: negative coefficient => higher expression associated with darker/stronger NM
+##
+## NOTE: These are NOT "APOE DEGs" — they are "NM-associated genes". The NM LMM
+## identifies genes whose expression predicts NM state, controlling for APOE.
+## The LC domain E4vE2 DEGs (182 genes) are a separate analysis (already used in blue design).
+##
+## For mediation, M = donor-level expression from dgl_lc (LC domain pseudobulk by donor,
+## 29802 genes x 29 donors), using log-CPM.
+## ============================================================================
 
-## nrow(nmde[gene_name==variable][fdr_gene<0.05])
-## [1] 809
-nmde <- copy(nmde)[gene_name==variable]
+## --- Load Source 2: NM-metric LMM results (11- file) ---
+## Nested list structure:
+##   lcnm$E4carrierYN$Intensity_NM  (142,464 rows x 11 cols = 23,744 genes x 6 rows each)
+##   lcnm$E4carrierYN$Prop_NM       (142,464 rows x 9 cols  = 23,743 genes x 6 rows each)
+##   lcnm$E4copiesOrderedFact$...   (not used here)
+##   lcnm$PerGeno$...               (not used here)
+## Per gene, 6 rows: Age, E4carrier, Sex, YRI, gene_itself, LRTvs_no_gene_coef
+## Gene-level result: where gene_name == variable (the gene's own coefficient row)
+## FDR columns: fdr_gene, bonf_gene (present in Intensity_NM; absent in Prop_NM — must compute)
+
+flcnm <- file.path(lcdir, '11-LCNMspots_NMmetric_LMMed_by_geneLogcounts_3apoeFactorizations.RDS')
+lcnm <- readRDS(flcnm)
+
+## Extract gene-level rows for Intensity_NM (E4carrierYN factorization)
+nmde_int <- lcnm$E4carrierYN$Intensity_NM[gene_name == variable]
+cat("NM Intensity: genes tested =", nrow(nmde_int),
+    ", FDR<0.05 =", nrow(nmde_int[fdr_gene < 0.05]),
+    ", Bonf<0.05 =", nrow(nmde_int[bonf_gene < 0.05]), "\n")
+
+## Extract gene-level rows for Prop_NM (compute FDR since it's missing)
+nmde_prop <- lcnm$E4carrierYN$Prop_NM[gene_name == variable]
+nmde_prop[, fdr_gene := p.adjust(p, method = "BH")]
+cat("NM Proportion: genes tested =", nrow(nmde_prop),
+    ", FDR<0.05 =", sum(nmde_prop$fdr_gene < 0.05, na.rm = TRUE), "\n\n")
+
+## --- Load Source 1: NM+/NM- binary DEGs (04- file) ---
+f04 <- file.path(lcdir, "04-LCNMpos_vs_LCNMneg_DE.txt")
+nm_posneg <- fread(f04)
+## This is a standard limma topTable with columns: gene_id, gene_name, logFC, adj.P.Val, etc.
+cat("NM+/NM- binary: genes tested =", nrow(nm_posneg),
+    ", FDR<0.05 =", sum(nm_posneg$adj.P.Val < 0.05),
+    " (up in NM+ =", sum(nm_posneg$adj.P.Val < 0.05 & nm_posneg$logFC > 0),
+    ", down =", sum(nm_posneg$adj.P.Val < 0.05 & nm_posneg$logFC < 0), ")\n\n")
+
+## --- Overlap summary ---
+int_sig_names <- nmde_int[fdr_gene < 0.05]$gene_name
+prop_sig_names <- nmde_prop[fdr_gene < 0.05]$gene_name
+binary_sig_names <- nm_posneg[adj.P.Val < 0.05]$gene_name
+nm_cont_union <- union(int_sig_names, prop_sig_names)
+
+cat("Overlap: Intensity ∩ Proportion =", length(intersect(int_sig_names, prop_sig_names)), "\n")
+cat("Union Intensity ∪ Proportion =", length(nm_cont_union), "\n")
+cat("NM+/NM- binary ∩ NM continuous union =", length(intersect(binary_sig_names, nm_cont_union)), "\n")
+cat("NM Intensity ∩ LC E4vE2 DEGs =", length(intersect(int_sig_names, lc_degs$gene_name)), "\n")
+cat("NM+/NM- binary ∩ LC E4vE2 DEGs =", length(intersect(binary_sig_names, lc_degs$gene_name)), "\n\n")
+```
+
+```{r LC NM - prepare mediation data objects}
+## ============================================================================
+## Prepare data for two orange-design mediation options:
+##   lc_nm      -> NM+/NM- binary DEGs (Source 1, 04- file)
+##   lc_nm_int  -> NM Intensity LMM DEGs (Source 2, 11- file, E4carrierYN)
+##
+## Both use the same donor-level expression source: dgl_lc (LC domain pseudobulk,
+## 29802 genes x 29 donors). Rownames are Ensembl IDs; gene symbols in $genes$gene_name.
+## The mediation script needs:
+##   med_degs: data.table with columns cluster, gene_id, gene_name, med_gene_id
+##   med_expr: matrix of log-CPM values (med_gene_id x BrNum)
+## ============================================================================
+
+## --- Gene symbol -> Ensembl ID mapping from LC pseudobulk ---
+## The 04- file has gene_id (Ensembl) directly.
+## The 11- LMM results have only gene_name (symbols); must map via dgl_lc$genes.
+gene_map_lc <- as.data.table(dgl_lc$genes[, c("gene_id", "gene_name")])
+## 9 gene_names map to 2 Ensembl IDs; deduplicate (keep first)
+gene_map_lc <- gene_map_lc[!duplicated(gene_name)]
+setkey(gene_map_lc, gene_name)
+
+## --- Option 1: lc_nm (NM+/NM- binary DEGs) ---
+## 04- file already has gene_id; just select significant and add cluster label
+nm_sign_degs <- nm_posneg[adj.P.Val < 0.05, .(gene_id, gene_name, logFC, adj.P.Val)]
+nm_sign_degs[, cluster := "LCNM"]
+nm_sign_degs[, med_gene_id := paste0("LCNM|", gene_id)]
+## Verify these gene_ids exist in dgl_lc
+nm_sign_degs[, in_pb := gene_id %in% rownames(dgl_lc$counts)]
+cat("lc_nm: NM+/NM- binary DEGs =", nrow(nm_sign_degs),
+    ", in LC pseudobulk =", sum(nm_sign_degs$in_pb), "\n")
+## Keep only those present in pseudobulk
+nm_sign_degs <- nm_sign_degs[in_pb == TRUE][, in_pb := NULL]
+setorder(nm_sign_degs, gene_id)
+
+## --- Option 2: lc_nm_int (NM Intensity LMM DEGs) ---
+## 11- file has gene_name only; map to Ensembl via gene_map_lc
+nm_int_degs <- nmde_int[fdr_gene < 0.05, .(gene_name, coef, fdr_gene)]
+nm_int_degs <- merge(nm_int_degs, gene_map_lc, by = "gene_name", all.x = FALSE)
+nm_int_degs[, cluster := "LCNMint"]
+nm_int_degs[, med_gene_id := paste0("LCNMint|", gene_id)]
+## Verify these gene_ids exist in dgl_lc
+nm_int_degs[, in_pb := gene_id %in% rownames(dgl_lc$counts)]
+cat("lc_nm_int: NM Intensity LMM DEGs =", nrow(nm_int_degs),
+    ", in LC pseudobulk =", sum(nm_int_degs$in_pb), "\n")
+nm_int_degs <- nm_int_degs[in_pb == TRUE][, in_pb := NULL]
+setorder(nm_int_degs, gene_id)
+
+## --- Build expression matrices (log-CPM from LC pseudobulk by donor) ---
+## Normalize and compute log-CPM
+dgl_lc_norm <- edgeR::calcNormFactors(dgl_lc)
+lc_logcpm <- edgeR::cpm(dgl_lc_norm, log = TRUE)
+## lc_logcpm: 29802 genes (Ensembl IDs) x 29 donors
+
+## Expression matrix for lc_nm (NM+/NM- binary)
+nm_sign_expr <- lc_logcpm[nm_sign_degs$gene_id, , drop = FALSE]
+rownames(nm_sign_expr) <- nm_sign_degs$med_gene_id
+cat("\nlc_nm expression matrix:", nrow(nm_sign_expr), "genes x", ncol(nm_sign_expr), "donors\n")
+
+## Expression matrix for lc_nm_int (NM Intensity)
+nm_int_expr <- lc_logcpm[nm_int_degs$gene_id, , drop = FALSE]
+rownames(nm_int_expr) <- nm_int_degs$med_gene_id
+cat("lc_nm_int expression matrix:", nrow(nm_int_expr), "genes x", ncol(nm_int_expr), "donors\n")
+
+## --- Save prepared objects for 01_mediation_screening.R ---
+## DEG tables
+f_nm_sign_degs <- file.path(mdir, "LC_NMposneg_DEGs_for_mediation.rds")
+saveRDS(nm_sign_degs, f_nm_sign_degs)
+f_nm_int_degs <- file.path(mdir, "LC_NMintensity_DEGs_for_mediation.rds")
+saveRDS(nm_int_degs, f_nm_int_degs)
+## Expression matrices (log-CPM)
+f_nm_sign_expr <- file.path(mdir, "LC_NMposneg_logcpm_for_mediation.rds")
+saveRDS(nm_sign_expr, f_nm_sign_expr)
+f_nm_int_expr <- file.path(mdir, "LC_NMintensity_logcpm_for_mediation.rds")
+saveRDS(nm_int_expr, f_nm_int_expr)
+## Also save the LC pseudobulk counts DGEList (for the mediation script to filter/normalize)
+f_lc_pb <- file.path(mdir, "lc_lc_pseudobulk_counts_by_donor.rds")
+if (!file.exists(f_lc_pb)) saveRDS(dgl_lc, f_lc_pb)
+
+cat("\nSaved to", mdir, ":\n")
+cat("  ", basename(f_nm_sign_degs), " (", nrow(nm_sign_degs), " DEGs)\n")
+cat("  ", basename(f_nm_int_degs), " (", nrow(nm_int_degs), " DEGs)\n")
+cat("  ", basename(f_nm_sign_expr), "\n")
+cat("  ", basename(f_nm_int_expr), "\n")
+cat("  ", basename(f_lc_pb), "(already existed:", file.exists(f_lc_pb), ")\n")
+```
+
+```{r Step 2 validation - donor-level APOE DGE for NM mediator genes}
+## ============================================================================
+## Baron & Kenny Step 2: Does APOE (X) significantly affect the mediator (M)?
+##
+## NM-linked genes are NOT necessarily APOE DEGs — they were identified by
+## association with NM biology. Step 2 asks whether APOE also drives these genes.
+## We run a fresh donor-level DGE on the LC domain pseudobulk (dgl_lc, 29 donors)
+## using the same 4-level APOE model and weighted carrier contrast as the ERC outcome.
+##
+## This cell produces annotated DEG tables with an `apoe_fdr` column, and also
+## a pre-computed donor-level DGE table restricted to the 21 overlap donors for
+## use in panel D of the mediation plots.
+##
+## Data hierarchy for the orange design plots:
+##   Panel C (mediator source context): section-level LC domain (73 sections, 29 donors)
+##     -> from v.swt / dgelflt / lcdgel  (already computed in earlier cells)
+##   Panel D (donor-level recalc): 21 overlap donors, donor-level pseudobulk
+##     -> computed here
+## ============================================================================
+
+## --- 1. Full 29-donor DGE (B&K Step 2 proper) ---
+## Use dgl_lc (29802 genes x 29 donors, LC domain pseudobulk by donor)
+dge29 <- edgeR::calcNormFactors(dgl_lc)
+des29 <- model.matrix(~0 + APOE_syn + Sex + Age + YRI, data = dge29$samples)
+colnames(des29) <- gsub("_syn", "_", colnames(des29))
+
+keep29 <- edgeR::filterByExpr(dge29, design = des29)
+dge29 <- dge29[keep29, , keep.lib.sizes = FALSE]
+dge29 <- edgeR::calcNormFactors(dge29)
+cat("29-donor DGE: genes after filterByExpr =", nrow(dge29), "\n")
+
+v29 <- voomLmFit(dge29, design = des29, adaptive.span = TRUE, sample.weights = TRUE)
+trast29 <- makeContrasts(
+    carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+    levels = des29
+)
+v29.fit <- contrasts.fit(v29, contrasts = trast29)
+v29.fit.e <- eBayes(v29.fit, robust = TRUE)
+
+tt29 <- as.data.table(topTable(v29.fit.e, coef = "carrier", number = Inf, adjust.method = "BH"))
+cat("29-donor DGE: FDR<0.05 =", sum(tt29$adj.P.Val < 0.05),
+    ", FDR<0.10 =", sum(tt29$adj.P.Val < 0.10),
+    ", nominal p<0.05 =", sum(tt29$P.Value < 0.05), "\n\n")
+
+## --- 2. Annotate NM DEG tables with APOE FDR from 29-donor DGE ---
+## For NM+/NM- binary DEGs
+nm_sign_degs_step2 <- copy(nm_sign_degs)
+nm_sign_degs_step2 <- merge(nm_sign_degs_step2,
+    tt29[, .(gene_id, apoe_logFC = logFC, apoe_pval = P.Value, apoe_fdr = adj.P.Val)],
+    by = "gene_id", all.x = TRUE)
+n_tested <- sum(!is.na(nm_sign_degs_step2$apoe_fdr))
+n_pass_fdr05 <- sum(nm_sign_degs_step2$apoe_fdr < 0.05, na.rm = TRUE)
+n_pass_fdr10 <- sum(nm_sign_degs_step2$apoe_fdr < 0.10, na.rm = TRUE)
+n_pass_nom05 <- sum(nm_sign_degs_step2$apoe_pval < 0.05, na.rm = TRUE)
+cat("NM+/NM- binary DEGs (", nrow(nm_sign_degs_step2), "):\n")
+cat("  In 29-donor DGE:", n_tested, "\n")
+cat("  Step 2 pass (APOE FDR<0.05):", n_pass_fdr05, "\n")
+cat("  Step 2 pass (APOE FDR<0.10):", n_pass_fdr10, "\n")
+cat("  Step 2 pass (APOE nom p<0.05):", n_pass_nom05, "\n\n")
+
+## For NM Intensity LMM DEGs
+nm_int_degs_step2 <- copy(nm_int_degs)
+nm_int_degs_step2 <- merge(nm_int_degs_step2,
+    tt29[, .(gene_id, apoe_logFC = logFC, apoe_pval = P.Value, apoe_fdr = adj.P.Val)],
+    by = "gene_id", all.x = TRUE)
+n_tested_i <- sum(!is.na(nm_int_degs_step2$apoe_fdr))
+n_pass_fdr05_i <- sum(nm_int_degs_step2$apoe_fdr < 0.05, na.rm = TRUE)
+n_pass_fdr10_i <- sum(nm_int_degs_step2$apoe_fdr < 0.10, na.rm = TRUE)
+n_pass_nom05_i <- sum(nm_int_degs_step2$apoe_pval < 0.05, na.rm = TRUE)
+cat("NM Intensity LMM DEGs (", nrow(nm_int_degs_step2), "):\n")
+cat("  In 29-donor DGE:", n_tested_i, "\n")
+cat("  Step 2 pass (APOE FDR<0.05):", n_pass_fdr05_i, "\n")
+cat("  Step 2 pass (APOE FDR<0.10):", n_pass_fdr10_i, "\n")
+cat("  Step 2 pass (APOE nom p<0.05):", n_pass_nom05_i, "\n\n")
+
+## --- 3. Panel D data: 21-overlap donor DGE ---
+## This is needed by plotMedComp() panel D to show donor-level APOE effect
+## restricted to the donors shared between LC and ERC.
+ovl_donors <- brovl  ## 21 overlap donors (LC ∩ ERC), computed in earlier cell
+stopifnot(length(ovl_donors) == 21)
+## Subset dgl_lc to overlap donors
+dge21 <- dgl_lc[, ovl_donors]
+dge21 <- edgeR::calcNormFactors(dge21)
+des21 <- model.matrix(~0 + APOE_syn + Sex + Age + YRI, data = dge21$samples)
+colnames(des21) <- gsub("_syn", "_", colnames(des21))
+
+keep21 <- edgeR::filterByExpr(dge21, design = des21)
+dge21 <- dge21[keep21, , keep.lib.sizes = FALSE]
+dge21 <- edgeR::calcNormFactors(dge21)
+cat("21-overlap DGE: genes after filterByExpr =", nrow(dge21), "\n")
+
+v21 <- voomLmFit(dge21, design = des21, adaptive.span = TRUE, sample.weights = TRUE)
+trast21 <- makeContrasts(
+    carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
+    levels = des21
+)
+v21.fit <- contrasts.fit(v21, contrasts = trast21)
+v21.fit.e <- eBayes(v21.fit, robust = TRUE)
+
+tt21 <- as.data.table(topTable(v21.fit.e, coef = "carrier", number = Inf, adjust.method = "BH"))
+cat("21-overlap DGE: FDR<0.05 =", sum(tt21$adj.P.Val < 0.05),
+    ", FDR<0.10 =", sum(tt21$adj.P.Val < 0.10),
+    ", nominal p<0.05 =", sum(tt21$P.Value < 0.05), "\n\n")
+
+## Annotate overlap-donor results onto NM DEG tables
+nm_sign_degs_step2 <- merge(nm_sign_degs_step2,
+    tt21[, .(gene_id, apoe_logFC_21 = logFC, apoe_pval_21 = P.Value, apoe_fdr_21 = adj.P.Val)],
+    by = "gene_id", all.x = TRUE)
+nm_int_degs_step2 <- merge(nm_int_degs_step2,
+    tt21[, .(gene_id, apoe_logFC_21 = logFC, apoe_pval_21 = P.Value, apoe_fdr_21 = adj.P.Val)],
+    by = "gene_id", all.x = TRUE)
+
+cat("--- Step 2 summary (21-overlap donors) ---\n")
+cat("NM+/NM- binary: tested =", sum(!is.na(nm_sign_degs_step2$apoe_fdr_21)),
+    ", FDR<0.05 =", sum(nm_sign_degs_step2$apoe_fdr_21 < 0.05, na.rm = TRUE),
+    ", nom p<0.05 =", sum(nm_sign_degs_step2$apoe_pval_21 < 0.05, na.rm = TRUE), "\n")
+cat("NM Intensity:   tested =", sum(!is.na(nm_int_degs_step2$apoe_fdr_21)),
+    ", FDR<0.05 =", sum(nm_int_degs_step2$apoe_fdr_21 < 0.05, na.rm = TRUE),
+    ", nom p<0.05 =", sum(nm_int_degs_step2$apoe_pval_21 < 0.05, na.rm = TRUE), "\n\n")
+
+## --- 4. Save annotated tables and panel D topTable ---
+f_nm_sign_step2 <- file.path(mdir, "LC_NMposneg_DEGs_step2_annotated.rds")
+saveRDS(nm_sign_degs_step2, f_nm_sign_step2)
+f_nm_int_step2 <- file.path(mdir, "LC_NMintensity_DEGs_step2_annotated.rds")
+saveRDS(nm_int_degs_step2, f_nm_int_step2)
+
+## Panel D topTable (21-overlap donors, full gene set)
+f_tt21_lc <- file.path(mdir, "LC_donor21_APOE_carrier_topTable.rds")
+saveRDS(tt21, f_tt21_lc)
+## Also save the voom object for panel D (logCPM + targets for cleaningY)
+f_v21_lc <- file.path(mdir, "LC_donor21_voomLmFit.rds")
+saveRDS(v21, f_v21_lc)
+
+cat("Saved Step 2 annotated DEG tables and panel D data to:\n")
+cat("  ", basename(f_nm_sign_step2), "\n")
+cat("  ", basename(f_nm_int_step2), "\n")
+cat("  ", basename(f_tt21_lc), "(topTable, all", nrow(tt21), "genes)\n")
+cat("  ", basename(f_v21_lc), "(voomLmFit object for cleaningY)\n")
+### 0 genes pass FDR<0.05 when performing DGE on donor-pseudobulked data
 ```

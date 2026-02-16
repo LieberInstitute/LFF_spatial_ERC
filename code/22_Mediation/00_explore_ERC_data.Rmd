@@ -10,6 +10,7 @@ library(data.table)
 library(ggplot2)
 library(dplyr)
 library(here)
+here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
 ```
