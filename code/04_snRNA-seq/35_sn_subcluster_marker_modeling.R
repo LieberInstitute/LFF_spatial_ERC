@@ -395,6 +395,104 @@ if(celltype == "Oligo"){
                   groupLegends = FALSE)
     dev.off()
     
+
+#### Sadick Integrated Oligo Cor ####
+    
+    sadick_stab5 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab5.xlsx"), sheet = "Oligo_merged_DEGs") |>
+        mutate(Sadick_cluster = paste0("Sadick_Ol", Oligo_merged_cluster))
+    
+    sadick_stab5 |> dplyr::count(Sadick_cluster)
+    
+    erc_v_sadick <- enrichment_genes |>
+        inner_join(sadick_stab5, relationship = "many-to-many")
+    
+    erc_v_sadick_cor <- erc_v_sadick |>
+        group_by(test, Sadick_cluster) |>
+        summarise(n = n(),
+                  cor = cor(logFC, avg_log2FC))
+    
+    write_csv(erc_v_sadick_cor, file = here(data_dir, "erc_v_sadick_oligo_cor.csv"))
+    
+    erc_v_sadick_cor |>
+        group_by(test) |> 
+        slice_max(cor)
+    
+    # test    Sadick_cluster     n    cor
+    # <chr>   <chr>          <int>  <dbl>
+    # 1 Oligo.1 Sadick_Ol1        87 0.0702
+    # 2 Oligo.2 Sadick_Ol0         4 0.971 
+    # 3 Oligo.3 Sadick_Ol2        34 0.620 
+    # 4 Oligo.4 Sadick_Ol2        34 0.622 
+    # 5 Oligo.5 Sadick_Ol2        34 0.643 
+    
+    erc_v_sadick_cor |>
+        group_by(Sadick_cluster) |> 
+        slice_max(cor)
+     
+    # test    Sadick_cluster     n   cor
+    # <chr>   <chr>          <int> <dbl>
+    # 1 Oligo.2 Sadick_Ol0         4 0.971
+    # 2 Oligo.4 Sadick_Ol1        87 0.165
+    # 3 Oligo.5 Sadick_Ol2        34 0.643
+    # 4 Oligo.2 Sadick_Ol3        85 0.635
+    # 5 Oligo.3 Sadick_Ol4        52 0.487
+    # 6 Oligo.2 Sadick_Ol5       307 0.374
+    # 7 Oligo.3 Sadick_Ol6       246 0.209
+    
+    (erc_v_sadick_cor_wide <- erc_v_sadick_cor |>
+            select(-n) |>
+            pivot_wider(names_from = "test", values_from = "cor") |>
+            column_to_rownames("Sadick_cluster") |>
+            as.matrix())
+    
+    ## heatmap
+    pdf(here(plot_dir, "Oligo_Sadick_cor_logFC.pdf"), height = 4, width = 8)
+    Heatmap(t(erc_v_sadick_cor_wide), name = "logFC cor")
+    dev.off()
+        
+    
+    ## sadick marker dot plot
+    sadick_o_makers <- sadick_stab5 |>
+        group_by(Sadick_cluster) |>
+        arrange(-avg_log2FC) |>
+        slice(1:5) |>
+        filter(gene %in% rownames(sce)) 
+    
+    # sadick_o_makers |>
+    #     ungroup() |>
+    #     count(gene) |>
+    #     filter(n==2)
+    #     
+    
+    sadick_o_makers |> filter(gene == "RASGRF1")
+    
+    rowData(sce)$sadick_Oligo <- NULL
+    rowData(sce)$sadick_Oligo <- sadick_o_makers$Sadick_cluster[match(rownames(sce), sadick_o_makers$gene)] 
+    table(rowData(sce)$sadick_Oligo)
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_sadick_Oligo.pdf", celltype)))
+    sce |>
+        scDotPlot(features = unique(sadick_o_makers$gene),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "sadick_Oligo",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    
+    sce |>
+        scDotPlot(features = unique(sadick_o_makers$gene),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "sadick_Oligo",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE)
+    
+    dev.off()
+    
 }
 
 
