@@ -595,7 +595,6 @@ if(celltype == "Oligo"){
     
     ggsave(oligo_bernie_genes, filename = here(plot_dir, "sn_violin_Oligo_check.png"))
     
-    
     ## oligo marker dot plot
     lit_markers <- AnnotationDbi::unlist2(lit_markers)
     
@@ -615,8 +614,80 @@ if(celltype == "Oligo"){
                   groupLegends = FALSE)
     dev.off()
     
-} else if(celltype == "Astro"){
+    #### Oligo Marques markers ####
     
+    Marques_markers <- consensus_marker_sets <- list(
+        OPC = c("PTPRZ1", "PDGFRA", "SERPINE2", "CSPG4", "CSPG5", "VCAN"),
+        COP = c("CD9", "NEU4", "BMP4","GPR17","VCAN"),
+        NFOL = c("ARPC1B", "TMEM2", "CHN2", "MPZL1", "FRMD4A", "MOBP", "DDR1", "TSPAN2"),
+        MFOL = c("CTPS1", "TMEM141", "OPALIN", "MAL", "PTGDS", "EVI2A", "EVI2B"),
+        MOL = c("APOD", "SEPP1", "S100B"),
+        MOL1 = c("FOSB", "DUSP1", "DNAJB1"),
+        MOL2 = c("ANXA5", "KLK6", "MGST3"),
+        MOL3 = c("CAR2", "CNTN2", "GAD2"),
+        MOL4 = c("SERPINB1", "NEAT1"),
+        MOL5 = c("CYP51A1", "DHCR24", "PDLIM2"),
+        MOL6 = c("IL33", "APOE", "PTGDS")
+    )
+    
+    
+    Marques_markers <- map(Marques_markers, ~.x[.x %in% rownames(sce)])
+    
+    plot_marker_express_List(
+        sce,
+        gene_list = Marques_markers,
+        cellType_col = "cell_type_anno",
+        pdf_fn = here(plot_dir, "sn_violin_Marques_markers.pdf"),
+        color_pal = cell_type_colors$anno
+    )
+    
+    Marques_markers <- AnnotationDbi::unlist2(Marques_markers)
+    
+    rowData(sce)$Marques_markers <- NULL
+    rowData(sce)$Marques_markers <- names(Marques_markers)[match(rownames(sce), Marques_markers)] 
+    table(rowData(sce)$Marques_markers)
+    
+    Marques_palette <- c(
+        OPC   = "#c27f3c",
+        NFOL  = "#996EC3",
+        COP   = "#33A02C",
+        MFOL  = "#4cab98",
+        MOL   = "#08306B",
+        MOL1  = "#08519C",
+        MOL2  = "#2171B5",
+        MOL3  = "#4292C6",
+        MOL4  = "#6BAED6",
+        MOL5  = "#9ECAE1",
+        MOL6  = "#C6DBEF"
+    )
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers.pdf", celltype)))
+    sce |>
+        scDotPlot(features = unique(Marques_markers),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers" = Marques_palette),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    
+    sce |>
+        scDotPlot(features = unique(Marques_markers),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers" = Marques_palette),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE)
+    dev.off()
+    
+    
+} else if(celltype == "Astro"){
+    #### Astro ####
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
     lit_markers <- list(disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
                         AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
@@ -654,7 +725,7 @@ if(celltype == "Oligo"){
     dev.off()
     
 }else if(celltype == "Micro"){
-    
+    #### Micro ####
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
     lit_markers <- list(disease_associated = c("TREM2"), #https://doi.org/10.1038/s41593-025-01873-x
                         inflamation = c("NLPR3")) 
@@ -688,6 +759,48 @@ if(celltype == "Oligo"){
     #               groupLegends = FALSE)
     # dev.off()
     # 
+} else if(celltype == "OPC") {
+    
+    Marques_markers2 <- list(OPC = c("PDGFRA", "CSPG4", "PTPRZ1", "PCDH15"), 
+                             COP = c("VCAN",  "SOX6", "GPR17", "NEU4", "BMP4", "NKX2-2"))
+    
+    Marques_markers2 <- map(Marques_markers2, ~.x[.x %in% rownames(sce)])
+    
+    Marques_markers2 <- AnnotationDbi::unlist2(Marques_markers2)
+    
+    rowData(sce)$Marques_markers2 <- NULL
+    rowData(sce)$Marques_markers2 <- names(Marques_markers2)[match(rownames(sce), Marques_markers2)] 
+    table(rowData(sce)$Marques_markers2)
+    
+    Marques_palette2 <- c(
+        OPC   = "navy",
+        COP  = "pink")
+    
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers2.pdf", celltype)))
+    sce |>
+        scDotPlot(features = unique(Marques_markers2),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                    "Marques_markers" = Marques_palette2),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    
+    sce |>
+        scDotPlot(features = unique(Marques_markers2),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                    "Marques_markers" = Marques_palette2),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE)
+    dev.off()
+    
 }
 
 
