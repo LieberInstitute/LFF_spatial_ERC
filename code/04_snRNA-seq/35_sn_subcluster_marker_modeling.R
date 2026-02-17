@@ -760,45 +760,46 @@ if(celltype == "Oligo"){
     # dev.off()
     # 
 } else if(celltype == "OPC") {
-    
-    Marques_markers2 <- list(OPC = c("PDGFRA", "CSPG4", "PTPRZ1", "PCDH15"), 
+  #### OPC  Marques markers ####  
+    Marques_markers_OPC <- list(OPC = c("PDGFRA", "CSPG4", "PTPRZ1", "PCDH15"), 
                              COP = c("VCAN",  "SOX6", "GPR17", "NEU4", "BMP4", "NKX2-2"))
     
-    Marques_markers2 <- map(Marques_markers2, ~.x[.x %in% rownames(sce)])
+    Marques_markers_OPC <- map(Marques_markers_OPC, ~.x[.x %in% rownames(sce)])
     
-    Marques_markers2 <- AnnotationDbi::unlist2(Marques_markers2)
+    Marques_markers_OPC <- AnnotationDbi::unlist2(Marques_markers_OPC)
     
-    rowData(sce)$Marques_markers2 <- NULL
-    rowData(sce)$Marques_markers2 <- names(Marques_markers2)[match(rownames(sce), Marques_markers2)] 
-    table(rowData(sce)$Marques_markers2)
+    rowData(sce)$Marques_markers_OPC <- NULL
+    rowData(sce)$Marques_markers_OPC <- names(Marques_markers_OPC)[match(rownames(sce), Marques_markers_OPC)] 
+    table(rowData(sce)$Marques_markers_OPC)
     
-    Marques_palette2 <- c(
+    Marques_palette_OPC <- c(
         OPC   = "navy",
         COP  = "pink")
     
     
-    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers2.pdf", celltype)))
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers_OPC.pdf", celltype)))
     sce |>
-        scDotPlot(features = unique(Marques_markers2),
+        scDotPlot(features = unique(Marques_markers_OPC),
                   group = "cell_type_anno",
                   groupAnno = "cell_type_anno",
-                  featureAnno = "Marques_markers",
+                  featureAnno = "Marques_markers_OPC",
                   scale = TRUE,
-                  annoColors = list("cell_type_anno" = Oligo_OPC_colors,
-                                    "Marques_markers" = Marques_palette2),
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers_OPC" = Marques_palette_OPC),
                   clusterRows = FALSE,
                   groupLegends = FALSE)
     
     sce |>
-        scDotPlot(features = unique(Marques_markers2),
+        scDotPlot(features = unique(Marques_markers_OPC),
                   group = "cell_type_anno",
                   groupAnno = "cell_type_anno",
-                  featureAnno = "Marques_markers",
+                  featureAnno = "Marques_markers_OPC",
                   scale = TRUE,
-                  annoColors = list("cell_type_anno" = Oligo_OPC_colors,
-                                    "Marques_markers" = Marques_palette2),
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers_OPC" = Marques_palette_OPC),
                   clusterRows = TRUE,
                   groupLegends = FALSE)
+
     dev.off()
     
 }
