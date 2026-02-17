@@ -423,7 +423,6 @@ erc_v_jakel_cor |>
     group_by(Jakel_Oligo) |> 
     slice_max(cor)
 
-}
 
 (erc_v_jakel_cor_wide <- erc_v_jakel_cor |>
         select(-n) |>
@@ -435,6 +434,87 @@ pdf(here(plot_dir, "OligoOPC_Jakel_cor_logFC.pdf"), height = 4, width = 8)
 Heatmap(t(erc_v_jakel_cor_wide), name = "logFC cor")
 dev.off()
 
+## jakel markers 
+
+jakel_Oligo_markers <- readxl::read_xlsx(here("external-data", "Jakel2019","Jakel2019_STab4.xlsx"), sheet = "OL lineage_markers") |> 
+    as.list()
+
+jakel_Oligo_markers <- map(jakel_Oligo_markers, ~.x[.x %in% rownames(sce)])
+
+names(jakel_Oligo_markers) <- gsub(" ", "", names(jakel_Oligo_markers))
+
+jakel_palette <- c(OPCs = "#d94478",
+                   `OPCs/COPs` = "#cb6b64",
+                   `OPCs/COPs/imOLG` = "#d34f34",
+                   `COPs` = "#be7d43",
+                   `COPs/Oligo6` = "#d3a439",
+                   `imOLG` = "#78722c",
+                   `imOLG/COPs/Oligo6` = "#9db34c",
+                   `Oligo6` = "#56b956",
+                   `Oligo5/Oligo6` = "#46854c",
+                   `Oligo2/Oligo6` = "#54bfab",
+                   Oligo5 =  "#688ccc",
+                   `Oligo1/Oligo5` = "#7268d2",
+                   Oligo4 = "#9a4caa",
+                   Oligo3 = "#d65ec6",
+                   Oligo2 = "#d283bb",
+                   Oligo1 = "#9a4669")
+
+jakel_Oligo_markers <- jakel_Oligo_markers[names(jakel_palette)]
+
+## Jakel Violin Plots
+plot_marker_express_List(
+    sce,
+    gene_list = jakel_Oligo_markers,
+    cellType_col = "cell_type_anno",
+    pdf_fn = here(plot_dir, "sn_violin_Oligo_OPC_Jakel_markers.pdf"),
+    color_pal = Oligo_OPC_colors,
+    free_y = TRUE
+)
+
+jakel_marker1b <- plot_gene_express(
+    sce,
+    genes = c("SOX6", "BCAN", "ITPR2", "APOE", "CD74", "CDH20", "LURAP1L-AS1", "MAG", "KLK6", "OPALIN", "PLP1"),
+    category = "cell_type_anno",
+    color_pal = Oligo_OPC_colors,
+    free_y = TRUE
+)
+
+ggsave(jakel_marker1b, filename = here(plot_dir, "sn_violin_Oligo_OPC_Jakel1b_markers.pdf"))
+
+jakel_Oligo_markers <- AnnotationDbi::unlist2(jakel_Oligo_markers)
+
+rowData(sce)$Jakel_markers <- NULL
+rowData(sce)$Jakel_markers <- names(jakel_Oligo_markers)[match(rownames(sce), jakel_Oligo_markers)] 
+table(rowData(sce)$Jakel_markers)
+
+
+pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Jakel_markers.pdf", celltype)), height = 10)
+sce |>
+    scDotPlot(features = unique(jakel_Oligo_markers),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "Jakel_markers",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                "Jakel_markers" = jakel_palette),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = unique(jakel_Oligo_markers),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "Jakel_markers",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                "Jakel_markers" = jakel_palette),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+dev.off()
+
+## Jakel Fig1d
 
 ####  GO analysis ####
 library("org.Hs.eg.db")
