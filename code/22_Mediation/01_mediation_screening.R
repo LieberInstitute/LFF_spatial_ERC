@@ -56,10 +56,11 @@ suppressPackageStartupMessages({
 })
 
 
-FDRthr=0.05
-## FDRthr=0.1 ## loosen for screening
+## FDRthr=0.05
+FDRthr=0.1 ## loosen for screening
 
-medSelFDR <- 0.05
+## medSelFDR <- 0.05
+medSelFDR <- 0.1 ## loosen for screening
 drop_donors_global <- c("Br1289")
 drop_donors_lc <- character(0)
 
@@ -70,11 +71,11 @@ if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm", "lc_nm_int"))) {
     stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm, lc_nm_int")
 }
 
-## null-coalescing function:
+## null-coalescing helper function:
 `%|%` <- function(x, y) {
     if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
 }
-
+## tracking sessions/cache invalidation with file fingerprints and object hashes
 md5_string <- function(x) {
     tf <- tempfile()
     writeLines(x, con = tf, useBytes = TRUE)
@@ -130,7 +131,8 @@ mediation_formula_str <- paste(baseline_formula_str, "+ med_vec")
 baseline_formula <- as.formula(paste("~", baseline_formula_str))
 mediation_formula <- as.formula(paste("~", mediation_formula_str))
 
-# Use single baseline (max donors) for all comparisons instead of separate baselines per donor set
+## use single baseline (max donors) for all comparisons instead of separate baselines per donor set
+## (only relevant for LC Astro or other scenarios that have variable donor sets)
 forceSingleBaseline <- TRUE
 
 build_design <- function(sample_df, formula_obj, batch_col, med_vec = NULL) {

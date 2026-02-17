@@ -17,6 +17,7 @@ library(dplyr)
 library(here)
 here::i_am('.git/HEAD')
 ddir <- here("processed-data")
+med_data_dir <- here("processed-data", "22_Mediation")
 ```
 
 
@@ -212,13 +213,18 @@ loadMedData <- function(out_dir, med_expr_src = NULL) {
 
 ```
 
-```{r load mediation data}
+```{r load ERC Astro data}
+
 ## loading ERC Astro mediation data
-erc_src_sce <- file.path(ddir, "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn", "sce_pseudo_DGE-cell_type_anno.RDS")
-pd <- loadMedData(
-    file.path(cdir, "22_Mediation", "out-erc_astro"),
+erc_src_sce <- file.path(ddir, "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn",
+                               "sce_pseudo_DGE-cell_type_anno.RDS")
+pd <- loadMedData( file.path(cdir, "22_Mediation", "out-erc_astro"),
     med_expr_src = list(kind = "erc_sce", path = erc_src_sce)
 )
+```
+
+
+```{r load LC mediation data}
 ## LC section-level counts source (MODEL2 voomLmFit object with counts + targets for all domains)
 lc_src_counts <- file.path(cdir, "22_Mediation", "LC-processed-data",
                            "dgelE2E4_voomLmFit_object_MODEL2_with_counts.qs2")
@@ -884,7 +890,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     med_mode_eff <- med_stats_mode
 
     mf <- resolve_mediator_results_file(pd, dt_mi, it, mgid, f_lb)
-    dt_mr <- data.table::fread(mf)
+    dt_mr <- .cached_fread(mf)
 
     if (!mgid %in% rownames(m_expr)) {
         stop("Mediator expression not found in `pd$mat$m_expr` for: ", mgid)
@@ -1077,6 +1083,15 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     out_rng_pad <- c(out_rng[1], out_rng[2] + pmax(0.15 * out_span, 0.35))
     med_rng_pad <- c(med_rng[1], med_rng[2] + pmax(0.15 * med_span, 0.35))
 
+    med_title_gene <- as.character(mr$gene_name[[1]])
+    med_title_cluster <- as.character(mr$cluster[[1]])
+    if (!nzchar(med_title_gene) || is.na(med_title_gene)) {
+        med_title_gene <- as.character(mediator_gene)
+    }
+    if (!nzchar(med_title_cluster) || is.na(med_title_cluster)) {
+        med_title_cluster <- "unknown_cluster"
+    }
+
     ggplot(plot_long, aes(x = carrier_group, y = expression, fill = carrier_group,
                         color = carrier_group)) +
         geom_boxplot(alpha = 0.7, outlier.shape = NA, linewidth = 0.3) +
@@ -1094,7 +1109,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         ) +
         scale_fill_manual(values = APOE_carrier_colors) +
         scale_color_manual(values = APOE_carrier_colors_dark) +
-        labs( title = sprintf("Outcome: ERC Oligo.3 %s | Mediator: %s %s", og, mcl, mediator_gene),
+        labs( title = sprintf("Outcome: ERC Oligo.3 %s | Mediator: %s [%s]", og, med_title_gene, med_title_cluster),
             ## subtitle = src_desc,
             x = "APOE Carrier Status",
             y = "Covariate-adjusted Expression (logCPM)",
@@ -1122,14 +1137,14 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
             }
         } +
         coord_cartesian(clip = "off") +
-        theme_bw(base_size = 13) +
+        theme_bw(base_size = 14) +
         theme( legend.position = "none",
             ## title positioning:
-            plot.title = element_text(margin = margin(b = 14)),
-            strip.text = element_text(size = 10, face = "bold"),
+            plot.title = element_text(size = 12, face = "bold", margin = margin(b = 12)),
+            strip.text = element_text(size = 12, face = "bold"),
             ## ticks:
-            axis.text.x = element_text(size = 11, color = "grey40", face="bold"),
-            axis.text.y = element_text(size = 11, color = "grey20"),
+            axis.text.x = element_text(size = 12, color = "grey40", face="bold"),
+            axis.text.y = element_text(size = 12, color = "grey20"),
             ## axis titles:
             axis.title.x = element_text(size = 12,  margin = margin(t = 13)),
             axis.title.y = element_text(size = 12, color = "black"),
@@ -1140,11 +1155,439 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         ) # +  coord_cartesian(clip = "off")
 }
 
+## make sure ERC astro data is loaded
+perc <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd,
+                    med_region = "ERC", med_stats_mode = "precomputed", start_letter=NULL, rows=2)
+print(perc)
+```
+
+```{r ERC mediated list diagnostics}
+## for file naming hygiene
+safe_token <- function(x) gsub("[^A-Za-z0-9._-]+", "_", as.character(x))
+
+parse_mediator_file <- function(lst_file) {
+    stem <- sub("\\.mediated\\.lst$", "", basename(lst_file))
+    parts <- strsplit(stem, "_", fixed = TRUE)[[1]]
+    if (length(parts) < 3L) {
+        stop("Could not parse mediator list filename: ", basename(lst_file))
+    }
+    list(
+        cluster = parts[1],
+        med_gene_id = parts[2],
+        mediator_gene = paste(parts[3:length(parts)], collapse = "_"),
+        mediator_ref = sprintf("%s:%s", parts[1], paste(parts[3:length(parts)], collapse = "_"))
+    )
+}
+
+read_mediated_genes <- function(lst_file) {
+    lines <- trimws(readLines(lst_file, warn = FALSE))
+    lines <- lines[nzchar(lines)]
+    if (length(lines) < 1L) return(character(0))
+    parts <- strsplit(lines, "|", fixed = TRUE)
+    genes <- vapply(parts, function(x) {
+        if (length(x) >= 2L && nzchar(trimws(x[2]))) {
+            trimws(x[2])
+        } else if (length(x) >= 1L) {
+            trimws(x[1])
+        } else {
+            ""
+        }
+    }, character(1))
+    genes <- genes[nzchar(genes)]
+    genes[!duplicated(genes)]
+}
+
+build_erc_mediated_diag <- function(erc_out_dir, small_first = TRUE) {
+    if (!dir.exists(erc_out_dir)) {
+        stop("ERC mediation output directory not found: ", erc_out_dir)
+    }
+    mediated_files <- list.files(erc_out_dir, pattern = "\\.mediated\\.lst$", full.names = TRUE)
+    if (length(mediated_files) > 0L) {
+        finfo <- file.info(mediated_files)
+        mediated_files <- mediated_files[!is.na(finfo$size) & finfo$size > 0]
+    }
+    mediated_files <- sort(mediated_files)
+    if (length(mediated_files) < 1L) {
+        out <- data.table::data.table(
+            list_file = character(0),
+            cluster = character(0),
+            med_gene_id = character(0),
+            mediator_gene = character(0),
+            mediator_ref = character(0),
+            n_mediated = integer(0),
+            outcomes_preview = character(0)
+        )
+        out[, outcome_genes := vector("list", 0L)]
+        return(out)
+    }
+    diag_rows <- lapply(mediated_files, function(f) {
+        minfo <- parse_mediator_file(f)
+        outcome_genes <- read_mediated_genes(f)
+        data.table::data.table(
+            list_file = f,
+            cluster = minfo$cluster,
+            med_gene_id = minfo$med_gene_id,
+            mediator_gene = minfo$mediator_gene,
+            mediator_ref = minfo$mediator_ref,
+            n_mediated = length(outcome_genes),
+            outcomes_preview = paste(head(outcome_genes, 6), collapse = ", "),
+            outcome_genes = list(outcome_genes)
+        )
+    })
+    diag_dt <- data.table::rbindlist(diag_rows, fill = TRUE)
+    ord <- if (isTRUE(small_first)) 1L else -1L
+    data.table::setorderv(diag_dt, c("n_mediated", "mediator_gene"), order = c(ord, 1L))
+    diag_dt
+}
+
+build_erc_overlap_dt <- function(diag_dt) {
+    if (!data.table::is.data.table(diag_dt) || nrow(diag_dt) < 2L) {
+        out <- data.table::data.table(
+            mediator_a = character(0),
+            mediator_b = character(0),
+            n_genes_a = integer(0),
+            n_genes_b = integer(0),
+            n_overlap = integer(0),
+            frac_a = numeric(0),
+            frac_b = numeric(0)
+        )
+        out[, overlap_genes := vector("list", 0L)]
+        return(out)
+    }
+    make_med_label <- function(gene, cluster) sprintf("%s [%s]", gene, cluster)
+    pair_idx <- combn(seq_len(nrow(diag_dt)), 2, simplify = FALSE)
+    ov_rows <- lapply(pair_idx, function(ix) {
+        a <- diag_dt[ix[1]]
+        b <- diag_dt[ix[2]]
+        ga <- as.character(a$outcome_genes[[1]])
+        gb <- as.character(b$outcome_genes[[1]])
+        ov <- sort(intersect(ga, gb))
+        if (length(ov) < 1L) return(NULL)
+        data.table::data.table(
+            mediator_a = make_med_label(a$mediator_gene[[1]], a$cluster[[1]]),
+            mediator_b = make_med_label(b$mediator_gene[[1]], b$cluster[[1]]),
+            n_genes_a = length(ga),
+            n_genes_b = length(gb),
+            n_overlap = length(ov),
+            frac_a = length(ov) / max(1L, length(ga)),
+            frac_b = length(ov) / max(1L, length(gb)),
+            ## overlap_preview = paste(head(ov, 12), collapse = ", "),
+            overlap_genes = list(ov)
+        )
+    })
+    ov_dt <- data.table::rbindlist(ov_rows, fill = TRUE)
+    if (nrow(ov_dt) > 0L) {
+        data.table::setorder(ov_dt, -n_overlap, mediator_a, mediator_b)
+        ov_dt[, frac_a := round(frac_a, 4)]
+        ov_dt[, frac_b := round(frac_b, 4)]
+    }
+    ov_dt
+}
+
+build_erc_mediator_impact_dt <- function(diag_dt, pd) {
+    if (!data.table::is.data.table(diag_dt) || nrow(diag_dt) < 1L) {
+        return(data.table::data.table(
+            med_cl = character(0),
+            mediator = character(0),
+            outcome = character(0),
+            fdr = numeric(0),
+            fdr_med = numeric(0)
+        ))
+    }
+    if (is.null(pd) || !is.list(pd)) {
+        stop("`pd` must be loaded (run the ERC data load chunk first).")
+    }
+    if (is.null(pd$dt$br) || is.null(pd$dt$md) || is.null(pd$key$gmap)) {
+        stop("`pd` is missing required components (`dt$br`, `dt$md`, `key$gmap`).")
+    }
+
+    min_or_na <- function(x) {
+        x <- as.numeric(x)
+        if (length(x) < 1L || all(is.na(x))) return(NA_real_)
+        min(x, na.rm = TRUE)
+    }
+
+    dt_br <- data.table::as.data.table(pd$dt$br)
+    dt_md <- data.table::as.data.table(pd$dt$md)
+    dt_mi <- pd$dt$mi
+    gmap <- data.table::as.data.table(pd$key$gmap)
+
+    if (!all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_br))) {
+        stop("Baseline table `pd$dt$br` must contain `outcome_gene_id` and `adj.P.Val`.")
+    }
+    if (!all(c("gene_name", "gene_id") %in% names(gmap))) {
+        stop("Gene map `pd$key$gmap` must contain `gene_name` and `gene_id`.")
+    }
+
+    base_map <- dt_br[
+        !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
+        .(fdr = min_or_na(adj.P.Val)),
+        by = .(outcome_gene_id = as.character(outcome_gene_id))
+    ]
+
+    impact_rows <- lapply(seq_len(nrow(diag_dt)), function(i) {
+        rr <- diag_dt[i]
+        med_cl <- as.character(rr$cluster[[1]])
+        mediator <- as.character(rr$mediator_gene[[1]])
+        outcomes <- sort(unique(as.character(rr$outcome_genes[[1]])))
+        if (length(outcomes) < 1L) return(NULL)
+
+        out_ids <- as.character(gmap$gene_id[match(outcomes, as.character(gmap$gene_name))])
+
+        med_map <- data.table::data.table(
+            outcome_gene_id = character(0),
+            fdr_med = numeric(0)
+        )
+        med_key <- sprintf("%s:%s", med_cl, mediator)
+        mr <- tryCatch(
+            resolve_mediator_row(med_key, dt_md),
+            error = function(e) {
+                warning(sprintf("Could not resolve mediator row for %s: %s", med_key, conditionMessage(e)))
+                NULL
+            }
+        )
+        if (!is.null(mr)) {
+            run_lb <- sprintf("%s|%s|%s",
+                as.character(mr$cluster[[1]]),
+                as.character(mr$gene_id[[1]]),
+                as.character(mr$gene_name[[1]])
+            )
+            f_lb <- gsub("\\|", "_", run_lb)
+            mf <- tryCatch(
+                resolve_mediator_results_file(
+                    pd = pd,
+                    dt_mi = dt_mi,
+                    it = as.integer(mr$iter[[1]]),
+                    mgid = as.character(mr$med_gene_id[[1]]),
+                    file_label = f_lb
+                ),
+                error = function(e) {
+                    warning(sprintf("Could not find Step-3 file for %s: %s", med_key, conditionMessage(e)))
+                    NA_character_
+                }
+            )
+            if (!is.na(mf) && nzchar(mf) && file.exists(mf)) {
+                dt_mr <- .cached_fread(mf)
+                if (all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_mr))) {
+                    med_map <- dt_mr[
+                        !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
+                        .(fdr_med = min_or_na(adj.P.Val)),
+                        by = .(outcome_gene_id = as.character(outcome_gene_id))
+                    ]
+                } else {
+                    warning(sprintf("Step-3 results file missing required columns: %s", mf))
+                }
+            }
+        }
+
+        fdr_base <- base_map$fdr[match(out_ids, base_map$outcome_gene_id)]
+        fdr_med <- med_map$fdr_med[match(out_ids, med_map$outcome_gene_id)]
+
+        data.table::data.table(
+            med_cl = med_cl,
+            mediator = mediator,
+            outcome = outcomes,
+            fdr = as.numeric(fdr_base),
+            fdr_med = as.numeric(fdr_med)
+        )
+    })
+
+    impact_dt <- data.table::rbindlist(impact_rows, fill = TRUE)
+    data.table::setcolorder(impact_dt, c("med_cl", "mediator", "outcome", "fdr", "fdr_med"))
+    data.table::setorderv(impact_dt, c("med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L))
+    impact_dt
+}
+
+.cached_fread <- local({
+    .cache <- new.env(parent = emptyenv())
+    function(path) {
+        key <- normalizePath(path, winslash = "/", mustWork = FALSE)
+        if (exists(key, envir = .cache, inherits = FALSE)) {
+            return(get(key, envir = .cache, inherits = FALSE))
+        }
+        dt <- data.table::fread(path)
+        assign(key, dt, envir = .cache)
+        dt
+    }
+})
+
+## fast: read non-empty .mediated.lst files, build mediator->mediated mapping, and overlap diagnostics
+
+erc_out_dir <- file.path(cdir, "22_Mediation", "out-erc_astro")
+diag_dt <- build_erc_mediated_diag(erc_out_dir, small_first = FALSE)
+cat(sprintf("Found %d non-empty .mediated.lst files in %s\n", nrow(diag_dt), erc_out_dir))
+
+if (nrow(diag_dt) < 1L) {
+    cat("No mediator list files to process.\n")
+} else {
+    cat("\nMediator diagnostics:\n")
+    print(diag_dt[, .(
+        mediator_gene,
+        cluster,
+        n_mediated,
+        list_file = basename(list_file),
+        outcomes_preview
+    )])
+
+    mediator_mediated_dt <- diag_dt[, .(
+        mediator = sprintf("%s [%s]", mediator_gene, cluster),
+        mediated = lapply(outcome_genes, function(x) sort(unique(as.character(x))))
+    )]
+    cat("\nMediator -> mediated mapping (2-column list-table):\n")
+    print(mediator_mediated_dt)
+
+    mediator_impact <- build_erc_mediator_impact_dt(diag_dt, pd)
+    cat(sprintf(
+        "\nMediator impact table rows: %d (columns: med_cl, mediator, outcome, fdr, fdr_med)\n",
+        nrow(mediator_impact)
+    ))
+    print(mediator_impact)
+
+    ov_dt <- build_erc_overlap_dt(diag_dt)
+    cat(sprintf("\nMediator pairs with overlap: %d\n", nrow(ov_dt)))
+    if (nrow(ov_dt) < 1L) {
+        cat("No overlaps found between mediated gene lists.\n")
+    } else {
+        cat("\nOverlapping mediator pairs:\n")
+        print(ov_dt)
+    }
+}
+
+fwrite(mediator_impact, file=file.path(med_data_dir, "mediator_outcome_fdr_impact.tsv.gz"), sep="\t")
+
+```
+
+```{r save all ERC mediator plots}
+## create one PDF per mediator, plots for all mediated genes in the same PDF
+
+erc_out_dir <- file.path(cdir, "22_Mediation", "out-erc_astro")
+if (!exists("diag_dt") || !data.table::is.data.table(diag_dt) || nrow(diag_dt) < 1L) {
+    diag_dt <- build_erc_mediated_diag(erc_out_dir, small_first = TRUE)
+} else {
+    diag_dt <- data.table::copy(diag_dt)
+    data.table::setorderv(diag_dt, c("n_mediated", "mediator_gene"), order = c(1L, 1L))
+}
+
+if (nrow(diag_dt) < 1L) {
+    cat("No non-empty .mediated.lst files available; skipping PDF generation.\n")
+} else {
+    pdf_out_dir <- file.path(here("plots/22_Mediation"), "ERC_Astro_mediation_pdfs")
+    dir.create(pdf_out_dir, recursive = TRUE, showWarnings = FALSE)
+    cat(sprintf("Saving PDFs to: %s\n", pdf_out_dir))
+
+    run_log <- vector("list", nrow(diag_dt))
+    t_all <- proc.time()[["elapsed"]]
+    for (i in seq_len(nrow(diag_dt))) {
+        row_i <- diag_dt[i]
+        mediator_gene <- as.character(row_i$mediator_gene[[1]])
+        mediator_ref <- as.character(row_i$mediator_ref[[1]])
+        cluster <- as.character(row_i$cluster[[1]])
+        outcome_genes <- row_i$outcome_genes[[1]]
+        n_targets <- length(outcome_genes)
+
+        pdf_file <- file.path(
+            pdf_out_dir,
+            sprintf(
+                "ERC_Astro_%s_%s_n%d_mediated.pdf",
+                safe_token(mediator_gene), safe_token(cluster), n_targets
+            )
+        )
+        cat(sprintf("[%d/%d] %s (%s): %d mediated genes\n",
+            i, nrow(diag_dt), mediator_gene, cluster, n_targets
+        ))
+        flush.console()
+
+        n_ok <- 0L
+        n_fail <- 0L
+        pdf_open <- FALSE
+        t0 <- proc.time()[["elapsed"]]
+
+        tryCatch({
+            grDevices::pdf(pdf_file, width = 7, height = 10, onefile = TRUE)
+            pdf_open <- TRUE
+            for (j in seq_along(outcome_genes)) {
+                outcome_gene <- outcome_genes[j]
+                if (j == 1L || j %% 10L == 0L || j == length(outcome_genes)) {
+                    cat(sprintf("  plotting %s: %d/%d (%s)\n",
+                        mediator_gene, j, length(outcome_genes), outcome_gene
+                    ))
+                    flush.console()
+                }
+                p <- tryCatch(
+                    plotMedComp(
+                        outcome_gene = outcome_gene,
+                        mediator_gene = mediator_ref,
+                        pd = pd,
+                        med_region = "ERC",
+                        med_stats_mode = "precomputed",
+                        rows = 2L,
+                        start_letter = NULL
+                    ),
+                    error = function(e) e
+                )
+                if (inherits(p, "error")) {
+                    n_fail <- n_fail + 1L
+                    message(sprintf("  plot failed for mediator=%s outcome=%s: %s",
+                        mediator_ref, outcome_gene, conditionMessage(p)
+                    ))
+                    next
+                }
+                print(p)
+                n_ok <- n_ok + 1L
+            }
+        }, error = function(e) {
+            message(sprintf("  failed while processing mediator %s: %s",
+                mediator_ref, conditionMessage(e)
+            ))
+        }, finally = {
+            if (pdf_open) grDevices::dev.off()
+        })
+
+        if (n_ok < 1L && file.exists(pdf_file)) unlink(pdf_file)
+
+        elapsed_sec <- proc.time()[["elapsed"]] - t0
+        run_log[[i]] <- data.table::data.table(
+            mediator_gene = mediator_gene,
+            cluster = cluster,
+            n_mediated = n_targets,
+            plots_written = n_ok,
+            plot_failures = n_fail,
+            created_pdf = as.logical(file.exists(pdf_file) && n_ok > 0L),
+            elapsed_sec = as.numeric(elapsed_sec),
+            pdf_file = pdf_file
+        )
+        cat(sprintf("  done %s: wrote %d/%d plots in %.1f sec\n",
+            mediator_gene, n_ok, n_targets, elapsed_sec
+        ))
+        flush.console()
+    }
+
+    run_log_dt <- data.table::rbindlist(run_log, fill = TRUE)
+    total_elapsed <- proc.time()[["elapsed"]] - t_all
+    cat("\nPDF generation summary:\n")
+    print(run_log_dt[, .(
+        mediator_gene,
+        cluster,
+        n_mediated,
+        plots_written,
+        plot_failures,
+        created_pdf,
+        elapsed_sec,
+        pdf_file = basename(pdf_file)
+    )])
+    cat(sprintf(
+        "\nCreated %d PDF files out of %d mediator files in %.1f sec.\n",
+        sum(run_log_dt$created_pdf), nrow(run_log_dt), total_elapsed
+    ))
+}
+
+```
+
+```{r LC data plots}
 #p <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd, med_region = "LC")
 #p <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd, med_stats_mode = "both")
 #print(p)
 ## load below the LC data first:
-
 plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
                     med_region = "LC", med_stats_mode = "both", start_letter="A", rows=1)
 
@@ -1202,6 +1645,27 @@ plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
 
 print(plc)
 ```
+
+```{r LC NM mediation data load and plot}
+## loading LC mediation data if you haven't done it above
+lc_src_counts <- file.path(cdir, "22_Mediation", "LC-processed-data",
+                           "dgelE2E4_voomLmFit_object_MODEL2_with_counts.qs2")
+lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
+                              "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+pd_lc <- loadMedData(
+    file.path(cdir, "22_Mediation", "out-lc_nm"),
+    med_expr_src = list(
+        path = lc_src_counts,
+        meta = list(donor_pb_path = lc_src_donor_pb)
+    )
+)
+plc <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "ZFP36L2", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "both")
+
+print(plc)
+```
+
+
 
 
 ```{r LC Astro mediator DGE stats using original tissue-section expression data, without donor-pseudobulk}
