@@ -389,126 +389,51 @@ dev.off()
 #     dev.off()
 # })
 
-#### Oligo Grubman Cor ####
-if(celltype == "Oligo"){
-    
-    grubman_subtypes_fn <- list.files(here("external-data", "Grubman2019"), pattern = "Oligo_", full.names = TRUE)
-    names(grubman_subtypes_fn) <- gsub("Grubman_Oligo_|.csv", "", basename(grubman_subtypes_fn))
-    
-    grubman_subtypes_data <- map2_dfr(grubman_subtypes_fn, names(grubman_subtypes_fn), ~read.csv(.x) |> mutate(g_cell_type = .y)) |>
-        rename(gene = geneName)
-    
-    grubman_subtypes_data |> count(g_cell_type)
-    
-    enrichment_genes <- sig_genes_extract(
-        n = nrow(sce_pseudo),
-        modeling_results = modeling_results,
-        model_type = "enrichment",
-        reverse = FALSE,
-        sce_layer = sce_pseudo,
-        gene_name = "gene_name"
-    )
+#### Jakel2019 Oligo Cor ####
 
-    erc_v_grubman <- enrichment_genes |>
-        inner_join(grubman_subtypes_data, relationship = "many-to-many")
-    
-    erc_v_grubman_cor <- erc_v_grubman |>
-        group_by(test, g_cell_type) |>
-        summarise(n = n(),
-                  cor = cor(logFC, LFC))
-    
-    write_csv(erc_v_grubman_cor, file = here(data_dir, "erc_v_grubman_oligo_cor.csv"))
-    
-    erc_v_grubman_cor |>
-        group_by(test) |> 
-        arrange(-cor) |>
-        slice(1)
-    
-    # test    g_cell_type     n   cor
-    # <chr>   <chr>       <int> <dbl>
-    # 1 Oligo.1 o5             95 0.706
-    # 2 Oligo.2 o5             95 0.544
-    # 3 Oligo.3 o4            651 0.752
-    # 4 Oligo.4 o5             95 0.358
-    # 5 Oligo.5 o4            651 0.482
-    
-    erc_v_grubman_cor |>
-        group_by( g_cell_type) |> 
-        arrange(-cor) |>
-        slice(1) 
-    
-    # test    g_cell_type     n   cor
-    # <chr>   <chr>       <int> <dbl>
-    # 1 Oligo.3 o1            411 0.483
-    # 2 Oligo.2 o2            394 0.397
-    # 3 Oligo.1 o3             96 0.303
-    # 4 Oligo.3 o4            651 0.752
-    # 5 Oligo.1 o5             95 0.706
-    # 6 Oligo.1 o6            212 0.511
-    
-    (erc_v_grubman_cor_wide <- erc_v_grubman_cor |>
-            select(-n) |>
-            pivot_wider(names_from = "test", values_from = "cor") |>
-            column_to_rownames("g_cell_type") |>
-            as.matrix())
-    
-    # Oligo.1    Oligo.2    Oligo.3     Oligo.4    Oligo.5
-    # o1 -0.4213429 -0.3937171  0.4830757 -0.08971312  0.2299773
-    # o2  0.3170668  0.3972655 -0.4272965  0.03675172 -0.2132549
-    # o3  0.3034454  0.2883027 -0.4272468  0.28193107 -0.2031632
-    # o4 -0.6556795 -0.6273667  0.7524666 -0.33494686  0.4816174
-    # o5  0.7063523  0.5439999 -0.6512348  0.35844107 -0.6110251
-    # o6  0.5113262  0.4239644 -0.5416082  0.12368402 -0.3155310
-    
-    
-    ## grubman annotations 
-    grubmab_anno <- data.frame(annotation = c("AD", "AD","AD", "Undetermined", "Control", "Control"))
-    rownames(grubmab_anno) <- paste0("o", 1:6)
-    
-    grubman_col_ha <- HeatmapAnnotation(df = grubmab_anno,
-                                         col = list("annotation" = c(AD = "purple",Undetermined = "black", Control = "Green")))
-    
-    pdf(here(plot_dir, "Oligo_grubman_cor_logFC.pdf"), height = 4, width = 8)
-    Heatmap(t(erc_v_grubman_cor_wide), name = "logFC cor",
-            bottom_annotation = grubman_col_ha)
-    dev.off()
-        
-    
-    ## grubman marker dot plot
-    
-    grubman_o_makers <- grubman_subtypes_data |>
-        group_by(g_cell_type) |>
-        arrange(-LFC) |>
-        slice(1:5) |>
-        ungroup() |>
-        group_by(gene) |>
-        slice_max(LFC) |>
-        filter(gene %in% rownames(sce)) |>
-        arrange(g_cell_type)
-    
-    # grubman_o_makers |>
-    #     ungroup() |>
-    #     count(gene) |>
-    #     filter(n==2)
-    #     
-    
-    rowData(sce)$Grubman_Oligo <- NULL
-    rowData(sce)$Grubman_Oligo <- grubman_o_makers$g_cell_type[match(rownames(sce), grubman_o_makers$gene)] 
-    table(rowData(sce)$Grubman_Oligo)
-    
-    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Grubman_Oligo.pdf", celltype)))
-    sce |>
-        scDotPlot(features = grubman_o_makers$gene,
-                  group = "cell_type_anno",
-                  groupAnno = "cell_type_anno",
-                  featureAnno = "Grubman_Oligo",
-                  scale = TRUE,
-                  annoColors = list("cell_type_anno" = Oligo_OPC_colors),
-                  clusterRows = FALSE,
-                  groupLegends = FALSE)
-    dev.off()
-    
+enrichment_genes <- sig_genes_extract(
+    n = nrow(sce_pseudo),
+    modeling_results = modeling_results,
+    model_type = "enrichment",
+    reverse = FALSE,
+    sce_layer = sce_pseudo,
+    gene_name = "gene_name"
+)
+
+sheets <- readxl::excel_sheets(here("external-data", "Jakel2019","Jakel2019_STab4.xlsx"))
+
+jakel_Oligo_stats <- map_dfr(sheets[2:10], ~readxl::read_xlsx(here("external-data", "Jakel2019","Jakel2019_STab4.xlsx"), sheet = .x) |>
+                                 mutate(Jakel_Oligo = paste0("Jakel_", .x)))
+
+erc_v_jakel <- enrichment_genes |>
+    inner_join(jakel_Oligo_stats, relationship = "many-to-many")
+
+erc_v_jakel_cor <- erc_v_jakel |>
+    group_by(test, Jakel_Oligo) |>
+    summarise(n = n(),
+              cor = cor(logFC, avg_logFC))
+
+write_csv(erc_v_sadick_cor, file = here(data_dir, "erc_v_jakel_OligoOPC_cor.csv"))
+
+erc_v_jakel_cor |>
+    group_by(test) |> 
+    slice_max(cor)
+
+erc_v_jakel_cor |>
+    group_by(Jakel_Oligo) |> 
+    slice_max(cor)
+
 }
+
+(erc_v_jakel_cor_wide <- erc_v_jakel_cor |>
+        select(-n) |>
+        pivot_wider(names_from = "test", values_from = "cor") |>
+        column_to_rownames("Jakel_Oligo") |>
+        as.matrix())
+
+pdf(here(plot_dir, "OligoOPC_Jakel_cor_logFC.pdf"), height = 4, width = 8)
+Heatmap(t(erc_v_jakel_cor_wide), name = "logFC cor")
+dev.off()
 
 
 ####  GO analysis ####
