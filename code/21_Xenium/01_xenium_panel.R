@@ -8,6 +8,7 @@ library("sessioninfo")
 library("spatialLIBD")
 library("scDotPlot")
 library("readxl")
+library("ggrepel")
 
 data_dir <- here("processed-data", "21_Xenium", "01_xenium_panel")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -175,7 +176,8 @@ enrichment_stats_top |> filter(Genes %in% Xenium_hBrain$Genes)
 
 enrichment_stats_select <- enrichment_stats_top |> 
     filter(cell_type_anno %in% c("Astro.1", "Astro.2", "Astro.3",
-                                 "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5")
+                                 "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
+                                 "OPC.5")
            ) |> 
     dplyr::rename(gene_name = Genes)|>
     inner_join(rowData(sce) |> as.data.frame()) |> 
@@ -211,7 +213,7 @@ marker_stats_top <- marker_stats_MeanRatio |>
     filter(MeanRatio.rank <= 10, MeanRatio > 1) |>
     arrange(cellType.target)
 
-## 11 top5 genes overla
+## 11 top5 genes overlap
 mean_ratio_xenium_overlap <- marker_stats_top |> 
     inner_join(Xenium_hBrain |> 
                    dplyr::rename(gene = Genes)) |>  
@@ -224,10 +226,13 @@ marker_stats_select <- marker_stats_top |>
     filter(MeanRatio.rank <= 5) |>
     filter(cellType.target %in% c("Astro.1", "Astro.2", "Astro.3",
                                  "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
+                                 "OPC.5",
                                  "Excit.L5.2", "Excit.L2_5.1")
     )
 
 marker_stats_select |> dplyr::count(cellType.target)
+
+marker_stats_select 
 
 rowData(sce)$MeanRatio <- NULL
 rowData(sce)$MeanRatio <- as.character(marker_stats_select$cellType.target)[match(rownames(sce), marker_stats_select$gene)] 
@@ -247,15 +252,52 @@ sce |>
     ) 
 dev.off()
 
+#### Cell type specific modeling ####
+
+broad_cell_types <- c("Oligo", "Astro")
+names(broad_cell_types) <- broad_cell_types
+
+ct_specific_mod <- map(broad_cell_types, ~readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", .x, sprintf("modeling_results_subtype-%s.rds", .x))) |>
+                           pluck("enrichment") |>
+                           pivot_longer(!c("ensembl", "gene"), names_to = "stat") |>
+                           mutate(stat = gsub("p_value", "p.value", stat),
+                                  stat = gsub("t_stat", "t.stat", stat),) |>
+                           separate(stat, into = c("stat", "cellType.target"), sep = "_") |>
+                           pivot_wider(names_from = "stat", values_from = "value", names_prefix = "enrich_") |>
+                           dplyr::rename(gene_ensembl = ensembl)
+                       )
+
+head(ct_specific_mod$Oligo) 
+
+ct_specific_marker_stats <- map2(broad_cell_types, ct_specific_mod, ~get(load(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", .x, sprintf("marker_stats_MeanRatio_%s.Rdata", .x)))) |>
+                                 left_join(.y))
+
+
+walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker_stats, name){
+    
+    ct_specific_t_v_ratio <- marker_stats |>
+        ggplot(aes(x= MeanRatio, y = enrich_t.stat, color = enrich_fdr < 0.05)) +
+        geom_point(size = 0.5) +
+        scale_color_manual(values = c(`TRUE` = "red")) +
+        geom_text_repel(aes(label = gene), size = 1.2) +
+        facet_wrap(~cellType.target, scales = "free_x") +
+        theme_bw() +
+        geom_vline(xintercept = 1, color = "blue") +
+        theme(legend.position = "None")
+    
+    ggsave(ct_specific_t_v_ratio, filename = here(plot_dir, sprintf("ct_specific_t_v_ratio_%s.png", name)))
+    
+})
+
 
 #### Genes of Interest ####
 
-gene_list_ADRB <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
-all(gene_list_ADRB %in% rownames(sce))
+NE_receptor_genes <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
+all(NE_receptor_genes %in% rownames(sce))
 
 genes_other <- c("RELN")
 
-genes_of_interest <- c(gene_list_ADRB, genes_other)
+genes_of_interest <- c(NE_receptor_genes, genes_other)
 
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_genes_of_interest.pdf")), height = 7, width = 8)
 sce |>
