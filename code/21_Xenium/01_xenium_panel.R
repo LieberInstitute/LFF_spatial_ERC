@@ -39,8 +39,8 @@ Xenium_annotation <- read_xlsx(here(data_dir, "Xenium_hBrain_annotation.xlsx"))
 Xenium_annotation |> dplyr::count(cell_type_class)
 
 Xenium_hBrain <- read_csv(here("processed-data", "21_Xenium", "Xenium_hBrain_v1_metadata.csv")) |>
-    # mutate(in_sce = Genes %in% rownames(sce),
-    #        in_spe = Genes %in% rownames(spe)) |>
+    mutate(in_sce = Genes %in% rownames(sce),
+           in_spe = Genes %in% rownames(spe)) |>
     left_join(Xenium_annotation) |>
     arrange(anno)  |> 
     filter(in_sce & in_spe)
@@ -236,12 +236,15 @@ mean_ratio_xenium_overlap <- marker_stats_top |>
 mean_ratio_xenium_overlap |> print(n = 21)
 
 ## pick markers for cell types of interest - not covered by base
+
+cellTypes_of_interest <- c("Astro.1", "Astro.2", "Astro.3",
+                           "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
+                           "OPC.5",
+                           "Excit.L5.2", "Excit.L2_5.1")
+
 marker_stats_select <- marker_stats_top |> 
     filter(MeanRatio.rank <= 5) |>
-    filter(cellType.target %in% c("Astro.1", "Astro.2", "Astro.3",
-                                  "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
-                                  "OPC.5",
-                                  "Excit.L5.2", "Excit.L2_5.1")
+    filter(cellType.target %in% cellTypes_of_interest
     )
 
 ## filter to very specific genes
@@ -254,7 +257,8 @@ select_global_mean_ratio_marker <- mean_ratio_xenium_overlap |>
            target = cellType.target, 
            goal = "cell type marker (global MR)",
            note = paste("globl MR genes - ", MeanRatio.anno),
-           in_base = gene_name %in% Xenium_hBrain$Genes)
+           in_base = gene_name %in% Xenium_hBrain$Genes) |>
+    arrange(target)
 
 select_global_mean_ratio_marker |> dplyr::count(target, in_base)
 # target           in_base     n
@@ -277,12 +281,12 @@ select_global_mean_ratio_marker |> dplyr::count(target, in_base)
 
 
 rowData(sce)$MeanRatio <- NULL
-rowData(sce)$MeanRatio <- as.character(marker_stats_select$cellType.target)[match(rownames(sce), marker_stats_select$gene)] 
+rowData(sce)$MeanRatio <- as.character(select_global_mean_ratio_marker$target)[match(rownames(sce), select_global_mean_ratio_marker$gene_name)] 
 table(rowData(sce)$MeanRatio)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_select.pdf")), height = 11, width = 8)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_global_select.pdf")), height = 11, width = 8)
 sce |>
-    scDotPlot(features = marker_stats_select$gene,
+    scDotPlot(features = select_global_mean_ratio_marker$gene_name,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "MeanRatio",
@@ -290,13 +294,26 @@ sce |>
               annoColors = list("cell_type_anno" = cell_type_colors$anno,
                                 "MeanRatio" = cell_type_colors$anno),
               clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE
+    ) 
+sce |>
+    scDotPlot(features = select_global_mean_ratio_marker$gene_name,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "MeanRatio",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "MeanRatio" = cell_type_colors$anno),
+              clusterRows = TRUE,
+              clusterColumns = TRUE,
               groupLegends = FALSE
     ) 
 dev.off()
 
 #### Cell Type Marker Genes - cell type specific modeling ####
 
-broad_cell_types <- c("Oligo", "Astro")
+broad_cell_types <- c("Oligo", "Astro", "OPC", "Excit")
 names(broad_cell_types) <- broad_cell_types
 
 ct_specific_mod <- map(broad_cell_types, ~readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", .x, sprintf("modeling_results_subtype-%s.rds", .x))) |>
@@ -304,15 +321,44 @@ ct_specific_mod <- map(broad_cell_types, ~readRDS(here("processed-data", "04_snR
                            pivot_longer(!c("ensembl", "gene"), names_to = "stat") |>
                            mutate(stat = gsub("p_value", "p.value", stat),
                                   stat = gsub("t_stat", "t.stat", stat),) |>
-                           separate(stat, into = c("stat", "cellType.target"), sep = "_") |>
+                           separate(stat, into = c("stat", "cellType.target"), sep = "_", extra = "merge") |>
                            pivot_wider(names_from = "stat", values_from = "value", names_prefix = "enrich_") |>
                            dplyr::rename(gene_ensembl = ensembl)
                        )
 
-head(ct_specific_mod$Oligo) 
+head(ct_specific_mod$Oligo)
 
-ct_specific_marker_stats <- map2(broad_cell_types, ct_specific_mod, ~get(load(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", .x, sprintf("marker_stats_MeanRatio_%s.Rdata", .x)))) |>
-                                 left_join(.y))
+ct_specific_mod$Oligo |> filter(gene == "LINGO2")
+
+ct_specific_mod$Oligo |> filter(cellType.target == "Oligo.3") |> arrange(-enrich_t.stat)
+
+ct_specific_marker_stats <- map2(broad_cell_types, ct_specific_mod, 
+                                 ~get(load(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", .x, sprintf("marker_stats_MeanRatio_%s.Rdata", .x)))) |>
+                                     full_join(.y) |>
+                                     mutate(in_base = gene %in% Xenium_hBrain$Genes))
+
+ct_specific_marker_stats$Oligo |> filter(gene == "GPM6A")
+
+mean_ratio_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats, 
+                                          ~.x |> 
+                                              filter(MeanRatio > 1.5 & in_base) |>
+                                              transmute(gene_name = gene, 
+                                                        target = cellType.target, 
+                                                        goal = "cell type marker (specific MR)",
+                                                        note = paste("specific MR genes -", MeanRatio.anno),
+                                                        in_base = in_base))
+
+
+# TODO
+# enrichment_specific_xenium_overlap <- map(ct_specific_marker_stats[1:3], 
+#                                               ~.x |> 
+#                                                   filter(enrich_logFC > 1, enrich_fdr < 0.05 & in_base) )
+# |>
+#                                                   transmute(gene_name = gene, 
+#                                                             target = cellType.target, 
+#                                                             goal = "cell type marker (specific MR)",
+#                                                             note = paste("specific MR genes -", MeanRatio.anno),
+#                                                             in_base = in_base))
 
 
 walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker_stats, name){
@@ -331,11 +377,61 @@ walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker
     
 })
 
-ct_markers <- c(
-    Oligo.1_2 <- c("OPALIN")
-    Oligo.3 <- c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2")
-    Oligo.5 <- c("ARHGEF3")
-)
+mean_ratio_specific_interest <- map_dfr(ct_specific_marker_stats, 
+                                    ~.x |> 
+                                        filter(cellType.target %in% cellTypes_of_interest,
+                                            MeanRatio > 1, 
+                                            MeanRatio.rank <= 3) |>
+                                        mutate(note = paste0("specific MR genes - ", MeanRatio.anno)))
+
+mean_ratio_specific_interest  |> dplyr::count(cellType.target)
+
+enrichment_specific_interest <- map_dfr(ct_specific_marker_stats, 
+                                    ~.x |> 
+                                        filter(cellType.target %in% cellTypes_of_interest,
+                                               enrich_p.value < 0.05, 
+                                               enrich_t.stat > 0) |>
+                                        arrange(-enrich_t.stat) |>
+                                        group_by(cellType.target) |>
+                                        dplyr::slice(1:2) |>
+                                        mutate(note = paste0("specific Enrich genes t=", round(enrich_t.stat, 2))))
+
+enrichment_specific_interest|> dplyr::count(cellType.target)
+
+select_specific_cell_type_marker <- bind_rows(mean_ratio_specific_interest, enrichment_specific_interest)  |>
+    transmute(gene_name = gene, 
+              target = cellType.target, 
+              goal = "cell type specific marker",
+              note = note,
+              in_base = in_base) |>
+    group_by(gene_name, target, goal, in_base) |>
+    summarise(note = paste(unique(note), collapse = ", "))
+
+
+select_specific_cell_type_marker |> ungroup() |> filter(!in_base) |> dplyr::count(target)
+
+# target           n
+# <chr>        <int>
+#     1 Astro.1          5
+# 2 Astro.2          4
+# 3 Astro.3          5
+# 4 Excit.L2_5.1     5
+# 5 Excit.L5.2       5
+# 6 OPC.5            4
+# 7 Oligo.1          4
+# 8 Oligo.2          4
+# 9 Oligo.3          4
+# 10 Oligo.5          2
+
+select_specific_cell_type_marker |> filter(target == "Oligo.3")
+
+ct_specific_marker_stats$Oligo |> filter(cellType.target == "Oligo.3", gene_name %in% c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2"))
+
+# ct_markers <- c(
+#     Oligo.1_2 <- c("OPALIN"),
+#     Oligo.3 <- c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2"),
+#     Oligo.5 <- c("ARHGEF3")
+# )
 
 #### Spatially interesting ####
 
@@ -489,13 +585,14 @@ dev.off()
 
 ALL_probes_long <- select_AD_risk |>
     bind_rows(select_global_mean_ratio_marker) |>
+    bind_rows(select_specific_cell_type_marker) |>
     bind_rows(select_NE_receptors) |>
     bind_rows(select_mediator_genes)
 
 ALL_probes_summary <- ALL_probes_long |>
     group_by(gene_name, in_base) |>
     summarise(n_goal = n(), 
-              goals = paste(sort(goal), collapse = ", "))
+              goals = paste(sort(unique(goal)), collapse = ", "))
 
 probes_summary_count <- ALL_probes_summary |>
     ungroup() |>
@@ -509,6 +606,10 @@ bind_rows(probes_summary_count,
                     across(where(is.character), ~"Total") # Label the character column as "Total"
           )
 )
+
+## Oligo.3 check 
+
+ALL_probes_long |> filter(target == "Oligo.3")
 
 
 ## filter gene not in base
