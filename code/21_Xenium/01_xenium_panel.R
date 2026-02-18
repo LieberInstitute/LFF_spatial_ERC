@@ -329,19 +329,59 @@ dev.off()
 
 mediation_summary <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediation_vs_baseline_summary.tsv.gz"))
 
-mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediator_outcome_fdr_impact.tsv.gz")) 
-
-## 20 outcomes in base probes
-mediator_outcome |> filter(outcome %in% Xenium_hBrain$Genes)
-
-mediator_outcome |> dplyr::count(med_cl, mediator)
-mediator_outcome |> dplyr::count(med_cl, mediator)
-
-head(mediation_summary)
-
-mediator_tab <- mediation_summary |> filter(mediated_n > 0) |> select(mediation_run) |> separate(mediation_run, into = c("cell_type", "ensemblID", "gene_name"), sep = "\\|")
+mediator_tab <- mediation_summary |> 
+    filter(mediated_n > 0) |> 
+    select(mediation_run, mediated_n) |> 
+    separate(mediation_run, into = c("cell_type", "ensemblID", "gene_name"), sep = "\\|")
+# cell_type       ensemblID gene_name mediated_n
+# 1   Astro.1 ENSG00000117600    PLPPR4          1
+# 2   Astro.1 ENSG00000221890     NPTXR         22
+# 3   Astro.2 ENSG00000141338     ABCA8          1
+# 4   Astro.2 ENSG00000147488      ST18          1
+# 5   Astro.2 ENSG00000166342     NETO1         61
+# 6   Astro.2 ENSG00000177283      FZD8        125
+# 7   Astro.2 ENSG00000185518      SV2B        199
+# 8   Astro.3 ENSG00000133019     CHRM3        205
+# 9   Astro.3 ENSG00000134352     IL6ST          4
 
 mediator_tab$gene_name %in% Xenium_hBrain$genes
+
+mediated_gene_shortlist <- c("MBP", # mylenation - ABCA8 outcome
+                             "NAP1L3", # only outcome pf ST18
+                             "ENC1", # only outcome of PLPPR4
+                             "SOX6", # key regulator of oligodendrocyte maturation - NPTXR outcome
+                             "SORBS1", # IL6ST outcome
+                             "GPM6A" #Oligo.3 marker FZD8 outcome
+)
+
+mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediator_outcome_fdr_impact.tsv.gz")) |>
+    mutate(outcome_in_base = outcome %in% Xenium_hBrain$Genes,
+           outcome_in_list = outcome %in% mediated_gene_shortlist,
+           pair = paste0(mediator, "|", outcome))
+
+## 15 pairs from short list
+mediator_outcome |> filter(outcome_in_list) 
+
+## 20 outcomes in base probes
+mediator_outcome |> filter(outcome_in_base) 
+
+mediator_outcome |> filter(outcome_in_list | outcome_in_base) 
+
+mediator_outcome |> filter(outcome_in_base) |> dplyr::count(med_cl, mediator)
+
+mediator_outcome |> dplyr::count(med_cl, mediator)
+
+mediator_outcome |> filter(mediator == "FZD8")
+
+mediation_fdr_scatter <- mediator_outcome |> 
+    ggplot(aes(x = fdr, fdr_med, color = outcome_in_base)) +
+    geom_point() +
+    geom_text_repel(aes(label = outcome), size = 1.5) +
+    facet_wrap(~mediator) +
+    theme_bw()
+
+ggsave(mediation_fdr_scatter, filename = here(plot_dir, "mediation_fdr_scatter.png"), height = 8, width = 10)
+    
 
 pdf(here(plot_dir, "sn_dotplot_mediator_genes.pdf"))
 sce |>
@@ -364,3 +404,29 @@ sce |>
               groupLegends = FALSE
     ) 
 dev.off()
+
+
+mediator_selection <- mediator_outcome |> 
+    select(mediator, outcome, med_cl) |> 
+    pivot_longer(!c(med_cl), values_to = "gene_name", names_to = "role") |>
+    mutate(in_base = gene_name %in% Xenium_hBrain$Genes,
+           in_list = gene_name %in% mediated_gene_shortlist) |>
+    filter(in_base | in_list | grepl("mediator", role)) |>
+    group_by(gene_name, in_base, in_list) |>
+    summarise(med_cl = paste(unique(med_cl),collapse = ","),
+              role = paste(unique(role),collapse = ",")) 
+
+mediator_selection |> ungroup() |> dplyr::count(in_base)
+
+mediator_selection_add <- mediator_selection |>
+    filter(in_list | grepl("mediator", role), !in_base) 
+
+mediator_tested <- mediator_outcome |> 
+    filter(mediator %in% mediator_selection$gene_name & outcome %in% mediator_selection$gene_name)
+
+    
+mediator_selection |> filter(role == "outcome") |> arrange(-n_pairs)
+
+mediator_selection |>
+    dplyr::count(in_base, in_list, role)
+
