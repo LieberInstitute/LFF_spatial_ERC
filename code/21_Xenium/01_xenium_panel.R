@@ -39,8 +39,8 @@ Xenium_annotation <- read_xlsx(here(data_dir, "Xenium_hBrain_annotation.xlsx"))
 Xenium_annotation |> dplyr::count(cell_type_class)
 
 Xenium_hBrain <- read_csv(here("processed-data", "21_Xenium", "Xenium_hBrain_v1_metadata.csv")) |>
-    mutate(in_sce = Genes %in% rownames(sce),
-           in_spe = Genes %in% rownames(spe)) |>
+    # mutate(in_sce = Genes %in% rownames(sce),
+    #        in_spe = Genes %in% rownames(spe)) |>
     left_join(Xenium_annotation) |>
     arrange(anno)  |> 
     filter(in_sce & in_spe)
@@ -99,7 +99,17 @@ Xenium_hBrain |> dplyr::filter(Genes %in% AD_risk$symbol) |> select(Genes, Annot
 # 4 APOE   Microglia-PVM               NA            
 # 5 PSEN1  Oligodendrocyte             NA  
 
-#### dotplot of panel on cell_type_anno ####
+## select AD risk genes already in pannel 
+select_AD_risk <- Xenium_hBrain |> 
+    dplyr::filter(Genes %in% AD_risk$symbol) |> 
+    transmute(gene_name = Genes, 
+           target = NA, 
+           goal = "AD risk", 
+           note = "OpenTargets AD gene", 
+           in_base = TRUE)
+    
+
+#### Plot base pannel in snRNA-seq genes ####
 
 rowData(sce)$Xenium <- NULL
 rowData(sce)$Xenium <- Xenium_hBrain$anno[match(rownames(sce), Xenium_hBrain$Genes)] 
@@ -141,7 +151,7 @@ walk(xenium_list,
         print())
 dev.off()
 
-#### Plot on Visium Data ####
+#### Plot base pannel on Visium Data ####
 
 rowData(spe)$Xenium <- NULL
 rowData(spe)$Xenium <- Xenium_hBrain$anno[match(rownames(spe), Xenium_hBrain$Genes)] 
@@ -163,7 +173,9 @@ walk(xenium_list,
          print())
 dev.off()
 
-#### Cell Type Enrichment ####
+#### Cell Type Marker Genes - global enrichment ####
+
+## global enrichment didn't look great, did not include
 
 enrichment_stats_top <- read_csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv")) |>
     dplyr::rename(Genes = ensembl)
@@ -172,15 +184,16 @@ non_unique <- enrichment_stats_top |> count(ensembl) |> filter(n != 1) |> pull(e
 
 enrichment_stats_top |> inner_join(Xenium_hBrain)
 
-enrichment_stats_top |> filter(Genes %in% Xenium_hBrain$Genes)
+any(enrichment_stats_top |> filter(Genes %in% Xenium_hBrain$Genes)) # no overlaps 
 
 enrichment_stats_select <- enrichment_stats_top |> 
     filter(cell_type_anno %in% c("Astro.1", "Astro.2", "Astro.3",
                                  "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
-                                 "OPC.5")
+                                 "OPC.5", 
+                                 "Excit.L5.2", "Excit.L2_5.1")
            ) |> 
     dplyr::rename(gene_name = Genes)|>
-    inner_join(rowData(sce) |> as.data.frame()) |> 
+    # inner_join(rowData(sce) |> as.data.frame()) |> 
     filter(gene_name != "ENSG00000272076") ## top gene for several astros
 
 enrichment_stats_select |> dplyr::count(cell_type_anno, gene_type)
@@ -205,7 +218,7 @@ sce |>
     ) 
 dev.off()
 
-#### Single Cell MeanRatio ####
+#### Cell Type Marker Genes - Global MeanRatio ####
 
 load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
 
@@ -213,26 +226,55 @@ marker_stats_top <- marker_stats_MeanRatio |>
     filter(MeanRatio.rank <= 10, MeanRatio > 1) |>
     arrange(cellType.target)
 
-## 11 top5 genes overlap
+## 21 top 10 genes overlap
 mean_ratio_xenium_overlap <- marker_stats_top |> 
     inner_join(Xenium_hBrain |> 
                    dplyr::rename(gene = Genes)) |>  
-    select(gene, cellType.target, MeanRatio, MeanRatio.rank, Annotation, cell_type_anno) |>
+    select(gene, cellType.target, MeanRatio, MeanRatio.rank, Annotation, cell_type_anno, MeanRatio.anno) |>
     arrange(cellType.target) 
 
 mean_ratio_xenium_overlap |> print(n = 21)
 
+## pick markers for cell types of interest - not covered by base
 marker_stats_select <- marker_stats_top |> 
     filter(MeanRatio.rank <= 5) |>
     filter(cellType.target %in% c("Astro.1", "Astro.2", "Astro.3",
-                                 "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
-                                 "OPC.5",
-                                 "Excit.L5.2", "Excit.L2_5.1")
+                                  "Oligo.1", "Oligo.2", "Oligo.3", "Oligo.5",
+                                  "OPC.5",
+                                  "Excit.L5.2", "Excit.L2_5.1")
     )
 
-marker_stats_select |> dplyr::count(cellType.target)
+## filter to very specific genes
+marker_stats_select <- marker_stats_select |> filter(MeanRatio > 1.5, MeanRatio.rank <= 2)
 
-marker_stats_select 
+## select target global MR genes or MR genes overlapping base panel
+select_global_mean_ratio_marker <- mean_ratio_xenium_overlap |>
+    bind_rows(marker_stats_select) |>
+    transmute(gene_name = gene, 
+           target = cellType.target, 
+           goal = "cell type marker (global MR)",
+           note = paste("globl MR genes - ", MeanRatio.anno),
+           in_base = gene_name %in% Xenium_hBrain$Genes)
+
+select_global_mean_ratio_marker |> dplyr::count(target, in_base)
+# target           in_base     n
+# <fct>            <lgl>   <int>
+# 1 Macro            TRUE        3
+# 2 Micro.1          TRUE        1
+# 3 OPC.4            TRUE        1
+# 4 Oligo.1          TRUE        1
+# 5 Oligo.2          FALSE       1
+# 6 Vasc.VLMC        TRUE        1
+# 7 Excit.L5.2       FALSE       1
+# 8 Excit.L5_6_NP    TRUE        1
+# 9 Excit.L6_CT      TRUE        1
+# 10 Excit.L6b        TRUE        2
+# 11 Inhib.Chandelier TRUE        1
+# 12 Inhib.Lamp5_Lhx6 TRUE        3
+# 13 Inhib.Pvalb      TRUE        2
+# 14 Inhib.Sst        TRUE        2
+# 15 Inhib.Vip        TRUE        2
+
 
 rowData(sce)$MeanRatio <- NULL
 rowData(sce)$MeanRatio <- as.character(marker_stats_select$cellType.target)[match(rownames(sce), marker_stats_select$gene)] 
@@ -252,7 +294,7 @@ sce |>
     ) 
 dev.off()
 
-#### Cell type specific modeling ####
+#### Cell Type Marker Genes - cell type specific modeling ####
 
 broad_cell_types <- c("Oligo", "Astro")
 names(broad_cell_types) <- broad_cell_types
@@ -289,19 +331,25 @@ walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker
     
 })
 
+ct_markers <- c(
+    Oligo.1_2 <- c("OPALIN")
+    Oligo.3 <- c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2")
+    Oligo.5 <- c("ARHGEF3")
+)
 
-#### Genes of Interest ####
+#### Spatially interesting ####
+
+genes_other <- c("RELN")
+
+
+#### NE_receptor_genes ####
 
 NE_receptor_genes <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
 all(NE_receptor_genes %in% rownames(sce))
 
-genes_other <- c("RELN")
-
-genes_of_interest <- c(NE_receptor_genes, genes_other)
-
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_genes_of_interest.pdf")), height = 7, width = 8)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_NE_receptor.pdf")), height = 7, width = 8)
 sce |>
-    scDotPlot(features = genes_of_interest,
+    scDotPlot(features = NE_receptor_genes,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               scale = TRUE,
@@ -311,17 +359,10 @@ sce |>
     ) 
 dev.off()
 
-pdf(here(plot_dir, sprintf("SpD_dotplot_genes_of_interest.pdf")), height = 7, width = 8)
-spe |>
-    scDotPlot(features = genes_of_interest,
-              group = "SpD",
-              groupAnno = "SpD",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = SpD_colors),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-dev.off()
+## select genes expressed in Oligo & Astro
+select_NE_receptors <- tibble(gene_name = c("ADRA1A","ADRA1B","ADRB1"), target = "Oligo, Astro", goal = "NE_receptors") |>
+    mutate(in_base = gene_name %in% Xenium_hBrain$Genes)
+
 
 #### Mediation Genes ####
 
@@ -332,7 +373,8 @@ mediation_summary <- read.delim(here("processed-data","22_Mediation","out-erc_as
 mediator_tab <- mediation_summary |> 
     filter(mediated_n > 0) |> 
     select(mediation_run, mediated_n) |> 
-    separate(mediation_run, into = c("cell_type", "ensemblID", "gene_name"), sep = "\\|")
+    separate(mediation_run, into = c("cell_type", "ensemblID", "gene_name"), sep = "\\|") |>
+    mutate(in_base = gene_name %in% Xenium_hBrain$Genes)
 # cell_type       ensemblID gene_name mediated_n
 # 1   Astro.1 ENSG00000117600    PLPPR4          1
 # 2   Astro.1 ENSG00000221890     NPTXR         22
@@ -343,8 +385,6 @@ mediator_tab <- mediation_summary |>
 # 7   Astro.2 ENSG00000185518      SV2B        199
 # 8   Astro.3 ENSG00000133019     CHRM3        205
 # 9   Astro.3 ENSG00000134352     IL6ST          4
-
-mediator_tab$gene_name %in% Xenium_hBrain$genes
 
 mediated_gene_shortlist <- c("MBP", # mylenation - ABCA8 outcome
                              "NAP1L3", # only outcome pf ST18
@@ -381,31 +421,17 @@ mediation_fdr_scatter <- mediator_outcome |>
     theme_bw()
 
 ggsave(mediation_fdr_scatter, filename = here(plot_dir, "mediation_fdr_scatter.png"), height = 8, width = 10)
+
+mediation_logFC_scatter <- mediator_outcome |> 
+    ggplot(aes(x = logFC, logFC_med, color = outcome_in_base)) +
+    geom_point() +
+    geom_text_repel(aes(label = outcome), size = 1.5) +
+    facet_wrap(~mediator) +
+    theme_bw()
+
+ggsave(mediation_logFC_scatter, filename = here(plot_dir, "mediation_logFC_scatter.png"), height = 8, width = 10)
     
-
-pdf(here(plot_dir, "sn_dotplot_mediator_genes.pdf"))
-sce |>
-    scDotPlot(features = mediator_tab$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              scale = FALSE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-
-sce |>
-    scDotPlot(features = mediator_tab$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-dev.off()
-
-
+## select all mediator genes, and outcome genes in shortlist or in base panel, 
 mediator_selection <- mediator_outcome |> 
     select(mediator, outcome, med_cl) |> 
     pivot_longer(!c(med_cl), values_to = "gene_name", names_to = "role") |>
@@ -418,15 +444,78 @@ mediator_selection <- mediator_outcome |>
 
 mediator_selection |> ungroup() |> dplyr::count(in_base)
 
-mediator_selection_add <- mediator_selection |>
-    filter(in_list | grepl("mediator", role), !in_base) 
+## select mediation genes
+select_mediator_genes <- mediator_selection |>
+    mutate(target = ifelse(role == "outcome", "Oligo.3", med_cl),
+           goal = "mediation", 
+           note = paste("mediation gene:", role, target)) |>
+    ungroup() |>
+    select(gene_name, in_base,target, goal, note)
 
 mediator_tested <- mediator_outcome |> 
     filter(mediator %in% mediator_selection$gene_name & outcome %in% mediator_selection$gene_name)
 
-    
+mediator_tested |> dplyr::count(med_cl)
+
 mediator_selection |> filter(role == "outcome") |> arrange(-n_pairs)
 
 mediator_selection |>
     dplyr::count(in_base, in_list, role)
+
+
+pdf(here(plot_dir, "sn_dotplot_mediator_genes.pdf"))
+sce |>
+    scDotPlot(features = mediator_selection_add$gene_name,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+
+sce |>
+    scDotPlot(features = mediator_selection_add$gene_name,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+dev.off()
+
+#### COMPILE ALL PROBE LISTS ####
+
+ALL_probes_long <- select_AD_risk |>
+    bind_rows(select_global_mean_ratio_marker) |>
+    bind_rows(select_NE_receptors) |>
+    bind_rows(select_mediator_genes)
+
+ALL_probes_summary <- ALL_probes_long |>
+    group_by(gene_name, in_base) |>
+    summarise(n_goal = n(), 
+              goals = paste(sort(goal), collapse = ", "))
+
+probes_summary_count <- ALL_probes_summary |>
+    ungroup() |>
+    dplyr::count(goals, in_base) |>
+    pivot_wider(names_from = "in_base", names_prefix = "base_", values_from = "n") 
+
+
+bind_rows(probes_summary_count,
+          summarise(probes_summary_count,
+                    across(where(is.numeric), \(x) sum(x, na.rm = TRUE)), # Sum all numeric columns
+                    across(where(is.character), ~"Total") # Label the character column as "Total"
+          )
+)
+
+
+## filter gene not in base
+select_custom_probes <- ALL_probes_gene_summary |> filter(!in_base)
+
+
+
+
+
 
