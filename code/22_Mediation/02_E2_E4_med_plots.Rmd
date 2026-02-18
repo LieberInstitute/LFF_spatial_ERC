@@ -1482,7 +1482,7 @@ if (nrow(diag_dt) < 1L) {
     }
 }
 
-fwrite(mediator_impact, file=file.path(med_data_dir, "mediator_outcome_fdr_impact.tsv.gz"), sep="\t")
+fwrite(mediator_impact, file=file.path(med_data_dir, "out-erc_astro", "mediator_outcome_fdr_impact.tsv.gz"), sep="\t")
 
 ```
 
