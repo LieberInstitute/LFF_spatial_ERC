@@ -86,7 +86,7 @@ Xenium_hBrain |> dplyr::count(Annotation) |> print(n = 28)
 # 27 VLMC                           18
 # 28 Vip                             2
 
-
+#### AD risk genes ####
 AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv"))
 
 Xenium_hBrain |> dplyr::filter(Genes %in% AD_risk$symbol) |> select(Genes, Annotation, cell_type_anno)
@@ -281,6 +281,44 @@ spe |>
     ) 
 dev.off()
 
+#### Mediation Genes ####
 
+# list.files(here("processed-data","22_Mediation","out-erc_astro"))
 
+mediation_summary <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediation_vs_baseline_summary.tsv.gz"))
 
+mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediator_outcome_fdr_impact.tsv.gz")) 
+
+## 20 outcomes in base probes
+mediator_outcome |> filter(outcome %in% Xenium_hBrain$Genes)
+
+mediator_outcome |> dplyr::count(med_cl, mediator)
+mediator_outcome |> dplyr::count(med_cl, mediator)
+
+head(mediation_summary)
+
+mediator_tab <- mediation_summary |> filter(mediated_n > 0) |> select(mediation_run) |> separate(mediation_run, into = c("cell_type", "ensemblID", "gene_name"), sep = "\\|")
+
+mediator_tab$gene_name %in% Xenium_hBrain$genes
+
+pdf(here(plot_dir, "sn_dotplot_mediator_genes.pdf"))
+sce |>
+    scDotPlot(features = mediator_tab$gene_name,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+
+sce |>
+    scDotPlot(features = mediator_tab$gene_name,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    ) 
+dev.off()
