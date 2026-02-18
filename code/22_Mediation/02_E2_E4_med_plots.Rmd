@@ -1306,8 +1306,10 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
             outcome = character(0),
             fdr = numeric(0),
             logFC = numeric(0),
+            t = numeric(0),
             fdr_med = numeric(0),
-            logFC_med = numeric(0)
+            logFC_med = numeric(0),
+            t_med = numeric(0)
         ))
     }
     if (is.null(pd) || !is.list(pd)) {
@@ -1341,6 +1343,7 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
     }
 
     base_fc_col <- first_present_col(dt_br, c("logFC", "vlmf_logFC"))
+    base_t_col <- first_present_col(dt_br, c("t", "vlmf_t"))
     base_map <- dt_br[
         !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
         {
@@ -1348,7 +1351,8 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
             best_i <- if (length(ii) > 0L) ii[which.min(adj.P.Val[ii])] else NA_integer_
             .(
                 fdr = min_or_na(adj.P.Val),
-                logFC = if (is.na(base_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(base_fc_col)[best_i])
+                logFC = if (is.na(base_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(base_fc_col)[best_i]),
+                t = if (is.na(base_t_col) || is.na(best_i)) NA_real_ else as.numeric(get(base_t_col)[best_i])
             )
         },
         by = .(outcome_gene_id = as.character(outcome_gene_id))
@@ -1366,7 +1370,8 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
         med_map <- data.table::data.table(
             outcome_gene_id = character(0),
             fdr_med = numeric(0),
-            logFC_med = numeric(0)
+            logFC_med = numeric(0),
+            t_med = numeric(0)
         )
         med_key <- sprintf("%s:%s", med_cl, mediator)
         mr <- tryCatch(
@@ -1400,6 +1405,7 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
                 dt_mr <- .cached_fread(mf)
                 if (all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_mr))) {
                     med_fc_col <- first_present_col(dt_mr, c("logFC", "vlmf_logFC"))
+                    med_t_col <- first_present_col(dt_mr, c("t", "vlmf_t"))
                     med_map <- dt_mr[
                         !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
                         {
@@ -1407,7 +1413,8 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
                             best_i <- if (length(ii) > 0L) ii[which.min(adj.P.Val[ii])] else NA_integer_
                             .(
                                 fdr_med = min_or_na(adj.P.Val),
-                                logFC_med = if (is.na(med_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_fc_col)[best_i])
+                                logFC_med = if (is.na(med_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_fc_col)[best_i]),
+                                t_med = if (is.na(med_t_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_t_col)[best_i])
                             )
                         },
                         by = .(outcome_gene_id = as.character(outcome_gene_id))
@@ -1420,8 +1427,10 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
 
         fdr_base <- base_map$fdr[match(out_ids, base_map$outcome_gene_id)]
         logFC_base <- base_map$logFC[match(out_ids, base_map$outcome_gene_id)]
+        t_base <- base_map$t[match(out_ids, base_map$outcome_gene_id)]
         fdr_med <- med_map$fdr_med[match(out_ids, med_map$outcome_gene_id)]
         logFC_med <- med_map$logFC_med[match(out_ids, med_map$outcome_gene_id)]
+        t_med <- med_map$t_med[match(out_ids, med_map$outcome_gene_id)]
 
         data.table::data.table(
             med_cl = med_cl,
@@ -1429,13 +1438,15 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
             outcome = outcomes,
             fdr = as.numeric(fdr_base),
             logFC = as.numeric(logFC_base),
+            t = as.numeric(t_base),
             fdr_med = as.numeric(fdr_med),
-            logFC_med = as.numeric(logFC_med)
+            logFC_med = as.numeric(logFC_med),
+            t_med = as.numeric(t_med)
         )
     })
 
     impact_dt <- data.table::rbindlist(impact_rows, fill = TRUE)
-    data.table::setcolorder(impact_dt, c("med_cl", "mediator", "outcome", "fdr", "logFC", "fdr_med", "logFC_med"))
+    data.table::setcolorder(impact_dt, c("med_cl", "mediator", "outcome", "fdr", "logFC", "t", "fdr_med", "logFC_med", "t_med"))
     data.table::setorderv(impact_dt, c("med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L))
     impact_dt
 }
@@ -1467,7 +1478,7 @@ if (nrow(diag_dt) < 1L) {
 
     mediator_impact <- build_erc_mediator_impact_dt(diag_dt, pd)
     cat(sprintf(
-        "\nMediator impact table rows: %d (columns: med_cl, mediator, outcome, fdr, logFC, fdr_med, logFC_med)\n",
+        "\nMediator impact table rows: %d (columns: med_cl, mediator, outcome, fdr, logFC, t, fdr_med, logFC_med, t_med)\n",
         nrow(mediator_impact)
     ))
     print(mediator_impact)
