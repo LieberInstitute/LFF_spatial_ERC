@@ -1094,8 +1094,8 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     ## add explicit top headroom per y-scale group for FDR/t annotations
     out_span <- diff(out_rng)
     med_span <- diff(med_rng)
-    out_rng_pad <- c(out_rng[1], out_rng[2] + pmax(0.15 * out_span, 0.35))
-    med_rng_pad <- c(med_rng[1], med_rng[2] + pmax(0.15 * med_span, 0.35))
+    out_rng_pad <- c(out_rng[1], out_rng[2] + pmax(0.25 * out_span, 0.45))
+    med_rng_pad <- c(med_rng[1], med_rng[2] + pmax(0.25 * med_span, 0.45))
 
     med_title_gene <- as.character(mr$gene_name[[1]])
     med_title_cluster <- as.character(mr$cluster[[1]])
@@ -1105,6 +1105,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     if (!nzchar(med_title_cluster) || is.na(med_title_cluster)) {
         med_title_cluster <- "unknown_cluster"
     }
+    if (med_title_cluster == "LCAstro") med_title_cluster <- "LC Astro"
 
     ggplot(plot_long, aes(x = carrier_group, y = expression, fill = carrier_group,
                         color = carrier_group)) +
@@ -1123,7 +1124,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         ) +
         scale_fill_manual(values = APOE_carrier_colors) +
         scale_color_manual(values = APOE_carrier_colors_dark) +
-        labs( title = sprintf("Outcome: ERC Oligo.3 %s | Mediator: %s [%s]", og, med_title_gene, med_title_cluster),
+        labs( title = sprintf("Outcome: %s [ERC Oligo.3] | Mediator: %s [%s]", og, med_title_gene, med_title_cluster),
             ## subtitle = src_desc,
             x = "APOE Carrier Status",
             y = "Covariate-adjusted Expression (logCPM)",
@@ -1133,7 +1134,7 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
                 data = anno,
                 aes(x = 1.5, y = Inf, label = label),
                 inherit.aes = FALSE,
-                size = 3.5, vjust = 1.2
+                size = 4, vjust = 1.2
           ) +
         {
             if (!is.null(panel_tag_df)) {
@@ -1154,14 +1155,14 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
         theme_bw(base_size = 14) +
         theme( legend.position = "none",
             ## title positioning:
-            plot.title = element_text(size = 12, face = "bold", margin = margin(b = 12)),
+            plot.title = element_text(size = 12, face = "bold", margin = margin(b = 12, l = -14)),
             strip.text = element_text(size = 12, face = "bold"),
             ## ticks:
-            axis.text.x = element_text(size = 12, color = "grey40", face="bold"),
+            axis.text.x = element_text(size = 13, color = "grey20", face="bold"),
             axis.text.y = element_text(size = 12, color = "grey20"),
             ## axis titles:
-            axis.title.x = element_text(size = 12,  margin = margin(t = 13)),
-            axis.title.y = element_text(size = 12, color = "black"),
+            axis.title.x = element_text(size = 14,  margin = margin(t = 12, l=-4)),
+            axis.title.y = element_text(size = 14, color = "black"),
             panel.spacing.x = grid::unit(26, "pt"),
             panel.spacing.y = grid::unit(26, "pt"),
             panel.border = element_rect(color = "grey40", fill = NA, linewidth = 0.4),
@@ -1170,9 +1171,19 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
 }
 
 ## make sure ERC astro data is loaded
-perc <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd,
-                    med_region = "ERC", med_stats_mode = "precomputed", start_letter=NULL, rows=2)
-print(perc)
+#perc <- plotMedComp(outcome_gene = "MBP", mediator_gene = "ABCA8", pd = pd,
+#                    med_region = "ERC", med_stats_mode = "precomputed", start_letter=NULL, rows=2)
+#print(perc)
+## test 4-panel LC 2x2 layout with both precomputed and recalculated stats
+
+plc2r <- plotMedComp(outcome_gene = "MMD2", mediator_gene = "SLC1A3", pd = pd_lc,
+                    med_region = "LC", med_stats_mode = "both", start_letter=NULL, rows=2)
+print(plc2r)
+#ggsave(filename = file.path(here("plots/22_Mediation"),
+#                     "LC_MMD2_SLC1A3_mediation_2r_nolabels_small.svg"), plot = plc2r,
+#                      width = 5.6, height = 7, units = "in")
+
+
 ```
 
 ```{r ERC mediated list diagnostics}
