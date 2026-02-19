@@ -381,9 +381,71 @@ select_SpD_markers <- SpD_marker_stats |>
 select_SpD_markers |> dplyr::count(gene_name, target) |> arrange(-n)
 
 
-#### DEGs - Oligo ####
+#### DEGs - carrier ####
 
-#### DEGs - Excit ####
+DE_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine", "DGE_results_carrier_sn_fine.Rds")) |>
+    select(cluster, gene_name, starts_with("vlmf")) |>
+    mutate(in_base =  gene_name %in% Xenium_hBrain$Genes,
+           DE_class = ifelse(vlmf_logFC < 0, "down", "up"))
+    
+## 48 DEGs in base panel 
+
+select_DEG_included <- DE_data |> 
+    filter(in_base, vlmf_adj.P.Val < 0.05) |>
+    transmute(gene_name,
+              target = cluster, 
+              goal = "DEG - carrier",
+              note = paste("DEG carrier included:", target , DE_class),
+              in_base)
+
+## Oligo.3
+select_DEG_top_Oligo.3 <- DE_data |>
+    filter(cluster == "Oligo.3")  |>
+    group_by(DE_class) |>
+    arrange(-abs(vlmf_logFC)) |>
+    slice(1:5) |>
+    ungroup() |>
+    transmute(gene_name,
+              target = cluster, 
+              goal = "DEG - carrier",
+              note = paste("DEG carrier top: Oligo.3", DE_class),
+              in_base)
+
+DEGs_of_interest <- c("PLP1", "MAG", "MAL", "MBP", "SOX10", "OPALIN", "MAPT", "FOS", "TLR2", "STAT1", "STAT4", "LRRK2")
+
+select_DEG_interest <- DE_data |>
+    filter(cluster == "Oligo.3", gene_name %in% DEGs_of_interest) |>
+    transmute(gene_name,
+              target = cluster, 
+              goal = "DEG - carrier",
+              note = paste("DEG of interest: Oligo.3", DE_class),
+              in_base)
+    
+
+## DEGs - Excit
+
+select_DEG_top_Excit <- DE_data |>
+    filter(cluster %in% c("Excit.L5.2", "Excit.L2_5.1"))  |>
+    group_by(DE_class, cluster) |>
+    arrange(-abs(vlmf_logFC)) |>
+    slice(1:2) |>
+    ungroup() |>
+    transmute(gene_name,
+              target = cluster, 
+              goal = "DEG - carrier",
+              note = paste("DEG carrier top: ", cluster, DE_class),
+              in_base)
+
+
+select_DEG_Carrier <- select_DEG_included |>
+    bind_rows(select_DEG_top_Oligo.3) |>
+    bind_rows(select_DEG_interest) |>
+    bind_rows(select_DEG_top_Excit) |>
+    group_by(gene_name, target, goal, in_base) |>
+    summarise(note = paste0(note, collapse = ", ")) |>
+    ungroup()
+
+select_DEG_Carrier |> count(in_base, target)
 
 #### DEGs - Astro Mediation Genes ####
 
@@ -465,6 +527,10 @@ mediator_selection <- mediator_outcome |>
 
 mediator_selection |> ungroup() |> dplyr::count(in_base)
 
+
+mediator_selection |>
+    dplyr::count(in_base, in_list, role)
+
 ## select mediation genes
 select_mediator_genes <- mediator_selection |>
     mutate(target = ifelse(role == "outcome", "Oligo.3", med_cl),
@@ -473,46 +539,43 @@ select_mediator_genes <- mediator_selection |>
     ungroup() |>
     select(gene_name, in_base,target, goal, note)
 
+## we can test 38 pairs!
 mediator_tested <- mediator_outcome |> 
-    filter(mediator %in% mediator_selection$gene_name & outcome %in% mediator_selection$gene_name)
+    filter(outcome %in% mediator_selection$gene_name |
+               outcome %in% select_DEG_Carrier$gene_name)
 
 mediator_tested |> dplyr::count(med_cl)
 
-mediator_selection |> filter(role == "outcome") |> arrange(-n_pairs)
-
-mediator_selection |>
-    dplyr::count(in_base, in_list, role)
-
-
-pdf(here(plot_dir, "sn_dotplot_mediator_genes.pdf"))
-sce |>
-    scDotPlot(features = mediator_selection_add$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              scale = FALSE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-
-sce |>
-    scDotPlot(features = mediator_selection_add$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-dev.off()
+# pdf(here(plot_dir, "sn_dotplot_mediator_genes.pdf"))
+# sce |>
+#     scDotPlot(features = mediator_selection_add$gene_name,
+#               group = "cell_type_anno",
+#               groupAnno = "cell_type_anno",
+#               scale = FALSE,
+#               annoColors = list("cell_type_anno" = cell_type_colors$anno),
+#               clusterRows = FALSE,
+#               groupLegends = FALSE
+#     ) 
+# 
+# sce |>
+#     scDotPlot(features = mediator_selection_add$gene_name,
+#               group = "cell_type_anno",
+#               groupAnno = "cell_type_anno",
+#               scale = TRUE,
+#               annoColors = list("cell_type_anno" = cell_type_colors$anno),
+#               clusterRows = FALSE,
+#               groupLegends = FALSE
+#     ) 
+# dev.off()
 
 #### COMPILE ALL PROBE LISTS ####
 
 ALL_probes_long <- select_AD_risk |>
+    bind_rows(select_NE_receptors) |>
     bind_rows(select_global_mean_ratio_marker) |>
     bind_rows(select_specific_cell_type_marker) |>
     bind_rows(select_SpD_markers) |>
-    bind_rows(select_NE_receptors) |>
+    bind_rows(select_DEG_Carrier)|>
     bind_rows(select_mediator_genes)
 
 # ALL_probes_long |> filter(goal == "")
@@ -520,7 +583,10 @@ ALL_probes_long <- select_AD_risk |>
 ALL_probes_summary <- ALL_probes_long |>
     group_by(gene_name, in_base) |>
     summarise(n_goal = n(), 
-              goals = paste(sort(unique(goal)), collapse = ", "))
+              goals = paste(sort(unique(goal)), collapse = ", "),
+              targets = paste(sort(unique(target)), collapse = ", "))
+
+ALL_probes_summary |> filter(!in_base) |> arrange(-n_goal)
 
 # ALL_probes_summary |> filter(goals == "")
 
@@ -535,7 +601,8 @@ bind_rows(probes_summary_count,
                     across(where(is.numeric), \(x) sum(x, na.rm = TRUE)), # Sum all numeric columns
                     across(where(is.character), ~"Total") # Label the character column as "Total"
           )
-)
+) |>
+    print(n=22)
 
 writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
 
