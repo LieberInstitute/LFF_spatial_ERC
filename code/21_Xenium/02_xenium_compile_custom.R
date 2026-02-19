@@ -7,23 +7,23 @@ library("here")
 library("sessioninfo")
 library("readxl")
 library("writexl")
+library("ggrepel")
 
-data_dir <- here("processed-data", "21_Xenium", "01_xenium_panel")
+data_dir <- here("processed-data", "21_Xenium", "02_xenium_compile_custom")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "21_Xenium", "01_xenium_panel")
+plot_dir <- here("plots", "21_Xenium", "02_xenium_compile_custom")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load and annotate Xenium base panel ####
-Xenium_annotation <- read_xlsx(here(data_dir, "Xenium_hBrain_annotation.xlsx"))
+Xenium_annotation <- read_xlsx(here("processed-data", "21_Xenium", "01_xenium_panel", "Xenium_hBrain_annotation.xlsx"))
 Xenium_annotation |> dplyr::count(cell_type_class)
 
 Xenium_hBrain <- read_csv(here("processed-data", "21_Xenium", "Xenium_hBrain_v1_metadata.csv")) |>
     left_join(Xenium_annotation) |>
-    arrange(anno)  |> 
-    filter(in_sce & in_spe)
+    arrange(anno) 
 
-#### AD risk genes ####
+#### Lit - AD risk genes ####
 AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv"))
 
 Xenium_hBrain |> dplyr::filter(Genes %in% AD_risk$symbol) |> select(Genes, Annotation, cell_type_anno)
@@ -35,7 +35,7 @@ Xenium_hBrain |> dplyr::filter(Genes %in% AD_risk$symbol) |> select(Genes, Annot
 # 4 APOE   Microglia-PVM               NA            
 # 5 PSEN1  Oligodendrocyte             NA  
 
-## select AD risk genes already in pannel 
+## select AD risk genes already in panel 
 select_AD_risk <- Xenium_hBrain |> 
     dplyr::filter(Genes %in% AD_risk$symbol) |> 
     transmute(gene_name = Genes, 
@@ -44,6 +44,29 @@ select_AD_risk <- Xenium_hBrain |>
               note = "OpenTargets AD gene", 
               in_base = TRUE)
 
+#### Lit - NE_receptor_genes ####
+
+NE_receptor_genes <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
+
+# pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_NE_receptor.pdf")), height = 7, width = 8)
+# sce |>
+#     scDotPlot(features = NE_receptor_genes,
+#               group = "cell_type_anno",
+#               groupAnno = "cell_type_anno",
+#               scale = TRUE,
+#               annoColors = list("cell_type_anno" = cell_type_colors$anno),
+#               clusterRows = FALSE,
+#               groupLegends = FALSE
+#     ) 
+# dev.off()
+
+## select genes expressed in Oligo & Astro
+select_NE_receptors <- tibble(gene_name = c("ADRA1A","ADRA1B","ADRB1"), 
+                              target = "Oligo, Astro", 
+                              goal = "Lit - NE receptors") |>
+    mutate(in_base = gene_name %in% Xenium_hBrain$Genes)
+
+
 #### Marker Genes - Cell Type  - global enrichment ####
 
 ## global enrichment didn't look great, did not include
@@ -51,9 +74,9 @@ select_AD_risk <- Xenium_hBrain |>
 enrichment_stats_top <- read_csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv")) |>
     dplyr::rename(Genes = ensembl)
 
-non_unique <- enrichment_stats_top |> count(ensembl) |> filter(n != 1) |> pull(ensembl)
+non_unique <- enrichment_stats_top |> count(Genes) |> filter(n != 1) |> pull(Genes)
 
-enrichment_stats_top |> inner_join(Xenium_hBrain)
+# enrichment_stats_top |> inner_join(Xenium_hBrain)
 
 any(enrichment_stats_top |> filter(Genes %in% Xenium_hBrain$Genes)) # no overlaps 
 
@@ -64,30 +87,26 @@ enrichment_stats_select <- enrichment_stats_top |>
                                  "Excit.L5.2", "Excit.L2_5.1")
     ) |> 
     dplyr::rename(gene_name = Genes)|>
-    # inner_join(rowData(sce) |> as.data.frame()) |> 
     filter(gene_name != "ENSG00000272076") ## top gene for several astros
 
-enrichment_stats_select |> dplyr::count(cell_type_anno, gene_type)
 
-enrichment_stats_select |> filter(gene_type == "protein_coding")
-
-rowData(sce)$enrichment <- NULL
-rowData(sce)$enrichment <- enrichment_stats_select$cell_type_anno[match(rownames(sce), enrichment_stats_select$gene_name)] 
-table(rowData(sce)$enrichment)
-
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_enrichment_select.pdf")), height = 11, width = 8)
-sce |>
-    scDotPlot(features = enrichment_stats_select$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              featureAnno = "enrichment",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno,
-                                "enrichment" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-dev.off()
+# rowData(sce)$enrichment <- NULL
+# rowData(sce)$enrichment <- enrichment_stats_select$cell_type_anno[match(rownames(sce), enrichment_stats_select$gene_name)] 
+# table(rowData(sce)$enrichment)
+# 
+# pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_enrichment_select.pdf")), height = 11, width = 8)
+# sce |>
+#     scDotPlot(features = enrichment_stats_select$gene_name,
+#               group = "cell_type_anno",
+#               groupAnno = "cell_type_anno",
+#               featureAnno = "enrichment",
+#               scale = TRUE,
+#               annoColors = list("cell_type_anno" = cell_type_colors$anno,
+#                                 "enrichment" = cell_type_colors$anno),
+#               clusterRows = FALSE,
+#               groupLegends = FALSE
+#     ) 
+# dev.off()
 
 #### Marker Genes - Cell Type - Global MeanRatio ####
 
@@ -151,36 +170,36 @@ select_global_mean_ratio_marker |> dplyr::count(target, in_base)
 # 15 Inhib.Vip        TRUE        2
 
 
-rowData(sce)$MeanRatio <- NULL
-rowData(sce)$MeanRatio <- as.character(select_global_mean_ratio_marker$target)[match(rownames(sce), select_global_mean_ratio_marker$gene_name)] 
-table(rowData(sce)$MeanRatio)
-
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_global_select.pdf")), height = 11, width = 8)
-sce |>
-    scDotPlot(features = select_global_mean_ratio_marker$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              featureAnno = "MeanRatio",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno,
-                                "MeanRatio" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              clusterColumns = FALSE,
-              groupLegends = FALSE
-    ) 
-sce |>
-    scDotPlot(features = select_global_mean_ratio_marker$gene_name,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              featureAnno = "MeanRatio",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno,
-                                "MeanRatio" = cell_type_colors$anno),
-              clusterRows = TRUE,
-              clusterColumns = TRUE,
-              groupLegends = FALSE
-    ) 
-dev.off()
+# rowData(sce)$MeanRatio <- NULL
+# rowData(sce)$MeanRatio <- as.character(select_global_mean_ratio_marker$target)[match(rownames(sce), select_global_mean_ratio_marker$gene_name)] 
+# table(rowData(sce)$MeanRatio)
+# 
+# pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_global_select.pdf")), height = 11, width = 8)
+# sce |>
+#     scDotPlot(features = select_global_mean_ratio_marker$gene_name,
+#               group = "cell_type_anno",
+#               groupAnno = "cell_type_anno",
+#               featureAnno = "MeanRatio",
+#               scale = TRUE,
+#               annoColors = list("cell_type_anno" = cell_type_colors$anno,
+#                                 "MeanRatio" = cell_type_colors$anno),
+#               clusterRows = FALSE,
+#               clusterColumns = FALSE,
+#               groupLegends = FALSE
+#     ) 
+# sce |>
+#     scDotPlot(features = select_global_mean_ratio_marker$gene_name,
+#               group = "cell_type_anno",
+#               groupAnno = "cell_type_anno",
+#               featureAnno = "MeanRatio",
+#               scale = TRUE,
+#               annoColors = list("cell_type_anno" = cell_type_colors$anno,
+#                                 "MeanRatio" = cell_type_colors$anno),
+#               clusterRows = TRUE,
+#               clusterColumns = TRUE,
+#               groupLegends = FALSE
+#     ) 
+# dev.off()
 
 #### Marker Genes - Cell Type - cell type specific modeling ####
 
@@ -220,16 +239,21 @@ mean_ratio_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
                                                             in_base = in_base))
 
 
-# TODO
-# enrichment_specific_xenium_overlap <- map(ct_specific_marker_stats[1:3], 
-#                                               ~.x |> 
-#                                                   filter(enrich_logFC > 1, enrich_fdr < 0.05 & in_base) )
-# |>
-#                                                   transmute(gene_name = gene, 
-#                                                             target = cellType.target, 
-#                                                             goal = "cell type marker (specific MR)",
-#                                                             note = paste("specific MR genes -", MeanRatio.anno),
-#                                                             in_base = in_base))
+
+enrichment_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
+                                          ~.x |>
+                                              filter(enrich_fdr < 0.05)|>
+                                              group_by(cellType.target) |>
+                                              arrange(-enrich_t.stat) |>
+                                              slice(1:10) |>
+                                              filter(in_base) |>
+                                              transmute(gene_name = gene,
+                                                        target = cellType.target,
+                                                        goal = "Marker - cell type specific",
+                                                        note = paste("specific Enrich genes t=", round(enrich_t.stat, 2)),
+                                                        in_base = in_base))
+
+enrichment_specific_xenium_overlap |> count(target)
 
 
 walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker_stats, name){
@@ -264,20 +288,29 @@ enrichment_specific_interest <- map_dfr(ct_specific_marker_stats,
                                                    enrich_t.stat > 0) |>
                                             arrange(-enrich_t.stat) |>
                                             group_by(cellType.target) |>
-                                            dplyr::slice(1:2) |>
+                                            dplyr::slice(1:5) |>
                                             mutate(note = paste0("specific Enrich genes t=", round(enrich_t.stat, 2))))
+
+ct_specific_marker_stats$Oligo |>
+    filter(cellType.target == "Oligo.3", gene %in% c("LINGO2"))
+
+
+enrichment_specific_interest |> filter(cellType.target == "Oligo.3")
 
 enrichment_specific_interest|> dplyr::count(cellType.target)
 
-select_specific_cell_type_marker <- bind_rows(mean_ratio_specific_interest, enrichment_specific_interest)  |>
+## TODO edit down n markers for non Oligo.3 cell types
+select_specific_cell_type_marker <- bind_rows(mean_ratio_specific_interest, 
+                                              enrichment_specific_interest)  |>
     transmute(gene_name = gene, 
               target = cellType.target, 
               goal = "Marker - cell type specific",
               note = note,
               in_base = in_base) |>
+    bind_rows(mean_ratio_specific_xenium_overlap) |>
+    bind_rows(enrichment_specific_xenium_overlap) |>
     group_by(gene_name, target, goal, in_base) |>
     summarise(note = paste(unique(note), collapse = ", "))
-
 
 select_specific_cell_type_marker |> ungroup() |> filter(!in_base) |> dplyr::count(target)
 
@@ -294,7 +327,11 @@ select_specific_cell_type_marker |> ungroup() |> filter(!in_base) |> dplyr::coun
 # 9 Oligo.3          4
 # 10 Oligo.5          2
 
+select_specific_cell_type_marker |> ungroup() |> count(target)
+
 select_specific_cell_type_marker |> filter(target == "Oligo.3")
+select_specific_cell_type_marker |> filter(target == "Astro.1")
+select_specific_cell_type_marker |> filter(target == "Astro.2")
 
 ct_specific_marker_stats$Oligo |> filter(cellType.target == "Oligo.3", gene_name %in% c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2"))
 
@@ -304,7 +341,7 @@ ct_specific_marker_stats$Oligo |> filter(cellType.target == "Oligo.3", gene_name
 #     Oligo.5 <- c("ARHGEF3")
 # )
 
-#### Spatially interesting ####
+#### Marker Gene - SpD ####
 
 load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE) 
 
@@ -313,6 +350,7 @@ SpD_marker_stats <- marker_stats |>
 
 # SpD_marker_stats |> filter(cellType.target == "LD~Sp09D02")
 
+## Get top enrichment genes for WM.uf 
 SpD_enrichment <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "enrichment_modeling_SpD_top100.csv")) |>
     mutate(in_base =  gene %in% Xenium_hBrain$Genes)  |> 
     filter((top <= 5 & in_base) | (top <= 2 & test == "WM.uf~Sp09D07")) |>
@@ -322,6 +360,7 @@ SpD_enrichment <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_
               note = paste0("SpD Enrich gene t=", round(stat, 2)),
               in_base = in_base)
 
+## top MR genes for LD
 select_SpD_markers <- SpD_marker_stats |> 
     filter(MeanRatio >1 & ((MeanRatio.rank <= 5 & in_base) | (MeanRatio.rank <= 2 & cellType.target == "LD~Sp09D02"))) |>
     transmute(gene_name = gene, 
@@ -331,41 +370,22 @@ select_SpD_markers <- SpD_marker_stats |>
               in_base = in_base) |>
     bind_rows(SpD_enrichment) |>
     group_by(gene_name, target, goal, in_base) |>
-    summarise(note = paste0(note, collapse = ", "))
-
+    summarise(note = paste0(note, collapse = ", ")) |>
+    ungroup() |>
+    add_row(gene_name = "RELN", ## Add RELN as ERC Layer 2 marker
+            goal = "Marker - SpD",
+            target = "L2.3~Sp09D01",
+            note = paste0("SpD marker from Lit"),
+            in_base = "RELN" %in% Xenium_hBrain$Genes)
 
 select_SpD_markers |> dplyr::count(gene_name, target) |> arrange(-n)
 
-genes_other <- c("RELN")
 
+#### DEGs - Oligo ####
 
+#### DEGs - Excit ####
 
-#"WM.uf~Sp09D07"
-SpD_enrichment |> filter(test %in% c("LD~Sp09D02")) |> arrange(top)
-
-#### NE_receptor_genes ####
-
-NE_receptor_genes <- c("ADRA1A","ADRA1B","ADRA1D","ADRA2A","ADRA2B","ADRA2C","ADRB1","ADRB2","ADRB3")
-all(NE_receptor_genes %in% rownames(sce))
-
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_NE_receptor.pdf")), height = 7, width = 8)
-sce |>
-    scDotPlot(features = NE_receptor_genes,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              scale = TRUE,
-              annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-    ) 
-dev.off()
-
-## select genes expressed in Oligo & Astro
-select_NE_receptors <- tibble(gene_name = c("ADRA1A","ADRA1B","ADRB1"), target = "Oligo, Astro", goal = "NE_receptors") |>
-    mutate(in_base = gene_name %in% Xenium_hBrain$Genes)
-
-
-#### Mediation Genes ####
+#### DEGs - Astro Mediation Genes ####
 
 # list.files(here("processed-data","22_Mediation","out-erc_astro"))
 
@@ -495,10 +515,14 @@ ALL_probes_long <- select_AD_risk |>
     bind_rows(select_NE_receptors) |>
     bind_rows(select_mediator_genes)
 
+# ALL_probes_long |> filter(goal == "")
+
 ALL_probes_summary <- ALL_probes_long |>
     group_by(gene_name, in_base) |>
     summarise(n_goal = n(), 
               goals = paste(sort(unique(goal)), collapse = ", "))
+
+# ALL_probes_summary |> filter(goals == "")
 
 probes_summary_count <- ALL_probes_summary |>
     ungroup() |>
