@@ -435,8 +435,42 @@ ct_specific_marker_stats$Oligo |> filter(cellType.target == "Oligo.3", gene_name
 
 #### Spatially interesting ####
 
+load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE) 
+
+SpD_marker_stats <- marker_stats |>
+    mutate(in_base =  gene %in% Xenium_hBrain$Genes)
+
+# SpD_marker_stats |> filter(cellType.target == "LD~Sp09D02")
+
+SpD_enrichment <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "enrichment_modeling_SpD_top100.csv")) |>
+    mutate(in_base =  gene %in% Xenium_hBrain$Genes)  |> 
+    filter((top <= 5 & in_base) | (top <= 2 & test == "WM.uf~Sp09D07")) |>
+    transmute(gene_name = gene, 
+              target = test, 
+              goal = "SpD marker",
+              note = paste0("SpD Enrich gene t=", round(stat, 2)),
+              in_base = in_base)
+
+select_SpD_markers <- SpD_marker_stats |> 
+    filter(MeanRatio >1 & ((MeanRatio.rank <= 5 & in_base) | (MeanRatio.rank <= 2 & cellType.target == "LD~Sp09D02"))) |>
+    transmute(gene_name = gene, 
+              target = cellType.target, 
+              goal = "SpD marker",
+              note = paste0("SpD MeanRatio gene: ", MeanRatio.anno),
+              in_base = in_base) |>
+    bind_rows(SpD_enrichment) |>
+    group_by(gene_name, target, goal, in_base) |>
+    summarise(note = paste0(note, collapse = ", "))
+
+
+select_SpD_markers |> dplyr::count(gene_name, target) |> arrange(-n)
+
 genes_other <- c("RELN")
 
+
+
+#"WM.uf~Sp09D07"
+SpD_enrichment |> filter(test %in% c("LD~Sp09D02")) |> arrange(top)
 
 #### NE_receptor_genes ####
 
@@ -586,6 +620,7 @@ dev.off()
 ALL_probes_long <- select_AD_risk |>
     bind_rows(select_global_mean_ratio_marker) |>
     bind_rows(select_specific_cell_type_marker) |>
+    bind_rows(select_SpD_markers) |>
     bind_rows(select_NE_receptors) |>
     bind_rows(select_mediator_genes)
 
@@ -606,6 +641,8 @@ bind_rows(probes_summary_count,
                     across(where(is.character), ~"Total") # Label the character column as "Total"
           )
 )
+
+writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
 
 ## Oligo.3 check 
 
