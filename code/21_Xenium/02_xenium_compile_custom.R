@@ -436,7 +436,6 @@ select_DEG_top_Excit <- DE_data |>
               note = paste("DEG carrier top: ", cluster, DE_class),
               in_base)
 
-
 select_DEG_Carrier <- select_DEG_included |>
     bind_rows(select_DEG_top_Oligo.3) |>
     bind_rows(select_DEG_interest) |>
@@ -568,6 +567,26 @@ mediator_tested |> dplyr::count(med_cl)
 #     ) 
 # dev.off()
 
+#### DEGs - Ancestry ####
+
+
+#### MOFA Genes ####
+
+MOFA_gene_weights <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
+
+select_MOFA_genes <- MOFA_gene_weights$Factor3 |> 
+    filter(ctype == "Oligo.3") |>
+    mutate(mofa_class = ifelse(value < 0, "Factor3-", "Factor3+")) |>
+    group_by(mofa_class) |>
+    arrange(-abs(value)) |> 
+    slice(1:5) |>
+    ungroup() |>
+    transmute(gene_name,
+              target = ctype, 
+              goal = "MOFA - Factor3",
+              note = paste("MOFA Oligo.3", mofa_class),
+              in_base =  gene_name %in% Xenium_hBrain$Genes)
+
 #### COMPILE ALL PROBE LISTS ####
 
 ALL_probes_long <- select_AD_risk |>
@@ -576,7 +595,8 @@ ALL_probes_long <- select_AD_risk |>
     bind_rows(select_specific_cell_type_marker) |>
     bind_rows(select_SpD_markers) |>
     bind_rows(select_DEG_Carrier)|>
-    bind_rows(select_mediator_genes)
+    bind_rows(select_mediator_genes) |>
+    bind_rows(select_MOFA_genes)
 
 # ALL_probes_long |> filter(goal == "")
 
@@ -602,7 +622,7 @@ bind_rows(probes_summary_count,
                     across(where(is.character), ~"Total") # Label the character column as "Total"
           )
 ) |>
-    print(n=22)
+    print(n=23)
 
 writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
 
