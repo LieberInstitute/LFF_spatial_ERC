@@ -23,6 +23,9 @@ Xenium_hBrain <- read_csv(here("processed-data", "21_Xenium", "Xenium_hBrain_v1_
     left_join(Xenium_annotation) |>
     arrange(anno) 
 
+## can we make probe 
+yesprobe <- read_csv(here("processed-data", "21_Xenium", "human_and_mouse_2020-A-ref-yesprobe-genes_v1assay.csv"))
+
 #### Lit - AD risk genes ####
 AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv"))
 
@@ -235,10 +238,8 @@ mean_ratio_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
                                                   transmute(gene_name = gene, 
                                                             target = cellType.target, 
                                                             goal = "Marker - cell type specific",
-                                                            note = paste("specific MR genes -", MeanRatio.anno),
+                                                            note = paste(target, "specific MR gene -", MeanRatio.anno),
                                                             in_base = in_base))
-
-
 
 enrichment_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
                                           ~.x |>
@@ -250,11 +251,10 @@ enrichment_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
                                               transmute(gene_name = gene,
                                                         target = cellType.target,
                                                         goal = "Marker - cell type specific",
-                                                        note = paste("specific Enrich genes t=", round(enrich_t.stat, 2)),
+                                                        note = paste(target, "specific Enrich genes t=", round(enrich_t.stat, 2)),
                                                         in_base = in_base))
 
 enrichment_specific_xenium_overlap |> count(target)
-
 
 walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker_stats, name){
     
@@ -276,10 +276,14 @@ mean_ratio_specific_interest <- map_dfr(ct_specific_marker_stats,
                                         ~.x |> 
                                             filter(cellType.target %in% cellTypes_of_interest,
                                                    MeanRatio > 1, 
-                                                   MeanRatio.rank <= 3) |>
-                                            mutate(note = paste0("specific MR genes - ", MeanRatio.anno)))
+                                                   MeanRatio.rank <= 3,
+                                                   gene %in% yesprobe$`Gene symbol`) |>
+                                            mutate(note = paste(cellType.target, "specific MR genes -", MeanRatio.anno))) |>
+    filter(gene != "MT-ND5") # lowest Mean for Excit.L2_5.1 - ties for 2nd Mean ratio
 
 mean_ratio_specific_interest  |> dplyr::count(cellType.target)
+
+mean_ratio_specific_interest |> filter(cellType.target == "Excit.L2_5.1") |> select(MeanRatio.anno)
 
 enrichment_specific_interest <- map_dfr(ct_specific_marker_stats, 
                                         ~.x |> 
@@ -288,18 +292,31 @@ enrichment_specific_interest <- map_dfr(ct_specific_marker_stats,
                                                    enrich_t.stat > 0) |>
                                             arrange(-enrich_t.stat) |>
                                             group_by(cellType.target) |>
+                                            filter(gene %in% yesprobe$`Gene symbol`) |>
+                                            mutate(t_rank = row_number()) |>
                                             dplyr::slice(1:5) |>
-                                            mutate(note = paste0("specific Enrich genes t=", round(enrich_t.stat, 2))))
+                                            mutate(note = paste(cellType.target, "specific Enrich genes t=", round(enrich_t.stat, 2)))
+                                        )|>
+    filter(
+        (t_rank <= 2 & grepl("Excit", cellType.target)) |
+            (t_rank <= 5 & grepl("Oligo.3", cellType.target)) |
+            (t_rank <= 3 & !grepl("Excit|Oligo.3", cellType.target))
+    ) 
+
+enrichment_specific_interest |> dplyr::count(cellType.target)
+
+enrichment_specific_interest |> filter(cellType.target == "Excit.L2_5.1")
 
 ct_specific_marker_stats$Oligo |>
     filter(cellType.target == "Oligo.3", gene %in% c("LINGO2"))
 
 
-enrichment_specific_interest |> filter(cellType.target == "Oligo.3")
+enrichment_specific_interest |> filter(cellType.target == "Oligo.3") |> select(cellType.target, enrich_t.stat, t_rank)
 
-enrichment_specific_interest|> dplyr::count(cellType.target)
 
-## TODO edit down n markers for non Oligo.3 cell types
+
+enrichment_specific_interest
+
 select_specific_cell_type_marker <- bind_rows(mean_ratio_specific_interest, 
                                               enrichment_specific_interest)  |>
     transmute(gene_name = gene, 
@@ -310,22 +327,23 @@ select_specific_cell_type_marker <- bind_rows(mean_ratio_specific_interest,
     bind_rows(mean_ratio_specific_xenium_overlap) |>
     bind_rows(enrichment_specific_xenium_overlap) |>
     group_by(gene_name, target, goal, in_base) |>
-    summarise(note = paste(unique(note), collapse = ", "))
+    summarise(note = paste(unique(note), collapse = ", ")) |>
+    mutate(yesprobe = gene_name %in% yesprobe$`Gene symbol`)
 
 select_specific_cell_type_marker |> ungroup() |> filter(!in_base) |> dplyr::count(target)
 
 # target           n
 # <chr>        <int>
-#     1 Astro.1          5
-# 2 Astro.2          4
-# 3 Astro.3          5
-# 4 Excit.L2_5.1     5
-# 5 Excit.L5.2       5
-# 6 OPC.5            4
-# 7 Oligo.1          4
+# 1 Astro.1          4
+# 2 Astro.2          5
+# 3 Astro.3          6
+# 4 Excit.L2_5.1     4
+# 5 Excit.L5.2       4
+# 6 OPC.5            5
+# 7 Oligo.1          5
 # 8 Oligo.2          4
-# 9 Oligo.3          4
-# 10 Oligo.5          2
+# 9 Oligo.3          7
+# 10 Oligo.5          3
 
 select_specific_cell_type_marker |> ungroup() |> count(target)
 
@@ -379,6 +397,7 @@ select_SpD_markers <- SpD_marker_stats |>
             in_base = "RELN" %in% Xenium_hBrain$Genes)
 
 select_SpD_markers |> dplyr::count(gene_name, target) |> arrange(-n)
+select_SpD_markers |> dplyr::count(target)
 
 
 #### DEGs - carrier ####
@@ -569,6 +588,70 @@ mediator_tested |> dplyr::count(med_cl)
 
 #### DEGs - Ancestry ####
 
+list.files(here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", "sn_fine"))
+
+DE_data_anc <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", "sn_fine", "DGE_results_ancestry_sn_fine.Rds")) |>
+    select(cluster, contrast, gene_name, starts_with("vlmf")) |>
+    mutate(in_base =  gene_name %in% Xenium_hBrain$Genes,
+           DE_class = paste0(gsub("carrier_", "", contrast), "_", ifelse(vlmf_logFC < 0, "down", "up")),
+           DEG = vlmf_adj.P.Val < 0.05)
+
+
+anc_op_t <- DE_data_anc |>
+    filter(cluster == "Oligo.3") |>
+    group_by(gene_name) |>
+    mutate(any_DEG = any(DEG),
+           anc = gsub("carrier_", "", contrast)) |>
+    filter(any_DEG) |>
+    select(gene_name, anc, vlmf_t) |>
+    pivot_wider(names_from = "anc", values_from = "vlmf_t") |>
+    filter((
+        AA < -3 & EA > 1.28) | ## AA_down*-EA_up
+               (AA < -0.45 & EA > 3) |## AA_down-EA_up*
+               (AA > 3 & EA < - 2.05) |  ## AA_up*-EA_down
+               (AA > 0.9 & EA < - 3)  ## AA_up-EA_down*
+    ) |>
+    arrange(-AA)
+
+anc_op_t |> print(n = 25)
+
+select_DEG_anc_op_Oligo.3 <- DE_data_anc |>
+    filter(cluster == "Oligo.3", gene_name %in% anc_op_t$gene_name) |>
+    select(gene_name,in_base, DEG, DE_class) |>
+    mutate(DE_class = ifelse(DEG, paste0(DE_class, "*"), DE_class)) |>
+    group_by(gene_name, in_base) |>
+    summarise(note = paste0(sort(DE_class), collapse = "-")) |>
+    arrange(note) |>
+    ungroup() |>
+    transmute(gene_name,
+              target = "Oligo.3", 
+              goal = "DEG - ancestry",
+              note = paste("DEG Ancestry op: Oligo.3", note),
+              in_base)
+
+select_DEG_anc_op_Oligo.3 |> count(note)
+
+select_DEG_anc_top_Oligo.3 <- DE_data_anc |>
+    filter(cluster == "Oligo.3")  |>
+    group_by(DE_class) |>
+    arrange(-abs(vlmf_logFC)) |>
+    slice(1:2) |>
+    ungroup() |>
+    transmute(gene_name,
+              target = cluster, 
+              goal = "DEG - ancestry",
+              note = paste("DEG carrier top: Oligo.3", DE_class),
+              in_base)
+
+select_DEG_anc <- bind_rows(select_DEG_anc_op_Oligo.3, select_DEG_anc_top_Oligo.3) |>
+    group_by(gene_name, target, goal, in_base) |>
+    summarise(note = paste0(note, collapse = ", ")) |>
+    ungroup()
+
+select_DEG_anc |> count(goal)
+select_DEG_anc |> count(note)
+
+select_DEG_anc |> count(in_base)
 
 #### MOFA Genes ####
 
@@ -579,7 +662,7 @@ select_MOFA_genes <- MOFA_gene_weights$Factor3 |>
     mutate(mofa_class = ifelse(value < 0, "Factor3-", "Factor3+")) |>
     group_by(mofa_class) |>
     arrange(-abs(value)) |> 
-    slice(1:5) |>
+    slice(1:3) |>
     ungroup() |>
     transmute(gene_name,
               target = ctype, 
@@ -596,6 +679,7 @@ ALL_probes_long <- select_AD_risk |>
     bind_rows(select_SpD_markers) |>
     bind_rows(select_DEG_Carrier)|>
     bind_rows(select_mediator_genes) |>
+    bind_rows(select_DEG_anc) |>
     bind_rows(select_MOFA_genes)
 
 # ALL_probes_long |> filter(goal == "")
@@ -604,13 +688,32 @@ ALL_probes_summary <- ALL_probes_long |>
     group_by(gene_name, in_base) |>
     summarise(n_goal = n(), 
               goals = paste(sort(unique(goal)), collapse = ", "),
-              targets = paste(sort(unique(target)), collapse = ", "))
+              targets = paste(sort(unique(target)), collapse = ", "),
+              notes = paste(unique(note), collapse = ", ")
+              ) |>
+    mutate(yesprobe = gene_name %in% yesprobe$`Gene symbol`) |>
+    ungroup()
 
 ALL_probes_summary |> filter(!in_base) |> arrange(-n_goal)
+
+ALL_probes_summary |> filter(!in_base) |> count(yesprobe)
+
+ALL_probes_summary |> filter(!in_base, !yesprobe)
+
+ALL_probes_summary |> count(goals) |> print(n = 26)
+
+ALL_probes_summary |> filter(goals == "Marker - cell type specific", !in_base, yesprobe) 
+
+# ct_check <-  ALL_probes_summary |> filter(goals == "Marker - cell type specific", !in_base, yesprobe) |> filter(targets == "OPC.5")
+# 
+# select_specific_cell_type_marker |>
+#     filter(gene_name %in% ct_check$gene_name) |>
+#     arrange(note)
 
 # ALL_probes_summary |> filter(goals == "")
 
 probes_summary_count <- ALL_probes_summary |>
+    filter(yesprobe) |>
     ungroup() |>
     dplyr::count(goals, in_base) |>
     pivot_wider(names_from = "in_base", names_prefix = "base_", values_from = "n") 
@@ -622,9 +725,41 @@ bind_rows(probes_summary_count,
                     across(where(is.character), ~"Total") # Label the character column as "Total"
           )
 ) |>
-    print(n=23)
+    print(n=30)
+
+# goals                                                                  base_FALSE base_TRUE
+# <chr>                                                                       <int>     <int>
+#     1 DEG - ancestry                                                                 15         1
+# 2 DEG - ancestry, DEG - carrier                                                  NA         1
+# 3 DEG - ancestry, Marker - cell type global, Marker - cell type specific         NA         1
+# 4 DEG - carrier                                                                  15        12
+# 5 DEG - carrier, DEG - mediation                                                 NA         8
+# 6 DEG - carrier, DEG - mediation, Lit - AD risk                                  NA         1
+# 7 DEG - carrier, DEG - mediation, Marker - SpD                                    1         2
+# 8 DEG - carrier, DEG - mediation, Marker - cell type specific                    NA         4
+# 9 DEG - carrier, Lit - AD risk                                                   NA         1
+# 10 DEG - carrier, Lit - NE receptors                                              NA         1
+# 11 DEG - carrier, Marker - SpD                                                    NA         2
+# 12 DEG - carrier, Marker - cell type global                                       NA         1
+# 13 DEG - carrier, Marker - cell type global, Marker - cell type specific          NA         1
+# 14 DEG - carrier, Marker - cell type specific                                      1         6
+# 15 DEG - mediation                                                                12        NA
+# 16 DEG - mediation, Marker - cell type specific                                    1        NA
+# 17 Lit - AD risk                                                                  NA         3
+# 18 Lit - NE receptors                                                              1        NA
+# 19 Lit - NE receptors, Marker - cell type global                                  NA         1
+# 20 MOFA - Factor3                                                                  6        NA
+# 21 Marker - SpD                                                                    3         5
+# 22 Marker - cell type global                                                       2        11
+# 23 Marker - cell type global, Marker - cell type specific                          1         6
+# 24 Marker - cell type specific                                                    42        34
+# 25 Marker - cell type specific, Marker - SpD                                      NA         2
+# 26 Total                                                                         100       104
+
+
 
 writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
+writexl::write_xlsx(ALL_probes_summary, path = here(data_dir, "ERC_Xenium_ALL_probes_summary.xlsx"))
 
 ## Oligo.3 check 
 
@@ -632,6 +767,10 @@ ALL_probes_long |> filter(target == "Oligo.3")
 
 
 ## filter gene not in base
-select_custom_probes <- ALL_probes_gene_summary |> filter(!in_base)
 
+select_custom_probes <- ALL_probes_summary |> 
+    filter(!in_base) |>
+    filter(yesprobe)
+    
+writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
 
