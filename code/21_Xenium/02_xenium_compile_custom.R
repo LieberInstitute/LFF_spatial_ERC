@@ -23,7 +23,9 @@ Xenium_hBrain <- read_csv(here("processed-data", "21_Xenium", "Xenium_hBrain_v1_
     left_join(Xenium_annotation) |>
     arrange(anno) 
 
-## can we make probe 
+Xenium_hBrain |> dplyr::count(Annotation, anno) |> print(n = 28)
+
+## can we make probe?
 yesprobe <- read_csv(here("processed-data", "21_Xenium", "human_and_mouse_2020-A-ref-yesprobe-genes_v1assay.csv"))
 
 #### Lit - AD risk genes ####
@@ -77,7 +79,7 @@ select_NE_receptors <- tibble(gene_name = c("ADRA1A","ADRA1B","ADRB1"),
 enrichment_stats_top <- read_csv(here("processed-data", "04_snRNA-seq", "31_sn_subcluster_heatmap", "sce_subcluster_enrichment_top5.csv")) |>
     dplyr::rename(Genes = ensembl)
 
-non_unique <- enrichment_stats_top |> count(Genes) |> filter(n != 1) |> pull(Genes)
+non_unique <- enrichment_stats_top |> dplyr::count(Genes) |> filter(n != 1) |> pull(Genes)
 
 # enrichment_stats_top |> inner_join(Xenium_hBrain)
 
@@ -246,7 +248,7 @@ enrichment_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
                                               filter(enrich_fdr < 0.05)|>
                                               group_by(cellType.target) |>
                                               arrange(-enrich_t.stat) |>
-                                              slice(1:10) |>
+                                              dplyr::slice(1:10) |>
                                               filter(in_base) |>
                                               transmute(gene_name = gene,
                                                         target = cellType.target,
@@ -254,7 +256,7 @@ enrichment_specific_xenium_overlap <- map_dfr(ct_specific_marker_stats,
                                                         note = paste(target, "specific Enrich genes t=", round(enrich_t.stat, 2)),
                                                         in_base = in_base))
 
-enrichment_specific_xenium_overlap |> count(target)
+enrichment_specific_xenium_overlap |> dplyr::count(target)
 
 walk2(ct_specific_marker_stats, names(ct_specific_marker_stats), function(marker_stats, name){
     
@@ -283,7 +285,7 @@ mean_ratio_specific_interest <- map_dfr(ct_specific_marker_stats,
 
 mean_ratio_specific_interest  |> dplyr::count(cellType.target)
 
-mean_ratio_specific_interest |> filter(cellType.target == "Excit.L2_5.1") |> select(MeanRatio.anno)
+mean_ratio_specific_interest |> filter(cellType.target == "Excit.L2_5.1") |> select(gene, MeanRatio.anno)
 
 enrichment_specific_interest <- map_dfr(ct_specific_marker_stats, 
                                         ~.x |> 
@@ -300,7 +302,7 @@ enrichment_specific_interest <- map_dfr(ct_specific_marker_stats,
     filter(
         (t_rank <= 2 & grepl("Excit", cellType.target)) |
             (t_rank <= 5 & grepl("Oligo.3", cellType.target)) |
-            (t_rank <= 3 & !grepl("Excit|Oligo.3", cellType.target))
+            (t_rank <= 2 & !grepl("Excit|Oligo.3", cellType.target))
     ) 
 
 enrichment_specific_interest |> dplyr::count(cellType.target)
@@ -312,8 +314,6 @@ ct_specific_marker_stats$Oligo |>
 
 
 enrichment_specific_interest |> filter(cellType.target == "Oligo.3") |> select(cellType.target, enrich_t.stat, t_rank)
-
-
 
 enrichment_specific_interest
 
@@ -334,30 +334,22 @@ select_specific_cell_type_marker |> ungroup() |> filter(!in_base) |> dplyr::coun
 
 # target           n
 # <chr>        <int>
-# 1 Astro.1          4
-# 2 Astro.2          5
-# 3 Astro.3          6
+# 1 Astro.1          3
+# 2 Astro.2          4
+# 3 Astro.3          5
 # 4 Excit.L2_5.1     4
 # 5 Excit.L5.2       4
-# 6 OPC.5            5
-# 7 Oligo.1          5
+# 6 OPC.5            4
+# 7 Oligo.1          4
 # 8 Oligo.2          4
 # 9 Oligo.3          7
-# 10 Oligo.5          3
+# 10 Oligo.5          2
 
 select_specific_cell_type_marker |> ungroup() |> count(target)
 
 select_specific_cell_type_marker |> filter(target == "Oligo.3")
 select_specific_cell_type_marker |> filter(target == "Astro.1")
 select_specific_cell_type_marker |> filter(target == "Astro.2")
-
-ct_specific_marker_stats$Oligo |> filter(cellType.target == "Oligo.3", gene_name %in% c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2"))
-
-# ct_markers <- c(
-#     Oligo.1_2 <- c("OPALIN"),
-#     Oligo.3 <- c("LINGO2", "KCNJ3", "GPM6A", "MT-CO3", "CNTNAP2"),
-#     Oligo.5 <- c("ARHGEF3")
-# )
 
 #### Marker Gene - SpD ####
 
@@ -368,15 +360,46 @@ SpD_marker_stats <- marker_stats |>
 
 # SpD_marker_stats |> filter(cellType.target == "LD~Sp09D02")
 
+modeling_results_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+
+select_pairwise_WM <- sig_genes_extract(n = 10, 
+                                 modeling_results = modeling_results_SpD, 
+                                 model_type = "pairwise",
+                                 reverse = TRUE) |>
+    filter(test == "WM.uf_Sp09D07-WM_Sp09D06") |>
+    mutate(yesprobe = gene %in% yesprobe$`Gene symbol`,
+           in_base = gene %in% Xenium_hBrain$Genes) |>
+    filter(top < 2) |>
+    transmute(gene_name = gene, 
+              target = test, 
+              goal = "Marker - SpD",
+              note = paste0("SpD pw gene t=", round(stat, 2)),
+              in_base = in_base)
+
 ## Get top enrichment genes for WM.uf 
 SpD_enrichment <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "enrichment_modeling_SpD_top100.csv")) |>
-    mutate(in_base =  gene %in% Xenium_hBrain$Genes)  |> 
-    filter((top <= 5 & in_base) | (top <= 2 & test == "WM.uf~Sp09D07")) |>
+    mutate(in_base =  gene %in% Xenium_hBrain$Genes) 
+
+
+SpD_enrichment |>
+    filter(top <= 5 & test == "WM.uf~Sp09D07")
+
+SpD_enrichment |>
+    filter(gene == "BCAS1")
+
+select_SpD_enrichment <- SpD_enrichment|> 
+    filter((top <= 5 & in_base) | 
+               (top <= 4 & test == "WM.uf~Sp09D07") &
+               gene != "AL627171.2" # not in single cell data
+           ) |>
     transmute(gene_name = gene, 
               target = test, 
               goal = "Marker - SpD",
               note = paste0("SpD Enrich gene t=", round(stat, 2)),
               in_base = in_base)
+
+
+SpD_enrichment
 
 ## top MR genes for LD
 select_SpD_markers <- SpD_marker_stats |> 
@@ -386,7 +409,8 @@ select_SpD_markers <- SpD_marker_stats |>
               goal = "Marker - SpD",
               note = paste0("SpD MeanRatio gene: ", MeanRatio.anno),
               in_base = in_base) |>
-    bind_rows(SpD_enrichment) |>
+    bind_rows(select_SpD_enrichment) |>
+    bind_rows(select_pairwise_WM) |>
     group_by(gene_name, target, goal, in_base) |>
     summarise(note = paste0(note, collapse = ", ")) |>
     ungroup() |>
@@ -422,7 +446,7 @@ select_DEG_top_Oligo.3 <- DE_data |>
     filter(cluster == "Oligo.3")  |>
     group_by(DE_class) |>
     arrange(-abs(vlmf_logFC)) |>
-    slice(1:5) |>
+    dplyr::slice(1:5) |>
     ungroup() |>
     transmute(gene_name,
               target = cluster, 
@@ -447,7 +471,7 @@ select_DEG_top_Excit <- DE_data |>
     filter(cluster %in% c("Excit.L5.2", "Excit.L2_5.1"))  |>
     group_by(DE_class, cluster) |>
     arrange(-abs(vlmf_logFC)) |>
-    slice(1:2) |>
+    dplyr::slice(1:2) |>
     ungroup() |>
     transmute(gene_name,
               target = cluster, 
@@ -463,7 +487,7 @@ select_DEG_Carrier <- select_DEG_included |>
     summarise(note = paste0(note, collapse = ", ")) |>
     ungroup()
 
-select_DEG_Carrier |> count(in_base, target)
+select_DEG_Carrier |> dplyr::count(in_base, target)
 
 #### DEGs - Astro Mediation Genes ####
 
@@ -591,7 +615,7 @@ mediator_tested |> dplyr::count(med_cl)
 list.files(here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", "sn_fine"))
 
 DE_data_anc <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_ancestry", "sn_fine", "DGE_results_ancestry_sn_fine.Rds")) |>
-    select(cluster, contrast, gene_name, starts_with("vlmf")) |>
+    dplyr::select(cluster, contrast, gene_name, starts_with("vlmf")) |>
     mutate(in_base =  gene_name %in% Xenium_hBrain$Genes,
            DE_class = paste0(gsub("carrier_", "", contrast), "_", ifelse(vlmf_logFC < 0, "down", "up")),
            DEG = vlmf_adj.P.Val < 0.05)
@@ -635,7 +659,7 @@ select_DEG_anc_top_Oligo.3 <- DE_data_anc |>
     filter(cluster == "Oligo.3")  |>
     group_by(DE_class) |>
     arrange(-abs(vlmf_logFC)) |>
-    slice(1:2) |>
+    dplyr::slice(1:2) |>
     ungroup() |>
     transmute(gene_name,
               target = cluster, 
@@ -648,10 +672,62 @@ select_DEG_anc <- bind_rows(select_DEG_anc_op_Oligo.3, select_DEG_anc_top_Oligo.
     summarise(note = paste0(note, collapse = ", ")) |>
     ungroup()
 
-select_DEG_anc |> count(goal)
-select_DEG_anc |> count(note)
+select_DEG_anc |> dplyr::count(goal)
+select_DEG_anc |> dplyr::count(note)
 
 select_DEG_anc |> count(in_base)
+
+#### DEGs - LR pairs ####
+
+LR_DEGS <- read_csv(here("processed-data", "17_cell_cell_comm", "10_LR_DEG_check", "Liana_LR_DEGs_sn_fine.csv"))
+
+LR_DEGS_summary <- LR_DEGS |> 
+    group_by(interaction, ligand_complex, receptor_complex) |>
+    summarise(n_source = length(unique(source)),
+              source = paste0(unique(source), collapse = ", "),
+              n_target = length(unique(target)),
+              target = paste0(unique(target), collapse = ", "),
+    ) |>
+    ungroup()
+
+LR_DEGS_summary |> dplyr::count(ligand_complex) |> arrange(-n)
+LR_DEGS_summary |> dplyr::count(receptor_complex) |> arrange(-n)
+
+LR_DEGS_summary |> filter(ligand_complex == "NLGN1")
+LR_DEGS_summary |> filter(receptor_complex == "NRXN1")
+
+LR_short_list <- c("NLGN1", "NRXN1", "NRXN3", "ERBB3", "NTRK3", "NRG3", "PTPRD")
+
+LR_DEGS_summary |> 
+    filter(ligand_complex %in% LR_short_list & 
+               receptor_complex %in% LR_short_list) |>
+    select(interaction, n_source, n_target)
+
+## in probe set
+LR_DEGS_summary |> filter(receptor_complex == "ERBB3")
+LR_DEGS_summary |> filter(ligand_complex == "NTRK3")
+
+LR_DEGS_summary |> filter(grepl("Oligo.3", target), grepl("Astro", source))
+# source  target  ligand_complex receptor_complex n_pass_magnitude_rank n_pass_specificity_rank n_test
+# <chr>   <chr>   <chr>          <chr>                            <int>                   <int>  <int>
+# 1 Astro.1 Oligo.3 NRXN1          NLGN1                               30                       0     30
+# 2 Astro.3 Oligo.3 NRXN1          NLGN1                               23                       0     30
+# 3 Astro.1 Oligo.3 NRG3           ERBB3                               13                       1     28
+# 4 Astro.4 Oligo.3 NRG3           ERBB3                               10                       0     26
+
+LR_DEGS_long <- LR_DEGS |> 
+    select(interaction, ligand_complex, receptor_complex) |>
+    pivot_longer(!interaction, names_to = "LR_role", values_to = "gene_name") 
+
+select_LR_genes <- LR_DEGS_long |>
+    filter(gene_name %in% LR_short_list) |>
+    group_by(gene_name)|>
+    summarise(interactions = paste0(sort(unique(interaction)), collapse = ",")) |>
+    transmute(gene_name,
+              target = "Oligo.3", 
+              goal = "DEGs - LR",
+              note = paste("DEG LR interactions:", interactions),
+              in_base =  gene_name %in% Xenium_hBrain$Genes)
 
 #### MOFA Genes ####
 
@@ -662,7 +738,7 @@ select_MOFA_genes <- MOFA_gene_weights$Factor3 |>
     mutate(mofa_class = ifelse(value < 0, "Factor3-", "Factor3+")) |>
     group_by(mofa_class) |>
     arrange(-abs(value)) |> 
-    slice(1:3) |>
+    dplyr::slice(1:3) |>
     ungroup() |>
     transmute(gene_name,
               target = ctype, 
@@ -680,6 +756,7 @@ ALL_probes_long <- select_AD_risk |>
     bind_rows(select_DEG_Carrier)|>
     bind_rows(select_mediator_genes) |>
     bind_rows(select_DEG_anc) |>
+    bind_rows(select_LR_genes) |>
     bind_rows(select_MOFA_genes)
 
 # ALL_probes_long |> filter(goal == "")
@@ -696,11 +773,11 @@ ALL_probes_summary <- ALL_probes_long |>
 
 ALL_probes_summary |> filter(!in_base) |> arrange(-n_goal)
 
-ALL_probes_summary |> filter(!in_base) |> count(yesprobe)
+ALL_probes_summary |> filter(!in_base) |> dplyr::count(yesprobe)
 
 ALL_probes_summary |> filter(!in_base, !yesprobe)
 
-ALL_probes_summary |> count(goals) |> print(n = 26)
+ALL_probes_summary |> dplyr::count(goals) |> print(n = 26)
 
 ALL_probes_summary |> filter(goals == "Marker - cell type specific", !in_base, yesprobe) 
 
@@ -756,10 +833,13 @@ bind_rows(probes_summary_count,
 # 25 Marker - cell type specific, Marker - SpD                                      NA         2
 # 26 Total                                                                         100       104
 
-
+probes_summary_count |> filter(grepl("LR", goals))
 
 writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
+
 writexl::write_xlsx(ALL_probes_summary, path = here(data_dir, "ERC_Xenium_ALL_probes_summary.xlsx"))
+
+# ALL_probes_summary <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_ALL_probes_summary.xlsx"))
 
 ## Oligo.3 check 
 
@@ -771,6 +851,16 @@ ALL_probes_long |> filter(target == "Oligo.3")
 select_custom_probes <- ALL_probes_summary |> 
     filter(!in_base) |>
     filter(yesprobe)
+
+select_custom_probes <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
     
 writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
+
+# rd
+rd <- rowData(spe) |> as.data.frame() |> dplyr::select(gene_name, gene_id)
+rd |> dplyr::filter(grepl("AL627171", gene_name))
+
+select_custom_probes <- select_custom_probes |> left_join(rd) |>
+    
+
 
