@@ -835,10 +835,6 @@ bind_rows(probes_summary_count,
 
 probes_summary_count |> filter(grepl("LR", goals))
 
-writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
-
-writexl::write_xlsx(ALL_probes_summary, path = here(data_dir, "ERC_Xenium_ALL_probes_summary.xlsx"))
-
 # ALL_probes_summary <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_ALL_probes_summary.xlsx"))
 
 ## Oligo.3 check 
@@ -846,6 +842,7 @@ writexl::write_xlsx(ALL_probes_summary, path = here(data_dir, "ERC_Xenium_ALL_pr
 ALL_probes_long |> filter(target == "Oligo.3")
 
 
+#### SELECT 100 CUSTOM PROBES ####
 ## filter gene not in base & add ensembl_id
 
 sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
@@ -862,9 +859,34 @@ select_custom_probes <- ALL_probes_summary |>
 
 
 writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
+
 # select_custom_probes <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
 
+#### Add base probes to ALL probes list ####
 
-    
+ALL_probes_long <- Xenium_hBrain |>
+    transmute(gene_name = Genes,
+              target = anno,
+              goal = "Base", note = paste0("Base probe - ", target),
+              in_base = TRUE,
+              yesprobe = TRUE) |>
+    bind_rows(ALL_probes_long) |>
+    arrange(gene_name)
 
+writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
+
+## Add base probes to ALL probe summary 
+ALL_probes_summary2 <- ALL_probes_long |>
+    group_by(gene_name, in_base) |>
+    summarise(n_goal = n(), 
+              goals = paste(sort(unique(goal)), collapse = ", "),
+              targets = paste(sort(unique(target)), collapse = ", "),
+              notes = paste(unique(note), collapse = ", ")
+    ) |>
+    mutate(yesprobe = gene_name %in% yesprobe$`Gene symbol`) |>
+    ungroup()
+
+ALL_probes_summary2 |> filter(grepl("Base", goals)) |> arrange(-n_goal)
+
+writexl::write_xlsx(ALL_probes_summary2, path = here(data_dir, "ERC_Xenium_ALL_probes_summary.xlsx"))
 
