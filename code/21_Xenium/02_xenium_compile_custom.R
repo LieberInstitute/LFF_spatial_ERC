@@ -846,21 +846,25 @@ writexl::write_xlsx(ALL_probes_summary, path = here(data_dir, "ERC_Xenium_ALL_pr
 ALL_probes_long |> filter(target == "Oligo.3")
 
 
-## filter gene not in base
+## filter gene not in base & add ensembl_id
+
+sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
+
+rd <- rowData(sce_pb) |> as.data.frame() |> dplyr::select(gene_name, gene_id)
+
+table(ALL_probes_summary$gene_name %in% rd$gene_name)
 
 select_custom_probes <- ALL_probes_summary |> 
     filter(!in_base) |>
-    filter(yesprobe)
+    filter(yesprobe) |> 
+    left_join(rd) |>
+    relocate(gene_id, .before = 1)
 
-select_custom_probes <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
-    
+
 writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
+# select_custom_probes <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
 
-# rd
-rd <- rowData(spe) |> as.data.frame() |> dplyr::select(gene_name, gene_id)
-rd |> dplyr::filter(grepl("AL627171", gene_name))
 
-select_custom_probes <- select_custom_probes |> left_join(rd) |>
     
 
 
