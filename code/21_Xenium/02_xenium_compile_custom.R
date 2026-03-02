@@ -25,8 +25,13 @@ Xenium_hBrain <- read_csv(here("processed-data", "21_Xenium", "Xenium_hBrain_v1_
 
 Xenium_hBrain |> dplyr::count(Annotation, anno) |> print(n = 28)
 
+
 ## can we make probe?
-yesprobe <- read_csv(here("processed-data", "21_Xenium", "human_and_mouse_2020-A-ref-yesprobe-genes_v1assay.csv"))
+yesprobe <- read_csv(here("processed-data", "21_Xenium", "human_and_mouse_2020-A-ref-yesprobe-genes_v1assay.csv")) 
+
+## results from custom panel review
+xenium_review <- read_xlsx(here(data_dir, "Q933KK_review_02272026.xlsx")) |>
+    filter(!`Gene Name` %in% c("MAPT", "FOS", "NPTXR", "COL21A1")) ## exclude genes of interset with > 0 probe set
 
 #### Lit - AD risk genes ####
 AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv"))
@@ -138,16 +143,21 @@ cellTypes_of_interest <- c("Astro.1", "Astro.2", "Astro.3",
                            "Excit.L5.2", "Excit.L2_5.1")
 
 marker_stats_select <- marker_stats_top |> 
-    filter(MeanRatio.rank <= 5) |>
-    filter(cellType.target %in% cellTypes_of_interest
-    )
+    filter(!gene_name %in% xenium_review$`Gene Name`,
+           cellType.target %in% cellTypes_of_interest,
+           MeanRatio > 1.47 ## filter to very specific genes - next gene for Oligo.2 
+    ) |>
+    group_by(cellType.target) |>
+    arrange(MeanRatio.rank) |>
+    dplyr::slice(1:2)
 
-## filter to very specific genes
-marker_stats_select <- marker_stats_select |> filter(MeanRatio > 1.5, MeanRatio.rank <= 2)
+
+# marker_stats_select |> filter(cellType.target == "Excit.L5.2") |> filter(gene %in% yesprobe$`Gene symbol`)
 
 ## select target global MR genes or MR genes overlapping base panel
 select_global_mean_ratio_marker <- mean_ratio_xenium_overlap |>
     bind_rows(marker_stats_select) |>
+    filter(gene %in% yesprobe$`Gene symbol`) |>
     transmute(gene_name = gene, 
               target = cellType.target, 
               goal = "Marker - cell type global",
@@ -366,10 +376,11 @@ select_pairwise_WM <- sig_genes_extract(n = 10,
                                  modeling_results = modeling_results_SpD, 
                                  model_type = "pairwise",
                                  reverse = TRUE) |>
-    filter(test == "WM.uf_Sp09D07-WM_Sp09D06") |>
-    mutate(yesprobe = gene %in% yesprobe$`Gene symbol`,
-           in_base = gene %in% Xenium_hBrain$Genes) |>
-    filter(top < 2) |>
+    filter(test == "WM.uf_Sp09D07-WM_Sp09D06",
+           !gene %in% xenium_review$`Gene Name`,
+           gene %in% yesprobe$`Gene symbol`) |>
+        mutate(in_base = gene %in% Xenium_hBrain$Genes) |>
+    filter(top < 3) |>
     transmute(gene_name = gene, 
               target = test, 
               goal = "Marker - SpD",
@@ -421,8 +432,18 @@ select_SpD_markers <- SpD_marker_stats |>
             in_base = "RELN" %in% Xenium_hBrain$Genes)
 
 select_SpD_markers |> dplyr::count(gene_name, target) |> arrange(-n)
-select_SpD_markers |> dplyr::count(target)
-
+select_SpD_markers |> dplyr::count(in_base, target)
+# in_base target                       n
+# <lgl>   <chr>                    <int>
+# 1 FALSE   LD~Sp09D02                   2
+# 2 FALSE   WM.uf_Sp09D07-WM_Sp09D06     1
+# 3 FALSE   WM.uf~Sp09D07                2
+# 4 TRUE    Inhib~Sp09D09                3
+# 5 TRUE    L1~Sp09D05                   3
+# 6 TRUE    L2.3~Sp09D01                 2
+# 7 TRUE    L6~Sp09D04                   1
+# 8 TRUE    WM.uf~Sp09D07                1
+# 9 TRUE    WM~Sp09D06                   2
 
 #### DEGs - carrier ####
 
@@ -451,24 +472,29 @@ select_DEG_top_Oligo.3 <- DE_data |>
     transmute(gene_name,
               target = cluster, 
               goal = "DEG - carrier",
-              note = paste("DEG carrier top: Oligo.3", DE_class),
+              note = paste0("DEG carrier top: Oligo.3 ", DE_class, " logFC=", round(vlmf_logFC, 2)),
               in_base)
 
-DEGs_of_interest <- c("PLP1", "MAG", "MAL", "MBP", "SOX10", "OPALIN", "MAPT", "FOS", "TLR2", "STAT1", "STAT4", "LRRK2")
+
+DEGs_of_interest <- c("PLP1", "MAG", "MAL", "MBP", "SOX10", "OPALIN", "MAPT", "FOS", "TLR2", "STAT1", "STAT4", "LRRK2", "CPNE4")
+#runner up "PLLP"
 
 select_DEG_interest <- DE_data |>
-    filter(cluster == "Oligo.3", gene_name %in% DEGs_of_interest) |>
+    filter(cluster == "Oligo.3", 
+           vlmf_adj.P.Val < 0.05) |>
+    mutate(logFC_rank = row_number()) |>
+    filter(gene_name %in% DEGs_of_interest) |>
     transmute(gene_name,
               target = cluster, 
               goal = "DEG - carrier",
-              note = paste("DEG of interest: Oligo.3", DE_class),
-              in_base)
-    
+              note = paste0("DEG of interest: Oligo.3 ", DE_class, " logFC=", round(vlmf_logFC, 2)),
+              in_base) 
 
 ## DEGs - Excit
 
 select_DEG_top_Excit <- DE_data |>
-    filter(cluster %in% c("Excit.L5.2", "Excit.L2_5.1"))  |>
+    filter(cluster %in% c("Excit.L5.2", "Excit.L2_5.1"),
+           vlmf_adj.P.Val < 0.05)  |>
     group_by(DE_class, cluster) |>
     arrange(-abs(vlmf_logFC)) |>
     dplyr::slice(1:2) |>
@@ -488,6 +514,20 @@ select_DEG_Carrier <- select_DEG_included |>
     ungroup()
 
 select_DEG_Carrier |> dplyr::count(in_base, target)
+
+# in_base target           n
+# <lgl>   <fct>        <int>
+# 1 FALSE   Oligo.3         13
+# 2 FALSE   Excit.L2_5.1     2
+# 3 FALSE   Excit.L5.2       4
+# 4 TRUE    Astro.2          6
+# 5 TRUE    Astro.3          3
+# 6 TRUE    Macro            2
+# 7 TRUE    Oligo.3         29
+# 8 TRUE    Oligo.5          3
+# 9 TRUE    Vasc.VLMC        1
+# 10 TRUE    Excit.L2_5.2     1
+# 11 TRUE    Inhib.Vip        3
 
 #### DEGs - Astro Mediation Genes ####
 
@@ -514,7 +554,7 @@ mediator_tab <- mediation_summary |>
 mediated_gene_shortlist <- c("MBP", # mylenation - ABCA8 outcome
                              "NAP1L3", # only outcome pf ST18
                              "ENC1", # only outcome of PLPPR4
-                             "SOX6", # key regulator of oligodendrocyte maturation - NPTXR outcome
+                             # "SOX6", # key regulator of oligodendrocyte maturation - NPTXR outcome - DROP not Xenium compatable
                              "SORBS1", # IL6ST outcome
                              "GPM6A" #Oligo.3 marker FZD8 outcome
 )
@@ -734,7 +774,8 @@ select_LR_genes <- LR_DEGS_long |>
 MOFA_gene_weights <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
 
 select_MOFA_genes <- MOFA_gene_weights$Factor3 |> 
-    filter(ctype == "Oligo.3") |>
+    filter(ctype == "Oligo.3",
+           !gene_name %in% xenium_review$`Gene Name`) |>
     mutate(mofa_class = ifelse(value < 0, "Factor3-", "Factor3+")) |>
     group_by(mofa_class) |>
     arrange(-abs(value)) |> 
@@ -759,7 +800,12 @@ ALL_probes_long <- select_AD_risk |>
     bind_rows(select_LR_genes) |>
     bind_rows(select_MOFA_genes)
 
-# ALL_probes_long |> filter(goal == "")
+
+ALL_probes_long |> filter(grepl("Excit.L2_5.1", target))
+
+ALL_probes_long |> filter(gene_name %in% xenium_review$`Gene Name`)
+
+# ALL_probes_long |> filter()
 
 ALL_probes_summary <- ALL_probes_long |>
     group_by(gene_name, in_base) |>
@@ -843,6 +889,9 @@ ALL_probes_long |> filter(target == "Oligo.3")
 
 
 #### SELECT 100 CUSTOM PROBES ####
+
+# select_custom_probes_old <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
+
 ## filter gene not in base & add ensembl_id
 
 sce_pb <- readRDS(here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS"))
@@ -855,12 +904,20 @@ select_custom_probes <- ALL_probes_summary |>
     filter(!in_base) |>
     filter(yesprobe) |> 
     left_join(rd) |>
-    relocate(gene_id, .before = 1)
+    relocate(gene_id, .before = 1) |>
+    mutate(update = ifelse(gene_name %in% select_custom_probes_old$gene_name, "Feb27", "Mar2"))
 
+select_custom_probes |> dplyr::count(update)
+select_custom_probes |> filter(update == "Mar2")
+
+select_custom_probes |> filter(gene_name == "BCAS1")
 
 writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
 
-# select_custom_probes <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
+# 
+
+select_custom_probes |> filter(gene_name %in% xenium_check$`Gene Name`) |> arrange(goals) |> select(-gene_id, -yesprobe)
+
 
 #### Add base probes to ALL probes list ####
 
