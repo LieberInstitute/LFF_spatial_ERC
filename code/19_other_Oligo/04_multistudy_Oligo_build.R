@@ -80,6 +80,7 @@ message("colnames match: ", identical(colnames(all_counts), rownames(all_colData
 message("rownames match: ", identical(rownames(all_counts), rownames(all_rowData)))
 
 #### Load spatialDLPFC ####
+## Huuki-Myers et al., 2024, 10.1126/science.adh1938
 message(Sys.time(), " - Load DLPFC sce")
 
 ## get DLPFC snRNA-seq data
@@ -135,6 +136,7 @@ message("colnames match: ", identical(colnames(all_counts), rownames(all_colData
 rm(sce_dlpfc)
 
 #### Load spatialHPC ####
+# Tompson et al., 2025, 10.1038/s41593-025-02022-0
 message(Sys.time(), " - Load HPC sce")
 
 ehub <- ExperimentHub()
@@ -195,6 +197,7 @@ message("colnames match: ", identical(colnames(all_counts), rownames(all_colData
 rm(sce_hpc)
 
 #### Load dACC data ####
+# Shah et al.,  2025, doi:10.1101/2025.07.14.664821
 message(Sys.time(), " - Load dACC sce")
 load("/dcs04/lieber/marmaypag/spatialdACC_LIBD4125/spatialdACC/processed-data/snRNA-seq/05_azimuth/sce_azimuth.Rdata", verbose = TRUE)
 message("dacc n nuc: ", ncol(sce), ", n gene:", nrow(sce))
