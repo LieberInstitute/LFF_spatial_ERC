@@ -908,11 +908,18 @@ select_custom_probes <- ALL_probes_summary |>
     mutate(update = ifelse(gene_name %in% select_custom_probes_old$gene_name, "Feb27", "Mar2"))
 
 select_custom_probes |> dplyr::count(update)
-select_custom_probes |> filter(update == "Mar2")
+select_custom_probes |> filter(update == "Mar2") |> select(-gene_id, -in_base, -yesprobe, -update)
 
 select_custom_probes |> filter(gene_name == "BCAS1")
 
 writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
+
+## what was excluded? 5 genes from 
+select_custom_probes_old |> 
+    filter(!gene_name %in% select_custom_probes$gene_name) |>
+    mutate(review= gene_name %in% xenium_review$`Gene Name`) |>
+    arrange(review)
+
 
 # 
 
