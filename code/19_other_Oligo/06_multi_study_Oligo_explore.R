@@ -37,6 +37,26 @@ message(Sys.time(), " - Load HDF5 sce") ## loads in 3s
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "19_other_Oligo", "04_multistudy_Oligo_build", "sce_multistudy_Oligo"))
 rownames(sce) <- rowData(sce)$gene_name
 
+
+#### donor overlap ####
+
+## samples 85
+sample_info <- colData(sce) |>
+    as.data.frame() |>
+    dplyr::group_by(sample_id, dataset, BrNum, Sex, Age) |>
+    dplyr::summarise(n_nuc = n())
+
+
+region_info <- sample_info |> 
+    ungroup() |>
+    group_by(BrNum) |> 
+    summarise(n_region = n(), 
+              dataset = paste(unique(dataset), collapse = ","),
+              in_ERC = grepl("erc", dataset)
+              )
+
+region_info |> filter(in_ERC) |> arrange(-n_region)
+
 ## cluster tab
 cluster_tab <- readRDS(here("processed-data", "19_other_Oligo", "05_multistudy_Oligo_cluster", sprintf("walktrap_snn_k%02d_subclusters_Multistudy_Oligo.Rds", opt$k)))
 # table(cluster_tab$cluster_anno)
