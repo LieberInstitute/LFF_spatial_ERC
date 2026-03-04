@@ -54,13 +54,12 @@ LFF_sample_info |>
     arrange()
 
 # ERC_qc LC_qc   NbM  n
-# 1    TRUE  TRUE FALSE 11
-# 2    TRUE  TRUE  TRUE 10
-# 3      NA    NA  TRUE  9
-# 4      NA  TRUE FALSE  7
-# 5    TRUE    NA  TRUE  4
-# 6    TRUE FALSE  TRUE  2
-# 7    TRUE    NA FALSE  2
-# 8      NA  TRUE  TRUE  2
-# 9   FALSE    NA FALSE  1
-# 10   TRUE FALSE FALSE  1
+# 1  FALSE    NA FALSE  1
+# 2   TRUE FALSE FALSE  1
+# 3   TRUE FALSE  TRUE  2
+# 4   TRUE  TRUE FALSE  5
+# 5   TRUE  TRUE  TRUE 16
+# 6   TRUE    NA  TRUE  6
+# 7     NA  TRUE FALSE  7
+# 8     NA  TRUE  TRUE  2
+# 9     NA    NA  TRUE  1
