@@ -35,7 +35,8 @@ sample_notes <- sample_notes |> add_row(BrNum = c("Br5517","Br5276","Br5712"), n
 ## NbM
 NbM_sample_info <- read_csv("/dcs05/lieber/lcolladotor/RAL_nbm_LIBD4265/RAL_nbm_APOE/processed-data/00_project_prep/RAL_nbm_APOE-sample_info.csv") |>
     select(all_of(select_cols)) |>
-    mutate(NbM = TRUE)
+    mutate(NbM = TRUE,
+           Age = round(Age, 2))
 
 
 LFF_sample_info <- erc_sample_info |>
@@ -43,6 +44,8 @@ LFF_sample_info <- erc_sample_info |>
     full_join(NbM_sample_info, by = join_by(BrNum, Age, Sex, Ancestry, APOE, Rin)) |>
     replace_na(list(ERC = FALSE, LC = FALSE, NbM = FALSE)) |>
     left_join(sample_notes)
+
+any(duplicated(LFF_sample_info$BrNum))
 
 write_csv(LFF_sample_info, file = here(data_dir, "LFF_erc_lc_nbm_sample_info.csv"))
 
