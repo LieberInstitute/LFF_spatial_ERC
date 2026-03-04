@@ -264,6 +264,43 @@ format_tstat <- function(tval) {
     sprintf("%.2f", tval)
 }
 
+map_stat_label <- function(stat_name, default = "t") {
+    nm <- as.character(stat_name %||% default)
+    if (!nzchar(nm)) nm <- default
+    if (nm %in% c("vlmf_t", "t", "t_stat", "statistic", "z")) return("t")
+    if (nm %in% c("vlmf_logFC", "logFC")) return("logFC")
+    if (nm %in% c("coef", "estimate", "beta")) return("coef")
+    nm
+}
+
+normalize_med_stat <- function(stats, default_name = "t") {
+    if (is.null(stats) || !is.list(stats)) {
+        return(list(fdr = NA_real_, stat_name = default_name, stat_value = NA_real_))
+    }
+    fdr <- as.numeric(stats$fdr %||% NA_real_)
+    stat_name <- as.character(stats$stat_name %||% default_name)
+    stat_value <- stats$stat_value %||% stats$t %||% NA_real_
+    stat_value <- as.numeric(stat_value)
+    list(fdr = fdr, stat_name = stat_name, stat_value = stat_value)
+}
+
+format_med_stats_block <- function(stats, prefix = "", default_name = "t") {
+    st <- normalize_med_stat(stats, default_name = default_name)
+    stat_label <- map_stat_label(st$stat_name, default = default_name)
+    stat_value_fmt <- if (stat_label == "t") {
+        format_tstat(st$stat_value)
+    } else if (is.na(st$stat_value)) {
+        "NA"
+    } else {
+        sprintf("%.3f", st$stat_value)
+    }
+    sprintf(
+        "%sFDR: %s\n%s%s: %s",
+        prefix, format_fdr(st$fdr),
+        prefix, stat_label, stat_value_fmt
+    )
+}
+
 extract_gene_stats <- function(dt, gene_id, gene_col = "outcome_gene_id") {
     if (is.null(dt) || !is.data.frame(dt) || nrow(dt) < 1 || !(gene_col %in% names(dt))) {
         return(list(fdr = NA_real_, t = NA_real_))
@@ -334,13 +371,28 @@ resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label) {
 }
 
 get_precomputed_med_stats <- function(mr) {
-    fdr_cols <- c("vlmf_adj.P.Val", "adj.P.Val")
-    t_cols <- c("vlmf_t", "t")
+    fdr_cols <- c("vlmf_adj.P.Val", "adj.P.Val", "fdr_gene", "FDR", "qvalue")
+    t_cols <- c("vlmf_t", "t", "t_stat", "statistic", "z")
+    eff_cols <- c("coef", "logFC", "vlmf_logFC")
     fdr_col <- fdr_cols[fdr_cols %in% names(mr)][1]
     t_col <- t_cols[t_cols %in% names(mr)][1]
+    eff_col <- eff_cols[eff_cols %in% names(mr)][1]
+    stat_name <- NA_character_
+    stat_value <- NA_real_
+    t_out <- NA_real_
+    if (!is.na(t_col)) {
+        stat_name <- as.character(t_col)
+        stat_value <- as.numeric(mr[[t_col]][1])
+        t_out <- stat_value
+    } else if (!is.na(eff_col)) {
+        stat_name <- as.character(eff_col)
+        stat_value <- as.numeric(mr[[eff_col]][1])
+    }
     list(
         fdr = if (!is.na(fdr_col)) as.numeric(mr[[fdr_col]][1]) else NA_real_,
-        t = if (!is.na(t_col)) as.numeric(mr[[t_col]][1]) else NA_real_
+        t = t_out,
+        stat_name = stat_name,
+        stat_value = stat_value
     )
 }
 
@@ -839,16 +891,14 @@ get_recalc_med_stats <- function(mr, pd, med_cache_dir, brnum_use = NULL) {
 
 build_med_label <- function(mode_eff, pre_stats, rec_stats) {
     if (mode_eff == "precomputed") {
-        return(sprintf("FDR: %s\nt: %s", format_fdr(pre_stats$fdr), format_tstat(pre_stats$t)))
+        return(format_med_stats_block(pre_stats, prefix = "", default_name = "t"))
     }
     if (mode_eff == "recalc") {
-        return(sprintf("Recalc FDR: %s\nRecalc t: %s", format_fdr(rec_stats$fdr), format_tstat(rec_stats$t)))
+        return(format_med_stats_block(rec_stats, prefix = "Recalc ", default_name = "t"))
     }
     paste(
-        sprintf("Recalc FDR: %s", format_fdr(rec_stats$fdr)),
-        sprintf("Recalc t: %s", format_tstat(rec_stats$t)),
-        sprintf("Precalc FDR: %s", format_fdr(pre_stats$fdr)),
-        sprintf("Precalc t: %s", format_tstat(pre_stats$t)),
+        format_med_stats_block(rec_stats, prefix = "Recalc ", default_name = "t"),
+        format_med_stats_block(pre_stats, prefix = "Precalc ", default_name = "t"),
         sep = "\n"
     )
 }
@@ -1033,8 +1083,8 @@ plotMedComp <- function(outcome_gene, mediator_gene, pd, med_region = "ERC", n_a
     }
     if (med_mode_eff == "both") {
         med_labels <- c(
-            sprintf("FDR: %s\nt: %s", format_fdr(med_pre$fdr), format_tstat(med_pre$t)),
-            sprintf("FDR: %s\nt: %s", format_fdr(med_recalc$fdr), format_tstat(med_recalc$t))
+            format_med_stats_block(med_pre, prefix = "", default_name = "t"),
+            format_med_stats_block(med_recalc, prefix = "", default_name = "t")
         )
     } else {
         med_labels <- build_med_label(med_mode_eff, med_pre, med_recalc)
@@ -1189,6 +1239,80 @@ print(plc2r)
 ```{r ERC mediated list diagnostics}
 ## for file naming hygiene
 safe_token <- function(x) gsub("[^A-Za-z0-9._-]+", "_", as.character(x))
+
+load_pd_for_source_dir <- local({
+    .cache <- new.env(parent = emptyenv())
+    function(source_dir) {
+        source_dir <- as.character(source_dir)
+        if (exists(source_dir, envir = .cache, inherits = FALSE)) {
+            return(get(source_dir, envir = .cache, inherits = FALSE))
+        }
+        valid_dirs <- c("out-erc_astro", "out-lc_astro", "out-lc_nm", "out-lc_nm_int")
+        if (!(source_dir %in% valid_dirs)) {
+            stop("Unsupported `source_dir`: ", source_dir,
+                 ". Expected one of: ", paste(valid_dirs, collapse = ", "))
+        }
+        if (source_dir == "out-erc_astro") {
+            erc_src_sce <- file.path(ddir, "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn",
+                                     "sce_pseudo_DGE-cell_type_anno.RDS")
+            pd_obj <- loadMedData(
+                file.path(cdir, "22_Mediation", source_dir),
+                med_expr_src = list(kind = "erc_sce", path = erc_src_sce)
+            )
+            out <- list(pd = pd_obj, med_region = "ERC")
+            assign(source_dir, out, envir = .cache)
+            return(out)
+        }
+        lc_src_counts <- file.path(cdir, "22_Mediation", "LC-processed-data",
+                                   "dgelE2E4_voomLmFit_object_MODEL2_with_counts.qs2")
+        lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
+                                     "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
+        pd_obj <- loadMedData(
+            file.path(cdir, "22_Mediation", source_dir),
+            med_expr_src = list(
+                path = lc_src_counts,
+                meta = list(donor_pb_path = lc_src_donor_pb)
+            )
+        )
+        out <- list(pd = pd_obj, med_region = "LC")
+        assign(source_dir, out, envir = .cache)
+        out
+    }
+})
+
+get_design_impact_dt <- function(target_design, impact_dir = med_data_dir) {
+    target_design <- as.character(target_design)
+    impact_file <- switch(
+        target_design,
+        green = file.path(impact_dir, "mediator_outcome_fdr_impact_green.tsv"),
+        blue = file.path(impact_dir, "mediator_outcome_fdr_impact_blue.tsv"),
+        orange = file.path(impact_dir, "mediator_outcome_fdr_impact_orange.tsv"),
+        stop("Unsupported `target_design`: ", target_design,
+             ". Expected one of: green, blue, orange.")
+    )
+    if (!file.exists(impact_file)) {
+        stop("Impact table not found for design '", target_design, "': ", impact_file,
+             "\nRun 01b_explore_results.Rmd to generate persisted impact tables.")
+    }
+    dt <- data.table::fread(impact_file)
+    req <- c("med_cl", "mediator", "outcome", "model", "source_dir")
+    miss <- setdiff(req, names(dt))
+    if (length(miss) > 0L) {
+        stop("Impact table is missing required column(s): ", paste(miss, collapse = ", "),
+             "\nFile: ", impact_file)
+    }
+    dt
+}
+
+build_plot_title_with_model <- function(p, model_label) {
+    model_label <- as.character(model_label %||% "")
+    base_title <- as.character(p$labels$title %||% "")
+    if (!nzchar(model_label)) return(p)
+    if (!nzchar(base_title)) {
+        return(p + ggplot2::labs(title = sprintf("Model: %s", model_label)))
+    }
+    p + ggplot2::labs(title = sprintf("%s | Model: %s", base_title, model_label))
+}
 
 parse_mediator_file <- function(lst_file) {
     stem <- sub("\\.mediated\\.lst$", "", basename(lst_file))
@@ -1462,175 +1586,144 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
     impact_dt
 }
 
-## fast: read non-empty .mediated.lst files, build mediator->mediated mapping, and overlap diagnostics
-
-erc_out_dir <- file.path(cdir, "22_Mediation", "out-erc_astro")
-diag_dt <- build_erc_mediated_diag(erc_out_dir, small_first = FALSE)
-cat(sprintf("Found %d non-empty .mediated.lst files in %s\n", nrow(diag_dt), erc_out_dir))
-
-if (nrow(diag_dt) < 1L) {
-    cat("No mediator list files to process.\n")
-} else {
-    cat("\nMediator diagnostics:\n")
-    print(diag_dt[, .(
-        mediator_gene,
-        cluster,
-        n_mediated,
-        list_file = basename(list_file),
-        outcomes_preview
-    )])
-
-    mediator_mediated_dt <- diag_dt[, .(
-        mediator = sprintf("%s [%s]", mediator_gene, cluster),
-        mediated = lapply(outcome_genes, function(x) sort(unique(as.character(x))))
-    )]
-    cat("\nMediator -> mediated mapping (2-column list-table):\n")
-    print(mediator_mediated_dt)
-
-    mediator_impact <- build_erc_mediator_impact_dt(diag_dt, pd)
-    cat(sprintf(
-        "\nMediator impact table rows: %d (columns: med_cl, mediator, outcome, fdr, logFC, t, fdr_med, logFC_med, t_med)\n",
-        nrow(mediator_impact)
-    ))
-    print(mediator_impact)
-
-    ov_dt <- build_erc_overlap_dt(diag_dt)
-    cat(sprintf("\nMediator pairs with overlap: %d\n", nrow(ov_dt)))
-    if (nrow(ov_dt) < 1L) {
-        cat("No overlaps found between mediated gene lists.\n")
-    } else {
-        cat("\nOverlapping mediator pairs:\n")
-        print(ov_dt)
-    }
-}
-
-fwrite(mediator_impact, file=file.path(med_data_dir, "out-erc_astro", "mediator_outcome_fdr_impact.tsv.gz"), sep="\t")
+## result exploration and persisted summary tables moved to 01b_explore_results.Rmd
+## this plotting notebook keeps the helper functions for downstream plotting/PDF generation.
 
 ```
 
-```{r save all ERC mediator plots}
-## create one PDF per mediator, plots for all mediated genes in the same PDF
+```{r save design mediator plots}
+## generic design-level PDF generation from persisted impact tables
 
-erc_out_dir <- file.path(cdir, "22_Mediation", "out-erc_astro")
-if (!exists("diag_dt") || !data.table::is.data.table(diag_dt) || nrow(diag_dt) < 1L) {
-    diag_dt <- build_erc_mediated_diag(erc_out_dir, small_first = TRUE)
-} else {
-    diag_dt <- data.table::copy(diag_dt)
-    data.table::setorderv(diag_dt, c("n_mediated", "mediator_gene"), order = c(1L, 1L))
+target_design <- "orange"    ## one of: green, blue, orange
+med_stats_mode <- "precomputed"  ## can be: precomputed, recalc, both
+rows <- 2L
+plot_all_rows <- TRUE
+max_rows <- Inf
+
+allowed_designs <- c("green", "blue", "orange")
+if (!(target_design %in% allowed_designs)) {
+    stop("`target_design` must be one of: ", paste(allowed_designs, collapse = ", "))
+}
+if (length(rows) != 1L || is.na(rows) || !is.numeric(rows) ||
+    (rows %% 1 != 0) || !(as.integer(rows) %in% c(1L, 2L))) {
+    stop("`rows` must be an integer in {1, 2}.")
+}
+rows <- as.integer(rows)
+
+impact_dt <- get_design_impact_dt(target_design)
+req_cols <- c("med_cl", "mediator", "outcome", "model", "source_dir")
+missing_cols <- setdiff(req_cols, names(impact_dt))
+if (length(missing_cols) > 0L) {
+    stop("Missing required column(s) in impact table: ", paste(missing_cols, collapse = ", "))
 }
 
-if (nrow(diag_dt) < 1L) {
-    cat("No non-empty .mediated.lst files available; skipping PDF generation.\n")
-} else {
-    pdf_out_dir <- file.path(here("plots/22_Mediation"), "ERC_Astro_mediation_pdfs")
-    dir.create(pdf_out_dir, recursive = TRUE, showWarnings = FALSE)
-    cat(sprintf("Saving PDFs to: %s\n", pdf_out_dir))
+valid_source_dirs <- c("out-erc_astro", "out-lc_astro", "out-lc_nm", "out-lc_nm_int")
+bad_source_dirs <- setdiff(unique(as.character(impact_dt$source_dir)), valid_source_dirs)
+if (length(bad_source_dirs) > 0L) {
+    stop("Unknown source_dir value(s) in impact table: ", paste(bad_source_dirs, collapse = ", "))
+}
 
-    run_log <- vector("list", nrow(diag_dt))
-    t_all <- proc.time()[["elapsed"]]
-    for (i in seq_len(nrow(diag_dt))) {
-        row_i <- diag_dt[i]
-        mediator_gene <- as.character(row_i$mediator_gene[[1]])
-        mediator_ref <- as.character(row_i$mediator_ref[[1]])
-        cluster <- as.character(row_i$cluster[[1]])
-        outcome_genes <- row_i$outcome_genes[[1]]
-        n_targets <- length(outcome_genes)
+impact_dt <- data.table::copy(impact_dt)
+data.table::setorderv(impact_dt, c("model", "mediator", "outcome"), order = c(1L, 1L, 1L))
+if (!isTRUE(plot_all_rows)) {
+    n_take <- if (is.finite(max_rows)) as.integer(max_rows) else nrow(impact_dt)
+    n_take <- max(0L, min(n_take, nrow(impact_dt)))
+    impact_dt <- impact_dt[seq_len(n_take)]
+}
+if (nrow(impact_dt) < 1L) {
+    stop("No rows to plot for design: ", target_design)
+}
 
-        pdf_file <- file.path(
-            pdf_out_dir,
-            sprintf(
-                "ERC_Astro_%s_%s_n%d_mediated.pdf",
-                safe_token(mediator_gene), safe_token(cluster), n_targets
-            )
-        )
-        cat(sprintf("[%d/%d] %s (%s): %d mediated genes\n",
-            i, nrow(diag_dt), mediator_gene, cluster, n_targets
+pdf_out_dir <- file.path(here("plots/22_Mediation"))
+dir.create(pdf_out_dir, recursive = TRUE, showWarnings = FALSE)
+pdf_file <- file.path(
+    pdf_out_dir,
+    sprintf("%s_mediation_all_pairs_n%d.pdf", toupper(target_design), rows)
+)
+cat(sprintf("Design=%s | plotting %d pairs\n", target_design, nrow(impact_dt)))
+cat(sprintf("Output PDF: %s\n", pdf_file))
+
+run_log <- vector("list", nrow(impact_dt))
+t_all <- proc.time()[["elapsed"]]
+n_ok <- 0L
+n_fail <- 0L
+pdf_open <- FALSE
+
+tryCatch({
+    grDevices::pdf(pdf_file, width = 7, height = 10, onefile = TRUE)
+    pdf_open <- TRUE
+    for (i in seq_len(nrow(impact_dt))) {
+        rr <- impact_dt[i]
+        med_cl <- as.character(rr$med_cl[[1]])
+        mediator <- as.character(rr$mediator[[1]])
+        outcome <- as.character(rr$outcome[[1]])
+        model_label <- as.character(rr$model[[1]])
+        source_dir <- as.character(rr$source_dir[[1]])
+        mediator_ref <- sprintf("%s:%s", med_cl, mediator)
+
+        cat(sprintf(
+            "[%d/%d] design=%s model=%s source=%s mediator=%s outcome=%s\n",
+            i, nrow(impact_dt), target_design, model_label, source_dir, mediator_ref, outcome
         ))
         flush.console()
 
-        n_ok <- 0L
-        n_fail <- 0L
-        pdf_open <- FALSE
         t0 <- proc.time()[["elapsed"]]
-
-        tryCatch({
-            grDevices::pdf(pdf_file, width = 7, height = 10, onefile = TRUE)
-            pdf_open <- TRUE
-            for (j in seq_along(outcome_genes)) {
-                outcome_gene <- outcome_genes[j]
-                if (j == 1L || j %% 10L == 0L || j == length(outcome_genes)) {
-                    cat(sprintf("  plotting %s: %d/%d (%s)\n",
-                        mediator_gene, j, length(outcome_genes), outcome_gene
-                    ))
-                    flush.console()
-                }
-                p <- tryCatch(
-                    plotMedComp(
-                        outcome_gene = outcome_gene,
-                        mediator_gene = mediator_ref,
-                        pd = pd,
-                        med_region = "ERC",
-                        med_stats_mode = "precomputed",
-                        rows = 2L,
-                        start_letter = NULL
-                    ),
-                    error = function(e) e
-                )
-                if (inherits(p, "error")) {
-                    n_fail <- n_fail + 1L
-                    message(sprintf("  plot failed for mediator=%s outcome=%s: %s",
-                        mediator_ref, outcome_gene, conditionMessage(p)
-                    ))
-                    next
-                }
-                print(p)
-                n_ok <- n_ok + 1L
-            }
+        status <- "ok"
+        msg <- ""
+        p <- tryCatch({
+            pd_info <- load_pd_for_source_dir(source_dir)
+            p0 <- plotMedComp(
+                outcome_gene = outcome,
+                mediator_gene = mediator_ref,
+                pd = pd_info$pd,
+                med_region = pd_info$med_region,
+                med_stats_mode = med_stats_mode,
+                rows = rows,
+                start_letter = NULL
+            )
+            build_plot_title_with_model(p0, model_label)
         }, error = function(e) {
-            message(sprintf("  failed while processing mediator %s: %s",
-                mediator_ref, conditionMessage(e)
-            ))
-        }, finally = {
-            if (pdf_open) grDevices::dev.off()
+            status <<- "failed"
+            msg <<- conditionMessage(e)
+            e
         })
 
-        if (n_ok < 1L && file.exists(pdf_file)) unlink(pdf_file)
-
+        if (inherits(p, "error")) {
+            n_fail <- n_fail + 1L
+            message(sprintf(
+                "  failed: design=%s model=%s source=%s mediator=%s outcome=%s | %s",
+                target_design, model_label, source_dir, mediator_ref, outcome, msg
+            ))
+        } else {
+            print(p)
+            n_ok <- n_ok + 1L
+        }
         elapsed_sec <- proc.time()[["elapsed"]] - t0
         run_log[[i]] <- data.table::data.table(
-            mediator_gene = mediator_gene,
-            cluster = cluster,
-            n_mediated = n_targets,
-            plots_written = n_ok,
-            plot_failures = n_fail,
-            created_pdf = as.logical(file.exists(pdf_file) && n_ok > 0L),
-            elapsed_sec = as.numeric(elapsed_sec),
-            pdf_file = pdf_file
+            design = target_design,
+            model = model_label,
+            source_dir = source_dir,
+            mediator = mediator_ref,
+            outcome = outcome,
+            status = status,
+            elapsed_sec = as.numeric(elapsed_sec)
         )
-        cat(sprintf("  done %s: wrote %d/%d plots in %.1f sec\n",
-            mediator_gene, n_ok, n_targets, elapsed_sec
-        ))
-        flush.console()
     }
+}, finally = {
+    if (pdf_open) grDevices::dev.off()
+})
 
-    run_log_dt <- data.table::rbindlist(run_log, fill = TRUE)
-    total_elapsed <- proc.time()[["elapsed"]] - t_all
-    cat("\nPDF generation summary:\n")
-    print(run_log_dt[, .(
-        mediator_gene,
-        cluster,
-        n_mediated,
-        plots_written,
-        plot_failures,
-        created_pdf,
-        elapsed_sec,
-        pdf_file = basename(pdf_file)
-    )])
-    cat(sprintf(
-        "\nCreated %d PDF files out of %d mediator files in %.1f sec.\n",
-        sum(run_log_dt$created_pdf), nrow(run_log_dt), total_elapsed
-    ))
-}
+if (n_ok < 1L && file.exists(pdf_file)) unlink(pdf_file)
+
+run_log_dt <- data.table::rbindlist(run_log, fill = TRUE)
+total_elapsed <- proc.time()[["elapsed"]] - t_all
+cat("\nPDF generation summary:\n")
+print(run_log_dt)
+cat(sprintf(
+    "\nCreated PDF: %s | ok=%d failed=%d total=%d elapsed=%.1f sec\n",
+    ifelse(file.exists(pdf_file), "yes", "no"),
+    n_ok, n_fail, nrow(impact_dt), total_elapsed
+))
 
 ```
 

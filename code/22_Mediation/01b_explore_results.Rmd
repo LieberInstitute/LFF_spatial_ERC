@@ -1,0 +1,815 @@
+---
+title: "Explore Mediation Screening Results"
+---
+
+```{r setup}
+suppressPackageStartupMessages({
+    library(data.table)
+    library(here)
+    library(qs2)
+})
+here::i_am(".git/HEAD")
+
+`%||%` <- function(x, y) if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
+
+code_med_dir <- here("code", "22_Mediation")
+out_data_dir <- here("processed-data", "22_Mediation")
+dir.create(out_data_dir, recursive = TRUE, showWarnings = FALSE)
+
+main_designs <- data.table::data.table(
+    source_dir = c("out-erc_astro", "out-lc_astro", "out-lc_nm", "out-lc_nm_int"),
+    design = c("green", "blue", "orange", "orange"),
+    model = c("ERC_Astro", "LC_ERC", "NM_bin", "NM_int")
+)
+
+read_run_signature <- function(path) {
+    if (!file.exists(path)) return(list())
+    lines <- readLines(path, warn = FALSE)
+    lines <- lines[nzchar(trimws(lines))]
+    if (length(lines) < 1L) return(list())
+    kv <- strsplit(lines, "=", fixed = TRUE)
+    keys <- trimws(vapply(kv, function(x) x[1], character(1)))
+    vals <- trimws(vapply(kv, function(x) paste(x[-1], collapse = "="), character(1)))
+    out <- as.list(vals)
+    names(out) <- keys
+    out
+}
+
+as_num <- function(x) {
+    if (is.null(x) || length(x) < 1) return(NA_real_)
+    suppressWarnings(as.numeric(trimws(as.character(x[[1]]))))
+}
+
+as_int <- function(x) {
+    if (is.null(x) || length(x) < 1) return(NA_integer_)
+    suppressWarnings(as.integer(trimws(as.character(x[[1]]))))
+}
+
+parse_mediator_file <- function(lst_file) {
+    stem <- sub("\\.mediated\\.lst$", "", basename(lst_file))
+    parts <- strsplit(stem, "_", fixed = TRUE)[[1]]
+    if (length(parts) < 3L) {
+        stop("Could not parse mediator list filename: ", basename(lst_file))
+    }
+    cluster <- parts[1]
+    med_gene_id <- parts[2]
+    mediator_gene <- paste(parts[3:length(parts)], collapse = "_")
+    list(
+        cluster = cluster,
+        med_gene_id = med_gene_id,
+        mediator_gene = mediator_gene,
+        mediator_ref = sprintf("%s:%s", cluster, mediator_gene),
+        mediation_run = sprintf("%s|%s|%s", cluster, med_gene_id, mediator_gene)
+    )
+}
+
+read_mediated_genes <- function(lst_file) {
+    lines <- trimws(readLines(lst_file, warn = FALSE))
+    lines <- lines[nzchar(lines)]
+    if (length(lines) < 1L) return(character(0))
+    parts <- strsplit(lines, "|", fixed = TRUE)
+    genes <- vapply(parts, function(x) {
+        if (length(x) >= 2L && nzchar(trimws(x[2]))) {
+            trimws(x[2])
+        } else if (length(x) >= 1L) {
+            trimws(x[1])
+        } else {
+            ""
+        }
+    }, character(1))
+    genes <- genes[nzchar(genes)]
+    genes[!duplicated(genes)]
+}
+
+resolve_latest_complete_run <- function(out_dir) {
+    run_history_path <- file.path(out_dir, "run_history.tsv")
+    if (!file.exists(run_history_path)) {
+        stop("Missing run_history.tsv in ", out_dir)
+    }
+    rh <- data.table::fread(run_history_path)
+    if (!("run_hash" %in% names(rh)) || nrow(rh) < 1L) {
+        stop("run_history.tsv missing run_hash or has no rows in ", out_dir)
+    }
+
+    rh <- data.table::copy(rh)
+    rh[, run_finished_at_posix := as.POSIXct(sub(" UTC$", "", as.character(run_finished_at)), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")]
+    rh[, row_id := .I]
+    data.table::setorderv(rh, c("run_finished_at_posix", "row_id"), order = c(-1L, -1L), na.last = TRUE)
+
+    missing_map <- list()
+    req_for_hash <- function(h) {
+        list(
+            fn_sig = file.path(out_dir, sprintf("run_signature_%s.txt", h)),
+            fn_md = file.path(out_dir, sprintf("med_degs_%s.qs2", h)),
+            fn_dge = file.path(out_dir, sprintf("dge_base_%s.qs2", h)),
+            fn_mi = file.path(out_dir, sprintf("mediation_run_index.%s.tsv", h)),
+            fn_sm = file.path(out_dir, sprintf("mediation_vs_baseline_summary.%s.tsv.gz", h)),
+            fn_bi = file.path(out_dir, sprintf("baseline_index.%s.tsv", h))
+        )
+    }
+
+    selected <- NULL
+    for (i in seq_len(nrow(rh))) {
+        h <- as.character(rh$run_hash[i])
+        p <- req_for_hash(h)
+        exists_vec <- vapply(p, file.exists, logical(1))
+        if (all(exists_vec)) {
+            selected <- list(
+                run_hash = h,
+                history_row = rh[i],
+                run_history = rh,
+                paths = p,
+                selection_mode = "latest_complete_hash",
+                selection_warning = "",
+                used_fallback = FALSE,
+                latest_complete_run_hash = h
+            )
+            break
+        }
+        missing_map[[h]] <- names(exists_vec)[!exists_vec]
+    }
+
+    if (!is.null(selected)) {
+        return(selected)
+    }
+
+    latest <- rh[1]
+    h <- as.character(latest$run_hash[[1]])
+    p_fallback <- list(
+        fn_sig = if (file.exists(file.path(out_dir, sprintf("run_signature_%s.txt", h)))) file.path(out_dir, sprintf("run_signature_%s.txt", h)) else file.path(out_dir, "run_signature_latest.txt"),
+        fn_md = if (file.exists(file.path(out_dir, sprintf("med_degs_%s.qs2", h)))) file.path(out_dir, sprintf("med_degs_%s.qs2", h)) else file.path(out_dir, "med_degs.qs2"),
+        fn_dge = if (file.exists(file.path(out_dir, sprintf("dge_base_%s.qs2", h)))) file.path(out_dir, sprintf("dge_base_%s.qs2", h)) else file.path(out_dir, "dge_base.qs2"),
+        fn_mi = if (file.exists(file.path(out_dir, sprintf("mediation_run_index.%s.tsv", h)))) file.path(out_dir, sprintf("mediation_run_index.%s.tsv", h)) else file.path(out_dir, "mediation_run_index.tsv"),
+        fn_sm = if (file.exists(file.path(out_dir, sprintf("mediation_vs_baseline_summary.%s.tsv.gz", h)))) file.path(out_dir, sprintf("mediation_vs_baseline_summary.%s.tsv.gz", h)) else file.path(out_dir, "mediation_vs_baseline_summary.tsv.gz"),
+        fn_bi = if (file.exists(file.path(out_dir, sprintf("baseline_index.%s.tsv", h)))) file.path(out_dir, sprintf("baseline_index.%s.tsv", h)) else file.path(out_dir, "baseline_index.tsv")
+    )
+    missing_after_fallback <- names(vapply(p_fallback, file.exists, logical(1)))[!vapply(p_fallback, file.exists, logical(1))]
+    if (length(missing_after_fallback) > 0L) {
+        stop("Could not resolve required run artifacts in ", out_dir, "; missing: ", paste(missing_after_fallback, collapse = ", "))
+    }
+
+    list(
+        run_hash = h,
+        history_row = latest,
+        run_history = rh,
+        paths = p_fallback,
+        selection_mode = "fallback_unqualified",
+        selection_warning = sprintf("No complete hash-pinned run found; used fallback artifacts for hash %s", h),
+        used_fallback = TRUE,
+        latest_complete_run_hash = NA_character_
+    )
+}
+
+assert_single_run_hash <- function(dt, col, expected, label) {
+    if (!(col %in% names(dt))) return(invisible(FALSE))
+    vals <- unique(as.character(dt[[col]]))
+    vals <- vals[!is.na(vals) & nzchar(vals)]
+    if (length(vals) != 1L) {
+        stop(sprintf("%s must contain exactly one non-empty %s value; found: %s", label, col, paste(vals, collapse = ",")))
+    }
+    if (!identical(vals[[1]], expected)) {
+        stop(sprintf("%s %s mismatch: found %s but expected %s", label, col, vals[[1]], expected))
+    }
+    invisible(TRUE)
+}
+
+build_mediated_diag <- function(out_dir, valid_run_labels = character(0), small_first = TRUE) {
+    if (!dir.exists(out_dir)) {
+        stop("Mediation output directory not found: ", out_dir)
+    }
+    mediated_files <- list.files(out_dir, pattern = "\\.mediated\\.lst$", full.names = TRUE)
+    if (length(mediated_files) > 0L) {
+        finfo <- file.info(mediated_files)
+        mediated_files <- mediated_files[!is.na(finfo$size) & finfo$size > 0]
+    }
+    mediated_files <- sort(mediated_files)
+
+    if (length(mediated_files) < 1L) {
+        empty <- data.table::data.table(
+            list_file = character(0),
+            mediation_run = character(0),
+            cluster = character(0),
+            med_gene_id = character(0),
+            mediator_gene = character(0),
+            mediator_ref = character(0),
+            n_mediated = integer(0),
+            outcomes_preview = character(0),
+            is_current_run = logical(0),
+            list_path = character(0)
+        )
+        empty[, outcome_genes := vector("list", 0L)]
+        return(list(
+            all = empty,
+            used = empty,
+            stats = list(total = 0L, used = 0L, excluded_stale = 0L)
+        ))
+    }
+
+    diag_rows <- lapply(mediated_files, function(f) {
+        minfo <- parse_mediator_file(f)
+        outcome_genes <- read_mediated_genes(f)
+        run_lb <- as.character(minfo$mediation_run)
+        data.table::data.table(
+            list_file = basename(f),
+            mediation_run = run_lb,
+            cluster = minfo$cluster,
+            med_gene_id = minfo$med_gene_id,
+            mediator_gene = minfo$mediator_gene,
+            mediator_ref = minfo$mediator_ref,
+            n_mediated = length(outcome_genes),
+            outcomes_preview = paste(head(outcome_genes, 6), collapse = ", "),
+            is_current_run = run_lb %in% valid_run_labels,
+            list_path = normalizePath(f, winslash = "/", mustWork = TRUE),
+            outcome_genes = list(outcome_genes)
+        )
+    })
+    diag_all <- data.table::rbindlist(diag_rows, fill = TRUE)
+    diag_used <- diag_all[is_current_run == TRUE]
+
+    ord <- if (isTRUE(small_first)) 1L else -1L
+    if (nrow(diag_all) > 0L) data.table::setorderv(diag_all, c("n_mediated", "mediator_gene"), order = c(ord, 1L))
+    if (nrow(diag_used) > 0L) data.table::setorderv(diag_used, c("n_mediated", "mediator_gene"), order = c(ord, 1L))
+
+    list(
+        all = diag_all,
+        used = diag_used,
+        stats = list(
+            total = as.integer(nrow(diag_all)),
+            used = as.integer(nrow(diag_used)),
+            excluded_stale = as.integer(nrow(diag_all) - nrow(diag_used))
+        )
+    )
+}
+
+loadMedDataSummary <- function(out_dir) {
+    resolved <- resolve_latest_complete_run(out_dir)
+    pth <- c(list(
+        out = out_dir,
+        base_dir = file.path(out_dir, "baseline"),
+        run_hash = resolved$run_hash,
+        run_history = file.path(out_dir, "run_history.tsv")
+    ), resolved$paths)
+
+    md <- data.table::as.data.table(qs_read(pth$fn_md))
+    dge <- qs_read(pth$fn_dge)
+    mi <- data.table::fread(pth$fn_mi)
+    sm <- data.table::fread(pth$fn_sm)
+    bi <- if (file.exists(pth$fn_bi)) data.table::fread(pth$fn_bi) else NULL
+    sig <- read_run_signature(pth$fn_sig)
+
+    assert_single_run_hash(mi, "run_hash", pth$run_hash, "mediation_run_index")
+    assert_single_run_hash(sm, "run_hash", pth$run_hash, "mediation_vs_baseline_summary")
+
+    bf <- NULL
+    if (!is.null(bi) && nrow(bi) > 0L && "out_file" %in% names(bi)) {
+        bi2 <- data.table::copy(bi)
+        if ("n_donors" %in% names(bi2)) {
+            data.table::setorderv(bi2, cols = "n_donors", order = -1L)
+        }
+        bf <- bi2$out_file[1]
+    } else {
+        bf <- list.files(pth$base_dir, pattern = "^baseline_[0-9a-f]+\\.tab\\.gz$", full.names = TRUE)[1]
+    }
+    if (is.na(bf) || !nzchar(bf) || !file.exists(bf)) {
+        stop("Could not resolve baseline file in: ", pth$base_dir)
+    }
+    br <- data.table::fread(bf)
+
+    if (is.null(dge$genes) || !("gene_name" %in% colnames(dge$genes))) {
+        stop("dge_base$genes must contain gene_name in: ", out_dir)
+    }
+    gmap <- data.table::data.table(
+        gene_name = as.character(dge$genes$gene_name),
+        gene_id = rownames(dge$genes)
+    )
+
+    list(
+        pth = pth,
+        dt = list(md = md, mi = mi, sm = sm, bi = bi, br = br),
+        meta = list(
+            signature = sig,
+            history_row = resolved$history_row,
+            selection_mode = resolved$selection_mode,
+            selection_warning = resolved$selection_warning,
+            used_fallback = resolved$used_fallback,
+            latest_complete_run_hash = resolved$latest_complete_run_hash
+        ),
+        key = list(gmap = gmap)
+    )
+}
+
+resolve_mediator_row <- function(mg, md) {
+    mg_cl <- NULL
+    mg_nm <- mg
+    if (grepl(":", mg, fixed = TRUE)) {
+        pr <- strsplit(mg, ":", fixed = TRUE)[[1]]
+        mg_cl <- pr[1]
+        mg_nm <- pr[2]
+    }
+    rs <- md[gene_name == mg_nm | gene_id == mg_nm | med_gene_id == mg_nm]
+    if (!is.null(mg_cl)) rs <- rs[cluster == mg_cl]
+    if (nrow(rs) == 0L) stop("Mediator not found: ", mg)
+    rs[nrow(rs)]
+}
+
+resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label) {
+    if (!is.null(dt_mi) && nrow(dt_mi) > 0L && all(c("iter", "med_gene_id", "out_file") %in% names(dt_mi))) {
+        idx <- dt_mi[iter == it & med_gene_id == mgid]
+        if (nrow(idx) > 0L) {
+            mf <- idx$out_file[1]
+            if (!is.na(mf) && nzchar(mf) && file.exists(mf)) return(mf)
+        }
+    }
+    mf <- file.path(pd$pth$out, sprintf("%03d_%s.tab.gz", it, file_label))
+    if (file.exists(mf)) return(mf)
+    stop("Mediation results file not found for mediator run label: ", file_label)
+}
+
+.cached_fread <- local({
+    .cache <- new.env(parent = emptyenv())
+    function(path) {
+        key <- normalizePath(path, winslash = "/", mustWork = FALSE)
+        if (exists(key, envir = .cache, inherits = FALSE)) {
+            return(get(key, envir = .cache, inherits = FALSE))
+        }
+        dt <- data.table::fread(path)
+        assign(key, dt, envir = .cache)
+        dt
+    }
+})
+
+build_mediator_impact_dt <- function(diag_dt, pd) {
+    if (!data.table::is.data.table(diag_dt) || nrow(diag_dt) < 1L) {
+        return(data.table::data.table(
+            med_cl = character(0), mediator = character(0), outcome = character(0),
+            fdr = numeric(0), logFC = numeric(0), t = numeric(0),
+            fdr_med = numeric(0), logFC_med = numeric(0), t_med = numeric(0)
+        ))
+    }
+
+    min_or_na <- function(x) {
+        x <- as.numeric(x)
+        if (length(x) < 1L || all(is.na(x))) return(NA_real_)
+        min(x, na.rm = TRUE)
+    }
+    first_present_col <- function(dt, candidates) {
+        hit <- candidates[candidates %in% names(dt)][1]
+        if (is.na(hit) || !nzchar(hit)) return(NA_character_)
+        hit
+    }
+
+    dt_br <- data.table::as.data.table(pd$dt$br)
+    dt_md <- data.table::as.data.table(pd$dt$md)
+    dt_mi <- pd$dt$mi
+    gmap <- data.table::as.data.table(pd$key$gmap)
+
+    if (!all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_br))) {
+        stop("Baseline table must contain outcome_gene_id and adj.P.Val.")
+    }
+
+    base_fc_col <- first_present_col(dt_br, c("logFC", "vlmf_logFC"))
+    base_t_col <- first_present_col(dt_br, c("t", "vlmf_t"))
+    base_map <- dt_br[
+        !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
+        {
+            ii <- which(!is.na(adj.P.Val))
+            best_i <- if (length(ii) > 0L) ii[which.min(adj.P.Val[ii])] else NA_integer_
+            .(
+                fdr = min_or_na(adj.P.Val),
+                logFC = if (is.na(base_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(base_fc_col)[best_i]),
+                t = if (is.na(base_t_col) || is.na(best_i)) NA_real_ else as.numeric(get(base_t_col)[best_i])
+            )
+        },
+        by = .(outcome_gene_id = as.character(outcome_gene_id))
+    ]
+
+    impact_rows <- lapply(seq_len(nrow(diag_dt)), function(i) {
+        rr <- diag_dt[i]
+        med_cl <- as.character(rr$cluster[[1]])
+        mediator <- as.character(rr$mediator_gene[[1]])
+        outcomes <- sort(unique(as.character(rr$outcome_genes[[1]])))
+        if (length(outcomes) < 1L) return(NULL)
+
+        out_ids <- as.character(gmap$gene_id[match(outcomes, as.character(gmap$gene_name))])
+
+        med_map <- data.table::data.table(
+            outcome_gene_id = character(0), fdr_med = numeric(0),
+            logFC_med = numeric(0), t_med = numeric(0)
+        )
+        med_key <- sprintf("%s:%s", med_cl, mediator)
+        mr <- tryCatch(resolve_mediator_row(med_key, dt_md), error = function(e) NULL)
+        if (!is.null(mr)) {
+            run_lb <- sprintf("%s|%s|%s", as.character(mr$cluster[[1]]), as.character(mr$gene_id[[1]]), as.character(mr$gene_name[[1]]))
+            f_lb <- gsub("\\|", "_", run_lb)
+            mf <- tryCatch(
+                resolve_mediator_results_file(
+                    pd = pd,
+                    dt_mi = dt_mi,
+                    it = as.integer(mr$iter[[1]]),
+                    mgid = as.character(mr$med_gene_id[[1]]),
+                    file_label = f_lb
+                ),
+                error = function(e) NA_character_
+            )
+            if (!is.na(mf) && nzchar(mf) && file.exists(mf)) {
+                dt_mr <- .cached_fread(mf)
+                if (all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_mr))) {
+                    med_fc_col <- first_present_col(dt_mr, c("logFC", "vlmf_logFC"))
+                    med_t_col <- first_present_col(dt_mr, c("t", "vlmf_t"))
+                    med_map <- dt_mr[
+                        !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
+                        {
+                            ii <- which(!is.na(adj.P.Val))
+                            best_i <- if (length(ii) > 0L) ii[which.min(adj.P.Val[ii])] else NA_integer_
+                            .(
+                                fdr_med = min_or_na(adj.P.Val),
+                                logFC_med = if (is.na(med_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_fc_col)[best_i]),
+                                t_med = if (is.na(med_t_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_t_col)[best_i])
+                            )
+                        },
+                        by = .(outcome_gene_id = as.character(outcome_gene_id))
+                    ]
+                }
+            }
+        }
+
+        data.table::data.table(
+            med_cl = med_cl,
+            mediator = mediator,
+            outcome = outcomes,
+            fdr = as.numeric(base_map$fdr[match(out_ids, base_map$outcome_gene_id)]),
+            logFC = as.numeric(base_map$logFC[match(out_ids, base_map$outcome_gene_id)]),
+            t = as.numeric(base_map$t[match(out_ids, base_map$outcome_gene_id)]),
+            fdr_med = as.numeric(med_map$fdr_med[match(out_ids, med_map$outcome_gene_id)]),
+            logFC_med = as.numeric(med_map$logFC_med[match(out_ids, med_map$outcome_gene_id)]),
+            t_med = as.numeric(med_map$t_med[match(out_ids, med_map$outcome_gene_id)])
+        )
+    })
+    impact_dt <- data.table::rbindlist(impact_rows, fill = TRUE)
+    data.table::setcolorder(impact_dt, c("med_cl", "mediator", "outcome", "fdr", "logFC", "t", "fdr_med", "logFC_med", "t_med"))
+    if (nrow(impact_dt) > 0L) {
+        data.table::setorderv(impact_dt, c("med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L))
+    }
+    impact_dt
+}
+
+build_run_tables <- function(pd, source_dir, design, model, diag_info) {
+    sig <- pd$meta$signature
+    latest <- pd$meta$history_row
+    sm <- data.table::copy(pd$dt$sm)
+
+    n_mediators_screened <- as_int(sig$n_mediators_screened %||% sig$n_mediators %||% latest$n_mediators_screened %||% latest$n_mediators)
+    n_mediators_eligible <- as_int(latest$n_mediators_eligible %||% unique(sm$n_mediators_eligible)[1])
+    n_completed <- as_int(latest$n_completed %||% nrow(sm))
+    n_validated_mediators <- as.integer(sum(as.logical(sm$pass_both), na.rm = TRUE))
+    validated_genes_total <- as.integer(sum(as.integer(sm$mediated_n), na.rm = TRUE))
+
+    run_overview <- data.table::data.table(
+        design = design,
+        model = model,
+        source_dir = source_dir,
+        out_dir = normalizePath(pd$pth$out, winslash = "/", mustWork = TRUE),
+        mediation = as.character(sig$mediation %||% latest$mediation %||% NA_character_),
+        run_hash = as.character(pd$pth$run_hash),
+        latest_complete_run_hash = as.character(pd$meta$latest_complete_run_hash %||% pd$pth$run_hash),
+        selected_hash_matches_latest_complete = identical(as.character(pd$pth$run_hash), as.character(pd$meta$latest_complete_run_hash %||% pd$pth$run_hash)),
+        run_selection_mode = as.character(pd$meta$selection_mode),
+        run_selection_warning = as.character(pd$meta$selection_warning %||% ""),
+        run_started_at = as.character(latest$run_started_at %||% NA_character_),
+        run_finished_at = as.character(latest$run_finished_at %||% NA_character_),
+        FDRthr = as_num(sig$FDRthr %||% latest$FDRthr),
+        medSelFDR = as_num(sig$medSelFDR %||% latest$medSelFDR),
+        n_mediators_screened = n_mediators_screened,
+        n_mediators_eligible = n_mediators_eligible,
+        n_completed = n_completed,
+        n_validated_mediators = n_validated_mediators,
+        validated_genes_total = validated_genes_total,
+        mediated_max = if (nrow(sm) > 0L) max(as.integer(sm$mediated_n), na.rm = TRUE) else 0L,
+        n_unique_donor_sets = as_int(latest$n_unique_donor_sets),
+        n_mediated_list_files_total = as.integer(diag_info$stats$total),
+        n_mediated_list_files_used = as.integer(diag_info$stats$used),
+        n_mediated_list_files_excluded_stale = as.integer(diag_info$stats$excluded_stale),
+        outcome_donor_key = as.character(sig$outcome_donor_key %||% latest$outcome_donor_key %||% NA_character_),
+        outcome_donor_str = as.character(sig$outcome_donor_str %||% latest$outcome_donor_str %||% NA_character_),
+        baseline_formula = as.character(sig$baseline_formula %||% NA_character_),
+        mediation_formula = as.character(sig$mediation_formula %||% NA_character_),
+        drop_donors_global = as.character(sig$drop_donors_global %||% NA_character_),
+        drop_donors_lc = as.character(sig$drop_donors_lc %||% NA_character_)
+    )
+
+    summary_metrics <- data.table::data.table(
+        design = design,
+        model = model,
+        source_dir = source_dir,
+        run_hash = as.character(pd$pth$run_hash),
+        FDRthr = run_overview$FDRthr,
+        medSelFDR = run_overview$medSelFDR,
+        n_mediators_screened = n_mediators_screened,
+        n_validated_mediators = n_validated_mediators,
+        validated_genes_total = validated_genes_total,
+        mediated_max = if (nrow(sm) > 0L) max(as.integer(sm$mediated_n), na.rm = TRUE) else 0L,
+        baselineDEGs_unique = paste(sort(unique(as.integer(sm$baselineDEGs))), collapse = ","),
+        outcomeDEGs_loss_total = sum(as.integer(sm$loss), na.rm = TRUE),
+        outcomeDEGs_gain_total = sum(as.integer(sm$gain), na.rm = TRUE),
+        n_donors_unique = paste(sort(unique(as.integer(sm$n_donors))), collapse = ",")
+    )
+
+    top <- data.table::copy(sm)
+    data.table::setorderv(top, c("mediated_n", "mediation_run"), order = c(-1L, 1L))
+    top <- top[mediated_n > 0]
+    top <- top[seq_len(min(10L, .N))]
+    if (nrow(top) > 0L) {
+        top[, rank := seq_len(.N)]
+        top[, `:=`(
+            design = design,
+            model = model,
+            source_dir = source_dir,
+            run_hash = as.character(pd$pth$run_hash),
+            FDRthr = run_overview$FDRthr,
+            medSelFDR = run_overview$medSelFDR,
+            n_mediators_screened = n_mediators_screened,
+            n_mediators_eligible = n_mediators_eligible,
+            n_completed = n_completed
+        )]
+        top <- top[, .(
+            design, model, source_dir, run_hash, rank, mediation_run, n_donors,
+            FDRthr, medSelFDR, n_mediators_screened, n_mediators_eligible, n_completed,
+            mediated_n, medSigBaselineDEGs, mediationCarrierDEGs, mediationMDEGs, pass_both
+        )]
+    } else {
+        top <- data.table::data.table(
+            design = character(0), model = character(0), source_dir = character(0),
+            run_hash = character(0), rank = integer(0), mediation_run = character(0),
+            n_donors = integer(0), FDRthr = numeric(0), medSelFDR = numeric(0),
+            n_mediators_screened = integer(0), n_mediators_eligible = integer(0),
+            n_completed = integer(0), mediated_n = integer(0), medSigBaselineDEGs = integer(0),
+            mediationCarrierDEGs = integer(0), mediationMDEGs = integer(0), pass_both = logical(0)
+        )
+    }
+
+    list(
+        run_overview = run_overview,
+        summary_metrics = summary_metrics,
+        top_hits = top,
+        common_meta = list(
+            run_hash = as.character(pd$pth$run_hash),
+            FDRthr = run_overview$FDRthr,
+            medSelFDR = run_overview$medSelFDR,
+            n_mediators_screened = n_mediators_screened,
+            n_mediators_eligible = n_mediators_eligible,
+            n_completed = n_completed
+        )
+    )
+}
+
+build_nonempty_mediated_lists_dt <- function(diag_used, source_dir, design, model, common_meta) {
+    if (!data.table::is.data.table(diag_used) || nrow(diag_used) < 1L) {
+        return(data.table::data.table(
+            design = character(0), model = character(0), source_dir = character(0), run_hash = character(0),
+            FDRthr = numeric(0), medSelFDR = numeric(0), n_mediators_screened = integer(0),
+            n_mediators_eligible = integer(0), n_completed = integer(0), list_file = character(0),
+            mediation_run = character(0), cluster = character(0), med_gene_id = character(0),
+            mediator_gene = character(0), n_mediated = integer(0), list_path = character(0)
+        ))
+    }
+    out <- data.table::copy(diag_used)
+    out[, `:=`(
+        design = design,
+        model = model,
+        source_dir = source_dir,
+        run_hash = common_meta$run_hash,
+        FDRthr = common_meta$FDRthr,
+        medSelFDR = common_meta$medSelFDR,
+        n_mediators_screened = common_meta$n_mediators_screened,
+        n_mediators_eligible = common_meta$n_mediators_eligible,
+        n_completed = common_meta$n_completed
+    )]
+    out[, .(
+        design, model, source_dir, run_hash, FDRthr, medSelFDR,
+        n_mediators_screened, n_mediators_eligible, n_completed,
+        list_file, mediation_run, cluster, med_gene_id, mediator_gene, n_mediated, list_path
+    )]
+}
+
+build_validated_by_mediator_dt <- function(sm, diag_used, source_dir, design, model, common_meta) {
+    if (!data.table::is.data.table(sm) || nrow(sm) < 1L) {
+        return(data.table::data.table(
+            design = character(0), model = character(0), source_dir = character(0), run_hash = character(0),
+            FDRthr = numeric(0), medSelFDR = numeric(0), n_mediators_screened = integer(0),
+            n_mediators_eligible = integer(0), n_completed = integer(0), mediation_run = character(0),
+            cluster = character(0), med_gene_id = character(0), mediator_gene = character(0),
+            mediated_n = integer(0), n_donors = integer(0), list_file = character(0), list_path = character(0)
+        ))
+    }
+
+    vv <- data.table::copy(sm[as.logical(pass_both) == TRUE & as.integer(mediated_n) > 0L])
+    if (nrow(vv) < 1L) {
+        return(data.table::data.table(
+            design = character(0), model = character(0), source_dir = character(0), run_hash = character(0),
+            FDRthr = numeric(0), medSelFDR = numeric(0), n_mediators_screened = integer(0),
+            n_mediators_eligible = integer(0), n_completed = integer(0), mediation_run = character(0),
+            cluster = character(0), med_gene_id = character(0), mediator_gene = character(0),
+            mediated_n = integer(0), n_donors = integer(0), list_file = character(0), list_path = character(0)
+        ))
+    }
+
+    run_parts <- strsplit(as.character(vv$mediation_run), "|", fixed = TRUE)
+    vv[, cluster := vapply(run_parts, function(x) if (length(x) >= 1L) x[1] else NA_character_, character(1))]
+    vv[, med_gene_id := vapply(run_parts, function(x) if (length(x) >= 2L) x[2] else NA_character_, character(1))]
+    vv[, mediator_gene := vapply(run_parts, function(x) if (length(x) >= 3L) paste(x[3:length(x)], collapse = "|") else NA_character_, character(1))]
+
+    list_map <- if (!is.null(diag_used) && nrow(diag_used) > 0L) {
+        unique(diag_used[, .(mediation_run, list_file, list_path, n_mediated_list = n_mediated)])
+    } else {
+        data.table::data.table(mediation_run = character(0), list_file = character(0), list_path = character(0), n_mediated_list = integer(0))
+    }
+
+    vv <- merge(vv, list_map, by = "mediation_run", all.x = TRUE)
+    vv[, `:=`(
+        design = design,
+        model = model,
+        source_dir = source_dir,
+        run_hash = common_meta$run_hash,
+        FDRthr = common_meta$FDRthr,
+        medSelFDR = common_meta$medSelFDR,
+        n_mediators_screened = common_meta$n_mediators_screened,
+        n_mediators_eligible = common_meta$n_mediators_eligible,
+        n_completed = common_meta$n_completed
+    )]
+
+    data.table::setorderv(vv, c("mediated_n", "mediation_run"), order = c(-1L, 1L))
+    vv[, .(
+        design, model, source_dir, run_hash, FDRthr, medSelFDR,
+        n_mediators_screened, n_mediators_eligible, n_completed,
+        mediation_run, cluster, med_gene_id, mediator_gene,
+        mediated_n, n_donors, list_file, list_path
+    )]
+}
+```
+
+```{r build-and-save}
+run_overview_list <- list()
+summary_metrics_list <- list()
+top_hits_list <- list()
+nonempty_lists_list <- list()
+validated_by_mediator_list <- list()
+impact_by_source <- list()
+validation_by_source <- list()
+
+for (i in seq_len(nrow(main_designs))) {
+    cfg <- main_designs[i]
+    source_dir <- as.character(cfg$source_dir[[1]])
+    design <- as.character(cfg$design[[1]])
+    model <- as.character(cfg$model[[1]])
+    out_dir <- file.path(code_med_dir, source_dir)
+
+    pd <- loadMedDataSummary(out_dir)
+    valid_run_labels <- unique(as.character(pd$dt$mi$run_label))
+    diag_info <- build_mediated_diag(out_dir, valid_run_labels = valid_run_labels, small_first = FALSE)
+
+    impact_dt <- build_mediator_impact_dt(diag_info$used, pd)
+    if (nrow(impact_dt) > 0L) {
+        impact_dt[, `:=`(design = design, model = model, source_dir = source_dir, run_hash = pd$pth$run_hash)]
+    }
+    impact_by_source[[source_dir]] <- impact_dt
+
+    rt <- build_run_tables(pd, source_dir, design, model, diag_info)
+    run_overview_list[[source_dir]] <- rt$run_overview
+    summary_metrics_list[[source_dir]] <- rt$summary_metrics
+    top_hits_list[[source_dir]] <- rt$top_hits
+
+    nonempty_dt <- build_nonempty_mediated_lists_dt(
+        diag_used = diag_info$used,
+        source_dir = source_dir,
+        design = design,
+        model = model,
+        common_meta = rt$common_meta
+    )
+    nonempty_lists_list[[source_dir]] <- nonempty_dt
+
+    validated_dt <- build_validated_by_mediator_dt(
+        sm = pd$dt$sm,
+        diag_used = diag_info$used,
+        source_dir = source_dir,
+        design = design,
+        model = model,
+        common_meta = rt$common_meta
+    )
+    validated_by_mediator_list[[source_dir]] <- validated_dt
+
+    validation_by_source[[source_dir]] <- data.table::data.table(
+        source_dir = source_dir,
+        runs_subset_ok = all(as.character(validated_dt$mediation_run) %in% valid_run_labels),
+        mediated_count_match_ok = all(
+            as.integer(validated_dt$mediated_n) == as.integer(pd$dt$sm$mediated_n[match(validated_dt$mediation_run, pd$dt$sm$mediation_run)])
+        )
+    )
+
+    fwrite(rt$run_overview, file.path(out_data_dir, sprintf("mediation_run_report_%s.tsv", source_dir)), sep = "\t")
+    fwrite(validated_dt, file.path(out_data_dir, sprintf("mediation_validated_by_mediator_%s.tsv", source_dir)), sep = "\t")
+}
+
+run_overview_dt <- data.table::rbindlist(run_overview_list, fill = TRUE)
+summary_metrics_dt <- data.table::rbindlist(summary_metrics_list, fill = TRUE)
+top_hits_dt <- data.table::rbindlist(top_hits_list, fill = TRUE)
+nonempty_mediated_lists_dt <- data.table::rbindlist(nonempty_lists_list, fill = TRUE)
+validated_by_mediator_dt <- data.table::rbindlist(validated_by_mediator_list, fill = TRUE)
+validation_checks_dt <- data.table::rbindlist(validation_by_source, fill = TRUE)
+
+orange_split <- summary_metrics_dt[source_dir %in% c("out-lc_nm", "out-lc_nm_int")]
+if (nrow(orange_split) > 0L) {
+    fdr_vals <- sort(unique(orange_split$FDRthr))
+    medsel_vals <- sort(unique(orange_split$medSelFDR))
+    orange_combined <- data.table::data.table(
+        design = "orange",
+        model = "NM_bin+NM_int",
+        source_dir = "orange_combined",
+        run_hash = paste(orange_split$run_hash, collapse = ";"),
+        FDRthr = if (length(fdr_vals) == 1L) fdr_vals else NA_real_,
+        medSelFDR = if (length(medsel_vals) == 1L) medsel_vals else NA_real_,
+        n_mediators_screened = sum(as.integer(orange_split$n_mediators_screened), na.rm = TRUE),
+        n_validated_mediators = sum(as.integer(orange_split$n_validated_mediators), na.rm = TRUE),
+        validated_genes_total = sum(as.integer(orange_split$validated_genes_total), na.rm = TRUE),
+        mediated_max = max(as.integer(orange_split$mediated_max), na.rm = TRUE),
+        baselineDEGs_unique = paste(sort(unique(unlist(strsplit(paste(orange_split$baselineDEGs_unique, collapse = ","), ",", fixed = TRUE)))), collapse = ","),
+        outcomeDEGs_loss_total = sum(as.integer(orange_split$outcomeDEGs_loss_total), na.rm = TRUE),
+        outcomeDEGs_gain_total = sum(as.integer(orange_split$outcomeDEGs_gain_total), na.rm = TRUE),
+        n_donors_unique = paste(sort(unique(unlist(strsplit(paste(orange_split$n_donors_unique, collapse = ","), ",", fixed = TRUE)))), collapse = ",")
+    )
+    summary_metrics_dt <- data.table::rbindlist(list(summary_metrics_dt, orange_combined), fill = TRUE)
+}
+
+impact_green <- impact_by_source[["out-erc_astro"]]
+impact_blue <- impact_by_source[["out-lc_astro"]]
+impact_orange <- data.table::rbindlist(
+    list(impact_by_source[["out-lc_nm"]], impact_by_source[["out-lc_nm_int"]]),
+    fill = TRUE
+)
+
+if (nrow(run_overview_dt) > 0) data.table::setorderv(run_overview_dt, c("design", "source_dir"), order = c(1L, 1L))
+if (nrow(summary_metrics_dt) > 0) data.table::setorderv(summary_metrics_dt, c("design", "source_dir"), order = c(1L, 1L))
+if (nrow(nonempty_mediated_lists_dt) > 0) data.table::setorderv(nonempty_mediated_lists_dt, c("design", "source_dir", "n_mediated", "list_file"), order = c(1L, 1L, -1L, 1L))
+if (nrow(top_hits_dt) > 0) data.table::setorderv(top_hits_dt, c("design", "source_dir", "rank"), order = c(1L, 1L, 1L))
+if (nrow(validated_by_mediator_dt) > 0) data.table::setorderv(validated_by_mediator_dt, c("design", "source_dir", "mediated_n", "mediation_run"), order = c(1L, 1L, -1L, 1L))
+if (nrow(impact_green) > 0) data.table::setorderv(impact_green, c("design", "model", "source_dir", "med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L, 1L, 1L, 1L))
+if (nrow(impact_blue) > 0) data.table::setorderv(impact_blue, c("design", "model", "source_dir", "med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L, 1L, 1L, 1L))
+if (nrow(impact_orange) > 0) data.table::setorderv(impact_orange, c("design", "model", "source_dir", "med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L, 1L, 1L, 1L))
+
+fwrite(run_overview_dt, file.path(out_data_dir, "mediation_run_overview_main.tsv"), sep = "\t")
+fwrite(summary_metrics_dt, file.path(out_data_dir, "mediation_summary_metrics_main.tsv"), sep = "\t")
+fwrite(nonempty_mediated_lists_dt, file.path(out_data_dir, "mediation_nonempty_mediated_lists_main.tsv"), sep = "\t")
+fwrite(top_hits_dt, file.path(out_data_dir, "mediation_top_hits_main.tsv"), sep = "\t")
+fwrite(validated_by_mediator_dt, file.path(out_data_dir, "mediation_validated_by_mediator_main.tsv"), sep = "\t")
+
+fwrite(impact_green, file.path(out_data_dir, "mediator_outcome_fdr_impact_green.tsv"), sep = "\t")
+fwrite(impact_blue, file.path(out_data_dir, "mediator_outcome_fdr_impact_blue.tsv"), sep = "\t")
+fwrite(impact_orange, file.path(out_data_dir, "mediator_outcome_fdr_impact_orange.tsv"), sep = "\t")
+
+cat(sprintf("Saved run overview rows: %d\n", nrow(run_overview_dt)))
+cat(sprintf("Saved summary metrics rows: %d\n", nrow(summary_metrics_dt)))
+cat(sprintf("Saved non-empty mediated list rows: %d\n", nrow(nonempty_mediated_lists_dt)))
+cat(sprintf("Saved top hits rows: %d\n", nrow(top_hits_dt)))
+cat(sprintf("Saved validated-by-mediator rows: %d\n", nrow(validated_by_mediator_dt)))
+cat(sprintf("Saved impact rows: green=%d blue=%d orange=%d\n", nrow(impact_green), nrow(impact_blue), nrow(impact_orange)))
+```
+
+```{r validations}
+stopifnot(all(unique(impact_green$model) %in% c("ERC_Astro")))
+stopifnot(all(unique(impact_blue$model) %in% c("LC_ERC")))
+stopifnot(all(c("NM_bin", "NM_int") %in% unique(impact_orange$model)))
+
+orange_expected <- nrow(impact_by_source[["out-lc_nm"]]) + nrow(impact_by_source[["out-lc_nm_int"]])
+stopifnot(nrow(impact_orange) == orange_expected)
+
+required_run_overview_cols <- c("FDRthr", "medSelFDR", "n_mediators_screened", "n_mediators_eligible", "n_completed", "n_validated_mediators", "validated_genes_total")
+required_summary_cols <- c("FDRthr", "medSelFDR", "n_mediators_screened", "n_validated_mediators", "validated_genes_total", "outcomeDEGs_loss_total", "outcomeDEGs_gain_total")
+required_lists_cols <- c("FDRthr", "medSelFDR", "n_mediators_screened", "n_mediators_eligible", "n_completed", "n_mediated")
+required_top_cols <- c("FDRthr", "medSelFDR", "n_mediators_screened", "n_mediators_eligible", "n_completed", "mediated_n")
+
+stopifnot(all(required_run_overview_cols %in% names(run_overview_dt)))
+stopifnot(all(required_summary_cols %in% names(summary_metrics_dt)))
+stopifnot(all(required_lists_cols %in% names(nonempty_mediated_lists_dt)))
+stopifnot(all(required_top_cols %in% names(top_hits_dt)))
+
+stopifnot(all(run_overview_dt$selected_hash_matches_latest_complete))
+stopifnot(all(validation_checks_dt$runs_subset_ok))
+stopifnot(all(validation_checks_dt$mediated_count_match_ok))
+
+blue_row <- summary_metrics_dt[source_dir == "out-lc_astro"]
+stopifnot(nrow(blue_row) == 1L)
+stopifnot(isTRUE(all.equal(as.numeric(blue_row$FDRthr), 0.1)))
+stopifnot(isTRUE(all.equal(as.numeric(blue_row$medSelFDR), 0.1)))
+stopifnot(as.integer(blue_row$n_validated_mediators) <= as.integer(blue_row$n_mediators_screened))
+stopifnot(as.integer(blue_row$validated_genes_total) >= as.integer(blue_row$n_validated_mediators))
+stopifnot(as.integer(blue_row$mediated_max) <= as.integer(blue_row$validated_genes_total))
+
+orange_split <- summary_metrics_dt[source_dir %in% c("out-lc_nm", "out-lc_nm_int")]
+orange_combined <- summary_metrics_dt[source_dir == "orange_combined"]
+if (nrow(orange_combined) == 1L) {
+    stopifnot(as.integer(orange_combined$n_mediators_screened) == sum(as.integer(orange_split$n_mediators_screened), na.rm = TRUE))
+    stopifnot(as.integer(orange_combined$n_validated_mediators) == sum(as.integer(orange_split$n_validated_mediators), na.rm = TRUE))
+    stopifnot(as.integer(orange_combined$validated_genes_total) == sum(as.integer(orange_split$validated_genes_total), na.rm = TRUE))
+}
+
+cat("Validation checks passed.\n")
+```
