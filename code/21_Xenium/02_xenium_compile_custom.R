@@ -31,6 +31,7 @@ yesprobe <- read_csv(here("processed-data", "21_Xenium", "human_and_mouse_2020-A
 
 ## results from custom panel review
 xenium_review <- read_xlsx(here(data_dir, "Q933KK_review_02272026.xlsx")) |>
+    add_row(`Gene Name` = c("MT-ND4", "SLC5A11", "TRIM51")) |> ## march 6 update - no formal table
     filter(!`Gene Name` %in% c("MAPT", "FOS", "NPTXR", "COL21A1")) ## exclude genes of interset with > 0 probe set
 
 #### Lit - AD risk genes ####
@@ -144,8 +145,9 @@ cellTypes_of_interest <- c("Astro.1", "Astro.2", "Astro.3",
 
 marker_stats_select <- marker_stats_top |> 
     filter(!gene_name %in% xenium_review$`Gene Name`,
+           gene_name != "SLC5A11", ## failed probe review
            cellType.target %in% cellTypes_of_interest,
-           MeanRatio > 1.47 ## filter to very specific genes - next gene for Oligo.2 
+           MeanRatio > 1.2 ## filter to very specific genes - next gene for Oligo.2 
     ) |>
     group_by(cellType.target) |>
     arrange(MeanRatio.rank) |>
@@ -372,20 +374,27 @@ SpD_marker_stats <- marker_stats |>
 
 modeling_results_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
-select_pairwise_WM <- sig_genes_extract(n = 10, 
-                                 modeling_results = modeling_results_SpD, 
-                                 model_type = "pairwise",
-                                 reverse = TRUE) |>
-    filter(test == "WM.uf_Sp09D07-WM_Sp09D06",
-           !gene %in% xenium_review$`Gene Name`,
-           gene %in% yesprobe$`Gene symbol`) |>
-        mutate(in_base = gene %in% Xenium_hBrain$Genes) |>
-    filter(top < 3) |>
-    transmute(gene_name = gene, 
-              target = test, 
-              goal = "Marker - SpD",
-              note = paste0("SpD pw gene t=", round(stat, 2)),
-              in_base = in_base)
+# select_pairwise_WM <- spatialLIBD::sig_genes_extract(n = 10, 
+#                                  modeling_results = modeling_results_SpD, 
+#                                  model_type = "pairwise",
+#                                  reverse = FALSE) |>
+#     # filter(test == "WM_Sp09D06-WM.uf_Sp09D07")
+#     filter(test == "WM.uf_Sp09D07-WM_Sp09D06",
+#            !gene %in% xenium_review$`Gene Name`,
+#            gene %in% yesprobe$`Gene symbol`) |>
+#         mutate(in_base = gene %in% Xenium_hBrain$Genes) |>
+#     filter(top < 3) |>
+#     transmute(gene_name = gene, 
+#               target = test, 
+#               goal = "Marker - SpD",
+#               note = paste0("SpD pw gene t=", round(stat, 2)),
+#               in_base = in_base)
+
+select_pairwise_WM <- tibble(gene_name = "CHN1", 
+                                target = "WM.uf_Sp09D07-WM_Sp09D06",
+                                goal = "Marker - SpD",
+                                note = paste0("SpD pw gene t=8.2")) |>
+    mutate(in_base = gene_name %in% Xenium_hBrain$Genes) 
 
 ## Get top enrichment genes for WM.uf 
 SpD_enrichment <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "enrichment_modeling_SpD_top100.csv")) |>
@@ -494,7 +503,9 @@ select_DEG_interest <- DE_data |>
 
 select_DEG_top_Excit <- DE_data |>
     filter(cluster %in% c("Excit.L5.2", "Excit.L2_5.1"),
-           vlmf_adj.P.Val < 0.05)  |>
+           vlmf_adj.P.Val < 0.05,
+           gene_name != "MT-ND4" ## fails probe check
+           )  |>
     group_by(DE_class, cluster) |>
     arrange(-abs(vlmf_logFC)) |>
     dplyr::slice(1:2) |>
@@ -502,7 +513,7 @@ select_DEG_top_Excit <- DE_data |>
     transmute(gene_name,
               target = cluster, 
               goal = "DEG - carrier",
-              note = paste("DEG carrier top: ", cluster, DE_class),
+              note = paste("DEG carrier top:", cluster, DE_class),
               in_base)
 
 select_DEG_Carrier <- select_DEG_included |>
@@ -798,8 +809,9 @@ ALL_probes_long <- select_AD_risk |>
     bind_rows(select_mediator_genes) |>
     bind_rows(select_DEG_anc) |>
     bind_rows(select_LR_genes) |>
-    bind_rows(select_MOFA_genes)
+    bind_rows(select_MOFA_genes) 
 
+nrow(ALL_probes_long) #282
 
 ALL_probes_long |> filter(grepl("Excit.L2_5.1", target))
 
@@ -856,28 +868,31 @@ bind_rows(probes_summary_count,
 # 2 DEG - ancestry, DEG - carrier                                                  NA         1
 # 3 DEG - ancestry, Marker - cell type global, Marker - cell type specific         NA         1
 # 4 DEG - carrier                                                                  15        12
-# 5 DEG - carrier, DEG - mediation                                                 NA         8
-# 6 DEG - carrier, DEG - mediation, Lit - AD risk                                  NA         1
-# 7 DEG - carrier, DEG - mediation, Marker - SpD                                    1         2
-# 8 DEG - carrier, DEG - mediation, Marker - cell type specific                    NA         4
-# 9 DEG - carrier, Lit - AD risk                                                   NA         1
-# 10 DEG - carrier, Lit - NE receptors                                              NA         1
-# 11 DEG - carrier, Marker - SpD                                                    NA         2
-# 12 DEG - carrier, Marker - cell type global                                       NA         1
-# 13 DEG - carrier, Marker - cell type global, Marker - cell type specific          NA         1
-# 14 DEG - carrier, Marker - cell type specific                                      1         6
-# 15 DEG - mediation                                                                12        NA
-# 16 DEG - mediation, Marker - cell type specific                                    1        NA
-# 17 Lit - AD risk                                                                  NA         3
-# 18 Lit - NE receptors                                                              1        NA
-# 19 Lit - NE receptors, Marker - cell type global                                  NA         1
-# 20 MOFA - Factor3                                                                  6        NA
-# 21 Marker - SpD                                                                    3         5
-# 22 Marker - cell type global                                                       2        11
-# 23 Marker - cell type global, Marker - cell type specific                          1         6
-# 24 Marker - cell type specific                                                    42        34
-# 25 Marker - cell type specific, Marker - SpD                                      NA         2
-# 26 Total                                                                         100       104
+# 5 DEG - carrier, DEG - mediation                                                 NA         7
+# 6 DEG - carrier, DEG - mediation, DEGs - LR                                      NA         1
+# 7 DEG - carrier, DEG - mediation, Lit - AD risk                                  NA         1
+# 8 DEG - carrier, DEG - mediation, Marker - SpD                                    1         2
+# 9 DEG - carrier, DEG - mediation, Marker - cell type specific                    NA         4
+# 10 DEG - carrier, Lit - AD risk                                                   NA         1
+# 11 DEG - carrier, Lit - NE receptors                                              NA         1
+# 12 DEG - carrier, Marker - SpD                                                    NA         2
+# 13 DEG - carrier, Marker - cell type global                                       NA         1
+# 14 DEG - carrier, Marker - cell type global, Marker - cell type specific          NA         1
+# 15 DEG - carrier, Marker - cell type specific                                      2         6
+# 16 DEG - mediation                                                                11        NA
+# 17 DEG - mediation, Marker - cell type specific                                    1        NA
+# 18 DEGs - LR                                                                       5        NA
+# 19 DEGs - LR, Marker - cell type specific                                          1        NA
+# 20 Lit - AD risk                                                                  NA         3
+# 21 Lit - NE receptors                                                              1        NA
+# 22 Lit - NE receptors, Marker - cell type global                                  NA         1
+# 23 MOFA - Factor3                                                                  6        NA
+# 24 Marker - SpD                                                                    3         5
+# 25 Marker - cell type global                                                       3        11
+# 26 Marker - cell type global, Marker - cell type specific                          2         6
+# 27 Marker - cell type specific                                                    33        34
+# 28 Marker - cell type specific, Marker - SpD                                       1         2
+# 29 Total                                                                         100       104
 
 probes_summary_count |> filter(grepl("LR", goals))
 
@@ -890,7 +905,7 @@ ALL_probes_long |> filter(target == "Oligo.3")
 
 #### SELECT 100 CUSTOM PROBES ####
 
-# select_custom_probes_old <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
+select_custom_probes_old <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
 
 ## filter gene not in base & add ensembl_id
 
@@ -905,23 +920,28 @@ select_custom_probes <- ALL_probes_summary |>
     filter(yesprobe) |> 
     left_join(rd) |>
     relocate(gene_id, .before = 1) |>
-    mutate(update = ifelse(gene_name %in% select_custom_probes_old$gene_name, "Feb27", "Mar2"))
+    left_join(select_custom_probes_old |> select(gene_name, update))|>
+    replace_na(list(update = "Mar6"))
 
 select_custom_probes |> dplyr::count(update)
-select_custom_probes |> filter(update == "Mar2") |> select(-gene_id, -in_base, -yesprobe, -update)
+select_custom_probes |> filter(update == "Mar6") |> select(-gene_id, -in_base, -yesprobe, -update)
 
 select_custom_probes |> filter(gene_name == "BCAS1")
 
 writexl::write_xlsx(select_custom_probes, path = here(data_dir, "ERC_Xenium_select_custom_probes.xlsx"))
 
-## what was excluded? 5 genes from 
+## what was excluded?
 select_custom_probes_old |> 
     filter(!gene_name %in% select_custom_probes$gene_name) |>
-    mutate(review= gene_name %in% xenium_review$`Gene Name`) |>
-    arrange(review)
+    mutate(review= gene_name %in% xenium_review$`Gene Name`) |> 
+    select(-gene_id, -in_base, -yesprobe, -update)
 
-
-# 
+## March 6
+# gene_name n_goal goals                     targets                  notes                                    review
+# <chr>      <dbl> <chr>                     <chr>                    <chr>                                    <lgl> 
+# 1 MT-ND4         1 DEG - carrier             Excit.L5.2               DEG carrier top:  Excit.L5.2 down        TRUE  
+# 2 SLC5A11        1 Marker - cell type global Oligo.2                  globl MR genes -  Oligo.2/Oligo.5: 1.492 TRUE  
+# 3 TRIM51         1 Marker - SpD              WM.uf_Sp09D07-WM_Sp09D06 SpD pw gene t=7.53                       FALSE 
 
 select_custom_probes |> filter(gene_name %in% xenium_check$`Gene Name`) |> arrange(goals) |> select(-gene_id, -yesprobe)
 
@@ -935,6 +955,7 @@ ALL_probes_long <- Xenium_hBrain |>
               in_base = TRUE,
               yesprobe = TRUE) |>
     bind_rows(ALL_probes_long) |>
+    filter(yesprobe) |>
     arrange(gene_name)
 
 writexl::write_xlsx(ALL_probes_long, path = here(data_dir, "ERC_Xenium_ALL_probes_long.xlsx"))
@@ -948,9 +969,11 @@ ALL_probes_summary2 <- ALL_probes_long |>
               notes = paste(unique(note), collapse = ", ")
     ) |>
     mutate(yesprobe = gene_name %in% yesprobe$`Gene symbol`) |>
-    ungroup()
+    ungroup() |>
+    filter(yesprobe) 
 
 ALL_probes_summary2 |> filter(grepl("Base", goals)) |> arrange(-n_goal)
 
 writexl::write_xlsx(ALL_probes_summary2, path = here(data_dir, "ERC_Xenium_ALL_probes_summary.xlsx"))
+
 
