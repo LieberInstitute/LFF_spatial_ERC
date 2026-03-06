@@ -17,20 +17,27 @@ show_usage <- function() {
     cat("\nOptions:\n")
     cat("  -m, --mediation <type>  Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int\n")
     cat("                          (default: lc_astro)\n")
+    cat("  -f, --fdrthr <value>    Override outcome FDR threshold (default by mediation type)\n")
+    cat("  -s, --med-sel-fdr <v>   Override mediator-selection FDR threshold (default by type)\n")
     cat("  -h, --help              Show this help message and exit\n")
     cat("\nEnvironment Variables:\n")
     cat("  MEDIATION_WORKERS       Number of parallel workers (default: 10)\n")
     cat("  MEDIATION_OUTDIR        Output directory (default: out-<mediation>)\n")
     cat("  MEDIATION_TEST_ROWS     Comma-separated test row indices\n")
+    cat("  MEDIATION_FDRTHR        Override outcome FDR threshold\n")
+    cat("  MEDIATION_MEDSELFDR     Override mediator-selection FDR threshold\n")
     cat("\nExamples:\n")
     cat("  Rscript 01_mediation_screening.R -m erc_astro\n")
     cat("  Rscript 01_mediation_screening.R --mediation lc_astro\n")
+    cat("  Rscript 01_mediation_screening.R -m lc_astro --fdrthr 0.1 --med-sel-fdr 0.1\n")
     invisible(NULL)
 }
 
 # Import command-line parameters
 medopt <- matrix(
     c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int",
+      "fdrthr",    "f", "1", "double",    "Outcome FDR threshold override",
+      "med-sel-fdr","s","1", "double",    "Mediator-selection FDR threshold override",
       "help",      "h", "0", "logical",   "Show help message"),
     ncol = 5, byrow = TRUE
 )
@@ -56,11 +63,6 @@ suppressPackageStartupMessages({
 })
 
 
-## FDRthr=0.05
-FDRthr=0.1 ## loosen for screening
-
-## medSelFDR <- 0.05
-medSelFDR <- 0.1 ## loosen for screening
 drop_donors_global <- c("Br1289")
 drop_donors_lc <- character(0)
 
@@ -70,6 +72,32 @@ if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
 if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm", "lc_nm_int"))) {
     stop("Invalid mediation type. Choose from: erc_astro, lc_astro, lc_nm, lc_nm_int")
 }
+
+parse_fdr_input <- function(x, label) {
+    if (is.null(x) || length(x) < 1 || all(is.na(x))) return(NA_real_)
+    val <- suppressWarnings(as.numeric(x[[1]]))
+    if (is.na(val) || val <= 0 || val > 1) {
+        stop(sprintf("Invalid %s value '%s'. Expected numeric in (0, 1].", label, as.character(x[[1]])))
+    }
+    val
+}
+
+fdr_defaults <- list(
+    erc_astro = list(FDRthr = 0.05, medSelFDR = 0.05),
+    lc_astro = list(FDRthr = 0.1, medSelFDR = 0.1),
+    lc_nm = list(FDRthr = 0.1, medSelFDR = 0.1),
+    lc_nm_int = list(FDRthr = 0.1, medSelFDR = 0.1)
+)
+fdr_def <- fdr_defaults[[opt$mediation]]
+cli_FDRthr <- parse_fdr_input(opt$fdrthr, "CLI --fdrthr")
+cli_medSelFDR <- parse_fdr_input(opt[["med-sel-fdr"]], "CLI --med-sel-fdr")
+env_fdr_raw <- Sys.getenv("MEDIATION_FDRTHR", "")
+env_medsel_raw <- Sys.getenv("MEDIATION_MEDSELFDR", "")
+env_FDRthr <- parse_fdr_input(if (nzchar(trimws(env_fdr_raw))) env_fdr_raw else NULL, "env MEDIATION_FDRTHR")
+env_medSelFDR <- parse_fdr_input(if (nzchar(trimws(env_medsel_raw))) env_medsel_raw else NULL, "env MEDIATION_MEDSELFDR")
+FDRthr <- if (!is.na(cli_FDRthr)) cli_FDRthr else if (!is.na(env_FDRthr)) env_FDRthr else fdr_def$FDRthr
+medSelFDR <- if (!is.na(cli_medSelFDR)) cli_medSelFDR else if (!is.na(env_medSelFDR)) env_medSelFDR else fdr_def$medSelFDR
+message(Sys.time(), sprintf(" - thresholds: FDRthr=%.4f medSelFDR=%.4f (mediation=%s)", FDRthr, medSelFDR, opt$mediation))
 
 ## null-coalescing helper function:
 `%|%` <- function(x, y) {
@@ -549,6 +577,7 @@ run_signature_lines <- c(
     sprintf("drop_donors_lc=%s", paste(drop_donors_lc, collapse = ",")),
     sprintf("test_rows=%s", paste(test_rows, collapse = ",")),
     sprintf("n_mediators=%d", nrow(med_degs)),
+    sprintf("n_mediators_screened=%d", nrow(med_degs)),
     sprintf("med_degs_hash=%s", med_degs_hash),
     sprintf("med_expr_hash=%s", med_expr_hash),
     sprintf("outcome_gene_hash=%s", outcome_gene_hash),
@@ -1054,19 +1083,28 @@ setorder(run_info_dt, iter)
 if (nrow(run_info_dt) < 1) {
     stop("No mediation runs completed successfully.")
 }
+run_info_dt[, `:=`(
+    mediation = opt$mediation,
+    FDRthr = FDRthr,
+    medSelFDR = medSelFDR,
+    n_mediators_screened = nrow(mediator_plan_dt),
+    n_mediators_eligible = nrow(mediator_plan_run)
+)]
 
 data.table::fwrite(
     run_info_dt[, .(
-        iter, run_label, med_gene_id, gene_id, gene_name, donor_key, donor_str,
-        n_donors, n_outcome_genes, run_hash, analysis_hash, out_file, out_Mfile
+        iter, mediation, run_label, med_gene_id, gene_id, gene_name, donor_key, donor_str,
+        n_donors, n_outcome_genes, run_hash, analysis_hash, FDRthr, medSelFDR,
+        n_mediators_screened, n_mediators_eligible, out_file, out_Mfile
     )],
     file = file.path(out_dir, "mediation_run_index.tsv"),
     sep = "\t"
 )
 data.table::fwrite(
     run_info_dt[, .(
-        iter, run_label, med_gene_id, gene_id, gene_name, donor_key, donor_str,
-        n_donors, n_outcome_genes, run_hash, analysis_hash, out_file, out_Mfile
+        iter, mediation, run_label, med_gene_id, gene_id, gene_name, donor_key, donor_str,
+        n_donors, n_outcome_genes, run_hash, analysis_hash, FDRthr, medSelFDR,
+        n_mediators_screened, n_mediators_eligible, out_file, out_Mfile
     )],
     file = file.path(out_dir, sprintf("mediation_run_index.%s.tsv", run_hash)),
     sep = "\t"
@@ -1074,6 +1112,8 @@ data.table::fwrite(
 
 summary_dt <- run_info_dt[, .(
     iter, run_hash, mediation_run = run_label, donor_key, n_donors,
+    mediation, FDRthr, medSelFDR, n_mediators_screened, n_mediators_eligible,
+    n_completed = nrow(run_info_dt),
     baselineDEGs, mediationCarrierDEGs, mediationMDEGs, medSigBaselineDEGs,
     mediated_n, pass_both, loss, gain, loss_file, gain_file, mediated_file
 )]
@@ -1100,6 +1140,7 @@ history_row <- data.table::data.table(
     medSelFDR = medSelFDR,
     forceSingleBaseline = forceSingleBaseline,
     n_mediators = nrow(mediator_plan_dt),
+    n_mediators_screened = nrow(mediator_plan_dt),
     n_mediators_eligible = nrow(mediator_plan_run),
     n_completed = nrow(run_info_dt),
     n_unique_donor_sets = nrow(donor_sets),
