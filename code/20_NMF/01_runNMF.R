@@ -36,7 +36,7 @@ x <- RcppML::nmf(assay(sce,'logcounts'),
                  maxit = 1000,
                  verbose = T,
                  L1 = 0.1,
-                 seed = 114,
+                 seed = 1:10, # Multiple random restarts help discover better models. - from https://zdebruine.github.io/RcppML/articles/robust_nmf.html
                  mask_zeros = FALSE,
                  diag = TRUE,
                  nonneg = TRUE
@@ -45,6 +45,9 @@ x <- RcppML::nmf(assay(sce,'logcounts'),
 # Save NMF results
 message(Sys.time(), " - Done NMF...Saving")
 saveRDS(x, file = here(data_dir, "ERC_sn_nmf.RDS"))
+
+message("Evaluate Model")
+RcppML::evaluate(x, assay(sce,'logcounts'))
 
 # slurmjobs::job_single('01_runNMF', create_shell = TRUE, memory = '100G', command = "Rscript 01_runNMF")
 
