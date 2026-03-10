@@ -58,10 +58,13 @@ proj_summary |> arrange(-median)
 #### Visulize ####
 
 nmf_vis <- vis_gene(spe,
-                    geneid = "nmf43")
+                    geneid = "nmf46")
 
 ggsave(nmf_vis, filename = here(plot_dir, "nmf_vis.png"))
 
+
+## nmf annotations 
+nmf_annotaions <- read_csv(here("processed-data", "20_NMF", "02_NMF_var_correlation", "nmf_annotaions.csv"))
 
 # slurmjobs::job_single('04_NMF_projection_explore', create_shell = TRUE, memory = '200G', command = "Rscript 04_multistudy_Oligo_subcluster.R")
 
