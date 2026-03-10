@@ -26,6 +26,14 @@ ALL_probes_summary |> filter(!in_base, !gene_name %in% select_custom_probes$gene
 
 ALL_probes_summary |> filter(grepl("SOX", gene_name))
 
+
+ALL_probes_summary |> filter(gene_name %in% c("LINGO2", "GPM6A","KCNJ3", "ARHGEF3"))
+
+## not in probes ATP1A2
+ALL_probes_summary |> filter(gene_name %in% c("SORBS1", "ADRA1B", "ATP1A2"))
+
+ALL_probes_summary |> filter(gene_name %in% c("LINC01877"))
+
 #### DEGs - Astro Mediation Genes ####
 
 mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediator_outcome_fdr_impact.tsv.gz")) |>
@@ -44,4 +52,28 @@ mediator_outcome_eval |> count(mediator) # 9 mediators
 mediator_outcome_eval |> count(outcome) # 31 outcome genes
 
 ALL_probes_summary |>filter(gene_name %in% c(mediator_outcome_eval$mediator, mediator_outcome_eval$outcome)) |> count(goals)
+
+
+#### WM uf marker ####
+
+select_pairwise_WM <- spatialLIBD::sig_genes_extract(n = 10, 
+                                                     modeling_results = modeling_results_SpD, 
+                                                     model_type = "pairwise",
+                                                     reverse = TRUE) |>
+    # filter(test == "WM_Sp09D06-WM.uf_Sp09D07")
+    filter(test == "WM.uf_Sp09D07-WM_Sp09D06")
+
+spe_pb <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium","spe_pseudo_DGE.RDS"))
+dim(spe_pb)
+rownames(spe_pb) <- rowData(spe_pb)$gene_name
+
+table(spe_pb$SpD)
+
+library(DeconvoBuddies)
+
+wm_genes <- select_pairwise_WM$gene[select_pairwise_WM$gene %in% rownames(spe_pb)]
+
+plot_gene_express(sce = spe_pb, wm_genes, category = "SpD") 
+plot_gene_express(sce = spe_pb, "CHN1", category = "SpD", plot_points = TRUE) 
+
 
