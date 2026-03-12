@@ -24,14 +24,26 @@ my_plot_reduced_dim <- function(spe,
                                 facet = FALSE,
                                 plot_dir_rd = plot_dir,
                                 verbose = TRUE,
-                                add_label = FALSE){
+                                add_label = FALSE,
+                                NA_gray = FALSE){
     
     rd_x = paste0(dimred, ".1")
     rd_y = paste0(dimred, ".2")
     
+    if(NA_gray & var_type == "express") { ## relace 0s with NA/gray in color scale 
+        message("Replace 0's with NAs")
+        logcounts(spe)[my_var,][logcounts(spe)[my_var,] == 0] <- NA
+    } 
+    
+    ## create plot
     rd_plot <- scater::ggcells(spe, mapping = aes(x = !!sym(rd_x),
-                                          y = !!sym(rd_y),
-                                          color = !!sym(my_var)))+
+                                                  y = !!sym(rd_y),
+                                                  color = !!sym(my_var)
+    )
+    )
+    
+    
+    rd_plot <- rd_plot +
         geom_point(size = 0.2, alpha = 0.3) +
         coord_equal() +
         theme_bw() +
@@ -48,8 +60,17 @@ my_plot_reduced_dim <- function(spe,
     } else if(var_type == "con") {
         rd_plot <- rd_plot + viridis::scale_color_viridis()
     } else if(var_type == "express") {
+        
+        # max_count <- max(logcounts(spe)[my_var,])
+        # min_count <- min(logcounts(spe)[my_var,][logcounts(spe)[my_var,] > 0])
+        # 
         rd_plot <- rd_plot + 
-            viridis::scale_color_viridis(name = "logcount") +  # label colorscheme as logcounts
+            viridis::scale_color_viridis(name = "logcount", na.value = "grey80") +  # label colorscheme as logcounts
+            # scale_color_gradientn(
+            #     colors = c("grey80", viridisLite::viridis(256)),
+            #     values = scales::rescale(c(0, min_count, max_count)),
+            #     limits = c(0, max_count)
+            # ) +
             labs(title = my_var) +
             theme(plot.title = element_text(face = "italic")) # make gene name title italic
     } 
@@ -71,7 +92,7 @@ my_plot_reduced_dim <- function(spe,
             #           ) |> 
             summarise(m_x = median(!!sym(rd_x)),
                       m_y = median(!!sym(rd_y))
-                      )
+            )
         
         rd_plot <- rd_plot + geom_text(data = rd_mean, aes(x = m_x, y = m_y, label = cat),
                                        color = "black")
