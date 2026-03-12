@@ -229,6 +229,27 @@ walk(c("UMAP", "TSNE"),
                           color_pal = c(`TRUE` = cell_type_colors$anno[["Oligo.3"]], `FALSE` = "grey50"))
 )
 
+walk2(c("Sex","APOE"), 
+      list(sex_colors, APOE_genotype_colors), 
+      ~my_plot_reduced_dim(sce, 
+                           prefix = "ERC_sn_subcluster",
+                           dimred = "TSNE", 
+                           my_var = .x, 
+                           var_type = "cat",
+                           color_pal = .y)
+      )
+
+walk2(c("Sex","APOE"), 
+      list(sex_colors, APOE_genotype_colors), 
+      ~my_plot_reduced_dim(sce, 
+                           prefix = "ERC_sn_subcluster",
+                           dimred = "TSNE", 
+                           my_var = .x, 
+                           var_type = "cat",
+                           color_pal = .y,
+                           facet = TRUE)
+)
+
 
 #### Explore Metrics by Cell Type ####
 
