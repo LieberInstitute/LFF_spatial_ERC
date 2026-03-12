@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=300G
 #SBATCH --job-name=01_runNMF
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 5-00:00:00
 #SBATCH -o logs/01_runNMF.txt
 #SBATCH -e logs/01_runNMF.txt
 #SBATCH --mail-type=ALL
