@@ -46,21 +46,105 @@ Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))],
 
 
 #### Data Driven Markers ####
+# Oligo v Oligo
 list.files(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo"))
+
+## MeanRatio
 load(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "marker_stats_MeanRatio_Oligo.Rdata"), verbose = TRUE)
-# marker_stats_MeanRatio
 
-marker_stats_MeanRatio |>
-    filter(MeanRatio > 1, MeanRatio.rank <= 5)
+marker_stats_MeanRatio |> 
+    filter(gene %in% c("RASGRF1", "RBFOX1", "CD44"))
 
-enrichment_top100 <- read_csv(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "subtype_enrichment_top100_OligoOPC.csv"))
+MeanRatio_Oligo <- marker_stats_MeanRatio |>
+    filter(MeanRatio > 1, MeanRatio.rank <= 10)  |>
+    select(cellType = cellType.target, gene) |>
+    mutate(method = "MeanRatio_Oligo")
 
-enrichment_top100 |> 
-    group_by(cluster = test) |>
-    arrange(-stat) |>
-    slice(1:5)
+## enrich
+enrich_Oligo <- read_csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_enrichment_top100_Oligo.csv")) 
+
+enrich_Oligo|>
+    filter(gene %in% c("RASGRF1", "RBFOX1", "CD44"))
+
+enrich_Oligo_filter <- enrich_Oligo |>
+    filter(top <= 10) |>
+    select(cellType = test, gene) |>
+    mutate(method = "Enrich_Oligo")
+
+
+## Oligo OPC
+# list.files(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC"))
+## MeanRatio
+load(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "marker_stats_MeanRatio_OligoOPC.Rdata"), verbose = TRUE)
+
+marker_stats_MeanRatio |> 
+    filter(gene %in% c("RASGRF1", "RBFOX1", "CD44"))
+
+MeanRatio_OligoOPC <- marker_stats_MeanRatio |>
+    filter(MeanRatio > 1, MeanRatio.rank <= 10)  |>
+    select(cellType = cellType.target, gene) |>
+    mutate(method = "MeanRatio_OligoOPC")
+
+## enrich
+enrich_OligoOPC <- read_csv(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "subtype_enrichment_top100_OligoOPC.csv"))
+
+enrich_OligoOPC|>
+    filter(gene %in% c("RASGRF1", "RBFOX1", "CD44"))
+
+enrich_OligoOPC_filter <- enrich_OligoOPC |>
+    filter(top <= 10) |>
+    select(cellType = test, gene) |>
+    mutate(method = "Enrich_OligoOPC")
+
+
+Oligo_markers_long <- MeanRatio_Oligo |>
+    bind_rows(enrich_Oligo_filter) |>
+    bind_rows(MeanRatio_OligoOPC) |>
+    bind_rows(enrich_OligoOPC_filter) |>
+    group_by(cellType, gene) |>
+    summarise(n = n(),
+              methods = paste(method, collapse = ","))
+
+Oligo_markers_long_2plus <- Oligo_markers_long |>  
+    filter(n > 1) 
+
+Oligo_markers_long_2plus |> count(cellType)
+
+
+Oligo_markers_long |> arrange(-n) |> filter(cellType == "Oligo.3") |> print(n = 30)
+
+Oligo_markers_long |> count(cellType, methods) |> print(n )
+
+Oligo_markers_long |> ungroup() |> group_by(gene) |> filter(n() > 1)
+
+Oligo_marker_summary <- MeanRatio_Oligo |>
+    group_by(cellType) |>
+    summarise(MeanRatio_Oligo = paste(gene, collapse = ","))|> 
+    left_join(enrich_Oligo_filter |>
+                  group_by(cellType) |>
+                  summarise(Enrichment_Oligo = paste(gene, collapse = ","))) |> 
+    full_join(MeanRatio_OligoOPC |>
+                  group_by(cellType) |>
+                  summarise(MeanRatio_OligoOPC = paste(gene, collapse = ","))) |>
+    left_join(enrich_OligoOPC_filter |>
+                  group_by(cellType) |>
+                  summarise(Enrichment_OligoOPC = paste(gene, collapse = ","))) |>
+    left_join(Oligo_markers_long_2plus |>
+                  group_by(cellType) |>
+                  summarise(multiHit = paste(gene, collapse = ",")))
+
+write_csv(Oligo_marker_summary, file = here(data_dir, "ERC_Oligo_marker_summary.csv"))
 
 #### Violin plots ####
+
+violin_key_genes <- plot_gene_express(sce, 
+                  category = "cell_type_anno",
+                  genes = c("OPALIN", "RASGRF2", "LINGO2", "ARHGEF3", "PDGFRA"),
+                  color_pal = Oligo_OPC_colors
+                  )
+
+ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.csv"))
+
 
 lit_marker_sets <- list(Mathys2024 = c("OPALIN", "RASGRF1"),
                         Siletti2023 = c("OPALIN", "RBFOX1", "CD44"))
