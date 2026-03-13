@@ -14,6 +14,8 @@ DE data downloaded from http://adsn.ddnetbio.com "AD vs Control cells within eac
 
 `Ramsden2015` Supplementary tables from Ramsden et al., 2015 [10.1371/journal.pcbi.1004032](https://doi.org/10.1371/journal.pcbi.1004032)
 
-`Sadick 2022` Supplementary tables from Sadick et al. 2022 [10.1016/j.neuron.2022.03.008](https://doi.org/10.1016/j.neuron.2022.03.008)
+`Sadick 2022` Supplementary tables from Sadick et al. 2022 [10.1126/science.add7046](https://doi.org/10.1126/science.add7046)
+
+`Siletti2023` Supplementary tables from Siletti et al. 2023 [10.1016/j.neuron.2022.03.008](https://doi.org/10.1016/j.neuron.2022.03.008)
 
 `Lou2023` Supplementary tables from Lou et al., 2023 [10.1002/advs.202300876](https://doi.org/10.1002/advs.202300876)
