@@ -7,6 +7,7 @@ library("here")
 library("sessioninfo")
 library("spatialLIBD")
 library("DeconvoBuddies")
+library("scDotPlot")
 
 data_dir <- here("processed-data", "19_other_Oligo", "00_check_Oligo_markers")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -139,15 +140,33 @@ write_csv(Oligo_marker_summary, file = here(data_dir, "ERC_Oligo_marker_summary.
 
 violin_key_genes <- plot_gene_express(sce, 
                   category = "cell_type_anno",
-                  genes = c("OPALIN", "RASGRF2", "LINGO2", "ARHGEF3", "PDGFRA"),
-                  color_pal = Oligo_OPC_colors
+                  genes = c("OPALIN", "RASGRF2", "LINGO2", "MT-CO3", "ARHGEF3", "PDGFRA"),
+                  color_pal = Oligo_OPC_colors,
+                  free_y = TRUE
                   )
 
-ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.csv"))
+ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.png"))
+
+## Marques
+Marques_markers <- consensus_marker_sets <- list(
+    OPC = c("PTPRZ1", "PDGFRA", "SERPINE2", "CSPG4", "CSPG5", "VCAN"),
+    COP = c("CD9", "NEU4", "BMP4","GPR17","VCAN"),
+    NFOL = c("ARPC1B", "TMEM2", "CHN2", "MPZL1", "FRMD4A", "MOBP", "DDR1", "TSPAN2"),
+    MFOL = c("CTPS1", "TMEM141", "OPALIN", "MAL", "PTGDS", "EVI2A", "EVI2B"),
+    MOL = c("APOD", "SEPP1", "S100B"),
+    MOL1 = c("FOSB", "DUSP1", "DNAJB1"),
+    MOL2 = c("ANXA5", "KLK6", "MGST3"),
+    MOL3 = c("CAR2", "CNTN2", "GAD2"),
+    MOL4 = c("SERPINB1", "NEAT1"),
+    MOL5 = c("CYP51A1", "DHCR24", "PDLIM2"),
+    MOL6 = c("IL33", "APOE", "PTGDS")
+)
 
 
-lit_marker_sets <- list(Mathys2024 = c("OPALIN", "RASGRF1"),
-                        Siletti2023 = c("OPALIN", "RBFOX1", "CD44"))
+lit_marker_sets <- list(Marques2016 = c("PDGFRA", "CSPG4", "PTPRZ1", "PCDH15", "VCAN", "SOX6", "GPR17", "NEU4", "BMP4", "NKX2-2"),
+                        Jakel2019 = c("SOX6", "BCAN", "ITPR2", "APOE", "CD74", "KLK6", "OPALIN", "PLP1"), 
+                        Mathys2024 = c("OPALIN", "RASGRF1"),
+                        Siletti2023 = c("OPALIN", "RBFOX1", "CD44", "GPC5"))
 
 plot_marker_express_List(sce,
                         gene_list = lit_marker_sets,
@@ -155,6 +174,31 @@ plot_marker_express_List(sce,
                         color_pal = Oligo_OPC_colors,
                         pdf_fn = here(plot_dir, "Violin_Oligo_lit_markers.pdf")
                         )
+
+#### Oligo + OPC subtypes #####
+
+violin_Siletti2023 <- plot_gene_express(sce, 
+                                      category = "cell_type_anno2",
+                                      genes = c("HES5", "IRX5", "GPC5", "OPALIN", "RBFOX1", "CD44", "GPC5"),
+                                      color_pal = Oligo_OPC_colors2,
+                                      free_y = TRUE
+)
+
+ggsave(violin_Siletti2023, filename = here(plot_dir, "Violin_Oligo_Siletti2023_markers.png"))
+
+
+pdf(here(plot_dir, "Oligo_dotplot_Siletti2023.pdf"))
+sce |>
+    scDotPlot(features = c("HES5", "IRX5", "GPC5", "OPALIN", "RBFOX1", "RASGRF1", "CD44", "LINGO2"),
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              # featureAnno = "Marques_markers",
+              scale = TRUE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+dev.off()
+
 
 #### Plot markers in reduced Dims ####
 source(here("code", "utils", "my_plot_reduced_dim.R"))
