@@ -282,7 +282,8 @@ if(celltype == "Oligo"){
     grubman_subtypes_fn <- list.files(here("external-data", "Grubman2019"), pattern = "Oligo_", full.names = TRUE)
     names(grubman_subtypes_fn) <- gsub("Grubman_Oligo_|.csv", "", basename(grubman_subtypes_fn))
     
-    grubman_subtypes_data <- map2_dfr(grubman_subtypes_fn, names(grubman_subtypes_fn), ~read.csv(.x) |> mutate(g_cell_type = .y)) |>
+    grubman_subtypes_data <- map2_dfr(grubman_subtypes_fn, names(grubman_subtypes_fn), ~read.csv(.x) |> 
+                                          mutate(g_cell_type = .y)) |>
         rename(gene = geneName)
     
     grubman_subtypes_data |> count(g_cell_type)
@@ -398,100 +399,104 @@ if(celltype == "Oligo"){
 
 #### Sadick Integrated Oligo Cor ####
     
-    sadick_stab5 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab5.xlsx"), sheet = "Oligo_merged_DEGs") |>
-        mutate(Sadick_cluster = paste0("Sadick_Ol", Oligo_merged_cluster))
+    sadick_stab3 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab3.xlsx"), sheet = "LEN_so_oligo_DEGs") |>
+        mutate(Sadick_cluster = paste0("Sadick_S", LEN_so_oligo_cluster),
+               data = "Sadick")
     
-    sadick_stab5 |> dplyr::count(Sadick_cluster)
+    sadick_stab5 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab5.xlsx"), sheet = "Oligo_merged_DEGs") |>
+        mutate(Sadick_cluster = paste0("Sadick_Int", Oligo_merged_cluster),
+               data = "Integrated")
+    
+    sadick_Oligo_markers <- sadick_stab3 |> bind_rows(sadick_stab5)
+    
+    sadick_Oligo_markers |> dplyr::count(Sadick_cluster)
+    # Sadick_cluster     n
+    # <chr>          <int>
+    # 1 Sadick_Ol0         4
+    # 2 Sadick_Ol1        88
+    # 3 Sadick_Ol2        37
+    # 4 Sadick_Ol3        95
+    # 5 Sadick_Ol4        53
+    # 6 Sadick_Ol5       332
+    # 7 Sadick_Ol6       250
     
     erc_v_sadick <- enrichment_genes |>
-        inner_join(sadick_stab5, relationship = "many-to-many")
+        inner_join(sadick_Oligo_markers, relationship = "many-to-many")
     
     erc_v_sadick_cor <- erc_v_sadick |>
-        group_by(test, Sadick_cluster) |>
+        group_by(test, data, Sadick_cluster) |>
         summarise(n = n(),
                   cor = cor(logFC, avg_log2FC))
     
     write_csv(erc_v_sadick_cor, file = here(data_dir, "erc_v_sadick_oligo_cor.csv"))
     
     erc_v_sadick_cor |>
-        group_by(test) |> 
+        group_by(test, data) |> 
         slice_max(cor)
-    
-    # test    Sadick_cluster     n    cor
-    # <chr>   <chr>          <int>  <dbl>
-    # 1 Oligo.1 Sadick_Ol1        87 0.0702
-    # 2 Oligo.2 Sadick_Ol0         4 0.971 
-    # 3 Oligo.3 Sadick_Ol2        34 0.620 
-    # 4 Oligo.4 Sadick_Ol2        34 0.622 
-    # 5 Oligo.5 Sadick_Ol2        34 0.643 
     
     erc_v_sadick_cor |>
-        group_by(Sadick_cluster) |> 
+        group_by(Sadick_cluster, data) |> 
         slice_max(cor)
      
-    # test    Sadick_cluster     n   cor
-    # <chr>   <chr>          <int> <dbl>
-    # 1 Oligo.2 Sadick_Ol0         4 0.971
-    # 2 Oligo.4 Sadick_Ol1        87 0.165
-    # 3 Oligo.5 Sadick_Ol2        34 0.643
-    # 4 Oligo.2 Sadick_Ol3        85 0.635
-    # 5 Oligo.3 Sadick_Ol4        52 0.487
-    # 6 Oligo.2 Sadick_Ol5       307 0.374
-    # 7 Oligo.3 Sadick_Ol6       246 0.209
-    
     (erc_v_sadick_cor_wide <- erc_v_sadick_cor |>
             select(-n) |>
-            pivot_wider(names_from = "test", values_from = "cor") |>
-            column_to_rownames("Sadick_cluster") |>
-            as.matrix())
+            group_by(data) |>
+            group_map(~pivot_wider(.x, names_from = "test", values_from = "cor") |>
+                          column_to_rownames("Sadick_cluster") |>
+                          as.matrix())
+    )
     
     ## heatmap
     pdf(here(plot_dir, "Oligo_Sadick_cor_logFC.pdf"), height = 4, width = 8)
-    Heatmap(t(erc_v_sadick_cor_wide), name = "logFC cor")
+    map(erc_v_sadick_cor_wide, ~print(Heatmap(t(.x), name = "logFC cor")))
     dev.off()
         
     
     ## sadick marker dot plot
-    sadick_o_makers <- sadick_stab5 |>
-        group_by(Sadick_cluster) |>
-        arrange(-avg_log2FC) |>
-        slice(1:5) |>
-        filter(gene %in% rownames(sce)) 
+    map2(list(sadick_stab3, sadick_stab5), c("S", "Int"), function(data, name){
+        
+        sadick_o_makers <- data |>
+            group_by(Sadick_cluster) |>
+            arrange(-avg_log2FC) |>
+            slice(1:5) |>
+            filter(gene %in% rownames(sce)) 
+        
+        # sadick_o_makers |>
+        #     ungroup() |>
+        #     count(gene) |>
+        #     filter(n==2)
+        # #     
+        # 
+        # sadick_o_makers |> filter(gene %in% c("RASGRF1", "RBFOX1"))
+        
+        rowData(sce)$sadick_Oligo <- NULL
+        rowData(sce)$sadick_Oligo <- sadick_o_makers$Sadick_cluster[match(rownames(sce), sadick_o_makers$gene)] 
+        table(rowData(sce)$sadick_Oligo)
+        
+        pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_sadick%s_Oligo.pdf", celltype, name)))
+        print(sce |>
+            scDotPlot(features = unique(sadick_o_makers$gene),
+                      group = "cell_type_anno",
+                      groupAnno = "cell_type_anno",
+                      featureAnno = "sadick_Oligo",
+                      scale = TRUE,
+                      annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                      clusterRows = FALSE,
+                      groupLegends = FALSE))
+        
+        print(sce |>
+            scDotPlot(features = unique(sadick_o_makers$gene),
+                      group = "cell_type_anno",
+                      groupAnno = "cell_type_anno",
+                      featureAnno = "sadick_Oligo",
+                      scale = TRUE,
+                      annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                      clusterRows = TRUE,
+                      groupLegends = FALSE))
+        
+        dev.off()
+    })
     
-    # sadick_o_makers |>
-    #     ungroup() |>
-    #     count(gene) |>
-    #     filter(n==2)
-    #     
-    
-    sadick_o_makers |> filter(gene == "RASGRF1")
-    
-    rowData(sce)$sadick_Oligo <- NULL
-    rowData(sce)$sadick_Oligo <- sadick_o_makers$Sadick_cluster[match(rownames(sce), sadick_o_makers$gene)] 
-    table(rowData(sce)$sadick_Oligo)
-    
-    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_sadick_Oligo.pdf", celltype)))
-    sce |>
-        scDotPlot(features = unique(sadick_o_makers$gene),
-                  group = "cell_type_anno",
-                  groupAnno = "cell_type_anno",
-                  featureAnno = "sadick_Oligo",
-                  scale = TRUE,
-                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
-                  clusterRows = FALSE,
-                  groupLegends = FALSE)
-    
-    sce |>
-        scDotPlot(features = unique(sadick_o_makers$gene),
-                  group = "cell_type_anno",
-                  groupAnno = "cell_type_anno",
-                  featureAnno = "sadick_Oligo",
-                  scale = TRUE,
-                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
-                  clusterRows = TRUE,
-                  groupLegends = FALSE)
-    
-    dev.off()
     
 }
 
@@ -688,9 +693,9 @@ if(celltype == "Oligo"){
     
 } else if(celltype == "Astro"){
     #### Astro ####
-    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
     lit_markers <- list(disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
-                        AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+                        AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
+                        Mathys_subtypes <- c("GRM3","DPP10", "DCLK1" ,"LUZP2")
     )
     
     
@@ -762,7 +767,8 @@ if(celltype == "Oligo"){
 } else if(celltype == "OPC") {
   #### OPC  Marques markers ####  
     Marques_markers_OPC <- list(OPC = c("PDGFRA", "CSPG4", "PTPRZ1", "PCDH15"), 
-                             COP = c("VCAN",  "SOX6", "GPR17", "NEU4", "BMP4", "NKX2-2"))
+                             COP = c("VCAN",  "SOX6", "GPR17", "NEU4", "BMP4", "NKX2-2"),
+                             Siletti = c("HES5", "IRX5", "GPC5"))
     
     Marques_markers_OPC <- map(Marques_markers_OPC, ~.x[.x %in% rownames(sce)])
     

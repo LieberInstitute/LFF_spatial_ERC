@@ -24,13 +24,18 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
 
 sce$cell_type_anno2 <- sce$cell_type_anno ## keep
+
+sce$cell_type_anno2 <- factor(sce$cell_type_anno2, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
+
 sce$cell_type_anno <- as.character(sce$cell_type_anno)
 
 ## flatten OPC subtypes
 sce$cell_type_anno[sce$cell_type_broad == "OPC"] <- "OPC"
 
-sce$cell_type_anno <- factor(sce$cell_type_anno)
+sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC", "Oligo.3", "Oligo.5", "Oligo.4", "Oligo.1", "Oligo.2"))
 table(sce$cell_type_anno)
+
+table(sce$cell_type_anno, sce$cell_type_anno2)
 
 reducedDims <- readRDS(here("processed-data", "04_snRNA-seq", "38_sn_subcluster_reducedDims_OligoOPC", "Oligo_OPC_reducedDims.Rds"))
 names(reducedDims)
@@ -137,15 +142,67 @@ Oligo_marker_summary <- MeanRatio_Oligo |>
 write_csv(Oligo_marker_summary, file = here(data_dir, "ERC_Oligo_marker_summary.csv"))
 
 #### Violin plots ####
+## TODO fininsh annotations
+erc_oligo_key_genes <- list(OPC = c("PDGFRA", "MEG3","OLIG2"), #OPCs
+                         "RBFOX1", "KCND2", "GPM6A", #OPC + Oligo.3
+                         "CNTNAP2", "NTRK3","KCNJ3", #OPC + Oligo.3
+                         "LINGO2", "MT-CO3", "ADGRV1",   # Oligo.3
+                         "ARHGEF3", "ADGRF5",  "CLDN5", #Oligo.5
+                         "OPALIN", "OMG", "SEMA6D", #Oligo.1
+                         "LAMA2", "ERBB4",  #Oligo.1 + 4
+                         "RASGRF1","RASGRF2", "LRRC63", "ANKRD18A" #Oligo.2
+)
+
 
 violin_key_genes <- plot_gene_express(sce, 
                   category = "cell_type_anno",
-                  genes = c("OPALIN", "RASGRF2", "LINGO2", "MT-CO3", "ARHGEF3", "PDGFRA"),
+                  genes = erc_oligo_key_genes,
                   color_pal = Oligo_OPC_colors,
-                  free_y = TRUE
+                  free_y = TRUE,
+                  ncol = 3
                   )
 
 ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.png"))
+
+rowData(sce)$cop_marker <- NULL
+rowData(sce)$cop_marker <- names(fang_cop_markers2)[match(rownames(sce), fang_cop_markers2)] 
+table(rowData(sce)$cop_marker)
+
+pdf(here(plot_dir, "OligoOPC_dotplot_key_markers.pdf"))
+sce |>
+    scDotPlot(features = erc_oligo_key_genes,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              # featureAnno = "cop_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = erc_oligo_key_genes,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              # featureAnno = "cop_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+dev.off()
+
+pdf(here(plot_dir, "Oligo_dotplot_key_markers.pdf"))
+sce[,sce$cell_type_broad == "Oligo"] |>
+    scDotPlot(features = erc_oligo_key_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "cop_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+dev.off()
+
 
 ## Marques
 Marques_markers <- consensus_marker_sets <- list(
@@ -203,7 +260,8 @@ dev.off()
 #### Plot markers in reduced Dims ####
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-walk(c("OPALIN", "LINGO2", "PLP1", "RASGRF1","RBFOX1", "CD44", "ARHGEF3"),
+# walk(c("OPALIN", "LINGO2", "PLP1", "RASGRF1","RBFOX1", "CD44", "ARHGEF3"),
+walk(c("GPR17", "BCAS1"),
      ~my_plot_reduced_dim(sce,
                           prefix = "sn_subcluster",
                           dimred = "TSNE",
@@ -217,4 +275,51 @@ walk(c("OPALIN", "LINGO2", "PLP1", "RASGRF1","RBFOX1", "CD44", "ARHGEF3"),
 )
 
 
+#### COP ####
+# Fang et al., 2023 10.1002/glia.24426
 
+fang_cop_markers <- list(OPC = c("NG2", "PDGFRA"),
+                         COP = c("GPR17", "BCAS1", "FYN", "NKX2.2", "O4", 
+                                 "EPHB1", "SH3RF3" #10.1016/j.neuron.2022.09.010
+                                 ),
+                         NFO = c("MYRF", "PLP", "CNP", "MBP", "MAG", "CC1"),
+                         MOL = c("ASPA", "TMEM10"))
+
+fang_cop_markers2 <- map(fang_cop_markers, ~.x[.x %in% rownames(sce)])
+
+plot_marker_express_List(sce,
+                         gene_list = fang_cop_markers2,
+                         cellType_col = "cell_type_anno2",
+                         color_pal = Oligo_OPC_colors2,
+                         pdf_fn = here(plot_dir, "Violin_OligoOPC_fang_cop_markers.pdf")
+)
+
+## oligo marker dot plot
+fang_cop_markers2 <- AnnotationDbi::unlist2(fang_cop_markers2)
+
+rowData(sce)$cop_marker <- NULL
+rowData(sce)$cop_marker <- names(fang_cop_markers2)[match(rownames(sce), fang_cop_markers2)] 
+table(rowData(sce)$cop_marker)
+
+pdf(here(plot_dir, "Oligo_dotplot_COP_Fang2023.pdf"))
+sce |>
+    scDotPlot(features = fang_cop_markers2,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              featureAnno = "cop_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = fang_cop_markers2,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              featureAnno = "cop_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+dev.off()
