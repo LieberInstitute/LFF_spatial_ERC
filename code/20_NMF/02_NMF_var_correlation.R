@@ -343,6 +343,14 @@ dev.off()
 
 
 
+# slurmjobs::job_single('02_NMF_var_correlation', create_shell = TRUE, memory = '100G', command = "Rscript 02_NMF_var_correlation.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
 
 
