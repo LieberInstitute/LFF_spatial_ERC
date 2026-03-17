@@ -397,7 +397,7 @@ if(celltype == "Oligo"){
     dev.off()
     
 
-#### Sadick Integrated Oligo Cor ####
+#### Oligo Sadick Cor ####
     
     sadick_stab3 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab3.xlsx"), sheet = "LEN_so_oligo_DEGs") |>
         mutate(Sadick_cluster = paste0("Sadick_S", LEN_so_oligo_cluster),
@@ -496,6 +496,32 @@ if(celltype == "Oligo"){
         
         dev.off()
     })
+    
+    #### Oligo Siletti2023 Cor ####
+    # Table S5: DEGs between Oligo1 (OPALIN) and Oligo2 (RBFOX).
+    Siletti2023 <- read_csv(here("external-data", "Siletti2023", "science.add7046_table_s5.csv")) |>
+        rename(gene = `...1`, Siletti_stat = stat)
+    
+    Siletti2023_cor <- Siletti2023 |>
+        inner_join(enrichment_genes |> 
+                       filter(top <= 100),
+                   relationship = "many-to-many") |>
+        group_by(test) |> 
+        summarise(n = n(),
+                  cor_t_stat = cor(stat, Siletti_stat),
+                  cor_logFC = cor(log2FoldChange, logFC))
+    
+    erc_v_Siletti_cor_wide <- Siletti2023_cor |>
+        select(-n) |>
+        column_to_rownames("test") |>
+                      as.matrix()
+    
+    pdf(here(plot_dir, "Oligo_Siletti2023_cor_logFC.pdf"), height = 4, width = 5)
+    print(Heatmap(erc_v_Siletti_cor_wide, 
+                  name = "cor", 
+                  cluster_columns = FALSE,
+                  column_title = "Oligo1 (OPALIN) vs. Oligo2 (RBFOX)"))
+    dev.off()
     
     
 }
