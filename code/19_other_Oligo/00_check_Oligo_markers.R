@@ -164,6 +164,17 @@ violin_key_genes <- plot_gene_express(sce,
 
 ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.png"))
 
+violin_OPLAIN_RASGRF1_genes <- plot_gene_express(sce, 
+                                      category = "cell_type_anno",
+                                      genes = c("OPALIN", "RBFOX1", "RASGRF1"),
+                                      color_pal = Oligo_OPC_colors,
+                                      free_y = TRUE,
+                                      ncol = 3
+)
+
+ggsave(violin_OPLAIN_RASGRF1_genes, filename = here(plot_dir, "Violin_Oligo_OPLAIN_RASGRF1.png"), width = 8, height = 4)
+
+
 rowData(sce)$cop_marker <- NULL
 rowData(sce)$cop_marker <- names(fang_cop_markers2)[match(rownames(sce), fang_cop_markers2)] 
 table(rowData(sce)$cop_marker)
@@ -323,3 +334,8 @@ sce |>
               groupLegends = FALSE)
 
 dev.off()
+
+#### maturation ####
+## myelin-forming populations (Ctps+) were distinct from mature oligodendrocytes (Klk6+) (Marques)
+
+
