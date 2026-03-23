@@ -389,7 +389,7 @@ dev.off()
 #     dev.off()
 # })
 
-#### Jakel2019 Oligo Cor ####
+#### OligoOPC Cor Jakel2019 ####
 
 enrichment_genes <- sig_genes_extract(
     n = nrow(sce_pseudo),
