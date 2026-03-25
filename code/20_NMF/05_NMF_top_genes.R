@@ -88,19 +88,3 @@ factor_top_genes_list <- map(rafalib::splitit(factor_top_genes$Factor), ~factor_
 ncol(nmf@h) == ncol(sce)
 
 
-## dotpltos
-sce_nmf <- SingleCellExperiment(colData = colData(sce), assays = list(logcounts = nmf$h))
-
-pdf(here(plot_dir, sprintf("nmf_test_dotplot.pdf")), height = 12, width = 10)
-scDotPlot(sce_nmf,
-        features = rownames(sce_nmf),
-        group = "cell_type_anno",
-        scale = FALSE)
-
-scDotPlot(sce_nmf,
-        features = rownames(sce_nmf),
-        group = "cell_type_anno",
-        scale = TRUE)
-dev.off()
-
-

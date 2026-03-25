@@ -86,11 +86,11 @@ sample_info |>
     filter(APOE_carrier == "E4+", Ancestry == "EA")
     
 (sample_picks <- sample_info_score |>
-    arrange(-score) |>
-    group_by(APOE_carrier, Ancestry) |>
-    mutate(rank = row_number()) |>
-    filter(rank <= 4) |>
-    arrange(APOE_carrier, Ancestry, rank))
+        arrange(-score) |>
+        group_by(APOE_carrier, Ancestry) |>
+        mutate(rank = row_number()) |>
+        filter(rank <= 4) |>
+        arrange(APOE_carrier, Ancestry, rank))
 
 
 #    BrNum  APOE_carrier Ancestry Sex     Age LC    rep_section fibroblast score  rank
@@ -114,4 +114,8 @@ sample_info |>
 
 write_csv(sample_picks, file = here(data_dir, "xenium_donor_picks.csv"))
 
-
+(sample_picks <- sample_info_score |>
+        arrange(-score) |>
+        filter(APOE_carrier == "E4+", Ancestry == "EA") |>
+        mutate(rank = row_number()) |>
+        arrange(APOE_carrier, Ancestry, rank))

@@ -137,7 +137,7 @@ remodel = FALSE
 if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
     message(Sys.time(), " - Load modeling data")
-     <- readRDS(modeling_fn)
+    modeling_results <- readRDS(modeling_fn)
     
 } else {
     
@@ -145,7 +145,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     ## make APOE syntatic
     sce$APOE <- gsub("/", "", sce$APOE)
     
-     <-registration_wrapper(
+     modeling_results <-registration_wrapper(
         sce = sce,
         var_registration = "cell_type_anno",
         var_sample_id = "sample_id",
@@ -165,7 +165,7 @@ sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_subtype-%s.rds", ce
 
 top_enrichment_genes <- sig_genes_extract(
     n = 10,
-     = ,
+    modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -177,7 +177,7 @@ write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10
 ## all signif
 top100_enrichment_genes <- sig_genes_extract(
     n = 100,
-     = ,
+    modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -393,7 +393,7 @@ dev.off()
 
 enrichment_genes <- sig_genes_extract(
     n = nrow(sce_pseudo),
-     = ,
+    modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -560,8 +560,8 @@ library("org.Hs.eg.db")
 library("clusterProfiler")
 
 sig_enrichment_genes <- sig_genes_extract(
-    n = nrow($enrichment),
-     = ,
+    n = nrow(modeling_results$enrichment),
+    modeling_results = modeling_results,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -572,7 +572,7 @@ sig_enrichment_genes |> count(test)
 
 
 ## ENTREZID look up
-entrez_search <- bitr($enrichment$ensembl, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+entrez_search <- bitr(modeling_results$enrichment$ensembl, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
 entrez_search |> count(ENSEMBL) |> count(n)
 
 DE_entrez <- sig_enrichment_genes |> 
