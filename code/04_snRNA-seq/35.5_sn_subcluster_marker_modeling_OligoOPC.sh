@@ -4,8 +4,8 @@
 #SBATCH --job-name=35.5_sn_subcluster_marker_modeling_OligoOPC
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/35.5_sn_subcluster_marker_modeling_OligoOPC.txt
-#SBATCH -e logs/35.5_sn_subcluster_marker_modeling_OligoOPC.txt
+#SBATCH -o logs/35.5_sn_subcluster_marker_modeling_OligoOPC2.txt
+#SBATCH -e logs/35.5_sn_subcluster_marker_modeling_OligoOPC2.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 35.5_sn_subcluster_marker_modeling_OligoOPC.R
+Rscript 35.5_sn_subcluster_marker_modeling_OligoOPC.R --celltype OligoOPC2
 
 echo "**** Job ends ****"
 date
