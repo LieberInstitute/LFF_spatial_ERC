@@ -129,7 +129,7 @@ dev.off()
 
 
 #### run cell type specific modeling ####
-modeling_fn <- here(data_dir, sprintf("modeling_results_subtype-%s.rds", celltype))
+modeling_fn <- here(data_dir, sprintf("_subtype-%s.rds", celltype))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_subtype-%s.rds", celltype))
 
 remodel = FALSE
@@ -137,7 +137,7 @@ remodel = FALSE
 if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
     message(Sys.time(), " - Load modeling data")
-    modeling_results <- readRDS(modeling_fn)
+     <- readRDS(modeling_fn)
     
 } else {
     
@@ -145,7 +145,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     ## make APOE syntatic
     sce$APOE <- gsub("/", "", sce$APOE)
     
-    modeling_results <-registration_wrapper(
+     <-registration_wrapper(
         sce = sce,
         var_registration = "cell_type_anno",
         var_sample_id = "sample_id",
@@ -157,7 +157,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
         )
 
     message(Sys.time(), " - Saving Data")
-    saveRDS(modeling_results, file = modeling_fn)
+    saveRDS(, file = modeling_fn)
     
 }
 
@@ -165,7 +165,7 @@ sce_pseudo <- readRDS(here(data_dir, sprintf("sce_pseudobulk_subtype-%s.rds", ce
 
 top_enrichment_genes <- sig_genes_extract(
     n = 10,
-    modeling_results = modeling_results,
+     = ,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -177,7 +177,7 @@ write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10
 ## all signif
 top100_enrichment_genes <- sig_genes_extract(
     n = 100,
-    modeling_results = modeling_results,
+     = ,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -329,29 +329,29 @@ dev.off()
 
 #### spatial registration ####
 # 
-# layer_modeling_results <- list()
+# layer_ <- list()
 # 
 # ## ERC
-# layer_modeling_results$spatialERC <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-# colnames(layer_modeling_results$spatialERC$enrichment) <- gsub("_Sp", "~Sp", colnames(layer_modeling_results$spatialERC$enrichment))
+# layer_$spatialERC <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "-SpD.rds"))
+# colnames(layer_$spatialERC$enrichment) <- gsub("_Sp", "~Sp", colnames(layer_$spatialERC$enrichment))
 # 
 # ## PsychENCODE enrichment
-# layer_modeling_results$snDLPFC_PEC <- list()
-# layer_modeling_results$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
+# layer_$snDLPFC_PEC <- list()
+# layer_$snDLPFC_PEC$enrichment <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/registration_stats_LIBD.rds")
 # 
 # ## sestan sn enrichment
-# layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
+# layer_$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
 # 
 # ## spatial HPC modeling 
-# layer_modeling_results$spatialHPC <- list()
-# layer_modeling_results$spatialHPC$enrichment <- read.csv("/dcs04/lieber/lcolladotor/spatialHPC_LIBD4035/spatial_hpc/snRNAseq_hpc/processed-data/revision/sn_enrichment_stats_superfine.csv", row.names=1)
+# layer_$spatialHPC <- list()
+# layer_$spatialHPC$enrichment <- read.csv("/dcs04/lieber/lcolladotor/spatialHPC_LIBD4035/spatial_hpc/snRNAseq_hpc/processed-data/revision/sn_enrichment_stats_superfine.csv", row.names=1)
 # 
-# names(layer_modeling_results)
+# names(layer_)
 # # [1] "HumanPilot"   "spatialDLPFC" "spatialERC"   "snDLPFC_PEC"  "sestan_EC"
 # 
-# cor_layer <- map(layer_modeling_results, function(layer_mod){
-#     cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
-#                                 modeling_results = layer_mod,
+# cor_layer <- map(layer_, function(layer_mod){
+#     cor_layer <- layer_stat_cor(stats = $enrichment,
+#                                  = layer_mod,
 #                                 model_type = "enrichment",
 #                                 top_n = 100)
 #     return(cor_layer)
@@ -393,7 +393,7 @@ dev.off()
 
 enrichment_genes <- sig_genes_extract(
     n = nrow(sce_pseudo),
-    modeling_results = modeling_results,
+     = ,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -516,13 +516,52 @@ dev.off()
 
 ## Jakel Fig1d
 
+#### OligoOPC Cor Green2024 ####
+
+Green_Oligo_stats <- readxl::read_xlsx(here("external-data", "Green2024","Green2024_SuppTable2.xlsx"), sheet = "DEGs") |>
+    filter(cell.type == "oligodendroglia",
+!is.na(avg_log2FC)) |>
+    mutate(Green_Oligo = state)
+
+Green_Oligo_stats |> count(Green_Oligo)
+
+erc_v_Green <- enrichment_genes |>
+    inner_join(Green_Oligo_stats, relationship = "many-to-many")
+
+erc_v_Green_cor <- erc_v_Green |>
+    group_by(test, Green_Oligo) |>
+    summarise(n = n(),
+              cor = cor(logFC, avg_log2FC))
+
+write_csv(erc_v_Green_cor, file = here(data_dir, "erc_v_Green2024_OligoOPC_cor.csv"))
+
+erc_v_Green_cor |>
+    group_by(test) |> 
+    slice_max(cor)
+
+erc_v_Green_cor |>
+    group_by(Green_Oligo) |> 
+    slice_max(cor)
+
+
+(erc_v_Green_cor_wide <- erc_v_Green_cor |>
+        select(-n) |>
+        pivot_wider(names_from = "test", values_from = "cor") |>
+        column_to_rownames("Green_Oligo") |>
+        as.matrix())
+
+pdf(here(plot_dir, "OligoOPC_Green_cor_logFC.pdf"), height = 4, width = 8)
+Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
+dev.off()
+
+
 ####  GO analysis ####
 library("org.Hs.eg.db")
 library("clusterProfiler")
 
 sig_enrichment_genes <- sig_genes_extract(
-    n = nrow(modeling_results$enrichment),
-    modeling_results = modeling_results,
+    n = nrow($enrichment),
+     = ,
     model_type = "enrichment",
     reverse = FALSE,
     sce_layer = sce_pseudo,
@@ -533,7 +572,7 @@ sig_enrichment_genes |> count(test)
 
 
 ## ENTREZID look up
-entrez_search <- bitr(modeling_results$enrichment$ensembl, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+entrez_search <- bitr($enrichment$ensembl, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
 entrez_search |> count(ENSEMBL) |> count(n)
 
 DE_entrez <- sig_enrichment_genes |> 
@@ -579,6 +618,8 @@ walk2(go_result, names(go_result),
       )
 )
 dev.off()
+
+#### OligoOPC Cor Green2024 ####
 
 # disease associated 
 #### Cell type checks ####
