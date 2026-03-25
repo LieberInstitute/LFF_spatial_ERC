@@ -57,9 +57,9 @@ Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))],
 
 ## pick grouped of specific OPCs
 if(celltype == "OligoOPC"){
-    cell_type_anno = "cell_type_anno"
-} else if(celltype = "OligoOPC2"){
-    cell_type_anno= "cell_type_anno2"
+    cell_type_anno <- "cell_type_anno"
+} else if(celltype == "OligoOPC2"){
+    cell_type_anno <- "cell_type_anno2"
 }
 
 #### AD risk gene dotplot ####
