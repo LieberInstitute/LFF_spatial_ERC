@@ -121,7 +121,7 @@ write.csv(top_MeanRatio_genes, here(data_dir, sprintf("subtype_MeanRatio_top10_%
 # top_MeanRatio_genes <- read.csv(here(data_dir, sprintf("subtype_MeanRatio_top10_%s.csv", celltype)))
 
 #### plot top MR markers ####
-message(Sys.time(), " - Plots")
+message(Sys.time(), " - Mean Ratio Plots")
 
 ## plot markers
 plot_marker_express_ALL(
@@ -242,7 +242,7 @@ rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
 
-pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_enrichment.pdf", celltype)))
+pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_enrichment.pdf", celltype)), height = 2*length(unique(top_enrichment_genes$gene))/7)
 sce |>
     scDotPlot(features = unique(top_enrichment_genes$gene),
               group = "cell_type_anno",
@@ -470,7 +470,7 @@ erc_v_jakel_cor |>
         column_to_rownames("Jakel_Oligo") |>
         as.matrix())
 
-pdf(here(plot_dir, "OligoOPC_Jakel_cor_logFC.pdf"), height = 4, width = 8)
+pdf(here(plot_dir, sprintf("%s_Jakel_cor_logFC.pdf", celltype), ), height = 4, width = 8)
 Heatmap(t(erc_v_jakel_cor_wide), name = "logFC cor")
 dev.off()
 
@@ -507,9 +507,8 @@ plot_marker_express_List(
     sce,
     gene_list = jakel_Oligo_markers,
     cellType_col = "cell_type_anno",
-    pdf_fn = here(plot_dir, "sn_violin_Oligo_OPC_Jakel_markers.pdf"),
-    color_pal = Oligo_OPC_colors,
-    free_y = TRUE
+    pdf_fn = here(plot_dir, sprintf("sn_violin_%s%_Jakel_markers.pdf", celltype)),
+    color_pal = Oligo_OPC_colors
 )
 
 jakel_marker1b <- plot_gene_express(
@@ -520,7 +519,7 @@ jakel_marker1b <- plot_gene_express(
     free_y = TRUE
 )
 
-ggsave(jakel_marker1b, filename = here(plot_dir, "sn_violin_Oligo_OPC_Jakel1b_markers.pdf"))
+ggsave(jakel_marker1b, filename = here(plot_dir, sprintf("sn_violin_%s_Jakel1b_markers.pdf", celltype)))
 
 jakel_Oligo_markers <- AnnotationDbi::unlist2(jakel_Oligo_markers)
 
