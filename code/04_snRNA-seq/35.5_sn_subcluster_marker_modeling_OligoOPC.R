@@ -236,13 +236,15 @@ write.csv(top100_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_to
 
 
 #### Enrichment dot plots ####
+message(Sys.time(), " - Enrichment dot plots")
+
 rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
 
 pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_enrichment.pdf", celltype)))
 sce |>
-    scDotPlot(features = top_enrichment_genes$gene,
+    scDotPlot(features = unique(top_enrichment_genes$gene),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "Marker",
