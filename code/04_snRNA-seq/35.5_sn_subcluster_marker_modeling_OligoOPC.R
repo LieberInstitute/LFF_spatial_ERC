@@ -242,7 +242,7 @@ rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_enrichment_genes$test[match(rownames(sce), top_enrichment_genes$gene)] 
 table(rowData(sce)$Marker)
 
-pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_enrichment.pdf", celltype)), height = 2*length(unique(top_enrichment_genes$gene))/7)
+pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_enrichment.pdf", celltype)), height = 1.5*length(unique(top_enrichment_genes$gene))/7)
 sce |>
     scDotPlot(features = unique(top_enrichment_genes$gene),
               group = "cell_type_anno",
@@ -470,7 +470,7 @@ erc_v_jakel_cor |>
         column_to_rownames("Jakel_Oligo") |>
         as.matrix())
 
-pdf(here(plot_dir, sprintf("%s_Jakel_cor_logFC.pdf", celltype), ), height = 4, width = 8)
+pdf(here(plot_dir, sprintf("%s_Jakel_cor_logFC.pdf", celltype)), height = 4, width = 8)
 Heatmap(t(erc_v_jakel_cor_wide), name = "logFC cor")
 dev.off()
 
