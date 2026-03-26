@@ -149,9 +149,20 @@ sce |>
               featureAnno = "Marker",
               scale = TRUE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors,
-                                "Marker" = cell_type_colors$anno),
+                                "Marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
+
+    scDotPlot(features = top_MeanRatio_genes$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "Marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                "Marker" = Oligo_OPC_colors),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
 dev.off()
 
 
