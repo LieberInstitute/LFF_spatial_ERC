@@ -55,6 +55,7 @@ load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose 
 
 ## pick grouped of specific OPCs
 if(celltype == "OligoOPC"){
+    message("Use flattened OPC subtypes")
     ## flatten OPC subtypes
     sce$cell_type_anno[sce$cell_type_broad == "OPC"] <- "OPC"
 
@@ -66,7 +67,7 @@ if(celltype == "OligoOPC"){
     Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
 
 } else if(celltype == "OligoOPC2"){
-
+    message("Use OPC subtypes")
     sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
     
 }
@@ -84,7 +85,7 @@ pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_AD_risk.pdf", celltype)))
 sce |>
     scDotPlot(features = AD_risk$symbol,
               group = cell_type_anno,
-              groupAnno = cell_type_anno,
+              groupAnno = "cell_type_anno",
               scale = TRUE,
               annoColors = list(cell_type_anno = Oligo_OPC_colors),
               clusterRows = TRUE,
