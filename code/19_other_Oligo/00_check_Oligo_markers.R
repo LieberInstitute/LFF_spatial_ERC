@@ -8,6 +8,7 @@ library("sessioninfo")
 library("spatialLIBD")
 library("DeconvoBuddies")
 library("scDotPlot")
+library("readxl")
 
 data_dir <- here("processed-data", "19_other_Oligo", "00_check_Oligo_markers")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -335,7 +336,55 @@ sce |>
 
 dev.off()
 
-#### maturation ####
-## myelin-forming populations (Ctps+) were distinct from mature oligodendrocytes (Klk6+) (Marques)
+#### Siletti2023 z-stat ####
 
+Siletti2023_markers <- read_xlsx(here("external-data", "Siletti2023", "science.add7046_table_s3.xlsx")) |>
+    filter(grepl("Oligo|oligo", Supercluster)) |>
+    select(Supercluster, `Cluster name`, `Number of cells`, `Top Enriched Genes`) |>
+    mutate(Genes = str_split(`Top Enriched Genes`, pattern = ", "),
+           n_genes = length(Genes))
+
+# message(Sys.time(), "- Pseudobulk OligoOPC data")
+# sce_pb <- scuttle::aggregateAcrossCells(
+#     sce,
+#     DataFrame(
+#         cll_type_broad = sce[["cell_type_broad"]],
+#         cell_type_anno = sce[["cell_type_anno"]],
+#         cell_type_anno2 = sce[["cell_type_anno2"]]
+#     )
+# )
+# 
+
+colnames(sce_pb) <- sce_pb$cell_type_anno2
+
+logcounts(sce_pb)  <-
+    edgeR::cpm(
+        edgeR::calcNormFactors(sce_pb),
+        log = TRUE,
+        prior.count = 1
+    )
+
+
+# saveRDS(sce_pb, file = here(data_dir, "sce_pb_OligoOPC.rds"))
+# message(Sys.time(), "- Done")
+
+
+Siletti2023_markers_list <- Siletti2023_markers$Genes
+names(Siletti2023_markers_list) <- Siletti2023_markers$`Cluster name`
+
+Siletti2023_markers_list <- map(Siletti2023_markers_list, ~.x[.x%in% rownames(sce)])
+map_int(Siletti2023_markers_list, length)
+
+logcounts(sce_pb)[Siletti2023_markers_list$COP_37,]
+
+spatialLIBD:::multi_gene_z_score(t(logcounts(sce_pb)[Siletti2023_markers_list$COP_37,]))
+
+Siletti_z_score <- map_dfr(Siletti2023_markers_list, ~spatialLIBD:::multi_gene_z_score(t(logcounts(sce_pb)[.x,])))
+
+Siletti_z_score <- as.matrix(Siletti_z_score)
+rownames(Siletti_z_score) <- names(Siletti2023_markers_list)
+
+pdf(here(plot_dir, "OligoOPC_Siletti2023_marker_z-score.pdf"), height = 4, width = 8)
+ComplexHeatmap::Heatmap(Siletti_z_score, name = "marker z-score")
+dev.off()
 
