@@ -507,7 +507,7 @@ plot_marker_express_List(
     sce,
     gene_list = jakel_Oligo_markers,
     cellType_col = "cell_type_anno",
-    pdf_fn = here(plot_dir, sprintf("sn_violin_%s%_Jakel_markers.pdf", celltype)),
+    pdf_fn = here(plot_dir, sprintf("sn_violin_%s_Jakel_markers.pdf", celltype)),
     color_pal = Oligo_OPC_colors
 )
 
