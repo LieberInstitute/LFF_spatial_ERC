@@ -153,7 +153,7 @@ sce |>
                                 "Marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-
+sce |>
     scDotPlot(features = top_MeanRatio_genes$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
