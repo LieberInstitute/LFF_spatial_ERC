@@ -58,8 +58,7 @@ if(celltype == "OligoOPC"){
     ## flatten OPC subtypes
     sce$cell_type_anno[sce$cell_type_broad == "OPC"] <- "OPC"
 
-    sce$cell_type_anno <- factor(sce$cell_type_anno)
-    table(sce$cell_type_anno)
+    sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
 
     
     # Oligo_OPC_colors
@@ -67,6 +66,8 @@ if(celltype == "OligoOPC"){
     Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
 
 } else if(celltype == "OligoOPC2"){
+
+    sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
     
 }
 
