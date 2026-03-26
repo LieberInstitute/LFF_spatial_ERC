@@ -272,7 +272,6 @@ Marques_markers <- consensus_marker_sets <- list(
     MOL6 = c("IL33", "APOE", "PTGDS")
 )
 
-
 Marques_markers <- map(Marques_markers, ~.x[.x %in% rownames(sce)])
 
 plot_marker_express_List(
@@ -454,7 +453,7 @@ erc_v_jakel_cor <- erc_v_jakel |>
     summarise(n = n(),
               cor = cor(logFC, avg_logFC))
 
-write_csv(erc_v_sadick_cor, file = here(data_dir, "erc_v_jakel_OligoOPC_cor.csv"))
+write_csv(erc_v_jakel_cor, file = here(data_dir, "erc_v_jakel_OligoOPC_cor.csv"))
 
 erc_v_jakel_cor |>
     group_by(test) |> 
