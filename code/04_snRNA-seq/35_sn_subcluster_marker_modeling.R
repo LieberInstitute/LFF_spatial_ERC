@@ -593,9 +593,9 @@ dev.off()
 
 # disease associated 
 #### Cell type checks ####
-#### Oligo ####
+
 if(celltype == "Oligo"){
-    
+    #### Oligo ####
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
     lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
                           Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
@@ -753,6 +753,45 @@ if(celltype == "Oligo"){
                   annoColors = list("cell_type_anno" = cell_type_colors$anno),
                   clusterRows = FALSE,
                   groupLegends = FALSE)
+    dev.off()
+
+     #### Astro cor Green 2024 ####       
+    
+    Green_Astro_stats <- readxl::read_xlsx(here("external-data", "Green2024","Green2024_SuppTable2.xlsx"), sheet = "DEGs") |>
+        filter(cell.type == "astrocytes",
+        !is.na(avg_log2FC)) |>
+        mutate(Green_Astro = state)
+
+    Green_Astro_stats |> count(cell.type)
+        Green_Astro_stats |> count(Green_Astro)
+
+    erc_v_Green <- enrichment_genes |>
+        inner_join(Green_Astro_stats, relationship = "many-to-many")
+
+    erc_v_Green_cor <- erc_v_Green |>
+        group_by(test, Green_Astro) |>
+        summarise(n = n(),
+                cor = cor(logFC, avg_log2FC))
+
+    write_csv(erc_v_Green_cor, file = here(data_dir, "erc_v_Green2024_Astro_cor.csv"))
+
+    erc_v_Green_cor |>
+        group_by(test) |> 
+        slice_max(cor)
+
+    erc_v_Green_cor |>
+        group_by(Green_Astro) |> 
+        slice_max(cor)
+
+
+    (erc_v_Green_cor_wide <- erc_v_Green_cor |>
+            select(-n) |>
+            pivot_wider(names_from = "test", values_from = "cor") |>
+            column_to_rownames("Green_Astro") |>
+            as.matrix())
+
+    pdf(here(plot_dir, "AstroOPC_Green_cor_logFC.pdf"), height = 4, width = 8)
+    Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
     dev.off()
     
 }else if(celltype == "Micro"){
