@@ -196,7 +196,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
         )
 
     message(Sys.time(), " - Saving Data")
-    saveRDS(, file = modeling_fn)
+    saveRDS(modeling_results, file = modeling_fn)
     
 }
 
