@@ -594,6 +594,16 @@ dev.off()
 # disease associated 
 #### Cell type checks ####
 
+enrichment_genes <- sig_genes_extract(
+    n = nrow(sce_pseudo),
+    modeling_results = modeling_results,
+    model_type = "enrichment",
+    reverse = FALSE,
+    sce_layer = sce_pseudo,
+    gene_name = "gene_name"
+)
+
+
 if(celltype == "Oligo"){
     #### Oligo ####
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
@@ -790,7 +800,7 @@ if(celltype == "Oligo"){
             column_to_rownames("Green_Astro") |>
             as.matrix())
 
-    pdf(here(plot_dir, "AstroOPC_Green_cor_logFC.pdf"), height = 4, width = 8)
+    pdf(here(plot_dir, "Astro_Green_cor_logFC.pdf"), height = 4, width = 8)
     Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
     dev.off()
     
