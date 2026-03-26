@@ -43,24 +43,34 @@ sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
 sce$cell_type_anno2 <- sce$cell_type_anno ## keep
 sce$cell_type_anno <- as.character(sce$cell_type_anno)
 
-## flatten OPC subtypes
-sce$cell_type_anno[sce$cell_type_broad == "OPC"] <- "OPC"
-
 sce$cell_type_anno <- factor(sce$cell_type_anno)
 table(sce$cell_type_anno)
 
 cell_type_colors <- metadata(sce)$cell_type_colors
 load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
-# Oligo_OPC_colors
-Oligo_OPC_colors2 <- Oligo_OPC_colors
-Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
+
+#  Oligo_OPC_colors
+#  OPC.1     OPC.2     OPC.3     OPC.4     OPC.5   Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5 
+# "#D2B037" "#BDB76B" "#FFDB58" "#A2852D" "#DA9100" "#00BFC4" "#00B0F6" "#9590FF" "#E76BF3" "#FF62BC"
 
 ## pick grouped of specific OPCs
 if(celltype == "OligoOPC"){
-    cell_type_anno <- "cell_type_anno"
+    ## flatten OPC subtypes
+    sce$cell_type_anno[sce$cell_type_broad == "OPC"] <- "OPC"
+
+    sce$cell_type_anno <- factor(sce$cell_type_anno)
+    table(sce$cell_type_anno)
+
+    
+    # Oligo_OPC_colors
+    Oligo_OPC_colors2 <- Oligo_OPC_colors
+    Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
+
 } else if(celltype == "OligoOPC2"){
-    cell_type_anno <- "cell_type_anno2"
+    
 }
+
+table(sce$cell_type_anno)
 
 #### AD risk gene dotplot ####
 
@@ -75,7 +85,7 @@ sce |>
               group = cell_type_anno,
               groupAnno = cell_type_anno,
               scale = TRUE,
-              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              annoColors = list(cell_type_anno = Oligo_OPC_colors),
               clusterRows = TRUE,
               groupLegends = FALSE)
 dev.off()
@@ -120,7 +130,7 @@ plot_marker_express_ALL(
     rank_col = "MeanRatio.rank",
     anno_col = "MeanRatio.anno",
     gene_col = "gene",
-    cellType_col = cell_type_anno,
+    cellType_col = "cell_type_anno",
     color_pal = Oligo_OPC_colors,
     plot_points = FALSE
 )
@@ -133,8 +143,8 @@ table(rowData(sce)$Marker)
 pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_MeanRatio.pdf", celltype)))
 sce |>
     scDotPlot(features = top_MeanRatio_genes$gene,
-              group = cell_type_anno,
-              groupAnno = cell_type_anno,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
               featureAnno = "Marker",
               scale = TRUE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors,
@@ -163,7 +173,7 @@ if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
      modeling_results <-registration_wrapper(
         sce = sce,
-        var_registration = cell_type_anno,
+        var_registration = "cell_type_anno",
         var_sample_id = "sample_id",
         covars = c("APOE", "Sex", "Age", "Anc_Afr"),
         gene_ensembl = "gene_id",
@@ -220,8 +230,8 @@ table(rowData(sce)$Marker)
 pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_enrichment.pdf", celltype)))
 sce |>
     scDotPlot(features = top_enrichment_genes$gene,
-              group = cell_type_anno,
-              groupAnno = cell_type_anno,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
               featureAnno = "Marker",
               scale = TRUE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors,
@@ -253,7 +263,7 @@ Marques_markers <- map(Marques_markers, ~.x[.x %in% rownames(sce)])
 plot_marker_express_List(
     sce,
     gene_list = Marques_markers,
-    cellType_col = cell_type_anno,
+    cellType_col = "cell_type_anno",
     pdf_fn = here(plot_dir, "sn_violin_Marques_markers.pdf"),
     color_pal = Oligo_OPC_colors
 )
@@ -281,8 +291,8 @@ Marques_palette <- c(
 pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers.pdf", celltype)))
 sce |>
     scDotPlot(features = unique(Marques_markers),
-              group = cell_type_anno,
-              groupAnno = cell_type_anno,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
               featureAnno = "Marques_markers",
               scale = TRUE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors,
@@ -292,8 +302,8 @@ sce |>
 
 sce |>
     scDotPlot(features = unique(Marques_markers),
-              group = cell_type_anno,
-              groupAnno = cell_type_anno,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
               featureAnno = "Marques_markers",
               scale = TRUE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors,
@@ -726,18 +736,18 @@ ggsave(oligo_NE_receptor_expression_carrier, filename = here(plot_dir, "sn_violi
 pdf(here(plot_dir, "sn_dotplot_NE_receptor_gene_OligoOPC.pdf"))
 sce |>
     scDotPlot(features = NE_receptor_genes,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
+              group = cell_type_anno,
+              groupAnno = cell_type_anno,
               scale = FALSE,
-              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              annoColors = list(cell_type_anno = Oligo_OPC_colors),
               clusterRows = TRUE,
               groupLegends = FALSE)
 sce |>
     scDotPlot(features = NE_receptor_genes,
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
+              group = cell_type_anno,
+              groupAnno = cell_type_anno,
               scale = TRUE,
-              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              annoColors = list(cell_type_anno = Oligo_OPC_colors),
               clusterRows = TRUE,
               groupLegends = FALSE)
 dev.off()
