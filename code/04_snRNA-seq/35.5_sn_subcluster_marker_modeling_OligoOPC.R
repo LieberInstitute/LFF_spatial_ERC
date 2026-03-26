@@ -84,10 +84,10 @@ AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
 pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_AD_risk.pdf", celltype)))
 sce |>
     scDotPlot(features = AD_risk$symbol,
-              group = cell_type_anno,
+              group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               scale = TRUE,
-              annoColors = list(cell_type_anno = Oligo_OPC_colors),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = TRUE,
               groupLegends = FALSE)
 dev.off()
