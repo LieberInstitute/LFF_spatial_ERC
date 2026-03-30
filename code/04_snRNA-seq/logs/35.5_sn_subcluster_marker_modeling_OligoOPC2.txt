@@ -1,0 +1,738 @@
+**** Job starts ****
+Thu Mar 26 02:46:47 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 30368202
+Job name: 35.5_sn_subcluster_marker_modeling_OligoOPC
+Node name: compute-122
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Registered S3 methods overwritten by 'GenomeInfoDb':
+  method                from   
+  as.data.frame.Seqinfo Seqinfo
+  merge.Seqinfo         Seqinfo
+  summary.Seqinfo       Seqinfo
+  update.Seqinfo        Seqinfo
+There were 16 warnings (use warnings() to see them)
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: h5mread
+Loading required package: rhdf5
+
+Attaching package: ‘h5mread’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.0     ✔ readr     2.2.0
+✔ forcats   1.0.0     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks Matrix::expand(), S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ tidyr::pack()         masks Matrix::pack()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ purrr::simplify()     masks DelayedArray::simplify()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ tidyr::unpack()       masks Matrix::unpack()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: SpatialExperiment
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.26.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+$ARGS
+character(0)
+
+$celltype
+[1] "OligoOPC2"
+
+2026-03-26 14:47:08.47955 - Load HDF5 sce
+
+Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
+  12519   12010    8587    6911    4254    4815    4009    3932    1961     458 
+Loading objects:
+  Oligo_OPC_colors
+Use OPC subtypes
+
+  OPC.3   OPC.4   OPC.1   OPC.2   OPC.5 Oligo.3 Oligo.4 Oligo.5 Oligo.1 Oligo.2 
+   3932    1961    4815    4009     458    8587    6911    4254   12519   12010 
+Rows: 23 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): symbol
+dbl (1): eva
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Warning messages:
+1: `aes_()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`
+ℹ The deprecated feature was likely used in the ggtree package.
+  Please report the issue at <https://github.com/YuLab-SMU/ggtree/issues>. 
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+3: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+2026-03-26 14:47:51.94855 - Load marker stats data
+Loading objects:
+  marker_stats_MeanRatio
+2026-03-26 14:47:51.980152 - Mean Ratio Plots
+[[1]]
+
+[[2]]
+
+[[3]]
+
+[[4]]
+
+[[5]]
+
+[[6]]
+
+[[7]]
+
+[[8]]
+
+[[9]]
+
+[[10]]
+
+null device 
+          1 
+
+  OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5 
+     10       3      10      10       2      10      10       1       0       1 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+2026-03-26 14:53:37.90588 - Load modeling data
+# A tibble: 10 × 2
+# Groups:   test [10]
+   test        n
+   <chr>   <int>
+ 1 OPC.1     100
+ 2 OPC.2     100
+ 3 OPC.3     100
+ 4 OPC.4     100
+ 5 OPC.5     100
+ 6 Oligo.1   100
+ 7 Oligo.2   100
+ 8 Oligo.3   100
+ 9 Oligo.4   100
+10 Oligo.5   100
+2026-03-26 14:53:38.571387 - Enrichment dot plots
+
+Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
+      8      10      10      10      10      10      10      10      10       7 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+$OPC
+
+$COP
+
+$NFOL
+
+$MFOL
+
+$MOL
+
+$MOL1
+
+$MOL2
+
+$MOL3
+
+$MOL4
+
+$MOL5
+
+$MOL6
+
+null device 
+          1 
+
+ COP MFOL  MOL MOL1 MOL2 MOL3 MOL4 MOL5 MOL6 NFOL  OPC 
+   4    7    2    3    3    2    2    3    2    7    6 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+
+COP OPC 
+  6   4 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and Jakel_Oligo.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, Jakel_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 10 × 4
+# Groups:   test [10]
+   test    Jakel_Oligo      n   cor
+   <chr>   <chr>        <int> <dbl>
+ 1 OPC.1   Jakel_OPCs     394 0.807
+ 2 OPC.2   Jakel_OPCs     394 0.808
+ 3 OPC.3   Jakel_OPCs     394 0.809
+ 4 OPC.4   Jakel_OPCs     394 0.811
+ 5 OPC.5   Jakel_OPCs     394 0.795
+ 6 Oligo.1 Jakel_Oligo4    28 0.502
+ 7 Oligo.2 Jakel_Oligo4    28 0.394
+ 8 Oligo.3 Jakel_Oligo4    28 0.493
+ 9 Oligo.4 Jakel_Oligo4    28 0.513
+10 Oligo.5 Jakel_Oligo4    28 0.477
+# A tibble: 9 × 4
+# Groups:   Jakel_Oligo [9]
+  test    Jakel_Oligo      n   cor
+  <chr>   <chr>        <int> <dbl>
+1 OPC.3   Jakel_COPs     205 0.542
+2 OPC.4   Jakel_OPCs     394 0.811
+3 Oligo.2 Jakel_Oligo1   219 0.129
+4 Oligo.5 Jakel_Oligo2    35 0.317
+5 OPC.3   Jakel_Oligo3    64 0.265
+6 Oligo.4 Jakel_Oligo4    28 0.513
+7 OPC.1   Jakel_Oligo5   192 0.162
+8 Oligo.1 Jakel_Oligo6    81 0.390
+9 Oligo.3 Jakel_imOLGs   116 0.333
+                   OPC.1       OPC.2       OPC.3       OPC.4       OPC.5
+Jakel_COPs    0.53978089  0.54064138  0.54178369  0.53613312  0.51713735
+Jakel_OPCs    0.80666905  0.80753988  0.80886850  0.81122410  0.79491435
+Jakel_Oligo1 -0.05310271 -0.04229444 -0.05209288 -0.07793923 -0.06122879
+Jakel_Oligo2 -0.24635296 -0.24857722 -0.28595346 -0.22804611 -0.29993357
+Jakel_Oligo3  0.25279644  0.23162292  0.26501498  0.24139333  0.11489015
+Jakel_Oligo4 -0.44596631 -0.45705315 -0.49584658 -0.49446405 -0.49088682
+Jakel_Oligo5  0.16196509  0.16146555  0.15591256  0.14312029  0.12634016
+Jakel_Oligo6 -0.35999396 -0.37525428 -0.34584110 -0.35316379 -0.28899149
+Jakel_imOLGs -0.08986469 -0.10323330 -0.09892183 -0.10572495  0.01107104
+                 Oligo.1     Oligo.2     Oligo.3      Oligo.4     Oligo.5
+Jakel_COPs   -0.48854503 -0.52016293 -0.46479147 -0.525098412 -0.52621830
+Jakel_OPCs   -0.77489591 -0.80043019 -0.75098648 -0.788818905 -0.79526342
+Jakel_Oligo1 -0.01530640  0.12858187  0.08779178  0.005284717  0.08786494
+Jakel_Oligo2  0.22041303  0.23224563  0.28647474  0.249128060  0.31710570
+Jakel_Oligo3 -0.22348823 -0.26653894 -0.20974333 -0.244482176 -0.23267150
+Jakel_Oligo4  0.50213254  0.39421967  0.49256095  0.513260211  0.47653708
+Jakel_Oligo5 -0.22243136 -0.07304364 -0.11069646 -0.197923124 -0.14502099
+Jakel_Oligo6  0.38987712  0.37603701  0.30792994  0.371273570  0.32726799
+Jakel_imOLGs -0.02662749 -0.07905065  0.33317012  0.096611005  0.18123636
+null device 
+          1 
+$OPCs
+
+$`OPCs/COPs`
+
+$`OPCs/COPs/imOLG`
+
+$COPs
+
+$`COPs/Oligo6`
+
+$imOLG
+
+$`imOLG/COPs/Oligo6`
+
+$Oligo6
+
+$`Oligo5/Oligo6`
+
+$`Oligo2/Oligo6`
+
+$Oligo5
+
+$`Oligo1/Oligo5`
+
+$Oligo4
+
+$Oligo3
+
+$Oligo2
+
+$Oligo1
+
+null device 
+          1 
+Saving 7 x 7 in image
+
+             COPs       COPs/Oligo6             imOLG imOLG/COPs/Oligo6 
+               10                 6                10                 4 
+           Oligo1     Oligo1/Oligo5            Oligo2     Oligo2/Oligo6 
+                7                 5                 2                 2 
+           Oligo3            Oligo5     Oligo5/Oligo6            Oligo6 
+                1                 4                 2                 7 
+             OPCs         OPCs/COPs   OPCs/COPs/imOLG 
+               12                 1                 1 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+# A tibble: 17 × 2
+   Green_Oligo     n
+   <chr>       <int>
+ 1 COP          3071
+ 2 MFOL         3242
+ 3 OPC.1        2890
+ 4 OPC.2        2541
+ 5 OPC.3        2238
+ 6 Oli.1         131
+ 7 Oli.10         13
+ 8 Oli.11         19
+ 9 Oli.12        384
+10 Oli.2          60
+11 Oli.3          44
+12 Oli.4         519
+13 Oli.5         491
+14 Oli.6         110
+15 Oli.7         226
+16 Oli.8         182
+17 Oli.9          17
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and Green_Oligo.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, Green_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 10 × 4
+# Groups:   test [10]
+   test    Green_Oligo     n   cor
+   <chr>   <chr>       <int> <dbl>
+ 1 OPC.1   Oli.2          60 0.647
+ 2 OPC.2   Oli.2          60 0.682
+ 3 OPC.3   Oli.1         129 0.594
+ 4 OPC.4   Oli.2          60 0.622
+ 5 OPC.5   Oli.2          60 0.708
+ 6 Oligo.1 Oli.9          16 0.614
+ 7 Oligo.2 Oli.9          16 0.709
+ 8 Oligo.3 Oli.9          16 0.397
+ 9 Oligo.4 Oli.9          16 0.515
+10 Oligo.5 Oli.9          16 0.578
+# A tibble: 17 × 4
+# Groups:   Green_Oligo [17]
+   test    Green_Oligo     n    cor
+   <chr>   <chr>       <int>  <dbl>
+ 1 Oligo.2 COP          2987 0.130 
+ 2 Oligo.5 MFOL         3189 0.287 
+ 3 Oligo.3 OPC.1        2827 0.0903
+ 4 OPC.2   OPC.2        2491 0.0808
+ 5 OPC.1   OPC.3        2186 0.0964
+ 6 OPC.3   Oli.1         129 0.594 
+ 7 Oligo.2 Oli.10         12 0.520 
+ 8 Oligo.2 Oli.11         18 0.504 
+ 9 OPC.3   Oli.12        379 0.406 
+10 OPC.5   Oli.2          60 0.708 
+11 Oligo.2 Oli.3          43 0.553 
+12 Oligo.2 Oli.4         512 0.340 
+13 Oligo.2 Oli.5         480 0.235 
+14 OPC.5   Oli.6         109 0.211 
+15 OPC.1   Oli.7         223 0.403 
+16 OPC.2   Oli.8         179 0.363 
+17 Oligo.2 Oli.9          16 0.709 
+             OPC.1       OPC.2        OPC.3       OPC.4       OPC.5     Oligo.1
+COP    -0.12711121 -0.12724684 -0.107069321 -0.11869052 -0.13724229  0.12564550
+MFOL   -0.27618976 -0.27644917 -0.286680868 -0.28101990 -0.29166637  0.26671039
+OPC.1  -0.06116473 -0.04658191 -0.098318531 -0.07612691 -0.06818268  0.05424607
+OPC.2   0.08064772  0.08075067  0.059428827  0.07150698  0.03547226 -0.06618182
+OPC.3   0.09636805  0.09453910  0.077311984  0.08920701  0.05151684 -0.09000427
+Oli.1   0.58208458  0.56414591  0.593990798  0.57824387  0.55767607 -0.54314270
+Oli.10 -0.16535920 -0.34535850 -0.037208481 -0.11563836 -0.42678868  0.31870632
+Oli.11 -0.38637780 -0.44051977 -0.320608080 -0.37526633 -0.28528040  0.42323052
+Oli.12  0.39390424  0.38840199  0.406316990  0.35967516  0.39066090 -0.41384461
+Oli.2   0.64741133  0.68177657  0.593817270  0.62217633  0.70758517 -0.69872055
+Oli.3  -0.43401588 -0.51275255 -0.328503936 -0.42147116 -0.51197938  0.49480698
+Oli.4  -0.29924342 -0.33365882 -0.248812659 -0.27258679 -0.32999542  0.33713185
+Oli.5  -0.04026278 -0.04929992 -0.003915802 -0.04056064 -0.09226834 -0.03514958
+Oli.6   0.11847209  0.17532106  0.076413130  0.11200061  0.21063164 -0.20556843
+Oli.7   0.40262312  0.39685575  0.399775618  0.40002497  0.29865745 -0.41159948
+Oli.8   0.34544425  0.36278924  0.326784530  0.35740362  0.28081965 -0.36861162
+Oli.9  -0.59325301 -0.64788946 -0.521241274 -0.56960938 -0.61364666  0.61405695
+           Oligo.2     Oligo.3     Oligo.4     Oligo.5
+COP     0.12972195  0.09856333  0.11761320  0.11623064
+MFOL    0.27594204  0.27910459  0.27927740  0.28729952
+OPC.1   0.06753221  0.09029900  0.07007765  0.07103324
+OPC.2  -0.04831270 -0.08598838 -0.07113992 -0.07869788
+OPC.3  -0.07073792 -0.09753162 -0.08775243 -0.07797964
+Oli.1  -0.54858724 -0.61312006 -0.58209752 -0.59479438
+Oli.10  0.51961381 -0.18799676  0.07434330  0.11010218
+Oli.11  0.50419320  0.21015665  0.26924936  0.34954226
+Oli.12 -0.40013509 -0.27011200 -0.39706719 -0.36172625
+Oli.2  -0.73808109 -0.42549460 -0.63208494 -0.61224587
+Oli.3   0.55262088  0.23328846  0.38007991  0.38481553
+Oli.4   0.34003558  0.14974698  0.28947925  0.26069906
+Oli.5   0.23502489 -0.02157314 -0.06241163  0.07038230
+Oli.6  -0.23515217  0.06774795 -0.09943291 -0.07091221
+Oli.7  -0.38675335 -0.38127127 -0.40176421 -0.36915978
+Oli.8  -0.33392324 -0.32247495 -0.36841500 -0.31451342
+Oli.9   0.70867081  0.39653669  0.51526291  0.57825250
+null device 
+          1 
+Loading required package: AnnotationDbi
+
+Attaching package: ‘AnnotationDbi’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+
+
+clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+
+Please cite:
+
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
+X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
+enrichment tool for interpreting omics data. The Innovation. 2021,
+2(3):100141
+
+Attaching package: ‘clusterProfiler’
+
+The following object is masked from ‘package:AnnotationDbi’:
+
+    select
+
+The following object is masked from ‘package:purrr’:
+
+    simplify
+
+The following object is masked from ‘package:DelayedArray’:
+
+    simplify
+
+The following object is masked from ‘package:IRanges’:
+
+    slice
+
+The following object is masked from ‘package:S4Vectors’:
+
+    rename
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+      test    n
+1    OPC.1 4758
+2    OPC.2 4793
+3    OPC.3 4761
+4    OPC.4 4888
+5    OPC.5 9703
+6  Oligo.1 5134
+7  Oligo.2 5412
+8  Oligo.3 2388
+9  Oligo.4 4244
+10 Oligo.5 3406
+'select()' returned 1:many mapping between keys and columns
+Warning message:
+In bitr(modeling_results$enrichment$ensembl, fromType = "ENSEMBL",  :
+  8.54% of input gene IDs are fail to map...
+Storing counts in `nn`, as `n` already present in input
+ℹ Use `name = "new_name"` to pick a new name.
+  n    nn
+1 1 12645
+2 2   169
+3 3    21
+4 5     1
+      test    n
+1    OPC.1 4292
+2    OPC.2 4351
+3    OPC.3 4311
+4    OPC.4 4429
+5    OPC.5 9141
+6  Oligo.1 4702
+7  Oligo.2 4966
+8  Oligo.3 2151
+9  Oligo.4 3874
+10 Oligo.5 3086
+[1] 13036
+   Cluster    n
+1  Oligo.1  964
+2  Oligo.2 1007
+3  Oligo.3  582
+4  Oligo.4  911
+5  Oligo.5  978
+6    OPC.1 1239
+7    OPC.2 1156
+8    OPC.3  962
+9    OPC.4 1143
+10   OPC.5  318
+Warning message:
+`aes_string()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`.
+ℹ See also `vignette("ggplot2-in-packages")` for more information.
+ℹ The deprecated feature was likely used in the enrichplot package.
+  Please report the issue at
+  <https://github.com/GuangchuangYu/enrichplot/issues>. 
+null device 
+          1 
+$OPC
+
+$Oligo
+
+$premyelin_Oligo
+
+$myelinating_Oligo
+
+$disease_associated
+
+$AD_risk
+
+null device 
+          1 
+Saving 7 x 7 in image
+
+           AD_risk disease_associated  myelinating_Oligo              Oligo 
+                 6                  7                  3                  6 
+               OPC    premyelin_Oligo 
+                 4                  5 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+[1] TRUE
+Saving 7 x 7 in image
+
+Oligo.1 E2+ Oligo.1 E4+ Oligo.2 E2+ Oligo.2 E4+ Oligo.3 E2+ Oligo.3 E4+ 
+       7969        4550        7758        4252        4217        4370 
+Oligo.4 E2+ Oligo.4 E4+ Oligo.5 E2+ Oligo.5 E4+   OPC.1 E2+   OPC.1 E4+ 
+       3614        3297        2080        2174        2205        2610 
+  OPC.2 E2+   OPC.2 E4+   OPC.3 E2+   OPC.3 E4+   OPC.4 E2+   OPC.4 E4+ 
+       1593        2416        1848        2084         939        1022 
+  OPC.5 E2+   OPC.5 E4+ 
+        138         320 
+Error: object 'Oligo_OPC_colors2' not found
+Execution halted

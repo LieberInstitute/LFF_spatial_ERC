@@ -1,11 +1,12 @@
 **** Job starts ****
-Wed Jan 28 01:23:37 PM EST 2026
+Thu Mar 12 12:52:36 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 27127910
+Job id: 29738459
 Job name: 01_runNMF
-Node name: compute-122
+Node name: compute-168
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -39,6 +40,12 @@ The following objects are masked from ‘package:base’:
     intersect, setdiff, setequal, union
 
 Loading required package: RcppEigen
+Registered S3 methods overwritten by 'GenomeInfoDb':
+  method                from   
+  as.data.frame.Seqinfo Seqinfo
+  merge.Seqinfo         Seqinfo
+  summary.Seqinfo       Seqinfo
+  update.Seqinfo        Seqinfo
 
 Attaching package: ‘singlet’
 
@@ -146,7 +153,7 @@ The following object is masked from ‘package:sp’:
 
     %over%
 
-Loading required package: GenomeInfoDb
+Loading required package: Seqinfo
 Loading required package: Biobase
 Welcome to Bioconductor
 
@@ -176,7 +183,7 @@ The following object is masked from ‘package:SeuratObject’:
 
     Assays
 
-2026-01-28 13:23:51.482029 - Load HDF5 sce
+2026-03-12 12:52:51.463552 - Load HDF5 sce
 <5 x 5> DelayedMatrix object of type "double":
                 [,1] [,2] [,3] [,4] [,5]
 ENSG00000290825    0    0    0    0    0
@@ -184,12 +191,14 @@ ENSG00000243485    0    0    0    0    0
 ENSG00000237613    0    0    0    0    0
 ENSG00000290826    0    0    0    0    0
 ENSG00000186092    0    0    0    0    0
-2026-01-28 13:23:59.522226 - Run NMF
-2026-01-29 07:38:24.726687 - Done NMF...Saving
+2026-03-12 12:52:59.879445 - Run NMF
+2026-03-14 21:38:51.393214 - Done NMF...Saving
+Evaluate Model
+[1] 0.1517852
 [1] "Reproducibility information:"
-[1] "2026-01-29 07:38:29 EST"
+[1] "2026-03-14 21:42:00 EDT"
       user     system    elapsed 
-129693.605    104.201  65690.984 
+402650.390    184.028 204563.590 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -200,7 +209,7 @@ ENSG00000186092    0    0    0    0    0
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-01-29
+ date     2026-03-14
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -209,39 +218,38 @@ ENSG00000186092    0    0    0    0    0
  abind                  1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
  assertthat             0.2.1     2019-03-21 [2] CRAN (R 4.5.0)
  babelgene              22.9      2022-09-29 [1] CRAN (R 4.5.0)
- Biobase              * 2.68.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocGenerics         * 0.54.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocParallel           1.42.2    2025-09-14 [1] Bioconductor 3.21 (R 4.5.0)
+ Biobase              * 2.70.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel           1.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  cli                    3.6.5     2025-04-23 [2] CRAN (R 4.5.0)
  cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
  cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
- crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
  curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
- data.table             1.18.0    2025-12-24 [1] CRAN (R 4.5.0)
- DelayedArray           0.34.1    2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
+ data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
+ DelayedArray           0.36.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  deldir                 2.0-4     2024-02-28 [2] CRAN (R 4.5.0)
  dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
  digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
  dotCall64              1.2       2024-10-04 [2] CRAN (R 4.5.0)
- dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.0     2026-02-03 [1] CRAN (R 4.5.0)
  evaluate               1.0.5     2025-08-27 [1] CRAN (R 4.5.0)
  farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
  fastDummies            1.7.5     2025-01-20 [2] CRAN (R 4.5.0)
  fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
  fastmatch              1.1-6     2024-12-23 [2] CRAN (R 4.5.0)
  fgsea                  1.34.2    2025-07-13 [1] Bioconductor 3.21 (R 4.5.0)
- fitdistrplus           1.2-5     2026-01-22 [1] CRAN (R 4.5.0)
+ fitdistrplus           1.2-6     2026-01-24 [1] CRAN (R 4.5.0)
  future                 1.69.0    2026-01-16 [1] CRAN (R 4.5.0)
- future.apply           1.20.1    2025-12-09 [1] CRAN (R 4.5.0)
+ future.apply           1.20.2    2026-02-20 [1] CRAN (R 4.5.0)
  generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
- GenomeInfoDb         * 1.44.3    2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDb           1.44.3    2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
  GenomeInfoDbData       1.2.14    2025-05-21 [2] Bioconductor
- GenomicRanges        * 1.60.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- ggplot2              * 4.0.1     2025-11-14 [1] CRAN (R 4.5.0)
- ggrepel                0.9.6     2024-09-07 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1    2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ ggplot2              * 4.0.2     2026-02-03 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.7     2026-02-25 [1] CRAN (R 4.5.0)
  ggridges               0.5.7     2025-08-27 [1] CRAN (R 4.5.0)
- globals                0.18.0    2025-05-08 [2] CRAN (R 4.5.0)
+ globals                0.19.0    2026-02-02 [1] CRAN (R 4.5.0)
  glue                   1.8.0     2024-09-30 [2] CRAN (R 4.5.0)
  goftest                1.2-3     2021-10-07 [2] CRAN (R 4.5.0)
  gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
@@ -252,11 +260,11 @@ ENSG00000186092    0    0    0    0    0
  htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
  htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
  httpuv                 1.6.16    2025-04-16 [2] CRAN (R 4.5.0)
- httr                   1.4.7     2023-08-15 [2] CRAN (R 4.5.0)
+ httr                   1.4.8     2026-02-13 [1] CRAN (R 4.5.0)
  ica                    1.0-3     2022-07-08 [2] CRAN (R 4.5.0)
- igraph                 2.2.1     2025-10-27 [1] CRAN (R 4.5.0)
- IRanges              * 2.42.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.5.0)
+ igraph                 2.2.2     2026-02-12 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ irlba                  2.3.7     2026-01-30 [1] CRAN (R 4.5.0)
  jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
  KernSmooth             2.23-26   2025-01-01 [3] CRAN (R 4.5.0)
  knitr                  1.51      2025-12-20 [1] CRAN (R 4.5.0)
@@ -264,13 +272,13 @@ ENSG00000186092    0    0    0    0    0
  lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
  lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.5.0)
  lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
- limma                  3.64.3    2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
+ limma                  3.66.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  listenv                0.10.0    2025-11-02 [1] CRAN (R 4.5.0)
  lmtest                 0.9-40    2022-03-21 [2] CRAN (R 4.5.0)
  magrittr               2.0.4     2025-09-12 [1] CRAN (R 4.5.0)
  MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.5.0)
  Matrix                 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
- MatrixGenerics       * 1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ MatrixGenerics       * 1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
  miniUI                 0.1.2     2025-04-17 [2] CRAN (R 4.5.0)
@@ -282,7 +290,7 @@ ENSG00000186092    0    0    0    0    0
  pbapply                1.7-4     2025-07-20 [1] CRAN (R 4.5.0)
  pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
- plotly                 4.11.0    2025-06-19 [1] CRAN (R 4.5.0)
+ plotly                 4.12.0    2026-01-24 [1] CRAN (R 4.5.0)
  plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.5.0)
  png                    0.1-8     2022-11-29 [2] CRAN (R 4.5.0)
  polyclip               1.10-7    2024-07-23 [2] CRAN (R 4.5.0)
@@ -296,9 +304,9 @@ ENSG00000186092    0    0    0    0    0
  RcppAnnoy              0.0.23    2026-01-12 [1] CRAN (R 4.5.0)
  RcppEigen            * 0.3.4.0.2 2024-08-24 [2] CRAN (R 4.5.0)
  RcppHNSW               0.6.0     2024-02-04 [2] CRAN (R 4.5.0)
- RcppML               * 0.5.6     2026-01-13 [1] Github (zdebruine/RcppML@5449a5b)
+ RcppML               * 0.5.6     2026-03-10 [1] Github (zdebruine/RcppML@2beac65)
  reshape2               1.4.5     2025-11-12 [1] CRAN (R 4.5.0)
- reticulate             1.44.1    2025-11-14 [1] CRAN (R 4.5.0)
+ reticulate             1.45.0    2026-02-13 [1] CRAN (R 4.5.0)
  rhdf5                  2.52.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  rhdf5filters           1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  Rhdf5lib               1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -307,21 +315,22 @@ ENSG00000186092    0    0    0    0    0
  rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
  RSpectra               0.16-2    2024-07-18 [2] CRAN (R 4.5.0)
  Rtsne                  0.17      2023-12-07 [2] CRAN (R 4.5.0)
- S4Arrays               1.8.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
- S4Vectors            * 0.46.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ S4Arrays               1.10.1    2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  S7                     0.2.1     2025-11-14 [1] CRAN (R 4.5.0)
  scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
  scattermore            1.2       2023-06-12 [2] CRAN (R 4.5.0)
  sctransform            0.4.3     2026-01-10 [1] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.5.0)
  Seurat               * 5.4.0     2025-12-14 [1] CRAN (R 4.5.0)
  SeuratObject         * 5.3.0     2025-12-12 [1] CRAN (R 4.5.0)
  shiny                  1.12.1    2025-12-09 [1] CRAN (R 4.5.0)
- SingleCellExperiment * 1.30.1    2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SingleCellExperiment * 1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  singlet              * 0.99.8    2026-01-13 [1] Github (zdebruine/singlet@7ce199e)
- sp                   * 2.2-0     2025-02-01 [2] CRAN (R 4.5.0)
+ sp                   * 2.2-1     2026-02-13 [1] CRAN (R 4.5.0)
  spam                   2.11-3    2026-01-08 [1] CRAN (R 4.5.0)
- SparseArray            1.8.1     2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.10.8    2025-12-18 [1] Bioconductor 3.22 (R 4.5.0)
  spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
  spatstat.explore       3.7-0     2026-01-22 [1] CRAN (R 4.5.0)
  spatstat.geom          3.7-0     2026-01-20 [1] CRAN (R 4.5.0)
@@ -332,7 +341,7 @@ ENSG00000186092    0    0    0    0    0
  statmod                1.5.1     2025-10-09 [1] CRAN (R 4.5.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
  stringr                1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
- SummarizedExperiment * 1.38.1    2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ SummarizedExperiment * 1.40.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  survival               3.8-3     2024-12-17 [3] CRAN (R 4.5.0)
  tensor                 1.5.1     2025-06-17 [1] CRAN (R 4.5.0)
  tibble                 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
@@ -340,12 +349,12 @@ ENSG00000186092    0    0    0    0    0
  tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
  UCSC.utils             1.4.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  uwot                   0.2.4     2025-11-10 [1] CRAN (R 4.5.0)
- vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.5.0)
- viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.5.0)
+ vctrs                  0.7.1     2026-01-23 [1] CRAN (R 4.5.0)
+ viridisLite            0.4.3     2026-02-04 [1] CRAN (R 4.5.0)
  withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
  xfun                   0.56      2026-01-18 [1] CRAN (R 4.5.0)
  xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.5.0)
- XVector                0.48.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ XVector                0.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  zoo                    1.8-15    2025-12-15 [1] CRAN (R 4.5.0)
 
  [1] /users/lhuuki/R/4.5
@@ -355,4 +364,4 @@ ENSG00000186092    0    0    0    0    0
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jan 29 07:38:30 AM EST 2026
+Sat Mar 14 09:42:01 PM EDT 2026
