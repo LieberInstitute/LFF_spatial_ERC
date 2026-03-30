@@ -57,6 +57,7 @@ load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose 
 if(celltype == "OligoOPC"){
     message("Use flattened OPC subtypes")
     ## flatten OPC subtypes
+    sce$cell_type_anno <- as.character(sce$cell_type_anno)
     sce$cell_type_anno[sce$cell_type_broad == "OPC"] <- "OPC"
 
     sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
@@ -168,7 +169,7 @@ dev.off()
 
 
 #### run cell type specific modeling ####
-modeling_fn <- here(data_dir, sprintf("_subtype-%s.rds", celltype))
+modeling_fn <- here(data_dir, sprintf("modeling_results_subtype-%s.rds", celltype))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_subtype-%s.rds", celltype))
 
 remodel = FALSE
