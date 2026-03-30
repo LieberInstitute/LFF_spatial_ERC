@@ -26,7 +26,7 @@ sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
 
 sce$cell_type_anno2 <- sce$cell_type_anno ## keep
 
-sce$cell_type_anno2 <- factor(sce$cell_type_anno2, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
+sce$cell_type_anno2 <- factor(sce$cell_type_anno2, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.5", "Oligo.4", "Oligo.1", "Oligo.2"))
 
 sce$cell_type_anno <- as.character(sce$cell_type_anno)
 
@@ -354,19 +354,18 @@ Siletti2023_markers <- read_xlsx(here("external-data", "Siletti2023", "science.a
 #     )
 # )
 # 
-
-colnames(sce_pb) <- sce_pb$cell_type_anno2
-
-logcounts(sce_pb)  <-
-    edgeR::cpm(
-        edgeR::calcNormFactors(sce_pb),
-        log = TRUE,
-        prior.count = 1
-    )
-
+# colnames(sce_pb) <- sce_pb$cell_type_anno2
+# logcounts(sce_pb)  <-
+#     edgeR::cpm(
+#         edgeR::calcNormFactors(sce_pb),
+#         log = TRUE,
+#         prior.count = 1
+#     )
 
 # saveRDS(sce_pb, file = here(data_dir, "sce_pb_OligoOPC.rds"))
 # message(Sys.time(), "- Done")
+
+sce_pb <- readRDS(file = here(data_dir, "sce_pb_OligoOPC.rds"))
 
 
 Siletti2023_markers_list <- Siletti2023_markers$Genes
@@ -375,7 +374,7 @@ names(Siletti2023_markers_list) <- Siletti2023_markers$`Cluster name`
 Siletti2023_markers_list <- map(Siletti2023_markers_list, ~.x[.x%in% rownames(sce)])
 map_int(Siletti2023_markers_list, length)
 
-logcounts(sce_pb)[Siletti2023_markers_list$COP_37,]
+logcounts(sce_pb)[Siletti2023_markers_list$COP_75,]
 
 spatialLIBD:::multi_gene_z_score(t(logcounts(sce_pb)[Siletti2023_markers_list$COP_37,]))
 
@@ -388,3 +387,52 @@ pdf(here(plot_dir, "OligoOPC_Siletti2023_marker_z-score.pdf"), height = 4, width
 ComplexHeatmap::Heatmap(Siletti_z_score, name = "marker z-score")
 dev.off()
 
+#### gene expression vs. pseudotime ####
+
+oligo_lineage_markers <- tibble(
+    gene = c("PDGFRA", "CSPG4", "OLIG2", "SOX10", "CNP", "MBP", "PLP1", "PTGSD", "RBFOX1", "RASGRF1", "OMG", "LINGO2", "GPM6A", "OPALIN", "MOG"),
+    target = c("OPC", "OPC", "OPC", "Oligo.3", "Oligo", "Oligo", "Oligo", "Oligo", "OPC", "Oligo", "Oligo", "Oligo.3", "OPC", "Oligo", "Oligo")) |> 
+  filter(gene %in% rownames(sce_pb))
+
+lineage_z_score <- scale(t(logcounts(sce_pb)[oligo_lineage_markers$gene,]))
+
+
+lineage_z_score_long <- lineage_z_score |>
+  as.data.frame() |>
+  rownames_to_column("cell_type") |>
+  pivot_longer(!cell_type, names_to = "gene", values_to = "z_score") |>
+  mutate(cell_type = factor(cell_type, levels = levels(sce_pb$cell_type_anno2))) |>
+  left_join(oligo_lineage_markers)
+
+lineage_z_score_plot <- lineage_z_score_long |>
+  ggplot(aes(x = cell_type, y = z_score, color = gene)) +
+  geom_point() +
+  geom_vline(xintercept = 5.5, linetype = "dashed") +
+  geom_line(aes(group = gene)) +
+  facet_wrap(~target, ncol = 1) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+
+ggsave(lineage_z_score_plot, filename = here(plot_dir, "lineage_z_score_line.png"))
+
+readRDS(here("processed-data", "04_snRNA-seq", "38_sn_subcluster_reducedDims_OligoOPC", "Oligo_OPC_line.data.Rds"))
+
+#### Complie other dataset correlatons ####
+
+dataset_cor_fn  <- map(c(sadick =  "sadick", grubman = "grubman"), ~here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", sprintf("erc_v_%s_oligo_cor.csv", .x)))
+#  
+# "erc_v_sadick_oligo_cor.csv"
+
+## jakel
+here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC")
+
+dataset_cor_fn$green  <-here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC2","erc_v_Green2024_OligoOPC2_cor.csv") 
+
+dataset_cor <- map2(dataset_cor_fn, names(dataset_cor_fn), ~read_csv(.x) |> mutate(dataset = .y))
+dataset_cor$sadick  <- dataset_cor$sadick |> filter(data == "Sadick") |> select(-data)
+
+map2_dfr(dataset_cor, names(dataset_cor), ~.x |> 
+  rename_with(~"other_oligo", .cols = 2) |> 
+  filter(test == "Oligo.3") |> 
+  mutate(dataset = .y) |>
+  slice_max(cor))
