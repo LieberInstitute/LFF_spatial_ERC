@@ -431,15 +431,40 @@ dataset_cor$Sadick2022  <- dataset_cor$Sadick2022 |> dplyr::filter(data == "Sadi
 dataset_cor$Jakel2019 <- dataset_cor$Jakel2019 |> mutate(Jakel_Oligo = gsub("Jakel_", "", Jakel_Oligo))
 
 dataset_cor_all <- map2_dfr(dataset_cor, names(dataset_cor), ~.x |> 
-  rename_with(~"other_oligo", .cols = 2))
+  rename_with(~"Other_Oligo", .cols = 2)) |>
+  dplyr::rename(ERC_Oligo = test, n_gene = n, cor_logFC= cor)
+
+## specificity socre
+
+other_oligo_match <- dataset_cor_all |>
+  filter(grepl("Oligo", ERC_Oligo)) |>
+  group_by(dataset, Other_Oligo) |>
+  mutate(rank_cor = rank(cor_logFC)) 
+
+other_oligo_best_match <- other_oligo_match |>
+  slice_max(rank_cor) |>
+  dplyr::rename(best_cor_logFC = cor_logFC) |>
+    left_join(other_oligo_match |>
+             filter(rank_cor == 4) |>
+             select(-rank_cor, -n_gene, ERC_Oligo_next = ERC_Oligo) |>
+             dplyr::rename(next_cor_logFC = cor_logFC)) |>
+  mutate(specif_score = (best_cor_logFC - next_cor_logFC)/best_cor_logFC)
+
+other_oligo_best_match|>
+  arrange(-specif_score) |>
+  filter(dataset == "Green2024")
+
+
+dataset_cor_all <- dataset_cor_all |>
+  left_join(other_oligo_best_match |> select(dataset, ERC_Oligo, Other_Oligo, specif_score))
 
 write_csv(dataset_cor_all, file = here(data_dir, "ERC_Oligo_v_external_data_cor.csv"))
 
 
 max_cor_oligo3 <-  dataset_cor_all |> 
-  filter(test == "Oligo.3") |> 
-  mutate(dataset = .y) |>
-  slice_max(cor)) |>
+  filter(ERC_Oligo == "Oligo.3") |> 
+  group_by(dataset) |>
+  slice_max(specif_score) |>
   mutate(other_oligo = fct_reorder(paste0(dataset, ": ", other_oligo), cor)) |>
   arrange(other_oligo)
 
