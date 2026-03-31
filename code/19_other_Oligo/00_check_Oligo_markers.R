@@ -419,20 +419,37 @@ readRDS(here("processed-data", "04_snRNA-seq", "38_sn_subcluster_reducedDims_Oli
 
 #### Complie other dataset correlatons ####
 
-dataset_cor_fn  <- map(c(sadick =  "sadick", grubman = "grubman"), ~here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", sprintf("erc_v_%s_oligo_cor.csv", .x)))
-#  
-# "erc_v_sadick_oligo_cor.csv"
+dataset_cor_fn  <- map(c(Sadick2022 =  "sadick", Grubman2019 = "grubman"), ~here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", sprintf("erc_v_%s_oligo_cor.csv", .x)))
 
 ## jakel
-here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC")
+dataset_cor_fn$Jakel2019 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "erc_v_jakel_OligoOPC_cor.csv")
 
-dataset_cor_fn$green  <-here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC2","erc_v_Green2024_OligoOPC2_cor.csv") 
+dataset_cor_fn$Green2024 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC2","erc_v_Green2024_OligoOPC2_cor.csv") 
 
 dataset_cor <- map2(dataset_cor_fn, names(dataset_cor_fn), ~read_csv(.x) |> mutate(dataset = .y))
-dataset_cor$sadick  <- dataset_cor$sadick |> filter(data == "Sadick") |> select(-data)
+dataset_cor$Sadick2022  <- dataset_cor$Sadick2022 |> dplyr::filter(data == "Sadick") |> select(-data) |> mutate(Sadick_cluster = gsub("Sadick_", "", Sadick_cluster))
+dataset_cor$Jakel2019 <- dataset_cor$Jakel2019 |> mutate(Jakel_Oligo = gsub("Jakel_", "", Jakel_Oligo))
 
-map2_dfr(dataset_cor, names(dataset_cor), ~.x |> 
-  rename_with(~"other_oligo", .cols = 2) |> 
+dataset_cor_all <- map2_dfr(dataset_cor, names(dataset_cor), ~.x |> 
+  rename_with(~"other_oligo", .cols = 2))
+
+write_csv(dataset_cor_all, file = here(data_dir, "ERC_Oligo_v_external_data_cor.csv"))
+
+
+max_cor_oligo3 <-  dataset_cor_all |> 
   filter(test == "Oligo.3") |> 
   mutate(dataset = .y) |>
-  slice_max(cor))
+  slice_max(cor)) |>
+  mutate(other_oligo = fct_reorder(paste0(dataset, ": ", other_oligo), cor)) |>
+  arrange(other_oligo)
+
+max_cor_oligo.3_barplot <- max_cor_oligo3 |>
+  ggplot(aes(x = cor, y = other_oligo, fill = cor)) +
+  geom_col() +
+  theme_bw() +
+  theme(legend.position = "None") +
+  scale_fill_gradient(low = "white", high = "red", limits = c(0,1)) +
+  labs(x = "correlation\nlogFC marker stats", y = NULL) 
+
+ggsave(max_cor_oligo.3_barplot, filename = here(plot_dir, "max_cor_oligo.3_barplot.png"), height = 3 , width = 3)
+  
