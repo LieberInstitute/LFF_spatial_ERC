@@ -1,0 +1,87 @@
+**** Job starts ****
+Mon Aug 11 06:35:12 PM EDT 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 21303907
+Job name: 02_ldsc_anno-sn_broad_specificity
+Node name: compute-121
+Task id: 30
+Unloading LIBD SLURM module for ldsc/1.0.1
+Loading LIBD SLURM module for ldsc/1.0.1
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) ldsc/1.0.1
+
+ 
+
+Cluster: Excit
+chr: 9
+Mon Aug 11 06:35:13 PM EDT 2025
+Annotation
+making annot file
+Mon Aug 11 06:35:24 PM EDT 2025
+LD score
+*********************************************************************
+* LD Score Regression (LDSC)
+* Version 1.0.1
+* (C) 2014-2019 Brendan Bulik-Sullivan and Hilary Finucane
+* Broad Institute of MIT and Harvard / MIT Department of Mathematics
+* GNU General Public License v3
+*********************************************************************
+Call: 
+./ldsc.py \
+--print-snps /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/hapmap3_snps/hm.9.snp \
+--ld-wind-cm 1.0 \
+--out /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_broad_specificity/Excit/chr.9 \
+--bfile /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_EUR_Phase3_plink/1000G.EUR.QC.9 \
+--thin-annot  \
+--annot /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_broad_specificity/Excit/chr.9.annot.gz \
+--l2  
+
+Beginning analysis at Mon Aug 11 18:35:24 2025
+Read list of 438106 SNPs from /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_EUR_Phase3_plink/1000G.EUR.QC.9.bim
+Read 1 annotations for 438106 SNPs from /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_broad_specificity/Excit/chr.9.annot.gz
+Read list of 489 individuals from /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_EUR_Phase3_plink/1000G.EUR.QC.9.fam
+Reading genotypes from /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_EUR_Phase3_plink/1000G.EUR.QC.9.bed
+After filtering, 438106 SNPs remain
+Estimating LD Score.
+Reading list of 63706 SNPs for which to print LD Scores from /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/hapmap3_snps/hm.9.snp
+After merging with --print-snps, LD Scores for 55885 SNPs will be printed.
+Writing LD Scores for 55885 SNPs to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_broad_specificity/Excit/chr.9.l2.ldscore.gz
+
+Summary of LD Scores in /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_broad_specificity/Excit/chr.9.l2.ldscore.gz
+         MAF        L2
+mean  0.2343   44.4878
+std   0.1436   65.9740
+min   0.0051   -3.2171
+25%   0.1084    0.5968
+50%   0.2239   16.3455
+75%   0.3558   65.6603
+max   0.5000  680.8918
+
+MAF/LD Score Correlation Matrix
+        MAF      L2
+MAF  1.0000  0.0812
+L2   0.0812  1.0000
+
+Annotation Correlation Matrix
+       ANNOT
+ANNOT    1.0
+
+Annotation Matrix Column Sums
+ANNOT    182391
+
+Summary of Annotation Matrix Row Sums
+count    438106.0000
+mean          0.4163
+std           0.4929
+min           0.0000
+25%           0.0000
+50%           0.0000
+75%           1.0000
+max           1.0000
+Analysis finished at Mon Aug 11 18:37:40 2025
+Total time elapsed: 2.0m:16.06s
+**** Job ends ****
+Mon Aug 11 06:37:40 PM EDT 2025

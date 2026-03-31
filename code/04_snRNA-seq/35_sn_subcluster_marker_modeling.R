@@ -11,6 +11,7 @@ library("tidyverse")
 library("getopt")
 library("spatialLIBD")
 library("scDotPlot")
+library("ComplexHeatmap")
 
 # Import command-line parameters
 scec <- matrix(
@@ -275,6 +276,257 @@ dev.off()
 #     dev.off()
 # })
 
+#### Oligo Grubman Cor ####
+if(celltype == "Oligo"){
+    
+    grubman_subtypes_fn <- list.files(here("external-data", "Grubman2019"), pattern = "Oligo_", full.names = TRUE)
+    names(grubman_subtypes_fn) <- gsub("Grubman_Oligo_|.csv", "", basename(grubman_subtypes_fn))
+    
+    grubman_subtypes_data <- map2_dfr(grubman_subtypes_fn, names(grubman_subtypes_fn), ~read.csv(.x) |> 
+                                          mutate(g_cell_type = .y)) |>
+        rename(gene = geneName)
+    
+    grubman_subtypes_data |> count(g_cell_type)
+    
+    enrichment_genes <- sig_genes_extract(
+        n = nrow(sce_pseudo),
+        modeling_results = modeling_results,
+        model_type = "enrichment",
+        reverse = FALSE,
+        sce_layer = sce_pseudo,
+        gene_name = "gene_name"
+    )
+
+    erc_v_grubman <- enrichment_genes |>
+        inner_join(grubman_subtypes_data, relationship = "many-to-many")
+    
+    erc_v_grubman_cor <- erc_v_grubman |>
+        group_by(test, g_cell_type) |>
+        summarise(n = n(),
+                  cor = cor(logFC, LFC))
+    
+    write_csv(erc_v_grubman_cor, file = here(data_dir, "erc_v_grubman_oligo_cor.csv"))
+    
+    erc_v_grubman_cor |>
+        group_by(test) |> 
+        arrange(-cor) |>
+        slice(1)
+    
+    # test    g_cell_type     n   cor
+    # <chr>   <chr>       <int> <dbl>
+    # 1 Oligo.1 o5             95 0.706
+    # 2 Oligo.2 o5             95 0.544
+    # 3 Oligo.3 o4            651 0.752
+    # 4 Oligo.4 o5             95 0.358
+    # 5 Oligo.5 o4            651 0.482
+    
+    erc_v_grubman_cor |>
+        group_by( g_cell_type) |> 
+        arrange(-cor) |>
+        slice(1) 
+    
+    # test    g_cell_type     n   cor
+    # <chr>   <chr>       <int> <dbl>
+    # 1 Oligo.3 o1            411 0.483
+    # 2 Oligo.2 o2            394 0.397
+    # 3 Oligo.1 o3             96 0.303
+    # 4 Oligo.3 o4            651 0.752
+    # 5 Oligo.1 o5             95 0.706
+    # 6 Oligo.1 o6            212 0.511
+    
+    (erc_v_grubman_cor_wide <- erc_v_grubman_cor |>
+            select(-n) |>
+            pivot_wider(names_from = "test", values_from = "cor") |>
+            column_to_rownames("g_cell_type") |>
+            as.matrix())
+    
+    # Oligo.1    Oligo.2    Oligo.3     Oligo.4    Oligo.5
+    # o1 -0.4213429 -0.3937171  0.4830757 -0.08971312  0.2299773
+    # o2  0.3170668  0.3972655 -0.4272965  0.03675172 -0.2132549
+    # o3  0.3034454  0.2883027 -0.4272468  0.28193107 -0.2031632
+    # o4 -0.6556795 -0.6273667  0.7524666 -0.33494686  0.4816174
+    # o5  0.7063523  0.5439999 -0.6512348  0.35844107 -0.6110251
+    # o6  0.5113262  0.4239644 -0.5416082  0.12368402 -0.3155310
+    
+    
+    ## grubman annotations 
+    grubmab_anno <- data.frame(annotation = c("AD", "AD","AD", "Undetermined", "Control", "Control"))
+    rownames(grubmab_anno) <- paste0("o", 1:6)
+    
+    grubman_col_ha <- HeatmapAnnotation(df = grubmab_anno,
+                                         col = list("annotation" = c(AD = "purple",Undetermined = "black", Control = "Green")))
+    
+    pdf(here(plot_dir, "Oligo_grubman_cor_logFC.pdf"), height = 4, width = 8)
+    Heatmap(t(erc_v_grubman_cor_wide), name = "logFC cor",
+            bottom_annotation = grubman_col_ha)
+    dev.off()
+        
+    
+    ## grubman marker dot plot
+    
+    grubman_o_makers <- grubman_subtypes_data |>
+        group_by(g_cell_type) |>
+        arrange(-LFC) |>
+        slice(1:5) |>
+        ungroup() |>
+        group_by(gene) |>
+        slice_max(LFC) |>
+        filter(gene %in% rownames(sce)) |>
+        arrange(g_cell_type)
+    
+    # grubman_o_makers |>
+    #     ungroup() |>
+    #     count(gene) |>
+    #     filter(n==2)
+    #     
+    
+    rowData(sce)$Grubman_Oligo <- NULL
+    rowData(sce)$Grubman_Oligo <- grubman_o_makers$g_cell_type[match(rownames(sce), grubman_o_makers$gene)] 
+    table(rowData(sce)$Grubman_Oligo)
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Grubman_Oligo.pdf", celltype)))
+    sce |>
+        scDotPlot(features = grubman_o_makers$gene,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Grubman_Oligo",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    dev.off()
+    
+
+#### Oligo Sadick Cor ####
+    
+    sadick_stab3 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab3.xlsx"), sheet = "LEN_so_oligo_DEGs") |>
+        mutate(Sadick_cluster = paste0("Sadick_S", LEN_so_oligo_cluster),
+               data = "Sadick")
+    
+    sadick_stab5 <- readxl::read_xlsx(here("external-data", "Sadick2022","Sadick2022_STab5.xlsx"), sheet = "Oligo_merged_DEGs") |>
+        mutate(Sadick_cluster = paste0("Sadick_Int", Oligo_merged_cluster),
+               data = "Integrated")
+    
+    sadick_Oligo_markers <- sadick_stab3 |> bind_rows(sadick_stab5)
+    
+    sadick_Oligo_markers |> dplyr::count(Sadick_cluster)
+    # Sadick_cluster     n
+    # <chr>          <int>
+    # 1 Sadick_Ol0         4
+    # 2 Sadick_Ol1        88
+    # 3 Sadick_Ol2        37
+    # 4 Sadick_Ol3        95
+    # 5 Sadick_Ol4        53
+    # 6 Sadick_Ol5       332
+    # 7 Sadick_Ol6       250
+    
+    erc_v_sadick <- enrichment_genes |>
+        inner_join(sadick_Oligo_markers, relationship = "many-to-many")
+    
+    erc_v_sadick_cor <- erc_v_sadick |>
+        group_by(test, data, Sadick_cluster) |>
+        summarise(n = n(),
+                  cor = cor(logFC, avg_log2FC))
+    
+    write_csv(erc_v_sadick_cor, file = here(data_dir, "erc_v_sadick_oligo_cor.csv"))
+    
+    erc_v_sadick_cor |>
+        group_by(test, data) |> 
+        slice_max(cor)
+    
+    erc_v_sadick_cor |>
+        group_by(Sadick_cluster, data) |> 
+        slice_max(cor)
+     
+    (erc_v_sadick_cor_wide <- erc_v_sadick_cor |>
+            select(-n) |>
+            group_by(data) |>
+            group_map(~pivot_wider(.x, names_from = "test", values_from = "cor") |>
+                          column_to_rownames("Sadick_cluster") |>
+                          as.matrix())
+    )
+    
+    ## heatmap
+    pdf(here(plot_dir, "Oligo_Sadick_cor_logFC.pdf"), height = 4, width = 8)
+    map(erc_v_sadick_cor_wide, ~print(Heatmap(t(.x), name = "logFC cor")))
+    dev.off()
+        
+    
+    ## sadick marker dot plot
+    map2(list(sadick_stab3, sadick_stab5), c("S", "Int"), function(data, name){
+        
+        sadick_o_makers <- data |>
+            group_by(Sadick_cluster) |>
+            arrange(-avg_log2FC) |>
+            slice(1:5) |>
+            filter(gene %in% rownames(sce)) 
+        
+        # sadick_o_makers |>
+        #     ungroup() |>
+        #     count(gene) |>
+        #     filter(n==2)
+        # #     
+        # 
+        # sadick_o_makers |> filter(gene %in% c("RASGRF1", "RBFOX1"))
+        
+        rowData(sce)$sadick_Oligo <- NULL
+        rowData(sce)$sadick_Oligo <- sadick_o_makers$Sadick_cluster[match(rownames(sce), sadick_o_makers$gene)] 
+        table(rowData(sce)$sadick_Oligo)
+        
+        pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_sadick%s_Oligo.pdf", celltype, name)))
+        print(sce |>
+            scDotPlot(features = unique(sadick_o_makers$gene),
+                      group = "cell_type_anno",
+                      groupAnno = "cell_type_anno",
+                      featureAnno = "sadick_Oligo",
+                      scale = TRUE,
+                      annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                      clusterRows = FALSE,
+                      groupLegends = FALSE))
+        
+        print(sce |>
+            scDotPlot(features = unique(sadick_o_makers$gene),
+                      group = "cell_type_anno",
+                      groupAnno = "cell_type_anno",
+                      featureAnno = "sadick_Oligo",
+                      scale = TRUE,
+                      annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                      clusterRows = TRUE,
+                      groupLegends = FALSE))
+        
+        dev.off()
+    })
+    
+    #### Oligo Siletti2023 Cor ####
+    # Table S5: DEGs between Oligo1 (OPALIN) and Oligo2 (RBFOX).
+    Siletti2023 <- read_csv(here("external-data", "Siletti2023", "science.add7046_table_s5.csv")) |>
+        rename(gene = `...1`, Siletti_stat = stat)
+    
+    Siletti2023_cor <- Siletti2023 |>
+        inner_join(enrichment_genes |> 
+                       filter(top <= 100),
+                   relationship = "many-to-many") |>
+        group_by(test) |> 
+        summarise(n = n(),
+                  cor_t_stat = cor(stat, Siletti_stat),
+                  cor_logFC = cor(log2FoldChange, logFC))
+    
+    erc_v_Siletti_cor_wide <- Siletti2023_cor |>
+        select(-n) |>
+        column_to_rownames("test") |>
+                      as.matrix()
+    
+    pdf(here(plot_dir, "Oligo_Siletti2023_cor_logFC.pdf"), height = 4, width = 5)
+    print(Heatmap(erc_v_Siletti_cor_wide, 
+                  name = "cor", 
+                  cluster_columns = FALSE,
+                  column_title = "Oligo1 (OPALIN) vs. Oligo2 (RBFOX)"))
+    dev.off()
+    
+    
+}
+
+
 ####  GO analysis ####
 library("org.Hs.eg.db")
 library("clusterProfiler")
@@ -341,12 +593,23 @@ dev.off()
 
 # disease associated 
 #### Cell type checks ####
+
+enrichment_genes <- sig_genes_extract(
+    n = nrow(sce_pseudo),
+    modeling_results = modeling_results,
+    model_type = "enrichment",
+    reverse = FALSE,
+    sce_layer = sce_pseudo,
+    gene_name = "gene_name"
+)
+
+
 if(celltype == "Oligo"){
-    
+    #### Oligo ####
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
     lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
                           Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
-                          premyelin_Oligo = c("SOX10", "OLIGO1", "OLIGO2", "NKX2-2", "CD9"),
+                          premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
                           myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
                           disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
                           AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
@@ -373,7 +636,6 @@ if(celltype == "Oligo"){
     
     ggsave(oligo_bernie_genes, filename = here(plot_dir, "sn_violin_Oligo_check.png"))
     
-    
     ## oligo marker dot plot
     lit_markers <- AnnotationDbi::unlist2(lit_markers)
     
@@ -393,11 +655,83 @@ if(celltype == "Oligo"){
                   groupLegends = FALSE)
     dev.off()
     
-} else if(celltype == "Astro"){
+    #### Oligo Marques markers ####
     
-    ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
+    Marques_markers <- consensus_marker_sets <- list(
+        OPC = c("PTPRZ1", "PDGFRA", "SERPINE2", "CSPG4", "CSPG5", "VCAN"),
+        COP = c("CD9", "NEU4", "BMP4","GPR17","VCAN"),
+        NFOL = c("ARPC1B", "TMEM2", "CHN2", "MPZL1", "FRMD4A", "MOBP", "DDR1", "TSPAN2"),
+        MFOL = c("CTPS1", "TMEM141", "OPALIN", "MAL", "PTGDS", "EVI2A", "EVI2B"),
+        MOL = c("APOD", "SEPP1", "S100B"),
+        MOL1 = c("FOSB", "DUSP1", "DNAJB1"),
+        MOL2 = c("ANXA5", "KLK6", "MGST3"),
+        MOL3 = c("CAR2", "CNTN2", "GAD2"),
+        MOL4 = c("SERPINB1", "NEAT1"),
+        MOL5 = c("CYP51A1", "DHCR24", "PDLIM2"),
+        MOL6 = c("IL33", "APOE", "PTGDS")
+    )
+    
+    
+    Marques_markers <- map(Marques_markers, ~.x[.x %in% rownames(sce)])
+    
+    plot_marker_express_List(
+        sce,
+        gene_list = Marques_markers,
+        cellType_col = "cell_type_anno",
+        pdf_fn = here(plot_dir, "sn_violin_Marques_markers.pdf"),
+        color_pal = cell_type_colors$anno
+    )
+    
+    Marques_markers <- AnnotationDbi::unlist2(Marques_markers)
+    
+    rowData(sce)$Marques_markers <- NULL
+    rowData(sce)$Marques_markers <- names(Marques_markers)[match(rownames(sce), Marques_markers)] 
+    table(rowData(sce)$Marques_markers)
+    
+    Marques_palette <- c(
+        OPC   = "#c27f3c",
+        NFOL  = "#996EC3",
+        COP   = "#33A02C",
+        MFOL  = "#4cab98",
+        MOL   = "#08306B",
+        MOL1  = "#08519C",
+        MOL2  = "#2171B5",
+        MOL3  = "#4292C6",
+        MOL4  = "#6BAED6",
+        MOL5  = "#9ECAE1",
+        MOL6  = "#C6DBEF"
+    )
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers.pdf", celltype)))
+    sce |>
+        scDotPlot(features = unique(Marques_markers),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers" = Marques_palette),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    
+    sce |>
+        scDotPlot(features = unique(Marques_markers),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers" = Marques_palette),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE)
+    dev.off()
+    
+    
+} else if(celltype == "Astro"){
+    #### Astro ####
     lit_markers <- list(disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
-                        AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+                        AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
+                        Mathys_subtypes <- c("GRM3","DPP10", "DCLK1" ,"LUZP2")
     )
     
     
@@ -430,9 +764,48 @@ if(celltype == "Oligo"){
                   clusterRows = FALSE,
                   groupLegends = FALSE)
     dev.off()
+
+     #### Astro cor Green 2024 ####       
+    
+    Green_Astro_stats <- readxl::read_xlsx(here("external-data", "Green2024","Green2024_SuppTable2.xlsx"), sheet = "DEGs") |>
+        filter(cell.type == "astrocytes",
+        !is.na(avg_log2FC)) |>
+        mutate(Green_Astro = state)
+
+    Green_Astro_stats |> count(cell.type)
+        Green_Astro_stats |> count(Green_Astro)
+
+    erc_v_Green <- enrichment_genes |>
+        inner_join(Green_Astro_stats, relationship = "many-to-many")
+
+    erc_v_Green_cor <- erc_v_Green |>
+        group_by(test, Green_Astro) |>
+        summarise(n = n(),
+                cor = cor(logFC, avg_log2FC))
+
+    write_csv(erc_v_Green_cor, file = here(data_dir, "erc_v_Green2024_Astro_cor.csv"))
+
+    erc_v_Green_cor |>
+        group_by(test) |> 
+        slice_max(cor)
+
+    erc_v_Green_cor |>
+        group_by(Green_Astro) |> 
+        slice_max(cor)
+
+
+    (erc_v_Green_cor_wide <- erc_v_Green_cor |>
+            select(-n) |>
+            pivot_wider(names_from = "test", values_from = "cor") |>
+            column_to_rownames("Green_Astro") |>
+            as.matrix())
+
+    pdf(here(plot_dir, "Astro_Green_cor_logFC.pdf"), height = 4, width = 8)
+    Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
+    dev.off()
     
 }else if(celltype == "Micro"){
-    
+    #### Micro ####
     ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
     lit_markers <- list(disease_associated = c("TREM2"), #https://doi.org/10.1038/s41593-025-01873-x
                         inflamation = c("NLPR3")) 
@@ -466,6 +839,50 @@ if(celltype == "Oligo"){
     #               groupLegends = FALSE)
     # dev.off()
     # 
+} else if(celltype == "OPC") {
+  #### OPC  Marques markers ####  
+    Marques_markers_OPC <- list(OPC = c("PDGFRA", "CSPG4", "PTPRZ1", "PCDH15"), 
+                             COP = c("VCAN",  "SOX6", "GPR17", "NEU4", "BMP4", "NKX2-2"),
+                             Siletti = c("HES5", "IRX5", "GPC5"))
+    
+    Marques_markers_OPC <- map(Marques_markers_OPC, ~.x[.x %in% rownames(sce)])
+    
+    Marques_markers_OPC <- AnnotationDbi::unlist2(Marques_markers_OPC)
+    
+    rowData(sce)$Marques_markers_OPC <- NULL
+    rowData(sce)$Marques_markers_OPC <- names(Marques_markers_OPC)[match(rownames(sce), Marques_markers_OPC)] 
+    table(rowData(sce)$Marques_markers_OPC)
+    
+    Marques_palette_OPC <- c(
+        OPC   = "navy",
+        COP  = "pink")
+    
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_Marques_markers_OPC.pdf", celltype)))
+    sce |>
+        scDotPlot(features = unique(Marques_markers_OPC),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers_OPC",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers_OPC" = Marques_palette_OPC),
+                  clusterRows = FALSE,
+                  groupLegends = FALSE)
+    
+    sce |>
+        scDotPlot(features = unique(Marques_markers_OPC),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "Marques_markers_OPC",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                    "Marques_markers_OPC" = Marques_palette_OPC),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE)
+
+    dev.off()
+    
 }
 
 

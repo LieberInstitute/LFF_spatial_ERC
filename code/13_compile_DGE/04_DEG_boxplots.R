@@ -140,10 +140,14 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
 dev.off()
 
 if(opt$datatype == "sn_broad"){
-    
+
+    # DE_data |> filter(cluster == "Oligo", gene_name %in% c("PLP1", "VCAM1"))
+    # DE_data |> filter(cluster == "Oligo") |> arrange(vlmf_adj.P.Val)
+    # DE_data |> filter(cluster == "Oligo", vlmf_adj.P.Val < 0.05) |> arrange(-vlmf_logFC)
+        
     #Oligo
-    map(c("C1QL3", "NPTXR"), function(g){
-        dge_plot <- plot_DEG_express_single(
+    map(c("OPALIN", "SRARP", "CD69","C1QL3", "NPTXR"), function(g){
+        dge_plot <- plot_DEG_express(
                 sce = sce_pb,
                 stats = DE_data,
                 gene = g,
@@ -156,13 +160,13 @@ if(opt$datatype == "sn_broad"){
             labs(title = "Oligo")
         ggsave(dge_plot, 
                filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Oligo", g)),
-               height = 4, width = 3)
+               height = 3, width = 3)
         
     })
     
     #Astro
     map(c("C1QL3", "NPTXR"), function(g){
-        dge_plot <- plot_DEG_express_single(
+        dge_plot <- plot_DEG_express(
                 sce = sce_pb,
                 stats = DE_data,
                 gene = g,
@@ -183,7 +187,7 @@ if(opt$datatype == "sn_broad"){
     
     #Oligo.3
     map(c("MAPT", "FOS"), function(g){
-        dge_plot <- plot_DEG_express_single(
+        dge_plot <- plot_DEG_express(
                 sce = sce_pb,
                 stats = DE_data,
                 gene = g,
@@ -204,7 +208,7 @@ if(opt$datatype == "sn_broad"){
     
     #Oligo
     boxplots_klk6 <- map(c("Vasc~Sp09D08", "WM.uf~Sp09D07"), function(spd){
-        dge_plot <- plot_DEG_express_single(
+        dge_plot <- plot_DEG_express(
             sce = sce_pb,
             stats = DE_data,
             gene = "KLK6",

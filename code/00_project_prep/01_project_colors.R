@@ -37,10 +37,12 @@ load(here("processed-data", "04_snRNA-seq", "cell_type_colors.Rdata"), verbose =
 ## APOE colors
 # APOE_genotype_colors <- c(`E2/E2`="#114B5F", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
 APOE_genotype_colors <- c(`E2/E2`="#186E8B", `E2/E3` = "#61C9A8", `E3/E4`="#ED9B40", `E4/E4`="#BA3B46")
-APOE_carrier_colors <- c(`E2+`="#398A84", `E4+`="#D46B43")
+
+APOE_carrier_colors_dark <- c(`E2+`="#3B918B", `E4+`="#B7522A")
+APOE_carrier_colors <- c(`E2+`="#51B8B1", `E4+`="#D97D59")
 
 ## phenotype colors
-ancestry_colors <- c(EA="#1B3174",AA="#698F3F")
+ancestry_colors <- c(EA="#8BA1E4",AA="#A4C77F")
 sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
 
 ## test APOE colors
@@ -71,7 +73,12 @@ names(sample_colors) <- apoe_colors_tb$sample_id
 # "#CD727A" "#D78F95" "#E1ABAF" "#EBC6CA" "#F5E3E4"
 
 ## save
-save(ancestry_colors, sex_colors, APOE_genotype_colors, APOE_carrier_colors, sample_colors,
+save(ancestry_colors, 
+     sex_colors, 
+     APOE_genotype_colors, 
+     APOE_carrier_colors, 
+     APOE_carrier_colors_dark,
+     sample_colors,
      file = here("processed-data", "project_colors.Rdata"))
 
 #### Cell type color archive ####
@@ -210,6 +217,22 @@ cell_type_colors <- list(broad = cell_type_colors_broad.V2,
 
 save(cell_type_colors, file = here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"))
 
+## Oligo + OPC alt colors
+# Oligo_OPC_colors <- create_cell_colors(cell_types = c(paste0("OPC.", 1:5), paste0("Oligo.", 1:5)), palette_name = "gg")
+# OPC.1     OPC.2     OPC.3     OPC.4     OPC.5   Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5
+# "#F8766D" "#D89000" "#A3A500" "#39B600" "#00BF7D" "#00BFC4" "#00B0F6" "#9590FF" "#E76BF3" "#FF62BC"
+
+Oligo_OPC_colors <- c(cell_type_colors_anno[grepl("OPC", names(cell_type_colors_anno))],
+                      Oligo.1 = "#00BFC4",
+                      Oligo.2 =  "#00B0F6",
+                      Oligo.3 = "#9590FF",
+                      Oligo.4 = "#E76BF3",
+                      Oligo.5 = "#FF62BC")
+
+# OPC.1     OPC.2     OPC.3     OPC.4     OPC.5   Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5 
+# "#D2B037" "#BDB76B" "#FFDB58" "#A2852D" "#DA9100" "#46aed7" "#6169d6" "#976bb3" "#7088cd" "#b25fce" 
+
+save(Oligo_OPC_colors, file = here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"))
 
 #### SpD colors ####
 SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid

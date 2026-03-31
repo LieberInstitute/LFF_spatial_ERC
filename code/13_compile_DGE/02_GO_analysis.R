@@ -35,6 +35,14 @@ if(opt$datatype == "sn_broad"){
     load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
     cluster_colors <- cell_type_colors$broad
     cluster_levels <- names(cell_type_colors$broad)
+}else if(opt$datatype == "sn_fine"){
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
+    
+    broad_cell_types <- names(cell_type_colors$broad)
+    broad_cell_types <- broad_cell_types[broad_cell_types != "Other"]
+    
 }else if(opt$datatype == "Visium"){
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     cluster_colors <- SpD_colors
@@ -50,12 +58,20 @@ file.exists(DE_data_fn)
 
 DE_data <- readRDS(DE_data_fn)
 
+cluster_levels <- cluster_levels[cluster_levels %in% DE_data$cluster]
+
 DE_data <- DE_data |> mutate(cluster = factor(cluster, levels = cluster_levels))
 
 DE_data |> count(cluster)
 
 head(DE_data)
 DE_data |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster)
+
+# DE_data |>
+#     # filter(grepl("LINGO", gene_name)) |>
+#     filter(gene_name == "ITGB5") |>
+#     select(gene_name, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC) |>
+#     arrange(vlmf_adj.P.Val)
 
 ## ENTREZID look up
 entrez_search <- bitr(DE_data$gene_id, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
@@ -93,12 +109,25 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
                                       # qvalueCutoff = 0.05,
                                       readable = TRUE))
 
+saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s.rds", opt$datatype)))
+
+go_result <- readRDS(here(data_dir, sprintf("GO_result_%s.rds", opt$datatype)))
+
+## convert to table
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(DE_class_cluster, ONTOLOGY)
 
-# compare_clus |> filter(DE_class_cluster == "Macro_down")
-
+# Save 
+saveRDS(compare_clus, file = here(data_dir, sprintf("GO_compare_clus_%s.rds", opt$datatype)))
 write.csv(compare_clus, file = here(data_dir, sprintf("GO_results_%s.csv", opt$datatype)), row.names = FALSE)
+
+# compare_clus <- readRDS(here(data_dir, sprintf("GO_compare_clus_%s.rds", opt$datatype)))
+
+## check specific genes
+# compare_clus |> filter(grepl("FOS", geneID), grepl("TLR2", geneID), grepl("STAT1", geneID), grepl("STAT4", geneID))
+# response to peptide hormone
+
+# compare_clus |> filter(grepl("FOS", geneID) | grepl("TLR2", geneID) | grepl("STAT1", geneID) | grepl("STAT4", geneID))
 
 #### dot plots ####
 
@@ -109,31 +138,176 @@ walk2(go_result, names(go_result),
                   x = "DE_class_cluster", 
                   showCategory = 3, 
                   label_format = 60)  +
-              ggtitle(paste("GO Enrichment:", .y)) +
+              ggtitle(paste("GO Enrichment:", .y, " (5+ genes)")) +
               theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
       )
 )
+
 dev.off()
 
-## by cell type
-# if(opt$datatype == "sn_fine"){
-#     
-#     pdf(file = here(plot_dir, sprintf("GO_dotplot_%s.pdf", opt$datatype)), width = 10, height = 10)
-#     walk2(go_result, names(go_result), function(gr){
-#         
-#         ~print(
-#             dotplot(.x, 
-#                     x = "DE_class_cluster", 
-#                     showCategory = 5, 
-#                     label_format = 60)  +
-#                 ggtitle(paste("GO Enrichment:", .y)) +
-#                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
-#         )
-#         
-#         }
-#     )
-#     dev.off()
+pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_2plus.pdf", opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), function(gr, ont){
     
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 2)
+    
+    if(nrow(gr@compareClusterResult) == 0) return(NULL)
+    
+    print(
+        dotplot(gr, 
+                x = "DE_class_cluster", 
+                showCategory = 3, 
+                label_format = 60)  +
+            ggtitle(paste("GO Enrichment:", ont, " (2+ genes)")) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+})
+dev.off()
+
+pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_5plus.pdf", opt$datatype)), width = 10, height = 10)
+walk2(go_result, names(go_result), function(gr, ont){
+    
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(!grepl("0", DE_class_cluster), Count >= 5)
+    
+    if(nrow(gr@compareClusterResult) == 0) return(NULL)
+    
+    print(
+        dotplot(gr, 
+                x = "DE_class_cluster", 
+                showCategory = 3, 
+                label_format = 60)  +
+            ggtitle(paste("GO Enrichment:", ont)) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+})
+dev.off()
+
+# for sn fine plot by cell type
+if(opt$datatype == "sn_fine"){
+    
+    ## by broad cell types
+    broad_cell_types <- unique(jaffelab::ss(cluster_levels, "\\."))
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_cell_type.pdf", opt$datatype)), width = 10, height = 10)
+    
+    map(broad_cell_types, function(ct){
+        go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster))
+            
+            if(nrow(gr@compareClusterResult ) > 1){
+            # dotplot
+            print(
+                dotplot(gr,
+                        x = "DE_class_cluster",
+                        showCategory = 5,
+                        label_format = 60)  +
+                    ggtitle(sprintf("GO Enrichment:%s - %s", ont, ct)) +
+                    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )}
+
+            # return(gr@compareClusterResult |> nrow())
+        })
+        # return(go_result_ct)
+    })
+    
+    dev.off()
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_cell_type_2plus.pdf", opt$datatype)), width = 10, height = 10)
+    map(broad_cell_types, function(ct){
+        go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster), Count >2)
+            
+            if(nrow(gr@compareClusterResult ) > 1){
+            # dotplot
+            print(
+                dotplot(gr,
+                        x = "DE_class_cluster",
+                        showCategory = 5,
+                        label_format = 60)  +
+                    ggtitle(sprintf("GO Enrichment:%s - %s (2+ genes)", ont, ct)) +
+                    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )}
+
+            # return(gr@compareClusterResult |> nrow())
+        })
+        # return(go_result_ct)
+    })
+    dev.off()    
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_cell_type_5plus.pdf", opt$datatype)), width = 10, height = 10)
+    map(broad_cell_types, function(ct){
+        go_result_ct <- map2(go_result, names(go_result), function(gr, ont){
+            # subset
+            gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl(ct, Cluster), Count >5)
+            
+            if(nrow(gr@compareClusterResult ) > 1){
+            # dotplot
+            print(
+                dotplot(gr,
+                        x = "DE_class_cluster",
+                        showCategory = 5,
+                        label_format = 60)  +
+                    ggtitle(sprintf("GO Enrichment:%s - %s (5+ genes)", ont, ct)) +
+                    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+            )}
+
+            # return(gr@compareClusterResult |> nrow())
+        })
+        # return(go_result_ct)
+    })
+    dev.off()
+    
+    
+    
+    
+    go_result_Oligo3 <- map(go_result, function(gr){
+        gr@compareClusterResult <- gr@compareClusterResult |> filter(grepl("Oligo.3", Cluster) | grepl("Astro.3", Cluster))
+        return(gr)
+    })
+    
+    map(go_result_Oligo3, ~.x@compareClusterResult |> count(Cluster))
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_Oligo.3.pdf", opt$datatype)), width = 6, height = 6)
+    walk2(go_result_Oligo3, names(go_result_Oligo3), 
+          ~print(
+              dotplot(.x, 
+                      x = "DE_class_cluster", 
+                      showCategory = 5, 
+                      label_format = 60)  +
+                  ggtitle(paste("GO Enrichment:", .y)) +
+                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+          )
+    )
+    dev.off()    
+    
+    ## select genes
+    go_result_select_genes <- map(go_result, function(gr){
+        gr@compareClusterResult <- gr@compareClusterResult  |> filter(grepl("FOS", geneID) |
+                                                                          grepl("TLR2", geneID) | 
+                                                                          grepl("STAT1", geneID) | 
+                                                                          grepl("STAT4", geneID))
+
+        return(gr)
+    })
+    
+    map(go_result_select_genes, ~.x@compareClusterResult |> count(Cluster))
+    
+    pdf(file = here(plot_dir, sprintf("GO_dotplot_%s_select_genes.pdf", opt$datatype)), width = 8, height = 8)
+    walk2(go_result_select_genes, names(go_result_select_genes), 
+          ~print(
+              dotplot(.x, 
+                      x = "DE_class_cluster", 
+                      showCategory = 10, 
+                      label_format = 60)  +
+                  ggtitle(paste("GO Enrichment:", .y, "FOS|TLR2|STAT1|STAT4")) +
+                  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+          )
+    )
+    dev.off()
+    
+    
+}
 
 
 #### rrvgo ####
@@ -184,6 +358,9 @@ reducedTerms_list <- map(ont_list, function(o){
 
 # map_depth(reducedTerms_list, 2, length)
 
+## save
+saveRDS(reducedTerms_list, file = here(data_dir, sprintf("GO_reduced_terms_%s.rds", opt$datatype)))
+
 reducedTerms_list2 <- list_transpose(reducedTerms_list)
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
 
@@ -214,173 +391,19 @@ dev.off()
 
 reducedTerms_list_long <- map(reducedTerms_list, ~do.call("rbind", .x))
 
-reducedTerms_list_long$BP |> count(parentTerm) 
+## check most common parent terms
+map(reducedTerms_list_long, ~.x |> count(parentTerm) |> arrange(-n) |> head())
 
-go_lookup <- function(search_term){
-    go_terms <- map(reducedTerms_list_long, ~.x |> dplyr::filter(parentTerm == search_term) |> pull(go) |> unique())
-    go_table <- map_dfr(go_terms, ~compare_clus |> filter(ID %in% .x))
-    return(unique(go_table$Description))
-    # return(go_table)
-}
+## check most common terms
+map(reducedTerms_list_long, ~.x |> count(term) |> arrange(-n) |> head())
 
-go_terms_myelination <- go_lookup("myelination")
-go_terms_myelination <- go_lookup("myelination")
-
-
-get_go_genes <- function(go_terms){
-    
-    go_genes <- compare_clus |>
-        filter(Description %in% go_terms) |>
-        select(ONTOLOGY, ID, Description, geneID) |>
-        mutate(geneID = str_split(geneID, "/")) |>
-        unnest_longer(geneID) |>
-        unique()
-    
-    return(go_genes)
-}
-
-go_genes <- get_go_genes(go_terms_myelination)
-
+## check GO terms w/ most genes
 compare_clus |> arrange(-Count) |> head()
 
-## gene can map parent term multiple times
-go_genes |> count(geneID) |> arrange(-n)
-go_genes |> count(Description) |> arrange(-n)
+## source functions
+source(here("code", "13_compile_DGE", "GO_logFC_heatmap.R"))
 
-get_go_DE_stats <- function(go_term){
-    
-    if(!go_term %in% compare_clus$Description){
-        stop("GO term not in compare_clus")
-    }
-    
-    go_gene <- compare_clus |>
-        filter(Description == go_term) |>
-        select(ONTOLOGY, ID, Description, gene_name = geneID) |>
-        mutate(gene_name = str_split(gene_name, "/")) |>
-        unnest_longer(gene_name) |>
-        unique() 
-    
-    go_term_de <- go_gene |>
-        left_join(DE_data |> select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val),
-                  by = "gene_name",
-                  relationship = "many-to-many") |>
-        group_by(cluster, gene_name) |>
-        arrange(vlmf_adj.P.Val) |>
-        slice(1) |>
-        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
-                                  vlmf_adj.P.Val < 0.01 ~ "**",
-                                  vlmf_adj.P.Val < 0.05 ~ "*",
-                                  TRUE ~ "")
-        ) 
-    
-    log_fc_matrix <- go_term_de |> 
-        select(gene_name, cluster, vlmf_logFC) |>
-        pivot_wider(names_from = "cluster", values_from = "vlmf_logFC", 
-                    names_expand = TRUE) |>
-        column_to_rownames("gene_name")
-    
-    log_fc_matrix <- log_fc_matrix[, cluster_levels]
-    
-    signif_matrix <- go_term_de |> 
-        select(gene_name, cluster, signif) |>
-        pivot_wider(names_from = "cluster", values_from = "signif", 
-                    names_expand = TRUE)|>
-        column_to_rownames("gene_name")
-    
-    signif_matrix <- signif_matrix[, cluster_levels]
-    
-    signif_matrix[is.na(signif_matrix)] <- ""
-    
-    return(list(log_fc = log_fc_matrix, 
-                signif = signif_matrix,
-                go_gene = go_gene))
-    
-}
-
-go_stats <- get_go_DE_stats("myelin assembly")
-go_stats <- get_go_DE_stats(go_term = "synaptic membrane")
-
-# go_stats <- get_go_DE_stats("myelin assembly")
-# go_stats <- get_go_DE_stats("myelination")
-# get_go_DE_stats("protein autoprocessing")
-# get_go_DE_stats("dendrite terminus")
-
-
-get_go_DE_stats_multi <- function(go_list){
-    
-   go_stats_m <- map(go_list, get_go_DE_stats)
-   go_stats_m <- map(list_transpose(go_stats_m), ~do.call("rbind",.x))
-   
-   go_stats_m$go_gene <-  go_stats_m$go_gene |> 
-       group_by(gene_name) |>
-       summarise(Description = paste0(Description, collapse = " +\n")) |>
-       arrange(Description)
-   
-   go_stats_m$log_fc <- go_stats_m$log_fc[go_stats_m$go_gene$gene_name,]
-   go_stats_m$signif <- go_stats_m$signif[go_stats_m$go_gene$gene_name,]
-   
-   return(go_stats_m)
-}
-
-# go_stats_multi <- get_go_DE_stats_multi(go_list = c("myelin assembly", "protein autoprocessing", "dendrite terminus"))
-go_stats_multi <- get_go_DE_stats_multi(go_list = c("protein autoprocessing", "myelination"))
-
-GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
-    
-    logFC <- as.matrix(go_stats$log_fc)
-    signif <- as.matrix(go_stats$signif)
-    
-    # multi_line <- any(grepl("+", go_stats$go_gene$Description))
-    
-    anno_table <- go_stats$go_gene |>
-        # rowwise() |>
-        dplyr::mutate(Description_n = ifelse(grepl("\\+", Description),
-                                      Description,
-                                      gsub(" ", "\n", Description))
-                      ) |>
-        # dplyr::mutate(Description_n = Description) |>
-        column_to_rownames("gene_name")
-    
-    anno_table <- anno_table[rownames(logFC),]
-
-    max_abs <- max(abs(logFC), na.rm = TRUE)
-    
-    my.col <- circlize::colorRamp2(
-        breaks = c(-1*max_abs,0,max_abs),
-        colors = c(APOE_carrier_colors[["E2+"]], "white", APOE_carrier_colors[["E4+"]])
-    )
-    
-    
-    Heatmap(as.matrix(logFC),
-            col = my.col,
-            name = "log(FC)",
-            cluster_rows = cluster_rows,
-            cluster_columns = FALSE,
-            row_split = anno_table$Description,
-            row_title_rot = 0,
-            cell_fun = function(j, i, x, y, width, height, fill) {
-                grid.text(signif[i, j], x, y, gp = gpar(fontsize = 10))
-            },
-            column_title = title)
-    
-}
-
-parent_term_heatmap <- function(search_term, term_title = gsub(" ", "_", search_term)){
-    
-    top_terms <- get_go_genes(go_lookup(search_term))|>
-        count(Description) |>
-        arrange(-n) |>
-        head(5) |>
-        pull(Description)
-    
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, term_title)), height = 10, width = 10)
-    
-    print(GO_logfc_Heatmap(get_go_DE_stats_multi(top_terms),
-                           title = search_term))
-    dev.off()
-    
-}
-
+# compare_clus |> filter(grepl("MAPT", geneID))
 
 #### GO heatmap by datatype ####
 if(opt$datatype == "Visium"){
@@ -402,44 +425,50 @@ if(opt$datatype == "Visium"){
     GO_logfc_Heatmap(get_go_DE_stats("myelin assembly"))
     GO_logfc_Heatmap(get_go_DE_stats("central nervous system myelination"))
     GO_logfc_Heatmap(get_go_DE_stats("oligodendrocyte differentiation"))
-    GO_logfc_Heatmap(go_stats_multi1)
-    
+    GO_logfc_Heatmap(get_go_DE_stats("oligodendrocyte differentiation"))
     GO_logfc_Heatmap(go_stats_multi1)
     
     dev.off()
     
-    #oligodendrocyte differentiation
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('oligodendrocyte differentiation')) |>
-    #     arrange(-Count)|>
-    #     head() 
-    # 
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('microtubule associated complex')) |>
-    #     arrange(-Count)|>
-    #     head()
+    parent_term_heatmap(search_term = c("myelination",
+                                        "oligodendrocyte differentiation",
+                                        "calcium ion transmembrane import into cytosol",
+                                        "negative regulation of developmental growth",
+                                        "dendrite terminus",
+                                        "mitotic spindle midzone",
+                                        "dipeptidase activity"), 
+                        pdf_suffix = "ParentTerms")
     
     
 } else if(opt$datatype == "sn_broad"){
     
-    go_terms1 <- c( "extracellular matrix",
-                    
-        "myelin assembly", 
-                   "cell-cell recognition",
-                   "myelination", 
-                   "ensheathment of neurons", 
-                   "axon ensheathment")
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_MF_%s.pdf", opt$datatype)))
+    # Astro Up
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("channel activity", "passive transmembrane transporter activity","GABA receptor activity")))
+    # Astro Down
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("exopeptidase activity", "dipeptidase activity","oligopeptide binding")))
+    # Inhib UP
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("heparan sulfate sulfotransferase activity", "proteoglycan sulfotransferase activity","microfilament motor activity")))
+    # Macro down
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("G protein-coupled purinergic nucleotide receptor activity","semaphorin receptor activity","purinergic nucleotide receptor activity")))
+    # Micro down
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("protein folding chaperone", "hydrolase activity, hydrolyzing O-glycosyl compounds","unfolded protein binding")))
+    # Oligo up
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("collagen binding", "high voltage-gated calcium channel activity")))
     
-    go_terms1 %in% go_terms_myelination
+    dev.off()
     
-    go_stats_multi1 <- get_go_DE_stats_multi(go_list = go_terms1)
     
+    
+    ## select GO terms
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s.pdf", opt$datatype)))
     
-    ## major terms
-    # go_genes |> count(Description) |> arrange(-n)
+    # Astro Up
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "modulation of chemical synaptic transmission"))
+
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "oligodendrocyte differentiation"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "heparin proteoglycan"))
     
-    GO_logfc_Heatmap(get_go_DE_stats(go_term = "neurotransmitter transport"))
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "cell fate commitment"))
     GO_logfc_Heatmap(get_go_DE_stats(go_term = "passive transmembrane transporter activity"))
     
@@ -448,82 +477,62 @@ if(opt$datatype == "Visium"){
     
     dev.off()
     
-    get_go_genes(go_lookup("monoatomic ion channel complex")) |>
-        count(Description) |>
-               arrange(-n)    
+    # go_lookup("dipeptidase activity")
+    # parent_term_lookup("peptid")
+    # compare_clus |> filter(grepl("pepti", Description))
+    compare_clus |> filter(grepl("hydrolase activity", Description))
+
+    parent_term_heatmap(search_term = c("synaptic membrane",
+                                        "oligodendrocyte differentiation",
+                                        "neurotransmitter transport",
+                                        "cellular response to calcium ion",
+                                        "learning or memory",
+                                        "early endosome membrane",
+                                        "external encapsulating structure"), 
+                        pdf_suffix = "ParentTerms")
     
-    
-    
-    parent_term_heatmap("neurotransmitter transport", term_title = "neuro_transport")
-    parent_term_heatmap("neurotransmitter transport", term_title = "neuro_transport")
-    parent_term_heatmap("cellular response to calcium ion", term_title = "calcium_ion")
-    
-    
-    get_go_genes(go_lookup("neurotransmitter transport"))|>
-        count(Description) |>
-               arrange(-n)
-    
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-neurotransmitter.pdf", opt$datatype)), height = 10, width = 10)
-    GO_logfc_Heatmap(get_go_DE_stats_multi(c("signal release", 
-                                             "calcium ion transport",
-                                             "regulation of trans-synaptic signaling",
-                                             "cellular response to calcium ion",
-                                             "cellular response to thyroid hormone stimulus")),
-                     title = "neurotransmitter transport")
-    dev.off()
-    
-    go_calcium <- get_go_genes(go_lookup("cellular response to calcium ion"))
-    go_calcium |>
-        count(Description) |>
-               arrange(-n)
-    # Description                                        n
-    # <chr>                                          <int>
-    # 1 response to metal ion                            11
-    # 2 response to calcium ion                           7
-    # 3 cellular response to calcium ion                  6
-    # 4 cellular response to thyroid hormone stimulus     3
-    
-    go_calcium |>
-        count(geneID) |>
-        arrange(-n)
-    
-    # geneID      n
-    # <chr>   <int>
-    # 1 INHBB       4
-    # 2 ADGRV1      3
-    # 3 CPNE8       3
-    # 4 FOS         3
-    
-    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-calcium_ion.pdf", opt$datatype)), height = 10, width = 10)
-    GO_logfc_Heatmap(get_go_DE_stats_multi(c("response to metal ion", 
-                                             "response to calcium ion",
-                                             "regulation of trans-synaptic signaling",
-                                             "cellular response to calcium ion",
-                                             "cellular response to thyroid hormone stimulus")),
-                     title = "cellular response to calcium ion")
-    dev.off()
-    
+   
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s-TOP.pdf", opt$datatype)), height = 10, width = 10)
     GO_logfc_Heatmap(get_go_DE_stats_multi(c("synaptic membrane", 
                                              "external encapsulating structure",
+                                        
                                              "regulation of trans-synaptic signaling",
                                              "extracellular structure organization",
                                              "regulation of membrane potential")),
                      title = "cellular response to calcium ion")
     dev.off()
+} else if(opt$datatype == "sn_fine"){
     
+    # compare_clus |> filter(grepl("MAPT", geneID))
+    # compare_clus |> filter(grepl("FOS", geneID))
     
-    #oligodendrocyte differentiation
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('oligodendrocyte differentiation')) |>
-    #     arrange(-Count)|>
-    #     head() 
-    # 
-    # compare_clus |>
-    #     filter(Description %in% go_lookup('microtubule associated complex')) |>
-    #     arrange(-Count)|>
-    #     head()
+    ## select GO terms
+    pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s.pdf", opt$datatype)), width = 12, height = 12)
+
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "neuronal cell body"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "synaptic membrane"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "metal ion transmembrane transporter activity"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "response to calcium ion"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "oligodendrocyte differentiation"))
+    GO_logfc_Heatmap(get_go_DE_stats(go_term = "main axon"))
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("main axon", "neuronal cell body")))
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("memory", "cognition")))
+    GO_logfc_Heatmap(get_go_DE_stats_multi(c("central nervous system myelination", "oligodendrocyte differentiation")))
     
+    dev.off()
+    
+    # parent_term_lookup("calcium")
+
+    parent_term_heatmap(search_term = c("myelin sheath",  # down in Astro.3 + Oligo.3
+                                        "myelination",
+                                        "cell-cell junction",
+                                        "synaptic membrane",  # Oligo.3 Up
+                                        "metal ion transmembrane transporter activity",
+                                        "regulation of metal ion transport",
+                                        "response to calcium ion",
+                                        "actin filament-based movement"), 
+                        pdf_suffix = "ParentTerms",
+                        height = 14, width = 12)
     
 }
 

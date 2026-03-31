@@ -29,6 +29,7 @@ dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
 ## Save data
 message(Sys.time(), " - Save")
 save(dend, tree.clusCollapsed, dist.clusCollapsed, file = here(data_dir, "sn_subcluster_hierarchical_cluster.Rdata"))
+# load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_cluster", "sn_subcluster_hierarchical_cluster.Rdata"))
 
 
 #### plot ####
@@ -48,7 +49,7 @@ dend |>
     set("leaves_cex", 2) |> 
     set("leaves_pch", 19) |> 
     set("branches_k_color", k = 7,
-        value = cell_type_colors$broad[c("Inhib", "Excit", "Micro", "Endo", "Oligo", "Astro", "OPC")]) |>
+        value = cell_type_colors$broad[c("Inhib", "Excit", "Micro", "Vasc", "Oligo", "Astro", "OPC")]) |>
     plot()
 
 # abline(v = 500, lty = 2)

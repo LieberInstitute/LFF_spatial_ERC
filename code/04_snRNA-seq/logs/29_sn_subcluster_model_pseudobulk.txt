@@ -1,11 +1,12 @@
 **** Job starts ****
-Fri Jun 20 04:55:33 AM EDT 2025
+Tue Aug 12 04:22:21 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 17606639
+Job id: 21312356
 Job name: 29_sn_subcluster_model_pseudobulk
-Node name: compute-169
+Node name: compute-155
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -143,202 +144,82 @@ $ARGS
 character(0)
 
 $cluster
-[1] "cell_type_anno"
+[1] "cell_type_broad"
 
-2025-06-20 04:55:44.232746 - Load HDF5 sce
+2025-08-12 16:22:32.674939 - Load HDF5 sce
 DataFrame with 122004 rows and 6 columns
-         cell_type_anno   sample_id     APOE      Sex       Age   Anc_Afr
-               <factor> <character> <factor> <factor> <numeric> <numeric>
-1      Oligo.5               Br6476    E3/E4        F     42.39  0.975491
-2      Excit.L2              Br6476    E3/E4        F     42.39  0.975491
-3      Astro.1               Br6476    E3/E4        F     42.39  0.975491
-4      Inhib.Pvalb           Br6476    E3/E4        F     42.39  0.975491
-5      Inhib.Lamp5_Lhx6      Br6476    E3/E4        F     42.39  0.975491
-...                 ...         ...      ...      ...       ...       ...
-122000     Micro.1           Br5426    E2/E3        F     48.75  0.850443
-122001     Excit.L2_5.1      Br5426    E2/E3        F     48.75  0.850443
-122002     Astro.1           Br5426    E2/E3        F     48.75  0.850443
-122003     Excit.L5.2        Br5426    E2/E3        F     48.75  0.850443
-122004     Astro.1           Br5426    E2/E3        F     48.75  0.850443
-2025-06-20 04:55:52.296381 - Running Spatial Registration on: cell_type_anno
-                  
-                   Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974
-  Astro.1             324    338    916    369    400    535    193      7
-  Astro.2             237    417    138    158    332    192    277     22
-  Astro.3             112    153    157     96    113    193    113     16
-  Astro.4              84     58    134      1     47     57     19      3
-  Astro.5              40     54     20     24     41     43     56      6
-  Macro                12     13     21      2     12      6     20      9
-  Micro.1              82    205    222      5     72    119    375    101
-  Micro.2             101    241     99     34    149    124    156    109
-  Micro.3              39     91     85      0     63     40     95     47
-  Micro.4              34     91     77      4     75     46    209     26
-  Micro.5              11     28     17      8     39     12     16     23
-  OPC.1               197    194    212    190    223    181     67     38
-  OPC.2               177    264     88    197    222    134    153     88
-  OPC.3               113     82    194     95    149    157     37     24
-  OPC.4               115     91    134     78     55     72     17     14
-  OPC.5                16     25      2      8     17      3     48     22
-  Oligo.1             434    588    664     14    432    266    422    162
-  Oligo.2             533    573    703      1    461    292    313    162
-  Oligo.3             185    346    140    251     71    269    181    164
-  Oligo.4             216    311    159     48     99    194    311    248
-  Oligo.5             188    247     66     42     86    220    101     89
-  Vasc.Endo            22     12     23     12     15     24     41      7
-  Vasc.PC               7      1      2      5      5      4      4      6
-  Vasc.VLMC            30     29     38      2     16      9     53      4
-  Excit.L2             18     96      6    167     86     62      8      7
-  Excit.L2_5.1         86    424     86    789    216    387    190     37
-  Excit.L2_5.2          6     58      3      0     55     34     13     13
-  Excit.L5.1            4     51      0    293     54     25     17      3
-  Excit.L5.2            0     35      0      0     22      7      9      0
-  Excit.L5_6_NP         0      1      0     14      3      2      0      0
-  Excit.L6_CT           3     41      3      2     35     55      4      3
-  Excit.L6b             5     59      7      5     31    114      3     10
-  Inhib.Chandelier      4     13     14     24      5     26      6      3
-  Inhib.Lamp5_Lhx6      8     42     24     72     49     46     83     10
-  Inhib.Pax6            3      2      1      2      3      5      5      2
-  Inhib.Pvalb          19     61      3     54     75     61     34     17
-  Inhib.Sst             9     47     16     11     33     23     30     13
-  Inhib.Vip           207    424    142    432    261    234    270     56
-                  
-                   Br5161 Br5212 Br5276 Br5367 Br5415 Br5426 Br5460 Br5517
-  Astro.1             269    793     64    482    348    573    369    234
-  Astro.2             347     94     70    133    211     93    106    150
-  Astro.3             147    137     24    127    110    124     86     63
-  Astro.4              23     17      2     26     21     15     27     43
-  Astro.5              49     13     16     31     37     13     12     35
-  Macro                14     21      1     17     24      9     61      8
-  Micro.1             204    195     28    100    351     71    109    107
-  Micro.2             197     84     24    170    148    148    136     91
-  Micro.3             109    104     10     63    166     33     51     55
-  Micro.4              71     82     12     40    127     35     42     45
-  Micro.5              32     17      3     36     28     22     29     21
-  OPC.1               154    275    105    229    179    188    200    172
-  OPC.2               205    162     56    194    125    117    112     46
-  OPC.3               123    239    135    161    127    156    191    214
-  OPC.4                30    101     64     49     76     83     82     96
-  OPC.5                35      1      4     15      4      9      2      2
-  Oligo.1             138   1169    313    231    648    328    201    398
-  Oligo.2              52    897    246    118    961    215    138    445
-  Oligo.3             511    238    135    468    178    276    187     66
-  Oligo.4             294    227    170    297    216    229    164    101
-  Oligo.5             204     75     55    141    289    144     90     99
-  Vasc.Endo            12     16      7     27     10     28     24     21
-  Vasc.PC               6      7      4      2      2      3      9      5
-  Vasc.VLMC            32     17      2     86     18     26    180     31
-  Excit.L2            148     20      0    150      4     80    219    146
-  Excit.L2_5.1        577     92     11    423     67    219    649    267
-  Excit.L2_5.2         26      5      0     19     15     11      1     53
-  Excit.L5.1          104     22      0     50      3     44    316     35
-  Excit.L5.2           10      4      0      3      3     16      4     21
-  Excit.L5_6_NP         9      2      0      2      0      2     27      0
-  Excit.L6_CT           8      4      0     37     15      6     19     59
-  Excit.L6b             5      0      1     56     13     12     13     63
-  Inhib.Chandelier     20     14      1     13      6      7     19     13
-  Inhib.Lamp5_Lhx6     80     32      0     53     23     32     71     68
-  Inhib.Pax6            6      2      0      3      0      9     11      1
-  Inhib.Pvalb         106     16      1     34     21     28     80     21
-  Inhib.Sst            51     39      2     26     16     20     34     16
-  Inhib.Vip           375    244     31    286    157    201    450    321
-                  
-                   Br5529 Br5599 Br5634 Br5712 Br5832 Br5854 Br5941 Br6085
-  Astro.1             253    239    282    189    229    267    109    319
-  Astro.2             182    143    112     87     82    140    176     97
-  Astro.3              72     88     54     46     73     86     86     79
-  Astro.4              28     26     52     68     61     34     29      8
-  Astro.5              35     12     14     17      9     23     33     15
-  Macro                 1     36      4     11     11     20     28      8
-  Micro.1              20    173    143     73    131    150    309     92
-  Micro.2              64    157     74     53     68     50    172     83
-  Micro.3               8     14     74     47     63     72    126     58
-  Micro.4               5     26     63     29     47     53    110     51
-  Micro.5              16      2     11     16     16     10     34     17
-  OPC.1                90    135    114    126    115     94    126    104
-  OPC.2                76    108     91     45     84     65    133    126
-  OPC.3               116    112    127    154     91     92     75    125
-  OPC.4                42     32     58     73     63     42     29     54
-  OPC.5                11     12      3      0      3      1     17     33
-  Oligo.1             235    187    795    683    649    414    525    126
-  Oligo.2             172    146    911    621    571    747    617    101
-  Oligo.3             982    250    134    100    124    243    215    101
-  Oligo.4             538    194    242    191    201    202    216     82
-  Oligo.5             238    205     84     73    121    319    210     46
-  Vasc.Endo            23     10     17     15     24     20     27     17
-  Vasc.PC               5      2      2      6      7      2      6     10
-  Vasc.VLMC            32     59      1     11     24     18     45      2
-  Excit.L2              4     87     41     16     19     21     74    104
-  Excit.L2_5.1        188    341    163    111    338    177    262    284
-  Excit.L2_5.2          0      0      0      5      3     85     15      1
-  Excit.L5.1           20    116    140      3     88     45     87    273
-  Excit.L5.2            1      0      0      1      0     17      5      0
-  Excit.L5_6_NP         0     18     24      1      1      0      2     20
-  Excit.L6_CT           3      4     15     40      9     90     36     22
-  Excit.L6b             7      5     33     71     73     66     43      9
-  Inhib.Chandelier      1     12      3      1      2      5      5     16
-  Inhib.Lamp5_Lhx6      8     38     31      7     19     35     41     48
-  Inhib.Pax6            0      5      2      1      2      1      8      6
-  Inhib.Pvalb           1     77     32     11     30     59     61     76
-  Inhib.Sst             4     42     57     12      8     12     34     59
-  Inhib.Vip           163    220    140    117    145    188    221    308
-                  
-                   Br6098 Br6161 Br6263 Br6321 Br6423 Br6476 Br6538
-  Astro.1             525    571    381    291    466    436    205
-  Astro.2              73    106    138    183    219    416    145
-  Astro.3              86     82     86     96    135    159     88
-  Astro.4              21     41      7     16     67     47     51
-  Astro.5               8     15     22     32     22     46     19
-  Macro                14      4      4     12     14      5     11
-  Micro.1             122      6     12    137    165     72    276
-  Micro.2             114     21    115    134    188    201    243
-  Micro.3              41      3      5     76     74     34    130
-  Micro.4              41      3     19     57     76     47     85
-  Micro.5               8      4     10     19     27     16     42
-  OPC.1               153    265    168    145    152    125     99
-  OPC.2                53     63     68    159    169    268    161
-  OPC.3               159    230    162    126     80     42     44
-  OPC.4                77    115     72     35     50     26     36
-  OPC.5                 1      0      0     15      0    108     41
-  Oligo.1             148    250    242    124   1118    252    363
-  Oligo.2             183    378    102    114    867     86    284
-  Oligo.3             237     50   1059    146    784    177    319
-  Oligo.4             122     72    514     86    444    238    285
-  Oligo.5              98     78    139     71    155     85    196
-  Vasc.Endo            25     17     20     38     15      4     13
-  Vasc.PC               7      5      6     11      1      1      4
-  Vasc.VLMC            82      7     16     14     15      3     13
-  Excit.L2             93     85     87     76     39    169     77
-  Excit.L2_5.1        189    166    364    267    235    686    380
-  Excit.L2_5.2         41      4      5     38     95      0      5
-  Excit.L5.1           23     16     20     70     65    226     22
-  Excit.L5.2           26     14     11      7     21      4      0
-  Excit.L5_6_NP         0      0      0      2      1     16      5
-  Excit.L6_CT          13      6      2     24     28     20     19
-  Excit.L6b            15     28     19      4     88      9     30
-  Inhib.Chandelier     13     18     19      6      4     10      0
-  Inhib.Lamp5_Lhx6     50     36     35     65     44     60     24
-  Inhib.Pax6            5      4      4     10      8      8      6
-  Inhib.Pvalb          30      5     35     71     59    134     51
-  Inhib.Sst            18     14     11     35     29     78     16
-  Inhib.Vip           272    231    241    245    269    557    127
-2025-06-20 04:55:52.331051 make pseudobulk object
-2025-06-20 05:02:51.286503 dropping 207 pseudo-bulked samples that are below 'min_ncells'.
-2025-06-20 05:02:52.337173 drop lowly expressed genes
-2025-06-20 05:02:53.232433 normalize expression
-2025-06-20 05:03:04.304451 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_pseudobulk-cell_type_anno.rds
-2025-06-20 05:03:17.191519 create model matrix
-2025-06-20 05:03:17.232963 run duplicateCorrelation()
-2025-06-20 05:13:00.685447 The estimated correlation is: 0.0714598422588673
-2025-06-20 05:13:00.70183 computing enrichment statistics
-2025-06-20 05:17:15.140904 extract and reformat enrichment results
-2025-06-20 05:17:15.364487 running the baseline pairwise model
-2025-06-20 05:17:23.086109 computing pairwise statistics
-2025-06-20 05:17:38.542456 computing F-statistics
-2025-06-20 05:17:46.327401 - Saving Data
+       cell_type_broad   sample_id     APOE      Sex       Age   Anc_Afr
+              <factor> <character> <factor> <factor> <numeric> <numeric>
+1                Oligo      Br6476    E3/E4        F     42.39  0.975491
+2                Excit      Br6476    E3/E4        F     42.39  0.975491
+3                Astro      Br6476    E3/E4        F     42.39  0.975491
+4                Inhib      Br6476    E3/E4        F     42.39  0.975491
+5                Inhib      Br6476    E3/E4        F     42.39  0.975491
+...                ...         ...      ...      ...       ...       ...
+122000           Micro      Br5426    E2/E3        F     48.75  0.850443
+122001           Excit      Br5426    E2/E3        F     48.75  0.850443
+122002           Astro      Br5426    E2/E3        F     48.75  0.850443
+122003           Excit      Br5426    E2/E3        F     48.75  0.850443
+122004           Astro      Br5426    E2/E3        F     48.75  0.850443
+2025-08-12 16:22:39.484782 - Running Spatial Registration on: cell_type_broad
+       
+        Br1039 Br1289 Br1556 Br1691 Br1706 Br2305 Br2582 Br3974 Br5161 Br5212
+  Astro    797   1020   1365    648    933   1020    658     54    835   1054
+  Macro     12     13     21      2     12      6     20      9     14     21
+  Micro    267    656    500     51    398    341    851    306    613    482
+  OPC      618    656    630    568    666    547    322    186    547    778
+  Oligo   1556   2065   1732    356   1149   1241   1328    825   1199   2606
+  Vasc      59     42     63     19     36     37     98     17     50     40
+  Excit    122    765    105   1270    502    686    244     73    887    149
+  Inhib    250    589    200    595    426    395    428    101    638    347
+       
+        Br5276 Br5367 Br5415 Br5426 Br5460 Br5517 Br5529 Br5599 Br5634 Br5712
+  Astro    176    799    727    818    600    525    570    508    514    407
+  Macro      1     17     24      9     61      8      1     36      4     11
+  Micro     77    409    820    309    367    319    113    372    365    218
+  OPC      364    648    511    553    587    530    335    399    393    398
+  Oligo    919   1255   2292   1192    780   1109   2165    982   2166   1668
+  Vasc      13    115     30     57    213     57     60     71     20     32
+  Excit     12    740    120    390   1248    644    223    571    416    248
+  Inhib     35    415    223    297    665    440    177    394    265    149
+       
+        Br5832 Br5854 Br5941 Br6085 Br6098 Br6161 Br6263 Br6321 Br6423 Br6476
+  Astro    454    550    433    518    713    815    634    618    909   1104
+  Macro     11     20     28      8     14      4      4     12     14      5
+  Micro    325    335    751    301    326     37    161    423    530    370
+  OPC      356    294    380    442    443    673    470    480    451    569
+  Oligo   1666   1925   1783    456    788    828   2056    541   3368    838
+  Vasc      55     40     78     29    114     29     42     63     31      8
+  Excit    531    501    524    713    400    319    508    488    572   1130
+  Inhib    206    300    370    513    388    308    345    432    413    847
+       
+        Br6538
+  Astro    508
+  Macro     11
+  Micro    776
+  OPC      381
+  Oligo   1447
+  Vasc      30
+  Excit    538
+  Inhib    224
+2025-08-12 16:22:39.521541 make pseudobulk object
+2025-08-12 16:31:47.423388 dropping 13 pseudo-bulked samples that are below 'min_ncells'.
+2025-08-12 16:31:47.516212 drop lowly expressed genes
+2025-08-12 16:31:47.871416 normalize expression
+2025-08-12 16:31:51.985333 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/04_snRNA-seq/29_sn_subcluster_model_pseudobulk/sce_subcluster_pseudobulk-cell_type_broad.rds
+2025-08-12 16:31:56.216796 create model matrix
+2025-08-12 16:31:56.270364 run duplicateCorrelation()
+2025-08-12 16:32:53.479833 The estimated correlation is: 0.0988103348505379
+2025-08-12 16:32:53.482607 computing enrichment statistics
+2025-08-12 16:32:58.61336 extract and reformat enrichment results
+2025-08-12 16:32:58.658452 running the baseline pairwise model
+2025-08-12 16:32:59.352909 computing pairwise statistics
+2025-08-12 16:32:59.902191 computing F-statistics
+2025-08-12 16:33:00.608217 - Saving Data
 [1] "Reproducibility information:"
-[1] "2025-06-20 05:18:02 EDT"
-    user   system  elapsed 
-1295.950   24.794 1349.103 
+[1] "2025-08-12 16:33:01 EDT"
+   user  system elapsed 
+602.791   9.615 639.688 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -349,7 +230,7 @@ DataFrame with 122004 rows and 6 columns
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-06-20
+ date     2025-08-12
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -367,9 +248,9 @@ DataFrame with 122004 rows and 6 columns
  BiocFileCache          2.16.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  BiocGenerics         * 0.54.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  BiocIO                 1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocManager            1.30.25   2024-08-28 [2] CRAN (R 4.5.0)
+ BiocManager            1.30.26   2025-06-05 [1] CRAN (R 4.5.0)
  BiocNeighbors          2.2.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocParallel           1.42.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocParallel           1.42.1    2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
  BiocSingular           1.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  BiocVersion            3.21.1    2024-10-29 [2] Bioconductor 3.21 (R 4.5.0)
  Biostrings             2.76.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -385,12 +266,12 @@ DataFrame with 122004 rows and 6 columns
  cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
  colorspace             2.1-1     2024-07-26 [2] CRAN (R 4.5.0)
- ComplexHeatmap         2.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ComplexHeatmap         2.24.1    2025-06-25 [1] Bioconductor 3.21 (R 4.5.0)
  config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
- cowplot                1.1.3     2024-01-22 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
- curl                   6.2.3     2025-05-24 [1] CRAN (R 4.5.0)
- data.table             1.17.4    2025-05-26 [1] CRAN (R 4.5.0)
+ curl                   6.4.0     2025-06-22 [1] CRAN (R 4.5.0)
+ data.table             1.17.8    2025-07-10 [1] CRAN (R 4.5.0)
  DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.5.0)
  dbplyr                 2.5.0     2024-03-19 [2] CRAN (R 4.5.0)
  DelayedArray         * 0.34.1    2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
@@ -432,14 +313,14 @@ DataFrame with 122004 rows and 6 columns
  iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
  jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
  jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
- KEGGREST               1.48.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ KEGGREST               1.48.1    2025-06-22 [1] Bioconductor 3.21 (R 4.5.0)
  later                  1.4.2     2025-04-08 [2] CRAN (R 4.5.0)
  lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
  lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.5.0)
  lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.5.0)
- limma                  3.64.1    2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ limma                  3.64.3    2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
  locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
- magick                 2.8.6     2025-03-23 [2] CRAN (R 4.5.0)
+ magick                 2.8.7     2025-06-06 [1] CRAN (R 4.5.0)
  magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.5.0)
  Matrix               * 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
  MatrixGenerics       * 1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -447,19 +328,19 @@ DataFrame with 122004 rows and 6 columns
  memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
  paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.5.0)
- pillar                 1.10.2    2025-04-05 [2] CRAN (R 4.5.0)
+ pillar                 1.11.0    2025-07-04 [1] CRAN (R 4.5.0)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
- plotly                 4.10.4    2024-01-13 [2] CRAN (R 4.5.0)
+ plotly                 4.11.0    2025-06-19 [1] CRAN (R 4.5.0)
  png                    0.1-8     2022-11-29 [2] CRAN (R 4.5.0)
- promises               1.3.2     2024-11-28 [2] CRAN (R 4.5.0)
+ promises               1.3.3     2025-05-29 [1] CRAN (R 4.5.0)
  purrr                  1.0.4     2025-02-05 [2] CRAN (R 4.5.0)
  R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
  rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.5.0)
  RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp                   1.0.14    2025-01-12 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.0     2025-07-02 [1] CRAN (R 4.5.0)
  RCurl                  1.98-1.17 2025-03-22 [2] CRAN (R 4.5.0)
  rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
- restfulr               0.0.15    2022-06-16 [2] CRAN (R 4.5.0)
+ restfulr               0.0.16    2025-06-27 [1] CRAN (R 4.5.0)
  rhdf5                * 2.52.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  rhdf5filters           1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  Rhdf5lib               1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -467,10 +348,10 @@ DataFrame with 122004 rows and 6 columns
  rlang                  1.1.6     2025-04-11 [2] CRAN (R 4.5.0)
  rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.5.0)
  Rsamtools              2.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- RSQLite                2.3.11    2025-05-04 [2] CRAN (R 4.5.0)
+ RSQLite                2.4.2     2025-07-18 [1] CRAN (R 4.5.0)
  rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
  rtracklayer            1.68.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- S4Arrays             * 1.8.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ S4Arrays             * 1.8.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
  S4Vectors            * 0.46.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
  ScaledMatrix           1.16.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -479,7 +360,7 @@ DataFrame with 122004 rows and 6 columns
  scuttle                1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.5.0)
  shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
- shiny                  1.10.0    2024-12-14 [2] CRAN (R 4.5.0)
+ shiny                  1.11.1    2025-07-03 [1] CRAN (R 4.5.0)
  shinyWidgets           0.9.0     2025-02-21 [2] CRAN (R 4.5.0)
  SingleCellExperiment * 1.30.1    2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
  SparseArray          * 1.8.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -487,7 +368,7 @@ DataFrame with 122004 rows and 6 columns
  spatialLIBD          * 1.21.5    2025-05-27 [1] Github (LieberInstitute/spatialLIBD@aff00db)
  statmod                1.5.0     2023-01-06 [2] CRAN (R 4.5.0)
  SummarizedExperiment * 1.38.1    2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
- tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.5.0)
+ tibble                 3.3.0     2025-06-08 [1] CRAN (R 4.5.0)
  tidyr                  1.3.1     2024-01-24 [2] CRAN (R 4.5.0)
  tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
  UCSC.utils             1.4.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
@@ -507,4 +388,4 @@ DataFrame with 122004 rows and 6 columns
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Jun 20 05:18:03 AM EDT 2025
+Tue Aug 12 04:33:02 PM EDT 2025

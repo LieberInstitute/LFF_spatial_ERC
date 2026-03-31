@@ -1,0 +1,116 @@
+---
+title: "ERC data exploration"
+## format: html
+---
+
+```{r}
+library(edgeR)
+library(SingleCellExperiment)
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(here)
+here::i_am('.git/HEAD')
+ddir <- here("processed-data")
+mdir <- here("processed-data", "22_Mediation")
+```
+
+
+```{r ERC DGE results}
+## fpdge <- file.path(ddir, "08_pseudoBulkDGE_sn/01_pseudobulk_data_sn", "sce_pseudo_DGE-cell_type_anno.RDS")
+## pdge <- readRDS(fpdge)
+fpdge <- file.path(ddir, "13_compile_DGE/01_compile_DGE/sn_fine", "DGE_results_carrier_sn_fine.Rds")
+pdge <- readRDS(fpdge)
+sumdt <- fread(file.path(ddir, "13_compile_DGE/01_compile_DGE/sn_fine", "vlmf_model_summary_sn_fine.csv"))
+```
+
+```{r-console}
+> head(sumdt)
+      V1 cell_type_broad cluster     mod n_genes n_FDR05   nUP nDown
+   <int>          <char>  <char>  <char>   <int>   <int> <int> <int>
+1:     1           Astro Astro.1 carrier   16867       7     5     2
+2:     2           Astro Astro.2 carrier    9994      58    10    48
+3:     3           Astro Astro.3 carrier   11282      23     5    18
+4:     4           Astro Astro.4 carrier    8135       0     0     0
+5:     5           Astro Astro.5 carrier    1793       0     0     0
+6:     6           Oligo Oligo.1 carrier   13881       0     0     0
+
+> head(pdge)
+# A tibble: 6 × 21
+  data_type cluster contrast seqnames    start      end width strand source type  gene_id         gene_version gene_name       gene_type      vlmf_logFC vlmf_AveExpr vlmf_t vlmf_P.Value vlmf_adj.P.Val vlmf_B cell_type_broad
+  <chr>     <fct>   <chr>    <fct>       <int>    <int> <int> <fct>  <fct>  <fct> <chr>           <chr>        <chr>           <chr>               <dbl>        <dbl>  <dbl>        <dbl>          <dbl>  <dbl> <fct>
+1 sn_fine   Astro.1 carrier  chr15    82339993 82349475  9483 -      HAVANA gene  ENSG00000278662 6            GOLGA6L10       protein_coding     -1.55          1.83  -6.46  0.000000659         0.0111   5.60 Astro
+2 sn_fine   Astro.1 carrier  chr22    38818452 38844028 25577 -      HAVANA gene  ENSG00000221890 6            NPTXR           protein_coding      0.751         4.29   5.73  0.00000436          0.0310   4.28 Astro
+3 sn_fine   Astro.1 carrier  chr1     99264292 99309590 45299 +      HAVANA gene  ENSG00000117600 14           PLPPR4          protein_coding      1.50          2.27   5.64  0.00000552          0.0310   3.76 Astro
+4 sn_fine   Astro.1 carrier  chr6     40344346 40387194 42849 -      HAVANA gene  ENSG00000226070 2            LINC00951       lncRNA              1.19          1.81   5.47  0.00000885          0.0373   3.21 Astro
+5 sn_fine   Astro.1 carrier  chr20     1266280  1309328 43049 +      HAVANA gene  ENSG00000101298 15           SNPH            protein_coding      0.538         4.31   5.29  0.0000140           0.0404   3.17 Astro
+6 sn_fine   Astro.1 carrier  chr10    47538377 47551954 13578 -      HAVANA gene  ENSG00000290453 1            ENSG00000290453 lncRNA             -0.911         3.66  -5.29  0.0000144           0.0404   3.16 Astro
+
+ ```
+
+```{r the 88 Astro genes}
+stopifnot(unique(pdge$data_type)=='sn_fine')
+## 88 Astro DEGs FDR<0.05
+degs <- as.data.table(pdge)[grepl("^Astro", cluster) & vlmf_adj.P.Val < 0.05 & contrast=='carrier',
+   .(cluster, gene_id, gene_name, gene_type, vlmf_logFC, vlmf_AveExpr, vlmf_t, vlmf_P.Value, vlmf_adj.P.Val, cell_type_broad)]
+## nrow(degs) # 88
+#length(unique(degs$gene_name)) # 86
+degs[gene_name %in% degs[duplicated(degs$gene_name)]$gene_name, .(gene_name, gene_id, cluster)]
+## only these two genes are shared between clusters
+#1:    GABBR2 ENSG00000136928 Astro.1
+#2:    ZNF536 ENSG00000198597 Astro.2
+#3:    GABBR2 ENSG00000136928 Astro.3
+#4:    ZNF536 ENSG00000198597 Astro.3
+
+### Show the same for Oligo.3:
+odegs <- as.data.table(pdge)[grepl("^Oligo", cluster) & vlmf_adj.P.Val < 0.05 & contrast=='carrier',
+   .(cluster, gene_id, gene_name, gene_type, vlmf_logFC, vlmf_AveExpr, vlmf_t, vlmf_P.Value, vlmf_adj.P.Val, cell_type_broad)]
+
+```
+
+
+```{r get expression data for these genes per brain and cell type}
+## pseudobulk data
+
+pb_fn <- file.path(ddir,  "08_pseudoBulkDGE_sn/01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS")
+pb <- readRDS(pb_fn)
+## Drop donor Br1289
+pb <- pb[, pb$BrNum != 'Br1289']
+
+astro_cls <- unique(as.character(degs$cluster))
+pbdex <- pb[degs$gene_id, pb$registration_variable %in% astro_cls]
+pboutcome <- pb[, pb$registration_variable == "Oligo.3"]
+pbdex$cluster <- as.character(pbdex$registration_variable)
+## write BrNum data for later matching to LC data
+cd <- as.data.frame(colData(pboutcome)[, c("BrNum", "APOE", "APOE_carrier", "APOE_syn", "Ancestry", "Sex",
+    "Age", "Rin", "Anc_Afr", "Anc_Eur", "ncells", "pseudo_sum_umi", "pseudo_expr_chrM_ratio")])
+fwrite(cd, file.path(mdir, "brnum_metadata_ERC_Oligo3_n30.tab"), sep = "\t")
+```
+
+```{r-console}
+## corner of the logcounts assay
+> hh(assays(pbdex)$logcounts)
+                Br1039_Astro.1 Br1556_Astro.1 Br1691_Astro.1 Br1706_Astro.1 Br2305_Astro.1 Br2582_Astro.1 Br5161_Astro.1 Br5212_Astro.1
+ENSG00000278662       2.610157       2.831021      0.5297312     0.05268869       1.855498       2.683376       1.330184       3.277047
+ENSG00000221890       4.114118       4.041462      5.5256579     4.79502073       4.280823       4.042058       4.752787       4.247719
+ENSG00000117600       1.837585       1.257096      3.0546350     3.55175869       2.809136       1.828722       3.689752       2.699462
+ENSG00000226070       1.976645       1.805763      2.5898594     2.67402766       2.177195       1.503035       2.627911       2.564164
+ENSG00000101298       4.922988       4.425846      5.5610530     4.77638361       4.346402       3.910505       5.020642       4.699048
+ENSG00000290453       3.955009       4.923233      2.2857618     2.67402766       3.876996       4.519407       4.102840       4.963852
+
+> table(pbdex$cluster)
+
+Astro.1 Astro.2 Astro.3
+     29      30      30
+
+> rowRanges(pbdex)
+GRanges object with 88 ranges and 6 metadata columns:
+                  seqnames              ranges strand |   source     type         gene_id gene_version   gene_name      gene_type
+                     <Rle>           <IRanges>  <Rle> | <factor> <factor>     <character>  <character> <character>    <character>
+  ENSG00000278662    chr15   82339993-82349475      - |   HAVANA     gene ENSG00000278662            6   GOLGA6L10 protein_coding
+  ENSG00000221890    chr22   38818452-38844028      - |   HAVANA     gene ENSG00000221890            6       NPTXR protein_coding
+  ENSG00000117600     chr1   99264292-99309590      + |   HAVANA     gene ENSG00000117600           14      PLPPR4 protein_coding
+  ENSG00000226070     chr6   40344346-40387194      - |   HAVANA     gene ENSG00000226070            2   LINC00951         lncRNA
+  ENSG00000101298    chr20     1266280-1309328      + |   HAVANA     gene ENSG00000101298           15        SNPH protein_coding
+
+```

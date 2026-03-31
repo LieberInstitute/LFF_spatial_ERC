@@ -1,12 +1,11 @@
 **** Job starts ****
-Tue Aug  5 06:05:51 PM EDT 2025
+Mon Dec  1 10:51:45 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21241925
+Job id: 25209385
 Job name: 10_GO_analysis_contrast
-Node name: compute-163
+Node name: compute-114
 Task id: 2
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -17,10 +16,10 @@ Currently Loaded Modules:
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ forcats   1.0.0     ✔ stringr   1.5.2
 ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.4     
+✔ purrr     1.1.0     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -151,6 +150,29 @@ The following object is masked from ‘package:stats’:
 
     filter
 
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading objects:
+  cell_type_colors
+[1] TRUE
 [1] TRUE
 # A tibble: 70 × 3
    cluster contrast       n
@@ -194,7 +216,7 @@ The following object is masked from ‘package:stats’:
 # ℹ 15 more rows
 'select()' returned 1:many mapping between keys and columns
 Warning message:
-In bitr(unique(DE_data$gene_id), fromType = "ENSEMBL", toType = "ENTREZID",  :
+In bitr(unique(DE_data_contrast$gene_id), fromType = "ENSEMBL",  :
   21.22% of input gene IDs are fail to map...
 Storing counts in `nn`, as `n` already present in input
 ℹ Use `name = "new_name"` to pick a new name.
@@ -204,385 +226,789 @@ Storing counts in `nn`, as `n` already present in input
 3 3    28
 4 4     3
 5 5     1
-# A tibble: 102 × 2
+# A tibble: 61 × 2
    DE_class_cluster     n
    <chr>            <int>
- 1 Astro-1_AA_None  14918
- 2 Astro-1_AA_down      3
- 3 Astro-1_AA_up       15
- 4 Astro-1_EA_None  14933
- 5 Astro-1_EA_down      3
- 6 Astro-2_AA_None   9627
- 7 Astro-2_AA_down      3
- 8 Astro-2_EA_None   9630
- 9 Astro-3_AA_None  10172
-10 Astro-3_AA_up        1
-# ℹ 92 more rows
-# A tibble: 70 × 3
+ 1 Astro-1_None_ALL 14928
+ 2 Astro-1_down_ALL     3
+ 3 Astro-1_up_ALL       5
+ 4 Astro-2_None_ALL  9575
+ 5 Astro-2_down_ALL    46
+ 6 Astro-2_up_ALL       9
+ 7 Astro-3_None_ALL 10699
+ 8 Astro-3_down_ALL    18
+ 9 Astro-3_up_ALL       5
+10 Astro-4_None_ALL  7856
+# ℹ 51 more rows
+# A tibble: 163 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro-1_None_AA  14918
+ 2 Astro-1_None_ALL 14928
+ 3 Astro-1_None_EA  14933
+ 4 Astro-1_down_AA      3
+ 5 Astro-1_down_ALL     3
+ 6 Astro-1_down_EA      3
+ 7 Astro-1_up_AA       15
+ 8 Astro-1_up_ALL       5
+ 9 Astro-2_None_AA   9627
+10 Astro-2_None_ALL  9575
+# ℹ 153 more rows
+`summarise()` has grouped output by 'model_type', 'ENTREZID', 'gene_name'. You
+can override using the `.groups` argument.
+# A tibble: 2,046 × 6
+# Groups:   model_type, ENTREZID, gene_name [1,950]
+   model_type ENTREZID gene_name cluster DE_classes                           n
+   <chr>      <chr>    <chr>     <fct>   <chr>                            <int>
+ 1 Specifc    10160    FARP1     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 2 Specifc    10161    LPAR6     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 3 Specifc    160335   TMTC2     Oligo.3 Oligo-3_down_AA, Oligo-3_down_EA     2
+ 4 Specifc    1607     DGKB      Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 5 Specifc    166614   DCLK2     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 6 Specifc    1809     DPYSL3    Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 7 Specifc    22873    DZIP1     Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 8 Specifc    2353     FOS       Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+ 9 Specifc    26031    OSBPL3    Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+10 Specifc    2670     GFAP      Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA         2
+# ℹ 2,036 more rows
+# A tibble: 60 × 4
+   model_type cluster DE_classes           n
+   <chr>      <fct>   <chr>            <int>
+ 1 All        Astro.1 Astro-1_down_ALL     3
+ 2 All        Astro.1 Astro-1_up_ALL       5
+ 3 All        Astro.2 Astro-2_down_ALL    46
+ 4 All        Astro.2 Astro-2_up_ALL       9
+ 5 All        Astro.3 Astro-3_down_ALL    18
+ 6 All        Astro.3 Astro-3_up_ALL       5
+ 7 All        Macro   Macro_down_ALL       5
+ 8 All        Macro   Macro_up_ALL        10
+ 9 All        Micro.1 Micro-1_up_ALL       1
+10 All        Micro.2 Micro-2_down_ALL     1
+# ℹ 50 more rows
+# A tibble: 8 × 4
+  model_type cluster DE_classes                           n
+  <chr>      <fct>   <chr>                            <int>
+1 All        Oligo.3 Oligo-3_down_ALL                   323
+2 All        Oligo.3 Oligo-3_up_ALL                     670
+3 Specifc    Oligo.3 Oligo-3_down_AA                    151
+4 Specifc    Oligo.3 Oligo-3_down_AA, Oligo-3_down_EA     2
+5 Specifc    Oligo.3 Oligo-3_down_EA                     50
+6 Specifc    Oligo.3 Oligo-3_up_AA                      355
+7 Specifc    Oligo.3 Oligo-3_up_AA, Oligo-3_up_EA        20
+8 Specifc    Oligo.3 Oligo-3_up_EA                      153
+# A tibble: 163 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 Astro-1_None_AA  14918
+ 2 Astro-1_None_ALL 14928
+ 3 Astro-1_None_EA  14933
+ 4 Astro-1_down_AA      3
+ 5 Astro-1_down_ALL     3
+ 6 Astro-1_down_EA      3
+ 7 Astro-1_up_AA       15
+ 8 Astro-1_up_ALL       5
+ 9 Astro-2_None_AA   9627
+10 Astro-2_None_ALL  9575
+# ℹ 153 more rows
+# A tibble: 105 × 3
    cluster contrast       n
    <fct>   <chr>      <int>
- 1 Astro.1 carrier_AA 14936
- 2 Astro.1 carrier_EA 14936
- 3 Astro.2 carrier_AA  9630
- 4 Astro.2 carrier_EA  9630
- 5 Astro.3 carrier_AA 10173
- 6 Astro.3 carrier_EA 10173
- 7 Astro.4 carrier_AA  7856
- 8 Astro.4 carrier_EA  7856
- 9 Astro.5 carrier_AA  1772
-10 Astro.5 carrier_EA  1772
-# ℹ 60 more rows
-# A tibble: 32 × 2
-   DE_class_cluster        n
-   <chr>               <int>
- 1 Astro-1_AA_down         3
- 2 Astro-1_AA_up          15
- 3 Astro-1_EA_down         3
- 4 Astro-2_AA_down         3
- 5 Astro-3_AA_up           1
- 6 Excit-L5-1_EA_up        1
- 7 Excit-L6_CT_AA_down     1
- 8 Excit-L6_CT_AA_up       1
- 9 Macro_AA_up             2
-10 Micro-1_AA_down         3
-# ℹ 22 more rows
+ 1 Astro.1 carrier    14936
+ 2 Astro.1 carrier_AA 14936
+ 3 Astro.1 carrier_EA 14936
+ 4 Astro.2 carrier     9630
+ 5 Astro.2 carrier_AA  9630
+ 6 Astro.2 carrier_EA  9630
+ 7 Astro.3 carrier    10722
+ 8 Astro.3 carrier_AA 10173
+ 9 Astro.3 carrier_EA 10173
+10 Astro.4 carrier     7856
+# ℹ 95 more rows
+# A tibble: 3 × 2
+  contrast        n
+  <chr>       <int>
+1 carrier    368240
+2 carrier_AA 363389
+3 carrier_EA 363389
+# A tibble: 58 × 2
+   DE_class_cluster      n
+   <chr>             <int>
+ 1 Oligo-3_up_ALL      670
+ 2 Oligo-3_up_AA       375
+ 3 Oligo-3_down_ALL    323
+ 4 Oligo-3_up_EA       173
+ 5 Oligo-3_down_AA     153
+ 6 Oligo-3_down_EA      52
+ 7 Astro-2_down_ALL     46
+ 8 Oligo-5_up_ALL       46
+ 9 Vasc-Endo_down_EA    21
+10 Astro-3_down_ALL     18
+# ℹ 48 more rows
+# A tibble: 2,068 × 3
+   gene_name       DE_class_cluster cluster
+   <chr>           <chr>            <fct>  
+ 1 ENSG00000273507 Astro-1_down_AA  Astro.1
+ 2 TCTN1           Astro-1_down_AA  Astro.1
+ 3 PNLDC1          Astro-1_down_AA  Astro.1
+ 4 GOLGA6L10       Astro-1_down_ALL Astro.1
+ 5 GOLGA6L10       Astro-1_down_ALL Astro.1
+ 6 GOLGA6L10       Astro-1_down_ALL Astro.1
+ 7 GOLGA6L10       Astro-1_down_EA  Astro.1
+ 8 GOLGA6L10       Astro-1_down_EA  Astro.1
+ 9 GOLGA6L10       Astro-1_down_EA  Astro.1
+10 PLPPR4          Astro-1_up_AA    Astro.1
+# ℹ 2,058 more rows
 Universe n genes: 19093
-      DE_class_cluster ONTOLOGY   n
-1      Astro-1_AA_down       BP  40
-2      Astro-1_AA_down       CC   2
-3      Astro-1_AA_down       MF  10
-4        Astro-1_AA_up       BP  26
-5        Astro-1_AA_up       CC  37
-6        Astro-1_AA_up       MF  31
-7        Astro-3_AA_up       BP  10
-8        Astro-3_AA_up       CC   7
-9        Astro-3_AA_up       MF   3
-10 Excit-L6_CT_AA_down       BP 105
-11 Excit-L6_CT_AA_down       CC   6
-12 Excit-L6_CT_AA_down       MF  19
-13         Macro_AA_up       BP 181
-14         Macro_AA_up       CC  17
-15         Macro_AA_up       MF   6
-16     Micro-1_AA_down       BP  51
-17     Micro-1_AA_down       CC   7
-18     Micro-1_AA_down       MF   7
-19       Micro-1_AA_up       BP  34
-20       Micro-1_AA_up       CC  39
-21       Micro-1_AA_up       MF  61
-22       Micro-3_EA_up       BP  46
-23       Micro-3_EA_up       CC  19
-24       Micro-3_EA_up       MF  25
-25       Micro-4_AA_up       BP  71
-26       Micro-4_AA_up       CC   7
-27       Micro-4_AA_up       MF   5
-28     Micro-4_EA_down       BP  75
-29     Micro-4_EA_down       CC  20
-30     Micro-4_EA_down       MF   3
-31       Micro-4_EA_up       BP  26
-32       Micro-4_EA_up       CC   2
-33       Micro-4_EA_up       MF   7
-34         OPC-3_EA_up       BP   4
-35         OPC-3_EA_up       MF   3
-36       OPC-4_AA_down       BP  38
-37       OPC-4_AA_down       CC   2
-38       OPC-4_AA_down       MF   3
-39       Oligo-1_AA_up       CC  19
-40       Oligo-1_AA_up       MF  10
-41       Oligo-2_EA_up       BP  17
-42       Oligo-3_AA_up       BP 135
-43       Oligo-3_AA_up       CC  56
-44       Oligo-3_AA_up       MF  14
-45       Oligo-3_EA_up       BP 164
-46       Oligo-3_EA_up       CC  15
-47       Oligo-3_EA_up       MF   4
-48       Oligo-5_EA_up       BP 153
-49       Oligo-5_EA_up       CC  13
-50       Oligo-5_EA_up       MF  32
-51   Vasc-Endo_AA_down       BP  57
-52   Vasc-Endo_AA_down       CC   5
-53   Vasc-Endo_AA_down       MF  14
-54     Vasc-Endo_EA_up       CC  11
-55   Vasc-VLMC_AA_down       BP  13
-56   Vasc-VLMC_AA_down       CC   5
-57   Vasc-VLMC_AA_down       MF  12
-58     Vasc-VLMC_EA_up       BP  27
-59     Vasc-VLMC_EA_up       CC   1
-60     Vasc-VLMC_EA_up       MF   6
+                          DE_classes ONTOLOGY   n
+1                    Astro-1_down_AA       BP  40
+2                    Astro-1_down_AA       CC   2
+3                    Astro-1_down_AA       MF  10
+4                      Astro-1_up_AA       BP  26
+5                      Astro-1_up_AA       CC  37
+6                      Astro-1_up_AA       MF  31
+7                     Astro-1_up_ALL       BP   8
+8                     Astro-1_up_ALL       CC   5
+9                     Astro-1_up_ALL       MF   6
+10                    Astro-2_up_ALL       MF  16
+11                  Astro-3_down_ALL       BP   7
+12                  Astro-3_down_ALL       CC   2
+13                  Astro-3_down_ALL       MF  23
+14                     Astro-3_up_AA       BP  10
+15                     Astro-3_up_AA       CC   7
+16                     Astro-3_up_AA       MF   3
+17                    Astro-3_up_ALL       BP  54
+18                    Astro-3_up_ALL       CC   8
+19                    Astro-3_up_ALL       MF  15
+20             Excit-L2_5-1_down_ALL       CC   2
+21             Excit-L2_5-1_down_ALL       MF  22
+22               Excit-L2_5-2_up_ALL       BP  13
+23               Excit-L2_5-2_up_ALL       CC   8
+24               Excit-L5-2_down_ALL       BP  66
+25               Excit-L5-2_down_ALL       CC  12
+26               Excit-L5-2_down_ALL       MF  25
+27                 Excit-L5-2_up_ALL       BP  21
+28                 Excit-L5-2_up_ALL       CC  25
+29                 Excit-L5-2_up_ALL       MF  10
+30               Excit-L6_CT_down_AA       BP 105
+31               Excit-L6_CT_down_AA       CC   6
+32               Excit-L6_CT_down_AA       MF  19
+33                Inhib-Sst_down_ALL       BP   1
+34                Inhib-Sst_down_ALL       CC   5
+35                Inhib-Sst_down_ALL       MF   1
+36                Inhib-Vip_down_ALL       BP   2
+37                Inhib-Vip_down_ALL       CC   1
+38                    Macro_down_ALL       BP 335
+39                    Macro_down_ALL       CC  14
+40                    Macro_down_ALL       MF  18
+41                       Macro_up_AA       BP 181
+42                       Macro_up_AA       CC  17
+43                       Macro_up_AA       MF   6
+44                      Macro_up_ALL       MF  10
+45                   Micro-1_down_AA       BP  51
+46                   Micro-1_down_AA       CC   7
+47                   Micro-1_down_AA       MF   7
+48                     Micro-1_up_AA       BP  34
+49                     Micro-1_up_AA       CC  39
+50                     Micro-1_up_AA       MF  61
+51                    Micro-1_up_ALL       BP   5
+52                    Micro-1_up_ALL       CC   3
+53                    Micro-1_up_ALL       MF  18
+54                  Micro-2_down_ALL       BP  20
+55                    Micro-3_up_ALL       BP  26
+56                    Micro-3_up_ALL       CC   1
+57                    Micro-3_up_ALL       MF   6
+58                     Micro-3_up_EA       BP  46
+59                     Micro-3_up_EA       CC  19
+60                     Micro-3_up_EA       MF  25
+61                   Micro-4_down_EA       BP  75
+62                   Micro-4_down_EA       CC  20
+63                   Micro-4_down_EA       MF   3
+64                     Micro-4_up_AA       BP  71
+65                     Micro-4_up_AA       CC   7
+66                     Micro-4_up_AA       MF   5
+67                    Micro-4_up_ALL       BP   2
+68                    Micro-4_up_ALL       CC  10
+69                     Micro-4_up_EA       BP  26
+70                     Micro-4_up_EA       CC   2
+71                     Micro-4_up_EA       MF   7
+72                       OPC-3_up_EA       BP   4
+73                       OPC-3_up_EA       MF   3
+74                     OPC-4_down_AA       BP  38
+75                     OPC-4_down_AA       CC   2
+76                     OPC-4_down_AA       MF   3
+77                     Oligo-1_up_AA       CC  19
+78                     Oligo-1_up_AA       MF  10
+79                     Oligo-2_up_EA       BP  17
+80  Oligo-3_down_AA, Oligo-3_down_EA       BP  10
+81  Oligo-3_down_AA, Oligo-3_down_EA       CC   1
+82  Oligo-3_down_AA, Oligo-3_down_EA       MF  10
+83                  Oligo-3_down_ALL       BP   5
+84                  Oligo-3_down_ALL       CC   8
+85                  Oligo-3_down_ALL       MF   2
+86                     Oligo-3_up_AA       BP 141
+87                     Oligo-3_up_AA       CC  55
+88                     Oligo-3_up_AA       MF  15
+89      Oligo-3_up_AA, Oligo-3_up_EA       BP  71
+90      Oligo-3_up_AA, Oligo-3_up_EA       CC   2
+91      Oligo-3_up_AA, Oligo-3_up_EA       MF   3
+92                    Oligo-3_up_ALL       BP 298
+93                    Oligo-3_up_ALL       CC  90
+94                    Oligo-3_up_ALL       MF  62
+95                     Oligo-3_up_EA       BP  59
+96                     Oligo-3_up_EA       CC  10
+97                     Oligo-3_up_EA       MF   2
+98                  Oligo-5_down_ALL       CC   3
+99                  Oligo-5_down_ALL       MF  16
+100                   Oligo-5_up_ALL       BP 104
+101                   Oligo-5_up_ALL       CC   3
+102                    Oligo-5_up_EA       BP 153
+103                    Oligo-5_up_EA       CC  13
+104                    Oligo-5_up_EA       MF  32
+105                Vasc-Endo_down_AA       BP  57
+106                Vasc-Endo_down_AA       CC   5
+107                Vasc-Endo_down_AA       MF  14
+108               Vasc-Endo_down_ALL       BP  57
+109               Vasc-Endo_down_ALL       CC   5
+110               Vasc-Endo_down_ALL       MF  14
+111                 Vasc-Endo_up_ALL       BP  29
+112                 Vasc-Endo_up_ALL       CC   8
+113                 Vasc-Endo_up_ALL       MF   6
+114                  Vasc-Endo_up_EA       CC  11
+115                Vasc-VLMC_down_AA       BP  13
+116                Vasc-VLMC_down_AA       CC   5
+117                Vasc-VLMC_down_AA       MF  12
+118               Vasc-VLMC_down_ALL       BP  10
+119               Vasc-VLMC_down_ALL       MF  16
+120                 Vasc-VLMC_up_ALL       BP 308
+121                 Vasc-VLMC_up_ALL       CC   2
+122                 Vasc-VLMC_up_ALL       MF  10
+123                  Vasc-VLMC_up_EA       BP  27
+124                  Vasc-VLMC_up_EA       CC   1
+125                  Vasc-VLMC_up_EA       MF   6
 null device 
           1 
-2025-08-05 18:10:55.377887 - CC
---Astro-1_AA_up (37)--
+                     DE_classes   n
+1               Astro-1_down_AA   1
+2                 Astro-1_up_AA  71
+3                Astro-1_up_ALL   2
+4                Astro-2_up_ALL   1
+5              Astro-3_down_ALL  14
+6                Astro-3_up_ALL  13
+7         Excit-L2_5-1_down_ALL   4
+8           Excit-L5-2_down_ALL  71
+9            Inhib-Vip_down_ALL   3
+10               Macro_down_ALL  48
+11                  Macro_up_AA   3
+12                 Macro_up_ALL   1
+13              Micro-1_down_AA   1
+14                Micro-1_up_AA 101
+15                Micro-3_up_EA   2
+16               Micro-4_up_ALL  11
+17                Oligo-1_up_AA  11
+18             Oligo-3_down_ALL  15
+19                Oligo-3_up_AA 211
+20 Oligo-3_up_AA, Oligo-3_up_EA  76
+21               Oligo-3_up_ALL 450
+22                Oligo-3_up_EA  71
+23             Oligo-5_down_ALL   2
+24               Oligo-5_up_ALL 107
+25              Vasc-Endo_up_EA  11
+26            Vasc-VLMC_down_AA   2
+null device 
+          1 
+                     DE_classes   n
+1                 Astro-1_up_AA  11
+2              Astro-3_down_ALL   3
+3           Excit-L5-2_down_ALL  56
+4                 Micro-1_up_AA  17
+5                Micro-4_up_ALL   1
+6              Oligo-3_down_ALL  12
+7                 Oligo-3_up_AA 178
+8  Oligo-3_up_AA, Oligo-3_up_EA   3
+9                Oligo-3_up_ALL 403
+10                Oligo-3_up_EA  56
+11               Oligo-5_up_ALL  46
+null device 
+          1 
+null device 
+          1 
+                            Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
+1                   Astro-1_down_AA         FALSE          TRUE      FALSE   1
+2                   Astro-1_down_AA         FALSE          TRUE       TRUE  39
+3                   Astro-1_down_AA          TRUE            NA       TRUE  12
+4                     Astro-1_up_AA         FALSE          TRUE      FALSE  71
+5                     Astro-1_up_AA         FALSE          TRUE       TRUE  23
+6                    Astro-1_up_ALL         FALSE          TRUE      FALSE   2
+7                    Astro-1_up_ALL         FALSE          TRUE       TRUE  17
+8                    Astro-2_up_ALL         FALSE          TRUE      FALSE   1
+9                    Astro-2_up_ALL         FALSE          TRUE       TRUE  15
+10                 Astro-3_down_ALL         FALSE          TRUE      FALSE  14
+11                 Astro-3_down_ALL         FALSE          TRUE       TRUE  18
+12                    Astro-3_up_AA          TRUE            NA       TRUE  20
+13                   Astro-3_up_ALL         FALSE          TRUE      FALSE  13
+14                   Astro-3_up_ALL         FALSE          TRUE       TRUE  64
+15            Excit-L2_5-1_down_ALL         FALSE          TRUE      FALSE   4
+16            Excit-L2_5-1_down_ALL         FALSE          TRUE       TRUE  20
+17              Excit-L2_5-2_up_ALL          TRUE            NA       TRUE  21
+18              Excit-L5-2_down_ALL         FALSE          TRUE      FALSE  71
+19              Excit-L5-2_down_ALL         FALSE          TRUE       TRUE  32
+20                Excit-L5-2_up_ALL         FALSE          TRUE       TRUE  46
+21                Excit-L5-2_up_ALL          TRUE            NA       TRUE  10
+22              Excit-L6_CT_down_AA          TRUE            NA       TRUE 130
+23               Inhib-Sst_down_ALL         FALSE          TRUE       TRUE   5
+24               Inhib-Sst_down_ALL          TRUE            NA       TRUE   2
+25               Inhib-Vip_down_ALL         FALSE          TRUE      FALSE   3
+26                   Macro_down_ALL         FALSE          TRUE      FALSE  48
+27                   Macro_down_ALL         FALSE          TRUE       TRUE 319
+28                      Macro_up_AA         FALSE          TRUE      FALSE   3
+29                      Macro_up_AA         FALSE          TRUE       TRUE 201
+30                     Macro_up_ALL         FALSE          TRUE      FALSE   1
+31                     Macro_up_ALL         FALSE          TRUE       TRUE   9
+32                  Micro-1_down_AA         FALSE          TRUE      FALSE   1
+33                  Micro-1_down_AA         FALSE          TRUE       TRUE  64
+34                    Micro-1_up_AA         FALSE          TRUE      FALSE 101
+35                    Micro-1_up_AA         FALSE          TRUE       TRUE  33
+36                   Micro-1_up_ALL          TRUE            NA       TRUE  26
+37                 Micro-2_down_ALL          TRUE            NA       TRUE  20
+38                   Micro-3_up_ALL          TRUE            NA       TRUE  33
+39                    Micro-3_up_EA         FALSE          TRUE      FALSE   2
+40                    Micro-3_up_EA         FALSE          TRUE       TRUE  88
+41                  Micro-4_down_EA          TRUE            NA       TRUE  98
+42                    Micro-4_up_AA          TRUE            NA       TRUE  83
+43                   Micro-4_up_ALL         FALSE          TRUE      FALSE  11
+44                   Micro-4_up_ALL         FALSE          TRUE       TRUE   1
+45                    Micro-4_up_EA          TRUE            NA       TRUE  35
+46                    Oligo-1_up_AA         FALSE          TRUE      FALSE  11
+47                    Oligo-1_up_AA         FALSE          TRUE       TRUE  18
+48                    Oligo-2_up_EA          TRUE            NA       TRUE  17
+49 Oligo-3_down_AA, Oligo-3_down_EA         FALSE          TRUE       TRUE  10
+50 Oligo-3_down_AA, Oligo-3_down_EA          TRUE            NA       TRUE  11
+51                 Oligo-3_down_ALL         FALSE          TRUE      FALSE  15
+52                    Oligo-3_up_AA         FALSE          TRUE      FALSE 211
+53     Oligo-3_up_AA, Oligo-3_up_EA         FALSE          TRUE      FALSE  76
+54                   Oligo-3_up_ALL         FALSE          TRUE      FALSE 450
+55                    Oligo-3_up_EA         FALSE          TRUE      FALSE  71
+56                 Oligo-5_down_ALL         FALSE          TRUE      FALSE   2
+57                 Oligo-5_down_ALL         FALSE          TRUE       TRUE  17
+58                   Oligo-5_up_ALL         FALSE          TRUE      FALSE 107
+59                    Oligo-5_up_EA          TRUE            NA       TRUE 198
+60                      OPC-3_up_EA          TRUE            NA       TRUE   7
+61                    OPC-4_down_AA         FALSE          TRUE       TRUE  41
+62                    OPC-4_down_AA          TRUE            NA       TRUE   2
+63                Vasc-Endo_down_AA          TRUE            NA       TRUE  76
+64               Vasc-Endo_down_ALL          TRUE            NA       TRUE  76
+65                 Vasc-Endo_up_ALL          TRUE            NA       TRUE  43
+66                  Vasc-Endo_up_EA         FALSE          TRUE      FALSE  11
+67                Vasc-VLMC_down_AA         FALSE          TRUE      FALSE   1
+68                Vasc-VLMC_down_AA         FALSE          TRUE       TRUE  17
+69                Vasc-VLMC_down_AA          TRUE            NA      FALSE   1
+70                Vasc-VLMC_down_AA          TRUE            NA       TRUE  11
+71               Vasc-VLMC_down_ALL         FALSE          TRUE       TRUE  16
+72               Vasc-VLMC_down_ALL          TRUE            NA       TRUE  10
+73                 Vasc-VLMC_up_ALL          TRUE            NA       TRUE 320
+74                  Vasc-VLMC_up_EA          TRUE            NA       TRUE  34
+2025-12-01 11:24:16.511821 - CC
+--Astro-1_up_AA (37)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (17)--
+--Astro-1_up_ALL (5)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_down (7)--
+--Astro-3_down_ALL (2)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_up (39)--
+--Astro-3_up_ALL (8)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-3_EA_up (19)--
+--Excit-L2_5-1_down_ALL (2)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-1_AA_up (19)--
+--Excit-L5-2_down_ALL (12)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-3_AA_up (56)--
+--Excit-L5-2_up_ALL (25)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-3_EA_up (15)--
+--Inhib-Sst_down_ALL (5)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Vasc-Endo_EA_up (11)--
+--Inhib-Vip_down_ALL (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+--Macro_down_ALL (14)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Vasc-VLMC_AA_down (5)--
+--Macro_up_AA (17)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-08-05 18:12:03.09781 - BP
---Astro-1_AA_down (40)--
+--Micro-1_down_AA (7)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Astro-1_AA_up (26)--
+--Micro-1_up_AA (39)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (181)--
+--Micro-3_up_EA (19)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_down (51)--
+--Micro-4_up_ALL (10)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_up (34)--
+--Oligo-1_up_AA (19)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-3_EA_up (46)--
+--Oligo-3_down_ALL (8)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-3_AA_up (135)--
+--Oligo-3_up_AA (55)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-3_EA_up (164)--
+--Oligo-3_up_AA, Oligo-3_up_EA (2)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---OPC-4_AA_down (38)--
+--Oligo-3_up_ALL (90)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Vasc-VLMC_AA_down (13)--
+--Oligo-3_up_EA (10)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-08-05 18:20:38.6396 - MF
---Astro-1_AA_up (31)--
+--Oligo-5_down_ALL (3)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Macro_AA_up (6)--
+--Oligo-5_up_ALL (3)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_down (7)--
+--Vasc-Endo_up_EA (11)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-1_AA_up (61)--
+--Vasc-VLMC_down_AA (5)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Micro-3_EA_up (25)--
+2025-12-01 11:34:09.988632 - BP
+--Astro-1_down_AA (40)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-1_AA_up (10)--
+--Astro-1_up_AA (26)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-3_AA_up (14)--
+--Astro-1_up_ALL (8)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Oligo-3_EA_up (4)--
+--Astro-3_down_ALL (7)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---OPC-4_AA_down (3)--
+--Astro-3_up_ALL (54)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_ALL (66)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_up_ALL (21)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Inhib-Vip_down_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (335)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_AA (181)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-1_down_AA (51)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-1_up_AA (34)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-3_up_EA (46)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-4_up_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_AA, Oligo-3_down_EA (10)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_ALL (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_AA (141)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_AA, Oligo-3_up_EA (71)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_ALL (298)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_EA (59)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_up_ALL (104)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--OPC-4_down_AA (38)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-VLMC_down_AA (13)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+2025-12-01 12:47:39.891734 - MF
+--Astro-1_up_AA (31)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-1_up_ALL (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-2_up_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_down_ALL (23)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Astro-3_up_ALL (15)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L2_5-1_down_ALL (22)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Excit-L5-2_down_ALL (25)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_down_ALL (18)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_AA (6)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Macro_up_ALL (10)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-1_down_AA (7)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-1_up_AA (61)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Micro-3_up_EA (25)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-1_up_AA (10)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_down_ALL (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_AA (15)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_AA, Oligo-3_up_EA (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_ALL (62)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-3_up_EA (2)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Oligo-5_down_ALL (16)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--OPC-4_down_AA (3)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--Vasc-VLMC_down_ALL (16)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
 Warning messages:
 1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for MF
+  Removed 1 terms that were not found in orgdb for BP
 2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
   Removed 1 terms that were not found in orgdb for MF
+3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 2 terms that were not found in orgdb for MF
+4: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+5: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+6: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 3 terms that were not found in orgdb for MF
+7: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms that were not found in orgdb for MF
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
 null device 
           1 
-[1] "Reproducibility information:"
-[1] "2025-08-05 18:21:56 EDT"
-   user  system elapsed 
-947.570  12.707 964.592 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.5.0 Patched (2025-05-21 r88220)
- os       Rocky Linux 9.4 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2025-08-05
- pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
- quarto   NA
+$CC
+                            parentTerm  n
+1                    synaptic membrane 59
+2               cation channel complex 31
+3            exocytic vesicle membrane 19
+4 postsynaptic specialization membrane 15
+5                         neuron spine 12
+6       monoatomic ion channel complex 10
 
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package          * version  date (UTC) lib source
- AnnotationDbi    * 1.70.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- ape                5.8-1    2024-12-16 [1] CRAN (R 4.5.0)
- aplot              0.2.8    2025-07-02 [1] CRAN (R 4.5.0)
- askpass            1.2.1    2024-10-04 [2] CRAN (R 4.5.0)
- Biobase          * 2.68.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocGenerics     * 0.54.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocParallel       1.42.1   2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
- Biostrings         2.76.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- bit                4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
- bit64              4.6.0-1  2025-01-16 [2] CRAN (R 4.5.0)
- blob               1.2.4    2023-03-17 [2] CRAN (R 4.5.0)
- cachem             1.1.0    2024-05-16 [2] CRAN (R 4.5.0)
- cli                3.6.5    2025-04-23 [2] CRAN (R 4.5.0)
- clusterProfiler  * 4.16.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- codetools          0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
- colorspace         2.1-1    2024-07-26 [2] CRAN (R 4.5.0)
- cowplot            1.2.0    2025-07-07 [1] CRAN (R 4.5.0)
- crayon             1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
- data.table         1.17.8   2025-07-10 [1] CRAN (R 4.5.0)
- DBI                1.2.3    2024-06-02 [2] CRAN (R 4.5.0)
- dichromat          2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
- digest             0.6.37   2024-08-19 [2] CRAN (R 4.5.0)
- DOSE               4.2.0    2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- dplyr            * 1.1.4    2023-11-17 [2] CRAN (R 4.5.0)
- enrichplot         1.28.4   2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
- farver             2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
- fastmap            1.2.0    2024-05-15 [2] CRAN (R 4.5.0)
- fastmatch          1.1-6    2024-12-23 [2] CRAN (R 4.5.0)
- fgsea              1.34.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- forcats          * 1.0.0    2023-01-29 [2] CRAN (R 4.5.0)
- fs                 1.6.6    2025-04-12 [2] CRAN (R 4.5.0)
- generics         * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
- GenomeInfoDb       1.44.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- GenomeInfoDbData   1.2.14   2025-05-21 [2] Bioconductor
- getopt           * 1.20.4   2023-10-01 [1] CRAN (R 4.5.0)
- ggfun              0.1.8    2024-12-03 [2] CRAN (R 4.5.0)
- ggplot2          * 3.5.2    2025-04-09 [2] CRAN (R 4.5.0)
- ggplotify          0.1.2    2023-08-09 [1] CRAN (R 4.5.0)
- ggrepel            0.9.6    2024-09-07 [2] CRAN (R 4.5.0)
- ggtangle           0.0.7    2025-06-30 [1] CRAN (R 4.5.0)
- ggtree             3.16.3   2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
- glue               1.8.0    2024-09-30 [2] CRAN (R 4.5.0)
- GO.db              3.21.0   2025-05-21 [2] Bioconductor
- GOSemSim           2.34.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- gridBase           0.4-7    2014-02-24 [1] CRAN (R 4.5.0)
- gridGraphics       0.5-1    2020-12-13 [1] CRAN (R 4.5.0)
- gson               0.1.0    2023-03-07 [1] CRAN (R 4.5.0)
- gtable             0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
- here             * 1.0.1    2020-12-13 [2] CRAN (R 4.5.0)
- hms                1.1.3    2023-03-21 [2] CRAN (R 4.5.0)
- htmltools          0.5.8.1  2024-04-04 [2] CRAN (R 4.5.0)
- httpuv             1.6.16   2025-04-16 [2] CRAN (R 4.5.0)
- httr               1.4.7    2023-08-15 [2] CRAN (R 4.5.0)
- igraph             2.1.4    2025-01-23 [2] CRAN (R 4.5.0)
- IRanges          * 2.42.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- jsonlite           2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
- KEGGREST           1.48.1   2025-06-22 [1] Bioconductor 3.21 (R 4.5.0)
- labeling           0.4.3    2023-08-29 [2] CRAN (R 4.5.0)
- later              1.4.2    2025-04-08 [2] CRAN (R 4.5.0)
- lattice            0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
- lazyeval           0.2.2    2019-03-15 [2] CRAN (R 4.5.0)
- lifecycle          1.0.4    2023-11-07 [2] CRAN (R 4.5.0)
- lubridate        * 1.9.4    2024-12-08 [2] CRAN (R 4.5.0)
- magrittr           2.0.3    2022-03-30 [2] CRAN (R 4.5.0)
- Matrix             1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
- memoise            2.0.1    2021-11-26 [2] CRAN (R 4.5.0)
- mime               0.13     2025-03-17 [2] CRAN (R 4.5.0)
- nlme               3.1-168  2025-03-31 [3] CRAN (R 4.5.0)
- NLP                0.3-2    2024-11-20 [1] CRAN (R 4.5.0)
- openssl            2.3.3    2025-05-26 [1] CRAN (R 4.5.0)
- org.Hs.eg.db     * 3.21.0   2025-05-21 [2] Bioconductor
- patchwork          1.3.0    2024-09-16 [2] CRAN (R 4.5.0)
- pheatmap           1.0.13   2025-06-05 [1] CRAN (R 4.5.0)
- pillar             1.11.0   2025-07-04 [1] CRAN (R 4.5.0)
- pkgconfig          2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
- plyr               1.8.9    2023-10-02 [2] CRAN (R 4.5.0)
- png                0.1-8    2022-11-29 [2] CRAN (R 4.5.0)
- promises           1.3.3    2025-05-29 [1] CRAN (R 4.5.0)
- purrr            * 1.0.4    2025-02-05 [2] CRAN (R 4.5.0)
- qvalue             2.40.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- R.methodsS3        1.8.2    2022-06-13 [2] CRAN (R 4.5.0)
- R.oo               1.27.1   2025-05-02 [2] CRAN (R 4.5.0)
- R.utils            2.13.0   2025-02-24 [2] CRAN (R 4.5.0)
- R6                 2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
- RColorBrewer       1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp               1.1.0    2025-07-02 [1] CRAN (R 4.5.0)
- readr            * 2.1.5    2024-01-10 [2] CRAN (R 4.5.0)
- reshape2           1.4.4    2020-04-09 [2] CRAN (R 4.5.0)
- reticulate         1.42.0   2025-03-25 [2] CRAN (R 4.5.0)
- rlang              1.1.6    2025-04-11 [2] CRAN (R 4.5.0)
- rprojroot          2.0.4    2023-11-05 [2] CRAN (R 4.5.0)
- rrvgo            * 1.20.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- RSpectra           0.16-2   2024-07-18 [2] CRAN (R 4.5.0)
- RSQLite            2.4.2    2025-07-18 [1] CRAN (R 4.5.0)
- S4Vectors        * 0.46.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scales             1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
- sessioninfo      * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
- shiny              1.11.1   2025-07-03 [1] CRAN (R 4.5.0)
- slam               0.1-55   2024-11-13 [2] CRAN (R 4.5.0)
- stringi            1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
- stringr          * 1.5.1    2023-11-14 [2] CRAN (R 4.5.0)
- tibble           * 3.3.0    2025-06-08 [1] CRAN (R 4.5.0)
- tidyr            * 1.3.1    2024-01-24 [2] CRAN (R 4.5.0)
- tidyselect         1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
- tidytree           0.4.6    2023-12-12 [1] CRAN (R 4.5.0)
- tidyverse        * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
- timechange         0.3.0    2024-01-18 [2] CRAN (R 4.5.0)
- tm                 0.7-16   2025-02-19 [1] CRAN (R 4.5.0)
- treeio             1.32.0   2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- treemap            2.4-4    2023-05-25 [1] CRAN (R 4.5.0)
- tzdb               0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
- UCSC.utils         1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- umap               0.2.10.0 2023-02-01 [1] CRAN (R 4.5.0)
- utf8               1.2.6    2025-06-08 [1] CRAN (R 4.5.0)
- vctrs              0.6.5    2023-12-01 [2] CRAN (R 4.5.0)
- withr              3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
- wordcloud          2.6      2018-08-24 [1] CRAN (R 4.5.0)
- xml2               1.3.8    2025-03-14 [2] CRAN (R 4.5.0)
- xtable             1.8-4    2019-04-21 [2] CRAN (R 4.5.0)
- XVector            0.48.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- yulab.utils        0.2.0    2025-01-29 [2] CRAN (R 4.5.0)
+$BP
+                                          parentTerm  n
+1                       regulation of system process 41
+2             regulation of trans-synaptic signaling 32
+3                           response to amyloid-beta 32
+4                                   axon development 31
+5 substrate-dependent cell migration, cell extension 29
+6         parasympathetic nervous system development 24
 
- [1] /users/lhuuki/R/4.5
- [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
- * ── Packages attached to the search path.
+$MF
+                                                                                             parentTerm
+1                                                                                gated channel activity
+2                                                          metal ion transmembrane transporter activity
+3                                                                        voltage-gated channel activity
+4                                                              amine transmembrane transporter activity
+5                                                                           glutamate receptor activity
+6 ligand-gated monoatomic ion channel activity involved in regulation of presynaptic membrane potential
+   n
+1 27
+2 26
+3 23
+4 13
+5 13
+6 11
 
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Tue Aug  5 06:21:57 PM EDT 2025
+$CC
+                      term n
+1        synaptic membrane 8
+2       neuronal cell body 7
+3    postsynaptic membrane 7
+4       asymmetric synapse 6
+5 neuron to neuron synapse 6
+6     postsynaptic density 6
+
+$BP
+                                          term n
+1 modulation of chemical synaptic transmission 5
+2       regulation of trans-synaptic signaling 5
+3          response to decreased oxygen levels 5
+4                          response to hypoxia 5
+5                      calcium ion homeostasis 4
+6    central nervous system neuron development 4
+
+$MF
+                                          term n
+1                             channel activity 4
+2 metal ion transmembrane transporter activity 4
+3           monoatomic cation channel activity 4
+4              monoatomic ion channel activity 4
+5   passive transmembrane transporter activity 4
+6                           syntaxin-1 binding 4
+
+         Cluster     DE_classes         ID
+1 Oligo-3_up_ALL Oligo-3_up_ALL GO:0043025
+2 Oligo-3_up_ALL Oligo-3_up_ALL GO:0050804
+3 Oligo-3_up_ALL Oligo-3_up_ALL GO:0099177
+4 Oligo-3_up_ALL Oligo-3_up_ALL GO:0097060
+5  Oligo-3_up_AA  Oligo-3_up_AA GO:0050804
+6  Oligo-3_up_AA  Oligo-3_up_AA GO:0099177
+                                   Description GeneRatio   BgRatio RichFactor
+1                           neuronal cell body    52/618 472/15105 0.11016949
+2 modulation of chemical synaptic transmission    52/596 474/14318 0.10970464
+3       regulation of trans-synaptic signaling    52/596 475/14318 0.10947368
+4                            synaptic membrane    48/618 434/15105 0.11059908
+5 modulation of chemical synaptic transmission    47/307 474/14318 0.09915612
+6       regulation of trans-synaptic signaling    47/307 475/14318 0.09894737
+  FoldEnrichment    zScore       pvalue     p.adjust       qvalue
+1       2.692735  7.716925 6.927650e-11 3.630089e-08 2.763768e-08
+2       2.635488  7.546512 1.439883e-10 3.998257e-07 3.323900e-07
+3       2.629940  7.529112 1.555137e-10 3.998257e-07 3.323900e-07
+4       2.703235  7.436019 3.393463e-10 6.301592e-08 4.797717e-08
+5       4.624486 11.878606 8.547225e-19 1.659440e-15 1.518384e-15
+6       4.614751 11.859617 9.312231e-19 1.659440e-15 1.518384e-15
+                                                                                                                                                                                                                                                                                                                                  geneID
+1 OLFM1/BAIAP2/ADCY8/LRRK2/CRMP1/EPHA4/INPP5F/FLNA/VPS13A/GRIP1/GAD2/GPM6A/GRM5/HCN1/ITGA4/KCND3/KCNN2/MAP2/ASTN1/ATP1A2/ATP2B2/PDE1B/PRKAA2/PLXDC1/SLC4A10/SLC12A5/CPNE5/BRINP2/PTPRN/CX3CL1/SLC1A1/RTN4R/SLC2A3/BMPR2/SNAP25/SYT4/TNFRSF1B/UCHL1/VGF/CACNA1B/CACNA1C/CACNA1E/LRP8/FZD3/RIN3/KCNIP4/GRIP2/CAPN2/ENC1/UNC5A/NRXN1/HOMER1
+2       BAIAP2/NRG3/CHRM1/ADCY8/LRRK2/CNR1/CBLN2/DNM1/EPHA4/SORCS3/VPS13A/PLCB1/SYNE1/RNF19A/GFAP/GRIK1/GRM5/GRM7/NXPH1/KCNQ3/MEF2C/ATP1A2/SLC4A10/JPH3/ADGRB1/NLGN4X/SYT13/RGS4/BCR/CX3CL1/SLC1A1/SNAP25/STX1A/STXBP1/SYT4/TRIO/VGF/YWHAH/CACNA1B/LRP8/CACNB4/MCTP1/CAMK2A/CAMK2B/CAMK2G/PPFIA3/SYT12/LGI1/CACNA2D2/NRXN1/HOMER1/CLSTN3
+3       BAIAP2/NRG3/CHRM1/ADCY8/LRRK2/CNR1/CBLN2/DNM1/EPHA4/SORCS3/VPS13A/PLCB1/SYNE1/RNF19A/GFAP/GRIK1/GRM5/GRM7/NXPH1/KCNQ3/MEF2C/ATP1A2/SLC4A10/JPH3/ADGRB1/NLGN4X/SYT13/RGS4/BCR/CX3CL1/SLC1A1/SNAP25/STX1A/STXBP1/SYT4/TRIO/VGF/YWHAH/CACNA1B/LRP8/CACNB4/MCTP1/CAMK2A/CAMK2B/CAMK2G/PPFIA3/SYT12/LGI1/CACNA2D2/NRXN1/HOMER1/CLSTN3
+4                               FARP1/BAIAP2/GNB5/CHRM1/ADCY8/CNR1/LRFN5/GSG1L/DGKB/DNM1/EPHA4/SORCS3/SYNE1/GRIP1/GABRB3/GAD2/ERC2/GPM6A/GRIK1/GRM5/GRM7/HCN1/KCND3/KCNJ3/NRCAM/ATP2B2/PALM/CACNA2D3/TENM2/SLC12A5/NLGN4X/KCTD16/CADM3/SCN2A/SLC1A2/SLC6A7/SNAP25/SNTA1/STXBP1/UTRN/CACNA1C/LRP8/FZD3/GRIP2/ADAM23/CACNA2D2/NRXN1/CLSTN3
+5                                       BAIAP2/NRG3/CPLX2/CPLX1/CNR1/CBLN2/DBN1/DNM1/EFNB3/SORCS3/IQSEC2/NCDN/VPS13A/PLCB1/MAPK8IP2/FRRS1L/KAT2A/GRIN1/GRM5/NXPH1/SEPTIN5/JPH3/ADGRB1/SYT13/CX3CL1/SLC8A2/SNAP25/STX1A/STXBP1/SYP/SYT4/SYT5/VGF/YWHAG/CACNA1B/LRP8/CAMKV/MCTP1/CAMK2A/CAMK2B/NETO1/JPH4/BAIAP3/LGI1/TSPOAP1/CLSTN3/RIMS3
+6                                       BAIAP2/NRG3/CPLX2/CPLX1/CNR1/CBLN2/DBN1/DNM1/EFNB3/SORCS3/IQSEC2/NCDN/VPS13A/PLCB1/MAPK8IP2/FRRS1L/KAT2A/GRIN1/GRM5/NXPH1/SEPTIN5/JPH3/ADGRB1/SYT13/CX3CL1/SLC8A2/SNAP25/STX1A/STXBP1/SYP/SYT4/SYT5/VGF/YWHAG/CACNA1B/LRP8/CAMKV/MCTP1/CAMK2A/CAMK2B/NETO1/JPH4/BAIAP3/LGI1/TSPOAP1/CLSTN3/RIMS3
+  Count ONTOLOGY
+1    52       CC
+2    52       BP
+3    52       BP
+4    48       CC
+5    47       BP
+6    47       BP
+Error in (function (cond)  : 
+  error in evaluating the argument 'x' in selecting a method for function 'unique': ℹ In argument: `Description %in% go_terms`.
+Caused by error in `h()`:
+! error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_test' not found
+Calls: get_go_genes ... abort -> signal_abort -> signalCondition -> <Anonymous>
+Execution halted

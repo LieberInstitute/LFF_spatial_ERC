@@ -1,0 +1,556 @@
+**** Job starts ****
+Thu Aug 14 04:34:10 PM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 21334598
+Job name: 04_liana_mofa_run
+Node name: compute-168
+Task id: 2
+Loading LIBD SLURM module for liana_plus/1.5.1
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) liana_plus/1.5.1
+
+ 
+
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/17_cell_cell_comm/04_liana_mofa_run.py:43: ImplicitModificationWarning: Trying to modify index of attribute `.var` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  0%|          | 0/30 [00:00<?, ?it/s]Now running: Br1039:   0%|          | 0/30 [00:00<?, ?it/s]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+Now running: Br1039:   3%|▎         | 1/30 [01:36<46:38, 96.51s/it]Now running: Br1556:   3%|▎         | 1/30 [01:36<46:38, 96.51s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br1556:   7%|▋         | 2/30 [02:56<40:36, 87.03s/it]Now running: Br1691:   7%|▋         | 2/30 [02:56<40:36, 87.03s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br1691:  10%|█         | 3/30 [04:07<35:49, 79.60s/it]Now running: Br1706:  10%|█         | 3/30 [04:07<35:49, 79.60s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br1706:  13%|█▎        | 4/30 [06:15<42:41, 98.52s/it]Now running: Br2305:  13%|█▎        | 4/30 [06:15<42:41, 98.52s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br2305:  17%|█▋        | 5/30 [08:15<44:18, 106.34s/it]Now running: Br2582:  17%|█▋        | 5/30 [08:15<44:18, 106.34s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br2582:  20%|██        | 6/30 [09:59<42:17, 105.72s/it]Now running: Br3974:  20%|██        | 6/30 [09:59<42:17, 105.72s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br3974:  23%|██▎       | 7/30 [11:15<36:45, 95.87s/it] Now running: Br5161:  23%|██▎       | 7/30 [11:15<36:45, 95.87s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5161:  27%|██▋       | 8/30 [13:30<39:41, 108.27s/it]Now running: Br5212:  27%|██▋       | 8/30 [13:30<39:41, 108.27s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5212:  30%|███       | 9/30 [15:07<36:41, 104.81s/it]Now running: Br5276:  30%|███       | 9/30 [15:07<36:41, 104.81s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+Now running: Br5276:  33%|███▎      | 10/30 [15:35<27:04, 81.22s/it]Now running: Br5367:  33%|███▎      | 10/30 [15:35<27:04, 81.22s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5367:  37%|███▋      | 11/30 [17:18<27:45, 87.63s/it]Now running: Br5415:  37%|███▋      | 11/30 [17:18<27:45, 87.63s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5415:  40%|████      | 12/30 [18:47<26:26, 88.12s/it]Now running: Br5426:  40%|████      | 12/30 [18:47<26:26, 88.12s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br5426:  43%|████▎     | 13/30 [20:55<28:24, 100.25s/it]Now running: Br5460:  43%|████▎     | 13/30 [20:55<28:24, 100.25s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5460:  47%|████▋     | 14/30 [22:57<28:30, 106.93s/it]Now running: Br5517:  47%|████▋     | 14/30 [22:57<28:30, 106.93s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5517:  50%|█████     | 15/30 [25:00<27:53, 111.56s/it]Now running: Br5529:  50%|█████     | 15/30 [25:00<27:53, 111.56s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+Now running: Br5529:  53%|█████▎    | 16/30 [26:07<22:53, 98.11s/it] Now running: Br5599:  53%|█████▎    | 16/30 [26:07<22:53, 98.11s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5599:  57%|█████▋    | 17/30 [27:54<21:53, 101.01s/it]Now running: Br5634:  57%|█████▋    | 17/30 [27:54<21:53, 101.01s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5634:  60%|██████    | 18/30 [29:19<19:14, 96.19s/it] Now running: Br5712:  60%|██████    | 18/30 [29:19<19:14, 96.19s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5712:  63%|██████▎   | 19/30 [30:55<17:37, 96.13s/it]Now running: Br5832:  63%|██████▎   | 19/30 [30:55<17:37, 96.13s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5832:  67%|██████▋   | 20/30 [32:43<16:36, 99.62s/it]Now running: Br5854:  67%|██████▋   | 20/30 [32:43<16:36, 99.62s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br5854:  70%|███████   | 21/30 [34:41<15:45, 105.01s/it]Now running: Br5941:  70%|███████   | 21/30 [34:41<15:45, 105.01s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br5941:  73%|███████▎  | 22/30 [37:01<15:25, 115.66s/it]Now running: Br6085:  73%|███████▎  | 22/30 [37:01<15:25, 115.66s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br6085:  77%|███████▋  | 23/30 [39:04<13:45, 117.97s/it]Now running: Br6098:  77%|███████▋  | 23/30 [39:04<13:45, 117.97s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br6098:  80%|████████  | 24/30 [41:19<12:17, 122.85s/it]Now running: Br6161:  80%|████████  | 24/30 [41:19<12:17, 122.85s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br6161:  83%|████████▎ | 25/30 [42:54<09:33, 114.67s/it]Now running: Br6263:  83%|████████▎ | 25/30 [42:54<09:33, 114.67s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br6263:  87%|████████▋ | 26/30 [44:39<07:27, 111.83s/it]Now running: Br6321:  87%|████████▋ | 26/30 [44:39<07:27, 111.83s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/numpy/_core/_methods.py:135: RuntimeWarning: invalid value encountered in reduce
+Now running: Br6321:  90%|█████████ | 27/30 [46:57<05:58, 119.53s/it]Now running: Br6423:  90%|█████████ | 27/30 [46:57<05:58, 119.53s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br6423:  93%|█████████▎| 28/30 [48:52<03:56, 118.25s/it]Now running: Br6476:  93%|█████████▎| 28/30 [48:52<03:56, 118.25s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br6476:  97%|█████████▋| 29/30 [50:55<01:59, 119.50s/it]Now running: Br6538:  97%|█████████▋| 29/30 [50:55<01:59, 119.50s/it]/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:381: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:150: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/_pipe_utils/_pre.py:153: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/functools.py:889: UserWarning: zero-centering a sparse array/matrix densifies it.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:262: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:360: RuntimeWarning: overflow encountered in power
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+/jhpce/shared/libd/core/liana_plus/1.5.1/liana_env/lib/python3.10/site-packages/liana/method/sc/_liana_pipe.py:354: RuntimeWarning: invalid value encountered in subtract
+Now running: Br6538: 100%|██████████| 30/30 [53:07<00:00, 123.35s/it]Now running: Br6538: 100%|██████████| 30/30 [53:07<00:00, 106.25s/it]
+-----
+anndata             0.11.4
+liana               1.5.1
+pyhere              1.0.3
+scanpy              1.11.4
+session_info        v1.0.1
+-----
+Python 3.10.18 | packaged by conda-forge | (main, Jun  4 2025, 14:45:41) [GCC 13.3.0]
+Linux-5.14.0-427.13.1.el9_4.x86_64-x86_64-with-glibc2.34
+-----
+Session information updated at 2025-08-14 17:30
+**** Job ends ****
+Thu Aug 14 05:30:11 PM EDT 2025

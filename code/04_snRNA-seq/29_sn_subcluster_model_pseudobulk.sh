@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 29_sn_subcluster_model_pseudobulk.R --cluster 'cell_type_anno'
+Rscript 29_sn_subcluster_model_pseudobulk.R --cluster 'cell_type_broad'
 
 echo "**** Job ends ****"
 date

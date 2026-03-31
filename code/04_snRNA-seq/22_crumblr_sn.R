@@ -1,11 +1,14 @@
 ## Louise Huuki-Myers, April 2025
 ## Run differential proportion analysis with Crumblr
 
+# BiocManager::install('DiseaseNeurogenomics/crumblr')
+
 library("SingleCellExperiment")
 library("tidyverse")
 library("crumblr")
 library("variancePartition")
 library("dendextend")
+library("jaffelab")
 library("here")
 library("sessioninfo")
 
@@ -169,13 +172,14 @@ load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_clust
 # tree.clusCollapsed
 # dist.clusCollapsed
 
+
+#### Run DREAM + eBayes on cobj ####
+fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round , erc_info) 
+fit <- eBayes(fit = fit)
+
 #### fit APOE_carrier ####
-# Use variancePartition workflow to analyze each cell type
 # Perform regression on each cell type separately
 #  then use eBayes to shrink residual variance
-
-fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round , erc_info) 
-fit <- eBayes(fit)
 
 # Extract results for each cell type
 (diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
@@ -192,6 +196,19 @@ fit <- eBayes(fit)
 
 write.csv(diff_prop_APOE_carrier, file = here(data_dir, "diff_prop_APOE_carrier.csv"))
 
+#### cleanY on cobj  APOE_carrier ####
+
+mod <- model.matrix( ~ APOE_carrier + Sex + Age + Anc_Afr + exp_round , erc_info)
+cleanY_cobj <- cleaningY(cobj$E , mod, P=2)
+head(cleanY_cobj)
+
+clean_clr_prop_long <- cleanY_cobj |>
+    as.data.frame() |>
+    rownames_to_column("cell_type_anno") |>
+    pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY")
+
+clr_prop_long <- clr_prop_long |> left_join(clean_clr_prop_long)
+
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
@@ -205,10 +222,12 @@ tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
+# TODO fdr.cutoff = 0.1
 tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
     theme(legend.position = "left" 
           # legend.box = "vertical"
-          )
+    )
+
 ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_beta.png"), width = 4, height = 7)
 
 # forest plots
@@ -226,21 +245,21 @@ ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_fo
 ## clr plot of top results
 clr_boxplot_APOE_carrier_Excit  <- clr_prop_long |>
     filter(cell_type_anno %in% c("Excit.L2", "Excit.L6b")) |>
-    ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
+    ggplot(aes(x = APOE_carrier, y = CLR_cleanY, fill = APOE_carrier)) +
     # geom_boxplot() +
     geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
     geom_jitter(width = .1) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cell_type_anno, scales = "free_y") +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw() +
     theme(legend.position = "None")
 
 ggsave(clr_boxplot_APOE_carrier_Excit , filename = here(plot_dir, "clr_boxplot_APOE_carrier_Excit.png"), height = 4, width = 4)
 
-clr_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
+clr_boxplot_APOE_carrier_OligoOPC <- clr_prop_long |>
     filter(cell_type_anno %in% c("Oligo.1", "Oligo.2", "Oligo.3", "OPC.5")) |>
-    ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
+    ggplot(aes(x = APOE_carrier, y = CLR_cleanY, fill = APOE_carrier)) +
     # geom_boxplot() +
     geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
@@ -250,7 +269,21 @@ clr_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
     theme_bw() +
     theme(legend.position = "None")
 
-ggsave(clr_boxplot_APOE_carrier_Oligo, filename = here(plot_dir, "clr_boxplot_APOE_carrier_Oligo.png"), height = 4, width = 8)
+ggsave(clr_boxplot_APOE_carrier_OligoOPC, filename = here(plot_dir, "clr_boxplot_APOE_carrier_OligoOPC.png"), height = 4, width = 8)
+
+clr_boxplot_APOE_carrier_OligoOPC_color <- clr_prop_long |>
+    filter(cell_type_anno %in% c("Oligo.1", "Oligo.2", "Oligo.3", "OPC.5")) |>
+    ggplot(aes(x = APOE_carrier, y = CLR_cleanY, fill = APOE_carrier)) +
+    # geom_boxplot() +
+    geom_boxplot(outlier.shape = NA) +
+    # geom_jitter(aes(color = error), width = .1) +
+    geom_jitter(width = .1, aes(color = APOE)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    theme_bw() 
+
+ggsave(clr_boxplot_APOE_carrier_OligoOPC_color, filename = here(plot_dir, "clr_boxplot_APOE_carrier_OligoOPC_color.png"), height = 4, width = 8)
 
 prop_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
     filter(grepl("Oligo", cell_type_anno)) |>
@@ -258,9 +291,10 @@ prop_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
     # geom_boxplot() +
     geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
-    geom_jitter(width = .1) +
+    geom_jitter(width = .1, aes(color = APOE)) +
     facet_wrap(~cell_type_anno, nrow = 1) +
     scale_fill_manual(values = APOE_carrier_colors) +
+    scale_color_manual(values = APOE_genotype_colors) +
     theme_bw() +
     theme(legend.position = "None")
 
@@ -347,7 +381,250 @@ topTable(fit, coef = "SexM", number = Inf)
 # 
 # ggsave(prop_boxplot_APOE_Excit.L6b, filename = "prop_boxplot_APOE_Excit.L6b.png")
 
-# slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 19_sn_heatmaps.R")
+#### fit Sex ####
+
+# Extract results for each cell type
+(diff_prop_Sex <- topTable(fit, coef = "SexM", number = Inf))
+
+#                        logFC     AveExpr           t     P.Value  adj.P.Val         B
+# Oligo.5          -0.94666061  1.16152659 -3.29523642 0.003352853 0.07350752 -1.705243
+# Oligo.3          -1.19927385  1.73901614 -3.22491808 0.003955976 0.07350752 -1.849009
+# Micro.3           1.09017877  0.07707637  2.98973855 0.006836606 0.07350752 -2.419935
+# Micro.4           0.85464395  0.09432697  2.93586040 0.007737634 0.07350752 -2.538259
+# Astro.5          -0.89531742 -0.49334478 -2.76536537 0.011398815 0.08663099 -2.734235
+
+write.csv(diff_prop_Sex, file = here(data_dir, "diff_prop_Sex.csv"))
+
+# Perform multivariate test across the hierarchy
+res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "SexM")
+
+res_tb <- res |> as_tibble()
+
+res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
+res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Sex.csv"))
+
+# Plot hierarchy and testing results
+tree_fdr_plot <- plotTreeTest(res)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_FDR.png"))
+
+# Plot hierarchy and regression coefficients
+tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']]) +
+    theme(legend.position = "left" 
+          # legend.box = "vertical"
+    )
+ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_beta.png"), width = 4, height = 7)
+
+# forest plots
+forest_plot <- plotForest(res, hide = FALSE, low = sex_colors[['F']], high = sex_colors[['M']]) 
+ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_forest.png"), width = 4, height = 7)
+
+
+# combined_fig <- fig.vp +
+#     theme(legend.position = "left") |
+#     tree_beta_plot |
+#     forest_plot
+# 
+# ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_Sex.png"), width = 10)
+
+
+#### Plot cleanY on cobj Sex ####
+
+mod <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + exp_round , erc_info)
+cleanY_cobj_sex <- cleaningY(cobj$E , mod, P=3)
+
+clr_prop_long <- clr_prop_long |> 
+    left_join(cleanY_cobj_sex |>
+                  as.data.frame() |>
+                  rownames_to_column("cell_type_anno") |>
+                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_Sex")) 
+
+## clr plot of top results
+clr_boxplot_Sex_Micro <- clr_prop_long |>
+    filter(grepl("Micro", cell_type_anno)) |>
+    ggplot(aes(x = Sex, y = CLR_cleanY_Sex, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    # geom_jitter(aes(color = error), width = .1) +
+    geom_jitter(width = .1) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = sex_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, "clr_boxplot_Sex_Micro.png"), height = 4, width = 6)
+
+clr_boxplot_Sex_Oligo <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    ggplot(aes(x = Sex, y = CLR_cleanY_Sex, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = sex_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
+
+
+#### Plot cleanY on cobj Sex + APOE carrier ####
+
+mod <- model.matrix( ~ Sex + APOE_carrier + Age + Anc_Afr + exp_round , erc_info)
+cleanY_cobj_carrier_sex <- cleaningY(cobj$E , mod, P=3)
+
+clr_prop_long <- clr_prop_long |> 
+    left_join(cleanY_cobj_sex |>
+                  as.data.frame() |>
+                  rownames_to_column("cell_type_anno") |>
+                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_carrier_Sex")) |>
+    mutate(Sex_APOE = paste(Sex, APOE_carrier))
+
+## plots 
+clr_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    ggplot(aes(x = Sex_APOE, y = CLR_cleanY_carrier_Sex, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+
+## plot prop
+prop_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    ggplot(aes(x = Sex_APOE, y = prop, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(prop_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "prop_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+
+
+clr_boxplot_Sex_carrier_Astro <- clr_prop_long |>
+    filter(grepl("Astro", cell_type_anno)) |>
+    ggplot(aes(x = Sex_APOE, y = CLR_cleanY_carrier_Sex, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1, scales = "free_y") +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_Sex_carrier_Astro, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Astro.png"), height = 4, width = 6)
+
+clr_boxplot_Sex_carrier_Micro <- clr_prop_long |>
+    filter(grepl("Micro", cell_type_anno)) |>
+    ggplot(aes(x = Sex_APOE, y = CLR_cleanY_carrier_Sex, fill = Sex)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE_carrier)) +
+    facet_wrap(~cell_type_anno, nrow = 1, scales = "free_y") +
+    scale_fill_manual(values = sex_colors) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Micro.png"), height = 4, width = 6)
+
+
+#### fit Age ####
+
+# Extract results for each cell type
+(diff_prop_Age<- topTable(fit, coef = "Age", number = Inf))
+
+#                           logFC     AveExpr           t      P.Value  adj.P.Val          B
+# Oligo.5           0.0445079005  1.16152659  3.88315362 0.0008221231 0.03124068 -0.6656332
+# Oligo.3           0.0367116103  1.73901614  2.36749646 0.0272914275 0.48068363 -3.8912433
+# Oligo.4           0.0317998131  1.65924744  2.21071638 0.0379487078 0.48068363 -4.1927394
+
+write.csv(diff_prop_Age, file = here(data_dir, "diff_prop_Age.csv"))
+
+# Perform multivariate test across the hierarchy
+res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
+
+res_tb <- res |> as_tibble()
+
+res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
+res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Age.csv"))
+
+# Plot hierarchy and testing results
+tree_fdr_plot <- plotTreeTest(res)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_FDR.png"))
+
+# Plot hierarchy and regression coefficients
+tree_beta_plot <- plotTreeTestBeta(res) +
+    theme(legend.position = "left" 
+          # legend.box = "vertical"
+    )
+ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_beta.png"), width = 4, height = 7)
+
+# forest plots
+forest_plot <- plotForest(res, hide = FALSE) 
+ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Age_forest.png"), width = 4, height = 7)
+
+#### Plot cleanY CLR for Age ####
+
+mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + exp_round , erc_info)
+cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=2)
+
+clr_prop_long$CLR_cleanY_Age <- NULL
+
+clr_prop_long <- clr_prop_long |> 
+    left_join(cleanY_cobj_Age |>
+                  as.data.frame() |>
+                  rownames_to_column("cell_type_anno") |>
+                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_Age")) 
+
+
+clr_sactter_Age_Oligo <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    ggplot(aes(x = Age, y = CLR_cleanY_Age)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    theme_bw() 
+
+ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "clr_sactter_Age_Oligo.png"), height = 4, width =10)
+
+
+#### Plot cleanY CLR for Age & APOE ####
+
+# mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + exp_round , erc_info)
+cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=3)
+
+clr_prop_long$CLR_cleanY_carrier_Age <- NULL
+
+clr_prop_long <- clr_prop_long |> 
+    left_join(cleanY_cobj_Age |>
+                  as.data.frame() |>
+                  rownames_to_column("cell_type_anno") |>
+                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_carrier_Age")) 
+
+
+clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
+    filter(grepl("Oligo", cell_type_anno)) |>
+    ggplot(aes(x = Age, y = CLR_cleanY_carrier_Age, color = APOE_carrier)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "bottom")
+
+ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
+
+
+# slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 22_crumblr_sn.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

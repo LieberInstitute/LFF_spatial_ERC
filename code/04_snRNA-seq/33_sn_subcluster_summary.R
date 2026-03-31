@@ -14,6 +14,8 @@ library("spatialLIBD")
 # library("dendextend")
 # library("readxl")
 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 ## source reduced dims function
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
@@ -112,7 +114,7 @@ qc_violin_mito <- ggplot(pd, aes(x = cell_type_anno, y = subsets_Mito_percent, f
     # scale_y_continuous(trans='log10') +
     theme_bw() +
     facet_grid(.~cell_type_broad, scales = "free_x", space = "free") +
-    labs(x = "Cell Type", y = "Precent Mito") +
+    labs(x = "Cell Type", y = "Percent Mito") +
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
@@ -150,7 +152,7 @@ plot_one_gene <- function(gene){
 apoe_plot <- plot_gene_express(sce, genes = "APOE", 
                                category = "cell_type_anno", 
                                color_pal = cell_type_colors$anno) +
-    labs(x = "Cell Type") +
+    labs(x = "cell type subcluster") +
     coord_flip()
 
 ggsave(apoe_plot, filename = here(plot_dir, "ERC_sn_gene_expres_APOE.png"), width = 4)
@@ -178,5 +180,123 @@ plot_marker_express_List(sce,
                          gene_name_col = "gene_name",
                          color_pal = cell_type_colors$anno,
 )
+
+
+#### plot on UMAP + TSNE ####
+message(Sys.time(), " - Plot UMAP + TSNE")
+
+## source reduced dims function
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+## plot annotated clusters
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "cell_type_anno",
+                          color_pal = cell_type_colors$anno))
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "cell_type_anno",
+                          facet = TRUE,
+                          color_pal = cell_type_colors$anno))
+
+
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "APOE_carrier",
+                          color_pal = APOE_carrier_colors))
+
+## Identify Oligo.3
+
+sce$Oligo.3 <- sce$cell_type_anno == "Oligo.3"
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "Oligo.3",
+                          color_pal = c(`TRUE` = cell_type_colors$anno[["Oligo.3"]], `FALSE` = "grey50"))
+)
+
+walk2(c("Sex","APOE"), 
+      list(sex_colors, APOE_genotype_colors), 
+      ~my_plot_reduced_dim(sce, 
+                           prefix = "ERC_sn_subcluster",
+                           dimred = "TSNE", 
+                           my_var = .x, 
+                           var_type = "cat",
+                           color_pal = .y)
+      )
+
+walk2(c("Sex","APOE"), 
+      list(sex_colors, APOE_genotype_colors), 
+      ~my_plot_reduced_dim(sce, 
+                           prefix = "ERC_sn_subcluster",
+                           dimred = "TSNE", 
+                           my_var = .x, 
+                           var_type = "cat",
+                           color_pal = .y,
+                           facet = TRUE)
+)
+
+
+#### Explore Metrics by Cell Type ####
+
+pd |>
+    group_by(cell_type_anno, APOE_carrier) |>
+    summarise(median_sum = median(sum))
+
+
+sum_test <- pd |>
+    group_by(cell_type_anno) |>
+    do(t = broom::tidy(t.test(sum ~ APOE_carrier, data = .))) |>
+    unnest(t)  |>
+    mutate(FDR = p.adjust(p.value, method = "fdr"))
+
+sum_test |> filter(FDR < 0.05) |> arrange(FDR)
+# cell_type_anno estimate estimate1 estimate2 statistic   p.value parameter conf.low conf.high alternative       FDR
+# <fct>             <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>    <dbl>     <dbl> <chr>           <dbl>
+# 1 Oligo.3            581.     2437.     1856.     27.4  3.79e-158     8316.     539.      622. two.sided   1.44e-156
+# 2 Oligo.4            431.     3736.     3305.     18.9  4.23e- 78     6881.     386.      476. two.sided   8.03e- 77
+# 3 Astro.1           1573.    11265.     9692.     18.4  3.71e- 74    10915.    1405.     1741. two.sided   4.70e- 73
+# 4 Oligo.2           1023.     9784.     8761.     17.1  1.40e- 64     9466.     906.     1140. two.sided   1.33e- 63
+# 5 Oligo.1            397.     6048.     5650.     15.3  2.80e- 52     9781.     347.      448. two.sided   2.13e- 51
+
+sum_test |> filter(FDR < 0.05) |> filter(estimate < 0)
+
+sum_by_cell_type <- pd |>
+    ggplot(aes(x = cell_type_anno, y = log10(sum), fill = cell_type_anno)) +
+    geom_boxplot() + 
+    facet_wrap(~cell_type_broad, scales = "free", ncol = 2) +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(sum_by_cell_type, filename = here(plot_dir, "ERC_sn_subtype_sum_boxplot.png"))
+
+
+sum_by_cell_type_carrier <- pd |>
+    ggplot(aes(x = cell_type_anno, y = log10(sum), fill = APOE_carrier)) +
+    geom_boxplot() + 
+    facet_wrap(~cell_type_broad, scales = "free", ncol = 2) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(sum_by_cell_type_carrier, filename = here(plot_dir, "ERC_sn_subtype_sum_boxplot_APOE_carrier.png"))
+
+
+    
 
 

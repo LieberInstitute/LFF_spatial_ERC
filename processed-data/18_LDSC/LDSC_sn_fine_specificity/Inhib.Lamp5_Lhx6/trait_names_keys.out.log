@@ -1,0 +1,50 @@
+*********************************************************************
+* LD Score Regression (LDSC)
+* Version 1.0.1
+* (C) 2014-2019 Brendan Bulik-Sullivan and Hilary Finucane
+* Broad Institute of MIT and Harvard / MIT Department of Mathematics
+* GNU General Public License v3
+*********************************************************************
+Call: 
+./ldsc.py \
+--h2 /dcs04/lieber/shared/statsgen/LDSC/base/gwas_brain/trait_names_keys.gz \
+--ref-ld-chr /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_fine_specificity/Inhib.Lamp5_Lhx6/chr.,/dcs04/lieber/shared/statsgen/LDSC/base/baseline2/baselineLD. \
+--out /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/18_LDSC/LDSC_sn_fine_specificity/Inhib.Lamp5_Lhx6/trait_names_keys.out \
+--overlap-annot  \
+--frqfile-chr /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_Phase3_frq/1000G.EUR.QC. \
+--w-ld-chr /dcs04/lieber/shared/statsgen/LDSC/base/referencefiles/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC. \
+--print-coefficients  
+
+Beginning analysis at Mon Aug 11 23:53:56 2025
+Reading summary statistics from /dcs04/lieber/shared/statsgen/LDSC/base/gwas_brain/trait_names_keys.gz ...
+Traceback (most recent call last):
+  File "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldsc.py", line 644, in <module>
+    sumstats.estimate_h2(args, log)
+  File "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldscore/sumstats.py", line 326, in estimate_h2
+    args, log, args.h2)
+  File "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldscore/sumstats.py", line 242, in _read_ld_sumstats
+    sumstats = _read_sumstats(args, log, fh, alleles=alleles, dropna=dropna)
+  File "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldscore/sumstats.py", line 163, in _read_sumstats
+    sumstats = ps.sumstats(fh, alleles=alleles, dropna=dropna)
+  File "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldscore/parse.py", line 89, in sumstats
+    x = read_csv(fh, usecols=usecols, dtype=dtype_dict, compression=compression)
+  File "/dcs04/lieber/shared/statsgen/LDSC/base/scripts/ldscore/parse.py", line 21, in read_csv
+    return pd.read_csv(fh, delim_whitespace=True, na_values='.', **kwargs)
+  File "/jhpce/shared/libd/core/ldsc/1.0.1/ldsc_env/lib/python2.7/site-packages/pandas/io/parsers.py", line 655, in parser_f
+    return _read(filepath_or_buffer, kwds)
+  File "/jhpce/shared/libd/core/ldsc/1.0.1/ldsc_env/lib/python2.7/site-packages/pandas/io/parsers.py", line 405, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/jhpce/shared/libd/core/ldsc/1.0.1/ldsc_env/lib/python2.7/site-packages/pandas/io/parsers.py", line 762, in __init__
+    self._make_engine(self.engine)
+  File "/jhpce/shared/libd/core/ldsc/1.0.1/ldsc_env/lib/python2.7/site-packages/pandas/io/parsers.py", line 966, in _make_engine
+    self._engine = CParserWrapper(self.f, **self.options)
+  File "/jhpce/shared/libd/core/ldsc/1.0.1/ldsc_env/lib/python2.7/site-packages/pandas/io/parsers.py", line 1582, in __init__
+    self._reader = parsers.TextReader(src, **kwds)
+  File "pandas/_libs/parsers.pyx", line 394, in pandas._libs.parsers.TextReader.__cinit__ (pandas/_libs/parsers.c:4209)
+  File "pandas/_libs/parsers.pyx", line 651, in pandas._libs.parsers.TextReader._setup_parser_source (pandas/_libs/parsers.c:7620)
+  File "/jhpce/shared/libd/core/ldsc/1.0.1/ldsc_env/lib/python2.7/gzip.py", line 94, in __init__
+    fileobj = self.myfileobj = __builtin__.open(filename, mode or 'rb')
+IOError: [Errno 2] No such file or directory: '/dcs04/lieber/shared/statsgen/LDSC/base/gwas_brain/trait_names_keys.gz'
+
+Analysis finished at Mon Aug 11 23:53:56 2025
+Total time elapsed: 0.0s

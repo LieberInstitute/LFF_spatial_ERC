@@ -1,0 +1,33 @@
+Table S1 Donor demographics. Demographics of donors included in the study, including pathology information. Related to Fig.1, Fig S1. 
+
+Table S2 SRT sample information. Sample information for SRT dataset including data generation metrics. Related to Fig.1.
+
+Table S3 SpD marker genes. SRT SpD marker gene statistics from enrichment and MeanRatio analysis. The statistics were computed with get_mean_ratio() from DeconvoBuddies and registration_wrapper() from spatialLIBD; see package documentation for the definition of the variable names. Related to Fig.1.
+
+Table S4 SRT SpD differential proportions. Differential proportion statistics for SpDs from crumblr analysis computed with treeTest(). Related to Fig S13.
+
+Table S5 snRNA-seq sample information. Sample information for snRNA-seq dataset including data generation metrics. Related to Fig.2.
+
+Table S6 Cell type subcluster marker genes. snRNA-seq cell type marker genes from MeanRatio and enrichment analysis. The statistics were computed with get_mean_ratio()from DeconvoBuddies and registration_wrapper() from spatialLIBD; see package documentation for the definition of the variable names. Related to Fig.2, Fig S27.
+
+Table S7 Spot deconvolution results. Spot deconvolution estimates from runRctd()by RCTD, with both the broad or the subcluster resolution snRNA-seq. Related to Fig S28.
+
+Table S8 snRNA-seq cell type differential proportions. Differential proportion statistics for cell types from crumblr analysis computed with treeTest(). Related to Fig S31, Fig S32.
+
+Table S9 SRT differential expression results. Differential expression statistics for SpDs for overall APOE carrier (E2 vs. E4), ancestry, and sex specific APOE carrier DGE analysis. The statistics were computed with voomLmFit() from edgeR; see its documentation for the definition of the variable names. Related to Fig.3.
+
+Table S10 SRT GO overrepresentation analysis. SRT SpD GO results for overall APOE carrier (E2 vs. E4) DEGs, and ancestry and sex specific APOE carrier DGE analysis. The statistics were computed with compareCluster() from clusterProfiler; see its documentation for the definition of the variable names. Related to Fig.3.
+
+Table S11 snRNA-seq broad cell type differential expression results. Differential expression statistics for broad cell types for overall APOE carrier (E2 vs. E4), ancestry, and sex specific APOE carrier DGE analysis. The statistics were computed with voomLmFit() from edgeR; see its documentation for the definition of the variable names. Related to Fig.4.
+
+Table S12 snRNA-seq broad cell type GO overrepresentation analysis. snRNA-seq broad cell type GO results for overall DEGs APOE carrier (E2 vs. E4), and ancestry and sex specific APOE carrier DGE analysis. The statistics were computed with compareCluster() from clusterProfiler; see its documentation for the definition of the variable names. Related to Fig.4.
+
+Table S13 snRNA-seq subcluster differential expression results. Differential expression statistics for fine subclusters for overall APOE carrier (E2 vs. E4), ancestry, and sex specific APOE carrier DGE analysis. The statistics were computed with voomLmFit() from edgeR; see its documentation for the definition of the variable names. Related to Fig.5.
+
+Table S14 snRNA-seq subcluster GO overrepresentation analysis. snRNA-seq cell subcluster GO results for overall APOE carrier (E2 vs. E4) DEGs, and ancestry and sex specific APOE carrier DGE analysis. The statistics were computed with compareCluster() from clusterProfiler; see its documentation for the definition of the variable names. Related to Fig.5.
+
+Table S15 External dataset DEG enrichment results. Gene set enrichment analysis statistics of DE gene sets against Grubman and Blanchard differential expression datasets17,19. These statistics were computed with fisher.test() from base R. Related to Fig S42.
+
+Table S16 Cell to cell communication results summary. CCC summary data, including counts of commonly observed LR pairs by source and target, statistics for LR source-target interactions involving a DEG including mean bivariate score. See Methods: Cell-cell communication for summary methods. Related to Fig S43.
+
+Table S17 MOFA results. MOFA statistics including gene expression variance explained (R2) for SpD and subcluster views, covariate p-values, and donor factor scores. The statistics were computed with run_mofa() from MOFA2; see its documentation for the definition of the variable names. Related to Fig.6.

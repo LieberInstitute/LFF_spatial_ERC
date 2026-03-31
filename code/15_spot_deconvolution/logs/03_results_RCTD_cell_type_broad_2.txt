@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Aug  5 04:42:41 PM EDT 2025
+Thu Aug  7 03:50:52 PM EDT 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 21241176
+Job id: 21263588
 Job name: 03_results_RCTD
-Node name: compute-163
+Node name: compute-159
 Task id: 2
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -173,7 +173,7 @@ Loading objects:
   SpD_colors
 Loading objects:
   cell_type_colors
-2025-08-05 16:42:56.528462 - load data
+2025-08-07 15:51:06.445203 - load data
 [1] "coldata" "assays" 
 [1] 122152      5
 DataFrame with 6 rows and 5 columns
@@ -205,52 +205,31 @@ $weights_full
 spots failed RCDT: 50
 [1] 154752      2
                                  num_nuclei_within num_nuclei_intersect
-ACGCCTGACACGCGCT-1_V13B23-363_A1                 1                    1
-TACCGATCCAACACTT-1_V13B23-363_A1                 1                    1
-ATTAAAGCGGACGAGC-1_V13B23-363_A1                 1                    1
+ACGCCTGACACGCGCT-1_V13B23-363_A1                 0                    0
+TACCGATCCAACACTT-1_V13B23-363_A1                 0                    0
+ATTAAAGCGGACGAGC-1_V13B23-363_A1                 0                    0
 GATAAGGGACGATTAG-1_V13B23-363_A1                 1                    1
-GTGCAAATCACCAATA-1_V13B23-363_A1                 1                    1
-TGTTGGCTGGCGGAAG-1_V13B23-363_A1                 1                    1
+GTGCAAATCACCAATA-1_V13B23-363_A1                 0                    0
+TGTTGGCTGGCGGAAG-1_V13B23-363_A1                 0                    0
+num_nuclei_within SPD summary:
+# A tibble: 9 × 10
+  SpD   median_nuc n_0_nuc p_0_nuc n_1_nuc p_1_nuc   q95 n_30_nuc p_30_nuc   max
+  <fct>      <dbl>   <int>   <dbl>   <int>   <dbl> <dbl>    <int>    <dbl> <int>
+1 Vasc…          3    1437  0.231      811  0.130     10        9  1.45e-3    59
+2 L1~S…          2    2248  0.146     2940  0.191      6        4  2.60e-4    36
+3 L2.3…          4     991  0.0864    1334  0.116      8        0  0          29
+4 LD~S…          2    4847  0.183     5208  0.197      6       10  3.78e-4    44
+5 Inhi…          3     389  0.0563     839  0.121      8        1  1.45e-4    31
+6 L5~S…          4     693  0.0597    1016  0.0875     9        1  8.61e-5    39
+7 L6~S…          3    2011  0.103     2587  0.133      8        0  0          27
+8 WM.u…          3    2197  0.176     1769  0.142      7        2  1.61e-4    39
+9 WM~S…          4     620  0.0510    1013  0.0833     8        0  0          26
 
-  TRUE 
-122152 
-# A tibble: 9 × 8
-  SpD           median_nuc n_0_nuc p_0_nuc   q59 n_30_nuc  p_30_nuc   max
-  <fct>              <dbl>   <int>   <dbl> <dbl>    <int>     <dbl> <int>
-1 Vasc~Sp09D08           3       0       0    10        9 0.00145      59
-2 L1~Sp09D05             2       0       0     6        4 0.000260     36
-3 L2.3~Sp09D01           4       0       0     8        0 0            29
-4 LD~Sp09D02             2       0       0     6       10 0.000378     44
-5 Inhib~Sp09D09          3       0       0     8        1 0.000145     31
-6 L5~Sp09D03             4       0       0     9        1 0.0000861    39
-7 L6~Sp09D04             3       0       0     8        0 0            27
-8 WM.uf~Sp09D07          3       0       0     7        2 0.000161     39
-9 WM~Sp09D06             4       0       0     8        0 0            26
-5 x 5 sparse Matrix of class "dgCMatrix"
-      AAACAAGTATCTCCCA-1_Br1039 AAACAATCTACTAGCA-1_Br1039
-Astro                 1.2335213                  1.531492
-Macro                 0.2897087                  .       
-Micro                 .                          .       
-OPC                   .                          .       
-Oligo                 0.7821295                  .       
-      AAACACCAATAACTGC-1_Br1039 AAACAGCTTTCAGAAG-1_Br1039
-Astro                 0.9553224                 1.1842330
-Macro                 .                         .        
-Micro                 .                         .        
-OPC                   .                         .        
-Oligo                 3.6563715                 0.2960469
-      AAACAGGGTCTATATT-1_Br1039
-Astro                         .
-Macro                         .
-Micro                         .
-OPC                           .
-Oligo                         .
-2025-08-05 16:44:48.334012 - Save Data
-Warning message:
-In geom_boxplot(draw_quantiles = c(0.5)) :
-  Ignoring unknown parameters: `draw_quantiles`
+Astro Excit Inhib Macro Micro Oligo   OPC  Vasc 
+28722 55319 14248    39    52 19966   308  3498 
+2025-08-07 15:53:03.883632 - Save Data
 Saving 7 x 7 in image
-2025-08-05 16:49:03.716513 - Visualization
+2025-08-07 15:55:59.141577 - Visualization
 vis_ct: Astro
 vis_ct: Macro
 vis_ct: Micro
@@ -301,6 +280,77 @@ vis_ct: Inhib
 
 [[8]]
 
+null device 
+          1 
+        
+         Astro Excit Inhib Macro Micro Oligo  OPC Vasc
+  Br1039   755  1473   541     1     0  1026    3  106
+  Br1289   602  2152   484     0     1   381    1   27
+  Br1556  1170  1310   758     1     0   198    8   78
+  Br1691  1786  1874   326     0     0    93   13   69
+  Br1706   631  2108   466     0     1   450    8   35
+  Br2305   952   844   733     0     1   491    6   42
+  Br2582   642   430   558    10    20   614    4   89
+  Br3974   505   525   504     8     5  1041   12  111
+  Br5161  1234  2661   508     2     1    97    0  179
+  Br5212   660  3349   346     0     0   263    5   51
+  Br5276  1339   301   274     0     4  1633   56  370
+  Br5367   556  1608   457     1     0   113    3   90
+  Br5415   578  1699   690     0     2   797    3   89
+  Br5426   760  3187   301     0     0   199    1  376
+  Br5460   345  3350   175     1     0   131    2   28
+  Br5517   619  1766   486     0     1   770   17  163
+  Br5529  2001   255   233     0     2  1701   62  315
+  Br5599   650  3399   370    10     3   332    6   42
+  Br5634   379  3100   507     0     0   834    3    7
+  Br5712   894   409   288     0     2  1541   10  229
+  Br5832   648  1109   393     1     0  1362    3   30
+  Br5854   389  1721   417     1     1   970    3   73
+  Br5941   700  2638   408     1     0  1008   19   95
+  Br6085   744  2713   454     0     0    85    2   19
+  Br6098  1583  1461   949     0     0   417   12  147
+  Br6161  2657  1759   252     0     0    75    6  115
+  Br6263  1722   597   373     0     1   308   21  204
+  Br6321   988  1823   417     1     3   147   10  252
+  Br6423   636  1902   344     0     0  1416    1   16
+  Br6476   669  2758   433     0     1    84    1   18
+  Br6538   928  1038   803     1     3  1389    7   33
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+========================================
+circlize version 0.4.16
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
+null device 
+          1 
 null device 
           1 
 Joining with `by = join_by(key)`
@@ -335,9 +385,9 @@ Loading objects:
 Joining with `by = join_by(sample_id, cell_type_broad)`
 Saving 10 x 7 in image
 [1] "Reproducibility information:"
-[1] "2025-08-05 16:51:43 EDT"
+[1] "2025-08-07 15:58:10 EDT"
    user  system elapsed 
-529.622   5.077 541.043 
+427.764   4.594 437.330 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -348,7 +398,7 @@ Saving 10 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-08-05
+ date     2025-08-07
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -378,13 +428,14 @@ Saving 10 x 7 in image
  blob                   1.2.4     2023-03-17 [2] CRAN (R 4.5.0)
  bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.5.0)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
- circlize               0.4.16    2024-02-20 [2] CRAN (R 4.5.0)
+ Cairo                  1.6-2     2023-11-28 [2] CRAN (R 4.5.0)
+ circlize             * 0.4.16    2024-02-20 [2] CRAN (R 4.5.0)
  cli                    3.6.5     2025-04-23 [2] CRAN (R 4.5.0)
  clue                   0.3-66    2024-11-13 [2] CRAN (R 4.5.0)
  cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
  colorspace             2.1-1     2024-07-26 [2] CRAN (R 4.5.0)
- ComplexHeatmap         2.24.1    2025-06-25 [1] Bioconductor 3.21 (R 4.5.0)
+ ComplexHeatmap       * 2.24.1    2025-06-25 [1] Bioconductor 3.21 (R 4.5.0)
  config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
  cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
@@ -442,7 +493,7 @@ Saving 10 x 7 in image
  lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
  lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.5.0)
  lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.5.0)
- limma                  3.64.1    2025-05-25 [1] Bioconductor 3.21 (R 4.5.0)
+ limma                  3.64.3    2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
  locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
  lubridate            * 1.9.4     2024-12-08 [2] CRAN (R 4.5.0)
  magick                 2.8.7     2025-06-06 [1] CRAN (R 4.5.0)
@@ -533,4 +584,4 @@ Saving 10 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Aug  5 04:51:44 PM EDT 2025
+Thu Aug  7 03:58:11 PM EDT 2025
