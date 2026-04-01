@@ -30,7 +30,7 @@ dataset_cor_all <- map2_dfr(dataset_cor, names(dataset_cor), ~.x |>
                               rename_with(~"Other_Oligo", .cols = 2)) |>
   dplyr::rename(ERC_Oligo = test, n_gene = n, cor_logFC= cor)
 
-## specificity socre
+## specificity score
 
 other_oligo_match <- dataset_cor_all |>
   filter(grepl("Oligo", ERC_Oligo)) |>
@@ -72,6 +72,42 @@ Oligo_marker_colors <- c(OPALIN = "#228277",
                          RBFOX1 = "#05678e",
                          `RASGRF1/RBFOX1` = "#00B0F6",
                          RASGRF1 = "#9dd2e7")
+
+
+#### uniform heatmap ####
+
+map(list(Oligo = c("Sadick2022", "Grubman2019"), OligoOPC = ))
+
+other_data <- dataset_cor_all |> filter(dataset %in% c("Sadick2022", "Grubman2019"))
+
+cor_wide <- other_data |> 
+  select(dataset, ERC_Oligo, Other_Oligo, cor_logFC) |>
+  pivot_wider(names_from = "ERC_Oligo", values_from = "cor_logFC") 
+
+cor_wide_matrix <- cor_wide |>
+  select(-dataset) |>
+  column_to_rownames("Other_Oligo") |>
+  as.matrix()
+
+other_anno <- dataset_subtypes |> filter(Other_Oligo %in% colnames(cor))
+
+other_oligo_anno <- dataset_subtypes |> 
+  filter(dataset %in% c("Sadick2022", "Grubman2019")) |>
+  select(Other_Oligo, marker) |>
+  column_to_rownames("Other_Oligo")
+
+other_oligo_anno <- other_oligo_anno[rownames(cor_wide_matrix),]
+other_oligo_ra <- rowAnnotation(express = other_oligo_anno, col = list(express = Oligo_marker_colors))
+
+pdf(here(plot_dir, "Other_dataset_cor_Oligo.pdf"), height = 5, width = 4)
+Heatmap(cor_wide_matrix, 
+        name = "logFC cor",
+        right_annotation = other_oligo_ra,
+        row_split = cor_wide$dataset
+        )
+dev.off()
+
+
 
 
 max_cor_oligo3 <-  dataset_cor_all2 |> 
