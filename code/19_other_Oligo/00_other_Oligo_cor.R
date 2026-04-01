@@ -7,10 +7,10 @@ library("here")
 library("sessioninfo")
 library("ComplexHeatmap")
 
-data_dir <- here("processed-data", "19_other_Oligo", "00_other_Oligo_data")
+data_dir <- here("processed-data", "19_other_Oligo", "00_other_Oligo_cor")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "19_other_Oligo", "00_other_Oligo_data")
+plot_dir <- here("plots", "19_other_Oligo", "00_other_Oligo_cor")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Complie other dataset correlatons ####
@@ -57,6 +57,21 @@ dataset_cor_all2 <- dataset_cor_all |>
   left_join(other_oligo_best_match |> select(dataset, ERC_Oligo, Other_Oligo, specificity_score))
 
 write_csv(dataset_cor_all2, file = here(data_dir, "ERC_Oligo_v_external_data_cor.csv"))
+
+
+# dataset_subtypes <- dataset_cor_all2 |> select(dataset, Other_Oligo) |> unique()
+# write_csv(dataset_subtypes, file = here(data_dir, "Oligo_external_data_subtypes.csv"))
+
+dataset_subtypes <- read_csv(here(data_dir, "Oligo_external_data_subtypes.csv"))
+dataset_subtypes |> count(marker)
+
+# Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5 
+# #00BFC4" "#00B0F6" "#9590FF" "#E76BF3" "#FF62BC" 
+
+Oligo_marker_colors <- c(OPALIN = "#228277",
+                         RBFOX1 = "#05678e",
+                         `RASGRF1/RBFOX1` = "#00B0F6",
+                         RASGRF1 = "#9dd2e7")
 
 
 max_cor_oligo3 <-  dataset_cor_all2 |> 
