@@ -336,6 +336,50 @@ sce |>
 
 dev.off()
 
+#### Mironova 2026 genes ####
+
+Mironova2026_genes <- read.delim(here("external-data", "Mironova2026", "Mironova2026_genes.csv")) |>
+  filter(gene %in% rownames(sce))
+
+violin_Mironova2026 <- plot_gene_express(sce, 
+                                        category = "cell_type_anno2",
+                                        genes = Mironova2026_genes$gene,
+                                        color_pal = Oligo_OPC_colors2,
+                                        free_y = TRUE
+)
+
+ggsave(violin_Mironova2026, filename = here(plot_dir, "Violin_Oligo_Mironova2026_markers.png"))
+
+
+# rowData(sce)$cop_marker <- NULL
+# rowData(sce)$cop_marker <- names(fang_cop_markers2)[match(rownames(sce), fang_cop_markers2)] 
+# table(rowData(sce)$cop_marker)
+
+pdf(here(plot_dir, "Oligo_dotplot_Mironova2026.pdf"), height = 5, width = 5)
+sce |>
+    scDotPlot(features = Mironova2026_genes$gene,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              # featureAnno = "cop_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = Mironova2026_genes$gene,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              # featureAnno = "cop_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+dev.off()
+
 #### Siletti2023 z-stat ####
 
 Siletti2023_markers <- read_xlsx(here("external-data", "Siletti2023", "science.add7046_table_s3.xlsx")) |>
@@ -392,10 +436,13 @@ dev.off()
 oligo_lineage_markers <- tibble(
     gene = c("PDGFRA", "CSPG4", "OLIG2", "SOX10", "CNP", "MBP", "PLP1", "PTGSD", "RBFOX1", "RASGRF1", "OMG", "LINGO2", "GPM6A", "OPALIN", "MOG"),
     target = c("OPC", "OPC", "OPC", "Oligo.3", "Oligo", "Oligo", "Oligo", "Oligo", "OPC", "Oligo", "Oligo", "Oligo.3", "OPC", "Oligo", "Oligo")) |> 
-  filter(gene %in% rownames(sce_pb))
+  filter(gene %in% rownames(sce_pb)) |>
+  arrange(target, gene)
 
 lineage_z_score <- scale(t(logcounts(sce_pb)[oligo_lineage_markers$gene,]))
 
+
+write_csv(oligo_lineage_markers, file = here(data_dir, "Oligo_lineage_markers.csv"))
 
 lineage_z_score_long <- lineage_z_score |>
   as.data.frame() |>
@@ -419,62 +466,20 @@ readRDS(here("processed-data", "04_snRNA-seq", "38_sn_subcluster_reducedDims_Oli
 
 #### Complie other dataset correlatons ####
 
-dataset_cor_fn  <- map(c(Sadick2022 =  "sadick", Grubman2019 = "grubman"), ~here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", sprintf("erc_v_%s_oligo_cor.csv", .x)))
+dataset_cor_fn  <- map(c(sadick =  "sadick", grubman = "grubman"), ~here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", sprintf("erc_v_%s_oligo_cor.csv", .x)))
+#  
+# "erc_v_sadick_oligo_cor.csv"
 
 ## jakel
-dataset_cor_fn$Jakel2019 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "erc_v_jakel_OligoOPC_cor.csv")
+here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC")
 
-dataset_cor_fn$Green2024 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC2","erc_v_Green2024_OligoOPC2_cor.csv") 
+dataset_cor_fn$green  <-here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC2","erc_v_Green2024_OligoOPC2_cor.csv") 
 
 dataset_cor <- map2(dataset_cor_fn, names(dataset_cor_fn), ~read_csv(.x) |> mutate(dataset = .y))
-dataset_cor$Sadick2022  <- dataset_cor$Sadick2022 |> dplyr::filter(data == "Sadick") |> select(-data) |> mutate(Sadick_cluster = gsub("Sadick_", "", Sadick_cluster))
-dataset_cor$Jakel2019 <- dataset_cor$Jakel2019 |> mutate(Jakel_Oligo = gsub("Jakel_", "", Jakel_Oligo))
+dataset_cor$sadick  <- dataset_cor$sadick |> filter(data == "Sadick") |> select(-data)
 
-dataset_cor_all <- map2_dfr(dataset_cor, names(dataset_cor), ~.x |> 
-  rename_with(~"Other_Oligo", .cols = 2)) |>
-  dplyr::rename(ERC_Oligo = test, n_gene = n, cor_logFC= cor)
-
-## specificity socre
-
-other_oligo_match <- dataset_cor_all |>
-  filter(grepl("Oligo", ERC_Oligo)) |>
-  group_by(dataset, Other_Oligo) |>
-  mutate(rank_cor = rank(cor_logFC)) 
-
-other_oligo_best_match <- other_oligo_match |>
-  slice_max(rank_cor) |>
-  dplyr::rename(best_cor_logFC = cor_logFC) |>
-    left_join(other_oligo_match |>
-             filter(rank_cor == 4) |>
-             select(-rank_cor, -n_gene, ERC_Oligo_next = ERC_Oligo) |>
-             dplyr::rename(next_cor_logFC = cor_logFC)) |>
-  mutate(specif_score = (best_cor_logFC - next_cor_logFC)/best_cor_logFC)
-
-other_oligo_best_match|>
-  arrange(-specif_score) |>
-  filter(dataset == "Green2024")
-
-
-dataset_cor_all <- dataset_cor_all |>
-  left_join(other_oligo_best_match |> select(dataset, ERC_Oligo, Other_Oligo, specif_score))
-
-write_csv(dataset_cor_all, file = here(data_dir, "ERC_Oligo_v_external_data_cor.csv"))
-
-
-max_cor_oligo3 <-  dataset_cor_all |> 
-  filter(ERC_Oligo == "Oligo.3") |> 
-  group_by(dataset) |>
-  slice_max(specif_score) |>
-  mutate(other_oligo = fct_reorder(paste0(dataset, ": ", other_oligo), cor)) |>
-  arrange(other_oligo)
-
-max_cor_oligo.3_barplot <- max_cor_oligo3 |>
-  ggplot(aes(x = cor, y = other_oligo, fill = cor)) +
-  geom_col() +
-  theme_bw() +
-  theme(legend.position = "None") +
-  scale_fill_gradient(low = "white", high = "red", limits = c(0,1)) +
-  labs(x = "correlation\nlogFC marker stats", y = NULL) 
-
-ggsave(max_cor_oligo.3_barplot, filename = here(plot_dir, "max_cor_oligo.3_barplot.png"), height = 3 , width = 3)
-  
+map2_dfr(dataset_cor, names(dataset_cor), ~.x |> 
+  rename_with(~"other_oligo", .cols = 2) |> 
+  filter(test == "Oligo.3") |> 
+  mutate(dataset = .y) |>
+  slice_max(cor))
