@@ -75,37 +75,47 @@ Oligo_marker_colors <- c(OPALIN = "#228277",
 
 
 #### uniform heatmap ####
+dataset_groups <- list(Oligo = c("Sadick2022", "Grubman2019"), OligoOPC = c("Jakel2019"), OligoOPC2 = c("Green2024"))
 
-map(list(Oligo = c("Sadick2022", "Grubman2019"), OligoOPC = ))
+map2(dataset_groups, names(dataset_groups), function(datasets, name){
+  
+  other_data <- dataset_cor_all |> 
+    filter(dataset %in% datasets) |>
+    mutate(ERC_Oligo = droplevels(factor(ERC_Oligo, 
+                                         levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "OPC", "Oligo.3", "Oligo.5", "Oligo.4", "Oligo.1", "Oligo.2")
+                                         )
+                                  )
+           )
+  
+  cor_wide <- other_data |> 
+    arrange(ERC_Oligo) |>
+    select(dataset, ERC_Oligo, Other_Oligo, cor_logFC) |>
+    pivot_wider(names_from = "ERC_Oligo", values_from = "cor_logFC") 
+  
+  cor_wide_matrix <- cor_wide |>
+    select(-dataset) |>
+    column_to_rownames("Other_Oligo") |>
+    as.matrix()
+  
+  other_oligo_anno <- dataset_subtypes |> 
+    filter(dataset %in% datasets) |>
+    select(Other_Oligo, marker) |>
+    column_to_rownames("Other_Oligo")
+  
+  other_oligo_anno <- other_oligo_anno[rownames(cor_wide_matrix),]
+  other_oligo_ra <- rowAnnotation(express = other_oligo_anno, col = list(express = Oligo_marker_colors))
+  
+  pdf(here(plot_dir, sprintf("Other_dataset_cor_%s.pdf", name)), height = 5, width = 5)
+  print(Heatmap(cor_wide_matrix, 
+                name = "logFC cor",
+                right_annotation = other_oligo_ra,
+                row_split = cor_wide$dataset,
+                cluster_columns = FALSE
+  ))
+  dev.off()
+  
+})
 
-other_data <- dataset_cor_all |> filter(dataset %in% c("Sadick2022", "Grubman2019"))
-
-cor_wide <- other_data |> 
-  select(dataset, ERC_Oligo, Other_Oligo, cor_logFC) |>
-  pivot_wider(names_from = "ERC_Oligo", values_from = "cor_logFC") 
-
-cor_wide_matrix <- cor_wide |>
-  select(-dataset) |>
-  column_to_rownames("Other_Oligo") |>
-  as.matrix()
-
-other_anno <- dataset_subtypes |> filter(Other_Oligo %in% colnames(cor))
-
-other_oligo_anno <- dataset_subtypes |> 
-  filter(dataset %in% c("Sadick2022", "Grubman2019")) |>
-  select(Other_Oligo, marker) |>
-  column_to_rownames("Other_Oligo")
-
-other_oligo_anno <- other_oligo_anno[rownames(cor_wide_matrix),]
-other_oligo_ra <- rowAnnotation(express = other_oligo_anno, col = list(express = Oligo_marker_colors))
-
-pdf(here(plot_dir, "Other_dataset_cor_Oligo.pdf"), height = 5, width = 4)
-Heatmap(cor_wide_matrix, 
-        name = "logFC cor",
-        right_annotation = other_oligo_ra,
-        row_split = cor_wide$dataset
-        )
-dev.off()
 
 
 
