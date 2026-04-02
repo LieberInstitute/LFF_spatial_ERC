@@ -454,7 +454,7 @@ erc_v_jakel_cor <- erc_v_jakel |>
     summarise(n = n(),
               cor = cor(logFC, avg_logFC))
 
-write_csv(erc_v_jakel_cor, file = here(data_dir, "erc_v_jakel_OligoOPC_cor.csv"))
+write_csv(erc_v_jakel_cor, file = here(data_dir, sprintf("erc_v_jakel_%s_cor.csv", celltype)))
 
 erc_v_jakel_cor |>
     group_by(test) |> 
@@ -559,9 +559,9 @@ dev.off()
 #### OligoOPC Cor Green2024 ####
 
 Green_Oligo_stats <- readxl::read_xlsx(here("external-data", "Green2024","Green2024_SuppTable2.xlsx"), sheet = "DEGs") |>
-    filter(cell.type == "oligodendroglia",
-!is.na(avg_log2FC)) |>
-    mutate(Green_Oligo = state)
+  filter(cell.type == "oligodendroglia",
+         !is.na(avg_log2FC)) |>
+  mutate(Green_Oligo = state)
 
 Green_Oligo_stats |> count(Green_Oligo)
 
@@ -573,7 +573,7 @@ erc_v_Green_cor <- erc_v_Green |>
     summarise(n = n(),
               cor = cor(logFC, avg_log2FC))
 
-write_csv(erc_v_Green_cor, file = here(data_dir, "erc_v_Green2024_OligoOPC_cor.csv"))
+write_csv(erc_v_Green_cor, file = here(data_dir, sprintf("erc_v_Green2024_%s_cor.csv", celltype)))
 
 erc_v_Green_cor |>
     group_by(test) |> 
@@ -590,10 +590,72 @@ erc_v_Green_cor |>
         column_to_rownames("Green_Oligo") |>
         as.matrix())
 
-pdf(here(plot_dir, "OligoOPC_Green_cor_logFC.pdf"), height = 4, width = 8)
+pdf(here(plot_dir, sprintf("%s_Green_cor_logFC.pdf", celltype)), height = 4, width = 8)
 Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
 dev.off()
 
+## Green vs Jakel
+Jakel_v_Green <- jakel_Oligo_stats |>
+  select(gene, Jakel_Oligo, Jakel_logFC = avg_logFC) |>
+  inner_join(Green_Oligo_stats |>
+               select(gene, Green_Oligo, Green_logFC = avg_log2FC), 
+             relationship = "many-to-many") |>
+  group_by(Jakel_Oligo, Green_Oligo) |>
+  summarise(n = n(),
+            cor = cor(Green_logFC, Jakel_logFC))
+
+Jakel_v_Green |> filter(is.na(cor))
+
+(Jakel_v_Green_cor_wide <- Jakel_v_Green |>
+    select(-n) |>
+    pivot_wider(names_from = "Jakel_Oligo", values_from = "cor") |>
+    column_to_rownames("Green_Oligo") |>
+    as.matrix())
+
+pdf(here(plot_dir, "Jakel_v_Green_cor_logFC.pdf"), height = 4, width = 8)
+Heatmap(t(Jakel_v_Green_cor_wide), name = "logFC cor")
+dev.off()
+
+#### OligoOPC cor Macnair2025 ####
+
+Macnair_oligo_sheets <- readxl::excel_sheets(here("external-data", "Macnair2025", "data_S4B_marker_genes_fine_cell_type.xlsx"))
+Macnair_oligo_sheets <- Macnair_oligo_sheets[grepl("OPC|COP|Oligo", Macnair_oligo_sheets)]
+
+Macnair_oligo_stats <- map_dfr(Macnair_oligo_sheets, ~readxl::read_xlsx(here("external-data", "Macnair2025", "data_S4B_marker_genes_fine_cell_type.xlsx"), sheet = .x)) |>
+  filter(broad_group == "oligo_opc")
+
+Macnair_oligo_stats |> count(broad_group, type_fine)
+
+# Macnair_oligo_stats |> count(is_marker, FDR < 0.05)
+
+erc_v_Macnair <- enrichment_genes |>
+  inner_join(Macnair_oligo_stats |> select(Macnair_Oligo = type_fine, log2fc, gene=symbol), 
+             relationship = "many-to-many")
+
+erc_v_Macnair_cor <- erc_v_Macnair |>
+  group_by(test, Macnair_Oligo) |>
+  summarise(n = n(),
+            cor = cor(logFC, log2fc))
+
+write_csv(erc_v_Macnair_cor, file = here(data_dir, sprintf("erc_v_jakel_%s_cor.csv"), celltype))
+
+erc_v_Macnair_cor |>
+  group_by(test) |> 
+  slice_max(cor)
+
+erc_v_Macnair_cor |>
+  group_by(Macnair_Oligo) |> 
+  slice_max(cor)
+
+(erc_v_Macnair_cor_wide <- erc_v_Macnair_cor |>
+    select(-n) |>
+    pivot_wider(names_from = "test", values_from = "cor") |>
+    column_to_rownames("Macnair_Oligo") |>
+    as.matrix())
+
+pdf(here(plot_dir, sprintf("%s_Macnair_cor_logFC.pdf", celltype)), height = 4, width = 8)
+Heatmap(t(erc_v_Macnair_cor_wide), name = "logFC cor")
+dev.off()
 
 ####  GO analysis ####
 library("org.Hs.eg.db")
