@@ -41,9 +41,10 @@ rownames(sce) <- rowData(sce)$gene_name
 sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
 
 sce$cell_type_anno2 <- sce$cell_type_anno ## keep
+sce$cell_type_anno2 <- droplevels(sce$cell_type_anno2)
+
 sce$cell_type_anno <- as.character(sce$cell_type_anno)
 
-sce$cell_type_anno <- factor(sce$cell_type_anno)
 table(sce$cell_type_anno)
 
 cell_type_colors <- metadata(sce)$cell_type_colors
@@ -73,7 +74,7 @@ if(celltype == "OligoOPC"){
     
 }
 
-table(sce$cell_type_anno)
+table(sce$cell_type_anno, sce$cell_type_anno2)
 
 #### AD risk gene dotplot ####
 
@@ -630,14 +631,16 @@ Macnair_oligo_stats |> count(broad_group, type_fine)
 
 erc_v_Macnair <- enrichment_genes |>
   inner_join(Macnair_oligo_stats |> select(Macnair_Oligo = type_fine, log2fc, gene=symbol), 
-             relationship = "many-to-many")
+             relationship = "many-to-many") 
+
+erc_v_Macnair |> count(Macnair_Oligo)
 
 erc_v_Macnair_cor <- erc_v_Macnair |>
   group_by(test, Macnair_Oligo) |>
   summarise(n = n(),
             cor = cor(logFC, log2fc))
 
-write_csv(erc_v_Macnair_cor, file = here(data_dir, sprintf("erc_v_jakel_%s_cor.csv"), celltype))
+write_csv(erc_v_Macnair_cor, file = here(data_dir, sprintf("erc_v_jakel_%s_cor.csv", celltype)))
 
 erc_v_Macnair_cor |>
   group_by(test) |> 
@@ -656,6 +659,47 @@ erc_v_Macnair_cor |>
 pdf(here(plot_dir, sprintf("%s_Macnair_cor_logFC.pdf", celltype)), height = 4, width = 8)
 Heatmap(t(erc_v_Macnair_cor_wide), name = "logFC cor")
 dev.off()
+
+#### OligoOPC vs OligoOPC2 stats ####
+if(celltype == "OligoOPC2"){
+  OligoOPC_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "modeling_results_subtype-OligoOPC.rds"))
+  
+  enrichment_genes_OligoOPC <- sig_genes_extract(
+    n = nrow(sce_pseudo),
+    modeling_results = OligoOPC_modeling,
+    model_type = "enrichment",
+    reverse = FALSE,
+    sce_layer = sce_pseudo,
+    gene_name = "gene_name"
+  )
+  
+  OligoOPC_cor <- enrichment_genes |>
+    select(test, gene, stat, fdr, logFC) |>
+    inner_join(enrichment_genes_OligoOPC |>
+                 select(test1 = test, gene, stat1 = stat, fdr1 = fdr, logFC1 = logFC),
+               relationship = "many-to-many") |>
+    group_by(test, test1) |>
+    summarise(n = n(),
+              cor = cor(logFC, logFC1),
+              cor_t = cor(stat, stat1)
+              )
+  
+  OligoOPC_cor |>
+    group_by(test1) |>
+    slice_max(cor)
+  
+  (OligoOPC_cor_wide <- OligoOPC_cor |>
+      select(test, test1, cor) |>
+      pivot_wider(names_from = "test", values_from = "cor") |>
+      column_to_rownames("test1") |>
+      as.matrix())
+  
+  pdf(here(plot_dir, "OligoOPC_cor_logFC.pdf"), height = 4, width = 8)
+  Heatmap(t(OligoOPC_cor_wide), name = "logFC cor")
+  dev.off()
+  
+ }
+
 
 ####  GO analysis ####
 library("org.Hs.eg.db")
