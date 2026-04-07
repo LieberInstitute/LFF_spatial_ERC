@@ -43,9 +43,9 @@ logcounts(sce) <- as(logcounts(sce), "CsparseMatrix")
 
 seurat_obj <- as.Seurat(sce, counts = "counts", data = "logcounts")
 
-p <- DimPlot(seurat_obj, group.by='cell_type_anno', label=TRUE) +
+p <- DimPlot(seurat_obj, group.by='cell_type_broad', label=TRUE) +
   umap_theme() + 
-  scale_color_manual(values = metadata(sce)$cell_type_colors$anno) +
+  scale_color_manual(values = metadata(sce)$cell_type_colors$broad) +
   ggtitle('Huuki-Myers et al., ERC') + 
   NoLegend()
 
@@ -71,20 +71,21 @@ seurat_obj <- MetacellsByGroups(
   reduction = 'HARMONY', # select the dimensionality reduction to perform KNN on
   k = 25, # nearest-neighbors parameter
   max_shared = 10, # maximum number of shared cells between two metacells
-  ident.group = 'cell_type_anno' # set the Idents of the metacell seurat object
+  ident.group = 'cell_type_broad' # set the Idents of the metacell seurat object
 )
 
 # normalize metacell expression matrix:
+message(Sys.time(), " - Normalize")
 seurat_obj <- NormalizeMetacells(seurat_obj)
 
 #### Co-expression network analysis ####
-
+message(Sys.time(), " - Specify the expression matrix")
 # specify the expression matrix that we will use for network analysis - only include Oligo
 seurat_obj <- SetDatExpr(
   seurat_obj,
   group_name = "Oligo", # the name of the group of interest in the group.by column
   group.by='cell_type_broad', # the metadata column containing the cell type info. This same column should have also been used in MetacellsByGroups
-  assay = 'RNA', # using RNA assay
+  assay = 'logcounts', # using RNA assay
   layer = 'data' # using normalized data
 )
 
