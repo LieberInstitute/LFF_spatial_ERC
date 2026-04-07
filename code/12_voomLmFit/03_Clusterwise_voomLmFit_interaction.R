@@ -13,7 +13,8 @@ library("sessioninfo")
 
 # Import command-line parameters
 scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type"),
+    c("datatype", "d", "1", "character", "Data type",
+      "interaction", "i", "1", "character", "Interaction type"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -45,6 +46,10 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 #### Load the data ####
 sce_pb <- readRDS(pb_fn)
 dim(sce_pb)
+
+## Drop sample Br1289
+sce_pb <- sce_pb[,sce_pb$BrNum != 'Br1289']
+
 table(sce_pb$registration_variable)
 
 clusters <- levels(sce_pb$registration_variable)
@@ -57,7 +62,17 @@ lmf_summary <- map_dfr(clusters, function(clus){
     dge <- sce_pb[,sce_pb$registration_variable == clus]
 
     # des <- model.matrix(~APOE_carrier_syn*Anc_Afr + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
-    des <- model.matrix(~APOE_carrier_syn*Ancestry + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+    
+    if(opt$interaction == "Anc"){
+      des <- model.matrix(~APOE_carrier_syn*Ancestry + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+      my_coef = "APOE_carrier_E4:AncestryEA"
+      message("APOE * Ancestry Interaction, coef: ", my_coef)
+    } else if(opt$interaction == "Age"){
+      des <- model.matrix(~APOE_carrier_syn*Age + Sex + Ancestry + pseudo_expr_chrM_ratio, data = colData(dge))
+      my_coef = "APOE_carrier_E4:Age"
+      message("APOE * Age Interaction, coef: ", my_coef)
+    }
+    
     des <- as.data.frame(des)
     
     # filter low expression genes
@@ -86,7 +101,7 @@ lmf_summary <- map_dfr(clusters, function(clus){
     
     v.swt.e.tt <- topTable(v.swt.fit.e, 
                            # coef = "APOE_carrier_E4:Anc_Afr",
-                           coef = c("APOE_carrier_E4:AncestryEA"),
+                           coef = c(my_coef),
                            number=Inf, 
                            adjust.method = "BH") |>
         mutate(data_type = opt$datatype, 
@@ -97,7 +112,7 @@ lmf_summary <- map_dfr(clusters, function(clus){
     head(v.swt.e.tt)
     
     message("Done - Save data")
-    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_interaction_%s_%s.rds", opt$datatype, clus)))
+    saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_interaction_%s_%s_%s.rds", opt$interaction, opt$datatype, clus)))
     
     
     return(tibble(cluster = clus, 
@@ -108,11 +123,9 @@ lmf_summary <- map_dfr(clusters, function(clus){
            )
 })
 
-write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_interacton_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
+write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_interacton_FDR05_summary_%s-%s.csv", opt$interaction, opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_fine', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_fine")
-# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_Visium', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype Visium")
+# slurmjobs::job_single('03_Clusterwise_voomLmFit_interaction_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad --interaction Age")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
