@@ -42,6 +42,7 @@ counts(sce) <- as(counts(sce), "CsparseMatrix")
 logcounts(sce) <- as(logcounts(sce), "CsparseMatrix")
 
 seurat_obj <- as.Seurat(sce, counts = "counts", data = "logcounts")
+Assays(seurat_obj)
 
 p <- DimPlot(seurat_obj, group.by='cell_type_broad', label=TRUE) +
   umap_theme() + 
@@ -58,7 +59,7 @@ seurat_obj <- SetupForWGCNA(
   seurat_obj,
   gene_select = "fraction", # the gene selection approach
   fraction = 0.05, # fraction of cells that a gene needs to be expressed in order to be included
-  wgcna_name = "tutorial" # the name of the hdWGCNA experiment
+  wgcna_name = "ERC_sn" # the name of the hdWGCNA experiment
 )
 
 #### Construct metacells ####
@@ -85,7 +86,7 @@ seurat_obj <- SetDatExpr(
   seurat_obj,
   group_name = "Oligo", # the name of the group of interest in the group.by column
   group.by='cell_type_broad', # the metadata column containing the cell type info. This same column should have also been used in MetacellsByGroups
-  assay = 'logcounts', # using RNA assay
+  assay = NULL, # using RNA assay
   layer = 'data' # using normalized data
 )
 
