@@ -67,7 +67,7 @@ message(Sys.time(), " - Construct metacells")
 # construct metacells  in each group
 seurat_obj <- MetacellsByGroups(
   seurat_obj = seurat_obj,
-  group.by = c("cell_type_anno", "BrNum"), # specify the columns in seurat_obj@meta.data to group by
+  group.by = c("cell_type_broad", "BrNum"), # specify the columns in seurat_obj@meta.data to group by
   reduction = 'HARMONY', # select the dimensionality reduction to perform KNN on
   k = 25, # nearest-neighbors parameter
   max_shared = 10, # maximum number of shared cells between two metacells
@@ -105,6 +105,17 @@ ggsave(wrap_plots(plot_list, ncol=2), filename = here(data_dir, "TestSoftPowers.
 power_table <- GetPowerTable(seurat_obj)
 head(power_table)
 
+## Construct co-expression network
+message(Sys.time(), " - ConstructNetwork")
+seurat_obj <- ConstructNetwork(
+  seurat_obj,
+  tom_name = 'Oligo' # name of the topoligical overlap matrix written to disk
+)
+
+pdf("hdWGCNA_Oligo_Dendrogram.pdf")
+PlotDendrogram(seurat_obj, main='Oligo hdWGCNA Dendrogram')
+dev.off()
+
 #### Module Eigengenes and Connectivity ####
 message(Sys.time(), " - Module Eigengenes")
 # need to run ScaleData first or else harmony throws an error:
@@ -127,7 +138,8 @@ MEs <- GetMEs(seurat_obj, harmonized=FALSE)
 # compute eigengene-based connectivity (kME):
 seurat_obj <- ModuleConnectivity(
   seurat_obj,
-  group.by = 'cell_type_anno', group_name = 'Oligo'
+  group.by = 'cell_type_anno', 
+  group_name = 'Oligo'
 )
 
 # plot genes ranked by kME for each module
