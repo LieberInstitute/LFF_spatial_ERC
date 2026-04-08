@@ -80,6 +80,7 @@ message(Sys.time(), " - Normalize")
 seurat_obj <- NormalizeMetacells(seurat_obj)
 
 #### Co-expression network analysis - setDatExpr, SoftPower,  ConstructNetwork ####
+
 message(Sys.time(), " - Specify the expression matrix")
 # specify the expression matrix that we will use for network analysis - only include Oligo
 seurat_obj <- SetDatExpr(
@@ -106,25 +107,33 @@ ggsave(wrap_plots(plot_list, ncol=2), filename = here(plot_dir, "TestSoftPowers.
 power_table <- GetPowerTable(seurat_obj)
 head(power_table)
 
-write.csv(power_table, file = here(data_dir, "power_tabel.csv"))
+write.csv(power_table, file = here(data_dir, "power_table.csv"))
 
 ## Construct co-expression network
 message(Sys.time(), " - ConstructNetwork")
 seurat_obj <- ConstructNetwork(
   seurat_obj,
   soft_power = 5,
-  tom_name = 'Oligo' # name of the topoligical overlap matrix written to disk
+  tom_name = 'Oligo', # name of the topoligical overlap matrix written to disk
+  tom_outdir = here(data_dir, "TOM")
 )
 
 pdf(here(plot_dir, "hdWGCNA_Oligo_Dendrogram.pdf"))
 PlotDendrogram(seurat_obj, main='Oligo hdWGCNA Dendrogram')
 dev.off()
 
-#### Module Eigengenes and Connectivity ####
-message(Sys.time(), " - Module Eigengenes")
-# need to run ScaleData first or else harmony throws an error:
-#seurat_obj <- ScaleData(seurat_obj, features=VariableFeatures(seurat_obj))
+# load(here("code", "23_hdWGCNA", "TOM", "Oligo_TOM.rda"), verbose = TRUE)
+# consTomDS
 
+message(Sys.time(), " - Save data as backup pre-ME")
+saveRDS(seurat_obj, file=here(data_dir, 'hdWGCNA_object.rds'))
+
+#### Module Eigengenes and Connectivity ####
+message(Sys.time(), " - Scale data")
+# need to run ScaleData first or else harmony throws an error:
+seurat_obj <- ScaleData(seurat_obj, features=VariableFeatures(seurat_obj))
+
+message(Sys.time(), " - Module Eigengenes")
 # compute all MEs in the full single-cell dataset
 seurat_obj <- ModuleEigengenes(
   seurat_obj,
@@ -132,13 +141,14 @@ seurat_obj <- ModuleEigengenes(
 )
 
 # harmonized module eigengenes:
+message(Sys.time(), " - GetMEs")
 hMEs <- GetMEs(seurat_obj)
 
 # module eigengenes:
 MEs <- GetMEs(seurat_obj, harmonized=FALSE)
 
 #### Compute module connectivity ####
-
+message(Sys.time(), " - ModuleConnectivity")
 # compute eigengene-based connectivity (kME):
 seurat_obj <- ModuleConnectivity(
   seurat_obj,
@@ -147,6 +157,7 @@ seurat_obj <- ModuleConnectivity(
 )
 
 # plot genes ranked by kME for each module
+message(Sys.time(), " - plot genes ranked by kME")
 p <- PlotKMEs(seurat_obj, ncol=5)
 
 pdf(here(plot_dir, "genes_ranked_kME.pdf"))
@@ -155,7 +166,7 @@ dev.off()
 
 
 ## Module assignment 
-
+message(Sys.time(), " - Module assignment")
 # get the module assignment table:
 modules <- GetModules(seurat_obj) %>% subset(module != 'grey')
 
@@ -167,6 +178,7 @@ hub_df <- GetHubGenes(seurat_obj, n_hubs = 10)
 
 head(hub_df)
 
+message(Sys.time(), " - Save data")
 saveRDS(seurat_obj, file=here(data_dir, 'hdWGCNA_object.rds'))
 
 # slurmjobs::job_single(name = "01_sn_hdWGCNA", create_shell = TRUE, memory = "50G", command = "Rscript 01_sn_hdWGCNA.R")
