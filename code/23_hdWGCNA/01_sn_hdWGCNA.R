@@ -79,7 +79,7 @@ seurat_obj <- MetacellsByGroups(
 message(Sys.time(), " - Normalize")
 seurat_obj <- NormalizeMetacells(seurat_obj)
 
-#### Co-expression network analysis ####
+#### Co-expression network analysis - setDatExpr, SoftPower,  ConstructNetwork ####
 message(Sys.time(), " - Specify the expression matrix")
 # specify the expression matrix that we will use for network analysis - only include Oligo
 seurat_obj <- SetDatExpr(
@@ -101,19 +101,22 @@ seurat_obj <- TestSoftPowers(
 plot_list <- PlotSoftPowers(seurat_obj)
 
 # assemble with patchwork
-ggsave(wrap_plots(plot_list, ncol=2), filename = here(data_dir, "TestSoftPowers.png"))
+ggsave(wrap_plots(plot_list, ncol=2), filename = here(plot_dir, "TestSoftPowers.png"))
 
 power_table <- GetPowerTable(seurat_obj)
 head(power_table)
+
+write.csv(power_table, file = here(data_dir, "power_tabel.csv"))
 
 ## Construct co-expression network
 message(Sys.time(), " - ConstructNetwork")
 seurat_obj <- ConstructNetwork(
   seurat_obj,
+  soft_power = 5,
   tom_name = 'Oligo' # name of the topoligical overlap matrix written to disk
 )
 
-pdf("hdWGCNA_Oligo_Dendrogram.pdf")
+pdf(here(plot_dir, "hdWGCNA_Oligo_Dendrogram.pdf"))
 PlotDendrogram(seurat_obj, main='Oligo hdWGCNA Dendrogram')
 dev.off()
 
