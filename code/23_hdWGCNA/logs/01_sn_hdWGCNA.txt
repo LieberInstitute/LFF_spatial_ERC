@@ -1,0 +1,413 @@
+**** Job starts ****
+Tue Apr  7 05:40:14 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 30667543
+Job name: 01_sn_hdWGCNA
+Node name: compute-140
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SeuratObject
+Loading required package: sp
+
+Attaching package: ‘SeuratObject’
+
+The following objects are masked from ‘package:base’:
+
+    intersect, t
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.0     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+Attaching package: ‘cowplot’
+
+The following object is masked from ‘package:lubridate’:
+
+    stamp
+
+
+Attaching package: ‘patchwork’
+
+The following object is masked from ‘package:cowplot’:
+
+    align_plots
+
+Loading required package: dynamicTreeCut
+Loading required package: fastcluster
+
+Attaching package: ‘fastcluster’
+
+The following object is masked from ‘package:stats’:
+
+    hclust
+
+
+Attaching package: ‘WGCNA’
+
+The following object is masked from ‘package:stats’:
+
+    cor
+
+Loading required package: harmony
+Loading required package: Rcpp
+Loading required package: ggrepel
+Loading required package: igraph
+
+Attaching package: ‘igraph’
+
+The following objects are masked from ‘package:lubridate’:
+
+    %--%, union
+
+The following objects are masked from ‘package:dplyr’:
+
+    as_data_frame, groups, union
+
+The following objects are masked from ‘package:purrr’:
+
+    compose, simplify
+
+The following object is masked from ‘package:tidyr’:
+
+    crossing
+
+The following object is masked from ‘package:tibble’:
+
+    as_data_frame
+
+The following object is masked from ‘package:Seurat’:
+
+    components
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+Loading required package: ggraph
+
+Attaching package: ‘ggraph’
+
+The following object is masked from ‘package:sp’:
+
+    geometry
+
+Loading required package: tidygraph
+
+Attaching package: ‘tidygraph’
+
+The following object is masked from ‘package:igraph’:
+
+    groups
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+Loading required package: UCell
+Loading required package: GeneOverlap
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:igraph’:
+
+    components, union
+
+The following object is masked from ‘package:lubridate’:
+
+    as.difftime
+
+The following object is masked from ‘package:dplyr’:
+
+    explain
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:igraph’:
+
+    normalize, path
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:tidygraph’:
+
+    active, rename
+
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
+The following objects are masked from ‘package:dplyr’:
+
+    first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:tidygraph’:
+
+    slice
+
+The following object is masked from ‘package:lubridate’:
+
+    %within%
+
+The following objects are masked from ‘package:dplyr’:
+
+    collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
+
+The following object is masked from ‘package:sp’:
+
+    %over%
+
+Loading required package: Seqinfo
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following object is masked from ‘package:dplyr’:
+
+    count
+
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘SummarizedExperiment’
+
+The following object is masked from ‘package:Seurat’:
+
+    Assays
+
+The following object is masked from ‘package:SeuratObject’:
+
+    Assays
+
+Loading required package: enrichR
+Welcome to enrichR
+Checking connections ... 
+Enrichr ... Connection is Live!
+FlyEnrichr ... Connection is Live!
+WormEnrichr ... Connection is Live!
+YeastEnrichr ... Connection is Live!
+FishEnrichr ... Connection is Live!
+OxEnrichr ... Connection is Live!
+Warning messages:
+1: replacing previous import ‘GenomicRanges::intersect’ by ‘SeuratObject::intersect’ when loading ‘hdWGCNA’ 
+2: replacing previous import ‘GenomicRanges::setdiff’ by ‘dplyr::setdiff’ when loading ‘hdWGCNA’ 
+3: replacing previous import ‘GenomicRanges::union’ by ‘dplyr::union’ when loading ‘hdWGCNA’ 
+4: replacing previous import ‘dplyr::as_data_frame’ by ‘igraph::as_data_frame’ when loading ‘hdWGCNA’ 
+5: replacing previous import ‘Seurat::components’ by ‘igraph::components’ when loading ‘hdWGCNA’ 
+6: replacing previous import ‘dplyr::groups’ by ‘igraph::groups’ when loading ‘hdWGCNA’ 
+7: replacing previous import ‘dplyr::union’ by ‘igraph::union’ when loading ‘hdWGCNA’ 
+8: replacing previous import ‘GenomicRanges::subtract’ by ‘magrittr::subtract’ when loading ‘hdWGCNA’ 
+9: replacing previous import ‘Matrix::as.matrix’ by ‘proxy::as.matrix’ when loading ‘hdWGCNA’ 
+10: replacing previous import ‘igraph::groups’ by ‘tidygraph::groups’ when loading ‘hdWGCNA’ 
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Allowing parallel execution with up to 8 working processes.
+2026-04-07 17:40:27.073913 - Load HDF5 sce
+2026-04-07 17:40:31.611633 - Convert data
+Warning: The column names of the counts matrix is NULL. Setting cell names to cell_columnidx (e.g 'cell_1').
+Warning: The column names of the data matrix is NULL. Setting cell names to cell_columnidx (e.g 'cell_1').
+Warning messages:
+1: Keys should be one or more alphanumeric characters followed by an underscore, setting key from PC to PC_ 
+2: Keys should be one or more alphanumeric characters followed by an underscore, setting key from TSNE to TSNE_ 
+3: Keys should be one or more alphanumeric characters followed by an underscore, setting key from UMAP to UMAP_ 
+An object of class "SimpleAssays"
+Slot "data":
+List of length 1
+
+Rasterizing points since number of points exceeds 100,000.
+To disable this behavior set `raster=FALSE`
+Saving 7 x 7 in image
+2026-04-07 17:50:52.181244 - Set up for WGCNA
+2026-04-07 17:53:00.49782 - Construct metacells
+Warning message:
+In MetacellsByGroups(seurat_obj = seurat_obj, group.by = c("cell_type_broad",  :
+  Removing the following groups that did not meet min_cells: Astro#Br3974, Excit#Br3974, Excit#Br5276, Inhib#Br5276, Macro#Br1039, Macro#Br1289, Macro#Br1556, Macro#Br1691, Macro#Br1706, Macro#Br2305, Macro#Br2582, Macro#Br3974, Macro#Br5161, Macro#Br5212, Macro#Br5276, Macro#Br5367, Macro#Br5415, Macro#Br5426, Macro#Br5460, Macro#Br5517, Macro#Br5529, Macro#Br5599, Macro#Br5634, Macro#Br5712, Macro#Br5832, Macro#Br5854, Macro#Br5941, Macro#Br6085, Macro#Br6098, Macro#Br6161, Macro#Br6263, Macro#Br6321, Macro#Br6423, Macro#Br6476, Macro#Br6538, Micro#Br1691, Micro#Br5276, Micro#Br6161, Vasc#Br1039, Vasc#Br1289, Vasc#Br1556, Vasc#Br1691, Vasc#Br1706, Vasc#Br2305, Vasc#Br2582, Vasc#Br3974, Vasc#Br5161, Vasc#Br5212, Vasc#Br5276, Vasc#Br5415, Vasc#Br5426, Vasc#Br5517, Vasc#Br5529, Vasc#Br5599, Vasc#Br5634, Vasc#Br5712, Vasc#Br5832, Vasc#Br5854, Vasc#Br5941, Vasc#Br6085, Vasc#Br6161, Vasc#Br6263, Vasc#Br6321, Vasc#Br6423, Vasc#Br6476, Vasc#Br6538
+2026-04-07 18:23:33.765721 - Normalize
+Normalizing layer: counts
+Performing log-normalization
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+2026-04-07 18:24:00.370245 - Specify the expression matrix
+Warning messages:
+1: In SetDatExpr(seurat_obj, group_name = "Oligo", group.by = "cell_type_broad",  :
+  assay not specified, trying to use assay originalexp
+2: In asMethod(object) :
+  sparse->dense coercion: allocating vector of size 2.4 GiB
+2026-04-07 18:24:22.381796 - Test soft power
+pickSoftThreshold: will use block size 3222.
+ pickSoftThreshold: calculating connectivity for given powers...
+   ..working on genes 1 through 3222 of 13885
+   ..working on genes 3223 through 6444 of 13885
+   ..working on genes 6445 through 9666 of 13885
+   ..working on genes 9667 through 12888 of 13885
+   ..working on genes 12889 through 13885 of 13885
+   Power SFT.R.sq  slope truncated.R.sq  mean.k. median.k.  max.k.
+1      1   0.0645  20.30          0.971 6.99e+03  6.99e+03 7230.00
+2      2   0.0487  -6.83          0.835 3.54e+03  3.52e+03 3890.00
+3      3   0.4080 -11.00          0.714 1.80e+03  1.78e+03 2180.00
+4      4   0.7420  -9.66          0.771 9.20e+02  9.01e+02 1280.00
+5      5   0.9030  -7.92          0.893 4.74e+02  4.57e+02  797.00
+6      6   0.9680  -6.45          0.959 2.46e+02  2.32e+02  525.00
+7      7   0.9700  -5.14          0.961 1.29e+02  1.18e+02  362.00
+8      8   0.9530  -4.27          0.944 6.88e+01  6.03e+01  261.00
+9      9   0.9500  -3.62          0.944 3.71e+01  3.08e+01  194.00
+10    10   0.9590  -3.13          0.959 2.04e+01  1.58e+01  148.00
+11    12   0.9580  -2.52          0.976 6.64e+00  4.17e+00   91.10
+12    14   0.9310  -2.17          0.979 2.42e+00  1.11e+00   59.20
+13    16   0.9290  -1.89          0.991 1.01e+00  3.00e-01   39.80
+14    18   0.9280  -1.72          0.995 4.74e-01  8.15e-02   27.50
+15    20   0.9160  -1.64          0.987 2.46e-01  2.25e-02   19.40
+16    22   0.9100  -1.59          0.975 1.38e-01  6.25e-03   13.90
+17    24   0.9170  -1.57          0.994 8.13e-02  1.76e-03   10.10
+18    26   0.9240  -1.52          0.996 4.99e-02  5.00e-04    7.47
+19    28   0.9250  -1.51          0.989 3.17e-02  1.44e-04    5.57
+20    30   0.9210  -1.48          0.981 2.06e-02  4.20e-05    4.19
+  Power   SFT.R.sq      slope truncated.R.sq   mean.k. median.k.    max.k.
+1     1 0.06452313  20.291551      0.9708902 6991.1220 6987.3586 7228.4851
+2     2 0.04873383  -6.829170      0.8351759 3536.6280 3523.4262 3888.2391
+3     3 0.40762416 -10.976965      0.7141975 1798.4572 1780.2969 2179.4850
+4     4 0.74151497  -9.664588      0.7709257  920.0886  901.1745 1277.5241
+5     5 0.90251720  -7.918199      0.8927673  474.0738  456.9350  796.7729
+6     6 0.96801649  -6.453301      0.9593395  246.3560  232.1682  524.6036
+Warning message:
+The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+ℹ Please use the `linewidth` argument instead.
+ℹ The deprecated feature was likely used in the hdWGCNA package.
+  Please report the issue to the authors. 
+Saving 7 x 7 in image
+  Power   SFT.R.sq      slope truncated.R.sq   mean.k. median.k.    max.k.
+1     1 0.06452313  20.291551      0.9708902 6991.1220 6987.3586 7228.4851
+2     2 0.04873383  -6.829170      0.8351759 3536.6280 3523.4262 3888.2391
+3     3 0.40762416 -10.976965      0.7141975 1798.4572 1780.2969 2179.4850
+4     4 0.74151497  -9.664588      0.7709257  920.0886  901.1745 1277.5241
+5     5 0.90251720  -7.918199      0.8927673  474.0738  456.9350  796.7729
+6     6 0.96801649  -6.453301      0.9593395  246.3560  232.1682  524.6036
+2026-04-08 08:39:36.828742 - ConstructNetwork
+Soft power not provided. Automatically using the lowest power that meets 0.8 scale-free topology fit. Using soft_power = 5
+ Calculating consensus modules and module eigengenes block-wise from all genes
+ Calculating topological overlaps block-wise from all genes
+   Flagging genes and samples with too many missing values...
+    ..step 1
+    TOM calculation: adjacency..
+    ..will use 8 parallel threads.
+     Fraction of slow calculations: 0.000000
+    ..connectivity..
+    ..matrix multiplication (system BLAS)..
+    ..normalization..
+    ..done.
+ ..Working on block 1 .
+ ..Working on block 1 .
+ ..merging consensus modules that are too close..
+null device 
+          1 
+2026-04-08 13:00:26.198136 - Module Eigengenes
+Error in ModuleEigengenes(seurat_obj, group.by.vars = "BrNum") : 
+  Need to run ScaleData before running ModuleEigengenes with group.by.vars option.
+Execution halted
