@@ -13,6 +13,7 @@ library("patchwork")
 library("WGCNA")
 library("hdWGCNA")
 
+library("qs2")
 library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
@@ -129,6 +130,14 @@ message(Sys.time(), " - Save data as backup pre-ME")
 saveRDS(seurat_obj, file=here(data_dir, 'hdWGCNA_object.rds'))
 
 #### Module Eigengenes and Connectivity ####
+message(Sys.time(), " - Check TOM file")
+## get TOM data
+# TOM file was messed up 
+GetNetworkData(seurat_obj, wgcna_name)$TOMFiles
+seurat_obj@misc[['ERC_sn']][["wgcna_net"]][["TOMFiles"]] <- here(data_dir, "TOM", "Oligo_TOM.rda")
+
+TOM <- GetTOM(seurat_obj)
+
 message(Sys.time(), " - Scale data")
 # need to run ScaleData first or else harmony throws an error:
 seurat_obj <- ScaleData(seurat_obj, features=VariableFeatures(seurat_obj))
@@ -149,6 +158,9 @@ MEs <- GetMEs(seurat_obj, harmonized=FALSE)
 
 #### Compute module connectivity ####
 message(Sys.time(), " - ModuleConnectivity")
+
+TOM <- GetTOM(seurat_obj)
+
 # compute eigengene-based connectivity (kME):
 seurat_obj <- ModuleConnectivity(
   seurat_obj,
@@ -168,7 +180,7 @@ dev.off()
 ## Module assignment 
 message(Sys.time(), " - Module assignment")
 # get the module assignment table:
-modules <- GetModules(seurat_obj) %>% subset(module != 'grey')
+modules <- GetModules(seurat_obj) |> subset(module != 'grey')
 
 # show the first 6 columns:
 head(modules[,1:6])
@@ -179,7 +191,9 @@ hub_df <- GetHubGenes(seurat_obj, n_hubs = 10)
 head(hub_df)
 
 message(Sys.time(), " - Save data")
-saveRDS(seurat_obj, file=here(data_dir, 'hdWGCNA_object.rds'))
+qs2::qs_save(sce, file = here(data_dir, "hdWGCNA_object.qs2"))
+message(Sys.time(), " - Done save qs2")
+
 
 # slurmjobs::job_single(name = "01_sn_hdWGCNA", create_shell = TRUE, memory = "50G", command = "Rscript 01_sn_hdWGCNA.R")
 
