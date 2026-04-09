@@ -36,6 +36,9 @@ enableWGCNAThreads(nThreads = 8)
 #### Read in Data ####
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
+
+sce <- sce[!duplicated(rowData(sce)$gene_name),]
+
 rownames(sce) <- rowData(sce)$gene_name
 
 # Convert to Seurat
