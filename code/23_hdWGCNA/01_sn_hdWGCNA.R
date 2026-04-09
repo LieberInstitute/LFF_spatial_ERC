@@ -36,6 +36,7 @@ enableWGCNAThreads(nThreads = 8)
 #### Read in Data ####
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
+rownames(sce) <- rowData(sce)$gene_name
 
 # Convert to Seurat
 message(Sys.time(), " - Convert data")
@@ -134,7 +135,7 @@ message(Sys.time(), " - Check TOM file")
 ## get TOM data
 # TOM file was messed up 
 GetNetworkData(seurat_obj, wgcna_name)$TOMFiles
-seurat_obj@misc[['ERC_sn']][["wgcna_net"]][["TOMFiles"]] <- here(data_dir, "TOM", "Oligo_TOM.rda")
+seurat_obj@misc[['ERC_sn']][["wgcna_net"]][["TOMFiles"]] <- here("processed-data", "23_hdWGCNA", "01_sn_hdWGCNA", "TOM", "Oligo_TOM.rda")
 
 TOM <- GetTOM(seurat_obj)
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=200G
+#SBATCH --mem=350G
 #SBATCH --job-name=01_sn_hdWGCNA
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 2-00:00:00
 #SBATCH -o logs/01_sn_hdWGCNA.txt
 #SBATCH -e logs/01_sn_hdWGCNA.txt
 #SBATCH --mail-type=ALL
