@@ -97,22 +97,24 @@ seurat_obj <- SetDatExpr(
 )
 
 message(Sys.time(), " - Test soft power")
-# Test different soft powers:
-seurat_obj <- TestSoftPowers(
-  seurat_obj,
-  networkType = 'signed' # you can also use "unsigned" or "signed hybrid"
-)
+## Test different soft powers:
+## skip already ran soft_power=5
 
-# plot the results:
-plot_list <- PlotSoftPowers(seurat_obj)
-
-# assemble with patchwork
-ggsave(wrap_plots(plot_list, ncol=2), filename = here(plot_dir, "TestSoftPowers.png"))
-
-power_table <- GetPowerTable(seurat_obj)
-head(power_table)
-
-write.csv(power_table, file = here(data_dir, "power_table.csv"))
+# seurat_obj <- TestSoftPowers(
+#   seurat_obj,
+#   networkType = 'signed' # you can also use "unsigned" or "signed hybrid"
+# )
+# 
+# # plot the results:
+# plot_list <- PlotSoftPowers(seurat_obj)
+# 
+# # assemble with patchwork
+# ggsave(wrap_plots(plot_list, ncol=2), filename = here(plot_dir, "TestSoftPowers.png"))
+# 
+# power_table <- GetPowerTable(seurat_obj)
+# head(power_table)
+# 
+# write.csv(power_table, file = here(data_dir, "power_table.csv"))
 
 ## Construct co-expression network
 message(Sys.time(), " - ConstructNetwork")
@@ -120,7 +122,8 @@ seurat_obj <- ConstructNetwork(
   seurat_obj,
   soft_power = 5,
   tom_name = 'Oligo', # name of the topoligical overlap matrix written to disk
-  tom_outdir = here(data_dir, "TOM")
+  tom_outdir = here(data_dir, "TOM"),
+  overwrite_tom = TRUE
 )
 
 pdf(here(plot_dir, "hdWGCNA_Oligo_Dendrogram.pdf"))
