@@ -10,7 +10,7 @@
 #SBATCH --array=1-6%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_datatype=(Visium sn-broad sn-fine)
+all_datatype=(Visium sn_broad sn_fine)
 datatype=${all_datatype[$(( $SLURM_ARRAY_TASK_ID / 2 % 3 ))]}
 
 all_interaction=(Anc Age)

@@ -255,13 +255,13 @@ write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%
 # slurmjobs::job_single('05_compile_DGE_interaction_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 05_compile_DGE_interaction --datatype sn_broad")
 # slurmjobs::job_single('05_compile_DGE_interaction_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 05_compile_DGE_interaction --datatype Visium")
 
-slurmjobs::job_loop(loops = list(datatype = c("Visium", "sn-broad", "sn-fine"),
-                                 interaction = c("Anc", "Age")),
-                    name = "05_compile_DGE_interaction",
-                    memory = "10G",
-                    create_shell = TRUE,
-                    create_script = FALSE
-)
+# slurmjobs::job_loop(loops = list(datatype = c("Visium", "sn-broad", "sn-fine"),
+#                                  interaction = c("Anc", "Age")),
+#                     name = "05_compile_DGE_interaction",
+#                     memory = "10G",
+#                     create_shell = TRUE,
+#                     create_script = FALSE
+# )
 
 #### Reproducibility information ####
 print("Reproducibility information:")
