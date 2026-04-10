@@ -82,36 +82,49 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~.x |>
                                            vlmf_adj.P.Val = adj.P.Val,
                                            vlmf_B = B
                              ))  |>
+  as_tibble()
+
+if(opt$datatype == "Visium"){
+  vlmf_data_tb <- vlmf_data_tb |>
     mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels),
-           mod = paste("interaction", opt$interaction)) |>
-    as_tibble()
+                         mod = paste("interaction", opt$interaction)) 
+} else {
+  vlmf_data_tb <- vlmf_data_tb |>
+    mutate(cluster = factor(cluster, levels = cluster_levels),
+           mod = paste("interaction", opt$interaction)) 
+}
+    
 
 vlmf_data_tb|> count(cluster)
 vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.1) |> count(cluster)
+
 vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC)
+## check risk genes
+vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol)|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC)
 
-
-vlmf_model_summary <- vlmf_data_tb |> 
+(vlmf_model_summary <- vlmf_data_tb |> 
     group_by(mod, cluster) |>
     summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0),
               n_FDR10 = sum(vlmf_adj.P.Val < 0.1),
-              n_FDR20 = sum(vlmf_adj.P.Val < 0.2))
+              n_FDR20 = sum(vlmf_adj.P.Val < 0.2)) |>
+  arrange(-n_FDR05))
                                
 
 # ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
     ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
     geom_col() +
-    geom_text(aes(label = n_FDR05), vjust=-.5) +
+    geom_text(aes(label = ifelse(n_FDR05 > 0, n_FDR05, ""), vjust=-.5)) +
     scale_fill_manual(values = cluster_colors) +
     # facet_wrap(~mod, ncol = 1) +
     theme_bw() +
     labs(title = sprintf("voomLmFit Interaction %s - %s", opt$interaction , opt$datatype), subtitle = "FDR < 0.05") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), legend.position = "None")
 
-ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar.png", opt$interaction, opt$datatype)))
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar.png", opt$interaction, opt$datatype)),
+       width = 6, height = 5)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(cluster, nDown, nUP) |>
@@ -119,7 +132,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
-    geom_text(aes(label = abs(n_genes))) +
+    geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""))) +
     # facet_wrap(~mod, ncol = 1) +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
@@ -160,14 +173,11 @@ custom_volcano <- function(data, FDR_cut = 0.2, model_name){
 
 if(opt$datatype == "sn_fine"){
     
-    # map(cell_type_broad_levels, ~vlmf_data_tb |> 
-    #         filter(grepl(.x, cluster)) |>
-    #         custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction")))
-    
     map(cell_type_broad_levels, ~vlmf_data_tb |> 
-            filter(grepl(.x, cluster),
-                   gene_name %in% AD_risk$symbol) |>
-            custom_volcano(model_name = paste0("sn_fine_interaction_", opt$interaction, "_", .x)))
+            filter(grepl(.x, cluster)) |>
+            custom_volcano(model_name = paste0("sn_fine_interaction_", opt$interaction, "_", .x),
+                           FDR_cut = 0.05)
+        )
     
 } else {
     ## plot volcanos
