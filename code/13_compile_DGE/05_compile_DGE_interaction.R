@@ -11,9 +11,9 @@ library("GGally")
 
 # Import command-line parameters
 scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type",
-      "interaction", "i", "1", "character", "Interaction type"),
-    ncol = 5, byrow = TRUE
+  c("datatype", "d", "1", "character", "Data type",
+    "interaction", "i", "1", "character", "Interaction type"),
+  ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
 
@@ -39,18 +39,18 @@ cluster_colors <- c()
 cluster_levels <- c()
 
 if(opt$datatype == "sn_broad"){
-    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
-    cluster_colors <- cell_type_colors$broad
-    cluster_levels <- names(cell_type_colors$broad)
+  load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+  cluster_colors <- cell_type_colors$broad
+  cluster_levels <- names(cell_type_colors$broad)
 }else if(opt$datatype == "sn_fine"){
-    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
-    cluster_colors <- cell_type_colors$anno
-    cluster_levels <- names(cell_type_colors$anno)
-    cell_type_broad_levels<- names(cell_type_colors$broad)
+  load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+  cluster_colors <- cell_type_colors$anno
+  cluster_levels <- names(cell_type_colors$anno)
+  cell_type_broad_levels<- names(cell_type_colors$broad)
 }else if(opt$datatype == "Visium"){
-    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
-    cluster_colors <- SpD_colors
-    cluster_levels <- names(SpD_colors)
+  load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+  cluster_colors <- SpD_colors
+  cluster_levels <- names(SpD_colors)
 }
 
 #### voomLmFit data ####
@@ -75,25 +75,26 @@ vlmf_data <- map(vlmf_fn, readRDS)
 all(names(vlmf_data) %in% cluster_levels)
 
 vlmf_data_tb <- map_dfr(vlmf_data, ~.x |>
-                             dplyr::rename(vlmf_logFC = logFC,
-                                           vlmf_AveExpr = AveExpr,
-                                           vlmf_t = t,
-                                           vlmf_P.Value = P.Value,
-                                           vlmf_adj.P.Val = adj.P.Val,
-                                           vlmf_B = B
-                             ))  |>
-  as_tibble()
+                          dplyr::rename(vlmf_logFC = logFC,
+                                        vlmf_AveExpr = AveExpr,
+                                        vlmf_t = t,
+                                        vlmf_P.Value = P.Value,
+                                        vlmf_adj.P.Val = adj.P.Val,
+                                        vlmf_B = B
+                          ))  |>
+  as_tibble() |>
+  mutate(datatype = opt$datatype,
+         mod = paste("interaction", opt$interaction),
+         .before = 1)
 
 if(opt$datatype == "Visium"){
   vlmf_data_tb <- vlmf_data_tb |>
-    mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels),
-                         mod = paste("interaction", opt$interaction)) 
+    mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels)) 
 } else {
   vlmf_data_tb <- vlmf_data_tb |>
-    mutate(cluster = factor(cluster, levels = cluster_levels),
-           mod = paste("interaction", opt$interaction)) 
+    mutate(cluster = factor(cluster, levels = cluster_levels)) 
 }
-    
+
 
 vlmf_data_tb|> count(cluster)
 vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.1) |> count(cluster)
@@ -109,34 +110,34 @@ vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol)|> arrange(vlmf_adj.P.Val) 
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0),
               n_FDR10 = sum(vlmf_adj.P.Val < 0.1),
               n_FDR20 = sum(vlmf_adj.P.Val < 0.2)) |>
-  arrange(-n_FDR05))
-                               
+    arrange(-n_FDR05))
+
 
 # ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
-    ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
-    geom_col() +
-    geom_text(aes(label = ifelse(n_FDR05 > 0, n_FDR05, ""), vjust=-.5)) +
-    scale_fill_manual(values = cluster_colors) +
-    # facet_wrap(~mod, ncol = 1) +
-    theme_bw() +
-    labs(title = sprintf("voomLmFit Interaction %s - %s", opt$interaction , opt$datatype), subtitle = "FDR < 0.05") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), legend.position = "None")
+  ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
+  geom_col() +
+  geom_text(aes(label = ifelse(n_FDR05 > 0, n_FDR05, ""), vjust=-.5)) +
+  scale_fill_manual(values = cluster_colors) +
+  # facet_wrap(~mod, ncol = 1) +
+  theme_bw() +
+  labs(title = sprintf("voomLmFit Interaction %s - %s", opt$interaction , opt$datatype), subtitle = "FDR < 0.05") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), legend.position = "None")
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar.png", opt$interaction, opt$datatype)),
        width = 6, height = 5)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
-    select(cluster, nDown, nUP) |>
-    mutate(nDown = -1*nDown) |>
-    pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
-    ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
-    geom_col() +
-    geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""))) +
-    # facet_wrap(~mod, ncol = 1) +
-    theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  select(cluster, nDown, nUP) |>
+  mutate(nDown = -1*nDown) |>
+  pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
+  ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
+  geom_col() +
+  geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""))) +
+  # facet_wrap(~mod, ncol = 1) +
+  theme_bw() +
+  labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar_reg.png", opt$interaction, opt$datatype)))
 
@@ -146,45 +147,45 @@ write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_
 #### vlmf volcano plots ####
 
 custom_volcano <- function(data, FDR_cut = 0.2, model_name){
-    
-    # define colors
-    signif_colors <- c("purple", "blue", "red")
-    names(signif_colors) <- c("both", paste("FDR<", FDR_cut) , "abs(logFC)>1" )
-    
-    volcano <- data |>
-        mutate(DE_class = case_when(vlmf_adj.P.Val < FDR_cut & abs(vlmf_logFC) > 1  ~ "both",
-                         vlmf_adj.P.Val < FDR_cut ~ paste("FDR<", FDR_cut),
-                         abs(vlmf_logFC) > 1 ~ "abs(logFC)>1",
-                         TRUE ~ "None")) |>
-        ggplot(aes(x = vlmf_logFC, y = -log10(vlmf_P.Value), color = DE_class)) +
-        geom_point(alpha = 0.5, size = 0.5) +
-        scale_color_manual(values = signif_colors) +
-        facet_wrap(~cluster) +
-        theme_bw() +
-        labs(title = model_name)
-    
-    if(nrow(data) > 1000){
-        volcano <- volcano + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) 
-    } else {
-        volcano <- volcano + geom_text_repel(aes(label = gene_name), size = 1.5)
-    }
-    ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_plot_%s.png", model_name)), height = 10, width = 10)
+  
+  # define colors
+  signif_colors <- c("purple", "blue", "red")
+  names(signif_colors) <- c("both", paste("FDR<", FDR_cut) , "abs(logFC)>1" )
+  
+  volcano <- data |>
+    mutate(DE_class = case_when(vlmf_adj.P.Val < FDR_cut & abs(vlmf_logFC) > 1  ~ "both",
+                                vlmf_adj.P.Val < FDR_cut ~ paste("FDR<", FDR_cut),
+                                abs(vlmf_logFC) > 1 ~ "abs(logFC)>1",
+                                TRUE ~ "None")) |>
+    ggplot(aes(x = vlmf_logFC, y = -log10(vlmf_P.Value), color = DE_class)) +
+    geom_point(alpha = 0.5, size = 0.5) +
+    scale_color_manual(values = signif_colors) +
+    facet_wrap(~cluster) +
+    theme_bw() +
+    labs(title = model_name)
+  
+  if(nrow(data) > 1000){
+    volcano <- volcano + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5) 
+  } else {
+    volcano <- volcano + geom_text_repel(aes(label = gene_name), size = 1.5)
+  }
+  ggsave(volcano, filename = here(plot_dir, sprintf("Volcano_plot_%s.png", model_name)), height = 10, width = 10)
 }
 
 if(opt$datatype == "sn_fine"){
-    
-    map(cell_type_broad_levels, ~vlmf_data_tb |> 
-            filter(grepl(.x, cluster)) |>
-            custom_volcano(model_name = paste0("sn_fine_interaction_", opt$interaction, "_", .x),
-                           FDR_cut = 0.05)
-        )
-    
+  
+  map(cell_type_broad_levels, ~vlmf_data_tb |> 
+        filter(grepl(.x, cluster)) |>
+        custom_volcano(model_name = paste0("sn_fine_interaction_", opt$interaction, "_", .x),
+                       FDR_cut = 0.05)
+  )
+  
 } else {
-    ## plot volcanos
-    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction_", opt$interaction))
-    
-    ## filter to risk genes
-    custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction_", opt$interaction,"-risk"))
+  ## plot volcanos
+  custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction_", opt$interaction))
+  
+  ## filter to risk genes
+  custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction_", opt$interaction,"-risk"))
 }
 
 
