@@ -95,6 +95,12 @@ if(opt$datatype == "Visium"){
     mutate(cluster = factor(cluster, levels = cluster_levels)) 
 }
 
+#### save data ####
+
+saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s_%s.Rds", opt$interaction, opt$datatype)))
+write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s_%s.csv", opt$interaction, opt$datatype)), row.names = FALSE)
+
+#### Summary table ####
 
 vlmf_data_tb|> count(cluster)
 vlmf_data_tb|> filter(vlmf_adj.P.Val < 0.1) |> count(cluster)
@@ -112,6 +118,8 @@ vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol)|> arrange(vlmf_adj.P.Val) 
               n_FDR20 = sum(vlmf_adj.P.Val < 0.2)) |>
     arrange(-n_FDR05))
 
+## save summary
+write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_interaction_%s_%s.csv", opt$interaction, opt$datatype)))
 
 # ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
@@ -141,8 +149,6 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
 
 ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar_reg.png", opt$interaction, opt$datatype)))
 
-## save summary
-write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_interaction_%s_%s.csv", opt$interaction, opt$datatype)))
 
 #### vlmf volcano plots ####
 
@@ -188,11 +194,6 @@ if(opt$datatype == "sn_fine"){
   custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction_", opt$interaction,"-risk"))
 }
 
-
-#### save data ####
-
-saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s_%s.Rds", opt$interaction, opt$datatype)))
-write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s_%s.csv", opt$interaction, opt$datatype)), row.names = FALSE)
 
 # vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
 
