@@ -1,0 +1,175 @@
+**** Job starts ****
+Fri Apr 10 12:46:49 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 30748622
+Job name: 05_compile_DGE_interaction
+Node name: compute-157
+Task id: 6
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  SpD_colors
+[1] FALSE
+# A tibble: 9 × 2
+  cluster           n
+  <fct>         <int>
+1 Vasc~Sp09D08   9014
+2 L1~Sp09D05    11594
+3 L2.3~Sp09D01  14006
+4 LD~Sp09D02    15053
+5 Inhib~Sp09D09 12207
+6 L5~Sp09D03    14322
+7 L6~Sp09D04    13930
+8 WM.uf~Sp09D07  3172
+9 WM~Sp09D06     9409
+# A tibble: 2 × 2
+  cluster          n
+  <fct>        <int>
+1 Vasc~Sp09D08     2
+2 L5~Sp09D03       1
+# A tibble: 102,707 × 5
+   cluster      gene_name  vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>        <chr>             <dbl>          <dbl>      <dbl>
+ 1 L5~Sp09D03   ABCC12       0.00000344         0.0492      -1.96
+ 2 Vasc~Sp09D08 CYBB         0.00000984         0.0887       2.96
+ 3 Vasc~Sp09D08 AC007952.4   0.0000206          0.0927       2.71
+ 4 LD~Sp09D02   AC140125.2   0.00000884         0.133        2.66
+ 5 L5~Sp09D03   AL513166.1   0.0000276          0.198       -2.58
+ 6 L5~Sp09D03   ASAP3        0.0000543          0.259       -1.68
+ 7 Vasc~Sp09D08 CFH          0.000218           0.323        2.30
+ 8 Vasc~Sp09D08 SLC6A13      0.000142           0.323        3.29
+ 9 Vasc~Sp09D08 HLA-F        0.000235           0.323        1.67
+10 Vasc~Sp09D08 C7           0.000195           0.323        2.53
+# ℹ 102,697 more rows
+# A tibble: 155 × 5
+   cluster      gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>        <chr>            <dbl>          <dbl>      <dbl>
+ 1 Vasc~Sp09D08 CSF1R           0.0375          0.849      0.846
+ 2 LD~Sp09D02   PSEN2           0.0849          0.907     -0.402
+ 3 LD~Sp09D02   PLCD1           0.124           0.907     -0.382
+ 4 LD~Sp09D02   SORL1           0.236           0.907      0.248
+ 5 LD~Sp09D02   UNC13C          0.241           0.907      0.337
+ 6 LD~Sp09D02   CSF1R           0.260           0.907      0.715
+ 7 LD~Sp09D02   TM2D3           0.324           0.920      0.186
+ 8 LD~Sp09D02   NOS3            0.327           0.922     -0.519
+ 9 LD~Sp09D02   SORCS1          0.359           0.927      0.340
+10 LD~Sp09D02   APOE            0.444           0.932     -0.249
+# ℹ 145 more rows
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by mod and cluster.
+ℹ Output is grouped by mod.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 9 × 7
+# Groups:   mod [1]
+  mod             cluster       n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>           <int> <int> <int>   <int>   <int>
+1 interaction Anc L5~Sp09D03          1     0     1       1       2
+2 interaction Anc Vasc~Sp09D08        0     0     0       2       2
+3 interaction Anc L1~Sp09D05          0     0     0       0       0
+4 interaction Anc L2.3~Sp09D01        0     0     0       0       0
+5 interaction Anc LD~Sp09D02          0     0     0       0       1
+6 interaction Anc Inhib~Sp09D09       0     0     0       0       0
+7 interaction Anc L6~Sp09D04          0     0     0       0       0
+8 interaction Anc WM.uf~Sp09D07       0     0     0       0       0
+9 interaction Anc WM~Sp09D06          0     0     0       0       0
+Adding missing grouping variables: `mod`
+Saving 7 x 7 in image
+[1] "Reproducibility information:"
+[1] "2026-04-10 12:47:15 EDT"
+   user  system elapsed 
+ 21.940   0.425  24.683 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-04-10
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package      * version date (UTC) lib source
+ cli            3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
+ dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr        * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
+ farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
+ generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2      * 4.0.2   2026-02-03 [1] CRAN (R 4.5.0)
+ ggrepel      * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
+ ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
+ glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here         * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms            1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
+ labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle      1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate    * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magrittr       2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ pillar         1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
+ purrr        * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
+ R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg           1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
+ RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr        * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ rlang          1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot      2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S7             0.2.1   2025-11-14 [1] CRAN (R 4.5.0)
+ scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr      * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ systemfonts    1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping    1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble       * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange     0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs          0.7.2   2026-03-21 [1] CRAN (R 4.5.0)
+ withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Apr 10 12:47:15 PM EDT 2026

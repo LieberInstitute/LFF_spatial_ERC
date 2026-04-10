@@ -1,0 +1,177 @@
+**** Job starts ****
+Fri Apr 10 12:46:49 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 30749022
+Job name: 05_compile_DGE_interaction
+Node name: compute-157
+Task id: 3
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  cell_type_colors
+[1] TRUE
+# A tibble: 8 × 2
+  cluster     n
+  <fct>   <int>
+1 Astro   18320
+2 Macro    2931
+3 Micro   14350
+4 Oligo   21175
+5 OPC     17884
+6 Vasc     9533
+7 Excit   25772
+8 Inhib   21076
+# A tibble: 0 × 2
+# ℹ 2 variables: cluster <fct>, n <int>
+# A tibble: 131,041 × 5
+   cluster gene_name  vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>             <dbl>          <dbl>      <dbl>
+ 1 Macro   TLR4         0.0000422           0.124    -0.186 
+ 2 Oligo   XYLT1        0.00000653          0.138    -0.0903
+ 3 OPC     MIR663AHG    0.00000788          0.141    -0.241 
+ 4 Macro   GPR183       0.0000965           0.141     0.134 
+ 5 Macro   RGS1         0.000250            0.154     0.255 
+ 6 Macro   MAP3K8       0.000256            0.154     0.201 
+ 7 Macro   NUTM2B-AS1   0.000264            0.154     0.168 
+ 8 Astro   SPATA1       0.0000161           0.186     0.0899
+ 9 Astro   KIRREL3      0.0000203           0.186    -0.143 
+10 Macro   SAMD12       0.000474            0.186    -0.163 
+# ℹ 131,031 more rows
+# A tibble: 146 × 5
+   cluster gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>            <dbl>          <dbl>      <dbl>
+ 1 Macro   PLD3           0.0185           0.299    -0.0848
+ 2 Macro   APP            0.0222           0.313     0.112 
+ 3 Astro   PSEN1          0.00963          0.483    -0.0192
+ 4 Macro   GRN            0.112            0.511    -0.0834
+ 5 Astro   ADAM10         0.0372           0.530     0.0185
+ 6 Macro   PSEN1          0.129            0.539     0.0500
+ 7 Astro   VCP            0.0617           0.560    -0.0186
+ 8 Macro   APOE           0.146            0.567    -0.0555
+ 9 Astro   ABCA7          0.138            0.644    -0.0349
+10 Astro   MT-ND1         0.145            0.651     0.0402
+# ℹ 136 more rows
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by mod and cluster.
+ℹ Output is grouped by mod.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 8 × 7
+# Groups:   mod [1]
+  mod             cluster n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>     <int> <int> <int>   <int>   <int>
+1 interaction Age Astro         0     0     0       0      28
+2 interaction Age Macro         0     0     0       0      19
+3 interaction Age Micro         0     0     0       0       0
+4 interaction Age Oligo         0     0     0       0       1
+5 interaction Age OPC           0     0     0       0       1
+6 interaction Age Vasc          0     0     0       0       0
+7 interaction Age Excit         0     0     0       0       0
+8 interaction Age Inhib         0     0     0       0       0
+Adding missing grouping variables: `mod`
+Saving 7 x 7 in image
+Warning messages:
+1: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+2: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+3: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+[1] "Reproducibility information:"
+[1] "2026-04-10 12:47:10 EDT"
+   user  system elapsed 
+ 18.238   0.459  19.788 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-04-10
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package      * version date (UTC) lib source
+ cli            3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
+ dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr        * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
+ farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
+ generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2      * 4.0.2   2026-02-03 [1] CRAN (R 4.5.0)
+ ggrepel      * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
+ ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
+ glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here         * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms            1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
+ labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle      1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate    * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magrittr       2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ pillar         1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
+ purrr        * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
+ R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg           1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
+ RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr        * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ rlang          1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot      2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S7             0.2.1   2025-11-14 [1] CRAN (R 4.5.0)
+ scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr      * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ systemfonts    1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping    1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble       * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange     0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs          0.7.2   2026-03-21 [1] CRAN (R 4.5.0)
+ withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Apr 10 12:47:11 PM EDT 2026

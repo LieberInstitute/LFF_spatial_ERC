@@ -1,0 +1,170 @@
+**** Job starts ****
+Fri Apr 10 12:46:49 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 30749021
+Job name: 05_compile_DGE_interaction
+Node name: compute-157
+Task id: 2
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  cell_type_colors
+[1] TRUE
+# A tibble: 8 × 2
+  cluster     n
+  <fct>   <int>
+1 Astro   18320
+2 Macro    2931
+3 Micro   14350
+4 Oligo   21175
+5 OPC     17290
+6 Vasc     8801
+7 Excit   25772
+8 Inhib   21076
+# A tibble: 0 × 2
+# ℹ 2 variables: cluster <fct>, n <int>
+# A tibble: 129,715 × 5
+   cluster gene_name       vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>                  <dbl>          <dbl>      <dbl>
+ 1 Macro   THRB               0.000110           0.321     -2.56 
+ 2 OPC     ARHGAP15           0.0000219          0.378      2.88 
+ 3 Inhib   ENSG00000248636    0.0000892          0.627      0.911
+ 4 Inhib   LLGL1              0.0000463          0.627      1.78 
+ 5 Inhib   ENSG00000268555    0.0000638          0.627      2.42 
+ 6 Micro   ENSG00000268081    0.0000494          0.710      3.30 
+ 7 Inhib   ENSG00000225806    0.000152           0.799      1.76 
+ 8 Micro   ANKRD18DP          0.000370           0.820     -1.40 
+ 9 Micro   GABARAPL1          0.000388           0.820     -1.46 
+10 Micro   EPHA1-AS1          0.000365           0.820      5.18 
+# ℹ 129,705 more rows
+# A tibble: 144 × 5
+   cluster gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>            <dbl>          <dbl>      <dbl>
+ 1 Excit   PLD3            0.0426          0.888     -0.343
+ 2 Excit   VCP             0.0822          0.888     -0.275
+ 3 Excit   MT-ND1          0.119           0.888     -1.28 
+ 4 Excit   PSEN2           0.119           0.888      0.306
+ 5 Excit   SORCS1          0.318           0.896      0.350
+ 6 Excit   GRID2IP         0.436           0.917     -0.380
+ 7 Excit   SORL1           0.443           0.919      0.176
+ 8 Excit   VPS13C          0.466           0.922      0.111
+ 9 Excit   TM2D3           0.515           0.934     -0.172
+10 Excit   UNC13C          0.562           0.943      0.180
+# ℹ 134 more rows
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by mod and cluster.
+ℹ Output is grouped by mod.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 8 × 7
+# Groups:   mod [1]
+  mod             cluster n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>     <int> <int> <int>   <int>   <int>
+1 interaction Anc Astro         0     0     0       0       0
+2 interaction Anc Macro         0     0     0       0       0
+3 interaction Anc Micro         0     0     0       0       0
+4 interaction Anc Oligo         0     0     0       0       0
+5 interaction Anc OPC           0     0     0       0       0
+6 interaction Anc Vasc          0     0     0       0       0
+7 interaction Anc Excit         0     0     0       0       0
+8 interaction Anc Inhib         0     0     0       0       0
+Adding missing grouping variables: `mod`
+Saving 7 x 7 in image
+[1] "Reproducibility information:"
+[1] "2026-04-10 12:47:30 EDT"
+   user  system elapsed 
+ 38.094   0.587  39.804 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-04-10
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package      * version date (UTC) lib source
+ cli            3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
+ dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr        * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
+ farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
+ generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2      * 4.0.2   2026-02-03 [1] CRAN (R 4.5.0)
+ ggrepel      * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
+ ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
+ glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here         * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms            1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
+ labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle      1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate    * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magrittr       2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ pillar         1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
+ purrr        * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
+ R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg           1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
+ RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr        * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ rlang          1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot      2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S7             0.2.1   2025-11-14 [1] CRAN (R 4.5.0)
+ scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr      * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ systemfonts    1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping    1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble       * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange     0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs          0.7.2   2026-03-21 [1] CRAN (R 4.5.0)
+ withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Apr 10 12:47:31 PM EDT 2026
