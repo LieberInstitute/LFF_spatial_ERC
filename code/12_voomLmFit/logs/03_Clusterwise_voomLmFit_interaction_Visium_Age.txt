@@ -1,17 +1,16 @@
 **** Job starts ****
-Tue Apr  7 05:26:51 PM EDT 2026
+Fri Apr 10 09:41:44 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30667519
-Job name: 03_Clusterwise_voomLmFit_interaction_sn_broad
-Node name: compute-168
+Job id: 30744219
+Job name: 03_Clusterwise_voomLmFit_interaction_Visium
+Node name: compute-161
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
 
  
 
@@ -125,7 +124,7 @@ The following objects are masked from ‘package:edgeR’:
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
-✔ forcats   1.0.0     ✔ stringr   1.6.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
 ✔ ggplot2   4.0.2     ✔ tibble    3.3.1
 ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
 ✔ purrr     1.2.1     
@@ -164,77 +163,93 @@ $ARGS
 character(0)
 
 $datatype
-[1] "sn_broad"
+[1] "Visium"
 
 $interaction
 [1] "Age"
 
-2026-04-07 17:26:58.019744 - Datatype = sn_broad, loading 'sce_pseudo_DGE-cell_type_broad.RDS'
-[1] 38606   235
+2026-04-10 09:41:52.054269 - Datatype = Visium, loading 'spe_pseudo_DGE.RDS'
+Loading required namespace: SpatialExperiment
+Registered S3 methods overwritten by 'GenomeInfoDb':
+  method                from   
+  as.data.frame.Seqinfo Seqinfo
+  merge.Seqinfo         Seqinfo
+  summary.Seqinfo       Seqinfo
+  update.Seqinfo        Seqinfo
+[1] 30494   279
 
-Astro Macro Micro   OPC Oligo  Vasc Excit Inhib 
-   30    18    30    30    30    29    30    30 
-2026-04-07 17:27:00.340279 - Loop voomlmFit by cluster
+ Vasc_Sp09D08    L1_Sp09D05  L2.3_Sp09D01    LD_Sp09D02 Inhib_Sp09D09 
+           30            30            30            30            30 
+   L5_Sp09D03    L6_Sp09D04 WM.uf_Sp09D07    WM_Sp09D06 
+           30            30            30            30 
+2026-04-10 09:41:55.405028 - Loop voomlmFit by cluster
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:27:01.933566 - voomLmFit - cluster: Astro, block= 'exp_round', ncol: 30, ngene: 18320
-First sample weights (min/max) 0.3468153/1.6693164
-First intra-block correlation  0.004138985
-Final sample weights (min/max) 0.3531631/1.6828209
-Final intra-block correlation  0.003872738
+2026-04-10 09:41:56.939186 - voomLmFit - cluster: Vasc_Sp09D08, block= 'Visium_slide', ncol: 30, ngene: 9014
+First sample weights (min/max) 0.4555693/1.4411480
+First intra-block correlation  0.01931462
+Final sample weights (min/max) 0.4594792/1.4264922
+Final intra-block correlation  0.01958194
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:27:35.120402 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 18, ngene: 2931
-First sample weights (min/max) 0.4363159/1.3864181
-First intra-block correlation  -0.05784629
-Final sample weights (min/max) 0.4326764/1.3886464
-Final intra-block correlation  -0.06004531
+2026-04-10 09:42:18.330669 - voomLmFit - cluster: L1_Sp09D05, block= 'Visium_slide', ncol: 30, ngene: 11594
+First sample weights (min/max) 0.6416778/1.3620847
+First intra-block correlation  0.06469036
+Final sample weights (min/max) 0.6355756/1.3602769
+Final intra-block correlation  0.06462289
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:27:42.04809 - voomLmFit - cluster: Micro, block= 'exp_round', ncol: 30, ngene: 14350
-First sample weights (min/max) 0.2469168/1.7221314
-First intra-block correlation  0.02094614
-Final sample weights (min/max) 0.2452018/1.7044426
-Final intra-block correlation  0.02135263
+2026-04-10 09:42:43.652954 - voomLmFit - cluster: L2.3_Sp09D01, block= 'Visium_slide', ncol: 30, ngene: 14006
+First sample weights (min/max) 0.6312978/1.4430348
+First intra-block correlation  0.03460528
+Final sample weights (min/max) 0.6326902/1.4438736
+Final intra-block correlation  0.0348712
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:28:08.431816 - voomLmFit - cluster: OPC, block= 'exp_round', ncol: 30, ngene: 17884
-First sample weights (min/max) 0.343112/2.356236
-First intra-block correlation  0.04100389
-Final sample weights (min/max) 0.3472172/2.3606269
-Final intra-block correlation  0.04056869
+2026-04-10 09:43:13.941269 - voomLmFit - cluster: LD_Sp09D02, block= 'Visium_slide', ncol: 30, ngene: 15053
+First sample weights (min/max) 0.4748577/1.3934392
+First intra-block correlation  0.05217894
+Final sample weights (min/max) 0.47188/1.41546
+Final intra-block correlation  0.05210627
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:28:40.168298 - voomLmFit - cluster: Oligo, block= 'exp_round', ncol: 30, ngene: 21175
-First sample weights (min/max) 0.3258602/1.7240239
-First intra-block correlation  0.06829674
-Final sample weights (min/max) 0.3475327/1.7673988
-Final intra-block correlation  0.06801429
+2026-04-10 09:43:46.18949 - voomLmFit - cluster: Inhib_Sp09D09, block= 'Visium_slide', ncol: 30, ngene: 12722
+First sample weights (min/max) 0.6664252/1.2831626
+First intra-block correlation  0.04475165
+Final sample weights (min/max) 0.6641516/1.2823557
+Final intra-block correlation  0.04497998
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:29:16.611407 - voomLmFit - cluster: Vasc, block= 'exp_round', ncol: 29, ngene: 9533
-First sample weights (min/max) 0.4973491/1.6677794
-First intra-block correlation  -0.01700849
-Final sample weights (min/max) 0.4916903/1.6406512
-Final intra-block correlation  -0.01663133
+2026-04-10 09:44:13.915042 - voomLmFit - cluster: L5_Sp09D03, block= 'Visium_slide', ncol: 30, ngene: 14322
+First sample weights (min/max) 0.4787071/1.7998346
+First intra-block correlation  0.06486109
+Final sample weights (min/max) 0.4769151/1.8067307
+Final intra-block correlation  0.06520596
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:29:35.556118 - voomLmFit - cluster: Excit, block= 'exp_round', ncol: 30, ngene: 25772
-First sample weights (min/max) 0.3946159/2.1211267
-First intra-block correlation  0.05442262
-Final sample weights (min/max) 0.3984908/2.0838524
-Final intra-block correlation  0.055396
+2026-04-10 09:44:43.850823 - voomLmFit - cluster: L6_Sp09D04, block= 'Visium_slide', ncol: 30, ngene: 13930
+First sample weights (min/max) 0.527686/1.341257
+First intra-block correlation  0.09574217
+Final sample weights (min/max) 0.5204164/1.3287558
+Final intra-block correlation  0.09618873
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-07 17:30:22.194738 - voomLmFit - cluster: Inhib, block= 'exp_round', ncol: 30, ngene: 21076
-First sample weights (min/max) 0.4833505/1.6386018
-First intra-block correlation  0.0683659
-Final sample weights (min/max) 0.4853684/1.6741917
-Final intra-block correlation  0.06870148
+2026-04-10 09:45:13.695256 - voomLmFit - cluster: WM.uf_Sp09D07, block= 'Visium_slide', ncol: 30, ngene: 3172
+First sample weights (min/max) 0.5825344/1.8301365
+First intra-block correlation  0.08033648
+Final sample weights (min/max) 0.5826105/1.7847110
+Final intra-block correlation  0.08099224
+Done - Save data
+APOE * Age Interaction, coef: APOE_carrier_E4:Age
+2026-04-10 09:45:20.50256 - voomLmFit - cluster: WM_Sp09D06, block= 'Visium_slide', ncol: 30, ngene: 9409
+First sample weights (min/max) 0.3986635/1.7702871
+First intra-block correlation  0.08065161
+Final sample weights (min/max) 0.3968986/1.7717393
+Final intra-block correlation  0.08134977
 Done - Save data
 [1] "Reproducibility information:"
-[1] "2026-04-07 17:30:58 EDT"
+[1] "2026-04-10 09:45:40 EDT"
    user  system elapsed 
-242.847   1.552 246.082 
+230.747   2.239 234.866 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -245,7 +260,7 @@ Done - Save data
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-07
+ date     2026-04-10
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -254,15 +269,17 @@ Done - Save data
  abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
  Biobase              * 2.70.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
- cli                    3.6.5    2025-04-23 [2] CRAN (R 4.5.0)
+ cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
  data.table           * 1.18.2.1 2026-01-27 [1] CRAN (R 4.5.0)
  DelayedArray           0.36.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  dichromat              2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
  dplyr                * 1.2.1    2026-04-03 [1] CRAN (R 4.5.0)
  edgeR                * 4.8.2    2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
  farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
- forcats              * 1.0.0    2023-01-29 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.1    2025-09-25 [1] CRAN (R 4.5.0)
  generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb           1.44.3   2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14   2025-05-21 [2] Bioconductor
  GenomicRanges        * 1.62.1   2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
  getopt               * 1.20.4   2023-10-01 [1] CRAN (R 4.5.0)
  ggplot2              * 4.0.2    2026-02-03 [1] CRAN (R 4.5.0)
@@ -270,12 +287,15 @@ Done - Save data
  gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
  here                 * 1.0.2    2025-09-15 [1] CRAN (R 4.5.0)
  hms                    1.1.4    2025-10-17 [1] CRAN (R 4.5.0)
+ httr                   1.4.8    2026-02-13 [1] CRAN (R 4.5.0)
  IRanges              * 2.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ jsonlite               2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
  lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
  lifecycle              1.0.5    2026-01-08 [1] CRAN (R 4.5.0)
  limma                * 3.66.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  locfit                 1.5-9.12 2025-03-05 [2] CRAN (R 4.5.0)
  lubridate            * 1.9.5    2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [1] CRAN (R 4.5.0)
  magrittr               2.0.5    2026-04-04 [1] CRAN (R 4.5.0)
  Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
  MatrixGenerics       * 1.22.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
@@ -285,7 +305,9 @@ Done - Save data
  purrr                * 1.2.1    2026-01-09 [1] CRAN (R 4.5.0)
  R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
  RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1    2026-01-10 [1] CRAN (R 4.5.0)
  readr                * 2.2.0    2026-02-19 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
  rlang                  1.2.0    2026-04-06 [1] CRAN (R 4.5.0)
  rprojroot              2.1.1    2025-08-26 [1] CRAN (R 4.5.0)
  S4Arrays               1.10.1   2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
@@ -296,6 +318,7 @@ Done - Save data
  sessioninfo          * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
  SingleCellExperiment * 1.32.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  SparseArray            1.10.8   2025-12-18 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment      1.18.1   2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
  statmod                1.5.1    2025-10-09 [1] CRAN (R 4.5.0)
  stringi                1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
  stringr              * 1.6.0    2025-11-04 [1] CRAN (R 4.5.0)
@@ -306,6 +329,7 @@ Done - Save data
  tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
  timechange             0.4.0    2026-01-29 [1] CRAN (R 4.5.0)
  tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
  vctrs                  0.7.2    2026-03-21 [1] CRAN (R 4.5.0)
  withr                  3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
  XVector                0.50.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
@@ -317,4 +341,4 @@ Done - Save data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Apr  7 05:30:58 PM EDT 2026
+Fri Apr 10 09:45:40 AM EDT 2026
