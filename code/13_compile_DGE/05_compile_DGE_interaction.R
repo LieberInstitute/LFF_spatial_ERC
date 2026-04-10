@@ -11,7 +11,8 @@ library("GGally")
 
 # Import command-line parameters
 scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type"),
+    c("datatype", "d", "1", "character", "Data type",
+      "interaction", "i", "1", "character", "Interaction type"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -20,6 +21,8 @@ opt <- getopt(scec)
 # opt$datatype = "sn_broad"
 # opt$datatype = "sn_fine"
 # opt$datatype = "Visium"
+
+# opt$interaction = "Age"
 
 data_dir <- here("processed-data", "13_compile_DGE", "05_compile_DGE_interaction", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -60,8 +63,10 @@ vlmf_dir <- vlmf_dir[[opt$datatype]]
 
 vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction", vlmf_dir),
                       full.names = TRUE, pattern = ".rds")
+## filter to selected interaction
+vlmf_fn <- vlmf_fn[grepl(opt$interaction, vlmf_fn)]
 
-names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_interaction_sn_broad_|voomLmFit_interaction_sn_fine_|voomLmFit_interaction_Visium_|.rds", "", basename(.x)))
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_interaction_%s_%s_|.rds", opt$interaction, opt$datatype), "", basename(.x)))
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -78,7 +83,7 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~.x |>
                                            vlmf_B = B
                              ))  |>
     mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels),
-           mod = "interaction") |>
+           mod = paste("interaction", opt$interaction)) |>
     as_tibble()
 
 vlmf_data_tb|> count(cluster)
@@ -89,40 +94,41 @@ vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Valu
 vlmf_model_summary <- vlmf_data_tb |> 
     group_by(mod, cluster) |>
     summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+              nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
+              nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0),
               n_FDR10 = sum(vlmf_adj.P.Val < 0.1),
               n_FDR20 = sum(vlmf_adj.P.Val < 0.2))
                                
 
 # ## n signif bar plots
-# vlmf_model_summary_bar <- vlmf_model_summary |>
-#     filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
-#     ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
-#     geom_col() +
-#     geom_text(aes(label = n_FDR05), vjust=-.5) +
-#     scale_fill_manual(values = cluster_colors) +
-#     facet_wrap(~mod, ncol = 1) +
-#     theme_bw() +
-#     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
-#     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-# 
-# ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)))
-# 
-# vlmf_model_summary_bar_reg <- vlmf_model_summary |>
-#     select(-n_FDR05) |>
-#     mutate(nDown = -1*nDown) |>
-#     pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
-#     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
-#     filter(mod == "carrier") |>
-#     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
-#     geom_col() +
-#     geom_text(aes(label = abs(n_genes))) +
-#     facet_wrap(~mod, ncol = 1) +
-#     theme_bw() +
-#     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
-#     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-# 
-# ## save summary
-# write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_%s.csv", opt$datatype)))
+vlmf_model_summary_bar <- vlmf_model_summary |>
+    ggplot(aes(x = cluster, y = n_FDR05, fill = cluster)) +
+    geom_col() +
+    geom_text(aes(label = n_FDR05), vjust=-.5) +
+    scale_fill_manual(values = cluster_colors) +
+    # facet_wrap(~mod, ncol = 1) +
+    theme_bw() +
+    labs(title = sprintf("voomLmFit Interaction %s - %s", opt$interaction , opt$datatype), subtitle = "FDR < 0.05") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar.png", opt$interaction, opt$datatype)))
+
+vlmf_model_summary_bar_reg <- vlmf_model_summary |>
+    select(cluster, nDown, nUP) |>
+    mutate(nDown = -1*nDown) |>
+    pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
+    ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
+    geom_col() +
+    geom_text(aes(label = abs(n_genes))) +
+    # facet_wrap(~mod, ncol = 1) +
+    theme_bw() +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("Interaction_%s_%s_vlmf_model_summary_bar_reg.png", opt$interaction, opt$datatype)))
+
+## save summary
+write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_interaction_%s_%s.csv", opt$interaction, opt$datatype)))
 
 #### vlmf volcano plots ####
 
@@ -161,21 +167,21 @@ if(opt$datatype == "sn_fine"){
     map(cell_type_broad_levels, ~vlmf_data_tb |> 
             filter(grepl(.x, cluster),
                    gene_name %in% AD_risk$symbol) |>
-            custom_volcano(model_name = paste0("sn_fine-", .x, "-interaction-risk")))
+            custom_volcano(model_name = paste0("sn_fine_interaction_", opt$interaction, "_", .x)))
     
 } else {
     ## plot volcanos
-    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction"))
+    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-interaction_", opt$interaction))
     
     ## filter to risk genes
-    custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction-risk"))
+    custom_volcano(data = vlmf_data_tb|> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-interaction_", opt$interaction,"-risk"))
 }
 
 
 #### save data ####
 
-saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
-write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s.csv", opt$datatype)), row.names = FALSE)
+saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s_%s.Rds", opt$interaction, opt$datatype)))
+write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%s_%s.csv", opt$interaction, opt$datatype)), row.names = FALSE)
 
 # vlmf_data_tb <- readRDS(here(data_dir, sprintf("DGE_results_interaction_%s.Rds", opt$datatype)))
 
@@ -248,6 +254,14 @@ write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_interaction_%
 
 # slurmjobs::job_single('05_compile_DGE_interaction_sn_broad', create_shell = TRUE, memory = '5G', command = "Rscript 05_compile_DGE_interaction --datatype sn_broad")
 # slurmjobs::job_single('05_compile_DGE_interaction_Visium', create_shell = TRUE, memory = '5G', command = "Rscript 05_compile_DGE_interaction --datatype Visium")
+
+slurmjobs::job_loop(loops = list(datatype = c("Visium", "sn-broad", "sn-fine"),
+                                 interaction = c("Anc", "Age")),
+                    name = "05_compile_DGE_interaction",
+                    memory = "10G",
+                    create_shell = TRUE,
+                    create_script = FALSE
+)
 
 #### Reproducibility information ####
 print("Reproducibility information:")
