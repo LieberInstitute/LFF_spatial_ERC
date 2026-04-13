@@ -4,8 +4,8 @@
 #SBATCH --job-name=03_Clusterwise_voomLmFit_interaction_sn_broad
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/03_Clusterwise_voomLmFit_interaction_sn_broad.txt
-#SBATCH -e logs/03_Clusterwise_voomLmFit_interaction_sn_broad.txt
+#SBATCH -o logs/03_Clusterwise_voomLmFit_interaction_sn_broad_Anc.txt
+#SBATCH -e logs/03_Clusterwise_voomLmFit_interaction_sn_broad_Anc.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad
+Rscript 03_Clusterwise_voomLmFit_interaction.R --datatype sn_broad --interaction Anc
 
 echo "**** Job ends ****"
 date
