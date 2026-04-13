@@ -1,6 +1,6 @@
 #' Plot gene expression for top DE genes for one cell type
 #'
-#' This function plots the top n differntially expressed genes for a specified 
+#' This function plots the top n differential expressed genes for a specified 
 #' cell type.
 #' The gene expression is plotted as box plot with `plot_gene_express` and adds
 #' annotations to each plot.
@@ -470,3 +470,141 @@ plot_DEG_express_contrast_top <- function(sce,
     
     
 }
+
+
+#' @examples
+DE_interaction_data <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_interaction", "sn_fine", "DGE_results_interaction_Age_sn_fine.Rds"))
+
+## Plot select genes for Astrocytes
+plot_DEG_express_interaction(
+    sce = sce_pb,
+    stats = DE_interaction_data,
+    gene = c("SELENOW", "RPL29"),
+    cluster_col = "cell_type_anno",
+    clus = "Excit.L2_5.2",
+    gene_col = "gene_name"
+)
+
+plot_DEG_express_interaction <- function(sce,
+                                      stats,
+                                      clus = "Excit.L2_5.2",
+                                      gene = c("SELENOW", "RPL29"),
+                                      n_genes = NULL,
+                                      pval_col = "vlmf_adj.P.Val",
+                                      fc_col = "vlmf_logFC",
+                                      gene_col = "gene_name",
+                                      cluster_col = "registration_variable",
+                                      category_col = "APOE_carrier",
+                                      interaction = "Age",
+                                      mod = ~0+ APOE_carrier + Age + Sex + pseudo_expr_chrM_ratio,
+                                      cleanY_P = 3,
+                                      color_pal = APOE_carrier_colors,
+                                      plot_points = FALSE,
+                                      ncol = 2,
+                                      title = "") {
+  
+  stopifnot(cluster_col %in% colnames(colData(sce)))
+  stopifnot(clus %in% sce[[cluster_col]])
+  stopifnot(clus %in% stats$cluster)
+  
+  # RCMD fix
+  rank_int <- Symbol <- anno_str <- NULL
+  
+  plot_title <- paste(clus, title)
+  # message(title)
+  
+  # max_digits <- nchar(n_genes)
+  
+  stopifnot(pval_col %in% colnames(stats))
+  stopifnot(gene_col %in% colnames(stats))
+  
+  ## filter to cluster
+  
+  lookup <- c(
+    pval_col = pval_col,
+    fc_col = fc_col,
+    gene_col = gene_col
+  )
+  
+  stats <- stats |>
+    dplyr::rename(dplyr::all_of(lookup)) |>
+    dplyr::select(cluster, gene_col, pval_col, fc_col) 
+  
+  stats_filter <- stats |>
+    dplyr::filter(
+      cluster == clus,
+      gene_col %in% gene
+    ) |>
+    arrange(pval_col) |>
+    mutate(
+      rank_col = row_number(),
+      Var1 = gene_col,
+      signif = case_when(pval_col < 0.001 ~"***",
+                         pval_col < 0.01 ~"**",
+                         pval_col < 0.05 ~"*",
+                         TRUE ~ "",
+      ),
+      anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", interaction, pval_col, signif, fc_col)
+    )
+  
+  
+  if (!any(stats_filter$gene_col %in% rownames(sce))) {
+    warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
+  }
+  
+  # return(stats_filter)
+  
+  #### clean Y ####
+  cluster_index <- sce[[cluster_col]] == clus
+  sce <- sce[,cluster_index]
+  
+  if(is.matrix(mod)) {
+    my_mod <- mod[cluster_index,]
+  } else if(class(mod) == "formula"){
+    my_mod <- model.matrix(mod, colData(sce))
+  }
+  
+  assays(sce)$cleanY <- jaffelab::cleaningY(logcounts(sce),
+                                            mod = my_mod,
+                                            P = cleanY_P)
+  
+  covars <- colnames(my_mod)[(cleanY_P+1):ncol(my_mod)]
+  
+  ## filter data
+  rownames(sce) <- rowData(sce)[[gene_col]]
+  
+  # sce <- sce[stats_filter$gene_col, ]
+  
+  category_df <- as.data.frame(colData(sce))[, c(category_col, interaction), drop = FALSE]
+  expression_long <- reshape2::melt(as.matrix(SummarizedExperiment::assays(sce)[["cleanY"]][unique(stats_filter$gene_col), , drop = FALSE]))
+  
+  category <- category_df[expression_long$Var2, ]
+  expression_long <- cbind(expression_long, category)
+  
+  pe <- ggplot(data = expression_long, 
+               aes(x = !!sym(interaction), 
+                   y = value)
+               ) +
+    geom_point(aes(color = !!sym(category_col))) +
+    geom_smooth(aes(color = !!sym(category_col)), method = "lm") +
+    facet_wrap(~Var1) + 
+    ggplot2::geom_label(
+      data = stats_filter,
+      ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
+      alpha = 0.5,
+      vjust = "inward",
+      hjust = "inward",
+      size = 2.5,
+      color = "black"
+    ) +
+    labs(title = plot_title, y = "logcounts - Covariates") +
+    scale_color_manual(values = color_pal) +
+    theme_bw() +
+    theme(strip.text.x = ggplot2::element_text(face = "italic"))
+  
+    # ggsave(pe, filename = here(plot_dir, "test.png"))
+    
+  return(pe)
+}
+
+
