@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Mar 26 02:46:47 PM EDT 2026
+Thu Apr  2 03:35:00 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30368202
+Job id: 30537101
 Job name: 35.5_sn_subcluster_marker_modeling_OligoOPC
-Node name: compute-122
+Node name: compute-146
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -199,16 +199,25 @@ character(0)
 $celltype
 [1] "OligoOPC2"
 
-2026-03-26 14:47:08.47955 - Load HDF5 sce
+2026-04-02 15:35:18.052856 - Load HDF5 sce
 
 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
   12519   12010    8587    6911    4254    4815    4009    3932    1961     458 
 Loading objects:
   Oligo_OPC_colors
 Use OPC subtypes
-
-  OPC.3   OPC.4   OPC.1   OPC.2   OPC.5 Oligo.3 Oligo.4 Oligo.5 Oligo.1 Oligo.2 
-   3932    1961    4815    4009     458    8587    6911    4254   12519   12010 
+         
+          OPC.1 OPC.2 OPC.3 OPC.4 OPC.5 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5
+  OPC.3       0     0  3932     0     0       0       0       0       0       0
+  OPC.4       0     0     0  1961     0       0       0       0       0       0
+  OPC.1    4815     0     0     0     0       0       0       0       0       0
+  OPC.2       0  4009     0     0     0       0       0       0       0       0
+  OPC.5       0     0     0     0   458       0       0       0       0       0
+  Oligo.3     0     0     0     0     0       0       0    8587       0       0
+  Oligo.4     0     0     0     0     0       0       0       0    6911       0
+  Oligo.5     0     0     0     0     0       0       0       0       0    4254
+  Oligo.1     0     0     0     0     0   12519       0       0       0       0
+  Oligo.2     0     0     0     0     0       0   12010       0       0       0
 Rows: 23 Columns: 2
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -234,10 +243,10 @@ Warning messages:
 ℹ Did you misspell an argument name?
 null device 
           1 
-2026-03-26 14:47:51.94855 - Load marker stats data
+2026-04-02 15:36:33.611471 - Load marker stats data
 Loading objects:
   marker_stats_MeanRatio
-2026-03-26 14:47:51.980152 - Mean Ratio Plots
+2026-04-02 15:36:33.664817 - Mean Ratio Plots
 [[1]]
 
 [[2]]
@@ -282,7 +291,7 @@ Warning messages:
 ℹ Did you misspell an argument name?
 null device 
           1 
-2026-03-26 14:53:37.90588 - Load modeling data
+2026-04-02 15:43:45.811638 - Load modeling data
 # A tibble: 10 × 2
 # Groups:   test [10]
    test        n
@@ -297,7 +306,7 @@ null device
  8 Oligo.3   100
  9 Oligo.4   100
 10 Oligo.5   100
-2026-03-26 14:53:38.571387 - Enrichment dot plots
+2026-04-02 15:43:46.558287 - Enrichment dot plots
 
 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
       8      10      10      10      10      10      10      10      10       7 
@@ -596,6 +605,164 @@ Oli.8  -0.33392324 -0.32247495 -0.36841500 -0.31451342
 Oli.9   0.70867081  0.39653669  0.51526291  0.57825250
 null device 
           1 
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by Jakel_Oligo and Green_Oligo.
+ℹ Output is grouped by Jakel_Oligo.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(Jakel_Oligo, Green_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 12 × 4
+# Groups:   Jakel_Oligo [6]
+   Jakel_Oligo  Green_Oligo     n   cor
+   <chr>        <chr>       <int> <dbl>
+ 1 Jakel_COPs   Oli.11          1    NA
+ 2 Jakel_OPCs   Oli.11          1    NA
+ 3 Jakel_Oligo2 Oli.10          1    NA
+ 4 Jakel_Oligo2 Oli.11          1    NA
+ 5 Jakel_Oligo4 Oli.12          1    NA
+ 6 Jakel_Oligo4 Oli.2           1    NA
+ 7 Jakel_Oligo4 Oli.4           1    NA
+ 8 Jakel_Oligo5 Oli.10          1    NA
+ 9 Jakel_Oligo5 Oli.9           1    NA
+10 Jakel_imOLGs Oli.10          1    NA
+11 Jakel_imOLGs Oli.11          1    NA
+12 Jakel_imOLGs Oli.9           1    NA
+        Jakel_COPs   Jakel_OPCs Jakel_Oligo1 Jakel_Oligo2 Jakel_Oligo3
+COP    -0.41163445 -0.251391884  -0.10119034   0.20984623  0.051046408
+MFOL   -0.50027613 -0.419970874  -0.05312768  -0.16757447 -0.186955353
+OPC.1  -0.27493433 -0.214883726   0.09145491   0.19981710 -0.086388000
+OPC.2  -0.09149315 -0.100793744  -0.04329942   0.14645219 -0.005063026
+OPC.3  -0.04564243 -0.111763836  -0.04192265   0.27146903 -0.031797232
+Oli.1  -0.10777328 -0.007637365  -0.28187799  -0.50326782  0.563066977
+Oli.10 -1.00000000 -1.000000000  -1.00000000           NA           NA
+Oli.11          NA           NA   0.66587400           NA           NA
+Oli.12  0.35520759  0.360587993   0.62698560   1.00000000  0.532875674
+Oli.2   0.24266868  0.417437105  -0.28414484   1.00000000 -1.000000000
+Oli.3  -0.39033186 -0.608597538  -0.08054973   1.00000000  1.000000000
+Oli.4  -0.30709424 -0.338182019  -0.25664952  -0.97487733 -0.859579889
+Oli.5  -0.12213002 -0.188433817   0.49945469   0.05612512  0.056891773
+Oli.6  -0.07874598  0.126530034   1.00000000   0.97506466  0.623330926
+Oli.7  -0.36944694 -0.232292166   0.30989598   0.40973476 -0.105577635
+Oli.8  -0.06536279  0.203606111   0.08303559   0.36698164 -0.350224948
+Oli.9  -1.00000000 -1.000000000   1.00000000           NA           NA
+       Jakel_Oligo4 Jakel_Oligo5 Jakel_Oligo6 Jakel_imOLGs
+COP     -0.12253660  -0.04990413   0.01217503   0.27394021
+MFOL     0.18415827  -0.09083477   0.10950766  -0.13540359
+OPC.1    0.26491253   0.10258304  -0.10589244  -0.31222540
+OPC.2    0.34260798   0.04050546  -0.17768485  -0.27398597
+OPC.3    0.23655614  -0.01037331   0.12161347  -0.31793782
+Oli.1   -0.03338024  -0.18740522   0.36702928  -0.50001382
+Oli.10           NA           NA           NA           NA
+Oli.11           NA   1.00000000           NA           NA
+Oli.12           NA   0.79201710  -0.71044491  -0.01178445
+Oli.2            NA   0.53577025           NA  -0.18106314
+Oli.3   -0.39778064   0.65045764  -0.76942736   1.00000000
+Oli.4            NA  -0.34565021   0.53792123   0.25795375
+Oli.5   -0.69068017   0.20631276   0.06686807  -0.19991146
+Oli.6            NA   0.58921713  -0.27358329   0.23538511
+Oli.7   -0.30893529   0.01613104  -0.77624479   1.00000000
+Oli.8   -0.30107300   0.08703697  -0.62388031           NA
+Oli.9            NA           NA           NA           NA
+null device 
+          1 
+# A tibble: 11 × 3
+   broad_group type_fine       n
+   <chr>       <chr>       <int>
+ 1 oligo_opc   COP          1065
+ 2 oligo_opc   OPC_1        1843
+ 3 oligo_opc   OPC_2        1008
+ 4 oligo_opc   Oligo_A      2207
+ 5 oligo_opc   Oligo_Astro   223
+ 6 oligo_opc   Oligo_B      2684
+ 7 oligo_opc   Oligo_C      2792
+ 8 oligo_opc   Oligo_D      2449
+ 9 oligo_opc   Oligo_E      2374
+10 oligo_opc   Oligo_F      2129
+11 oligo_opc   Oligo_G      1821
+Joining with `by = join_by(gene)`
+   Macnair_Oligo     n
+1            COP 10210
+2          OPC_1 17630
+3          OPC_2  9650
+4        Oligo_A 21020
+5    Oligo_Astro  2170
+6        Oligo_B 25530
+7        Oligo_C 26460
+8        Oligo_D 23280
+9        Oligo_E 22580
+10       Oligo_F 20270
+11       Oligo_G 17530
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and Macnair_Oligo.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, Macnair_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 10 × 4
+# Groups:   test [10]
+   test    Macnair_Oligo     n   cor
+   <chr>   <chr>         <int> <dbl>
+ 1 OPC.1   OPC_1          1763 0.913
+ 2 OPC.2   OPC_1          1763 0.915
+ 3 OPC.3   OPC_1          1763 0.906
+ 4 OPC.4   OPC_1          1763 0.909
+ 5 OPC.5   OPC_2           965 0.859
+ 6 Oligo.1 Oligo_C        2646 0.799
+ 7 Oligo.2 Oligo_C        2646 0.863
+ 8 Oligo.3 Oligo_C        2646 0.749
+ 9 Oligo.4 Oligo_C        2646 0.782
+10 Oligo.5 Oligo_C        2646 0.800
+# A tibble: 11 × 4
+# Groups:   Macnair_Oligo [11]
+   test    Macnair_Oligo     n   cor
+   <chr>   <chr>         <int> <dbl>
+ 1 OPC.3   COP            1021 0.471
+ 2 OPC.2   OPC_1          1763 0.915
+ 3 OPC.2   OPC_2           965 0.908
+ 4 Oligo.1 Oligo_A        2102 0.445
+ 5 Oligo.3 Oligo_Astro     217 0.239
+ 6 Oligo.1 Oligo_B        2553 0.775
+ 7 Oligo.2 Oligo_C        2646 0.863
+ 8 Oligo.2 Oligo_D        2328 0.490
+ 9 Oligo.3 Oligo_E        2258 0.611
+10 Oligo.3 Oligo_F        2027 0.173
+11 Oligo.3 Oligo_G        1753 0.189
+                  OPC.1       OPC.2       OPC.3       OPC.4       OPC.5
+COP          0.42972226  0.43536141  0.47094062  0.43899159  0.33670796
+OPC_1        0.91344989  0.91547954  0.90631249  0.90906566  0.83814884
+OPC_2        0.90250965  0.90762903  0.89590623  0.89789413  0.85868515
+Oligo_A     -0.39694162 -0.40450426 -0.38827349 -0.39381022 -0.34605121
+Oligo_Astro  0.06865277  0.07161841  0.05575084  0.03703082  0.04944903
+Oligo_B     -0.73273174 -0.73320260 -0.73619143 -0.72992533 -0.61475843
+Oligo_C     -0.80509227 -0.80019645 -0.79958117 -0.80385572 -0.68873674
+Oligo_D     -0.34336044 -0.34208958 -0.33903844 -0.36290568 -0.31648221
+Oligo_E     -0.54816314 -0.52481423 -0.55705824 -0.56416125 -0.42807567
+Oligo_F     -0.12945154 -0.11340878 -0.16898661 -0.15680907 -0.16281498
+Oligo_G     -0.12353153 -0.11604509 -0.15053879 -0.13396256 -0.13465396
+               Oligo.1    Oligo.2    Oligo.3     Oligo.4    Oligo.5
+COP         -0.4470569 -0.4497811 -0.3417836 -0.44383745 -0.3848265
+OPC_1       -0.9216503 -0.9281311 -0.7247772 -0.88608434 -0.8269558
+OPC_2       -0.9092587 -0.9175592 -0.6727728 -0.86914309 -0.7977715
+Oligo_A      0.4454486  0.3591767  0.3684805  0.42357524  0.3761425
+Oligo_Astro -0.1902932 -0.2435558  0.2391428 -0.04289122  0.1237335
+Oligo_B      0.7750948  0.7023951  0.6975545  0.76569376  0.7097845
+Oligo_C      0.7994697  0.8628967  0.7492307  0.78219421  0.8004032
+Oligo_D      0.2667392  0.4901788  0.3381891  0.25744266  0.3785579
+Oligo_E      0.5201419  0.4714418  0.6111579  0.57255608  0.5510885
+Oligo_F      0.1377066  0.1297044  0.1734913  0.14332616  0.1487079
+Oligo_G      0.1045235  0.0870881  0.1890292  0.12770090  0.1655124
+null device 
+          1 
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and test1.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, test1))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+null device 
+          1 
 Loading required package: AnnotationDbi
 
 Attaching package: ‘AnnotationDbi’
@@ -610,10 +777,8 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
