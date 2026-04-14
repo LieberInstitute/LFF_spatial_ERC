@@ -9,6 +9,7 @@ library("ggrepel")
 library("getopt")
 library("ComplexHeatmap")
 library("SingleCellExperiment")
+library("DeconvoBuddies")
 
 ## set plot dir
 plot_dir <- here("plots", "13_compile_DGE", "14_interaction_plots")
@@ -118,7 +119,7 @@ topDEGs <- DE_data |>
   group_by(cluster) |>
   filter(vlmf_adj.P.Val < 0.05) |>
   arrange(vlmf_adj.P.Val) |>
-  slice(1:5) |>
+  dplyr::slice(1:5) |>
   pull(gene_name) |>
   unique()
 
@@ -155,6 +156,9 @@ if(datatype == "sn_fine"){
 
 
 #### Interaction Plots ####
+source(here("code","utils","plot_DEG_express.R"))
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 
 #### Load pseudobulk data ####
 if(datatype == "Visium"){
@@ -182,7 +186,7 @@ table(sce_pb$registration_variable)
 rownames(sce_pb) <- rowData(sce_pb)$gene_name
 
 ## check model
-head(model.matrix(~0 + APOE_carrier*Age + Sex + Anc_Afr + pseudo_expr_chrM_ratio, colData(sce_pb)))
+head(model.matrix(~0 + APOE_carrier + Age + Sex + Anc_Afr + pseudo_expr_chrM_ratio, colData(sce_pb)))
 
 cluster_levels <- levels(sce_pb[[cluster_var]])
 cluster_levels2 <- as.character(unique(DE_data$cluster))
@@ -191,8 +195,80 @@ cluster_levels <- intersect(cluster_levels, cluster_levels2)
 
 all(cluster_levels %in% sce_pb[[cluster_var]])
 
+dge_n_v_fdr |> filter(n_signif > 0)
 
+table(sce_pb[[cluster_var]])
 
+table(sce_pb[[cluster_var]], sce_pb$APOE_carrier)
+
+summary(sce_pb[, sce_pb$cell_type_anno == "Excit.L2_5.2"]$ncells)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 11.00   15.00   30.00   36.64   50.00   95.00 
+
+colData(sce_pb)[sce_pb$cell_type_anno == "Excit.L2_5.2",c("BrNum","ncells")]
+
+pdf(here(plot_dir, sprintf("DEG_interaction_%s_boxplots_carrier_%s.pdf", interaction, datatype)))
+plot_DEG_express_top(sce = sce_pb,
+                 stats = DE_data,
+                 clus = "Excit.L2_5.2",
+                 # n_genes = 10,
+                 pval_col = "vlmf_adj.P.Val",
+                 fc_col = "vlmf_logFC",
+                 gene_col = "gene_name",
+                 cluster_col = cluster_var,
+                 category_col = "APOE_carrier",
+                 mod = ~0 + APOE_carrier + Age + Sex + Ancestry + pseudo_expr_chrM_ratio,
+                 color_pal = APOE_carrier_colors,
+                 plot_points = TRUE,
+                 ncol = 2,
+                 cleanY_P = 3)
+dev.off()
+
+rps_genes <- DE_interaction_data |> 
+  filter(vlmf_adj.P.Val < 0.05) |> 
+  select(cluster, gene_name, vlmf_P.Value, vlmf_adj.P.Val, vlmf_logFC) |> 
+  filter(grepl("^RPS" , gene_name)) |> 
+  dplyr::slice(1:6) |> 
+  pull(gene_name)
+
+interaction_plot_RPS_genes <- plot_DEG_express_interaction(
+  sce = sce_pb,
+  stats = DE_data,
+  gene = rps_genes,
+  cluster_col = "cell_type_anno",
+  clus = "Excit.L2_5.2",
+  gene_col = "gene_name"
+)
+
+ggsave(interaction_plot_RPS_genes, filename = here(plot_dir, "DEG_scatter_interaction_Age_sn_fine_Excit.L2_5.2_RPSgenes.png"))
+
+## risk gene "MT-ND1"
+interaction_plot_MTND1 <- plot_DEG_express_interaction(
+  sce = sce_pb,
+  stats = DE_data,
+  gene = "MT-ND1",
+  cluster_col = "cell_type_anno",
+  clus = "Excit.L2_5.2",
+  gene_col = "gene_name"
+)
+
+ggsave(interaction_plot_MTND1, filename = here(plot_dir, "DEG_scatter_interaction_Age_sn_fine_Excit.L2_5.2_MT-ND1.png"), height = 5, width = 5)
+
+top50_degs <- DE_data |> filter(clus == "Excit.L2_5.2", vlmf_adj.P.Val < 0.05) |> arrange(vlmf_adj.P.Val) |> dplyr::slice(1:50)
+
+top50_interaction_plots <- map(top50_degs$gene_name, 
+                               ~plot_DEG_express_interaction(
+                                 sce = sce_pb,
+                                 stats = DE_data,
+                                 gene = .x,
+                                 cluster_col = "cell_type_anno",
+                                 clus = "Excit.L2_5.2",
+                                 gene_col = "gene_name"
+                               ))
+
+pdf(here(plot_dir, "DEG_scatter_interaction_Age_sn_fine_Excit.L2_5.2_top50.pdf"), height = 5, width = 5)
+print(top50_interaction_plots)
+dev.off()
 
 # 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
