@@ -1,16 +1,17 @@
 **** Job starts ****
-Fri Apr 10 09:22:33 AM EDT 2026
+Tue Apr 14 03:47:27 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30744204
-Job name: 03_Clusterwise_voomLmFit_interaction_sn_fine
-Node name: compute-176
+Job id: 30794754
+Job name: 03_Clusterwise_voomLmFit_interaction_sn_fine_leaveout
+Node name: compute-178
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
 
  
 
@@ -168,277 +169,281 @@ $datatype
 $interaction
 [1] "Age"
 
-2026-04-10 09:22:40.169768 - Datatype = sn_fine, loading 'sce_pseudo_DGE-cell_type_anno.RDS'
+$leaveout
+[1] "Br3974"
+
+2026-04-14 15:47:34.09461 - Datatype = sn_fine, loading 'sce_pseudo_DGE-cell_type_anno.RDS'
+LEAVING OUT: Br3974
 [1] 38606   918
 
          Astro.1          Astro.2          Astro.3          Astro.4 
-              29               30               30               25 
+              29               29               29               25 
          Astro.5            Macro          Micro.1          Micro.2 
-              27               18               28               30 
+              27               18               27               29 
          Micro.3          Micro.4          Micro.5            OPC.1 
-              26               27               25               30 
+              25               26               24               29 
            OPC.2            OPC.3            OPC.4            OPC.5 
-              30               30               30               13 
+              29               29               29               12 
          Oligo.1          Oligo.2          Oligo.3          Oligo.4 
-              30               29               30               30 
+              29               28               29               29 
          Oligo.5        Vasc.Endo        Vasc.VLMC         Excit.L2 
-              30               27               22               24 
+              29               27               22               24 
     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1       Excit.L5.2 
-              30               14               24                9 
+              29               13               24                9 
      Excit.L6_CT        Excit.L6b Inhib.Chandelier Inhib.Lamp5_Lhx6 
-              16               18               14               26 
+              16               17               14               25 
      Inhib.Pvalb        Inhib.Sst        Inhib.Vip 
-              26               26               30 
-2026-04-10 09:22:44.617251 - Loop voomlmFit by cluster
+              25               25               29 
+2026-04-14 15:47:38.943474 - Loop voomlmFit by cluster
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:22:45.841805 - voomLmFit - cluster: Astro.1, block= 'exp_round', ncol: 29, ngene: 16867
+2026-04-14 15:47:39.995856 - voomLmFit - cluster: Astro.1, block= 'exp_round', ncol: 29, ngene: 16867
 First sample weights (min/max) 0.364262/1.534979
 First intra-block correlation  -0.0002518122
 Final sample weights (min/max) 0.371856/1.543992
 Final intra-block correlation  -0.0003443834
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:23:23.475539 - voomLmFit - cluster: Astro.2, block= 'exp_round', ncol: 30, ngene: 9994
-First sample weights (min/max) 0.4103929/1.4114626
-First intra-block correlation  0.01485075
-Final sample weights (min/max) 0.4100442/1.4005391
-Final intra-block correlation  0.01474948
+2026-04-14 15:48:12.475512 - voomLmFit - cluster: Astro.2, block= 'exp_round', ncol: 29, ngene: 10083
+First sample weights (min/max) 0.4149831/1.4682959
+First intra-block correlation  0.01124706
+Final sample weights (min/max) 0.4146609/1.4812848
+Final intra-block correlation  0.01121202
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:23:45.504405 - voomLmFit - cluster: Astro.3, block= 'exp_round', ncol: 30, ngene: 10634
-First sample weights (min/max) 0.467310/1.382222
-First intra-block correlation  0.006436213
-Final sample weights (min/max) 0.4681903/1.3842401
-Final intra-block correlation  0.006576591
+2026-04-14 15:48:30.941632 - voomLmFit - cluster: Astro.3, block= 'exp_round', ncol: 29, ngene: 10569
+First sample weights (min/max) 0.4642006/1.3760229
+First intra-block correlation  0.00929874
+Final sample weights (min/max) 0.464757/1.379049
+Final intra-block correlation  0.009411002
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:24:09.071923 - voomLmFit - cluster: Astro.4, block= 'exp_round', ncol: 25, ngene: 8135
+2026-04-14 15:48:50.683029 - voomLmFit - cluster: Astro.4, block= 'exp_round', ncol: 25, ngene: 8135
 First sample weights (min/max) 0.5413298/1.4176467
 First intra-block correlation  -0.03435833
 Final sample weights (min/max) 0.538119/1.414395
 Final intra-block correlation  -0.0344928
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:24:27.500252 - voomLmFit - cluster: Astro.5, block= 'exp_round', ncol: 27, ngene: 1793
+2026-04-14 15:49:06.173372 - voomLmFit - cluster: Astro.5, block= 'exp_round', ncol: 27, ngene: 1793
 First sample weights (min/max) 0.5626918/1.4460049
 First intra-block correlation  -0.01112086
 Final sample weights (min/max) 0.5580915/1.4455913
 Final intra-block correlation  -0.01078543
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:24:31.715468 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 18, ngene: 2931
+2026-04-14 15:49:09.727402 - voomLmFit - cluster: Macro, block= 'exp_round', ncol: 18, ngene: 2931
 First sample weights (min/max) 0.4363159/1.3864181
 First intra-block correlation  -0.05784629
 Final sample weights (min/max) 0.4326764/1.3886464
 Final intra-block correlation  -0.06004531
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:24:39.756185 - voomLmFit - cluster: Micro.1, block= 'exp_round', ncol: 28, ngene: 10158
-First sample weights (min/max) 0.2134293/1.5316225
-First intra-block correlation  0.008183268
-Final sample weights (min/max) 0.2076985/1.6203799
-Final intra-block correlation  0.008414969
+2026-04-14 15:49:16.66301 - voomLmFit - cluster: Micro.1, block= 'exp_round', ncol: 27, ngene: 10199
+First sample weights (min/max) 0.2095579/1.4775711
+First intra-block correlation  0.007200972
+Final sample weights (min/max) 0.2035234/1.5823686
+Final intra-block correlation  0.007612096
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:25:02.212537 - voomLmFit - cluster: Micro.2, block= 'exp_round', ncol: 30, ngene: 8763
-First sample weights (min/max) 0.2712229/1.4519163
-First intra-block correlation  -0.003793773
-Final sample weights (min/max) 0.265705/1.429436
-Final intra-block correlation  -0.003569096
+2026-04-14 15:49:35.28144 - voomLmFit - cluster: Micro.2, block= 'exp_round', ncol: 29, ngene: 8990
+First sample weights (min/max) 0.2720651/1.4196279
+First intra-block correlation  -0.01375854
+Final sample weights (min/max) 0.2663068/1.4205797
+Final intra-block correlation  -0.01367939
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:25:21.202374 - voomLmFit - cluster: Micro.3, block= 'exp_round', ncol: 26, ngene: 7923
-First sample weights (min/max) 0.5867473/1.3063714
-First intra-block correlation  0.01575994
-Final sample weights (min/max) 0.5819944/1.3206212
-Final intra-block correlation  0.01577546
+2026-04-14 15:49:52.428859 - voomLmFit - cluster: Micro.3, block= 'exp_round', ncol: 25, ngene: 8114
+First sample weights (min/max) 0.5878613/1.3038358
+First intra-block correlation  0.0128235
+Final sample weights (min/max) 0.5827066/1.3232714
+Final intra-block correlation  0.01308028
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:25:37.808269 - voomLmFit - cluster: Micro.4, block= 'exp_round', ncol: 27, ngene: 6620
-First sample weights (min/max) 0.4867907/1.3641924
-First intra-block correlation  -0.00398365
-Final sample weights (min/max) 0.4683873/1.3464820
-Final intra-block correlation  -0.003595027
+2026-04-14 15:50:08.330015 - voomLmFit - cluster: Micro.4, block= 'exp_round', ncol: 26, ngene: 6768
+First sample weights (min/max) 0.4811312/1.3230605
+First intra-block correlation  -0.004428733
+Final sample weights (min/max) 0.4628357/1.3038325
+Final intra-block correlation  -0.004098906
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:25:52.177101 - voomLmFit - cluster: Micro.5, block= 'exp_round', ncol: 25, ngene: 2327
-First sample weights (min/max) 0.5252818/1.3498319
-First intra-block correlation  -0.02523626
-Final sample weights (min/max) 0.5195559/1.3489962
-Final intra-block correlation  -0.02470875
+2026-04-14 15:50:21.657631 - voomLmFit - cluster: Micro.5, block= 'exp_round', ncol: 24, ngene: 2285
+First sample weights (min/max) 0.5246229/1.3332192
+First intra-block correlation  -0.0218072
+Final sample weights (min/max) 0.5196296/1.3309856
+Final intra-block correlation  -0.02084788
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:25:58.984226 - voomLmFit - cluster: OPC.1, block= 'exp_round', ncol: 30, ngene: 13131
-First sample weights (min/max) 0.3723277/1.6153629
-First intra-block correlation  0.02207899
-Final sample weights (min/max) 0.3731971/1.6323272
-Final intra-block correlation  0.02166898
+2026-04-14 15:50:27.806253 - voomLmFit - cluster: OPC.1, block= 'exp_round', ncol: 29, ngene: 13474
+First sample weights (min/max) 0.3810611/1.5779447
+First intra-block correlation  0.01153587
+Final sample weights (min/max) 0.3832744/1.5609496
+Final intra-block correlation  0.01109173
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:26:25.967922 - voomLmFit - cluster: OPC.2, block= 'exp_round', ncol: 30, ngene: 10614
-First sample weights (min/max) 0.5442428/1.4771294
-First intra-block correlation  0.01830548
-Final sample weights (min/max) 0.5408168/1.4630116
-Final intra-block correlation  0.0182429
+2026-04-14 15:50:53.831796 - voomLmFit - cluster: OPC.2, block= 'exp_round', ncol: 29, ngene: 10555
+First sample weights (min/max) 0.5438265/1.4520577
+First intra-block correlation  0.006050994
+Final sample weights (min/max) 0.5408374/1.4368696
+Final intra-block correlation  0.00598572
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:26:49.29586 - voomLmFit - cluster: OPC.3, block= 'exp_round', ncol: 30, ngene: 14268
-First sample weights (min/max) 0.3581862/1.7602577
-First intra-block correlation  0.01869692
-Final sample weights (min/max) 0.3588565/1.7921044
-Final intra-block correlation  0.01853298
+2026-04-14 15:51:15.054597 - voomLmFit - cluster: OPC.3, block= 'exp_round', ncol: 29, ngene: 14349
+First sample weights (min/max) 0.3605688/1.7819405
+First intra-block correlation  0.01274633
+Final sample weights (min/max) 0.3630387/1.8291288
+Final intra-block correlation  0.01265587
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:27:18.350062 - voomLmFit - cluster: OPC.4, block= 'exp_round', ncol: 30, ngene: 11598
-First sample weights (min/max) 0.5267025/1.4532227
-First intra-block correlation  -0.003015438
-Final sample weights (min/max) 0.5265857/1.4531128
-Final intra-block correlation  -0.003174266
+2026-04-14 15:51:41.785643 - voomLmFit - cluster: OPC.4, block= 'exp_round', ncol: 29, ngene: 11670
+First sample weights (min/max) 0.5333183/1.4560292
+First intra-block correlation  -0.006363783
+Final sample weights (min/max) 0.5338365/1.4578541
+Final intra-block correlation  -0.006479409
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:27:42.467826 - voomLmFit - cluster: OPC.5, block= 'exp_round', ncol: 13, ngene: 1380
-First sample weights (min/max) 0.5350166/1.4149867
-First intra-block correlation  0.1972474
-Final sample weights (min/max) 0.5230898/1.4233666
-Final intra-block correlation  0.199373
+2026-04-14 15:52:03.814936 - voomLmFit - cluster: OPC.5, block= 'exp_round', ncol: 12, ngene: 1362
+First sample weights (min/max) 0.5672381/1.4546518
+First intra-block correlation  0.3447051
+Final sample weights (min/max) 0.5615429/1.4677986
+Final intra-block correlation  0.3489946
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:27:46.926512 - voomLmFit - cluster: Oligo.1, block= 'exp_round', ncol: 30, ngene: 13881
-First sample weights (min/max) 0.5924868/1.3614602
-First intra-block correlation  0.03077027
-Final sample weights (min/max) 0.5933079/1.3648920
-Final intra-block correlation  0.03077789
+2026-04-14 15:52:07.860618 - voomLmFit - cluster: Oligo.1, block= 'exp_round', ncol: 29, ngene: 13970
+First sample weights (min/max) 0.5905093/1.3879815
+First intra-block correlation  0.02749186
+Final sample weights (min/max) 0.5918578/1.3839929
+Final intra-block correlation  0.02758961
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:28:16.180314 - voomLmFit - cluster: Oligo.2, block= 'exp_round', ncol: 29, ngene: 13983
-First sample weights (min/max) 0.5804868/1.5869569
-First intra-block correlation  0.02503974
-Final sample weights (min/max) 0.5735106/1.6067328
-Final intra-block correlation  0.02447819
+2026-04-14 15:52:34.840845 - voomLmFit - cluster: Oligo.2, block= 'exp_round', ncol: 28, ngene: 14226
+First sample weights (min/max) 0.578065/1.590472
+First intra-block correlation  0.02640602
+Final sample weights (min/max) 0.5714017/1.6043382
+Final intra-block correlation  0.02599875
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:28:45.362609 - voomLmFit - cluster: Oligo.3, block= 'exp_round', ncol: 30, ngene: 11496
-First sample weights (min/max) 0.2785418/1.6890827
-First intra-block correlation  0.001871437
-Final sample weights (min/max) 0.3203961/1.6416574
-Final intra-block correlation  0.001250481
+2026-04-14 15:53:00.57484 - voomLmFit - cluster: Oligo.3, block= 'exp_round', ncol: 29, ngene: 11482
+First sample weights (min/max) 0.2775912/1.7095780
+First intra-block correlation  0.004091199
+Final sample weights (min/max) 0.3204389/1.6545649
+Final intra-block correlation  0.003199152
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:29:09.903285 - voomLmFit - cluster: Oligo.4, block= 'exp_round', ncol: 30, ngene: 12055
-First sample weights (min/max) 0.5261328/1.4187971
-First intra-block correlation  0.01758457
-Final sample weights (min/max) 0.5240126/1.4215739
-Final intra-block correlation  0.01771912
+2026-04-14 15:53:21.933881 - voomLmFit - cluster: Oligo.4, block= 'exp_round', ncol: 29, ngene: 11901
+First sample weights (min/max) 0.5297954/1.4293953
+First intra-block correlation  0.01935571
+Final sample weights (min/max) 0.5271288/1.4329492
+Final intra-block correlation  0.01965536
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:29:35.34705 - voomLmFit - cluster: Oligo.5, block= 'exp_round', ncol: 30, ngene: 9670
-First sample weights (min/max) 0.4667039/1.3991957
-First intra-block correlation  -0.009001417
-Final sample weights (min/max) 0.463131/1.419793
-Final intra-block correlation  -0.008418801
+2026-04-14 15:53:43.701699 - voomLmFit - cluster: Oligo.5, block= 'exp_round', ncol: 29, ngene: 9854
+First sample weights (min/max) 0.4761428/1.4299842
+First intra-block correlation  -0.009505842
+Final sample weights (min/max) 0.4714325/1.4550973
+Final intra-block correlation  -0.008989923
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:29:56.240957 - voomLmFit - cluster: Vasc.Endo, block= 'exp_round', ncol: 27, ngene: 5618
+2026-04-14 15:54:02.773043 - voomLmFit - cluster: Vasc.Endo, block= 'exp_round', ncol: 27, ngene: 5618
 First sample weights (min/max) 0.5459119/1.5680897
 First intra-block correlation  -0.02808637
 Final sample weights (min/max) 0.537835/1.584125
 Final intra-block correlation  -0.02797363
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:30:09.377829 - voomLmFit - cluster: Vasc.VLMC, block= 'exp_round', ncol: 22, ngene: 6644
+2026-04-14 15:54:14.041155 - voomLmFit - cluster: Vasc.VLMC, block= 'exp_round', ncol: 22, ngene: 6644
 First sample weights (min/max) 0.3871264/2.8841410
 First intra-block correlation  -0.01617372
 Final sample weights (min/max) 0.3810906/2.7356245
 Final intra-block correlation  -0.01679974
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:30:25.252505 - voomLmFit - cluster: Excit.L2, block= 'exp_round', ncol: 24, ngene: 20080
+2026-04-14 15:54:28.935004 - voomLmFit - cluster: Excit.L2, block= 'exp_round', ncol: 24, ngene: 20080
 First sample weights (min/max) 0.4831876/1.9618842
 First intra-block correlation  -0.03658684
 Final sample weights (min/max) 0.48665/1.94125
 Final intra-block correlation  -0.03574897
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:31:11.75357 - voomLmFit - cluster: Excit.L2_5.1, block= 'exp_round', ncol: 30, ngene: 22201
-First sample weights (min/max) 0.3028177/2.0784356
-First intra-block correlation  0.05443716
-Final sample weights (min/max) 0.2950442/2.0961128
-Final intra-block correlation  0.05528836
+2026-04-14 15:55:10.827472 - voomLmFit - cluster: Excit.L2_5.1, block= 'exp_round', ncol: 29, ngene: 22170
+First sample weights (min/max) 0.2993967/2.0448776
+First intra-block correlation  0.0527927
+Final sample weights (min/max) 0.2911589/2.1194579
+Final intra-block correlation  0.05412309
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:31:59.455826 - voomLmFit - cluster: Excit.L2_5.2, block= 'exp_round', ncol: 14, ngene: 13455
-First sample weights (min/max) 0.5573023/1.6200231
-First intra-block correlation  -0.02379114
-Final sample weights (min/max) 0.5756829/1.6433233
-Final intra-block correlation  -0.02196134
+2026-04-14 15:55:49.641975 - voomLmFit - cluster: Excit.L2_5.2, block= 'exp_round', ncol: 13, ngene: 14365
+First sample weights (min/max) 0.5802234/1.5687808
+First intra-block correlation  -0.08197424
+Final sample weights (min/max) 0.5750952/1.5920083
+Final intra-block correlation  -0.07953933
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:32:33.097415 - voomLmFit - cluster: Excit.L5.1, block= 'exp_round', ncol: 24, ngene: 18607
+2026-04-14 15:56:20.136884 - voomLmFit - cluster: Excit.L5.1, block= 'exp_round', ncol: 24, ngene: 18607
 First sample weights (min/max) 0.3221491/1.6419454
 First intra-block correlation  -0.07506581
 Final sample weights (min/max) 0.3108411/1.6470371
 Final intra-block correlation  -0.07471887
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:33:15.848464 - voomLmFit - cluster: Excit.L5.2, block= 'exp_round', ncol: 9, ngene: 11952
+2026-04-14 15:56:58.908775 - voomLmFit - cluster: Excit.L5.2, block= 'exp_round', ncol: 9, ngene: 11952
 First sample weights (min/max) 0.9138531/1.1311485
 Final sample weights (min/max) 0.9123357/1.1316595
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:33:19.474067 - voomLmFit - cluster: Excit.L6_CT, block= 'exp_round', ncol: 16, ngene: 14031
+2026-04-14 15:57:02.226247 - voomLmFit - cluster: Excit.L6_CT, block= 'exp_round', ncol: 16, ngene: 14031
 First sample weights (min/max) 0.3130176/2.0475435
 First intra-block correlation  -0.02332602
 Final sample weights (min/max) 0.3294677/1.9709504
 Final intra-block correlation  -0.0224573
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:33:54.388016 - voomLmFit - cluster: Excit.L6b, block= 'exp_round', ncol: 18, ngene: 15739
-First sample weights (min/max) 0.3008791/1.6456003
-First intra-block correlation  -0.03354965
-Final sample weights (min/max) 0.3135816/1.5999287
-Final intra-block correlation  -0.03316962
+2026-04-14 15:57:33.454589 - voomLmFit - cluster: Excit.L6b, block= 'exp_round', ncol: 17, ngene: 16016
+First sample weights (min/max) 0.3176683/1.5214212
+First intra-block correlation  -0.0599796
+Final sample weights (min/max) 0.328933/1.492720
+Final intra-block correlation  -0.05992853
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:34:27.926223 - voomLmFit - cluster: Inhib.Chandelier, block= 'exp_round', ncol: 14, ngene: 8999
+2026-04-14 15:58:05.902008 - voomLmFit - cluster: Inhib.Chandelier, block= 'exp_round', ncol: 14, ngene: 8999
 First sample weights (min/max) 0.5897978/1.5804003
 First intra-block correlation  0.04826206
 Final sample weights (min/max) 0.5335223/1.6064419
 Final intra-block correlation  0.05302274
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:34:51.545099 - voomLmFit - cluster: Inhib.Lamp5_Lhx6, block= 'exp_round', ncol: 26, ngene: 13528
-First sample weights (min/max) 0.6225878/1.5157098
-First intra-block correlation  0.00744828
-Final sample weights (min/max) 0.6312328/1.5457542
-Final intra-block correlation  0.008053321
+2026-04-14 15:58:26.556792 - voomLmFit - cluster: Inhib.Lamp5_Lhx6, block= 'exp_round', ncol: 25, ngene: 13588
+First sample weights (min/max) 0.5823621/1.4211325
+First intra-block correlation  -0.03389666
+Final sample weights (min/max) 0.5797232/1.4324694
+Final intra-block correlation  -0.03334029
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:35:20.172658 - voomLmFit - cluster: Inhib.Pvalb, block= 'exp_round', ncol: 26, ngene: 15219
-First sample weights (min/max) 0.4975421/1.9656462
-First intra-block correlation  0.003088807
-Final sample weights (min/max) 0.4879935/1.9518001
-Final intra-block correlation  0.00302676
+2026-04-14 15:58:52.273835 - voomLmFit - cluster: Inhib.Pvalb, block= 'exp_round', ncol: 25, ngene: 15249
+First sample weights (min/max) 0.3735028/1.9325813
+First intra-block correlation  -0.0223527
+Final sample weights (min/max) 0.3678873/1.9181471
+Final intra-block correlation  -0.02230973
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:35:54.476319 - voomLmFit - cluster: Inhib.Sst, block= 'exp_round', ncol: 26, ngene: 12194
-First sample weights (min/max) 0.4964291/1.3852239
-First intra-block correlation  0.005924257
-Final sample weights (min/max) 0.4999141/1.4111308
-Final intra-block correlation  0.005717842
+2026-04-14 15:59:21.863877 - voomLmFit - cluster: Inhib.Sst, block= 'exp_round', ncol: 25, ngene: 12219
+First sample weights (min/max) 0.5072725/1.3756887
+First intra-block correlation  -0.02068856
+Final sample weights (min/max) 0.5091123/1.3942261
+Final intra-block correlation  -0.02087653
 Done - Save data
 APOE * Age Interaction, coef: APOE_carrier_E4:Age
-2026-04-10 09:36:21.573009 - voomLmFit - cluster: Inhib.Vip, block= 'exp_round', ncol: 30, ngene: 19549
-First sample weights (min/max) 0.5058737/1.5646364
-First intra-block correlation  0.05538774
-Final sample weights (min/max) 0.5084216/1.5462012
-Final intra-block correlation  0.05564561
+2026-04-14 15:59:46.453091 - voomLmFit - cluster: Inhib.Vip, block= 'exp_round', ncol: 29, ngene: 19576
+First sample weights (min/max) 0.4998752/1.5394860
+First intra-block correlation  0.04193248
+Final sample weights (min/max) 0.5029897/1.5219159
+Final intra-block correlation  0.04223149
 Done - Save data
 Warning message:
 Intra-block correlation not estimable, setting to zero. 
 [1] "Reproducibility information:"
-[1] "2026-04-10 09:37:00 EDT"
+[1] "2026-04-14 16:00:21 EDT"
    user  system elapsed 
-857.323   4.621 866.351 
+766.140   3.611 773.100 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -449,7 +454,7 @@ Intra-block correlation not estimable, setting to zero.
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-10
+ date     2026-04-14
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -521,4 +526,4 @@ Intra-block correlation not estimable, setting to zero.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Apr 10 09:37:01 AM EDT 2026
+Tue Apr 14 04:00:21 PM EDT 2026
