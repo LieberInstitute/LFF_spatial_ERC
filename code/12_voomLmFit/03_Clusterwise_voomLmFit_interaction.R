@@ -14,13 +14,15 @@ library("sessioninfo")
 # Import command-line parameters
 scec <- matrix(
     c("datatype", "d", "1", "character", "Data type",
-      "interaction", "i", "1", "character", "Interaction type"),
+      "interaction", "i", "1", "character", "Interaction type",
+      "leaveout", "l", "1", "character", "BrNum to exclude"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
 
 ## test
-# opt$datatype <- "sn_broad"
+# opt$datatype <- "sn_fine"
+# opt$leaveout <- "Br3974"
 
 print(opt)
 
@@ -39,6 +41,11 @@ if(opt$datatype == "Visium"){
 
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, basename(pb_fn)))
 
+if(!is.null(opt$leaveout)){
+  message("LEAVING OUT: ", opt$leaveout)
+  opt$datatype <- paste0(opt$datatype, "_leaveOut_", opt$leaveout)
+}
+
 #### Set up dirs ####
 data_dir <- here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction", sprintf("vlmf_%s", opt$datatype))
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -49,6 +56,10 @@ dim(sce_pb)
 
 ## Drop sample Br1289
 sce_pb <- sce_pb[,sce_pb$BrNum != 'Br1289']
+
+if(!is.null(opt$leaveout)){
+  sce_pb <- sce_pb[,sce_pb$BrNum != opt$leaveout]
+}
 
 table(sce_pb$registration_variable)
 
