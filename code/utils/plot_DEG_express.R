@@ -473,17 +473,18 @@ plot_DEG_express_contrast_top <- function(sce,
 
 
 #' @examples
-DE_interaction_data <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_interaction", "sn_fine", "DGE_results_interaction_Age_sn_fine.Rds"))
-
-## Plot select genes for Astrocytes
-plot_DEG_express_interaction(
-    sce = sce_pb,
-    stats = DE_interaction_data,
-    gene = c("SELENOW", "RPL29"),
-    cluster_col = "cell_type_anno",
-    clus = "Excit.L2_5.2",
-    gene_col = "gene_name"
-)
+#' DE_interaction_data <- readRDS(here("processed-data", "13_compile_DGE", "05_compile_DGE_interaction", "sn_fine", "DGE_results_interaction_Age_sn_fine.Rds"))
+#' 
+#' ## Plot test genes for Excit.L2_5.2
+#' test <- plot_DEG_express_interaction(
+#'     sce = sce_pb,
+#'     stats = DE_interaction_data,
+#'     gene = c("SELENOW", "RPL29", "RPL18A"),
+#'     cluster_col = "cell_type_anno",
+#'     clus = "Excit.L2_5.2",
+#'     gene_col = "gene_name"
+#' )
+#' ggsave(test, filename = here(plot_dir, "test.png"))
 
 plot_DEG_express_interaction <- function(sce,
                                       stats,
@@ -544,7 +545,7 @@ plot_DEG_express_interaction <- function(sce,
                          pval_col < 0.05 ~"*",
                          TRUE ~ "",
       ),
-      anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", interaction, pval_col, signif, fc_col)
+      anno_str = sprintf("%s*%s\nFDR=%.2e%s\nlogFC=%.2f", category_col, interaction, pval_col, signif, fc_col)
     )
   
   
@@ -575,7 +576,7 @@ plot_DEG_express_interaction <- function(sce,
   
   # sce <- sce[stats_filter$gene_col, ]
   
-  category_df <- as.data.frame(colData(sce))[, c(category_col, interaction), drop = FALSE]
+  category_df <- as.data.frame(colData(sce))[, c("BrNum", category_col, interaction), drop = FALSE]
   expression_long <- reshape2::melt(as.matrix(SummarizedExperiment::assays(sce)[["cleanY"]][unique(stats_filter$gene_col), , drop = FALSE]))
   
   category <- category_df[expression_long$Var2, ]
@@ -587,6 +588,7 @@ plot_DEG_express_interaction <- function(sce,
                ) +
     geom_point(aes(color = !!sym(category_col))) +
     geom_smooth(aes(color = !!sym(category_col)), method = "lm") +
+    ggrepel::geom_text_repel(aes(label = BrNum, color = !!sym(category_col)), size = 1.5) +
     facet_wrap(~Var1) + 
     ggplot2::geom_label(
       data = stats_filter,
@@ -600,9 +602,8 @@ plot_DEG_express_interaction <- function(sce,
     labs(title = plot_title, y = "logcounts - Covariates") +
     scale_color_manual(values = color_pal) +
     theme_bw() +
-    theme(strip.text.x = ggplot2::element_text(face = "italic"))
-  
-    # ggsave(pe, filename = here(plot_dir, "test.png"))
+    theme(strip.text.x = ggplot2::element_text(face = "italic"),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     
   return(pe)
 }
