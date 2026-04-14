@@ -232,7 +232,71 @@ if(datatype == "sn_fine"){
                   col_anno = gene_col_ha,
                   save = TRUE)
     
+    #### check Jakel immune Oligo markers
     
+    jakel_Oligo_stats <- readxl::read_xlsx(here("external-data", "Jakel2019","Jakel2019_STab4.xlsx"), sheet = "imOLGs")
+    
+    jakel_top_imOLG_markers <- jakel_Oligo_stats |> arrange(-avg_logFC) |> slice(1:20) |> pull(gene)
+    
+    
+    dge_data |> 
+      filter(cluster == "Oligo.3") |> 
+      filter(gene_name %in% jakel_Oligo_stats$gene) |> 
+      select(cluster, gene_name, starts_with("vlmf")) |>
+      filter(gene_name == "CD74")
+    
+    
+    logFC_Heatmap(data = dge_data |>
+                    filter(grepl("Oligo", cluster)), 
+                  gene_list = jakel_top_imOLG_markers, 
+                  title = "Jakel_imOLG_markers", 
+                  # cluster_col = TRUE,
+                  order_genes = FALSE,
+                  datatype = datatype,
+                  # col_anno = gene_col_ha,
+                  save = TRUE)
+    
+    source(here("code", "utils", "custom_volcano.R"))
+    
+    vol_imOLG <- custom_volcano(dge_data |> filter(gene_name %in% jakel_Oligo_stats$gene), 
+                                clus = "Oligo.3", 
+                                save = FALSE, 
+                                text = TRUE, 
+                                highlight_genes = "CD74") +
+      geom_point(size = 1) +
+      labs(subtitle = "Jakel et al., 2019 imOLG markers")
+    
+    ggsave(vol_imOLG, 
+           filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_imOGL.png", datatype, "carrier", "Oligo.3")), 
+           height = 6, width = 6)
+    
+    immune_genes <- c("STAT1", "IRF1", "B2M", "SERPINA3", "CD74", "HLA-A","HLA-B","HLA-C")
+    
+    dge_data |> 
+      filter(cluster == "Oligo.3") |> 
+      filter(gene_name %in% immune_genes) |> 
+      select(cluster, gene_name, starts_with("vlmf"))
+    
+    # cluster gene_name vlmf_logFC vlmf_AveExpr vlmf_t vlmf_P.Value vlmf_adj.P.Val vlmf_B
+    # <fct>   <chr>          <dbl>        <dbl>  <dbl>        <dbl>          <dbl>  <dbl>
+    # 1 Oligo.3 STAT1          0.803         4.93  3.14       0.00381         0.0464  -2.12
+    # 2 Oligo.3 CD74           1.18          3.15  2.35       0.0259          0.121   -3.47
+    # 3 Oligo.3 HLA-A          0.818         4.23  1.97       0.0580          0.195   -4.23
+    # 4 Oligo.3 HLA-B          0.645         3.76  1.80       0.0815          0.239   -4.48
+    # 5 Oligo.3 IRF1           0.732         2.77  1.57       0.127           0.313   -4.65
+    # 6 Oligo.3 HLA-C          0.366         3.38  1.18       0.246           0.469   -5.31
+    # 7 Oligo.3 B2M            0.177         6.26  0.858      0.398           0.619   -6.32
+    
+    source(here("code", "13_compile_DGE", "DE_gene_set_enrichment.R"))
+    
+    imOGL_enrich <- DE_gene_set_enrichment(gene_list = list(imOLG = jakel_Oligo_stats$gene), 
+                           de_results = dge_data,
+                           fdr_cut = 0.05)
+    
+    imOGL_enrich |> arrange(-OR) |> head()
+    #         OR         Pval NumSig SetSize         test fdr_cut DEG_n    ID  common_genes
+    # 1 8.346211 1.940734e-03      4     110   Oligo.5_up    0.05    47 imOLG  ABCC4, PTPRC, SAMSN1, CHST11
+    # 2 6.603897 1.247513e-14     33     116   Oligo.3_up    0.05   679 imOLG  ZFP36L1, DOCK8, CAMK1D, MEF2C, SAT1, AKAP13, SRGN, ARHGAP26, PLCB1, CHST11...
 }
 
 # 
