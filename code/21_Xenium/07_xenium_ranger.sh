@@ -13,7 +13,7 @@
 read SAMPLE_NAME SAMPLE_DIR < <(awk -v i=${SLURM_ARRAY_TASK_ID} -F'\t' 'NR==i {print $1 "\t" $2}' xenium_samples.tsv)
 
 ## Explicitly pipe script output to a log
-log_path=logs/01_get_droplet_scores_${SAMPLE_NAME}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/07_xenium_ranger_${SAMPLE_NAME}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
