@@ -21,13 +21,13 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4
+module load conda_R/4.5
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 07_xenium_build_spe
+Rscript 07_xenium_build_spe.R
 
 echo "**** Job ends ****"
 date
