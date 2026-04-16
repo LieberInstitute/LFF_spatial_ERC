@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, April 2026
-## prep xenium ranger run
+## prep xenium ranger run - NO NEED TO RUN matrix already in cell_feature_matrix/
 
 library(here)
 
