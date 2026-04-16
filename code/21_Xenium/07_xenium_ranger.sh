@@ -10,7 +10,7 @@
 #SBATCH --array=1-8%8
 
 ## get sample name and data dir
-read SAMPLE_NAME SAMPLE_DIR < <(awk -v i=$SLURM_ARRAY_TASK_ID -F'\t' 'NR==i {print $1 "\t" $2}' xenium_samples.tsv)
+read SAMPLE_NAME SAMPLE_DIR < <(awk -v i=${SLURM_ARRAY_TASK_ID} -F'\t' 'NR==i {print $1 "\t" $2}' xenium_samples.tsv)
 
 ## Explicitly pipe script output to a log
 log_path=logs/01_get_droplet_scores_${SAMPLE_NAME}_${SLURM_ARRAY_TASK_ID}.txt
@@ -35,7 +35,7 @@ module load xeniumranger/4.0.0
 module list
 
 
-echo "Processing sample ${SAMPLE_NAME}"
+echo "Processing sample: ${SAMPLE_NAME}"
 
 ## Edit with your job command
 xeniumranger count \
