@@ -46,7 +46,7 @@ spe_list <- map(xenium_files, function(sample_dir){
 })
 
 #### Combine SPE ####
-message(Sys.time(), "Combine data")
+message(Sys.time(), " - Combine data")
 spe <- do.call(cbind, spe_list)
 
 #### dononr info ####
@@ -67,7 +67,7 @@ colData(spe) <- cbind(colData(spe), xenium_experiment_table[spe$BrNum,])
 
 ## Save data
 message(Sys.time(), " - Save qs2")
-qs2::qs_save(sce, file = here(data_dir, "spe_xenium.qs2"))
+qs2::qs_save(spe, file = here(data_dir, "spe_xenium.qs2"))
 
 
 # slurmjobs::job_single('07_xenium_build_spe', create_shell = TRUE, memory = '100G', command = "Rscript 07_xenium_build_spe")
