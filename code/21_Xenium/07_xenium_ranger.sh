@@ -29,7 +29,7 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load xeniumranger
+module load xeniumranger/4.0.0
 
 ## List current modules for reproducibility
 module list
