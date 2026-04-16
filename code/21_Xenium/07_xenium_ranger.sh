@@ -38,7 +38,7 @@ module list
 echo "Processing sample: ${SAMPLE_NAME}"
 
 ## Edit with your job command
-xeniumranger count \
+xeniumranger run \
   --id=${SAMPLE_NAME} \
   --xenium-bundle=/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/xenium/${SAMPLE_DIR}\
   --output-dir=/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/07_xenium_ranger/${SAMPLE_NAME} \
