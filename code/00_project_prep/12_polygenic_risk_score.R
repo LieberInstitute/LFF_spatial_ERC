@@ -31,6 +31,14 @@ PRS_scores <- read_csv(here(data_dir, "PRS_scores_by_threshold.csv")) |>
 
 PRS_scores |> count(cutoff)
 
+PRS_scores_summary <- PRS_scores |> 
+    group_by(cutoff, APOE_carrier, Ancestry) |> 
+    summarize(min_PRS = min(PRS), median_PRS = median(PRS), max_PRS = max(PRS))
+
+write_csv(PRS_scores_summary, file = here(data_dir, "ERC_PRS_scores_summary.csv"))
+
+#### plots ####
+
 prs_carrier_boxplot <- PRS_scores |> 
     ggplot(aes(x = APOE_carrier, y = PRS, color = APOE_carrier)) +
     geom_boxplot(outlier.shape = NA) +
@@ -54,6 +62,21 @@ prs_carrier_boxplot_free <- PRS_scores |>
     theme(legend.position = "None")
 
 ggsave(prs_carrier_boxplot_free, filename = here(plot_dir, "PRS_carrier_boxplot_free.png"), width = 8, height = 8)
+
+prs_carrier_boxplot_select <- PRS_scores |> 
+    filter(cutoff %in% c("p cutoff=1e-08", "p cutoff=1e-05", "p cutoff=0.001", "p cutoff=0.05", "p cutoff=1")) |>
+    ggplot(aes(x = APOE_carrier, y = PRS, color = APOE_carrier)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(position = ggplot2::position_jitter(seed = 1, width = .2)) +
+    # ggrepel::geom_text_repel(aes(label = BrNum), position = ggplot2::position_jitter(seed = 1, width = .2), size = 2) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(Ancestry~cutoff) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    labs(x = "APOE_carrier") +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(prs_carrier_boxplot_select, filename = here(plot_dir, "PRS_carrier_boxplot_select.png"), width = 6, height = 4)
 
 prs_carrier_boxplot05 <- PRS_scores |> 
     filter(cutoff == "p cutoff=0.05") |>
