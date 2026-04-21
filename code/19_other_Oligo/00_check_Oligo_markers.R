@@ -176,6 +176,20 @@ violin_OPLAIN_RASGRF1_genes <- plot_gene_express(sce,
 ggsave(violin_OPLAIN_RASGRF1_genes, filename = here(plot_dir, "Violin_Oligo_OPLAIN_RASGRF1.png"), width = 8, height = 4)
 
 
+map(c("GPR17"), function(gene_single){
+    violin_key_genes <- plot_gene_express(sce, 
+                                          category = "cell_type_anno2",
+                                          genes = gene_single,
+                                          color_pal = Oligo_OPC_colors2,
+                                          free_y = TRUE,
+                                          ncol = 3
+    )
+    ggsave(violin_key_genes, filename = here(plot_dir, sprintf("Violin_OligoOPC_%s.png", gene_single)))
+})
+
+
+#### Dotplots ####
+
 rowData(sce)$cop_marker <- NULL
 rowData(sce)$cop_marker <- names(fang_cop_markers2)[match(rownames(sce), fang_cop_markers2)] 
 table(rowData(sce)$cop_marker)
