@@ -840,8 +840,8 @@ ggsave(oligo_NE_receptor_expression, filename = here(plot_dir, "sn_violin_NE_rec
 sce$cell_type_carrier <- paste(sce$cell_type_anno2, sce$APOE_carrier)
 table(sce$cell_type_carrier)
 
-Oligo_carrier_colors <- Oligo_OPC_colors2[rep(names(Oligo_OPC_colors2), each = 2)]
-names(Oligo_carrier_colors) <- paste(names(Oligo_carrier_colors), rep(levels(sce$APOE_carrier), length(Oligo_OPC_colors2)))
+Oligo_carrier_colors <- Oligo_OPC_colors[rep(names(Oligo_OPC_colors), each = 2)]
+names(Oligo_carrier_colors) <- paste(names(Oligo_carrier_colors), rep(levels(sce$APOE_carrier), length(Oligo_OPC_colors)))
 
 oligo_NE_receptor_expression_carrier <- plot_gene_express(
     sce[,grepl("Oligo|OPC.5", sce$cell_type_anno2)],
