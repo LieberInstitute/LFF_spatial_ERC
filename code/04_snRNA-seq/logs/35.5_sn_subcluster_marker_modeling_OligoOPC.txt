@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Jan 23 12:08:02 PM EST 2026
+Tue Apr 21 12:01:46 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 27092480
+Job id: 30933701
 Job name: 35.5_sn_subcluster_marker_modeling_OligoOPC
-Node name: compute-119
+Node name: compute-113
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -81,7 +81,7 @@ The following objects are masked from ‘package:base’:
     expand.grid, I, unname
 
 Loading required package: IRanges
-Loading required package: GenomeInfoDb
+Loading required package: Seqinfo
 Loading required package: Biobase
 Welcome to Bioconductor
 
@@ -100,6 +100,13 @@ The following objects are masked from ‘package:matrixStats’:
 
     anyMissing, rowMedians
 
+Registered S3 methods overwritten by 'GenomeInfoDb':
+  method                from   
+  as.data.frame.Seqinfo Seqinfo
+  merge.Seqinfo         Seqinfo
+  summary.Seqinfo       Seqinfo
+  update.Seqinfo        Seqinfo
+There were 16 warnings (use warnings() to see them)
 Loading required package: SparseArray
 Loading required package: Matrix
 
@@ -140,10 +147,10 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.6.0
-✔ ggplot2   4.0.1     ✔ tibble    3.3.1
-✔ lubridate 1.9.4     ✔ tidyr     1.3.2
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
 ✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ lubridate::%within%() masks IRanges::%within%()
@@ -168,7 +175,7 @@ The following object is masked from ‘package:rhdf5’:
 Loading required package: SpatialExperiment
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.1
+ComplexHeatmap version 2.26.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -186,12 +193,27 @@ This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 
-2026-01-23 12:08:30.031853 - Load HDF5 sce
+$ARGS
+character(0)
 
-Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5     OPC 
-  12519   12010    8587    6911    4254   15175 
+$celltype
+[1] "OligoOPC"
+
+2026-04-21 12:02:32.718685 - Load HDF5 sce
+
+  OPC.3   OPC.4   OPC.1   OPC.2   OPC.5 Oligo.3 Oligo.4 Oligo.5 Oligo.1 Oligo.2 
+   3932    1961    4815    4009     458    8587    6911    4254   12519   12010 
 Loading objects:
   Oligo_OPC_colors
+Use flattened OPC subtypes
+         
+          OPC.3 OPC.4 OPC.1 OPC.2 OPC.5 Oligo.3 Oligo.4 Oligo.5 Oligo.1 Oligo.2
+  OPC      3932  1961  4815  4009   458       0       0       0       0       0
+  Oligo.3     0     0     0     0     0    8587       0       0       0       0
+  Oligo.4     0     0     0     0     0       0    6911       0       0       0
+  Oligo.5     0     0     0     0     0       0       0    4254       0       0
+  Oligo.1     0     0     0     0     0       0       0       0   12519       0
+  Oligo.2     0     0     0     0     0       0       0       0       0   12010
 Rows: 23 Columns: 2
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -217,10 +239,10 @@ Warning messages:
 ℹ Did you misspell an argument name?
 null device 
           1 
-2026-01-23 12:09:52.658971 - Load marker stats data
+2026-04-21 12:03:40.785167 - Load marker stats data
 Loading objects:
   marker_stats_MeanRatio
-2026-01-23 12:09:52.719479 - Plots
+2026-04-21 12:03:40.834505 - Mean Ratio Plots
 [[1]]
 
 [[2]]
@@ -244,9 +266,20 @@ In fortify(data, ...) : Arguments in `...` must be used.
 • as.Date = as.Date
 • yscale_mapping = yscale_mapping
 ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
 null device 
           1 
-2026-01-23 12:13:37.168866 - Load modeling data
+2026-04-21 12:09:56.078491 - Load modeling data
 # A tibble: 6 × 2
 # Groups:   test [6]
   test        n
@@ -257,6 +290,7 @@ null device
 4 Oligo.3   100
 5 Oligo.4   100
 6 Oligo.5   100
+2026-04-21 12:09:57.160474 - Enrichment dot plots
 
 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5     OPC 
      10      10      10      10      10      10 
@@ -266,6 +300,412 @@ In fortify(data, ...) : Arguments in `...` must be used.
 • as.Date = as.Date
 • yscale_mapping = yscale_mapping
 ℹ Did you misspell an argument name?
+null device 
+          1 
+$OPC
+
+$COP
+
+$NFOL
+
+$MFOL
+
+$MOL
+
+$MOL1
+
+$MOL2
+
+$MOL3
+
+$MOL4
+
+$MOL5
+
+$MOL6
+
+null device 
+          1 
+
+ COP MFOL  MOL MOL1 MOL2 MOL3 MOL4 MOL5 MOL6 NFOL  OPC 
+   4    7    2    3    3    2    2    3    2    7    6 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+
+COP OPC 
+  6   4 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and Jakel_Oligo.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, Jakel_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 6 × 4
+# Groups:   test [6]
+  test    Jakel_Oligo      n   cor
+  <chr>   <chr>        <int> <dbl>
+1 OPC     Jakel_OPCs     394 0.805
+2 Oligo.1 Jakel_Oligo4    28 0.538
+3 Oligo.2 Jakel_Oligo6    81 0.373
+4 Oligo.3 Jakel_imOLGs   111 0.548
+5 Oligo.4 Jakel_Oligo4    28 0.571
+6 Oligo.5 Jakel_Oligo4    28 0.469
+# A tibble: 9 × 4
+# Groups:   Jakel_Oligo [9]
+  test    Jakel_Oligo      n   cor
+  <chr>   <chr>        <int> <dbl>
+1 OPC     Jakel_COPs     205 0.536
+2 OPC     Jakel_OPCs     394 0.805
+3 Oligo.2 Jakel_Oligo1   219 0.229
+4 Oligo.5 Jakel_Oligo2    35 0.368
+5 OPC     Jakel_Oligo3    64 0.248
+6 Oligo.4 Jakel_Oligo4    28 0.571
+7 OPC     Jakel_Oligo5   190 0.147
+8 Oligo.1 Jakel_Oligo6    81 0.416
+9 Oligo.3 Jakel_imOLGs   111 0.548
+                     OPC    Oligo.1     Oligo.2     Oligo.3     Oligo.4
+Jakel_COPs    0.53586449 -0.3869135 -0.44876140 -0.03968639 -0.47355224
+Jakel_OPCs    0.80540406 -0.7061192 -0.75647290  0.27646143 -0.72485611
+Jakel_Oligo1 -0.05210273 -0.1282742  0.22922277  0.14388837 -0.08530472
+Jakel_Oligo2 -0.25194079  0.1370568  0.16835411  0.21185356  0.19789799
+Jakel_Oligo3  0.24769235 -0.2041634 -0.29803416 -0.13340007 -0.26179968
+Jakel_Oligo4 -0.47689324  0.5382445  0.23544880  0.50305234  0.57068501
+Jakel_Oligo5  0.14677079 -0.2742693  0.05894249  0.03279083 -0.27853242
+Jakel_Oligo6 -0.36651311  0.4161063  0.37323203  0.12766885  0.38448004
+Jakel_imOLGs -0.06307897 -0.1792047 -0.24771106  0.54786122  0.07847892
+                 Oligo.5
+Jakel_COPs   -0.34526288
+Jakel_OPCs   -0.55926737
+Jakel_Oligo1  0.13892385
+Jakel_Oligo2  0.36836865
+Jakel_Oligo3 -0.23146017
+Jakel_Oligo4  0.46927178
+Jakel_Oligo5 -0.08526529
+Jakel_Oligo6  0.23417701
+Jakel_imOLGs  0.22910087
+null device 
+          1 
+$OPCs
+
+$`OPCs/COPs`
+
+$`OPCs/COPs/imOLG`
+
+$COPs
+
+$`COPs/Oligo6`
+
+$imOLG
+
+$`imOLG/COPs/Oligo6`
+
+$Oligo6
+
+$`Oligo5/Oligo6`
+
+$`Oligo2/Oligo6`
+
+$Oligo5
+
+$`Oligo1/Oligo5`
+
+$Oligo4
+
+$Oligo3
+
+$Oligo2
+
+$Oligo1
+
+null device 
+          1 
+Saving 7 x 7 in image
+
+             COPs       COPs/Oligo6             imOLG imOLG/COPs/Oligo6 
+               10                 6                10                 4 
+           Oligo1     Oligo1/Oligo5            Oligo2     Oligo2/Oligo6 
+                7                 5                 2                 2 
+           Oligo3            Oligo5     Oligo5/Oligo6            Oligo6 
+                1                 4                 2                 7 
+             OPCs         OPCs/COPs   OPCs/COPs/imOLG 
+               12                 1                 1 
+Warning message:
+In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+Warning messages:
+1: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+2: In fortify(data, ...) : Arguments in `...` must be used.
+✖ Problematic arguments:
+• as.Date = as.Date
+• yscale_mapping = yscale_mapping
+ℹ Did you misspell an argument name?
+null device 
+          1 
+# A tibble: 17 × 2
+   Green_Oligo     n
+   <chr>       <int>
+ 1 COP          3071
+ 2 MFOL         3242
+ 3 OPC.1        2890
+ 4 OPC.2        2541
+ 5 OPC.3        2238
+ 6 Oli.1         131
+ 7 Oli.10         13
+ 8 Oli.11         19
+ 9 Oli.12        384
+10 Oli.2          60
+11 Oli.3          44
+12 Oli.4         519
+13 Oli.5         491
+14 Oli.6         110
+15 Oli.7         226
+16 Oli.8         182
+17 Oli.9          17
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and Green_Oligo.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, Green_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 6 × 4
+# Groups:   test [6]
+  test    Green_Oligo     n   cor
+  <chr>   <chr>       <int> <dbl>
+1 OPC     Oli.2          60 0.649
+2 Oligo.1 Oli.11         17 0.825
+3 Oligo.2 Oli.11         17 0.913
+4 Oligo.3 Oli.6         108 0.340
+5 Oligo.4 Oli.11         17 0.500
+6 Oligo.5 Oli.11         17 0.588
+# A tibble: 17 × 4
+# Groups:   Green_Oligo [17]
+   test    Green_Oligo     n    cor
+   <chr>   <chr>       <int>  <dbl>
+ 1 Oligo.2 COP          2934 0.127 
+ 2 Oligo.4 MFOL         3161 0.259 
+ 3 Oligo.4 OPC.1        2776 0.0646
+ 4 OPC     OPC.2        2454 0.0717
+ 5 OPC     OPC.3        2155 0.0877
+ 6 OPC     Oli.1         129 0.582 
+ 7 Oligo.2 Oli.10         12 0.741 
+ 8 Oligo.2 Oli.11         17 0.913 
+ 9 OPC     Oli.12        378 0.392 
+10 OPC     Oli.2          60 0.649 
+11 Oligo.2 Oli.3          43 0.626 
+12 Oligo.1 Oli.4         511 0.364 
+13 Oligo.2 Oli.5         480 0.433 
+14 Oligo.3 Oli.6         108 0.340 
+15 OPC     Oli.7         223 0.400 
+16 OPC     Oli.8         178 0.350 
+17 Oligo.2 Oli.9          16 0.780 
+               OPC     Oligo.1     Oligo.2     Oligo.3     Oligo.4     Oligo.5
+COP    -0.12066874  0.12131642  0.12731547 -0.03942176  0.10161974  0.07079729
+MFOL   -0.27903262  0.23308510  0.25003215  0.08976356  0.25902178  0.23928399
+OPC.1  -0.07026517  0.03335353  0.06094965  0.05959315  0.06456804  0.05055255
+OPC.2   0.07168182 -0.05803574 -0.02470621 -0.06797319 -0.06992592 -0.08283891
+OPC.3   0.08767532 -0.08996074 -0.05336688 -0.04878563 -0.08675861 -0.04487092
+Oli.1   0.58217412 -0.47436995 -0.48852650 -0.58445057 -0.57235296 -0.60938028
+Oli.10 -0.17863682  0.49277973  0.74130595 -0.77473934 -0.15284392 -0.05922299
+Oli.11 -0.71157730  0.82528451  0.91252055 -0.40594160  0.50005306  0.58820515
+Oli.12  0.39224982 -0.41474134 -0.37254916  0.07235911 -0.39388719 -0.25195853
+Oli.2   0.64852200 -0.74230056 -0.78938055  0.32243604 -0.58736564 -0.50582627
+Oli.3  -0.42684262  0.54163451  0.62591872 -0.37351166  0.26190745  0.23075456
+Oli.4  -0.29406653  0.36371782  0.34886741 -0.19522705  0.26382221  0.13747125
+Oli.5  -0.03339587 -0.13572128  0.43347403 -0.15313376 -0.20329516  0.10400179
+Oli.6   0.12477248 -0.26994486 -0.29778020  0.34024858 -0.03160512  0.07377643
+Oli.7   0.39957086 -0.43096909 -0.35889727 -0.30972767 -0.41104971 -0.31170502
+Oli.8   0.34978750 -0.39391477 -0.29999269 -0.20797149 -0.40178316 -0.23821291
+Oli.9  -0.58581651  0.63251383  0.77989044 -0.21986678  0.33096518  0.54380201
+null device 
+          1 
+Joining with `by = join_by(gene)`
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by Jakel_Oligo and Green_Oligo.
+ℹ Output is grouped by Jakel_Oligo.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(Jakel_Oligo, Green_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 12 × 4
+# Groups:   Jakel_Oligo [6]
+   Jakel_Oligo  Green_Oligo     n   cor
+   <chr>        <chr>       <int> <dbl>
+ 1 Jakel_COPs   Oli.11          1    NA
+ 2 Jakel_OPCs   Oli.11          1    NA
+ 3 Jakel_Oligo2 Oli.10          1    NA
+ 4 Jakel_Oligo2 Oli.11          1    NA
+ 5 Jakel_Oligo4 Oli.12          1    NA
+ 6 Jakel_Oligo4 Oli.2           1    NA
+ 7 Jakel_Oligo4 Oli.4           1    NA
+ 8 Jakel_Oligo5 Oli.10          1    NA
+ 9 Jakel_Oligo5 Oli.9           1    NA
+10 Jakel_imOLGs Oli.10          1    NA
+11 Jakel_imOLGs Oli.11          1    NA
+12 Jakel_imOLGs Oli.9           1    NA
+        Jakel_COPs   Jakel_OPCs Jakel_Oligo1 Jakel_Oligo2 Jakel_Oligo3
+COP    -0.41163445 -0.251391884  -0.10119034   0.20984623  0.051046408
+MFOL   -0.50027613 -0.419970874  -0.05312768  -0.16757447 -0.186955353
+OPC.1  -0.27493433 -0.214883726   0.09145491   0.19981710 -0.086388000
+OPC.2  -0.09149315 -0.100793744  -0.04329942   0.14645219 -0.005063026
+OPC.3  -0.04564243 -0.111763836  -0.04192265   0.27146903 -0.031797232
+Oli.1  -0.10777328 -0.007637365  -0.28187799  -0.50326782  0.563066977
+Oli.10 -1.00000000 -1.000000000  -1.00000000           NA           NA
+Oli.11          NA           NA   0.66587400           NA           NA
+Oli.12  0.35520759  0.360587993   0.62698560   1.00000000  0.532875674
+Oli.2   0.24266868  0.417437105  -0.28414484   1.00000000 -1.000000000
+Oli.3  -0.39033186 -0.608597538  -0.08054973   1.00000000  1.000000000
+Oli.4  -0.30709424 -0.338182019  -0.25664952  -0.97487733 -0.859579889
+Oli.5  -0.12213002 -0.188433817   0.49945469   0.05612512  0.056891773
+Oli.6  -0.07874598  0.126530034   1.00000000   0.97506466  0.623330926
+Oli.7  -0.36944694 -0.232292166   0.30989598   0.40973476 -0.105577635
+Oli.8  -0.06536279  0.203606111   0.08303559   0.36698164 -0.350224948
+Oli.9  -1.00000000 -1.000000000   1.00000000           NA           NA
+       Jakel_Oligo4 Jakel_Oligo5 Jakel_Oligo6 Jakel_imOLGs
+COP     -0.12253660  -0.04990413   0.01217503   0.27394021
+MFOL     0.18415827  -0.09083477   0.10950766  -0.13540359
+OPC.1    0.26491253   0.10258304  -0.10589244  -0.31222540
+OPC.2    0.34260798   0.04050546  -0.17768485  -0.27398597
+OPC.3    0.23655614  -0.01037331   0.12161347  -0.31793782
+Oli.1   -0.03338024  -0.18740522   0.36702928  -0.50001382
+Oli.10           NA           NA           NA           NA
+Oli.11           NA   1.00000000           NA           NA
+Oli.12           NA   0.79201710  -0.71044491  -0.01178445
+Oli.2            NA   0.53577025           NA  -0.18106314
+Oli.3   -0.39778064   0.65045764  -0.76942736   1.00000000
+Oli.4            NA  -0.34565021   0.53792123   0.25795375
+Oli.5   -0.69068017   0.20631276   0.06686807  -0.19991146
+Oli.6            NA   0.58921713  -0.27358329   0.23538511
+Oli.7   -0.30893529   0.01613104  -0.77624479   1.00000000
+Oli.8   -0.30107300   0.08703697  -0.62388031           NA
+Oli.9            NA           NA           NA           NA
+null device 
+          1 
+# A tibble: 11 × 3
+   broad_group type_fine       n
+   <chr>       <chr>       <int>
+ 1 oligo_opc   COP          1065
+ 2 oligo_opc   OPC_1        1843
+ 3 oligo_opc   OPC_2        1008
+ 4 oligo_opc   Oligo_A      2207
+ 5 oligo_opc   Oligo_Astro   223
+ 6 oligo_opc   Oligo_B      2684
+ 7 oligo_opc   Oligo_C      2792
+ 8 oligo_opc   Oligo_D      2449
+ 9 oligo_opc   Oligo_E      2374
+10 oligo_opc   Oligo_F      2129
+11 oligo_opc   Oligo_G      1821
+Joining with `by = join_by(gene)`
+   Macnair_Oligo     n
+1            COP  6084
+2          OPC_1 10572
+3          OPC_2  5784
+4        Oligo_A 12612
+5    Oligo_Astro  1302
+6        Oligo_B 15318
+7        Oligo_C 15876
+8        Oligo_D 13968
+9        Oligo_E 13548
+10       Oligo_F 12156
+11       Oligo_G 10518
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by test and Macnair_Oligo.
+ℹ Output is grouped by test.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(test, Macnair_Oligo))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 6 × 4
+# Groups:   test [6]
+  test    Macnair_Oligo     n   cor
+  <chr>   <chr>         <int> <dbl>
+1 OPC     OPC_1          1762 0.916
+2 Oligo.1 Oligo_B        2553 0.801
+3 Oligo.2 Oligo_C        2646 0.874
+4 Oligo.3 Oligo_E        2258 0.625
+5 Oligo.4 Oligo_B        2553 0.791
+6 Oligo.5 Oligo_C        2646 0.737
+# A tibble: 11 × 4
+# Groups:   Macnair_Oligo [11]
+   test    Macnair_Oligo     n   cor
+   <chr>   <chr>         <int> <dbl>
+ 1 OPC     COP            1014 0.467
+ 2 OPC     OPC_1          1762 0.916
+ 3 OPC     OPC_2           964 0.902
+ 4 Oligo.1 Oligo_A        2102 0.498
+ 5 Oligo.3 Oligo_Astro     217 0.581
+ 6 Oligo.1 Oligo_B        2553 0.801
+ 7 Oligo.2 Oligo_C        2646 0.874
+ 8 Oligo.2 Oligo_D        2328 0.628
+ 9 Oligo.3 Oligo_E        2258 0.625
+10 Oligo.3 Oligo_F        2026 0.169
+11 Oligo.3 Oligo_G        1753 0.251
+                    OPC     Oligo.1     Oligo.2   Oligo.3     Oligo.4
+COP          0.46667399 -0.45554262 -0.45530834 0.1752403 -0.45800474
+OPC_1        0.91591427 -0.89373334 -0.89977276 0.4926207 -0.79705338
+OPC_2        0.90197521 -0.86282653 -0.87350642 0.4772458 -0.74741878
+Oligo_A     -0.39926420  0.49826586  0.27853313 0.2369157  0.45232393
+Oligo_Astro  0.07285879 -0.32335003 -0.38096954 0.5810917 -0.03109299
+Oligo_B     -0.74095621  0.80135062  0.61014781 0.4824080  0.79121724
+Oligo_C     -0.81023588  0.74564939  0.87431388 0.4829034  0.70888211
+Oligo_D     -0.34711687  0.12499871  0.62847627 0.2314978  0.09091357
+Oligo_E     -0.54921034  0.45739474  0.34032435 0.6246579  0.59774112
+Oligo_F     -0.14107577  0.10632798  0.08951248 0.1690872  0.12004323
+Oligo_G     -0.13031565  0.05364132  0.01668868 0.2506316  0.10462514
+               Oligo.5
+COP         -0.1990203
+OPC_1       -0.3977228
+OPC_2       -0.3399514
+Oligo_A      0.3104065
+Oligo_Astro  0.3052415
+Oligo_B      0.6186630
+Oligo_C      0.7369290
+Oligo_D      0.3704195
+Oligo_E      0.5293269
+Oligo_F      0.1141688
+Oligo_G      0.1858907
 null device 
           1 
 Loading required package: AnnotationDbi
@@ -282,9 +722,10 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320
+Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
+clusterProfiler: an R package for comparing biological themes among
+gene clusters. OMICS: A Journal of Integrative Biology. 2012,
+16(5):284-287
 
 Attaching package: ‘clusterProfiler’
 
@@ -384,300 +825,15 @@ null device
           1 
 [1] TRUE
 Saving 7 x 7 in image
-Warning messages:
-1: In fortify(data, ...) : Arguments in `...` must be used.
-✖ Problematic arguments:
-• as.Date = as.Date
-• yscale_mapping = yscale_mapping
-ℹ Did you misspell an argument name?
-2: In fortify(data, ...) : Arguments in `...` must be used.
-✖ Problematic arguments:
-• as.Date = as.Date
-• yscale_mapping = yscale_mapping
-ℹ Did you misspell an argument name?
-Warning messages:
-1: In fortify(data, ...) : Arguments in `...` must be used.
-✖ Problematic arguments:
-• as.Date = as.Date
-• yscale_mapping = yscale_mapping
-ℹ Did you misspell an argument name?
-2: In fortify(data, ...) : Arguments in `...` must be used.
-✖ Problematic arguments:
-• as.Date = as.Date
-• yscale_mapping = yscale_mapping
-ℹ Did you misspell an argument name?
-null device 
-          1 
-[1] "Reproducibility information:"
-[1] "2026-01-23 12:20:37 EST"
-   user  system elapsed 
-640.785  18.883 753.711 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.5.0 Patched (2025-05-21 r88220)
- os       Rocky Linux 9.4 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2026-01-23
- pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
- quarto   NA
 
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package              * version   date (UTC) lib source
- abind                * 1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
- AnnotationDbi        * 1.70.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- AnnotationHub          3.16.1    2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
- ape                    5.8-1     2024-12-16 [1] CRAN (R 4.5.0)
- aplot                  0.2.9     2025-09-12 [1] CRAN (R 4.5.0)
- attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
- beachmat               2.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
- benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
- benchmarkmeData        1.0.4     2020-04-23 [2] CRAN (R 4.5.0)
- Biobase              * 2.68.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocFileCache          2.16.2    2025-08-27 [1] Bioconductor 3.21 (R 4.5.0)
- BiocGenerics         * 0.54.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocIO                 1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocManager            1.30.27   2025-11-14 [1] CRAN (R 4.5.0)
- BiocNeighbors          2.2.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocParallel           1.42.2    2025-09-14 [1] Bioconductor 3.21 (R 4.5.0)
- BiocSingular           1.24.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- BiocVersion            3.21.1    2024-10-29 [2] Bioconductor 3.21 (R 4.5.0)
- Biostrings             2.76.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.6.0-1   2025-01-16 [2] CRAN (R 4.5.0)
- bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
- blob                   1.2.4     2023-03-17 [2] CRAN (R 4.5.0)
- bluster                1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- bslib                  0.9.0     2025-01-30 [2] CRAN (R 4.5.0)
- cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
- circlize               0.4.16    2024-02-20 [2] CRAN (R 4.5.0)
- cli                    3.6.5     2025-04-23 [2] CRAN (R 4.5.0)
- clue                   0.3-66    2024-11-13 [2] CRAN (R 4.5.0)
- cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
- clusterProfiler      * 4.16.0    2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
- colorspace             2.1-1     2024-07-26 [2] CRAN (R 4.5.0)
- ComplexHeatmap       * 2.24.1    2025-06-25 [1] Bioconductor 3.21 (R 4.5.0)
- config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
- cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
- crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
- curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
- data.table             1.18.0    2025-12-24 [1] CRAN (R 4.5.0)
- DBI                    1.2.3     2024-06-02 [2] CRAN (R 4.5.0)
- dbplyr                 2.5.1     2025-09-10 [1] CRAN (R 4.5.0)
- DeconvoBuddies       * 1.1.3     2025-07-07 [1] Github (LieberInstitute/DeconvoBuddies@cb26e36)
- DelayedArray         * 0.34.1    2025-04-17 [2] Bioconductor 3.21 (R 4.5.0)
- DelayedMatrixStats     1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- deldir                 2.0-4     2024-02-28 [2] CRAN (R 4.5.0)
- dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
- digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
- doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
- DOSE                   4.2.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- dotCall64              1.2       2024-10-04 [2] CRAN (R 4.5.0)
- dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.5.0)
- dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.5.0)
- DT                     0.34.0    2025-09-02 [1] CRAN (R 4.5.0)
- edgeR                  4.6.3     2025-07-09 [1] Bioconductor 3.21 (R 4.5.0)
- enrichplot             1.28.4    2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
- ExperimentHub          2.16.1    2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
- farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
- fastDummies            1.7.5     2025-01-20 [2] CRAN (R 4.5.0)
- fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
- fastmatch              1.1-6     2024-12-23 [2] CRAN (R 4.5.0)
- fgsea                  1.34.2    2025-07-13 [1] Bioconductor 3.21 (R 4.5.0)
- filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
- fitdistrplus           1.2-4     2025-07-03 [1] CRAN (R 4.5.0)
- forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.5.0)
- foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
- fs                     1.6.6     2025-04-12 [2] CRAN (R 4.5.0)
- future                 1.68.0    2025-11-17 [1] CRAN (R 4.5.0)
- future.apply           1.20.1    2025-12-09 [1] CRAN (R 4.5.0)
- generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
- GenomeInfoDb         * 1.44.3    2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
- GenomeInfoDbData       1.2.14    2025-05-21 [2] Bioconductor
- GenomicAlignments      1.44.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- GenomicRanges        * 1.60.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- getopt               * 1.20.4    2023-10-01 [1] CRAN (R 4.5.0)
- GetoptLong             1.0.5     2020-12-15 [2] CRAN (R 4.5.0)
- ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.5.0)
- ggfun                  0.2.0     2025-07-15 [1] CRAN (R 4.5.0)
- ggplot2              * 4.0.1     2025-11-14 [1] CRAN (R 4.5.0)
- ggplotify              0.1.3     2025-09-20 [1] CRAN (R 4.5.0)
- ggrepel                0.9.6     2024-09-07 [2] CRAN (R 4.5.0)
- ggridges               0.5.7     2025-08-27 [1] CRAN (R 4.5.0)
- ggsci                  3.2.0     2024-06-18 [2] CRAN (R 4.5.0)
- ggtangle               0.1.0     2026-01-07 [1] CRAN (R 4.5.0)
- ggtree                 3.16.3    2025-07-16 [1] Bioconductor 3.21 (R 4.5.0)
- GlobalOptions          0.1.2     2020-06-10 [2] CRAN (R 4.5.0)
- globals                0.18.0    2025-05-08 [2] CRAN (R 4.5.0)
- glue                   1.8.0     2024-09-30 [2] CRAN (R 4.5.0)
- GO.db                  3.21.0    2025-05-21 [2] Bioconductor
- goftest                1.2-3     2021-10-07 [2] CRAN (R 4.5.0)
- golem                  0.5.1     2024-08-27 [2] CRAN (R 4.5.0)
- GOSemSim               2.34.0    2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
- gridGraphics           0.5-1     2020-12-13 [1] CRAN (R 4.5.0)
- gson                   0.1.0     2023-03-07 [1] CRAN (R 4.5.0)
- gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
- h5mread              * 1.0.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- HDF5Array            * 1.36.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- here                 * 1.0.2     2025-09-15 [1] CRAN (R 4.5.0)
- hms                    1.1.3     2023-03-21 [2] CRAN (R 4.5.0)
- htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
- htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
- httpuv                 1.6.16    2025-04-16 [2] CRAN (R 4.5.0)
- httr                   1.4.7     2023-08-15 [2] CRAN (R 4.5.0)
- ica                    1.0-3     2022-07-08 [2] CRAN (R 4.5.0)
- igraph                 2.2.1     2025-10-27 [1] CRAN (R 4.5.0)
- IRanges              * 2.42.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.5.0)
- iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
- jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
- jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
- KEGGREST               1.48.1    2025-06-22 [1] Bioconductor 3.21 (R 4.5.0)
- KernSmooth             2.23-26   2025-01-01 [3] CRAN (R 4.5.0)
- labeling               0.4.3     2023-08-29 [2] CRAN (R 4.5.0)
- later                  1.4.5     2026-01-08 [1] CRAN (R 4.5.0)
- lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
- lazyeval               0.2.2     2019-03-15 [2] CRAN (R 4.5.0)
- lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
- limma                  3.64.3    2025-08-03 [1] Bioconductor 3.21 (R 4.5.0)
- listenv                0.10.0    2025-11-02 [1] CRAN (R 4.5.0)
- lmtest                 0.9-40    2022-03-21 [2] CRAN (R 4.5.0)
- locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
- lubridate            * 1.9.4     2024-12-08 [2] CRAN (R 4.5.0)
- magick                 2.9.0     2025-09-08 [1] CRAN (R 4.5.0)
- magrittr               2.0.4     2025-09-12 [1] CRAN (R 4.5.0)
- MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.5.0)
- Matrix               * 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
- MatrixGenerics       * 1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
- memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
- metapod                1.16.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
- miniUI                 0.1.2     2025-04-17 [2] CRAN (R 4.5.0)
- nlme                   3.1-168   2025-03-31 [3] CRAN (R 4.5.0)
- org.Hs.eg.db         * 3.21.0    2025-05-21 [2] Bioconductor
- otel                   0.2.0     2025-08-29 [1] CRAN (R 4.5.0)
- paletteer              1.6.0     2024-01-21 [2] CRAN (R 4.5.0)
- parallelly             1.46.1    2026-01-08 [1] CRAN (R 4.5.0)
- patchwork              1.3.2     2025-08-25 [1] CRAN (R 4.5.0)
- pbapply                1.7-4     2025-07-20 [1] CRAN (R 4.5.0)
- pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
- pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
- plotly                 4.11.0    2025-06-19 [1] CRAN (R 4.5.0)
- plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.5.0)
- png                    0.1-8     2022-11-29 [2] CRAN (R 4.5.0)
- polyclip               1.10-7    2024-07-23 [2] CRAN (R 4.5.0)
- progressr              0.18.0    2025-11-06 [1] CRAN (R 4.5.0)
- promises               1.5.0     2025-11-01 [1] CRAN (R 4.5.0)
- purrr                * 1.2.1     2026-01-09 [1] CRAN (R 4.5.0)
- qvalue                 2.40.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- R.methodsS3            1.8.2     2022-06-13 [2] CRAN (R 4.5.0)
- R.oo                   1.27.1    2025-05-02 [2] CRAN (R 4.5.0)
- R.utils                2.13.0    2025-02-24 [2] CRAN (R 4.5.0)
- R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
- rafalib                1.0.4     2025-04-08 [1] CRAN (R 4.5.0)
- ragg                   1.5.0     2025-09-02 [1] CRAN (R 4.5.0)
- RANN                   2.6.2     2024-08-25 [2] CRAN (R 4.5.0)
- rappdirs               0.3.3     2021-01-31 [2] CRAN (R 4.5.0)
- RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp                   1.1.1     2026-01-10 [1] CRAN (R 4.5.0)
- RcppAnnoy              0.0.23    2026-01-12 [1] CRAN (R 4.5.0)
- RcppHNSW               0.6.0     2024-02-04 [2] CRAN (R 4.5.0)
- RCurl                  1.98-1.17 2025-03-22 [2] CRAN (R 4.5.0)
- readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.5.0)
- rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
- reshape2               1.4.5     2025-11-12 [1] CRAN (R 4.5.0)
- restfulr               0.0.16    2025-06-27 [1] CRAN (R 4.5.0)
- reticulate             1.44.1    2025-11-14 [1] CRAN (R 4.5.0)
- rhdf5                * 2.52.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- rhdf5filters           1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- Rhdf5lib               1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
- rlang                  1.1.7     2026-01-09 [1] CRAN (R 4.5.0)
- ROCR                   1.0-11    2020-05-02 [2] CRAN (R 4.5.0)
- rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
- Rsamtools              2.24.1    2025-09-07 [1] Bioconductor 3.21 (R 4.5.0)
- RSpectra               0.16-2    2024-07-18 [2] CRAN (R 4.5.0)
- RSQLite                2.4.2     2025-07-18 [1] CRAN (R 4.5.0)
- rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
- rtracklayer            1.68.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- Rtsne                  0.17      2023-12-07 [2] CRAN (R 4.5.0)
- S4Arrays             * 1.8.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
- S4Vectors            * 0.46.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- S7                     0.2.1     2025-11-14 [1] CRAN (R 4.5.0)
- sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
- ScaledMatrix           1.16.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
- scater                 1.36.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- scattermore            1.2       2023-06-12 [2] CRAN (R 4.5.0)
- scDotPlot            * 1.2.1     2025-07-13 [1] Bioconductor 3.21 (R 4.5.0)
- scran                  1.36.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- sctransform            0.4.3     2026-01-10 [1] CRAN (R 4.5.0)
- scuttle                1.18.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.5.0)
- Seurat                 5.4.0     2025-12-14 [1] CRAN (R 4.5.0)
- SeuratObject           5.3.0     2025-12-12 [1] CRAN (R 4.5.0)
- shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
- shiny                  1.12.1    2025-12-09 [1] CRAN (R 4.5.0)
- shinyWidgets           0.9.0     2025-02-21 [2] CRAN (R 4.5.0)
- SingleCellExperiment * 1.30.1    2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
- sp                     2.2-0     2025-02-01 [2] CRAN (R 4.5.0)
- spam                   2.11-3    2026-01-08 [1] CRAN (R 4.5.0)
- SparseArray          * 1.8.1     2025-07-23 [1] Bioconductor 3.21 (R 4.5.0)
- sparseMatrixStats      1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- SpatialExperiment    * 1.18.1    2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
- spatialLIBD          * 1.21.5    2025-09-10 [1] Github (LieberInstitute/spatialLIBD@95dd3a1)
- spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
- spatstat.explore       3.6-0     2025-11-22 [1] CRAN (R 4.5.0)
- spatstat.geom          3.6-1     2025-11-20 [1] CRAN (R 4.5.0)
- spatstat.random        3.4-3     2025-11-21 [1] CRAN (R 4.5.0)
- spatstat.sparse        3.1-0     2024-06-21 [2] CRAN (R 4.5.0)
- spatstat.univar        3.1-5     2025-11-17 [1] CRAN (R 4.5.0)
- spatstat.utils         3.2-1     2026-01-10 [1] CRAN (R 4.5.0)
- statmod                1.5.1     2025-10-09 [1] CRAN (R 4.5.0)
- stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
- stringr              * 1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
- SummarizedExperiment * 1.38.1    2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
- survival               3.8-3     2024-12-17 [3] CRAN (R 4.5.0)
- systemfonts            1.3.1     2025-10-01 [1] CRAN (R 4.5.0)
- tensor                 1.5.1     2025-06-17 [1] CRAN (R 4.5.0)
- textshaping            1.0.4     2025-10-10 [1] CRAN (R 4.5.0)
- tibble               * 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
- tidyr                * 1.3.2     2025-12-19 [1] CRAN (R 4.5.0)
- tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
- tidytree               0.4.7     2026-01-08 [1] CRAN (R 4.5.0)
- tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.5.0)
- timechange             0.3.0     2024-01-18 [2] CRAN (R 4.5.0)
- treeio                 1.32.0    2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
- tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.5.0)
- UCSC.utils             1.4.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- utf8                   1.2.6     2025-06-08 [1] CRAN (R 4.5.0)
- uwot                   0.2.4     2025-11-10 [1] CRAN (R 4.5.0)
- vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.5.0)
- vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
- viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
- viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.5.0)
- vroom                  1.6.5     2023-12-05 [2] CRAN (R 4.5.0)
- withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
- XML                    3.99-0.20 2025-11-08 [1] CRAN (R 4.5.0)
- xtable                 1.8-4     2019-04-21 [2] CRAN (R 4.5.0)
- XVector                0.48.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
- yaml                   2.3.12    2025-12-10 [1] CRAN (R 4.5.0)
- yulab.utils            0.2.3     2025-12-15 [1] CRAN (R 4.5.0)
- zoo                    1.8-15    2025-12-15 [1] CRAN (R 4.5.0)
-
- [1] /users/lhuuki/R/4.5
- [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
- * ── Packages attached to the search path.
-
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Fri Jan 23 12:20:39 PM EST 2026
+Oligo.1 E2+ Oligo.1 E4+ Oligo.2 E2+ Oligo.2 E4+ Oligo.3 E2+ Oligo.3 E4+ 
+       7969        4550        7758        4252        4217        4370 
+Oligo.4 E2+ Oligo.4 E4+ Oligo.5 E2+ Oligo.5 E4+   OPC.1 E2+   OPC.1 E4+ 
+       3614        3297        2080        2174        2205        2610 
+  OPC.2 E2+   OPC.2 E4+   OPC.3 E2+   OPC.3 E4+   OPC.4 E2+   OPC.4 E4+ 
+       1593        2416        1848        2084         939        1022 
+  OPC.5 E2+   OPC.5 E4+ 
+        138         320 
+Saving 7 x 7 in image
+Error: object 'cell_type_anno' not found
+Execution halted
