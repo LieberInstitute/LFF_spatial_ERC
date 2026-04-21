@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Apr  2 03:35:00 PM EDT 2026
+Tue Apr 21 11:34:54 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30537101
+Job id: 30933013
 Job name: 35.5_sn_subcluster_marker_modeling_OligoOPC
-Node name: compute-146
+Node name: compute-169
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -147,8 +147,8 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.2.0     ✔ readr     2.2.0
-✔ forcats   1.0.0     ✔ stringr   1.6.0
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
 ✔ ggplot2   4.0.2     ✔ tibble    3.3.1
 ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
 ✔ purrr     1.2.1     
@@ -199,25 +199,25 @@ character(0)
 $celltype
 [1] "OligoOPC2"
 
-2026-04-02 15:35:18.052856 - Load HDF5 sce
+2026-04-21 11:35:10.499615 - Load HDF5 sce
 
-Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
-  12519   12010    8587    6911    4254    4815    4009    3932    1961     458 
+  OPC.3   OPC.4   OPC.1   OPC.2   OPC.5 Oligo.3 Oligo.4 Oligo.5 Oligo.1 Oligo.2 
+   3932    1961    4815    4009     458    8587    6911    4254   12519   12010 
 Loading objects:
   Oligo_OPC_colors
 Use OPC subtypes
          
-          OPC.1 OPC.2 OPC.3 OPC.4 OPC.5 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5
-  OPC.3       0     0  3932     0     0       0       0       0       0       0
-  OPC.4       0     0     0  1961     0       0       0       0       0       0
-  OPC.1    4815     0     0     0     0       0       0       0       0       0
-  OPC.2       0  4009     0     0     0       0       0       0       0       0
+          OPC.3 OPC.4 OPC.1 OPC.2 OPC.5 Oligo.3 Oligo.4 Oligo.5 Oligo.1 Oligo.2
+  OPC.3    3932     0     0     0     0       0       0       0       0       0
+  OPC.4       0  1961     0     0     0       0       0       0       0       0
+  OPC.1       0     0  4815     0     0       0       0       0       0       0
+  OPC.2       0     0     0  4009     0       0       0       0       0       0
   OPC.5       0     0     0     0   458       0       0       0       0       0
-  Oligo.3     0     0     0     0     0       0       0    8587       0       0
-  Oligo.4     0     0     0     0     0       0       0       0    6911       0
-  Oligo.5     0     0     0     0     0       0       0       0       0    4254
-  Oligo.1     0     0     0     0     0   12519       0       0       0       0
-  Oligo.2     0     0     0     0     0       0   12010       0       0       0
+  Oligo.3     0     0     0     0     0    8587       0       0       0       0
+  Oligo.4     0     0     0     0     0       0    6911       0       0       0
+  Oligo.5     0     0     0     0     0       0       0    4254       0       0
+  Oligo.1     0     0     0     0     0       0       0       0   12519       0
+  Oligo.2     0     0     0     0     0       0       0       0       0   12010
 Rows: 23 Columns: 2
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -243,10 +243,10 @@ Warning messages:
 ℹ Did you misspell an argument name?
 null device 
           1 
-2026-04-02 15:36:33.611471 - Load marker stats data
+2026-04-21 11:35:43.587567 - Load marker stats data
 Loading objects:
   marker_stats_MeanRatio
-2026-04-02 15:36:33.664817 - Mean Ratio Plots
+2026-04-21 11:35:43.689881 - Mean Ratio Plots
 [[1]]
 
 [[2]]
@@ -291,7 +291,7 @@ Warning messages:
 ℹ Did you misspell an argument name?
 null device 
           1 
-2026-04-02 15:43:45.811638 - Load modeling data
+2026-04-21 11:41:18.720036 - Load modeling data
 # A tibble: 10 × 2
 # Groups:   test [10]
    test        n
@@ -306,7 +306,7 @@ null device
  8 Oligo.3   100
  9 Oligo.4   100
 10 Oligo.5   100
-2026-04-02 15:43:46.558287 - Enrichment dot plots
+2026-04-21 11:41:19.531165 - Enrichment dot plots
 
 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5   OPC.1   OPC.2   OPC.3   OPC.4   OPC.5 
       8      10      10      10      10      10      10      10      10       7 
