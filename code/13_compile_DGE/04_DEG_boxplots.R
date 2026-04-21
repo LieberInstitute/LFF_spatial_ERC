@@ -184,7 +184,7 @@ if(opt$datatype == "sn_broad"){
     })
 
 }else if(opt$datatype == "sn_fine"){
-    
+    #### sn_fine specific plots ####
     #Oligo.3
     map(c("MAPT", "FOS"), function(g){
         dge_plot <- plot_DEG_express(
@@ -200,6 +200,25 @@ if(opt$datatype == "sn_broad"){
             labs(title = "Oligo.3")
         ggsave(dge_plot, 
                filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "Oligo.3", g)),
+               height = 4, width = 3)
+        
+    })
+  
+  map(c("MAPT", "FOS"), function(g){
+        dge_plot <- plot_DEG_express(
+                sce = sce_pb,
+                stats = DE_data,
+                gene = g,
+                cluster_col = "cell_type_anno",
+                clus = "Oligo.3",
+                gene_col = "gene_name",
+                color_pal = APOE_carrier_colors,
+                plot_points = TRUE,
+                add_label = "BrNum"
+        ) +
+            labs(title = "Oligo.3")
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s_label.png", opt$datatype, "Oligo.3", g)),
                height = 4, width = 3)
         
     })
@@ -329,10 +348,11 @@ anc_single_gene <- function(gene_list,
 
 
 if(opt$datatype == "Visium"){
+  #### Visium plots ###
     anc_single_gene(gene_list = list(`WM_Sp09D06` = c("PEX14")))
     
 } else if(opt$datatype == "sn_broad"){
-    
+    #### sn broad ####
     anc_single_gene(gene_list = list(Astro = c("TCTN1", "JUP"),
                                      Vasc = c("RIPK2")), 
                     cluster_col = "cell_type_broad")
