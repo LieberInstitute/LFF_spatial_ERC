@@ -40,10 +40,11 @@ rownames(sce) <- rowData(sce)$gene_name
 ## subset sce
 sce <- sce[,sce$cell_type_broad %in% c("Oligo", "OPC")]
 
+sce$cell_type_anno <- as.character(sce$cell_type_anno)
+sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
+
 sce$cell_type_anno2 <- sce$cell_type_anno ## keep
 sce$cell_type_anno2 <- droplevels(sce$cell_type_anno2)
-
-sce$cell_type_anno <- as.character(sce$cell_type_anno)
 
 table(sce$cell_type_anno)
 
@@ -53,6 +54,7 @@ load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose 
 #  Oligo_OPC_colors
 #  OPC.1     OPC.2     OPC.3     OPC.4     OPC.5   Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5 
 # "#D2B037" "#BDB76B" "#FFDB58" "#A2852D" "#DA9100" "#00BFC4" "#00B0F6" "#9590FF" "#E76BF3" "#FF62BC"
+
 
 ## pick grouped of specific OPCs
 if(celltype == "OligoOPC"){
@@ -70,7 +72,6 @@ if(celltype == "OligoOPC"){
 
 } else if(celltype == "OligoOPC2"){
     message("Use OPC subtypes")
-    sce$cell_type_anno <- factor(sce$cell_type_anno, levels = c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.4", "Oligo.5", "Oligo.1", "Oligo.2"))
     
 }
 
@@ -431,7 +432,7 @@ dev.off()
 #     dev.off()
 # })
 
-#### OligoOPC Cor Jakel2019 ####
+#### OligoOPC Cor Jakel2019 - get enrichment genes ####
 
 enrichment_genes <- sig_genes_extract(
     n = nrow(sce_pseudo),
@@ -640,7 +641,7 @@ erc_v_Macnair_cor <- erc_v_Macnair |>
   summarise(n = n(),
             cor = cor(logFC, log2fc))
 
-write_csv(erc_v_Macnair_cor, file = here(data_dir, sprintf("erc_v_jakel_%s_cor.csv", celltype)))
+write_csv(erc_v_Macnair_cor, file = here(data_dir, sprintf("erc_v_Macnair2025_%s_cor.csv", celltype)))
 
 erc_v_Macnair_cor |>
   group_by(test) |> 
