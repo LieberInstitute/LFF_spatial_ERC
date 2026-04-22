@@ -36,7 +36,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 06_multistudy_Oligo_explore.R --k ${k}
+Rscript 06_multi_study_Oligo_explore.R --k ${k}
 
 echo "**** Job ends ****"
 date
