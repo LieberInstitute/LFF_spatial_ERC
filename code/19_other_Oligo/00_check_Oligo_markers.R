@@ -143,27 +143,57 @@ Oligo_marker_summary <- MeanRatio_Oligo |>
 write_csv(Oligo_marker_summary, file = here(data_dir, "ERC_Oligo_marker_summary.csv"))
 
 #### Violin plots ####
-## TODO fininsh annotations
 erc_oligo_key_genes <- list(OPC = c("PDGFRA", "MEG3","OLIG2"), #OPCs
-                         "RBFOX1", "KCND2", "GPM6A", #OPC + Oligo.3
-                         "CNTNAP2", "NTRK3","KCNJ3", #OPC + Oligo.3
-                         "LINGO2", "MT-CO3", "ADGRV1",   # Oligo.3
-                         "ARHGEF3", "ADGRF5",  "CLDN5", #Oligo.5
-                         "OPALIN", "OMG", "SEMA6D", #Oligo.1
-                         "LAMA2", "ERBB4",  #Oligo.1 + 4
-                         "RASGRF1","RASGRF2", "LRRC63", "ANKRD18A" #Oligo.2
+                            COP = c("GPR17"),
+                            Oligo = c("MBP", "MOG", "PLP1", "CNP", "MAL"),
+                            OPC_Oligo.3 = c("RBFOX1", "KCND2", "GPM6A", #OPC + Oligo.3
+                                            "CNTNAP2", "NTRK3","KCNJ3"), #OPC + Oligo.3
+                            Oligo.3 = c("LINGO2", "MT-CO3", "ADGRV1"),   # Oligo.3
+                            Oligo.5 = c("ARHGEF3", "ADGRF5",  "CLDN5"), #Oligo.5
+                            Oligo.4 = c("LAMA2", "ERBB4"),  #Oligo.1 + 4
+                            Oligo.1 = c("OPALIN", "OMG", "SEMA6D"), #Oligo.1
+                            Oligo.2 = c("RASGRF1","RASGRF2", "LRRC63", "ANKRD18A") #Oligo.2
 )
 
 
-violin_key_genes <- plot_gene_express(sce, 
-                  category = "cell_type_anno",
-                  genes = erc_oligo_key_genes,
-                  color_pal = Oligo_OPC_colors,
-                  free_y = TRUE,
-                  ncol = 3
-                  )
+plot_marker_express_List(sce, 
+                         cellType_col = "cell_type_anno",
+                         gene_list = erc_oligo_key_genes,
+                         color_pal = Oligo_OPC_colors,
+                         pdf_fn = here(plot_dir, "Violin_Oligo_key_markers.pdf")
+)
 
-ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.png"))
+plot_marker_express_List(sce, 
+                         cellType_col = "cell_type_anno2",
+                         gene_list = erc_oligo_key_genes,
+                         color_pal = Oligo_OPC_colors2,
+                         pdf_fn = here(plot_dir, "Violin_OligoOPC_key_markers.pdf")
+)
+
+
+genes_check <-list(COP = c("GPR17", "BCAS1", "TNR"),
+    MFOL = c("MAL", "SERINC5"),
+                   NFOL = c("SEMA5A", "ENPP6"),
+                   MOL = c("KLK6", "FRY", "KCNIP4"),
+                   imOL = c("CD74", "B2M", "HLA-A", "HLA-B", "HLA-C", "HLA-DRA"))
+
+plot_marker_express_List(sce, 
+                         cellType_col = "cell_type_anno2",
+                         gene_list = genes_check,
+                         color_pal = Oligo_OPC_colors2,
+                         pdf_fn = here(plot_dir, "Violin_OligoOPC_check_markers.pdf")
+)
+
+
+# violin_key_genes <- plot_marker_express_List(sce, 
+#                   category = "cell_type_anno",
+#                   gene_list = erc_oligo_key_genes,
+#                   color_pal = Oligo_OPC_colors,
+#                   free_y = TRUE,
+#                   ncol = 3
+#                   )
+# 
+# ggsave(violin_key_genes, filename = here(plot_dir, "Violin_Oligo_key_markers.png"))
 
 violin_OPLAIN_RASGRF1_genes <- plot_gene_express(sce, 
                                       category = "cell_type_anno",
@@ -176,7 +206,7 @@ violin_OPLAIN_RASGRF1_genes <- plot_gene_express(sce,
 ggsave(violin_OPLAIN_RASGRF1_genes, filename = here(plot_dir, "Violin_Oligo_OPLAIN_RASGRF1.png"), width = 8, height = 4)
 
 
-map(c("GPR17"), function(gene_single){
+map(c("GPR17","RBFOX1", "LINGO2","PDGFRA", "MEG3","OLIG2"), function(gene_single){
     violin_key_genes <- plot_gene_express(sce, 
                                           category = "cell_type_anno2",
                                           genes = gene_single,
@@ -190,29 +220,63 @@ map(c("GPR17"), function(gene_single){
 
 #### Dotplots ####
 
-rowData(sce)$cop_marker <- NULL
-rowData(sce)$cop_marker <- names(fang_cop_markers2)[match(rownames(sce), fang_cop_markers2)] 
-table(rowData(sce)$cop_marker)
+erc_oligo_key_genes2 <- AnnotationDbi::unlist2(erc_oligo_key_genes)
+
+rowData(sce)$key_marker <- NULL
+rowData(sce)$key_marker <- names(erc_oligo_key_genes2)[match(rownames(sce), erc_oligo_key_genes2)] 
+table(rowData(sce)$key_marker)
+
+setdiff(names(erc_oligo_key_genes), names(Oligo_OPC_colors))
+
+Oligo_anno_colors <- c(Oligo_OPC_colors, Oligo = "#F57A00", COP = "#885053", OPC_Oligo.3 = "#DF7D68")
 
 pdf(here(plot_dir, "OligoOPC_dotplot_key_markers.pdf"))
 sce |>
-    scDotPlot(features = erc_oligo_key_genes,
-              group = "cell_type_anno2",
-              groupAnno = "cell_type_anno2",
-              # featureAnno = "cop_marker",
+    scDotPlot(features = erc_oligo_key_genes2,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "key_marker",
               scale = TRUE,
-              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
-              clusterRows = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                key_marker = Oligo_anno_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
               groupLegends = FALSE)
 
 sce |>
-    scDotPlot(features = erc_oligo_key_genes,
+    scDotPlot(features = erc_oligo_key_genes2,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "key_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors,
+                                key_marker = Oligo_anno_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = erc_oligo_key_genes2,
               group = "cell_type_anno2",
               groupAnno = "cell_type_anno2",
-              # featureAnno = "cop_marker",
+              featureAnno = "key_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2,
+                                key_marker = Oligo_anno_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = erc_oligo_key_genes2,
+              group = "cell_type_anno2",
+              groupAnno = "cell_type_anno2",
+              featureAnno = "key_marker",
               scale = FALSE,
-              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2),
+              annoColors = list("cell_type_anno2" = Oligo_OPC_colors2,
+                                key_marker = Oligo_anno_colors),
               clusterRows = TRUE,
+              clusterColumns = FALSE,
               groupLegends = FALSE)
 
 dev.off()
