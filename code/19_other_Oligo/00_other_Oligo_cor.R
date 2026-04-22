@@ -19,8 +19,9 @@ dataset_cor_fn  <- map(c(Sadick2022 =  "sadick", Grubman2019 = "grubman"), ~here
 
 ## jakel
 dataset_cor_fn$Jakel2019 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "erc_v_jakel_OligoOPC_cor.csv")
+dataset_cor_fn$Macnair2025 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC", "erc_v_Macnair2025_OligoOPC_cor.csv")
 
-dataset_cor_fn$Green2024 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC2","erc_v_Green2024_OligoOPC2_cor.csv") 
+dataset_cor_fn$Green2024 <- here("processed-data", "04_snRNA-seq", "35.5_sn_subcluster_marker_modeling_OligoOPC","erc_v_Green2024_OligoOPC_cor.csv") 
 
 dataset_cor <- map2(dataset_cor_fn, names(dataset_cor_fn), ~read_csv(.x) |> mutate(dataset = .y))
 dataset_cor$Sadick2022  <- dataset_cor$Sadick2022 |> dplyr::filter(data == "Sadick") |> select(-data) |> mutate(Sadick_cluster = gsub("Sadick_", "", Sadick_cluster))
@@ -30,39 +31,42 @@ dataset_cor_all <- map2_dfr(dataset_cor, names(dataset_cor), ~.x |>
                               rename_with(~"Other_Oligo", .cols = 2)) |>
   dplyr::rename(ERC_Oligo = test, n_gene = n, cor_logFC= cor)
 
+dataset_cor_all |> filter(dataset == "Macnair2025") |> count(dataset, Other_Oligo)
+
 ## specificity score
 
-other_oligo_match <- dataset_cor_all |>
-  filter(grepl("Oligo", ERC_Oligo)) |>
-  group_by(dataset, Other_Oligo) |>
-  mutate(rank_cor = rank(cor_logFC)) 
+# other_oligo_match <- dataset_cor_all |>
+#   filter(grepl("Oligo", ERC_Oligo)) |>
+#   group_by(dataset, Other_Oligo) |>
+#   mutate(rank_cor = rank(cor_logFC)) 
+# 
+# other_oligo_best_match <- other_oligo_match |>
+#   slice_max(rank_cor) |>
+#   dplyr::rename(best_cor_logFC = cor_logFC) |>
+#   left_join(other_oligo_match |>
+#               filter(rank_cor == 4) |>
+#               select(-rank_cor, -n_gene, ERC_Oligo_next = ERC_Oligo) |>
+#               dplyr::rename(next_cor_logFC = cor_logFC)) |>
+#   mutate(specificity_score = (best_cor_logFC - next_cor_logFC)/abs(next_cor_logFC))
+# 
+# other_oligo_best_match|>
+#   arrange(-specificity_score) |>
+#   filter(dataset == "Sadick2022")
+# 
+# write_csv(other_oligo_best_match, file = here(data_dir, "ERC_Oligo_v_external_data_specificity_score.csv"))
 
-other_oligo_best_match <- other_oligo_match |>
-  slice_max(rank_cor) |>
-  dplyr::rename(best_cor_logFC = cor_logFC) |>
-  left_join(other_oligo_match |>
-              filter(rank_cor == 4) |>
-              select(-rank_cor, -n_gene, ERC_Oligo_next = ERC_Oligo) |>
-              dplyr::rename(next_cor_logFC = cor_logFC)) |>
-  mutate(specificity_score = (best_cor_logFC - next_cor_logFC)/abs(next_cor_logFC))
 
-other_oligo_best_match|>
-  arrange(-specificity_score) |>
-  filter(dataset == "Sadick2022")
+# dataset_cor_all2 <- dataset_cor_all |>
+#   left_join(other_oligo_best_match |> select(dataset, ERC_Oligo, Other_Oligo, specificity_score))
 
-write_csv(other_oligo_best_match, file = here(data_dir, "ERC_Oligo_v_external_data_specificity_score.csv"))
-
-
-dataset_cor_all2 <- dataset_cor_all |>
-  left_join(other_oligo_best_match |> select(dataset, ERC_Oligo, Other_Oligo, specificity_score))
-
-write_csv(dataset_cor_all2, file = here(data_dir, "ERC_Oligo_v_external_data_cor.csv"))
+write_csv(dataset_cor_all, file = here(data_dir, "ERC_Oligo_v_external_data_cor.csv"))
 
 
 # dataset_subtypes <- dataset_cor_all2 |> select(dataset, Other_Oligo) |> unique()
 # write_csv(dataset_subtypes, file = here(data_dir, "Oligo_external_data_subtypes.csv"))
 
 dataset_subtypes <- read_csv(here(data_dir, "Oligo_external_data_subtypes.csv"))
+dataset_subtypes |> count(dataset)
 dataset_subtypes |> count(marker)
 
 # Oligo.1   Oligo.2   Oligo.3   Oligo.4   Oligo.5 
@@ -75,7 +79,7 @@ Oligo_marker_colors <- c(OPALIN = "#228277",
 
 
 #### uniform heatmap ####
-dataset_groups <- list(Oligo = c("Sadick2022", "Grubman2019"), OligoOPC = c("Jakel2019"), OligoOPC2 = c("Green2024"))
+dataset_groups <- list(Oligo = c("Sadick2022", "Grubman2019"), OligoOPC = c("Jakel2019", "Green2024", "Macnair2025"))
 
 map2(dataset_groups, names(dataset_groups), function(datasets, name){
   
@@ -90,7 +94,11 @@ map2(dataset_groups, names(dataset_groups), function(datasets, name){
   cor_wide <- other_data |> 
     arrange(ERC_Oligo) |>
     select(dataset, ERC_Oligo, Other_Oligo, cor_logFC) |>
-    pivot_wider(names_from = "ERC_Oligo", values_from = "cor_logFC") 
+    pivot_wider(names_from = "ERC_Oligo", values_from = "cor_logFC") |>
+      mutate(Other_Oligo = ifelse(Other_Oligo == "COP" & dataset == "Green2024", "C0P", Other_Oligo)) ## double COP fix...
+  
+  # cor_wide |> count(Other_Oligo) |> filter(n>1)
+  # cor_wide |> filter(Other_Oligo == "COP")
   
   cor_wide_matrix <- cor_wide |>
     select(-dataset) |>
@@ -98,14 +106,15 @@ map2(dataset_groups, names(dataset_groups), function(datasets, name){
     as.matrix()
   
   other_oligo_anno <- dataset_subtypes |> 
-    filter(dataset %in% datasets) |>
-    select(Other_Oligo, marker) |>
-    column_to_rownames("Other_Oligo")
+      filter(dataset %in% datasets) |>
+      mutate(Other_Oligo = ifelse(Other_Oligo == "COP" & dataset == "Green2024", "C0P", Other_Oligo)) |>
+      select(Other_Oligo, marker)  |>
+      column_to_rownames("Other_Oligo")
   
   other_oligo_anno <- other_oligo_anno[rownames(cor_wide_matrix),]
   other_oligo_ra <- rowAnnotation(express = other_oligo_anno, col = list(express = Oligo_marker_colors))
   
-  pdf(here(plot_dir, sprintf("Other_dataset_cor_%s.pdf", name)), height = 5, width = 5)
+  pdf(here(plot_dir, sprintf("Other_dataset_cor_%s.pdf", name)), height = 8, width = 5)
   print(Heatmap(cor_wide_matrix, 
                 name = "logFC cor",
                 right_annotation = other_oligo_ra,
@@ -117,24 +126,26 @@ map2(dataset_groups, names(dataset_groups), function(datasets, name){
 })
 
 
-
-
-
-max_cor_oligo3 <-  dataset_cor_all2 |> 
+max_cor_oligo3 <-  dataset_cor_all |> 
   filter(ERC_Oligo == "Oligo.3") |> 
   group_by(dataset) |>
-  slice_max(cor_logFC) |> 
-  mutate(selection = "Max Cor") |>
-  bind_rows(dataset_cor_all2 |> 
-              filter(ERC_Oligo == "Oligo.3") |> 
-              group_by(dataset) |>
-              slice_max(specificity_score)|> 
-              mutate(selection = "Max Specificity") ) |>
-  group_by(Other_Oligo) |>
-  mutate(selection = ifelse(n() > 1, "Max Both", selection)) |>
-  unique() |>
-  mutate(Other_Oligo2 = paste0(dataset, ":", Other_Oligo)) |>
-  arrange(dataset)
+  slice_max(cor_logFC)
+
+# max_cor_oligo3 <-  dataset_cor_all |> 
+#   filter(ERC_Oligo == "Oligo.3") |> 
+#   group_by(dataset) |>
+#   slice_max(cor_logFC) |> 
+#   mutate(selection = "Max Cor") |>
+#   bind_rows(dataset_cor_all2 |> 
+#               filter(ERC_Oligo == "Oligo.3") |> 
+#               group_by(dataset) |>
+#               slice_max(specificity_score)|> 
+#               mutate(selection = "Max Specificity") ) |>
+#   group_by(Other_Oligo) |>
+#   mutate(selection = ifelse(n() > 1, "Max Both", selection)) |>
+#   unique() |>
+#   mutate(Other_Oligo2 = paste0(dataset, ":", Other_Oligo)) |>
+#   arrange(dataset)
 
 
 #   mutate(Other_Oligo = fct_reorder(paste0(dataset, ": ", other_oligo), cor)) |>
@@ -170,29 +181,26 @@ ggsave(max_cor_oligo.3_dotplot, filename = here(plot_dir, "max_cor_oligo.3_dotpl
 oligo3_select_cor_matrix <- dataset_cor_all |>
   filter(Other_Oligo %in% max_cor_oligo3$Other_Oligo,
          grepl("Oligo", ERC_Oligo)) |>
-  #   mutate(Other_Oligo = paste0(dataset, ":", Other_Oligo)) |>
+    mutate(Other_Oligo = paste0(dataset, ":", Other_Oligo)) |>
   select(ERC_Oligo, Other_Oligo, cor_logFC) |>
   pivot_wider(values_from = cor_logFC, names_from = Other_Oligo) |>
   column_to_rownames("ERC_Oligo") |>
   as.matrix() |>
   t()
 
-setequal(colnames(oligo3_select_cor_matrix),max_cor_oligo3$Other_Oligo)
-setdiff(colnames(oligo3_select_cor_matrix),max_cor_oligo3$Other_Oligo)
+oligo3_select_cor_matrix <- oligo3_select_cor_matrix[order(oligo3_select_cor_matrix[,'Oligo.3']),]
 
-oligo3_select_cor_matrix <- oligo3_select_cor_matrix[max_cor_oligo3$Other_Oligo,]
+setequal(rownames(oligo3_select_cor_matrix),max_cor_oligo3$Other_Oligo)
+setdiff(rownames(oligo3_select_cor_matrix),max_cor_oligo3$Other_Oligo)
 
-library(ComplexHeatmap)
+# oligo3_select_cor_matrix <- oligo3_select_cor_matrix[max_cor_oligo3$Other_Oligo,]
+# 
+# other_oligo_anno <- rowAnnotation(df = max_cor_oligo3 |> ungroup() |> select(selection)
+# )
 
-other_oligo_anno <- rowAnnotation(df = max_cor_oligo3 |> ungroup() |> select(selection),
-                                  col = list(selection = selection_colors)
-)
-
-pdf(here(plot_dir, "Other_Oligo_select_heatmap.pdf"))
+pdf(here(plot_dir, "Other_Oligo_select_heatmap.pdf"), height = 2.5, width = 4)
 Heatmap(oligo3_select_cor_matrix,
         name = "cor logFC",
-        cluster_rows = FALSE,
-        right_annotation = other_oligo_anno,
-        row_split = max_cor_oligo3$dataset)
+        cluster_rows = FALSE)
 dev.off()
 
