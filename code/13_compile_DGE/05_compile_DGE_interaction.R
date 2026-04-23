@@ -114,7 +114,8 @@ vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol)|> arrange(vlmf_adj.P.Val) 
 
 (vlmf_model_summary <- vlmf_data_tb |> 
     group_by(mod, cluster) |>
-    summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+    summarize(n_gene = n(),
+              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0),
               n_FDR10 = sum(vlmf_adj.P.Val < 0.1),
