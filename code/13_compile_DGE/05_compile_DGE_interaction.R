@@ -61,6 +61,9 @@ vlmf_dir <-list(sn_broad = "vlmf_sn_broad",
 
 vlmf_dir <- vlmf_dir[[opt$datatype]]
 
+## use drop saple data for sn_fine age interaction
+if(opt$datatype == "sn_fine" & opt$interaction == "Age") vlmf_dir <- "vlmf_sn_fine_leaveOut_Br3974"
+
 vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction", vlmf_dir),
                       full.names = TRUE, pattern = ".rds")
 ## filter to selected interaction
