@@ -61,7 +61,7 @@ vlmf_dir <-list(sn_broad = "vlmf_sn_broad",
 
 vlmf_dir <- vlmf_dir[[opt$datatype]]
 
-## use drop saple data for sn_fine age interaction
+## use drop sample data for sn_fine age interaction
 if(opt$datatype == "sn_fine" & opt$interaction == "Age") vlmf_dir <- "vlmf_sn_fine_leaveOut_Br3974"
 
 vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "03_Clusterwise_voomLmFit_interaction", vlmf_dir),
@@ -114,7 +114,8 @@ vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol)|> arrange(vlmf_adj.P.Val) 
 
 (vlmf_model_summary <- vlmf_data_tb |> 
     group_by(mod, cluster) |>
-    summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+    summarize(n_gene = n(),
+              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0),
               n_FDR10 = sum(vlmf_adj.P.Val < 0.1),
