@@ -96,7 +96,8 @@ vlmf_data_tb|> arrange(vlmf_adj.P.Val) |> select(cluster, gene_name, vlmf_P.Valu
 
 (vlmf_model_summary <- vlmf_data_tb |> 
     group_by(cluster, contrast) |>
-    summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+    summarize(n_genes = n(),
+              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
               nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
               nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0)))
                                
