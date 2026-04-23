@@ -5,31 +5,41 @@
 library("tidyverse")
 library("here")
 
+## set plot dir
+data_dir <- here("plots", "13_compile_DGE", "16_all_mod_summary")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
+## set plot dir
+plot_dir <- here("plots", "13_compile_DGE", "16_all_mod_summary")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+
 #### Get summary numbers ####
 
 datatypes <- c("Visium", "sn_broad", "sn_fine")
 names(datatypes) <- datatypes
 
-# mod_dir <- c(carrier = "01_compile_DGE",
-#              carrier_anc = "05_compile_DGE_ancestry")
+mod_dir <- c(carrier = "01_compile_DGE",
+             carrier_anc = "05_compile_DGE_ancestry")
 
-mod_dir <- c(carrier = "01_Clusterwise_voomLmFit",
-             carrier_anc = "04_Clusterwise_voomLmFit_ancestry")
-
-list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", paste0("vlmf_","sn_fine")), pattern = "FDR05_summary")
+# list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", paste0("vlmf_","sn_fine")), pattern = "FDR05_summary")
 
 summary_files <- map2(mod_dir, names(mod_dir), function(mod, mod_name){
-    unlist(map(c("Visium", "sn_broad", "sn_fine"), ~list.files(here("processed-data", "12_voomLmFit", mod, paste0("vlmf_",.x)),
-                                            pattern = "FDR05_summary"),
-                                            full.names = TRUE)
+    unlist(map(c("Visium", "sn_broad", "sn_fine"), ~list.files(here("processed-data", "13_compile_DGE", mod, .x),
+                                            pattern = "summary",
+                                            full.names = TRUE))
            ) })
 
 summary_interaction_tbl <- map2_dfr(summary_files, names(summary_files), 
-                                    function(files, name){map(files, ~read.csv(.x) |> 
-                                                                  mutate(datatype = name, 
-                                                                         file = basename(.x))
+                                    function(files, name){map(files, ~read.csv(.x, row.names = 1) |> 
+                                                                  mutate(model = name,
+                                                                         file = basename(.x),
+                                                                         datatype = gsub(".*_summary_(.*)\\.csv", "\\1", file))
                                     )}
-) 
+) |>
+    filter(mod == "carrier" | is.na(mod))
+
+summary_interaction_tbl |> count(model, datatype)
 
 # summary_tbl <- map2_dfr(mod_dir, names(mod_dir), function(mod, mod_name){
 #     map_dfr(datatypes, ~read.csv(list.files(here("processed-data", "13_compile_DGE", mod, paste0("vlmf_",.x)), 
