@@ -180,7 +180,8 @@ vlmf_model_summary <- map2_dfr(vlmf_data_tb, names(vlmf_data_tb),
                                ~.x |> 
                                    mutate(mod = .y) |>
                                    group_by(cluster, mod) |>
-                                   summarize(n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
+                                   summarize(n_genes = n(),
+                                             n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
                                              nUP = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC > 0),
                                              nDown = sum(vlmf_adj.P.Val < 0.05 & vlmf_logFC < 0))
                                )
