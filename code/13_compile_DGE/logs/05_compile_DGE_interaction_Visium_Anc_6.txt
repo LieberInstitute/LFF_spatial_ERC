@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Apr 10 02:59:00 PM EDT 2026
+Thu Apr 23 03:37:41 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30758122
+Job id: 31036913
 Job name: 05_compile_DGE_interaction
-Node name: compute-127
+Node name: compute-120
 Task id: 6
 Loading conda_R/4.5
 
@@ -82,25 +82,25 @@ Loading objects:
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-# A tibble: 9 × 7
+# A tibble: 9 × 8
 # Groups:   mod [1]
-  mod             cluster       n_FDR05   nUP nDown n_FDR10 n_FDR20
-  <chr>           <fct>           <int> <int> <int>   <int>   <int>
-1 interaction Anc L5~Sp09D03          1     0     1       1       2
-2 interaction Anc Vasc~Sp09D08        0     0     0       2       2
-3 interaction Anc L1~Sp09D05          0     0     0       0       0
-4 interaction Anc L2.3~Sp09D01        0     0     0       0       0
-5 interaction Anc LD~Sp09D02          0     0     0       0       1
-6 interaction Anc Inhib~Sp09D09       0     0     0       0       0
-7 interaction Anc L6~Sp09D04          0     0     0       0       0
-8 interaction Anc WM.uf~Sp09D07       0     0     0       0       0
-9 interaction Anc WM~Sp09D06          0     0     0       0       0
+  mod             cluster       n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>          <int>   <int> <int> <int>   <int>   <int>
+1 interaction Anc L5~Sp09D03     14322       1     0     1       1       2
+2 interaction Anc Vasc~Sp09D08    9014       0     0     0       2       2
+3 interaction Anc L1~Sp09D05     11594       0     0     0       0       0
+4 interaction Anc L2.3~Sp09D01   14006       0     0     0       0       0
+5 interaction Anc LD~Sp09D02     15053       0     0     0       0       1
+6 interaction Anc Inhib~Sp09D09  12207       0     0     0       0       0
+7 interaction Anc L6~Sp09D04     13930       0     0     0       0       0
+8 interaction Anc WM.uf~Sp09D07   3172       0     0     0       0       0
+9 interaction Anc WM~Sp09D06      9409       0     0     0       0       0
 Adding missing grouping variables: `mod`
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2026-04-10 14:59:21 EDT"
+[1] "2026-04-23 15:38:03 EDT"
    user  system elapsed 
- 19.045   0.493  20.513 
+ 19.073   0.495  20.948 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -111,7 +111,7 @@ Saving 7 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-10
+ date     2026-04-23
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -171,4 +171,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Apr 10 02:59:22 PM EDT 2026
+Thu Apr 23 03:38:03 PM EDT 2026

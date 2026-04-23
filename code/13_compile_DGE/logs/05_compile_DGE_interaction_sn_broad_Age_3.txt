@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Apr 10 02:59:00 PM EDT 2026
+Thu Apr 23 03:37:41 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30758125
+Job id: 31036916
 Job name: 05_compile_DGE_interaction
-Node name: compute-113
+Node name: compute-119
 Task id: 3
 Loading conda_R/4.5
 
@@ -78,18 +78,18 @@ Loading objects:
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-# A tibble: 8 × 7
+# A tibble: 8 × 8
 # Groups:   mod [1]
-  mod             cluster n_FDR05   nUP nDown n_FDR10 n_FDR20
-  <chr>           <fct>     <int> <int> <int>   <int>   <int>
-1 interaction Age Astro         0     0     0       0      28
-2 interaction Age Macro         0     0     0       0      19
-3 interaction Age Micro         0     0     0       0       0
-4 interaction Age Oligo         0     0     0       0       1
-5 interaction Age OPC           0     0     0       0       1
-6 interaction Age Vasc          0     0     0       0       0
-7 interaction Age Excit         0     0     0       0       0
-8 interaction Age Inhib         0     0     0       0       0
+  mod             cluster n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>    <int>   <int> <int> <int>   <int>   <int>
+1 interaction Age Astro    18320       0     0     0       0      28
+2 interaction Age Macro     2931       0     0     0       0      19
+3 interaction Age Micro    14350       0     0     0       0       0
+4 interaction Age Oligo    21175       0     0     0       0       1
+5 interaction Age OPC      17884       0     0     0       0       1
+6 interaction Age Vasc      9533       0     0     0       0       0
+7 interaction Age Excit    25772       0     0     0       0       0
+8 interaction Age Inhib    21076       0     0     0       0       0
 Adding missing grouping variables: `mod`
 Saving 7 x 7 in image
 Warning messages:
@@ -100,9 +100,9 @@ data's colour values.
 3: No shared levels found between `names(values)` of the manual scale and the
 data's colour values. 
 [1] "Reproducibility information:"
-[1] "2026-04-10 14:59:35 EDT"
+[1] "2026-04-23 15:37:56 EDT"
    user  system elapsed 
- 31.032   0.676  33.419 
+ 12.702   0.512  14.313 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -113,7 +113,7 @@ data's colour values.
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-10
+ date     2026-04-23
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -173,4 +173,4 @@ data's colour values.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Apr 10 02:59:35 PM EDT 2026
+Thu Apr 23 03:37:56 PM EDT 2026

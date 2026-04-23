@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Apr 10 02:59:00 PM EDT 2026
+Thu Apr 23 03:37:41 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30758127
+Job id: 31036918
 Job name: 05_compile_DGE_interaction
-Node name: compute-127
+Node name: compute-120
 Task id: 5
 Loading conda_R/4.5
 
@@ -30,77 +30,76 @@ Registered S3 method overwritten by 'GGally':
   +.gg   ggplot2
 Loading objects:
   cell_type_colors
-[1] TRUE
+[1] FALSE
 # A tibble: 35 × 2
    cluster     n
    <fct>   <int>
  1 Astro.1 16867
- 2 Astro.2  9994
- 3 Astro.3 10634
+ 2 Astro.2 10083
+ 3 Astro.3 10569
  4 Astro.4  8135
  5 Astro.5  1793
  6 Macro    2931
- 7 Micro.1 10158
- 8 Micro.2  8763
- 9 Micro.3  7923
-10 Micro.4  6620
+ 7 Micro.1 10199
+ 8 Micro.2  8990
+ 9 Micro.3  8114
+10 Micro.4  6768
 # ℹ 25 more rows
-# A tibble: 5 × 2
+# A tibble: 4 × 2
   cluster          n
   <fct>        <int>
 1 OPC.3            1
 2 Vasc.VLMC        2
-3 Excit.L2_5.1     3
-4 Excit.L2_5.2  1727
-5 Excit.L5.2       7
-# A tibble: 396,037 × 5
-   cluster      gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
-   <fct>        <chr>            <dbl>          <dbl>      <dbl>
- 1 Excit.L2_5.2 SELENOW    0.000000516        0.00321      0.203
- 2 Excit.L2_5.2 RPL29      0.00000102         0.00321      0.280
- 3 Excit.L2_5.2 RPL18A     0.00000104         0.00321      0.296
- 4 Excit.L2_5.2 RPS3A      0.00000166         0.00321      0.220
- 5 Excit.L2_5.2 RPL9       0.00000183         0.00321      0.214
- 6 Excit.L2_5.2 TUBB2A     0.00000224         0.00321      0.159
- 7 Excit.L2_5.2 EEF1A2     0.00000235         0.00321      0.192
- 8 Excit.L2_5.2 FTL        0.00000257         0.00321      0.245
- 9 Excit.L2_5.2 RPL10      0.00000259         0.00321      0.244
-10 Excit.L2_5.2 MAP1LC3A   0.00000270         0.00321      0.187
-# ℹ 396,027 more rows
-# A tibble: 508 × 5
-   cluster      gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
-   <fct>        <chr>            <dbl>          <dbl>      <dbl>
- 1 Excit.L5.2   MT-ND1       0.0000259         0.0464     0.341 
- 2 Excit.L2_5.2 SORCS1       0.00598           0.0648    -0.105 
- 3 Excit.L2_5.2 TM2D3        0.0183            0.120      0.0718
- 4 Excit.L2_5.2 VPS13C       0.0351            0.175     -0.0404
- 5 Excit.L2     MT-ND1       0.00181           0.188      0.147 
- 6 Excit.L2_5.2 PLD3         0.0405            0.191      0.0626
- 7 Excit.L2     ADAM10       0.00413           0.213      0.0339
- 8 Excit.L5.1   ADAM10       0.000407          0.240      0.0507
- 9 Excit.L2     UNC13C       0.00982           0.247      0.0636
-10 Excit.L5.1   MT-ND1       0.00311           0.250      0.139 
-# ℹ 498 more rows
+3 Excit.L2_5.1     7
+4 Excit.L5.2       7
+# A tibble: 398,691 × 5
+   cluster      gene_name       vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>        <chr>                  <dbl>          <dbl>      <dbl>
+ 1 Excit.L5.2   MT-CYB            0.00000247         0.0295     0.381 
+ 2 Excit.L5.2   MT-ND4            0.00000636         0.0380     0.424 
+ 3 OPC.3        KIAA1755          0.00000275         0.0394    -0.0973
+ 4 Excit.L2_5.1 ENSG00000256982   0.00000379         0.0461    -0.111 
+ 5 Excit.L2_5.1 NR3C2             0.00000416         0.0461     0.0576
+ 6 Excit.L5.2   LINC02055         0.0000122          0.0464     0.202 
+ 7 Excit.L5.2   MT-CO3            0.0000272          0.0464     0.409 
+ 8 Excit.L5.2   ZDHHC11           0.0000243          0.0464     0.380 
+ 9 Excit.L5.2   MT-ATP6           0.0000201          0.0464     0.399 
+10 Excit.L5.2   MT-ND1            0.0000259          0.0464     0.341 
+# ℹ 398,681 more rows
+# A tibble: 509 × 5
+   cluster    gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>      <chr>            <dbl>          <dbl>      <dbl>
+ 1 Excit.L5.2 MT-ND1       0.0000259         0.0464     0.341 
+ 2 Excit.L2   MT-ND1       0.00181           0.188      0.147 
+ 3 Excit.L2   ADAM10       0.00413           0.213      0.0339
+ 4 Inhib.Vip  SORCS1       0.00105           0.223      0.0465
+ 5 Excit.L5.1 ADAM10       0.000407          0.240      0.0507
+ 6 Excit.L2   UNC13C       0.00982           0.247      0.0636
+ 7 Excit.L5.1 MT-ND1       0.00311           0.250      0.139 
+ 8 Excit.L5.1 VPS13C       0.00499           0.256      0.0434
+ 9 Excit.L2   TNK1         0.0123            0.257     -0.140 
+10 Excit.L5.1 APP          0.0120            0.273      0.0394
+# ℹ 499 more rows
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by mod and cluster.
 ℹ Output is grouped by mod.
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-# A tibble: 35 × 7
+# A tibble: 35 × 8
 # Groups:   mod [1]
-   mod             cluster      n_FDR05   nUP nDown n_FDR10 n_FDR20
-   <chr>           <fct>          <int> <int> <int>   <int>   <int>
- 1 interaction Age Excit.L2_5.2     947   702   245    1727    2976
- 2 interaction Age Excit.L5.2         7     7     0       7      13
- 3 interaction Age OPC.3              1     0     1       1       1
- 4 interaction Age Astro.1            0     0     0       0       0
- 5 interaction Age Astro.2            0     0     0       0       0
- 6 interaction Age Astro.3            0     0     0       0       3
- 7 interaction Age Astro.4            0     0     0       0       1
- 8 interaction Age Astro.5            0     0     0       0       1
- 9 interaction Age Macro              0     0     0       0      19
-10 interaction Age Micro.1            0     0     0       0       0
+   mod             cluster      n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
+   <chr>           <fct>         <int>   <int> <int> <int>   <int>   <int>
+ 1 interaction Age Excit.L5.2    11952       7     7     0       7      13
+ 2 interaction Age Excit.L2_5.1  22170       3     1     2       7      84
+ 3 interaction Age OPC.3         14349       1     0     1       1       1
+ 4 interaction Age Astro.1       16867       0     0     0       0       0
+ 5 interaction Age Astro.2       10083       0     0     0       0       0
+ 6 interaction Age Astro.3       10569       0     0     0       0       0
+ 7 interaction Age Astro.4        8135       0     0     0       0       1
+ 8 interaction Age Astro.5        1793       0     0     0       0       1
+ 9 interaction Age Macro          2931       0     0     0       0      19
+10 interaction Age Micro.1       10199       0     0     0       0       0
 # ℹ 25 more rows
 Adding missing grouping variables: `mod`
 Saving 7 x 7 in image

@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Apr 10 02:59:00 PM EDT 2026
+Thu Apr 23 03:37:41 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30758124
+Job id: 31036915
 Job name: 05_compile_DGE_interaction
-Node name: compute-113
+Node name: compute-119
 Task id: 2
 Loading conda_R/4.5
 
@@ -78,24 +78,24 @@ Loading objects:
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-# A tibble: 8 × 7
+# A tibble: 8 × 8
 # Groups:   mod [1]
-  mod             cluster n_FDR05   nUP nDown n_FDR10 n_FDR20
-  <chr>           <fct>     <int> <int> <int>   <int>   <int>
-1 interaction Anc Astro         0     0     0       0       0
-2 interaction Anc Macro         0     0     0       0       0
-3 interaction Anc Micro         0     0     0       0       0
-4 interaction Anc Oligo         0     0     0       0       0
-5 interaction Anc OPC           0     0     0       0       0
-6 interaction Anc Vasc          0     0     0       0       0
-7 interaction Anc Excit         0     0     0       0       0
-8 interaction Anc Inhib         0     0     0       0       0
+  mod             cluster n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>    <int>   <int> <int> <int>   <int>   <int>
+1 interaction Anc Astro    18320       0     0     0       0       0
+2 interaction Anc Macro     2931       0     0     0       0       0
+3 interaction Anc Micro    14350       0     0     0       0       0
+4 interaction Anc Oligo    21175       0     0     0       0       0
+5 interaction Anc OPC      17290       0     0     0       0       0
+6 interaction Anc Vasc      8801       0     0     0       0       0
+7 interaction Anc Excit    25772       0     0     0       0       0
+8 interaction Anc Inhib    21076       0     0     0       0       0
 Adding missing grouping variables: `mod`
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2026-04-10 15:00:10 EDT"
+[1] "2026-04-23 15:38:13 EDT"
    user  system elapsed 
- 66.212   0.828  69.089 
+ 29.159   0.589  30.637 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -106,7 +106,7 @@ Saving 7 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-10
+ date     2026-04-23
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -166,4 +166,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Apr 10 03:00:10 PM EDT 2026
+Thu Apr 23 03:38:13 PM EDT 2026

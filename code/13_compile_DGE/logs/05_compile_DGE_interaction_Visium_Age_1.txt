@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Apr 10 02:59:00 PM EDT 2026
+Thu Apr 23 03:37:41 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 30758123
+Job id: 31036914
 Job name: 05_compile_DGE_interaction
-Node name: compute-169
+Node name: compute-119
 Task id: 1
 Loading conda_R/4.5
 
@@ -81,19 +81,19 @@ Loading objects:
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-# A tibble: 9 × 7
+# A tibble: 9 × 8
 # Groups:   mod [1]
-  mod             cluster       n_FDR05   nUP nDown n_FDR10 n_FDR20
-  <chr>           <fct>           <int> <int> <int>   <int>   <int>
-1 interaction Age Inhib~Sp09D09       1     1     0       1       1
-2 interaction Age Vasc~Sp09D08        0     0     0       0       0
-3 interaction Age L1~Sp09D05          0     0     0       0       0
-4 interaction Age L2.3~Sp09D01        0     0     0       0       0
-5 interaction Age LD~Sp09D02          0     0     0       0       1
-6 interaction Age L5~Sp09D03          0     0     0       0       0
-7 interaction Age L6~Sp09D04          0     0     0       0       0
-8 interaction Age WM.uf~Sp09D07       0     0     0       0       0
-9 interaction Age WM~Sp09D06          0     0     0       0       0
+  mod             cluster       n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
+  <chr>           <fct>          <int>   <int> <int> <int>   <int>   <int>
+1 interaction Age Inhib~Sp09D09  12722       1     1     0       1       1
+2 interaction Age Vasc~Sp09D08    9014       0     0     0       0       0
+3 interaction Age L1~Sp09D05     11594       0     0     0       0       0
+4 interaction Age L2.3~Sp09D01   14006       0     0     0       0       0
+5 interaction Age LD~Sp09D02     15053       0     0     0       0       1
+6 interaction Age L5~Sp09D03     14322       0     0     0       0       0
+7 interaction Age L6~Sp09D04     13930       0     0     0       0       0
+8 interaction Age WM.uf~Sp09D07   3172       0     0     0       0       0
+9 interaction Age WM~Sp09D06      9409       0     0     0       0       0
 Adding missing grouping variables: `mod`
 Saving 7 x 7 in image
 Warning messages:
@@ -104,9 +104,9 @@ data's colour values.
 3: No shared levels found between `names(values)` of the manual scale and the
 data's colour values. 
 [1] "Reproducibility information:"
-[1] "2026-04-10 14:59:08 EDT"
+[1] "2026-04-23 15:37:55 EDT"
    user  system elapsed 
-  6.506   0.184   7.718 
+ 11.332   0.439  12.828 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -117,7 +117,7 @@ data's colour values.
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-10
+ date     2026-04-23
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -177,4 +177,4 @@ data's colour values.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Apr 10 02:59:08 PM EDT 2026
+Thu Apr 23 03:37:55 PM EDT 2026
