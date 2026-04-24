@@ -14,12 +14,20 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/xenium"
 xenium_files <- list.files(here("raw-data", "xenium"))
-
+message("Samples: ", length(xenium_files))
 
 xenium_experiment_table <- tibble(path = xenium_files) |>
     separate(path, into = c(NA, "chip", "sample", "date", "chip2"), sep = "__") |>
     separate(sample, into = c("BrNum", "experiment", "Run"), sep = "_") |>
     mutate(chip = paste0("c", chip)) ## leading 0 protection
+
+xenium_experiment_table |> count(Run, chip)
+#   Run   chip         n
+# <chr> <chr>    <int>
+# 1 Run1  c0102273     4
+# 2 Run1  c0102447     4
+# 3 Run2  c0061389     4
+# 4 Run2  c0102694     4
 
 write_csv(xenium_experiment_table, here(data_dir, "xenium_experiment_details.csv"))
 
