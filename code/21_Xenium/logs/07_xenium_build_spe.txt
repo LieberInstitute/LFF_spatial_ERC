@@ -1,0 +1,295 @@
+**** Job starts ****
+Fri Apr 24 11:15:11 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 31041658
+Job name: 07_xenium_build_spe
+Node name: compute-129
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Registered S3 methods overwritten by 'GenomeInfoDb':
+  method                from   
+  as.data.frame.Seqinfo Seqinfo
+  merge.Seqinfo         Seqinfo
+  summary.Seqinfo       Seqinfo
+  update.Seqinfo        Seqinfo
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+qs2 0.1.7
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/xenium"
+Samples: 16
+# A tibble: 4 × 3
+  Run   chip         n
+  <chr> <chr>    <int>
+1 Run1  c0102273     4
+2 Run1  c0102447     4
+3 Run2  c0061389     4
+4 Run2  c0102694     4
+2026-04-24 11:15:20.9424output-XETG00558__0061389__Br1039_LFF-ERC_Run2__20260417__183516
+Rows: 33938 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:24.952233output-XETG00558__0061389__Br1556_LFF-ERC_Run2__20260417__183516
+Rows: 20797 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:26.361575output-XETG00558__0061389__Br5367_LFF-ERC_Run2__20260417__183516
+Rows: 24546 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:27.540679output-XETG00558__0061389__Br5599_LFF-ERC_Run2__20260417__183516
+Rows: 30381 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:28.360259output-XETG00558__0102273__Br1706_LFF-ERC_Run1__20260410__173740
+Rows: 30126 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:30.009195output-XETG00558__0102273__Br5415_LFF-ERC_Run1__20260410__173740
+Rows: 29290 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:31.615724output-XETG00558__0102273__Br5941_LFF-ERC_Run1__20260410__173740
+Rows: 22070 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:32.317734output-XETG00558__0102273__Br6538_LFF-ERC_Run1__20260410__173740
+Rows: 38985 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:33.352213output-XETG00558__0102447__Br2582_LFF-ERC_Run1__20260410__173739
+Rows: 31564 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:35.182794output-XETG00558__0102447__Br5426_LFF-ERC_Run1__20260410__173739
+Rows: 32091 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:36.118321output-XETG00558__0102447__Br5517_LFF-ERC_Run1__20260410__173740
+Rows: 22903 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:37.006941output-XETG00558__0102447__Br6098_LFF-ERC_Run1__20260410__173739
+Rows: 49278 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:38.765601output-XETG00558__0102694__Br5161_LFF-ERC_Run2__20260417__183516
+Rows: 25198 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:39.59714output-XETG00558__0102694__Br5460_LFF-ERC_Run2__20260417__183516
+Rows: 29767 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:40.541064output-XETG00558__0102694__Br5634_LFF-ERC_Run2__20260417__183516
+Rows: 29544 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:42.228159output-XETG00558__0102694__Br5854_LFF-ERC_Run2__20260417__183516
+Rows: 23133 Columns: 14
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): cell_id, segmentation_method
+dbl (12): x_centroid, y_centroid, transcript_counts, control_probe_counts, g...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+2026-04-24 11:15:43.201834 - Combine data
+'sample_id's are duplicated across 'SpatialExperiment' objects to cbind; appending sample indices.
+2026-04-24 11:15:50.470885 - Save qs2
+[1] "Reproducibility information:"
+[1] "2026-04-24 11:15:52 EDT"
+   user  system elapsed 
+ 31.848   2.158  39.787 
+Error in session_info() : could not find function "session_info"
+Execution halted
