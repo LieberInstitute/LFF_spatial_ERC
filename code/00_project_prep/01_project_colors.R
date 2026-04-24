@@ -45,6 +45,15 @@ APOE_carrier_colors <- c(`E2+`="#51B8B1", `E4+`="#D97D59")
 ancestry_colors <- c(EA="#8BA1E4",AA="#A4C77F")
 sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
 
+## APOE ancestry colors 
+
+APOE_carrier_colors <- c(
+    "E2_EA" = "#51B8B1", 
+    "E2_AA" = "#A8D9D6", 
+    "E4_EA" = "#D97D59",    
+    "E4_AA" = "#EDB99E"  
+)
+
 ## test APOE colors
 pdf(here(plot_dir, "ERC_APOE_colors.pdf"))
 test_pallet_plots(APOE_genotype_colors, "APOE_genotype_colors")
