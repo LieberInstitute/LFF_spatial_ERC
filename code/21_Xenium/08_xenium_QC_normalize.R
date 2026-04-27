@@ -10,10 +10,10 @@ library("qs2")
 library("scater")
 library("tidyverse")
 
-data_dir <- here("processed-data", "21_Xenium", "08_xenium_QC")
+data_dir <- here("processed-data", "21_Xenium", "08_xenium_QC_normalize")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "21_Xenium", "08_xenium_QC")
+plot_dir <- here("plots", "21_Xenium", "08_xenium_QC_normalize")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
@@ -293,9 +293,55 @@ table(spe$global_outliers)
 spe <- spe[,!spe$global_outliers]
 dim(spe)
 
+#### Normalize ####
+## adapted from https://github.com/LieberInstitute/xenium_NAC/blob/54a6bd78ef1127d0e41f037bd6a080579dad9020/code/04_normalization/01_area_based_norm.R
+## Goal: Calculate size factors based on nucleus and cell area
+
+pd <- as.data.frame(colData(spe))
+
+#Based on Atta et al. 2024, generate non-count based scaling factors
+#Calculate both cell area and nucleus area values
+message("cell_area.sf")
+spe$cell_area.sf <- spe$cell_area / median(spe$cell_area)
+summary(spe$cell_area.sf)
+message("nucleus_area.sf")
+spe$nucleus_area.sf <- spe$nucleus_area / median(spe$nucleus_area)
+summary(spe$nucleus_area.sf)
+
+
+#Generate histograms 
+cell_area_hist <- ggplot(colData(spe),aes(x = cell_area.sf)) +
+    geom_histogram(bins = 50,fill = "#70bbfe",color = "#FFF") +
+    labs(x = "Scaling Factor",
+         y = "Frequency",
+         title = "Cell area") +
+    theme_bw() +
+    theme(plot.title = element_text(hjust= 0.5))
+
+ggsave(plot = cell_area_hist, filename = here(plot_dir,"cell_area_scaling_hist.pdf"))
+
+nuc_area_hist <- ggplot(colData(spe),aes(x = nucleus_area.sf)) +
+    geom_histogram(bins = 50,fill = "#70bbfe",color = "#FFF") +
+    labs(x = "Scaling Factor",
+         y = "Frequency",
+         title = "Nucleus area") +
+    theme_bw() +
+    theme(plot.title = element_text(hjust= 0.5))
+
+ggsave(plot = nuc_area_hist, filename = here(plot_dir,"nucleus_area_scaling_hist.pdf"))
+
+# From https://github.com/LieberInstitute/spatialAmygdala/blob/77670e73360a112945a4b8257557194f9212bdb6/code/Xenium/03_quality_control/perCellQC/01_perCellQC.R#L102-L103
+# normalize the counts by the nucleus and cell area scaling factors
+message(Sys.time(), " -  Normalize by size factors")
+assay(spe, "nucleus_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts")
+assay(spe, "cell_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$cell_area.sf, transform="log", assay.type="counts")
+
+
 #Save cleaned SPE
 message(Sys.time(), " - Saving cleaned SPE object")
 qs2::qs_save(spe, here(data_dir, "spe_xenium_QC.qs2"))
+
+# spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
 
 # slurmjobs::job_single('08_xenium_QC', create_shell = TRUE, memory = '100G', command = "Rscript 08_xenium_QC.R")
