@@ -344,7 +344,7 @@ qs2::qs_save(spe, here(data_dir, "spe_xenium_QC.qs2"))
 # spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
 
-# slurmjobs::job_single('08_xenium_QC', create_shell = TRUE, memory = '100G', command = "Rscript 08_xenium_QC.R")
+# slurmjobs::job_single('08_xenium_QC_normalize', create_shell = TRUE, memory = '100G', command = "Rscript 08_xenium_QC_normalize.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
