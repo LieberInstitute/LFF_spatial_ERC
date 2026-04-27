@@ -286,7 +286,7 @@ ggsave(patchwork::wrap_plots(escher_QC, ncol = 4), filename = here(plot_dir, "es
 #                  is_stitched = TRUE,
 #                  spatial = FALSE)
 
-##### Save cleaned SPE #####
+#### Drop Global Outliers ####
 
 #Remove all of the low quality cells
 table(spe$global_outliers)
