@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=20G
 #SBATCH --job-name=08_xenium_QC
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
@@ -21,7 +21,7 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4
+module load conda_R/4.5
 
 ## List current modules for reproducibility
 module list
