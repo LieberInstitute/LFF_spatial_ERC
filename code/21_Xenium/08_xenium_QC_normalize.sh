@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=20G
-#SBATCH --job-name=08_xenium_QC
+#SBATCH --job-name=08_xenium_QC_normalize
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/08_xenium_QC.txt
-#SBATCH -e logs/08_xenium_QC.txt
+#SBATCH -o logs/08_xenium_QC_normalize.txt
+#SBATCH -e logs/08_xenium_QC_normalize.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 08_xenium_QC.R
+Rscript 08_xenium_QC_normalize.R
 
 echo "**** Job ends ****"
 date
