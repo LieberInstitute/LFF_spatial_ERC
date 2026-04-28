@@ -8,6 +8,9 @@ library("here")
 data_dir <- here("processed-data", "21_Xenium", "04_xenium_donors")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
+plot_dir <- here("plots", "21_Xenium", "04_xenium_donors")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
 
 ## 21 common Brains LC - ERC
 common_BrNum <- readLines(here("processed-data", "00_project_prep", "ERC_LC_common_BrNum.txt"))
@@ -119,3 +122,35 @@ write_csv(sample_picks, file = here(data_dir, "xenium_donor_picks.csv"))
         filter(APOE_carrier == "E4+", Ancestry == "EA") |>
         mutate(rank = row_number()) |>
         arrange(APOE_carrier, Ancestry, rank))
+
+
+sample_picks_confirmed <- readxl::read_xlsx(here(data_dir, "xenium_donor_picks_tissue_inventory.xlsx")) 
+
+# sample_picks_confirmed |> dplyr::count(`Tissue left?`)
+
+#### plot Visium data for selected samples ####
+
+sample_info <- read_csv(here("processed-data", "21_Xenium", "08_xenium_QC_normalize", "ERC_Xenium_QC_summary.csv"))
+
+
+sample_info |> select(BrNum) |> write_csv(here(data_dir, "Xenium_rotation.csv"))
+
+library("spatialLIBD")
+
+message(Sys.time(), " - Load HDF5 SPE")
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
+
+vis_clus_plots <- vis_grid_clus(
+    spe = spe[, spe$BrNum %in% sample_info$BrNum],
+    clustervar = "SpD",
+    colors = metadata(spe)$SpD_colors,
+    sort_clust = FALSE,
+    return_plots = FALSE,
+    point_size = 2,
+    guide_point_size = 3,
+    pdf_file = here(plot_dir, "Visium_SpD_xenium_samples.pdf")
+)
+
+
+
+
