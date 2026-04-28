@@ -151,30 +151,30 @@ max_cor_oligo3 <-  dataset_cor_all |>
 #   mutate(Other_Oligo = fct_reorder(paste0(dataset, ": ", other_oligo), cor)) |>
 #   arrange(other_oligo)
 
-max_cor_oligo.3_barplot <- max_cor_oligo3 |>
-  ggplot(aes(x = cor, y = Other_Oligo, fill = cor)) +
-  geom_col() +
-  theme_bw() +
-  theme(legend.position = "None") +
-  scale_fill_gradient(low = "white", high = "red", limits = c(0,1)) +
-  labs(x = "correlation\nlogFC marker stats", y = NULL) 
-
-ggsave(max_cor_oligo.3_barplot, filename = here(plot_dir, "max_cor_oligo.3_barplot.png"), height = 3 , width = 3)
-
-selection_colors = c(`Max Cor` = "#777acd",
-                     `Max Both` = "#c45ca2",
-                     `Max Specificity` = "#cb5a4c")
-
-max_cor_oligo.3_dotplot <- max_cor_oligo3 |>
-  filter(!is.na(specificity_score)) |>
-  ggplot(aes(x = cor_logFC, y = Other_Oligo, size = specificity_score, color = `selection`)) +
-  geom_point() +
-  scale_color_manual(values = selection_colors) +
-  theme_bw() +
-  facet_grid(dataset~., scales = "free_y") +
-  labs(x = "correlation\nlogFC marker stats", y = NULL) 
-
-ggsave(max_cor_oligo.3_dotplot, filename = here(plot_dir, "max_cor_oligo.3_dotplot.png"), height = 5 , width = 3)
+# max_cor_oligo.3_barplot <- max_cor_oligo3 |>
+#   ggplot(aes(x = cor, y = Other_Oligo, fill = cor)) +
+#   geom_col() +
+#   theme_bw() +
+#   theme(legend.position = "None") +
+#   scale_fill_gradient(low = "white", high = "red", limits = c(0,1)) +
+#   labs(x = "correlation\nlogFC marker stats", y = NULL) 
+# 
+# ggsave(max_cor_oligo.3_barplot, filename = here(plot_dir, "max_cor_oligo.3_barplot.png"), height = 3 , width = 3)
+# 
+# selection_colors = c(`Max Cor` = "#777acd",
+#                      `Max Both` = "#c45ca2",
+#                      `Max Specificity` = "#cb5a4c")
+# 
+# max_cor_oligo.3_dotplot <- max_cor_oligo3 |>
+#   filter(!is.na(specificity_score)) |>
+#   ggplot(aes(x = cor_logFC, y = Other_Oligo, size = specificity_score, color = `selection`)) +
+#   geom_point() +
+#   scale_color_manual(values = selection_colors) +
+#   theme_bw() +
+#   facet_grid(dataset~., scales = "free_y") +
+#   labs(x = "correlation\nlogFC marker stats", y = NULL) 
+# 
+# ggsave(max_cor_oligo.3_dotplot, filename = here(plot_dir, "max_cor_oligo.3_dotplot.png"), height = 5 , width = 3)
 
 
 ## combined heatmap 
