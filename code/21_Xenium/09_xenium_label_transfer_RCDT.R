@@ -3,14 +3,26 @@
 ## Adapted from https://github.com/LieberInstitute/spatialAmygdala/blob/77670e73360a112945a4b8257557194f9212bdb6/code/Xenium/06_label_transfer/01_RCTD_updated.R
 #### Set up ####
 
-library("here")
 library("SpatialExperiment")
 library("qs2")
-library("scater")
-library("tidyverse")
+# library("scater")
+# library("tidyverse")
 
+# packageVersion("spacexr")
 ## using devel version ‘2.2.1’
 library("spacexr")
+
+library("here")
+library("sessioninfo")
+library("getopt")
+
+# Import command-line parameters
+scec <- matrix(
+    c("cell_type_col", "c", "1", "character", "cell type column"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+opt$cell_type_col <- "cell_type_broad"
 
 data_dir <- here("processed-data", "21_Xenium", "08_xenium_label_transfer_RCDT")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -28,13 +40,11 @@ sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objec
 spe
 # dim: 366 467516 
 
-## Remove any remaining duplicate gene names
-dup_genes <- duplicated(rownames(spe))
-if (any(dup_genes)) {
-    message("Removing ", sum(dup_genes), " duplicated gene names from spe")
-    spe <- spe[!dup_genes, ]
-}
+#### Convert SPE to SpatialRNA (spacexr format) ####
 
-any(duplicated(rownames(spe)))
+message(Sys.time(), " - Prep RCDT data with refrence: ", opt$cell_type_col)
+rctd_data <- createRctd(spe, sce, UMI_min = 2, cell_type_col = opt$cell_type_col, class_df = cell_type_df)
 
 
+# save
+saveRDS(myRCTD, here(processed_dir, "rctd_results_xenium.rds"))
