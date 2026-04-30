@@ -17,7 +17,7 @@ plot_dir <- here("plots", "21_Xenium", "08_xenium_QC_normalize")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
-message(Sys.time(), "- Loda data")
+message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "07_xenium_build_spe","spe_xenium.qs2"))
 
 spe
