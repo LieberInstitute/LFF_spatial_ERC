@@ -47,7 +47,7 @@ sex_colors <- c(M = "#5C80BC", F ="#D58BCC")
 
 ## APOE ancestry colors 
 
-APOE_carrier_colors <- c(
+APOE_carrier_anc_colors <- c(
     "E2_EA" = "#51B8B1", 
     "E2_AA" = "#A8D9D6", 
     "E4_EA" = "#D97D59",    
@@ -88,6 +88,7 @@ save(ancestry_colors,
      APOE_carrier_colors, 
      APOE_carrier_colors_dark,
      sample_colors,
+     APOE_carrier_anc_colors,
      file = here("processed-data", "project_colors.Rdata"))
 
 #### Cell type color archive ####
