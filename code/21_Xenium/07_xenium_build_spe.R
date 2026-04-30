@@ -12,7 +12,7 @@ library("qs2")
 data_dir <- here("processed-data", "21_Xenium", "07_xenium_build_spe")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-"/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/xenium"
+# "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/raw-data/xenium"
 xenium_files <- list.files(here("raw-data", "xenium"))
 message("Samples: ", length(xenium_files))
 
