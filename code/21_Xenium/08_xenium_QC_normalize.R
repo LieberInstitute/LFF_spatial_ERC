@@ -23,6 +23,9 @@ spe <- qs_read(here("processed-data", "21_Xenium", "07_xenium_build_spe","spe_xe
 spe
 # dim: 541 473611
 
+colnames(spe) <- paste0(spe$BrNum, "_", spe$Barcode)
+any(duplicated(colnames(spe)))
+
 spe$APOE_ancestry <- paste0(gsub("\\+", "_", spe$APOE_carrier), spe$Ancestry)
 
 sample_nCells_preQC <- as.data.frame(colData(spe)) |>
@@ -204,7 +207,7 @@ n_cell_barplot <- QC_summary |>
     facet_wrap(~Run+chip, scales = "free_x", nrow = 1) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    scale_fill_manual(values = APOE_carrier_colors) +
+    scale_fill_manual(values = APOE_carrier_anc_colors) +
     scale_color_manual(values = c(Outliers = "red", CellsRetained = "black"))
 
 ggsave(n_cell_barplot, filename = here(plot_dir, "xenium_n_cell_barplot.png"), height = 5)
@@ -215,7 +218,7 @@ n_cell_boxplot <- QC_summary |>
     geom_jitter(aes(color = APOE_ancestry), width = 0.2) +
     facet_wrap(~Run, scales = "free_x", nrow = 1) +
     theme_bw()  +
-    scale_color_manual(values = APOE_carrier_colors)
+    scale_color_manual(values = APOE_carrier_anc_colors)
 
 ggsave(n_cell_boxplot, filename = here(plot_dir, "xenium_n_cell_boxplot.png"), height = 5)
 
@@ -278,13 +281,26 @@ ggsave(patchwork::wrap_plots(escher_QC, ncol = 4), filename = here(plot_dir, "es
 
 #### Vis_clus ####
 # library(spatialLIBD)
-# 
-# head(spatialCoords(spe))
+
+head(spatialCoords(spe))
+#      x_centroid y_centroid
+# [1,]   642.6926   1825.158
+# [2,]   584.5524   1850.862
+# [3,]   661.8859   1807.252
+
+# Error: Abnormal spatial coordinates: should have 'pxl_row_in_fullres' and 'pxl_col_in_fullres' columns.
+
+# imgData(spe)
 # 
 # test <- vis_clus(spe,
 #                  clustervar = "global_outliers",
 #                  is_stitched = TRUE,
 #                  spatial = FALSE)
+# 
+# test <- vis_image(spe)
+# 
+# 
+# SpatialExperiment::scaleFactors(spe, sample = "sample01.1")
 
 #### Drop Global Outliers ####
 
