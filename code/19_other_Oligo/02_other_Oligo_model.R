@@ -19,8 +19,8 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 # Import command-line parameters
 scec <- matrix(
     c("dataset", "d", "1", "character", "dataset",
-      "cluster", "c", "2", "character", "clustering data",
-      "opc", "o", "4", "logical", "include OPCs"),
+      "cluster", "c", "1", "character", "clustering data",
+      "opc", "o", "1", "logical", "include OPCs"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
