@@ -128,14 +128,14 @@ reference <- Reference(ref_counts, cell_types, nUMI_ref)
 #### create object & run RCTD ####
 message(Sys.time(), " - create RCDT data")
 
-rctd_data <- create.RCTD(spatialRNA = spe, 
-                         reference = sce, 
+rctd_data <- create.RCTD(spatialRNA = puck, 
+                         reference = reference, 
                          max_cores = 4,
                          class_df = cell_type_df)
 
 
 message(Sys.time(), "Run RCDT")
-myRCTD <- run.RCTD(myRCTD, doublet_mode = "doublet", cell_type_df)
+myRCTD <- run.RCTD(rctd_data, doublet_mode = "doublet")
 
 message(Sys.time(), " - Save qs2")
 qs2::qs_save(myRCTD, here(data_dir, "rctd_results_xenium.qs2"))
