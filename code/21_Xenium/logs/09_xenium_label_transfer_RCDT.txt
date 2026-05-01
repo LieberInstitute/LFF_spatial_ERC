@@ -1,0 +1,331 @@
+**** Job starts ****
+Fri May  1 03:30:56 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 31452802
+Job name: 09_xenium_label_transfer_RCDT
+Node name: compute-160
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Registered S3 methods overwritten by 'GenomeInfoDb':
+  method                from   
+  as.data.frame.Seqinfo Seqinfo
+  merge.Seqinfo         Seqinfo
+  summary.Seqinfo       Seqinfo
+  update.Seqinfo        Seqinfo
+qs2 0.2.0
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+2026-05-01 15:31:02.893146- Load data
+2026-05-01 15:31:13.339029 - Load HDF5 sce
+class: SpatialExperiment 
+dim: 366 467516 
+metadata(16): Samples Samples ... Samples Samples
+assays(3): counts nucleus_normcounts cell_normcounts
+rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
+rowData names(8): ID Symbol ... subsets_any_neg subsets_GEX
+colnames(467516): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
+  Br5854_oiphphbd-1 Br5854_ojaapmlh-1
+colData names(61): Sample Barcode ... cell_area.sf nucleus_area.sf
+reducedDimNames(0):
+mainExpName: NULL
+altExpNames(0):
+spatialCoords names(2) : x_centroid y_centroid
+imgData names(1): sample_id
+Use class_df
+2026-05-01 15:31:17.63847 - Convert SPE to Reference
+2026-05-01 15:31:25.124043 - Convert SCE to Reference with cell_types = cell_type_anno
+Removing 22 duplicated gene names from sce
+<5 x 5> DelayedMatrix object of type "double":
+                AAACCCAAGTTGGAGC-1_Br6476 ... AAACGAAAGAGGATCC-1_Br6476
+DDX11L2                                 0   .                         0
+MIR1302-2HG                             0   .                         0
+FAM138A                                 0   .                         0
+ENSG00000290826                         0   .                         0
+OR4F5                                   0   .                         0
+Warning message:
+In Reference(ref_counts, cell_types, nUMI_ref) :
+  Reference: number of cells per cell type is 12519, larger than maximum allowable of 10000. Downsampling number of cells to: 10000
+2026-05-01 15:37:56.128363 - create RCDT data
+Begin: process_cell_type_info
+process_cell_type_info: number of cells in reference: 116499
+process_cell_type_info: number of genes in reference: 38584
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           10000             5276             3087             1133 
+         Astro.5            Macro          Micro.1          Micro.2 
+             812              433             4227             3748 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+            1876             1728              590             4815 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+            4009             3932             1961              458 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+           10000            10000             8587             6911 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+            4254              586              147              915 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+            2209             8671              609             2235 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+             241              152              625              897 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+             303             1234              125             1363 
+       Inhib.Sst        Inhib.Vip 
+             815             7535 
+End: process_cell_type_info
+create.RCTD: getting regression differentially expressed genes: 
+get_de_genes: Astro.1 found DE genes: 24
+get_de_genes: Astro.2 found DE genes: 25
+get_de_genes: Astro.3 found DE genes: 24
+get_de_genes: Astro.4 found DE genes: 28
+get_de_genes: Astro.5 found DE genes: 26
+get_de_genes: Macro found DE genes: 25
+get_de_genes: Micro.1 found DE genes: 18
+get_de_genes: Micro.2 found DE genes: 17
+get_de_genes: Micro.3 found DE genes: 18
+get_de_genes: Micro.4 found DE genes: 18
+get_de_genes: Micro.5 found DE genes: 17
+get_de_genes: OPC.1 found DE genes: 28
+get_de_genes: OPC.2 found DE genes: 27
+get_de_genes: OPC.3 found DE genes: 27
+get_de_genes: OPC.4 found DE genes: 26
+get_de_genes: OPC.5 found DE genes: 23
+get_de_genes: Oligo.1 found DE genes: 31
+get_de_genes: Oligo.2 found DE genes: 29
+get_de_genes: Oligo.3 found DE genes: 26
+get_de_genes: Oligo.4 found DE genes: 27
+get_de_genes: Oligo.5 found DE genes: 25
+get_de_genes: Vasc.Endo found DE genes: 24
+get_de_genes: Vasc.PC found DE genes: 21
+get_de_genes: Vasc.VLMC found DE genes: 27
+get_de_genes: Excit.L2 found DE genes: 17
+get_de_genes: Excit.L2_5.1 found DE genes: 20
+get_de_genes: Excit.L2_5.2 found DE genes: 28
+get_de_genes: Excit.L5.1 found DE genes: 23
+get_de_genes: Excit.L5.2 found DE genes: 23
+get_de_genes: Excit.L5_6_NP found DE genes: 21
+get_de_genes: Excit.L6_CT found DE genes: 24
+get_de_genes: Excit.L6b found DE genes: 22
+get_de_genes: Inhib.Chandelier found DE genes: 25
+get_de_genes: Inhib.Lamp5_Lhx6 found DE genes: 26
+get_de_genes: Inhib.Pax6 found DE genes: 22
+get_de_genes: Inhib.Pvalb found DE genes: 20
+get_de_genes: Inhib.Sst found DE genes: 19
+get_de_genes: Inhib.Vip found DE genes: 23
+get_de_genes: total DE genes: 212
+create.RCTD: getting platform effect normalization differentially expressed genes: 
+get_de_genes: Astro.1 found DE genes: 39
+get_de_genes: Astro.2 found DE genes: 41
+get_de_genes: Astro.3 found DE genes: 40
+get_de_genes: Astro.4 found DE genes: 35
+get_de_genes: Astro.5 found DE genes: 39
+get_de_genes: Macro found DE genes: 37
+get_de_genes: Micro.1 found DE genes: 29
+get_de_genes: Micro.2 found DE genes: 29
+get_de_genes: Micro.3 found DE genes: 29
+get_de_genes: Micro.4 found DE genes: 29
+get_de_genes: Micro.5 found DE genes: 28
+get_de_genes: OPC.1 found DE genes: 40
+get_de_genes: OPC.2 found DE genes: 39
+get_de_genes: OPC.3 found DE genes: 39
+get_de_genes: OPC.4 found DE genes: 39
+get_de_genes: OPC.5 found DE genes: 40
+get_de_genes: Oligo.1 found DE genes: 40
+get_de_genes: Oligo.2 found DE genes: 39
+get_de_genes: Oligo.3 found DE genes: 37
+get_de_genes: Oligo.4 found DE genes: 37
+get_de_genes: Oligo.5 found DE genes: 34
+get_de_genes: Vasc.Endo found DE genes: 29
+get_de_genes: Vasc.PC found DE genes: 31
+get_de_genes: Vasc.VLMC found DE genes: 36
+get_de_genes: Excit.L2 found DE genes: 31
+get_de_genes: Excit.L2_5.1 found DE genes: 28
+get_de_genes: Excit.L2_5.2 found DE genes: 37
+get_de_genes: Excit.L5.1 found DE genes: 34
+get_de_genes: Excit.L5.2 found DE genes: 35
+get_de_genes: Excit.L5_6_NP found DE genes: 37
+get_de_genes: Excit.L6_CT found DE genes: 35
+get_de_genes: Excit.L6b found DE genes: 33
+get_de_genes: Inhib.Chandelier found DE genes: 35
+get_de_genes: Inhib.Lamp5_Lhx6 found DE genes: 34
+get_de_genes: Inhib.Pax6 found DE genes: 29
+get_de_genes: Inhib.Pvalb found DE genes: 35
+get_de_genes: Inhib.Sst found DE genes: 27
+get_de_genes: Inhib.Vip found DE genes: 39
+get_de_genes: total DE genes: 255
+There were 14 warnings (use warnings() to see them)
+2026-05-01 15:40:17.173934Run RCDT
+fitBulk: decomposing bulk
+chooseSigma: using initial Q_mat with sigma =  1
+starting worker pid=1573429 on localhost:11975 at 15:40:21.473
+starting worker pid=1573456 on localhost:11975 at 15:40:21.634
+starting worker pid=1573479 on localhost:11975 at 15:40:21.797
+starting worker pid=1573504 on localhost:11975 at 15:40:21.969
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Likelihood value: 235946.887382006
+Sigma value:  0.84
+starting worker pid=1581595 on localhost:11975 at 15:41:09.327
+starting worker pid=1581610 on localhost:11975 at 15:41:09.486
+starting worker pid=1581625 on localhost:11975 at 15:41:09.644
+starting worker pid=1581640 on localhost:11975 at 15:41:09.800
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Likelihood value: 233400.762984194
+Sigma value:  0.69
+starting worker pid=1582932 on localhost:11975 at 15:41:55.309
+starting worker pid=1582947 on localhost:11975 at 15:41:55.472
+starting worker pid=1582962 on localhost:11975 at 15:41:55.635
+starting worker pid=1582978 on localhost:11975 at 15:41:55.800
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Likelihood value: 232170.187612719
+Sigma value:  0.67
+starting worker pid=1588167 on localhost:11975 at 15:42:40.486
+starting worker pid=1589538 on localhost:11975 at 15:42:40.650
+starting worker pid=1590279 on localhost:11975 at 15:42:40.808
+starting worker pid=1590312 on localhost:11975 at 15:42:40.974
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Likelihood value: 232126.269777283
+Sigma value:  0.66
+starting worker pid=1592830 on localhost:11975 at 15:43:25.007
+starting worker pid=1592845 on localhost:11975 at 15:43:25.167
+starting worker pid=1592860 on localhost:11975 at 15:43:25.328
+starting worker pid=1592875 on localhost:11975 at 15:43:25.487
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Likelihood value: 232117.118645733
+Sigma value:  0.66
+starting worker pid=1596931 on localhost:11975 at 15:44:11.293
+starting worker pid=1596980 on localhost:11975 at 15:44:11.452
+starting worker pid=1597028 on localhost:11975 at 15:44:11.611
+starting worker pid=1597086 on localhost:11975 at 15:44:11.774
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
+Loading required package: spacexr
+loaded spacexr and set parent environment
