@@ -3,7 +3,7 @@
 #SBATCH --mem=200G
 #SBATCH --job-name=09_xenium_label_transfer_RCDT
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 3-00:00:00
 #SBATCH -o logs/09_xenium_label_transfer_RCDT.txt
 #SBATCH -e logs/09_xenium_label_transfer_RCDT.txt
 #SBATCH --mail-type=ALL
