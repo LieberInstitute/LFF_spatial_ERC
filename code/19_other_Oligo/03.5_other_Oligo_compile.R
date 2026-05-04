@@ -97,7 +97,6 @@ identical(oligo_notes$ERC_Oligo, colnames(cor_wide_matrix))
       
 erc_oligo_ca <- HeatmapAnnotation(Oligo_anno = oligo_notes$Annotation_short, col = list(Oligo_anno = Oligo_anno_colors))
 
-
 pdf(here(plot_dir, "LIBD_Other_dataset_cor.pdf"), height = 8, width = 5)
 draw(Heatmap(cor_wide_matrix, 
               name = "t-stat cor",
@@ -115,5 +114,28 @@ draw(Heatmap(cor_wide_matrix,
 ), merge_legend = TRUE,)
 dev.off()
 
+#### Top match heatmap ####
+ 
+best_match <- cor_layer_anno2_select_long |> filter(ERC_Oligo == "Oligo.3")
+
+
+cor_wide_matrix_best <- cor_wide_matrix[best_match$cluster,]
+
+anno_matrix_best <- anno_matrix[best_match$cluster,]
+
+pdf(here(plot_dir, "LIBD_Other_dataset_cor_bestOligo3.pdf"), height = 2.5, width = 4)
+print(Heatmap(cor_wide_matrix_best, 
+             name = "t-stat cor",
+             col = circlize::colorRamp2(
+                 breaks = seq(-1, 1, length.out = 7),
+                 colors = RColorBrewer::brewer.pal(7, "PRGn")
+             ),
+             cluster_rows = FALSE,
+             cluster_columns = FALSE,
+             cell_fun = function(j, i, x, y, width, height, fill) {
+                 grid.text(anno_matrix_best[i, j], x, y, gp = gpar(fontsize = 10))
+             })
+      )
+dev.off()
 
          
