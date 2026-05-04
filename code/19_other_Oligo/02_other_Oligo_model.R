@@ -29,7 +29,8 @@ opt <- getopt(scec)
 # opt <- list()
 # opt$dataset <- "spatialDLPFC"
 # opt$dataset <- "spatialdACC"
-# opt$cluster <- "k10"
+# opt$dataset <- "spatialHPC"
+# opt$cluster <- "k20"
 # opt$opc = TRUE
 
 opt$opc <- as.logical(opt$opc)
@@ -413,6 +414,26 @@ sce |>
               annoColors = list("Oligo_anno" = other_oligo_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
+dev.off()
+
+if(opt$dataset == "spatialdACC_wOPC" & opt$cluster == "k20") sce$Oligo_anno <- factor(sce$Oligo_anno, levels = c("dacc_OPC","dacc_Oligo.4", "dacc_Oligo.5", "dacc_Oligo.6", "dacc_Oligo.3", "dacc_Oligo.1", "dacc_Oligo.2"))
+if(opt$dataset == "spatialDLPFC_wOPC" & opt$cluster == "k20") sce$Oligo_anno <- factor(sce$Oligo_anno, levels = c("dlpfc_OPC","dlpfc_Oligo.6", "dlpfc_Oligo.8", "dlpfc_Oligo.7", "dlpfc_Oligo.5", "dlpfc_Oligo.4", "dlpfc_Oligo.3", "dlpfc_Oligo.1", "dlpfc_Oligo.2"))
+if(opt$dataset == "spatialHPC" & opt$cluster == "k20") sce$Oligo_anno <- factor(sce$Oligo_anno, levels = c("hpc_Oligo.3", "hpc_Oligo.5", "hpc_Oligo.2", "hpc_Oligo.1", "hpc_Oligo.4"))
+
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_key2.pdf", opt$dataset, opt$cluster)), height = 3, width = 4)
+sce |>
+    scDotPlot(features = c("PDGFRA", "LINGO2", "RBFOX1", "OPALIN" ,"RASGRF1"),
+              group = "Oligo_anno",
+              # groupAnno = "Oligo_anno",
+              # featureAnno = "oligo_key_genes",
+              scale = TRUE,
+              # annoColors = list("Oligo_anno" = other_oligo_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE,
+              flipPlot = TRUE
+              )
+
 dev.off()
 
 
