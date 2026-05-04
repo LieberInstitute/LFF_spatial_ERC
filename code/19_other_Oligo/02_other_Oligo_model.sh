@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 02_other_Oligo_model.R --dataset spatialDLPFC --cluster k10 --opc TRUE
+Rscript 02_other_Oligo_model.R --dataset spatialDLPFC --cluster k20 --opc TRUE
 
 echo "**** Job ends ****"
 date
