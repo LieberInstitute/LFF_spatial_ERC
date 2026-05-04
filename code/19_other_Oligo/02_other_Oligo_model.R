@@ -29,7 +29,7 @@ opt <- getopt(scec)
 # opt <- list()
 # opt$dataset <- "spatialDLPFC"
 # opt$dataset <- "spatialdACC"
-# opt$cluster <- "k20"
+# opt$cluster <- "k10"
 # opt$opc = TRUE
 
 opt$opc <- as.logical(opt$opc)
@@ -152,7 +152,7 @@ other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno
 modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 
-remodel = FALSE
+remodel = TRUE
 
 if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
@@ -359,6 +359,58 @@ sce |>
               annoColors = list("Oligo_anno" = other_oligo_colors,
                                 "ERC_Oligo" = Oligo_OPC_colors),
               scale = TRUE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+
+#### key markers from ERC subtypes ####
+
+erc_oligo_key_genes <- list(OPC = c("PDGFRA", "MEG3","OLIG2"), #OPCs
+                            COP = c("GPR17"),
+                            Oligo = c("MBP", "MOG", "PLP1", "CNP", "MAL"),
+                            OPC_Oligo.NF = c("RBFOX1", "KCND2", "GPM6A", #OPC + Oligo.3
+                                            "CNTNAP2", "NTRK3","KCNJ3"), #OPC + Oligo.3
+                            Oligo.NF = c("LINGO2", "MT-CO3", "ADGRV1"),   # Oligo.3
+                            Oligo.PV = c("ARHGEF3", "ADGRF5",  "CLDN5"), #Oligo.5
+                            Oligo.M = c("LAMA2", "ERBB4","OPALIN", "OMG", "SEMA6D"), #Oligo.1 + Oligo.1
+                            Oligo.L = c("RASGRF1","RASGRF2", "LRRC63", "ANKRD18A") #Oligo.2
+)
+
+
+plot_marker_express_List(sce, 
+                         cellType_col = "Oligo_anno",
+                         gene_list = erc_oligo_key_genes,
+                         color_pal = other_oligo_colors,
+                         pdf_fn = here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_Violin_Oligo_key_genes.pdf", opt$dataset, opt$cluster))
+)
+
+
+oligo_key_genes <- map(erc_oligo_key_genes, ~.x[.x %in% rownames(sce)])
+oligo_key_genes <- AnnotationDbi::unlist2(oligo_key_genes)
+
+rowData(sce)$oligo_key_genes <- NULL
+rowData(sce)$oligo_key_genes <- names(oligo_key_genes)[match(rownames(sce), oligo_key_genes)] 
+table(rowData(sce)$oligo_key_genes)
+
+pdf(here(plot_dir, sprintf("other_Oligo_subtype_%s_%s_dotplot_key.pdf", opt$dataset, opt$cluster)))
+sce |>
+    scDotPlot(features = oligo_key_genes,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "oligo_key_genes",
+              scale = TRUE,
+              annoColors = list("Oligo_anno" = other_oligo_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+sce |>
+    scDotPlot(features = oligo_key_genes,
+              group = "Oligo_anno",
+              groupAnno = "Oligo_anno",
+              featureAnno = "oligo_key_genes",
+              scale = FALSE,
+              annoColors = list("Oligo_anno" = other_oligo_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
 dev.off()
