@@ -29,7 +29,7 @@ opt <- getopt(scec)
 # opt <- list()
 # opt$dataset <- "spatialDLPFC"
 # opt$dataset <- "spatialdACC"
-# opt$cluster <- "k30"
+# opt$cluster <- "k10"
 # opt$opc = TRUE
 
 opt$opc <- as.logical(opt$opc)
@@ -152,7 +152,7 @@ other_oligo_colors <- create_cell_colors(cell_types = sort(unique(sce$Oligo_anno
 modeling_fn <- here(data_dir, sprintf("modeling_results_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 pseudobulk_fn = here(data_dir, sprintf("sce_pseudobulk_Oligo_subtype-%s_%s.rds", opt$dataset, opt$cluster))
 
-remodel = FALSE
+remodel = TRUE
 
 if(!remodel & file.exists(modeling_fn) & file.exists(pseudobulk_fn)){
     
