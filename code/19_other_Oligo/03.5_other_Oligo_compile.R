@@ -21,9 +21,9 @@ cor_layer_fn <- list.files( here("processed-data", "19_other_Oligo", "02_other_O
 
 cor_layer_data <- map(cor_layer_fn, ~readRDS(here("processed-data", "19_other_Oligo", "02_other_Oligo_model", .x)))
 
-pdf(here(plot_dir, "layer_stat_cor_plot_all.pdf"))
-walk2(cor_layer_data, cor_layer_fn, ~print(layer_stat_cor_plot(cor_stats_layer = .x$cor_layer, annotation = .x$anno, column_title = basename(.y))))
-dev.off()
+# pdf(here(plot_dir, "layer_stat_cor_plot_all.pdf"))
+# walk2(cor_layer_data, cor_layer_fn, ~print(layer_stat_cor_plot(cor_stats_layer = .x$cor_layer, annotation = .x$anno, column_title = basename(.y))))
+# dev.off()
 
 
 cor_layer_select_fn <-  list(
@@ -47,6 +47,31 @@ cor_layer_select_long <- map2_dfr(cor_layer_data_select, names(cor_layer_data_se
 cor_layer_anno_select_long <- map2_dfr(cor_layer_data_select, names(cor_layer_data_select), 
                                   ~.x$'anno')
 
+#### other oligo annotation ####
+
+oligo_notes <- readxl::read_xlsx(here("processed-data", "19_other_Oligo", "00_check_Oligo_markers", "ERC_Oligo_notes.xlsx")) |>
+    select(ERC_Oligo = `Oligo subtype`, Annotation_short)
+
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
+Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
+
+Oligo_anno_colors <- c(Oligo.M = "#00BFC4",
+                       # Oligo.M = "#E76BF3",
+                       Oligo.L = "#00B0F6",
+                       Oligo.NF = "#9590FF",
+                       Oligo.P = "#FF62BC",
+                       OPC = "#D2B037")
+
+cor_layer_anno2_select_long <- cor_layer_anno_select_long |> 
+    mutate(ERC_Oligo = gsub("/.*", "", layer_label)) |> 
+    left_join(oligo_notes)
+
+write_csv(cor_layer_anno2_select_long, file = here(data_dir, "LIBD_other_Oligo_annotations.csv"))
+
+
+
+#### combined t-stat heatmp ####
+
 cor_wide <- cor_layer_select_long |> 
     arrange(ERC_Oligo) |>
     select(dataset, ERC_Oligo, Other_Oligo, cor) |>
@@ -58,24 +83,59 @@ cor_wide_matrix <- cor_wide |>
     column_to_rownames("Other_Oligo") |>
     as.matrix()
 
-
+## create X and * matrix 
 anno_matrix <- spatialLIBD:::create_annotation_matrix(cor_layer_anno_select_long, cor_wide_matrix)
 
+other_oligo_anno <- cor_layer_anno2_select_long |> 
+    select(cluster, Oligo_anno = Annotation_short)  |>
+    column_to_rownames("cluster")
+
+other_oligo_anno <- other_oligo_anno[rownames(cor_wide_matrix),]
+other_oligo_ra <- rowAnnotation(" " = other_oligo_anno, col = list(` ` = Oligo_anno_colors), show_legend = FALSE)
+
+identical(oligo_notes$ERC_Oligo, colnames(cor_wide_matrix))
+      
+erc_oligo_ca <- HeatmapAnnotation(Oligo_anno = oligo_notes$Annotation_short, col = list(Oligo_anno = Oligo_anno_colors))
+
 pdf(here(plot_dir, "LIBD_Other_dataset_cor.pdf"), height = 8, width = 5)
-print(Heatmap(cor_wide_matrix, 
+draw(Heatmap(cor_wide_matrix, 
               name = "t-stat cor",
               col = circlize::colorRamp2(
                   breaks = seq(-1, 1, length.out = 7),
                   colors = RColorBrewer::brewer.pal(7, "PRGn")
               ),
-              # right_annotation = other_oligo_ra,
+              right_annotation = other_oligo_ra,
+              bottom_annotation = erc_oligo_ca,
               row_split = cor_wide$dataset,
               cluster_columns = FALSE,
               cell_fun = function(j, i, x, y, width, height, fill) {
                   grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
               }
-))
+), merge_legend = TRUE,)
 dev.off()
 
+#### Top match heatmap ####
+ 
+best_match <- cor_layer_anno2_select_long |> filter(ERC_Oligo == "Oligo.3")
+
+
+cor_wide_matrix_best <- cor_wide_matrix[best_match$cluster,]
+
+anno_matrix_best <- anno_matrix[best_match$cluster,]
+
+pdf(here(plot_dir, "LIBD_Other_dataset_cor_bestOligo3.pdf"), height = 2.5, width = 4)
+print(Heatmap(cor_wide_matrix_best, 
+             name = "t-stat cor",
+             col = circlize::colorRamp2(
+                 breaks = seq(-1, 1, length.out = 7),
+                 colors = RColorBrewer::brewer.pal(7, "PRGn")
+             ),
+             cluster_rows = FALSE,
+             cluster_columns = FALSE,
+             cell_fun = function(j, i, x, y, width, height, fill) {
+                 grid.text(anno_matrix_best[i, j], x, y, gp = gpar(fontsize = 10))
+             })
+      )
+dev.off()
 
          
