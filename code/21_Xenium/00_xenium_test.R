@@ -1,4 +1,5 @@
-
+library("here")
+library("spatialLIBD")
 
 data_dir <- here("processed-data", "21_Xenium", "00_xenium_test")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -45,5 +46,15 @@ rowData(spe)
 lobstr::obj_size(spe) #40.24 MB
 
 qs2::qs_save(spe, file = here(data_dir, "spe_test_Br1039.qs2"))
+
+
+#### subset test ####
+spe <- qs2::qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
+
+spe <- spe[,spe$BrNum == "Br1039"]
+lobstr::obj_size(spe) #1.8G
+
+qs2::qs_save(spe, file = here(data_dir, "spe_test_Br1039.qs2"))
+
 
 
