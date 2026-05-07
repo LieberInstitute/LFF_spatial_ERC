@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri May  1 03:30:56 PM EDT 2026
+Mon May  4 09:11:19 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31452802
+Job id: 31586524
 Job name: 09_xenium_label_transfer_RCDT
-Node name: compute-160
+Node name: compute-175
 Task id: 
 Loading conda_R/4.5
 
@@ -107,8 +107,8 @@ Registered S3 methods overwritten by 'GenomeInfoDb':
   update.Seqinfo        Seqinfo
 qs2 0.2.0
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2026-05-01 15:31:02.893146- Load data
-2026-05-01 15:31:13.339029 - Load HDF5 sce
+2026-05-04 09:11:27.361721- Load data
+2026-05-04 09:11:39.499773 - Load HDF5 sce
 class: SpatialExperiment 
 dim: 366 467516 
 metadata(16): Samples Samples ... Samples Samples
@@ -124,8 +124,8 @@ altExpNames(0):
 spatialCoords names(2) : x_centroid y_centroid
 imgData names(1): sample_id
 Use class_df
-2026-05-01 15:31:17.63847 - Convert SPE to Reference
-2026-05-01 15:31:25.124043 - Convert SCE to Reference with cell_types = cell_type_anno
+2026-05-04 09:11:48.461187 - Convert SPE to Reference
+2026-05-04 09:11:57.926586 - Convert SCE to Reference with cell_types = cell_type_anno
 Removing 22 duplicated gene names from sce
 <5 x 5> DelayedMatrix object of type "double":
                 AAACCCAAGTTGGAGC-1_Br6476 ... AAACGAAAGAGGATCC-1_Br6476
@@ -137,7 +137,7 @@ OR4F5                                   0   .                         0
 Warning message:
 In Reference(ref_counts, cell_types, nUMI_ref) :
   Reference: number of cells per cell type is 12519, larger than maximum allowable of 10000. Downsampling number of cells to: 10000
-2026-05-01 15:37:56.128363 - create RCDT data
+2026-05-04 09:19:57.663987 - create RCDT data
 Begin: process_cell_type_info
 process_cell_type_info: number of cells in reference: 116499
 process_cell_type_info: number of genes in reference: 38584
@@ -244,13 +244,13 @@ get_de_genes: Inhib.Sst found DE genes: 27
 get_de_genes: Inhib.Vip found DE genes: 39
 get_de_genes: total DE genes: 255
 There were 14 warnings (use warnings() to see them)
-2026-05-01 15:40:17.173934Run RCDT
+2026-05-04 09:22:35.7924Run RCDT
 fitBulk: decomposing bulk
 chooseSigma: using initial Q_mat with sigma =  1
-starting worker pid=1573429 on localhost:11975 at 15:40:21.473
-starting worker pid=1573456 on localhost:11975 at 15:40:21.634
-starting worker pid=1573479 on localhost:11975 at 15:40:21.797
-starting worker pid=1573504 on localhost:11975 at 15:40:21.969
+starting worker pid=675149 on localhost:11155 at 09:22:41.122
+starting worker pid=675164 on localhost:11155 at 09:22:41.319
+starting worker pid=675179 on localhost:11155 at 09:22:41.514
+starting worker pid=675194 on localhost:11155 at 09:22:41.715
 Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
@@ -259,12 +259,12 @@ Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
 loaded spacexr and set parent environment
-Likelihood value: 235946.887382006
+Likelihood value: 234664.69863205
 Sigma value:  0.84
-starting worker pid=1581595 on localhost:11975 at 15:41:09.327
-starting worker pid=1581610 on localhost:11975 at 15:41:09.486
-starting worker pid=1581625 on localhost:11975 at 15:41:09.644
-starting worker pid=1581640 on localhost:11975 at 15:41:09.800
+starting worker pid=675242 on localhost:11155 at 09:23:39.212
+starting worker pid=675257 on localhost:11155 at 09:23:39.420
+starting worker pid=675272 on localhost:11155 at 09:23:39.626
+starting worker pid=675287 on localhost:11155 at 09:23:39.877
 Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
@@ -273,12 +273,12 @@ Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
 loaded spacexr and set parent environment
-Likelihood value: 233400.762984194
+Likelihood value: 232193.52208787
 Sigma value:  0.69
-starting worker pid=1582932 on localhost:11975 at 15:41:55.309
-starting worker pid=1582947 on localhost:11975 at 15:41:55.472
-starting worker pid=1582962 on localhost:11975 at 15:41:55.635
-starting worker pid=1582978 on localhost:11975 at 15:41:55.800
+starting worker pid=675338 on localhost:11155 at 09:24:36.140
+starting worker pid=675353 on localhost:11155 at 09:24:36.342
+starting worker pid=675368 on localhost:11155 at 09:24:36.570
+starting worker pid=675383 on localhost:11155 at 09:24:36.770
 Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
@@ -287,12 +287,12 @@ Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
 loaded spacexr and set parent environment
-Likelihood value: 232170.187612719
+Likelihood value: 231045.350274645
 Sigma value:  0.67
-starting worker pid=1588167 on localhost:11975 at 15:42:40.486
-starting worker pid=1589538 on localhost:11975 at 15:42:40.650
-starting worker pid=1590279 on localhost:11975 at 15:42:40.808
-starting worker pid=1590312 on localhost:11975 at 15:42:40.974
+starting worker pid=676243 on localhost:11155 at 09:25:31.738
+starting worker pid=676258 on localhost:11155 at 09:25:31.963
+starting worker pid=676273 on localhost:11155 at 09:25:32.188
+starting worker pid=676288 on localhost:11155 at 09:25:32.412
 Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
@@ -301,12 +301,12 @@ Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
 loaded spacexr and set parent environment
-Likelihood value: 232126.269777283
+Likelihood value: 231011.634001861
 Sigma value:  0.66
-starting worker pid=1592830 on localhost:11975 at 15:43:25.007
-starting worker pid=1592845 on localhost:11975 at 15:43:25.167
-starting worker pid=1592860 on localhost:11975 at 15:43:25.328
-starting worker pid=1592875 on localhost:11975 at 15:43:25.487
+starting worker pid=676336 on localhost:11155 at 09:26:25.142
+starting worker pid=676351 on localhost:11155 at 09:26:25.358
+starting worker pid=676366 on localhost:11155 at 09:26:25.668
+starting worker pid=676381 on localhost:11155 at 09:26:25.862
 Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
@@ -315,12 +315,12 @@ Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
 loaded spacexr and set parent environment
-Likelihood value: 232117.118645733
+Likelihood value: 231007.532142945
 Sigma value:  0.66
-starting worker pid=1596931 on localhost:11975 at 15:44:11.293
-starting worker pid=1596980 on localhost:11975 at 15:44:11.452
-starting worker pid=1597028 on localhost:11975 at 15:44:11.611
-starting worker pid=1597086 on localhost:11975 at 15:44:11.774
+starting worker pid=676434 on localhost:11155 at 09:27:22.619
+starting worker pid=676449 on localhost:11155 at 09:27:22.819
+starting worker pid=676464 on localhost:11155 at 09:27:23.038
+starting worker pid=676479 on localhost:11155 at 09:27:23.258
 Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
@@ -329,3 +329,552 @@ Loading required package: spacexr
 loaded spacexr and set parent environment
 Loading required package: spacexr
 loaded spacexr and set parent environment
+[1] "gather_results: finished 1000"
+[1] "gather_results: finished 2000"
+[1] "gather_results: finished 3000"
+[1] "gather_results: finished 4000"
+[1] "gather_results: finished 5000"
+[1] "gather_results: finished 6000"
+[1] "gather_results: finished 7000"
+[1] "gather_results: finished 8000"
+[1] "gather_results: finished 9000"
+[1] "gather_results: finished 10000"
+[1] "gather_results: finished 11000"
+[1] "gather_results: finished 12000"
+[1] "gather_results: finished 13000"
+[1] "gather_results: finished 14000"
+[1] "gather_results: finished 15000"
+[1] "gather_results: finished 16000"
+[1] "gather_results: finished 17000"
+[1] "gather_results: finished 18000"
+[1] "gather_results: finished 19000"
+[1] "gather_results: finished 20000"
+[1] "gather_results: finished 21000"
+[1] "gather_results: finished 22000"
+[1] "gather_results: finished 23000"
+[1] "gather_results: finished 24000"
+[1] "gather_results: finished 25000"
+[1] "gather_results: finished 26000"
+[1] "gather_results: finished 27000"
+[1] "gather_results: finished 28000"
+[1] "gather_results: finished 29000"
+[1] "gather_results: finished 30000"
+[1] "gather_results: finished 31000"
+[1] "gather_results: finished 32000"
+[1] "gather_results: finished 33000"
+[1] "gather_results: finished 34000"
+[1] "gather_results: finished 35000"
+[1] "gather_results: finished 36000"
+[1] "gather_results: finished 37000"
+[1] "gather_results: finished 38000"
+[1] "gather_results: finished 39000"
+[1] "gather_results: finished 40000"
+[1] "gather_results: finished 41000"
+[1] "gather_results: finished 42000"
+[1] "gather_results: finished 43000"
+[1] "gather_results: finished 44000"
+[1] "gather_results: finished 45000"
+[1] "gather_results: finished 46000"
+[1] "gather_results: finished 47000"
+[1] "gather_results: finished 48000"
+[1] "gather_results: finished 49000"
+[1] "gather_results: finished 50000"
+[1] "gather_results: finished 51000"
+[1] "gather_results: finished 52000"
+[1] "gather_results: finished 53000"
+[1] "gather_results: finished 54000"
+[1] "gather_results: finished 55000"
+[1] "gather_results: finished 56000"
+[1] "gather_results: finished 57000"
+[1] "gather_results: finished 58000"
+[1] "gather_results: finished 59000"
+[1] "gather_results: finished 60000"
+[1] "gather_results: finished 61000"
+[1] "gather_results: finished 62000"
+[1] "gather_results: finished 63000"
+[1] "gather_results: finished 64000"
+[1] "gather_results: finished 65000"
+[1] "gather_results: finished 66000"
+[1] "gather_results: finished 67000"
+[1] "gather_results: finished 68000"
+[1] "gather_results: finished 69000"
+[1] "gather_results: finished 70000"
+[1] "gather_results: finished 71000"
+[1] "gather_results: finished 72000"
+[1] "gather_results: finished 73000"
+[1] "gather_results: finished 74000"
+[1] "gather_results: finished 75000"
+[1] "gather_results: finished 76000"
+[1] "gather_results: finished 77000"
+[1] "gather_results: finished 78000"
+[1] "gather_results: finished 79000"
+[1] "gather_results: finished 80000"
+[1] "gather_results: finished 81000"
+[1] "gather_results: finished 82000"
+[1] "gather_results: finished 83000"
+[1] "gather_results: finished 84000"
+[1] "gather_results: finished 85000"
+[1] "gather_results: finished 86000"
+[1] "gather_results: finished 87000"
+[1] "gather_results: finished 88000"
+[1] "gather_results: finished 89000"
+[1] "gather_results: finished 90000"
+[1] "gather_results: finished 91000"
+[1] "gather_results: finished 92000"
+[1] "gather_results: finished 93000"
+[1] "gather_results: finished 94000"
+[1] "gather_results: finished 95000"
+[1] "gather_results: finished 96000"
+[1] "gather_results: finished 97000"
+[1] "gather_results: finished 98000"
+[1] "gather_results: finished 99000"
+[1] "gather_results: finished 100000"
+[1] "gather_results: finished 101000"
+[1] "gather_results: finished 102000"
+[1] "gather_results: finished 103000"
+[1] "gather_results: finished 104000"
+[1] "gather_results: finished 105000"
+[1] "gather_results: finished 106000"
+[1] "gather_results: finished 107000"
+[1] "gather_results: finished 108000"
+[1] "gather_results: finished 109000"
+[1] "gather_results: finished 110000"
+[1] "gather_results: finished 111000"
+[1] "gather_results: finished 112000"
+[1] "gather_results: finished 113000"
+[1] "gather_results: finished 114000"
+[1] "gather_results: finished 115000"
+[1] "gather_results: finished 116000"
+[1] "gather_results: finished 117000"
+[1] "gather_results: finished 118000"
+[1] "gather_results: finished 119000"
+[1] "gather_results: finished 120000"
+[1] "gather_results: finished 121000"
+[1] "gather_results: finished 122000"
+[1] "gather_results: finished 123000"
+[1] "gather_results: finished 124000"
+[1] "gather_results: finished 125000"
+[1] "gather_results: finished 126000"
+[1] "gather_results: finished 127000"
+[1] "gather_results: finished 128000"
+[1] "gather_results: finished 129000"
+[1] "gather_results: finished 130000"
+[1] "gather_results: finished 131000"
+[1] "gather_results: finished 132000"
+[1] "gather_results: finished 133000"
+[1] "gather_results: finished 134000"
+[1] "gather_results: finished 135000"
+[1] "gather_results: finished 136000"
+[1] "gather_results: finished 137000"
+[1] "gather_results: finished 138000"
+[1] "gather_results: finished 139000"
+[1] "gather_results: finished 140000"
+[1] "gather_results: finished 141000"
+[1] "gather_results: finished 142000"
+[1] "gather_results: finished 143000"
+[1] "gather_results: finished 144000"
+[1] "gather_results: finished 145000"
+[1] "gather_results: finished 146000"
+[1] "gather_results: finished 147000"
+[1] "gather_results: finished 148000"
+[1] "gather_results: finished 149000"
+[1] "gather_results: finished 150000"
+[1] "gather_results: finished 151000"
+[1] "gather_results: finished 152000"
+[1] "gather_results: finished 153000"
+[1] "gather_results: finished 154000"
+[1] "gather_results: finished 155000"
+[1] "gather_results: finished 156000"
+[1] "gather_results: finished 157000"
+[1] "gather_results: finished 158000"
+[1] "gather_results: finished 159000"
+[1] "gather_results: finished 160000"
+[1] "gather_results: finished 161000"
+[1] "gather_results: finished 162000"
+[1] "gather_results: finished 163000"
+[1] "gather_results: finished 164000"
+[1] "gather_results: finished 165000"
+[1] "gather_results: finished 166000"
+[1] "gather_results: finished 167000"
+[1] "gather_results: finished 168000"
+[1] "gather_results: finished 169000"
+[1] "gather_results: finished 170000"
+[1] "gather_results: finished 171000"
+[1] "gather_results: finished 172000"
+[1] "gather_results: finished 173000"
+[1] "gather_results: finished 174000"
+[1] "gather_results: finished 175000"
+[1] "gather_results: finished 176000"
+[1] "gather_results: finished 177000"
+[1] "gather_results: finished 178000"
+[1] "gather_results: finished 179000"
+[1] "gather_results: finished 180000"
+[1] "gather_results: finished 181000"
+[1] "gather_results: finished 182000"
+[1] "gather_results: finished 183000"
+[1] "gather_results: finished 184000"
+[1] "gather_results: finished 185000"
+[1] "gather_results: finished 186000"
+[1] "gather_results: finished 187000"
+[1] "gather_results: finished 188000"
+[1] "gather_results: finished 189000"
+[1] "gather_results: finished 190000"
+[1] "gather_results: finished 191000"
+[1] "gather_results: finished 192000"
+[1] "gather_results: finished 193000"
+[1] "gather_results: finished 194000"
+[1] "gather_results: finished 195000"
+[1] "gather_results: finished 196000"
+[1] "gather_results: finished 197000"
+[1] "gather_results: finished 198000"
+[1] "gather_results: finished 199000"
+[1] "gather_results: finished 200000"
+[1] "gather_results: finished 201000"
+[1] "gather_results: finished 202000"
+[1] "gather_results: finished 203000"
+[1] "gather_results: finished 204000"
+[1] "gather_results: finished 205000"
+[1] "gather_results: finished 206000"
+[1] "gather_results: finished 207000"
+[1] "gather_results: finished 208000"
+[1] "gather_results: finished 209000"
+[1] "gather_results: finished 210000"
+[1] "gather_results: finished 211000"
+[1] "gather_results: finished 212000"
+[1] "gather_results: finished 213000"
+[1] "gather_results: finished 214000"
+[1] "gather_results: finished 215000"
+[1] "gather_results: finished 216000"
+[1] "gather_results: finished 217000"
+[1] "gather_results: finished 218000"
+[1] "gather_results: finished 219000"
+[1] "gather_results: finished 220000"
+[1] "gather_results: finished 221000"
+[1] "gather_results: finished 222000"
+[1] "gather_results: finished 223000"
+[1] "gather_results: finished 224000"
+[1] "gather_results: finished 225000"
+[1] "gather_results: finished 226000"
+[1] "gather_results: finished 227000"
+[1] "gather_results: finished 228000"
+[1] "gather_results: finished 229000"
+[1] "gather_results: finished 230000"
+[1] "gather_results: finished 231000"
+[1] "gather_results: finished 232000"
+[1] "gather_results: finished 233000"
+[1] "gather_results: finished 234000"
+[1] "gather_results: finished 235000"
+[1] "gather_results: finished 236000"
+[1] "gather_results: finished 237000"
+[1] "gather_results: finished 238000"
+[1] "gather_results: finished 239000"
+[1] "gather_results: finished 240000"
+[1] "gather_results: finished 241000"
+[1] "gather_results: finished 242000"
+[1] "gather_results: finished 243000"
+[1] "gather_results: finished 244000"
+[1] "gather_results: finished 245000"
+[1] "gather_results: finished 246000"
+[1] "gather_results: finished 247000"
+[1] "gather_results: finished 248000"
+[1] "gather_results: finished 249000"
+[1] "gather_results: finished 250000"
+[1] "gather_results: finished 251000"
+[1] "gather_results: finished 252000"
+[1] "gather_results: finished 253000"
+[1] "gather_results: finished 254000"
+[1] "gather_results: finished 255000"
+[1] "gather_results: finished 256000"
+[1] "gather_results: finished 257000"
+[1] "gather_results: finished 258000"
+[1] "gather_results: finished 259000"
+[1] "gather_results: finished 260000"
+[1] "gather_results: finished 261000"
+[1] "gather_results: finished 262000"
+[1] "gather_results: finished 263000"
+[1] "gather_results: finished 264000"
+[1] "gather_results: finished 265000"
+[1] "gather_results: finished 266000"
+[1] "gather_results: finished 267000"
+[1] "gather_results: finished 268000"
+[1] "gather_results: finished 269000"
+[1] "gather_results: finished 270000"
+[1] "gather_results: finished 271000"
+[1] "gather_results: finished 272000"
+[1] "gather_results: finished 273000"
+[1] "gather_results: finished 274000"
+[1] "gather_results: finished 275000"
+[1] "gather_results: finished 276000"
+[1] "gather_results: finished 277000"
+[1] "gather_results: finished 278000"
+[1] "gather_results: finished 279000"
+[1] "gather_results: finished 280000"
+[1] "gather_results: finished 281000"
+[1] "gather_results: finished 282000"
+[1] "gather_results: finished 283000"
+[1] "gather_results: finished 284000"
+[1] "gather_results: finished 285000"
+[1] "gather_results: finished 286000"
+[1] "gather_results: finished 287000"
+[1] "gather_results: finished 288000"
+[1] "gather_results: finished 289000"
+[1] "gather_results: finished 290000"
+[1] "gather_results: finished 291000"
+[1] "gather_results: finished 292000"
+[1] "gather_results: finished 293000"
+[1] "gather_results: finished 294000"
+[1] "gather_results: finished 295000"
+[1] "gather_results: finished 296000"
+[1] "gather_results: finished 297000"
+[1] "gather_results: finished 298000"
+[1] "gather_results: finished 299000"
+[1] "gather_results: finished 300000"
+[1] "gather_results: finished 301000"
+[1] "gather_results: finished 302000"
+[1] "gather_results: finished 303000"
+[1] "gather_results: finished 304000"
+[1] "gather_results: finished 305000"
+[1] "gather_results: finished 306000"
+[1] "gather_results: finished 307000"
+[1] "gather_results: finished 308000"
+[1] "gather_results: finished 309000"
+[1] "gather_results: finished 310000"
+[1] "gather_results: finished 311000"
+[1] "gather_results: finished 312000"
+[1] "gather_results: finished 313000"
+[1] "gather_results: finished 314000"
+[1] "gather_results: finished 315000"
+[1] "gather_results: finished 316000"
+[1] "gather_results: finished 317000"
+[1] "gather_results: finished 318000"
+[1] "gather_results: finished 319000"
+[1] "gather_results: finished 320000"
+[1] "gather_results: finished 321000"
+[1] "gather_results: finished 322000"
+[1] "gather_results: finished 323000"
+[1] "gather_results: finished 324000"
+[1] "gather_results: finished 325000"
+[1] "gather_results: finished 326000"
+[1] "gather_results: finished 327000"
+[1] "gather_results: finished 328000"
+[1] "gather_results: finished 329000"
+[1] "gather_results: finished 330000"
+[1] "gather_results: finished 331000"
+[1] "gather_results: finished 332000"
+[1] "gather_results: finished 333000"
+[1] "gather_results: finished 334000"
+[1] "gather_results: finished 335000"
+[1] "gather_results: finished 336000"
+[1] "gather_results: finished 337000"
+[1] "gather_results: finished 338000"
+[1] "gather_results: finished 339000"
+[1] "gather_results: finished 340000"
+[1] "gather_results: finished 341000"
+[1] "gather_results: finished 342000"
+[1] "gather_results: finished 343000"
+[1] "gather_results: finished 344000"
+[1] "gather_results: finished 345000"
+[1] "gather_results: finished 346000"
+[1] "gather_results: finished 347000"
+[1] "gather_results: finished 348000"
+[1] "gather_results: finished 349000"
+[1] "gather_results: finished 350000"
+[1] "gather_results: finished 351000"
+[1] "gather_results: finished 352000"
+[1] "gather_results: finished 353000"
+[1] "gather_results: finished 354000"
+[1] "gather_results: finished 355000"
+[1] "gather_results: finished 356000"
+[1] "gather_results: finished 357000"
+[1] "gather_results: finished 358000"
+[1] "gather_results: finished 359000"
+[1] "gather_results: finished 360000"
+[1] "gather_results: finished 361000"
+[1] "gather_results: finished 362000"
+[1] "gather_results: finished 363000"
+[1] "gather_results: finished 364000"
+[1] "gather_results: finished 365000"
+[1] "gather_results: finished 366000"
+[1] "gather_results: finished 367000"
+[1] "gather_results: finished 368000"
+[1] "gather_results: finished 369000"
+[1] "gather_results: finished 370000"
+[1] "gather_results: finished 371000"
+[1] "gather_results: finished 372000"
+[1] "gather_results: finished 373000"
+[1] "gather_results: finished 374000"
+[1] "gather_results: finished 375000"
+[1] "gather_results: finished 376000"
+[1] "gather_results: finished 377000"
+[1] "gather_results: finished 378000"
+[1] "gather_results: finished 379000"
+[1] "gather_results: finished 380000"
+[1] "gather_results: finished 381000"
+[1] "gather_results: finished 382000"
+[1] "gather_results: finished 383000"
+[1] "gather_results: finished 384000"
+[1] "gather_results: finished 385000"
+[1] "gather_results: finished 386000"
+[1] "gather_results: finished 387000"
+[1] "gather_results: finished 388000"
+[1] "gather_results: finished 389000"
+[1] "gather_results: finished 390000"
+[1] "gather_results: finished 391000"
+[1] "gather_results: finished 392000"
+[1] "gather_results: finished 393000"
+[1] "gather_results: finished 394000"
+[1] "gather_results: finished 395000"
+[1] "gather_results: finished 396000"
+[1] "gather_results: finished 397000"
+[1] "gather_results: finished 398000"
+[1] "gather_results: finished 399000"
+[1] "gather_results: finished 400000"
+[1] "gather_results: finished 401000"
+[1] "gather_results: finished 402000"
+[1] "gather_results: finished 403000"
+[1] "gather_results: finished 404000"
+[1] "gather_results: finished 405000"
+[1] "gather_results: finished 406000"
+[1] "gather_results: finished 407000"
+[1] "gather_results: finished 408000"
+[1] "gather_results: finished 409000"
+[1] "gather_results: finished 410000"
+[1] "gather_results: finished 411000"
+[1] "gather_results: finished 412000"
+[1] "gather_results: finished 413000"
+[1] "gather_results: finished 414000"
+[1] "gather_results: finished 415000"
+[1] "gather_results: finished 416000"
+[1] "gather_results: finished 417000"
+[1] "gather_results: finished 418000"
+[1] "gather_results: finished 419000"
+[1] "gather_results: finished 420000"
+[1] "gather_results: finished 421000"
+[1] "gather_results: finished 422000"
+[1] "gather_results: finished 423000"
+[1] "gather_results: finished 424000"
+[1] "gather_results: finished 425000"
+[1] "gather_results: finished 426000"
+[1] "gather_results: finished 427000"
+[1] "gather_results: finished 428000"
+[1] "gather_results: finished 429000"
+[1] "gather_results: finished 430000"
+[1] "gather_results: finished 431000"
+[1] "gather_results: finished 432000"
+[1] "gather_results: finished 433000"
+[1] "gather_results: finished 434000"
+[1] "gather_results: finished 435000"
+[1] "gather_results: finished 436000"
+[1] "gather_results: finished 437000"
+[1] "gather_results: finished 438000"
+[1] "gather_results: finished 439000"
+[1] "gather_results: finished 440000"
+[1] "gather_results: finished 441000"
+[1] "gather_results: finished 442000"
+[1] "gather_results: finished 443000"
+[1] "gather_results: finished 444000"
+[1] "gather_results: finished 445000"
+[1] "gather_results: finished 446000"
+[1] "gather_results: finished 447000"
+[1] "gather_results: finished 448000"
+[1] "gather_results: finished 449000"
+[1] "gather_results: finished 450000"
+2026-05-07 07:12:32.986254 - Save qs2
+[1] "Reproducibility information:"
+[1] "2026-05-07 07:12:42 EDT"
+     user    system   elapsed 
+155692.84  14942.84 252082.57 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-05-07
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ Biobase              * 2.70.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
+ DelayedArray           0.36.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ doParallel             1.0.17   2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                  1.2.1    2026-04-03 [1] CRAN (R 4.5.0)
+ foreach                1.5.2    2022-02-02 [2] CRAN (R 4.5.0)
+ fs                     2.1.0    2026-04-18 [1] CRAN (R 4.5.0)
+ gargle                 1.5.2    2023-07-20 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb           1.44.3   2025-09-21 [1] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14   2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.62.1   2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1   2026-04-27 [1] CRAN (R 4.5.0)
+ glue                   1.8.1    2026-04-17 [1] CRAN (R 4.5.0)
+ googledrive            2.1.1    2023-06-11 [2] CRAN (R 4.5.0)
+ h5mread                1.0.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ HDF5Array              1.36.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ here                 * 1.0.2    2025-09-15 [1] CRAN (R 4.5.0)
+ httr                   1.4.8    2026-02-13 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ iterators              1.0.14   2022-02-05 [2] CRAN (R 4.5.0)
+ jaffelab               0.99.34  2025-05-27 [1] Github (LieberInstitute/jaffelab@e7a26ca)
+ jsonlite               2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.5    2026-01-08 [1] CRAN (R 4.5.0)
+ limma                  3.66.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5    2026-04-04 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65   2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168  2025-03-31 [3] CRAN (R 4.5.0)
+ pillar                 1.11.1   2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ purrr                  1.2.1    2026-01-09 [1] CRAN (R 4.5.0)
+ qs2                  * 0.2.0    2026-04-22 [1] CRAN (R 4.5.0)
+ quadprog               1.5-8    2019-11-20 [2] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ rafalib                1.0.4    2025-04-08 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1    2026-01-10 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2 2026-03-05 [1] CRAN (R 4.5.0)
+ rhdf5                  2.52.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rhdf5filters           1.20.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Rhdf5lib               1.30.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0    2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1    2025-08-26 [1] CRAN (R 4.5.0)
+ S4Arrays               1.10.1   2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ segmented              2.2-1    2026-01-29 [1] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ spacexr              * 2.2.1    2026-04-30 [1] Github (dmcable/spacexr@9f5dc33)
+ SparseArray            1.10.8   2025-12-18 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment    * 1.18.1   2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.1    2025-10-09 [1] CRAN (R 4.5.0)
+ stringfish             0.19.0   2026-04-21 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ tibble                 3.3.1    2026-01-11 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ vctrs                  0.7.3    2026-04-11 [1] CRAN (R 4.5.0)
+ XVector                0.50.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu May  7 07:12:43 AM EDT 2026
