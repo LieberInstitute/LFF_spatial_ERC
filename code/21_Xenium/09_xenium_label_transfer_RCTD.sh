@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=200G
-#SBATCH --job-name=09_xenium_label_transfer_RCDT
+#SBATCH --job-name=09_xenium_label_transfer_RCTD
 #SBATCH -c 1
 #SBATCH -t 3-00:00:00
-#SBATCH -o logs/09_xenium_label_transfer_RCDT.txt
-#SBATCH -e logs/09_xenium_label_transfer_RCDT.txt
+#SBATCH -o logs/09_xenium_label_transfer_RCTD.txt
+#SBATCH -e logs/09_xenium_label_transfer_RCTD.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 09_xenium_label_transfer_RCDT.R --cell_type_col cell_type_anno
+Rscript 09_xenium_label_transfer_RCTD.R --cell_type_col cell_type_anno
 
 echo "**** Job ends ****"
 date
