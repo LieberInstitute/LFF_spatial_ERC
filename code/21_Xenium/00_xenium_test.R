@@ -51,10 +51,14 @@ qs2::qs_save(spe, file = here(data_dir, "spe_test_Br1039.qs2"))
 #### subset test ####
 spe <- qs2::qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
-spe <- spe[,spe$BrNum == "Br1039"]
-lobstr::obj_size(spe) #1.8G
+spe$sample_id <- gsub("01\\.", "", spe$sample_id)
 
-qs2::qs_save(spe, file = here(data_dir, "spe_test_Br1039.qs2"))
+spe <- spe[,spe$BrNum %in% c("Br1039", "Br1556")]
+lobstr::obj_size(spe) #216M
+
+# qs2::qs_save(spe, file = here(data_dir, "spe_Xenium_test_Br1039.qs2"))
+qs2::qs_save(spe, file = here(data_dir, "spe_Xenium_test.qs2"))
+saveRDS(spe, file = here(data_dir, "spe_Xenium_test.rds"))
 
 
 
