@@ -21,6 +21,8 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 ncores <- 4  # match Sys.getenv('SLURM_CPUS_ON_NODE')
 bp <- MulticoreParam(workers = ncores) #or bp <- MulticoreParam(4)
 
+set.seed(202605)
+
 #### load data ####
 message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "07_xenium_build_spe","spe_xenium.qs2"))
@@ -401,8 +403,18 @@ source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 #### plot ####
 ## categorical
-walk(c("sample_id", "seq_round", "chip","APOE"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
-walk(c("sample_id", "seq_round", "chip","APOE"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk2(c("first_type"), 
+     list(cell_type_colors$anno), 
+     ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = .y, save_plot = TRUE))
+
+walk2(c("first_type"), 
+     list(cell_type_colors$anno), 
+     ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y, save_plot = TRUE))
+
+walk(c("sample_id", "seq_round", "chip","APOE", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk(c("sample_id", "seq_round", "chip","APOE", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", facet = TRUE))
 
 ## continuous
 walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
@@ -419,7 +431,7 @@ my_genes <- c(Astro = "AQP4",
               Inhib = "GAD1")
 
 walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
-walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
+walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
 
 
 # spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
