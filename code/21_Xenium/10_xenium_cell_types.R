@@ -74,7 +74,7 @@ spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp)
 
 # Print reduced dimension names
 message("\n\n", "Reduced Dim Names:\n")
-reducedDimNames(sce)
+reducedDimNames(spe)
 
 #Save SPE with addititional data
 message(Sys.time(), " - Saving cleaned SPE object")
@@ -108,14 +108,14 @@ source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 #### plot ####
 ## categorical
-walk(c("sample_id", "seq_round", "chip","APOE", "first_type"), ~my_plot_reduced_dim(sce, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
-walk(c("sample_id", "seq_round", "chip","APOE", "first_type"), ~my_plot_reduced_dim(sce, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk(c("sample_id", "seq_round", "chip","APOE", "first_type"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk(c("sample_id", "seq_round", "chip","APOE", "first_type"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
 
 ## continuous
-walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(sce, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
+walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
 
-walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x))
-walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(sce, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x))
+walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x))
+walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x))
 
 # slurmjobs::job_single('10_xenium_cell_types', create_shell = TRUE, memory = '100G', command = "Rscript 10_xenium_cell_types.R")
 
