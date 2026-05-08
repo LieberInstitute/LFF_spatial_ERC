@@ -354,15 +354,13 @@ ggsave(plot = nuc_area_hist, filename = here(plot_dir,"nucleus_area_scaling_hist
 # From https://github.com/LieberInstitute/spatialAmygdala/blob/77670e73360a112945a4b8257557194f9212bdb6/code/Xenium/03_quality_control/perCellQC/01_perCellQC.R#L102-L103
 # normalize the counts by the nucleus and cell area scaling factors
 message(Sys.time(), " -  Normalize by size factors")
-assay(spe, "logcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts") ## segmentation of nuclei is more relable
+assay(spe, "nucleus_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts") ## segmentation of nuclei is more relable
 assay(spe, "cell_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$cell_area.sf, transform="log", assay.type="counts")
 
+## regular logcounts
+spe <- logNormCounts(spe, assay.type = "counts")
+
 #### Reduced dims ####
-
-# use logcounts of your preferred normalization
-# spe <- logNormCounts(spe, assay.type = "counts")
-
-assay(spe, "logcounts") <- log2(assay(spe, "nucleus_normcounts") + 1)
 
 message(Sys.time(), " - running PCA")
 spe <- runPCA(spe,
