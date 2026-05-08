@@ -9,6 +9,7 @@ library("SpatialExperiment")
 library("qs2")
 library("scater")
 library("tidyverse")
+library("BiocParallel")
 
 data_dir <- here("processed-data", "21_Xenium", "08_xenium_QC_normalize")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
