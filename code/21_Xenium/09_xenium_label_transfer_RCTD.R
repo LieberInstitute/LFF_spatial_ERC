@@ -24,10 +24,10 @@ scec <- matrix(
 opt <- getopt(scec)
 # opt$cell_type_col <- "cell_type_broad"
 
-data_dir <- here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCDT")
+data_dir <- here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-# plot_dir <- here("plots", "21_Xenium", "08_xenium_label_transfer_RCDT")
+# plot_dir <- here("plots", "21_Xenium", "08_xenium_label_transfer_RCTD")
 # if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
@@ -126,7 +126,7 @@ names(nUMI_ref) <- colnames(sce)
 reference <- Reference(ref_counts, cell_types, nUMI_ref)
 
 #### create object & run RCTD ####
-message(Sys.time(), " - create RCDT data")
+message(Sys.time(), " - create RCTD data")
 
 rctd_data <- create.RCTD(spatialRNA = puck, 
                          reference = reference, 
@@ -134,13 +134,13 @@ rctd_data <- create.RCTD(spatialRNA = puck,
                          class_df = cell_type_df)
 
 
-message(Sys.time(), "Run RCDT")
+message(Sys.time(), "Run RCTD")
 myRCTD <- run.RCTD(rctd_data, doublet_mode = "doublet")
 
 message(Sys.time(), " - Save qs2")
 qs2::qs_save(myRCTD, here(data_dir, "rctd_results_xenium.qs2"))
 
-# slurmjobs::job_single('09_xenium_label_transfer_RCDT', create_shell = TRUE, memory = '200G', command = "Rscript 09_xenium_label_transfer_RCDT.R --cell_type_col cell_type_anno")
+# slurmjobs::job_single('09_xenium_label_transfer_RCTD', create_shell = TRUE, memory = '200G', command = "Rscript 09_xenium_label_transfer_RCTD.R --cell_type_col cell_type_anno")
 
 ## Reproducibility information
 print("Reproducibility information:")
