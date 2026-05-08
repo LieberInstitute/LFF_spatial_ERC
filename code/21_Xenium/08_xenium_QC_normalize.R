@@ -16,6 +16,10 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "21_Xenium", "08_xenium_QC_normalize")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+## SET UP MULTICORE PARAM
+ncores <- 4  # match Sys.getenv('SLURM_CPUS_ON_NODE')
+bp <- MulticoreParam(workers = ncores) #or bp <- MulticoreParam(4)
+
 #### load data ####
 message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "07_xenium_build_spe","spe_xenium.qs2"))
@@ -349,13 +353,75 @@ ggsave(plot = nuc_area_hist, filename = here(plot_dir,"nucleus_area_scaling_hist
 # From https://github.com/LieberInstitute/spatialAmygdala/blob/77670e73360a112945a4b8257557194f9212bdb6/code/Xenium/03_quality_control/perCellQC/01_perCellQC.R#L102-L103
 # normalize the counts by the nucleus and cell area scaling factors
 message(Sys.time(), " -  Normalize by size factors")
-assay(spe, "nucleus_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts")
+assay(spe, "logcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts") ## segmentation of nuclei is more relable
 assay(spe, "cell_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$cell_area.sf, transform="log", assay.type="counts")
+
+#### Reduced dims ####
+
+# use logcounts of your preferred normalization
+# spe <- logNormCounts(spe, assay.type = "counts")
+
+assay(spe, "logcounts") <- log2(assay(spe, "nucleus_normcounts") + 1)
+
+message(Sys.time(), " - running PCA")
+spe <- runPCA(spe,
+              ncomponents = 30,
+              BSPARAM = BiocSingular::IrlbaParam(),
+              BPPARAM = bp
+)
+
+message(Sys.time(), " - running TSNE")
+spe <- runTSNE(spe, dimred = "PCA", BPPARAM = bp)
+
+message(Sys.time(), " - running UMAP")
+spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp)
+
+# Print reduced dimension names
+message("\n\n", "Reduced Dim Names:\n")
+reducedDimNames(spe)
 
 
 #Save cleaned SPE
 message(Sys.time(), " - Saving cleaned SPE object")
 qs2::qs_save(spe, here(data_dir, "spe_xenium_QC.qs2"))
+
+# elbow plot
+var_explained <- data.frame(PC = seq_along(pca_var_pct),
+                            var_explained = pca_var_pct) 
+
+var_explained_elbow <- var_explained |>
+    ggplot(aes(x = PC, y = var_explained)) +
+    geom_point() +
+    geom_line() +
+    labs(x = "PC", y = "Variance Explained (%)") +
+    theme_bw()
+
+ggsave(var_explained_elbow, filename = here(plot_dir, "var_explained_elbow.png"))
+
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+#### plot ####
+## categorical
+walk(c("sample_id", "seq_round", "chip","APOE"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk(c("sample_id", "seq_round", "chip","APOE"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+
+## continuous
+walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
+
+my_genes <- c(Astro = "AQP4", 
+              # Micro = "CD86",
+              Micro = "CTSH",
+              Oligo = "MBP",
+              Oligo.M = "OPALIN",
+              Oligo.3 = "LINGO2",
+              OPC = "PDGFRA",
+              Vasc = "PECAM1",
+              Excit = "SLC17A7",
+              Inhib = "GAD1")
+
+walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
+walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
+
 
 # spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
