@@ -10,7 +10,7 @@ library("BiocParallel")
 library("scran")
 library("scater")
 
-# library("tidyverse")
+library("tidyverse")
 # library("crumblr")
 # library("variancePartition")
 
@@ -67,6 +67,8 @@ pca_var_pct <- pca_var / sum(pca_var) * 100
 message(Sys.time(), " - Saving cleaned SPE object")
 qs2::qs_save(spe, here(data_dir, "spe_xenium_PCA.qs2"))
 
+# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_PCA.qs2"))
+
 
 # elbow plot
 var_explained <- data.frame(PC = seq_along(pca_var_pct),
@@ -85,14 +87,29 @@ source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 #### plot ####
 ## categorical
-walk(c("sample_id", "seq_round", "chip","APOE", "first_type"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
-walk(c("sample_id", "seq_round", "chip","APOE", "first_type"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk(c("first_type"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+
+walk(c("BrNum", "Run", "chip","APOE", "first_type", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk(c("BrNum", "Run", "chip","APOE", "first_type", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
 
 ## continuous
-walk(c("sum", "detected", "subsets_Mito_percent"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
+## continuous
+walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "con"))
+walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
 
-walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x))
-walk(c("MBP", "SNAP25", "SLC17A7" ,"GFAP", "GAD1", "CLDN5", "OLIG2", "TMEM119"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x))
+my_genes <- c(Astro = "AQP4", 
+              # Micro = "CD86",
+              Micro = "CTSH",
+              Oligo = "MBP",
+              Oligo.M = "OPALIN",
+              Oligo.3 = "LINGO2",
+              OPC = "PDGFRA",
+              Vasc = "PECAM1",
+              Excit = "SLC17A7",
+              Inhib = "GAD1")
+
+walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
+walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
 
 # slurmjobs::job_single('10_xenium_cell_types', create_shell = TRUE, memory = '100G', command = "Rscript 10_xenium_cell_types.R")
 
