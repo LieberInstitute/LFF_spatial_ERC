@@ -52,29 +52,6 @@ identical(colnames(spe), rownames(rctd_data@results$results_df))
 
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
-#### Reduced dims ####
-
-# use logcounts of your preferred normalization
-# spe <- logNormCounts(spe, assay.type = "counts")
-
-assay(spe, "logcounts") <- log2(assay(spe, "nucleus_normcounts") + 1)
-
-message(Sys.time(), " - running PCA")
-spe <- runPCA(spe,
-              ncomponents = 30,
-              BSPARAM = BiocSingular::IrlbaParam(),
-              BPPARAM = bp
-)
-
-message(Sys.time(), " - running TSNE")
-spe <- runTSNE(spe, dimred = "PCA", BPPARAM = bp)
-
-message(Sys.time(), " - running UMAP")
-spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp)
-
-# Print reduced dimension names
-message("\n\n", "Reduced Dim Names:\n")
-reducedDimNames(spe)
 
 #Save SPE with addititional data
 message(Sys.time(), " - Saving cleaned SPE object")
