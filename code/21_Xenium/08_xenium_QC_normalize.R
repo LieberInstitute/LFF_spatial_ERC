@@ -372,10 +372,10 @@ spe <- runPCA(spe,
 )
 
 message(Sys.time(), " - running TSNE")
-spe <- runTSNE(spe, dimred = "PCA", BPPARAM = bp)
+spe <- runTSNE(spe, dimred = "PCA", BPPARAM = bp, n_dimred = 10)
 
 message(Sys.time(), " - running UMAP")
-spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp)
+spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp, n_dimred = 10)
 
 # Print reduced dimension names
 message("\n\n", "Reduced Dim Names:\n")
@@ -387,6 +387,10 @@ message(Sys.time(), " - Saving cleaned SPE object")
 qs2::qs_save(spe, here(data_dir, "spe_xenium_QC.qs2"))
 
 # elbow plot
+# get variance explained
+pca_var <- attr(reducedDim(spe, "PCA"), "varExplained")
+pca_var_pct <- pca_var / sum(pca_var) * 100
+
 var_explained <- data.frame(PC = seq_along(pca_var_pct),
                             var_explained = pca_var_pct) 
 
@@ -401,23 +405,19 @@ ggsave(var_explained_elbow, filename = here(plot_dir, "var_explained_elbow.png")
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-#### plot ####
+#### plot reduced dims  ####
+
+# load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
+
 ## categorical
-walk2(c("first_type"), 
-     list(cell_type_colors$anno), 
-     ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = .y, save_plot = TRUE))
-
-walk2(c("first_type"), 
-     list(cell_type_colors$anno), 
-     ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y, save_plot = TRUE))
-
-walk(c("sample_id", "seq_round", "chip","APOE", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
-walk(c("sample_id", "seq_round", "chip","APOE", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
-
-walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", facet = TRUE))
+walk(c("sample_id", "Run", "chip","APOE"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk(c("sample_id", "Run", "chip","APOE"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
 
 ## continuous
 walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
+walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "con"))
 
 my_genes <- c(Astro = "AQP4", 
               # Micro = "CD86",
