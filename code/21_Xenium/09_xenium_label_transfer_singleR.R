@@ -45,7 +45,7 @@ pred <- SingleR(test = spe[,1:1000],
                 ref = sce, 
                 labels = sce[[opt$cell_type_col]], 
                 assay.type.test="logcounts",
-                BSPARAM = BiocSingular::IrlbaParam(),
+                # BSPARAM = BiocSingular::IrlbaParam(),
                 BPPARAM = bp)
 
 message(Sys.time(), " - Save qs2")
