@@ -24,14 +24,16 @@ load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), ver
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 ## SET UP MULTICORE PARAM
-ncores <- 4  # match Sys.getenv('SLURM_CPUS_ON_NODE')
-bp <- MulticoreParam(workers = ncores) #or bp <- MulticoreParam(4)
-
+# ncores <- 4  # match Sys.getenv('SLURM_CPUS_ON_NODE')
+# bp <- MulticoreParam(workers = ncores) #or bp <- MulticoreParam(4)
+# 
 
 #### Load data ####
 message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
+
+#### Add RCTD cell types to spe ####
 message(Sys.time(), "- Load rctd data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
 
@@ -39,77 +41,56 @@ names(rctd_data@results)
 
 head(rctd_data@results$results_df)
 
-## missing cells from ectd data
+## missing cells from rctd data
 ncol(spe) - nrow(rctd_data@results$results_df) #17209
 
-setequal(colnames(spe), rownames(rctd_data@results$results_df))
+spe$cell_id <- colnames(spe)
 
-setdiff(rownames(rctd_data@results$results_df), colnames(spe))
+rctd_tb <- rctd_data@results$results_df |>
+    tibble::rownames_to_column("cell_id")
 
-spe <- spe[,rownames(rctd_data@results$results_df)]
+# extract colData with cell IDs
+col_df <- as.data.frame(colData(spe)) |>
+    left_join(rctd_tb, by = "cell_id")
+    
+# put back into spe
+rownames(col_df) <- col_df$cell_id
+colData(spe) <- DataFrame(col_df)
 
-identical(colnames(spe), rownames(rctd_data@results$results_df))
 
-colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
+table(is.na(spe$spot_class), spe$sum_gex < 100)
 
+#         FALSE   TRUE
+# FALSE 450307      0
+# TRUE       0  17209
 
-#Save SPE with addititional data
+## 3% of nuclei <100 counts (sum_gex) and missing RCTD nuclei 
+sum(is.na(spe$spot_class))/ncol(spe)
+
+#Save SPE with additional data
 message(Sys.time(), " - Saving cleaned SPE object")
 qs2::qs_save(spe, here(data_dir, "spe_xenium_cell_types.qs2"))
 
-
-# get variance explained
-pca_var <- attr(reducedDim(spe, "PCA"), "varExplained")
-pca_var_pct <- pca_var / sum(pca_var) * 100
-
-
-#Save cleaned SPE
-message(Sys.time(), " - Saving cleaned SPE object")
-qs2::qs_save(spe, here(data_dir, "spe_xenium_PCA.qs2"))
-
 # spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_PCA.qs2"))
-
-
-# elbow plot
-var_explained <- data.frame(PC = seq_along(pca_var_pct),
-           var_explained = pca_var_pct) 
-
-var_explained_elbow <- var_explained |>
-    ggplot(aes(x = PC, y = var_explained)) +
-    geom_point() +
-    geom_line() +
-    labs(x = "PC", y = "Variance Explained (%)") +
-    theme_bw()
-
-ggsave(var_explained_elbow, filename = here(plot_dir, "var_explained_elbow.png"))
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 #### plot ####
 ## categorical
-walk(c("first_type"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk2(c("first_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("first_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
 
-walk(c("BrNum", "Run", "chip","APOE", "first_type", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
-walk(c("BrNum", "Run", "chip","APOE", "first_type", "spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk2(c("second_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
 
-## continuous
-## continuous
-walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "con"))
-walk(c("sum_gex", "detected_gex", "cell_area"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "con"))
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
 
-my_genes <- c(Astro = "AQP4", 
-              # Micro = "CD86",
-              Micro = "CTSH",
-              Oligo = "MBP",
-              Oligo.M = "OPALIN",
-              Oligo.3 = "LINGO2",
-              OPC = "PDGFRA",
-              Vasc = "PECAM1",
-              Excit = "SLC17A7",
-              Inhib = "GAD1")
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
 
-walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
-walk2(my_genes, names(my_genes), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", var_type = "express", my_var = .x, suffix = .y, NA_gray = TRUE))
+
+
+
 
 # slurmjobs::job_single('10_xenium_cell_types', create_shell = TRUE, memory = '100G', command = "Rscript 10_xenium_cell_types.R")
 
