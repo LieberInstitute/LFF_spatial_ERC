@@ -57,10 +57,10 @@ cat("NAs in labels:", sum(is.na(labels)), "\n")
 cat("Empty strings:", sum(labels == ""), "\n")
 cat("N unique labels:", length(unique(labels)), "\n")
 
-# rows with all zeros can cause issues
-all_zero_genes <- assay(sce, "logcounts") == 0
-cat("All-zero genes in ref:", sum(all_zero_genes), "\n")
-sce <- sce[!all_zero_genes, ]
+# # rows with all zeros can cause issues
+# all_zero_genes <- rowSum(assay(sce, "logcounts")) == 0
+# cat("All-zero genes in ref:", sum(all_zero_genes), "\n")
+# sce <- sce[!all_zero_genes, ]
 
 
 #### Run SingleR ####
