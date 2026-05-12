@@ -108,7 +108,8 @@ spe$exclude_any_neg <- spe$subsets_any_neg_percent >= 25              # 324 cell
 
 # 4) Adaptive total counts and detected genes outliers (GEX-only metrics), per sample
 
-spe$sum_gex_low <- isOutlier(spe$sum_gex, log=TRUE, batch=as.factor(spe$Sample), nmads=4, type="lower")
+# spe$sum_gex_low <- isOutlier(spe$sum_gex, log=TRUE, batch=as.factor(spe$Sample), nmads=4, type="lower")
+spe$sum_gex_low <- spe$sum_gex < 100
 message("sum_gex_low: ", sum(spe$sum_gex_low)) #4161
 
 spe$detected_gex_low  <- isOutlier(spe$detected_gex, log=TRUE, batch=as.factor(spe$Sample), nmads=4, type="lower") 
