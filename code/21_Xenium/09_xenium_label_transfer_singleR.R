@@ -41,10 +41,18 @@ rownames(sce) <- rowData(sce)$gene_name
 
 #### Run SingleR ####
 message(Sys.time(), "- Run SingleR")
-pred <- SingleR(test = spe[,1:1000], 
-                ref = sce, 
-                labels = sce[[opt$cell_type_col]], 
-                assay.type.test="logcounts")
+pred <- SingleR(test = spe[, 1:1000],
+                  ref = sce,
+                  labels = sce[[opt$cell_type_col]],
+                  assay.type.test = "logcounts",
+                  num.threads = 1,                  # force single thread in C++ code
+                  BPPARAM = BiocParallel::SerialParam()  # force single thread in R
+)
+
+# pred <- SingleR(test = spe[,1:1000], 
+#                 ref = sce, 
+#                 labels = sce[[opt$cell_type_col]], 
+#                 assay.type.test="logcounts")
 
 # BSPARAM = BiocSingular::IrlbaParam(),
 # BPPARAM = bp
