@@ -34,15 +34,8 @@ set.seed(202605)
 message(Sys.time(), "- Load data")
 spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
-
-# fix if found
-ref_mat[is.na(ref_mat)] <- 0
-ref_mat[is.infinite(ref_mat)] <- 0
-assay(sce, "logcounts") <- ref_mat
-
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
-
 
 ## brain logcounts in to mem
 logcount(sce) <- logcounts = as(logcouts(spe), "dgCMatrix")
