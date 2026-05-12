@@ -184,7 +184,13 @@ ggsave(rctd_class_ct_prop_bar_plot, filename = here(plot_dir, "xenium_rctd_class
 
 write_csv(cell_type_class_summary, file = here(data_dir, "RCTD_cell_type_class_summary.csv"))
 
-#Save SPE with additional data
+## quality metrics vs. RCTD class
+
+gg_QC_plot_out <- GGally::ggpairs(as.data.frame(colData(spe)), columns = c("sum_gex", "detected_gex", "cell_area"), aes(colour = spot_class)) + theme_bw()
+ggsave(gg_QC_plot_out, filename = here(plot_dir, "xenium_QC_metrics_ggpairs_plot_RCTD_spot_class.png"), height = 12, width = 12)
+
+
+#### Save SPE with additional data ####
 message(Sys.time(), " - Saving cleaned SPE object")
 qs2::qs_save(spe, here(data_dir, "spe_xenium_cell_types.qs2"))
 
