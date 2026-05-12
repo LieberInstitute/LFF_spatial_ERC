@@ -38,7 +38,7 @@ message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 
 ## brain logcounts in to mem
-logcount(sce) <- logcounts = as(logcouts(spe), "dgCMatrix")
+logcount(sce) <- logcounts = as(logcounts(spe), "dgCMatrix")
 
 cat("NAs:", sum(is.na(assay(sce, "logcounts"))), "\n")
 cat("Inf:", sum(is.infinite(assay(sce, "logcounts"))), "\n")
