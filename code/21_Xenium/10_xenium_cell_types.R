@@ -83,14 +83,34 @@ walk2(c("first_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, pr
 walk2(c("second_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
 
 walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
-walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"), facet = TRUE)
 
 walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
-walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"))
+walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat"), facet = TRUE)
 
 
+#### doublets ####
+
+rctd_tb_doublet_counts <- rctd_tb |>
+    filter(spot_class == "doublet_certain") |>
+    count(first_type, second_type) |>
+    as_tibble()
+
+rctd_tb_doublet_counts |> arrange(-n) 
+
+rctd_tb_doublet_counts |> filter(first_type == "Oligo.3") |> arrange(-n) 
+    
+
+rctd_tb_doublet_tile <- rctd_tb_doublet_counts |>
+    ggplot(aes(first_type, second_type, fill = n)) +
+    geom_tile() +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+ggsave(rctd_tb_doublet_tile, filename = here(plot_dir, "xenium_rctd_doublet_tile.png"))
 
 
+#### SC dot plots ####
 
 # slurmjobs::job_single('10_xenium_cell_types', create_shell = TRUE, memory = '100G', command = "Rscript 10_xenium_cell_types.R")
 
