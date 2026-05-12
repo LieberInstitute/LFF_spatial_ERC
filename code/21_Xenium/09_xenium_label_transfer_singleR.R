@@ -36,21 +36,25 @@ spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe
 
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
+rownames(sce) <- rowData(sce)$gene_name
+
+table(sce[[opt$cell_type_col]])
+
+#   Subset each object to the genes in common
+shared_genes = intersect(rownames(sce), rownames(spe))
+spe <- spe[shared_genes,]
+sce <- sce[shared_genes,]
 
 ## brain logcounts in to mem
+message(Sys.time(), "convert sce logcounts")
 logcounts(sce) <- as(logcounts(sce), "dgCMatrix")
 
 cat("NAs:", sum(is.na(assay(sce, "logcounts"))), "\n")
 cat("Inf:", sum(is.infinite(assay(sce, "logcounts"))), "\n")
 cat("NaN:", sum(is.nan(assay(sce, "logcounts"))), "\n")
 
-rownames(sce) <- rowData(sce)$gene_name
 
-test_genes <- rownames(spe)
-ref_genes <- rownames(sce)
-
-cat("Shared genes:", length(intersect(test_genes, ref_genes)), "\n")
-cat("Test genes not in ref:", sum(!test_genes %in% ref_genes), "\n")
+message("Shared genes:", shared_genes, "\n")
 
 labels <- sce[[opt$cell_type_col]]
 cat("NAs in labels:", sum(is.na(labels)), "\n")
@@ -66,12 +70,13 @@ cat("N unique labels:", length(unique(labels)), "\n")
 #### Run SingleR ####
 message(Sys.time(), "- Run SingleR")
 pred <- SingleR(test = spe[, 1:1000],
-                  ref = sce,
-                  labels = sce[[opt$cell_type_col]],
-                  assay.type.test = "logcounts",
-                  num.threads = 1,                  # force single thread in C++ code
-                  BPPARAM = BiocParallel::SerialParam()  # force single thread in R
-)
+                ref = sce,
+                labels = sce[[opt$cell_type_col]],
+                de.method = "wilcox")
+
+# assay.type.test = "logcounts",
+# num.threads = 1,                  # force single thread in C++ code
+# BPPARAM = BiocParallel::SerialParam()  # force single thread in R
 
 # pred <- SingleR(test = spe[,1:1000], 
 #                 ref = sce, 
