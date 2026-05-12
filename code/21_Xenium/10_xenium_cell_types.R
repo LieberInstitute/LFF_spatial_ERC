@@ -47,6 +47,8 @@ spe$cell_id <- colnames(spe)
 
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
+#### Explore RCTD results ####
+
 table(is.na(spe$spot_class), spe$sum_gex < 100)
 
 ## from before sum_gex < 100 filter
@@ -104,20 +106,29 @@ rcdt_results_singlets_summary <- rctd_data@results$results_df |>
     rownames_to_column("barcode") |>
     filter(spot_class == "singlet") |>
     mutate(sample_id = gsub("_.*", "", barcode)) |>
-    group_by(sample_id, cell_type_anno = first_type) |>
+    group_by(sample_id, spot_class, cell_type_anno = first_type) |>
     summarise(xenium_n = n()) |>
     group_by(sample_id) |>
-    mutate(xenium_singlet_prop = xenium_n/sum(xenium_n))
-
+    mutate(xenium_singlet_prop = xenium_n/sum(xenium_n),
+           type = "first_type")
 
 rcdt_results_doublets <- rctd_data@results$results_df |> 
     rownames_to_column("barcode") |>
     filter(spot_class == "doublet_certain") |>
     mutate(sample_id = gsub("_.*", "", barcode)) |>
-    select(barcode, sample_id, first_type, second_type) |>
-    pivot_longer(!c(barcode, sample_id), names_to = "type", values_to = "cell_type_anno")
+    select(barcode, spot_class, sample_id, first_type, second_type) |>
+    pivot_longer(!c(barcode, sample_id, spot_class), names_to = "type", values_to = "cell_type_anno") |> 
+    bind_rows(rctd_data@results$results_df |> 
+                  rownames_to_column("barcode") |>
+                  filter(spot_class == "doublet_uncertain") |>
+                  mutate(sample_id = gsub("_.*", "", barcode),
+                         type = "first_type") |>
+                  select(barcode, spot_class, sample_id, type,  cell_type_anno = first_type))
+
+rcdt_results_doublets |> count(spot_class, type)
 
 doublet_combos <- rcdt_results_doublets |> 
+    filter(spot_class == "doublet_certain") |>
     group_by(barcode, sample_id) |> 
     summarise(doublet = paste0(sort(cell_type_anno), collapse = "-")) |>
     ungroup() |>
@@ -134,7 +145,7 @@ doublet_combos |> filter(grepl("Oligo.3", doublet)) |> arrange(-n)
 # 5 Oligo.3-Excit.L2_5.2  1022
 
 rcdt_results_doublets_summary <- rcdt_results_doublets |>    
-    group_by(sample_id, cell_type_anno) |>
+    group_by(sample_id, spot_class, type, cell_type_anno) |>
     summarise(xenium_n = n())  |>
     group_by(sample_id) |>
     mutate(xenium_doublet_prop = xenium_n/sum(xenium_n))
@@ -147,7 +158,31 @@ rcdt_results_summary <- rcdt_results_singlets_summary |>
     mutate(xenium_prop = xenium_n/sum(xenium_n))
 
 
+cell_type_class_summary <- rcdt_results_singlets_summary |> 
+    bind_rows(rcdt_results_doublets_summary) |>
+    group_by(cell_type_anno, spot_class, type) |>
+    summarise(xenium_n = sum(xenium_n)) |>
+    group_by(cell_type_anno) |> 
+    mutate(prop = xenium_n/sum(xenium_n),
+           rctd_class = ifelse(spot_class == "doublet_certain", paste0("doublet_c_", gsub("_type", "", type)) , as.character(spot_class)))
 
+rctd_class_ct_bar_plot <- cell_type_class_summary |>
+    ggplot(aes(x = cell_type_anno, y = xenium_n, fill = rctd_class)) +
+    geom_col() +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(rctd_class_ct_bar_plot, filename = here(plot_dir, "xenium_rctd_class_ct_bar_plot.png"), width = 9)
+
+rctd_class_ct_prop_bar_plot <- cell_type_class_summary |>
+    ggplot(aes(x = cell_type_anno, y = prop, fill = rctd_class)) +
+    geom_col() +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(rctd_class_ct_prop_bar_plot, filename = here(plot_dir, "xenium_rctd_class_ct_prop_bar_plot.png"), width = 9)
+
+write_csv(cell_type_class_summary, file = here(data_dir, "RCTD_cell_type_class_summary.csv"))
 
 #Save SPE with additional data
 message(Sys.time(), " - Saving cleaned SPE object")

@@ -21,7 +21,7 @@ my_plot_reduced_dim <- function(spe,
                                 save_plot = TRUE,
                                 suffix = NULL,
                                 color_pal = NULL,
-                                facet = FALSE,
+                                facet = NULL,
                                 plot_dir_rd = plot_dir,
                                 verbose = TRUE,
                                 add_label = FALSE,
@@ -52,11 +52,7 @@ my_plot_reduced_dim <- function(spe,
     
     if(var_type == "cat"){ ## add larger legend to categorical variables
         rd_plot <- rd_plot + guides(colour = guide_legend(override.aes = list(size = 2, alpha = 1)))
-        if(facet){
-            rd_plot <- rd_plot + 
-                facet_wrap(as.formula(paste("~", my_var))) +
-                theme(legend.position = "None") # no legend with facet
-        }
+        
     } else if(var_type == "con") {
         rd_plot <- rd_plot + viridis::scale_color_viridis()
     } else if(var_type == "express") {
@@ -74,6 +70,12 @@ my_plot_reduced_dim <- function(spe,
             labs(title = my_var) +
             theme(plot.title = element_text(face = "italic")) # make gene name title italic
     } 
+    
+    if(!is.null(facet)){
+        rd_plot <- rd_plot + 
+            facet_wrap(as.formula(paste("~", facet))) +
+            theme(legend.position = "None") # no legend with facet
+    }
     
     if(!is.null(color_pal))  rd_plot <- rd_plot + scale_color_manual(values = color_pal)
     
