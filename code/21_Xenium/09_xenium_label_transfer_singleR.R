@@ -34,10 +34,41 @@ set.seed(202605)
 message(Sys.time(), "- Load data")
 spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
+
+# fix if found
+ref_mat[is.na(ref_mat)] <- 0
+ref_mat[is.infinite(ref_mat)] <- 0
+assay(sce, "logcounts") <- ref_mat
+
 message(Sys.time(), " - Load HDF5 sce")
 sce <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "sce_objects", "sce_ERC_subcluster"))
 
+
+## brain logcounts in to mem
+logcount(sce) <- logcounts = as(logcouts(spe), "dgCMatrix")
+
+cat("NAs:", sum(is.na(assay(sce, "logcounts"))), "\n")
+cat("Inf:", sum(is.infinite(assay(sce, "logcounts"))), "\n")
+cat("NaN:", sum(is.nan(assay(sce, "logcounts"))), "\n")
+
 rownames(sce) <- rowData(sce)$gene_name
+
+test_genes <- rownames(spe)
+ref_genes <- rownames(sce)
+
+cat("Shared genes:", length(intersect(test_genes, ref_genes)), "\n")
+cat("Test genes not in ref:", sum(!test_genes %in% ref_genes), "\n")
+
+labels <- sce[[opt$cell_type_col]]
+cat("NAs in labels:", sum(is.na(labels)), "\n")
+cat("Empty strings:", sum(labels == ""), "\n")
+cat("N unique labels:", length(unique(labels)), "\n")
+
+# rows with all zeros can cause issues
+all_zero_genes <- assay(sce, "logcounts") == 0
+cat("All-zero genes in ref:", sum(all_zero_genes), "\n")
+sce <- sce[!all_zero_genes, ]
+
 
 #### Run SingleR ####
 message(Sys.time(), "- Run SingleR")
