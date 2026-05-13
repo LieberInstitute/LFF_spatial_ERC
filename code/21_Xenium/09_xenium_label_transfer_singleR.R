@@ -69,7 +69,7 @@ cat("N unique labels:", length(unique(labels)), "\n")
 
 #### Run SingleR ####
 message(Sys.time(), "- Run SingleR")
-pred <- SingleR(test = spe[, 1:1000],
+pred <- SingleR(test = spe,
                 ref = sce,
                 labels = sce[[opt$cell_type_col]],
                 de.method = "wilcox")
