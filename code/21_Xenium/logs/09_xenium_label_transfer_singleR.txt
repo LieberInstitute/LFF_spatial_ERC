@@ -1,0 +1,210 @@
+**** Job starts ****
+Wed May 13 09:50:31 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 31882396
+Job name: 09_xenium_label_transfer_singleR
+Node name: compute-158
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+qs2 0.2.1
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+2026-05-13 09:50:36.895385- Load data
+2026-05-13 09:50:48.027692 - Load HDF5 sce
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           10976             5276             3087             1133 
+         Astro.5            Macro          Micro.1          Micro.2 
+             812              433             4227             3748 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+            1876             1728              590             4815 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+            4009             3932             1961              458 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+           12519            12010             8587             6911 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+            4254              586              147              915 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+            2209             8671              609             2235 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+             241              152              625              897 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+             303             1234              125             1363 
+       Inhib.Sst        Inhib.Vip 
+             815             7535 
+2026-05-13 09:50:55.698842convert sce logcounts
+NAs: 0 
+Inf: 0 
+NaN: 0 
+Shared genes:CD52COL16A1PLPPR4NTNG1C1orf162TMIGD3CD2FCGR1ACTSSS100A4RPS27BCANNESNCSTNCD48FCER1GFCGR3ADDR2FASLGRGS16BRINP3PTPRCCNTN2PROX1CENPFTGFB2PSEN2CHRM3PLD5SOX11UBXN2AOST4ALKLINC00486NRXN1VPS54TACR1CAPGGNLYMALCXCR4THSD7BNXPH2LYPD6BLYPD6KCNJ3NR4A2ERMNCYTIPTANKFIGNGAD1CHN1MTX2ITGAVFAM171BCALCRLSTAT1STAT4LINC01877IDH1ERBB4VWC2LIGFBP5SPHKAPDNEREFHD1COPS9RFTN1CX3CR1MOBPCCKHHATLARHGEF3SYNPRPHLDB2ZDHHC23CD86CPNE4P2RY13P2RY12PLCH1ZBBXCLDN11NLGN1SOX2SSTHES1TNK2FGFR3STK32BNWD2PDGFRAKITSLC4A4NPFFR2ADAMTS3ARHGAP24MEPENPNTCOL25A1UGT8NDST4TLR2SFRP2RXFP1NPY1RGPM6AZDHHC11ADAMTS16SEMA5ACDH12CDH6ADAMTS12IL7RSELENOPGZMAIL6STENC1CRHBPVCANPCSK1LOXFSTL4CXCL14TGFBICD14ADRA1BSLIT3LY86BMP6ELOVL2CD83RNF144BSOX4MOGAIF1HLA-DQA1HLA-DMBTREM2ADGRF5PTCHD4COL21A1LINC00472COL12A1FILIP1ROS1GJA1THEMISLAMA2EYA4SAMD5VIPRNASET2SDK1MMD2GPNMBHOTAIRM1TRILPOU6F2IGFBP3IKZF1EGFRCD36TAC1RELNSLC26A4CAV1KCND2PTPRZ1HILPDACNTNAP2ADRA1AIDO1GOLGA7ANK1ST18SULF1ANGPT1RSPO2PTPRDLURAP1L-AS1SLC24A2LINGO2ANKRD18ACNTNAP3BLERFSCEMIP2ANXA1RORBGNA14-AS1KLF4LPAR1LHX6HMCN2NTNG2NOTCH1PTGDSLINC00706ITGA8C1QL3GAD2NRP1FZD8CDK1CTNNA3UNC5BNRG3SNCGPLCE1SORBS1OPALINSORCS1ADRB1RGS10FGFR2MKI67IFITM3HBBLYVE1LINC02752SPON1SLC17A6ANO3PAX6SPI1MS4A6AMYRFTRPC6PDGFDCD3GSNX19CD4CD163KLRB1MGST1LMO3ABCC9LRRK2TESPA1ERBB3B4GALNT1WIF1TPH2TRHDEOTOGLDCNGAS2L3CHST11CUX2TMEM132CFLT1CCNA1POSTNLRRC63HTR2APCDH9-AS2GPC5-AS1GPC6GPR183MYO16RNASE1TRACPABPN1LINC00609KCNH5PSEN1FOSNRXN3SERPINA3MEG3ATP10ARYR3GOLGA8AMEIS2RASGRP1THBS1CAPN3SEMA6DCCNB2THSD4CSPG4CTSHCEMIPNTRK3IDH2SV2BMCTP2NR2F2LRRK1PCSK6CRYMHS3ST2HS3ST4CORO1AITGAMITGAXCDH1SNTB2ATP2C2DVL2CD68TP53CCL5CCL4TOP2AIGFBP4KAT2ASTAT3MAPTPECAM1ABCA8SOX9EXOC7AATKCABLES1AQP4RIT2MYO5BCDH19NETO1CNDP1MBPSTXBP2KLF2MAGPSENENTGFB1APOESNRNP70SLC17A7KLK6NKG7TTYH1PCNALAMP5SLC24A3SNTA1NNATTSHZ2BCAS1CDH4CHODLAPPOLIG2OLIG1CBSITGB2MIATPVALBSOX10NPTXRSGSM3FBLN1RABL2BGPR34MAGED2NAP1L3PLP1TRPC5HTR2CTENM1MT-ND1MT-CO3MT-CYB
+
+NAs in labels: 0 
+Empty strings: 0 
+N unique labels: 38 
+2026-05-13 09:52:36.043237- Run SingleR
+2026-05-13 17:07:38.649661 - Save qs2
+[1] "Reproducibility information:"
+[1] "2026-05-13 17:07:39 EDT"
+     user    system   elapsed 
+26150.314    16.879 26227.102 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-05-13
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ beachmat               2.26.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ Biobase              * 2.70.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocNeighbors          2.4.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel         * 1.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
+ DelayedArray           0.36.1   2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ DelayedMatrixStats     1.30.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1   2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1   2026-04-27 [1] CRAN (R 4.5.0)
+ h5mread                1.0.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ HDF5Array              1.36.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ here                 * 1.0.2    2025-09-15 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5    2026-04-04 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ qs2                  * 0.2.1    2026-05-04 [1] CRAN (R 4.5.0)
+ Rcpp                   1.1.1    2026-01-10 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2 2026-03-05 [1] CRAN (R 4.5.0)
+ rhdf5                  2.52.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rhdf5filters           1.20.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Rhdf5lib               1.30.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rprojroot              2.1.1    2025-08-26 [1] CRAN (R 4.5.0)
+ S4Arrays               1.10.1   2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1   2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ scrapper               1.4.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ Seqinfo              * 1.0.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SingleR              * 2.12.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10  2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ sparseMatrixStats      1.20.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ SpatialExperiment    * 1.20.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ stringfish             0.19.0   2026-04-21 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ XVector                0.50.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed May 13 05:07:39 PM EDT 2026
