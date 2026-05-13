@@ -200,10 +200,17 @@ source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 #### plot ####
 ## categorical
-walk2(c("first_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = .y))
-walk2(c("first_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("first_type", "second_type"), list(cell_type_colors$anno, cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("first_type", "second_type"), list(cell_type_colors$anno, cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
 
-walk2(c("second_type"), list(cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("first_type", "second_type"), 
+      list(cell_type_colors$anno, cell_type_colors$anno), 
+      ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", 
+                           dimred = "UMAP", 
+                           my_var = .x, 
+                           var_type = "cat", 
+                           color_pal = .y, 
+                           facet = "spot_class"))
 
 walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat"))
 walk(c("spot_class"), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", facet = TRUE))
