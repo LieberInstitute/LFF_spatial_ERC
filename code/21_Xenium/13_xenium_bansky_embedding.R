@@ -172,8 +172,11 @@ spe_b = clusterBanksy(
 )
 
 
+
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
+
+spatialCoords(spe) <- orginal_coords
 
 qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
