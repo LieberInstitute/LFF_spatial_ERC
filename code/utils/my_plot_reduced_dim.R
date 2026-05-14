@@ -103,7 +103,7 @@ my_plot_reduced_dim <- function(spe,
     
     if(save_plot){
         plot_name <- plot_name <- paste(c(paste(c(prefix, dimred, var_type), collapse = "_"), my_var, suffix), collapse = "-")
-        if(facet) plot_name <- paste0(plot_name, "_facet")
+        if(!is.null(facet)) plot_name <- paste0(plot_name, "_facet-", facet)
         
         plot_name <- paste0(plot_name, ".png")
         
