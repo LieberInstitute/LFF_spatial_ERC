@@ -1,54 +1,44 @@
+## Louise Huuki-Myers, May 2026
+## Run Bansky on ERC Xenium data to get SpDs
 ## Adapted from https://github.com/LieberInstitute/Habenula_Visium/blob/b8719fbcdde7b14be267a396c1dd743cdc034649/code/09_HD_cell_level/05_banksy_embedding.R
 
-library(here)
-library(SpatialExperiment)
-library(sessioninfo)
-library(Banksy)
-library(harmony)
-library(cowplot)
-library(scater)
-library(tidyverse)
+#### Set Up ####
 
-spe_path = here(
-    'processed-data', '09_HD_cell_level', 'no_secondary',
-    'spe_norm_filtered_split.rds'
-)
-out_path = here(
-    'processed-data', '09_HD_cell_level', 'no_secondary', 'banksy',
-    'spe_banksy.rds'
-)
-svg_path = here(
-    'processed-data', '10_HD_bin_level', 'no_secondary', 'nnSVG_out',
-    'merged_SVGs.txt'
-)
-sample_info_path = here('raw-data', 'sample_info', 'hd_basic_info_split.csv')
-plot_dir = here('plots', '09_HD_cell_level', 'no_secondary', 'banksy')
+library("here")
+library("SpatialExperiment")
+library("sessioninfo")
+library("Banksy")
+library("harmony")
+library("cowplot")
+library("scater")
+library("tidyverse")
+library("qs2")
 
-random_seed = 0
+data_dir <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding")
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
+plot_dir <- here("plots", "21_Xenium", "13_xenium_bansky_embedding")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+#### Load data #### 
+message(Sys.time(), " - Load spe data")
+spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+
+#### set up params ####
+random_seed = 514
 buffer_prop = 0.5
-lambda = 0.2
+lambda = 0.8 ## 0.8 finds spatial domain vs. 0.2 cell type resolution
 
-dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
-dir.create(dirname(out_path), showWarnings = FALSE)
 set.seed(random_seed)
 
-#   Load and subset to SVGs to avoid exceeding maximum number
-#   of rows in a data table created internally. See
-#   https://github.com/prabhakarlab/Banksy/issues/38#issuecomment-2310220881 and
-#   https://github.com/prabhakarlab/Banksy_py/issues/12#issuecomment-2268114768
-spe = readRDS(spe_path)
-spe = spe[readLines(svg_path),]
-spe$exclude_overlapping = FALSE
 
-################################################################################
-#   Stagger spatial coordinates to fit each sample in a unique range
-################################################################################
+####   Stagger spatial coordinates to fit each sample in a unique range ####
 
 message(Sys.time(), ' | Staggering spatial coordinates')
 coords = spatialCoords(spe) |>
     as_tibble() |>
     mutate(sample_id = factor(spe$sample_id)) |>
-    rename(sdimx = pxl_col_in_fullres, sdimy = pxl_row_in_fullres)
+    rename(sdimx = x_centroid, sdimy = y_centroid)
 
 #   Find a range of X values slightly larger than any particular sample
 x_size = coords |>
@@ -70,9 +60,7 @@ spatialCoords(spe) = coords |>
     select(sdimx, sdimy) |>
     as.matrix()
 
-################################################################################
-#   Compute Banksy embedding
-################################################################################
+#### Compute Banksy embedding ####
 
 message(Sys.time(), ' | Running computeBanksy on full dataset')
 spe = computeBanksy(
@@ -84,9 +72,7 @@ spe = runBanksyPCA(
     spe, use_agf = TRUE, lambda = lambda, seed = random_seed
 )
 
-################################################################################
-#   Run Harmony on embedding, with UMAP before and after
-################################################################################
+####   Run Harmony on embedding, with UMAP before and after ####
 
 message(Sys.time(), ' | Running UMAP on embedding')
 spe = runBanksyUMAP(
@@ -108,20 +94,18 @@ spe = runBanksyUMAP(
     seed = random_seed
 )
 
-################################################################################
-#   Explore effect of Harmony on UMAP
-################################################################################
+####   Explore effect of Harmony on UMAP ####
 
 sample_info = read_csv(sample_info_path, show_col_types = FALSE)
-spe$batch_num = paste(
+spe$chip = paste(
     'Batch',
-    sample_info$batch_num[
+    sample_info$chip[
         match(spe$sample_id, sample_info$tissue_id)
     ]
 )
 
 #   All samples together, colored by sample ID and batch number (separate plots)
-for (color_var in c('sample_id', 'batch_num')) {
+for (color_var in c('sample_id', 'chip')) {
     p = plot_grid(
         plotReducedDim(
             spe, sprintf("UMAP_M1_lam%s", lambda), point_size = 0.6,
@@ -154,7 +138,7 @@ for (color_var in c('sample_id', 'batch_num')) {
 p = plot_grid(
     plotReducedDim(
         spe, sprintf("UMAP_M1_lam%s", lambda), point_size = 0.6,
-        point_alpha = 0.5, color_by = 'batch_num'
+        point_alpha = 0.5, color_by = 'chip'
     ) +
         facet_wrap(~ spe$sample_id, nrow = 1) +
         theme_bw(base_size = 18) +
@@ -163,7 +147,7 @@ p = plot_grid(
         ),
     plotReducedDim(
         spe, "UMAP_HARMONY", point_size = 0.6, point_alpha = 0.5,
-        color_by = 'batch_num'
+        color_by = 'chip'
     ) +
         facet_wrap(~ spe$sample_id, nrow = 1) +
         theme_bw(base_size = 18) +
@@ -179,7 +163,17 @@ png(
 print(p)
 dev.off()
 
-message(Sys.time(), ' | Saving full SPE object')
-saveRDS(spe, file = out_path)
+#### Save SPE with bansky data ####
+message(Sys.time(), " - Saving SPE object")
 
-session_info()
+qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
+
+
+# slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
