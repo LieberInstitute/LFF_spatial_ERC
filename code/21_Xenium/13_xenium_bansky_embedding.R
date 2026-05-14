@@ -96,14 +96,6 @@ spe = runBanksyUMAP(
 
 ####   Explore effect of Harmony on UMAP ####
 
-sample_info = read_csv(sample_info_path, show_col_types = FALSE)
-spe$chip = paste(
-    'Batch',
-    sample_info$chip[
-        match(spe$sample_id, sample_info$tissue_id)
-    ]
-)
-
 #   All samples together, colored by sample ID and batch number (separate plots)
 for (color_var in c('sample_id', 'chip')) {
     p = plot_grid(
