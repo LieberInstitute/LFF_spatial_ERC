@@ -40,6 +40,8 @@ spe$cell_id <- colnames(spe)
 
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
+## TODO add broad cell types
+
 #### Explore RCTD results ####
 
 table(is.na(spe$spot_class), spe$sum_gex < 100)
@@ -184,6 +186,19 @@ ggsave(rctd_class_ct_prop_bar_plot, filename = here(plot_dir, "xenium_rctd_class
 
 write_csv(cell_type_class_summary, file = here(data_dir, "RCTD_cell_type_class_summary.csv"))
 
+#### load SingleR results ####
+
+singleR_results <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_singleR", "SingleR_results_xenium.qs2"))
+dim(singleR_results)
+head(singleR_results)
+
+identical(rownames(singleR_results), colnames(spe))
+
+spe$singleR_label <- factor(singleR_results$labels, levels = levels(spe$first_type))
+spe$singleR_delta <- singleR_results$delta.next
+
+summary(spe$singleR_delta)
+
 #### quality metrics vs. RCTD class ####
 
 rctd_qc_summary <- as.data.frame(colData(spe)) |>
@@ -206,33 +221,54 @@ rctd_qc_summary <- as.data.frame(colData(spe)) |>
 
 rctd_qc_summary |> filter(stat == "cell_area", spot_class %in% c("singlet", "doublet_certain"))
 
-gg_QC_plot_out <- GGally::ggpairs(as.data.frame(colData(spe)), columns = c("sum_gex", "detected_gex", "cell_area"), aes(colour = spot_class)) + theme_bw()
+gg_QC_plot_out <- GGally::ggpairs(as.data.frame(colData(spe)), columns = c("sum_gex", "detected_gex", "cell_area", "singleR_delta"), aes(colour = spot_class)) + theme_bw()
 ggsave(gg_QC_plot_out, filename = here(plot_dir, "xenium_QC_metrics_ggpairs_plot_RCTD_spot_class.png"), height = 12, width = 12)
 
 
-#### load SingleR results ####
+summary(spe$singleR_delta)
 
-singleR_results <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_singleR", "SingleR_results_xenium.qs2"))
+delta_distibution <- as.data.frame(colData(spe)) |>
+    ggplot(aes(x = singleR_delta, color = spot_class)) +
+    geom_density() +
+    geom_vline(xintercept = 0.05)
 
-rctd_test <- rctd_data@results$results_df[1:1000,]
+ggsave(delta_distibution, filename = here(plot_dir, "singleR_delta_distibution.png"))
 
-identical(rownames(singleR_results), rownames(rctd_test))
+## compare cell type calls ####
+table(singleR_results$labels == spe$first_type, spe$spot_class)
 
-table(singleR_results$labels, rctd_test$first_type)
+table(singleR_results$labels, spe$first_type)
+
+bluster::pairwiseRand(singleR_results$labels, spe$first_type, mode = "index")
+
+map_dbl(levels(spe$spot_class), ~bluster::pairwiseRand(spe[, spe$spot_class == .x]$first_type, spe[, spe$spot_class == .x]$singleR_label, mode = "index"))
+# "reject"            "singlet"           "doublet_certain"   "doublet_uncertain"
+#  0.0484253           0.4174931.          0.4139423           0.4842218
 
 
-#### Save SPE with additional data ####
-message(Sys.time(), " - Saving cleaned SPE object")
-qs2::qs_save(spe, here(data_dir, "spe_xenium_cell_types.qs2"))
+levels(spe$spot_class)
 
-# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+jacc.mat <- map(levels(spe$spot_class), ~bluster::linkClustersMatrix(spe[, spe$spot_class == .x]$first_type, spe[, spe$spot_class == .x]$singleR_label))
 
+pdf(here(plot_dir, "jacc_matrix_ct_RCTD_singleR.pdf"), height = 12, width = 12)
+walk2(jacc.mat, levels(spe$spot_class), 
+      ~print(ComplexHeatmap::Heatmap(.x,
+                                     name = "Correspondence",
+                                     col = c("black", viridisLite::plasma(100)),
+                                     na_col = "black",
+                                     cluster_rows = FALSE,
+                                     cluster_columns = FALSE,
+                                     column_title = .y
+      )))
+
+dev.off()
+
+#### Plot cell types in Reduced Dims ####
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-#### Plot RCTD cell types in Reduced Dims ####
 ## categorical
-walk2(c("first_type", "second_type"), list(cell_type_colors$anno, cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = .y))
-walk2(c("first_type", "second_type"), list(cell_type_colors$anno, cell_type_colors$anno), ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = .y))
+walk(c("first_type", "second_type", "singleR_label"),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "TSNE", my_var = .x, var_type = "cat", color_pal = cell_type_colors$anno))
+walk(c("first_type", "second_type", "singleR_label"),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP", my_var = .x, var_type = "cat", color_pal = cell_type_colors$anno))
 
 walk2(c("first_type", "second_type"), 
       list(cell_type_colors$anno, cell_type_colors$anno), 
@@ -381,7 +417,9 @@ probes_markers |> count(unique_target)
 
 probes_markers |> filter(n_broad == 1) |> count(target_broad, unique_target, n_target)
 
-probes_markers |> filter(gene_name == 'DNER')
+probes_markers |> filter(gene_name == 'RORB')
+probes_markers |> filter(target == 'Oligo.3')
+probes_markers |> filter(target == 'Macro')
 
 probes_markers |> ungroup() |> count(gene_name) |> arrange(-n)
 
@@ -401,7 +439,7 @@ broad_markers <- list(
     Oligo = c("MBP", "MOBP", "MOG", "MAG", "OPALIN","LINGO2"),
     OPC   = c("PDGFRA", "OLIG2", "VCAN", "SOX10", "PTPRZ1", "BRINP3"),
     Micro = c("P2RY12", "SPI1", "CTSH", "TREM2", "P2RY13", "ITGAM"),
-    Macro = c("CD163", "LYVE1", "PTPRC", "ITGAM", "ITGAX", "TGFB1"),
+    Macro = c("CD163", "LYVE1","MS4A6A", "PTPRC", "ITGAX", "TGFB1"),
     Vasc  = c("PECAM1", "FLT1", "NRP1", "ABCC9", "CSPG4", "NR2F2"),
     Excit = c("SLC17A7", "SLC17A6", "CUX2", "RORB", "THEMIS", "CRYM"),
     Inhib = c("GAD1", "GAD2", "SST", "PVALB", "VIP", "LAMP5")
@@ -419,10 +457,51 @@ plot_marker_express_List(
 )
 
 plot_marker_express_List(
+    spe[, spe$spot_class == "singlet"],
+    gene_list = broad_markers,
+    pdf_fn = here(plot_dir, "xenium_rcdt_singlets_broad_marker_expres_violin.pdf"),
+    cellType_col = "first_type",
+    gene_name_col = "Symbol",
+    color_pal = cell_type_colors$anno
+)
+
+plot_marker_express_List(
     spe[, spe$spot_class == "doublet_certain"],
     gene_list = broad_markers,
-    pdf_fn = here(plot_dir, "xenium_rcdt_doubletc_broad_marker_expres_violin.pdf"),
+    pdf_fn = here(plot_dir, "xenium_singleR_broad_marker_expres_violin.pdf"),
+    cellType_col = "singleR_label",
+    gene_name_col = "Symbol",
+    color_pal = cell_type_colors$anno
+)
+
+erc_oligo_key_genes <- list(OPC = c("PDGFRA", "MEG3","OLIG2"), #OPCs
+                            # COP = c("GPR17"),
+                            Oligo = c("MBP", "MOG", "PLP1", "CNP", "MAL"),
+                            OPC_Oligo.3 = c("RBFOX1", "KCND2", "GPM6A", #OPC + Oligo.3
+                                            "CNTNAP2", "NTRK3","KCNJ3"), #OPC + Oligo.3
+                            Oligo.3 = c("LINGO2", "MT-CO3", "ADGRV1"),   # Oligo.3
+                            Oligo.5 = c("ARHGEF3", "ADGRF5",  "CLDN5"), #Oligo.5
+                            Oligo.4 = c("LAMA2", "ERBB4"),  #Oligo.1 + 4
+                            Oligo.1 = c("OPALIN", "OMG", "SEMA6D"), #Oligo.1
+                            Oligo.2 = c("RASGRF1","RASGRF2", "LRRC63", "ANKRD18A") #Oligo.2
+)
+
+erc_oligo_key_genes <- map(erc_oligo_key_genes, ~.x[.x %in% rownames(spe)])
+
+plot_marker_express_List(
+    spe[, spe$spot_class == "singlet" & grepl("Oligo|OPC", spe$first_type)],
+    gene_list = erc_oligo_key_genes,
+    pdf_fn = here(plot_dir, "xenium_rcdt_singlets_Oligo_marker_expres_violin.pdf"),
     cellType_col = "first_type",
+    gene_name_col = "Symbol",
+    color_pal = cell_type_colors$anno
+)
+
+plot_marker_express_List(
+    spe[, spe$spot_class == "singlet" & grepl("Oligo|OPC", spe$singleR_label)],
+    gene_list = erc_oligo_key_genes,
+    pdf_fn = here(plot_dir, "xenium_singleR_singlets_Oligo_marker_expres_violin.pdf"),
+    cellType_col = "singleR_label",
     gene_name_col = "Symbol",
     color_pal = cell_type_colors$anno
 )
@@ -430,6 +509,86 @@ plot_marker_express_List(
 #### scDot plots ####
 
 library("scDotPlot")
+
+broad_markers2 <- AnnotationDbi::unlist2(broad_markers)
+
+any(duplicated(broad_markers2))
+
+rowData(spe)$broad_markers <- NULL
+rowData(spe)$broad_markers <- names(broad_markers2)[match(rownames(spe), broad_markers2)] 
+table(rowData(spe)$broad_markers)
+
+pdf(here(plot_dir, "Xenium_singlet_dotplot_broad_markers.pdf"), height = 12, width =11)
+
+spe[, spe$spot_class == "singlet"] |>
+    scDotPlot(features = broad_markers2,
+              group = "first_type",
+              groupAnno = "first_type",
+              featureAnno = "broad_markers",
+              scale = TRUE,
+              annoColors = list("first_type" = cell_type_colors$anno,
+                                broad_markers = cell_type_colors$broad),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+spe[, spe$spot_class == "singlet"] |>
+    scDotPlot(features = broad_markers2,
+              group = "singleR_label",
+              groupAnno = "singleR_label",
+              featureAnno = "broad_markers",
+              scale = TRUE,
+              annoColors = list("singleR_label" = cell_type_colors$anno,
+                                broad_markers = cell_type_colors$broad),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+dev.off()
+
+erc_oligo_key_genes2 <- AnnotationDbi::unlist2(erc_oligo_key_genes)
+
+rowData(spe)$Oligo_marker <- NULL
+rowData(spe)$Oligo_marker <- names(erc_oligo_key_genes2)[match(rownames(spe), erc_oligo_key_genes2)] 
+table(rowData(spe)$Oligo_marker)
+
+pdf(here(plot_dir, "Xenium_singlet_dotplot_Oligo_markers.pdf"))
+
+spe[, spe$spot_class == "singlet" & grepl("Oligo|OPC", spe$first_type)] |>
+    scDotPlot(features = erc_oligo_key_genes2,
+              group = "first_type",
+              groupAnno = "first_type",
+              featureAnno = "Oligo_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              #                   Oligo_marker = Oligo_anno_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+spe[, spe$spot_class == "singlet" & grepl("Oligo|OPC", spe$singleR_label)] |>
+    scDotPlot(features = erc_oligo_key_genes2,
+              group = "singleR_label",
+              groupAnno = "singleR_label",
+              featureAnno = "Oligo_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              #                   Oligo_marker = Oligo_anno_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+
+dev.off()
+
+
+#### Save SPE with additional data ####
+message(Sys.time(), " - Saving singlet only SPE object")
+
+spe <- spe[, spe$spot_class == "singlet"]
+qs2::qs_save(spe, here(data_dir, "spe_xenium_cell_types.qs2"))
+
+# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+
 
 # slurmjobs::job_single('10_xenium_cell_types', create_shell = TRUE, memory = '100G', command = "Rscript 10_xenium_cell_types.R")
 
