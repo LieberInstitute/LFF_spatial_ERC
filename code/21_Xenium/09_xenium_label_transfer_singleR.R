@@ -54,7 +54,7 @@ cat("Inf:", sum(is.infinite(assay(sce, "logcounts"))), "\n")
 cat("NaN:", sum(is.nan(assay(sce, "logcounts"))), "\n")
 
 
-message("Shared genes:", shared_genes, "\n")
+message("Shared genes:", message(shared_genes), "\n")
 
 labels <- sce[[opt$cell_type_col]]
 cat("NAs in labels:", sum(is.na(labels)), "\n")
