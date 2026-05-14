@@ -40,7 +40,19 @@ spe$cell_id <- colnames(spe)
 
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
-## TODO add broad cell types
+## Define typical cell type columns
+
+spe$cell_type_anno <- spe$first_type
+spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+table(spe$cell_type_broad)
+
+#### Save SPE with additional data ####
+message(Sys.time(), " - Saving singlet only SPE object")
+
+spe_singlet <- spe[, spe$spot_class == "singlet"]
+qs2::qs_save(spe_singlet, here(data_dir, "spe_xenium_cell_types.qs2"))
+
+rm(spe_singlet)
 
 #### Explore RCTD results ####
 
@@ -194,7 +206,11 @@ head(singleR_results)
 
 identical(rownames(singleR_results), colnames(spe))
 
+## cell types
 spe$singleR_label <- factor(singleR_results$labels, levels = levels(spe$first_type))
+spe$singleR_label_broad <- factor(gsub("\\..*?$", "", spe$singleR_label), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+table(spe$singleR_label_broad)
+
 spe$singleR_delta <- singleR_results$delta.next
 
 summary(spe$singleR_delta)
@@ -225,7 +241,9 @@ gg_QC_plot_out <- GGally::ggpairs(as.data.frame(colData(spe)), columns = c("sum_
 ggsave(gg_QC_plot_out, filename = here(plot_dir, "xenium_QC_metrics_ggpairs_plot_RCTD_spot_class.png"), height = 12, width = 12)
 
 
-summary(spe$singleR_delta)
+summary(spe$singleR_delta) ## this is super low
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# 0.000000 0.005566 0.016527 0.056630 0.075513 1.355408 
 
 delta_distibution <- as.data.frame(colData(spe)) |>
     ggplot(aes(x = singleR_delta, color = spot_class)) +
@@ -237,7 +255,13 @@ ggsave(delta_distibution, filename = here(plot_dir, "singleR_delta_distibution.p
 ## compare cell type calls ####
 table(singleR_results$labels == spe$first_type, spe$spot_class)
 
-table(singleR_results$labels, spe$first_type)
+table(singleR_results$labels == spe$first_type, spe$spot_class)
+
+table(spe$singleR_label_broad, spe$cell_type_broad)
+table(spe$singleR_label_broad ==  spe$cell_type_broad, spe$spot_class)
+# reject singlet doublet_certain doublet_uncertain
+# FALSE   3596   12286           18559              2738
+# TRUE    2013  292115          103705             15295
 
 bluster::pairwiseRand(singleR_results$labels, spe$first_type, mode = "index")
 
@@ -579,13 +603,6 @@ spe[, spe$spot_class == "singlet" & grepl("Oligo|OPC", spe$singleR_label)] |>
               groupLegends = FALSE)
 
 dev.off()
-
-
-#### Save SPE with additional data ####
-message(Sys.time(), " - Saving singlet only SPE object")
-
-spe <- spe[, spe$spot_class == "singlet"]
-qs2::qs_save(spe, here(data_dir, "spe_xenium_cell_types.qs2"))
 
 # spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
 
