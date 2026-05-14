@@ -28,11 +28,14 @@ spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_x
 random_seed = 514
 buffer_prop = 0.5
 lambda = 0.8 ## 0.8 finds spatial domain vs. 0.2 cell type resolution
+k_geom <- c(25, 50)
 
 set.seed(random_seed)
 
 
 ####   Stagger spatial coordinates to fit each sample in a unique range ####
+
+orginal_coords <- spatialCoords(spe)
 
 message(Sys.time(), ' | Staggering spatial coordinates')
 coords = spatialCoords(spe) |>
@@ -64,11 +67,11 @@ spatialCoords(spe) = coords |>
 
 message(Sys.time(), ' | Running computeBanksy on full dataset')
 spe = computeBanksy(
-    spe, assay_name = "logcounts", compute_agf = TRUE, seed = random_seed
+    spe, assay_name = "logcounts", compute_agf = TRUE, seed = random_seed, k_geom = k_geom
 )
 
 message(Sys.time(), ' | Running PCA on embedding')
-spe = runBanksyPCA(
+spe_b = runBanksyPCA(
     spe, use_agf = TRUE, lambda = lambda, seed = random_seed
 )
 
@@ -155,11 +158,52 @@ png(
 print(p)
 dev.off()
 
+#### Bansky clustering ####
+message(Sys.time(), ' | Performing clustering')
+spe_b = clusterBanksy(
+    spe_b, 
+    use_agf = TRUE, 
+    lambda = lambda,
+    seed = random_seed,
+    algo = "kmeans", 
+    # resolution = res, 
+    dimred = "HARMONY",
+    kmeans.centers = 9
+)
+
+
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
 
 qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
+# # spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
+# 
+# table(spe$BrNum, spe$clust_HARMONY_kmeans9)
+# 
+# library(spatialLIBD)
+# 
+# spe_b <- spe
+# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+# 
+# spe$clust_HARMONY_kmeans9 <- spe_b$clust_HARMONY_kmeans9
+# spe$clust_HARMONY_kmeans12 <- spe_b$clust_HARMONY_kmeans12
+# 
+# pdf(here(plot_dir, "Bansky_k9_cluster_v_cell_type_broad.pdf"))
+# ComplexHeatmap::Heatmap(table(spe$clust_HARMONY_kmeans9, spe$cell_type_broad))
+# dev.off()
+# 
+# samp <- "Br1556"
+# vis_clus_class <- vis_clus(spe,
+#                            sampleid = samp,
+#                            clustervar = "clust_HARMONY_kmeans12",
+#                            datatype = "Xenium",
+#                            point_size = 1.5,
+#                            # alpha = 0.5,
+#                            # colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"),
+#                            guide_point_size = 3)
+# 
+# ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k12_%s.png", samp)), width = 12)
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
 
