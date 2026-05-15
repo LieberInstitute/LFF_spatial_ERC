@@ -92,12 +92,6 @@ results <- crawdad::findTrends(cells,
                                verbose = TRUE
 )
 
-# Error: BiocParallel errors
-# 3 remote errors, element index: 1, 3, 5
-# 2 unevaluated and other errors
-# first remote error:
-#     Error in `$<-.data.frame`(`*tmp*`, "celltypes", value = structure(c(`1` = 1L, : replacement has 45 rows, data has 12231
-
 dat <- crawdad::meltResultsList(results, withPerms = TRUE)
 
 write_csv(dat |> mutate(BrNum = opt$brnum, .before = 1), file = here(data_dir, sprintf("xenium_CRAWDAD_results_%s.csv", opt$brnum)))

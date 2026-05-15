@@ -30,6 +30,9 @@ spe <- qs_read(here("processed-data", "21_Xenium", "07_xenium_build_spe","spe_xe
 spe
 # dim: 541 473611
 
+## fix sample ID
+spe$sample_id <- spe$BrNum
+
 colnames(spe) <- paste0(spe$BrNum, "_", spe$Barcode)
 any(duplicated(colnames(spe)))
 
