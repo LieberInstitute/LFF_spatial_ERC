@@ -182,17 +182,18 @@ table(spe$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans12)
 #### Annotate bansky clus ####
 
 SpX_colors = c('Vasc~Sp9X3' = "#E05AD2",
-               'L1~Sp9X6' = "#0220DE",
-               'L1~Sp9X7' = "#9AA7FE",
+               'L1~Sp9X6' = "#9AA7FE",
+               'L1~Sp9X7' = "#0220DE",
                'L2.3~Sp9X4' = "#FEAF16",
-               'LD~Sp9X1' = "#00BCF9",
+               'LD~Sp9X8' = "#00BCF9",
                'Inhib~Sp9X5' = "#C82100",
-               'L5~Sp9X8' = "#16FF32",
+               'L5~Sp9X1' = "#16FF32",
                'L6~Sp9X9' = "#178C6D",
                'WM~Sp9X2'= "#581009")
 
 cluster_anno <- readxl::read_xlsx(here("processed-data", "21_Xenium", "Bansky_cluster_notes.xlsx")) |>
     filter(!grepl("uf", Visium)) |>
+    # mutate(SpX = paste0(Visium , "~Sp9X", Xenium_k9))
     mutate(SpX = factor(paste0(Visium , "~Sp9X", Xenium_k9), levels = names(SpX_colors)))
 
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
@@ -205,6 +206,23 @@ SpD_colors
 spe$SpX <- cluster_anno$SpX[match(spe$clust_HARMONY_kmeans9, cluster_anno$Xenium_k9)]
 
 table(spe$SpX, spe$clust_HARMONY_kmeans9)
+
+#### Add RCTD data ###
+
+message(Sys.time(), "- Load rctd data")
+rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
+
+ncol(spe) == nrow(rctd_data@results$results_df)
+identical(colnames(spe), rownames(rctd_data@results$results_df))
+
+colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
+
+spe$cell_type_anno <- spe$first_type
+spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+table(spe$cell_type_broad)
+
+table(spe$SpX, spe$cell_type_broad)
+table(spe$SpX, spe$spot_class)
 
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
@@ -341,7 +359,89 @@ spe |>
               groupLegends = FALSE)
 dev.off()
 
+#### Cell Type vs. SpX heatmap ####
+library(ComplexHeatmap)
 
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
+
+cell_v_SpX <- table(spe[, spe$spot_class == "singlet"]$SpX, spe[, spe$spot_class == "singlet"]$cell_type_anno)
+
+## proportion cell type (SpX rows sum to 1)
+cell_prop_v_SpX <- sweep(cell_v_SpX, 1, rowSums(cell_v_SpX), FUN = "/")
+rowSums(cell_prop_v_SpX)
+
+## proportion SpX (cell type cols sum to 1)
+cell_v_SpX_prop <- sweep(cell_v_SpX, 2, colSums(cell_v_SpX), FUN = "/")
+colSums(cell_v_SpX_prop)
+
+
+SpX_row_ha <- rowAnnotation(
+    SpX = rownames(cell_v_SpX),
+    col = list(SpX = SpX_colors),
+    show_legend = FALSE
+)
+
+all(colnames(cell_v_SpX) %in% names(cell_type_colors$anno))
+
+cell_type_col_ha <- HeatmapAnnotation(
+    cell_type = colnames(cell_v_SpX),
+    col = list(cell_type = cell_type_colors$anno),
+    show_legend = FALSE
+)
+
+## PLOT HEATMAPS
+pdf(here(plot_dir, "Xenium_bansky_SpX_v_cell_type_heatmap.pdf"), width = 10)
+
+## counts
+ComplexHeatmap::Heatmap(cell_v_SpX,
+                        name = "n singlet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_v_SpX,
+                        name = "n singlet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+## proportion cell type (SpX row sum to 1)
+ComplexHeatmap::Heatmap(cell_prop_v_SpX,
+                        name = "prop cell type\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = TRUE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_prop_v_SpX,
+                        name = "prop cell type\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+## proportion SpX (cell type cols sum to 1)
+ComplexHeatmap::Heatmap(cell_v_SpX_prop,
+                        name = "prop SpX\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = TRUE,
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_v_SpX_prop,
+                        name = "prop SpX\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+dev.off()
 
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
