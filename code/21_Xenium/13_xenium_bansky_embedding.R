@@ -161,8 +161,8 @@ dev.off()
 
 #### Bansky clustering ####
 message(Sys.time(), ' | Performing clustering')
-spe_b = clusterBanksy(
-    spe_b, 
+spe = clusterBanksy(
+    spe, 
     use_agf = TRUE, 
     lambda = lambda,
     seed = random_seed,
