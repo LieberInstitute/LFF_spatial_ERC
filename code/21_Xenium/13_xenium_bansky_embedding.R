@@ -22,7 +22,8 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data #### 
 message(Sys.time(), " - Load spe data")
-spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
 
 #### set up params ####
 random_seed = 514
@@ -71,7 +72,7 @@ spe = computeBanksy(
 )
 
 message(Sys.time(), ' | Running PCA on embedding')
-spe_b = runBanksyPCA(
+spe = runBanksyPCA(
     spe, use_agf = TRUE, lambda = lambda, seed = random_seed
 )
 
@@ -171,7 +172,7 @@ spe_b = clusterBanksy(
     kmeans.centers = 9
 )
 
-
+table(spe$clust_HARMONY_kmeans9)
 
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
@@ -180,33 +181,26 @@ spatialCoords(spe) <- orginal_coords
 
 qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
-# # spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
-# 
-# table(spe$BrNum, spe$clust_HARMONY_kmeans9)
-# 
-# library(spatialLIBD)
-# 
-# spe_b <- spe
-# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
-# 
-# spe$clust_HARMONY_kmeans9 <- spe_b$clust_HARMONY_kmeans9
-# spe$clust_HARMONY_kmeans12 <- spe_b$clust_HARMONY_kmeans12
-# 
+# spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
+
+#### Plot bansky clus ####
+library(spatialLIBD)
+
 # pdf(here(plot_dir, "Bansky_k9_cluster_v_cell_type_broad.pdf"))
 # ComplexHeatmap::Heatmap(table(spe$clust_HARMONY_kmeans9, spe$cell_type_broad))
 # dev.off()
-# 
-# samp <- "Br1556"
-# vis_clus_class <- vis_clus(spe,
-#                            sampleid = samp,
-#                            clustervar = "clust_HARMONY_kmeans12",
-#                            datatype = "Xenium",
-#                            point_size = 1.5,
-#                            # alpha = 0.5,
-#                            # colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"),
-#                            guide_point_size = 3)
-# 
-# ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k12_%s.png", samp)), width = 12)
+
+samp <- "Br1556"
+vis_clus_class <- spatialLIBD::vis_clus(spe,
+                           sampleid = samp,
+                           clustervar = "clust_HARMONY_kmeans12",
+                           datatype = "Xenium",
+                           point_size = 1.5,
+                           # alpha = 0.5,
+                           # colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"),
+                           guide_point_size = 3)
+
+ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k12_%s.png", samp)), width = 12)
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
 
