@@ -14,6 +14,9 @@ library("scater")
 library("tidyverse")
 library("qs2")
 
+library("spatialLIBD")
+library("scDotPlot")
+
 data_dir <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
@@ -24,6 +27,7 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 message(Sys.time(), " - Load spe data")
 # spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
 spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
+spe$sample_id <- spe$BrNum
 
 #### set up params ####
 random_seed = 514
@@ -169,38 +173,176 @@ spe = clusterBanksy(
     algo = "kmeans", 
     # resolution = res, 
     dimred = "HARMONY",
-    kmeans.centers = 9
+    kmeans.centers = 12
 )
 
-table(spe$clust_HARMONY_kmeans9)
+table(spe$clust_HARMONY_kmeans12)
+table(spe$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans12)
+
+#### Annotate bansky clus ####
+
+SpX_colors = c('Vasc~Sp9X3' = "#E05AD2",
+               'L1~Sp9X6' = "#0220DE",
+               'L1~Sp9X7' = "#9AA7FE",
+               'L2.3~Sp9X4' = "#FEAF16",
+               'LD~Sp9X1' = "#00BCF9",
+               'Inhib~Sp9X5' = "#C82100",
+               'L5~Sp9X8' = "#16FF32",
+               'L6~Sp9X9' = "#178C6D",
+               'WM~Sp9X2'= "#581009")
+
+cluster_anno <- readxl::read_xlsx(here("processed-data", "21_Xenium", "Bansky_cluster_notes.xlsx")) |>
+    filter(!grepl("uf", Visium)) |>
+    mutate(SpX = factor(paste0(Visium , "~Sp9X", Xenium_k9), levels = names(SpX_colors)))
+
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+SpD_colors
+# Vasc~Sp09D08    L1~Sp09D05  L2.3~Sp09D01    LD~Sp09D02 Inhib~Sp09D09    L5~Sp09D03    L6~Sp09D04 WM.uf~Sp09D07
+# "#E05AD2"     "#0220DE"     "#FEAF16"     "#00BCF9"     "#C82100"     "#16FF32"     "#178C6D"     "#E4E1E3"
+# WM~Sp09D06
+# "#581009"
+
+spe$SpX <- cluster_anno$SpX[match(spe$clust_HARMONY_kmeans9, cluster_anno$Xenium_k9)]
+
+table(spe$SpX, spe$clust_HARMONY_kmeans9)
 
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
 
 spatialCoords(spe) <- orginal_coords
 
+metadata(spe)$SpX_colors <- SpX_colors
+
 qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
 # spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
 
-#### Plot bansky clus ####
-library(spatialLIBD)
+#### Plot Vis clus ####
+
+
 
 # pdf(here(plot_dir, "Bansky_k9_cluster_v_cell_type_broad.pdf"))
 # ComplexHeatmap::Heatmap(table(spe$clust_HARMONY_kmeans9, spe$cell_type_broad))
 # dev.off()
 
-samp <- "Br1556"
-vis_clus_class <- spatialLIBD::vis_clus(spe,
-                           sampleid = samp,
-                           clustervar = "clust_HARMONY_kmeans12",
-                           datatype = "Xenium",
-                           point_size = 1.5,
-                           # alpha = 0.5,
-                           # colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"),
-                           guide_point_size = 3)
+cluster_colors <- c("#f62062",
+                    "#f45e28",
+                    "#cf9800",
+                    "#608d00",
+                    "#01e090",
+                    "#3ed9e6",
+                    "#0064ca",
+                    "#9215a3",
+                    "#ff8ee2",
+                    "black",
+                    "grey",
+                    "brown")
 
-ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k12_%s.png", samp)), width = 12)
+samp <- "Br1556"
+
+map(unique(spe$BrNum), function(samp){
+    vis_clus_class <- spatialLIBD::vis_clus(spe,
+                                            sampleid = samp,
+                                            clustervar = "clust_HARMONY_kmeans9",
+                                            datatype = "Xenium",
+                                            point_size = 1.5,
+                                            # alpha = 0.5,
+                                            colors = cluster_colors,
+                                            guide_point_size = 3)
+    
+    ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k9_%s.png", samp)), width = 12)
+    
+})
+
+map(unique(spe$BrNum), function(samp){
+    vis_clus_class <- spatialLIBD::vis_clus(spe,
+                                            sampleid = samp,
+                                            clustervar = "SpX",
+                                            datatype = "Xenium",
+                                            point_size = 1.5,
+                                            # alpha = 0.5,
+                                            colors = SpX_colors,
+                                            guide_point_size = 3)
+    
+    ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_SpX_%s.png", samp)), width = 12)
+    
+})
+
+
+source(here("code", "utils", "my_plot_reduced_dim.R"))
+
+
+walk2(c("clust_HARMONY_kmeans9", "SpX"), list(cluster_colors, SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
+
+
+#### SpD gene expression ####
+
+load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE)
+
+marker_stats_top <- marker_stats |>
+    filter(gene %in% rownames(spe), MeanRatio >1) |>
+    group_by(cellType.target) |>
+    arrange(MeanRatio.rank) |>
+    slice(1:5) |>
+    select(gene, MeanRatio.rank, SpD = cellType.target) |>
+    arrange(SpD)
+
+spd_marker_list <- map(rafalib::splitit(marker_stats_top$SpD), ~marker_stats_top$gene[.x])
+spd_marker_list <- spd_marker_list[map_int(spd_marker_list, length) > 0]
+
+map(lit_markers_list, ~all(.x %in% rownames(spe)))
+map(lit_markers_list, ~all(.x %in% rownames(spe)))
+
+DeconvoBuddies::plot_marker_express_List(sce = spe, 
+                                         spd_marker_list, 
+                                         color_pal = cluster_colors,
+                                         cellType_col = "clust_HARMONY_kmeans9",
+                                         pdf = here(plot_dir, "xenium_bansky_cluster_k9_SpD_markers.pdf"),
+                                         gene_name_col = "Symbol")
+
+DeconvoBuddies::plot_marker_express_List(sce = spe, 
+                                         spd_marker_list, 
+                                         color_pal = SpX_colors,
+                                         cellType_col = "SpX",
+                                         pdf = here(plot_dir, "xenium_bansky_SpX_SpD_markers.pdf"),
+                                         gene_name_col = "Symbol")
+
+#### scDot plots ####
+
+rowData(spe)$SpD_marker <- NULL
+rowData(spe)$SpD_marker <- marker_stats_top$SpD[match(rownames(spe), marker_stats_top$gene)] 
+table(rowData(spe)$SpD_marker)
+
+pdf(here(plot_dir, "Xenium_bansky_k9_dotplot_SpD_markers.pdf"))
+spe |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "clust_HARMONY_kmeans9",
+              groupAnno = "clust_HARMONY_kmeans9",
+              featureAnno = "SpD_marker",
+              scale = TRUE,
+              annoColors = list(clust_HARMONY_kmeans9 = cluster_colors,
+                                SpD_marker = SpD_colors),
+              clusterRows = FALSE,
+              clusterColumns = TRUE,
+              groupLegends = FALSE)
+dev.off()
+
+pdf(here(plot_dir, "Xenium_bansky_SpX_dotplot_SpD_markers.pdf"))
+spe |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "SpX",
+              groupAnno = "SpX",
+              featureAnno = "SpD_marker",
+              scale = TRUE,
+              annoColors = list(SpX = SpX_colors,
+                                SpD_marker = SpD_colors),
+              clusterRows = FALSE,
+              clusterColumns = TRUE,
+              groupLegends = FALSE)
+dev.off()
+
+
+
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
 
