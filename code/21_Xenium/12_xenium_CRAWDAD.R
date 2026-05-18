@@ -64,7 +64,7 @@ table(cells$celltypes)
 # dev.off()
 
 ## define the scales to analyze the data
-scales = c(100, 200, 500, 1000, 5000)
+scales = c(50, 100, 200, 300, 400, 500, 1000, 5000)
 random_seed = 513
 
 num_cores = as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
