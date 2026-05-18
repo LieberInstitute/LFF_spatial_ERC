@@ -8,8 +8,8 @@ library("HDF5Array")
 library("scDotPlot")
 library("tidyverse")
 
-# data_dir <- here("processed-data", "04_snRNA-seq", "36_sn_subcluster_dotplot", celltype)
-# if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
+data_dir <- here("processed-data", "04_snRNA-seq", "36_sn_subcluster_dotplot")
+if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
 plot_dir <- here("plots", "04_snRNA-seq", "36_sn_subcluster_dotplot")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
