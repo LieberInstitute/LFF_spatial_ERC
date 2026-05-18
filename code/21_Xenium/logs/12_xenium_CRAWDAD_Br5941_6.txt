@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu May 14 03:14:38 PM EDT 2026
+Mon May 18 03:28:54 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31895725
+Job id: 31972267
 Job name: 12_xenium_CRAWDAD
-Node name: compute-124
+Node name: compute-100
 Task id: 6
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -125,7 +125,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-05-14 15:14:59.906776 - Load SPE data, subset to: Br5941
+2026-05-18 15:29:09.666749 - Load SPE data, subset to: Br5941
 ncells:14733
 
          Astro.1          Astro.2          Astro.3          Astro.4 
@@ -198,6 +198,15 @@ Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb        Inhib.Sst
              298 
 Run on 1cores
 shuffling permutation 1 using seed 1
+50 unit scale
+11858 tiles to shuffle...
+shuffling permutation 2 using seed 2
+50 unit scale
+11858 tiles to shuffle...
+shuffling permutation 3 using seed 3
+50 unit scale
+11956 tiles to shuffle...
+shuffling permutation 1 using seed 1
 100 unit scale
 2989 tiles to shuffle...
 shuffling permutation 2 using seed 2
@@ -215,6 +224,24 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 200 unit scale
 775 tiles to shuffle...
+shuffling permutation 1 using seed 1
+300 unit scale
+357 tiles to shuffle...
+shuffling permutation 2 using seed 2
+300 unit scale
+357 tiles to shuffle...
+shuffling permutation 3 using seed 3
+300 unit scale
+357 tiles to shuffle...
+shuffling permutation 1 using seed 1
+400 unit scale
+208 tiles to shuffle...
+shuffling permutation 2 using seed 2
+400 unit scale
+208 tiles to shuffle...
+shuffling permutation 3 using seed 3
+400 unit scale
+208 tiles to shuffle...
 shuffling permutation 1 using seed 1
 500 unit scale
 130 tiles to shuffle...
@@ -242,7 +269,7 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 5000 unit scale
 4 tiles to shuffle...
-Time was 8.58 mins
+Time was 36.36 mins
 There were 50 or more warnings (use warnings() to see the first 50)
 Evaluating significance for each cell type
 using neighbor distance of 50
@@ -284,16 +311,16 @@ Inhib.Pax6
 Inhib.Pvalb
 Inhib.Sst
 Inhib.Vip
-Time was 27.18 mins
+Time was 13.17 mins
 this function will be deprecated, use vizRelationships instead
 Scale for x is already present.
 Adding another scale for x, which will replace the existing scale.
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-14 15:51:25 EDT"
+[1] "2026-05-18 16:19:01 EDT"
     user   system  elapsed 
-2169.216   15.745 2204.985 
+2976.299   11.662 3005.986 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -304,7 +331,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-14
+ date     2026-05-18
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -397,4 +424,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu May 14 03:51:26 PM EDT 2026
+Mon May 18 04:19:02 PM EDT 2026
