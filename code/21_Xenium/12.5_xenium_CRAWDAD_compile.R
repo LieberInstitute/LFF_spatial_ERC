@@ -9,7 +9,7 @@ library("sessioninfo")
 library("crawdad")
 library("tidyverse")
 library("spatialLIBD")
-library(scales)
+library("scales")
 
 data_dir <- here("processed-data", "21_Xenium", "12.5_xenium_CRAWDAD_compile")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -34,6 +34,21 @@ crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), read_cs
 z_sig <- crawdad_data |> filter(BrNum == "Br5460") |> correctZBonferroni()
 # [1] 4.12
 
+# crawdad_data |> 
+#     filter(reference == 'Vasc.VLMC', neighbor =='Astro.4') |>
+#     group_by(BrNum, neighbor, scale, reference) |>
+#     summarize(Z = mean(Z)) |>
+#     ggplot(aes(x = scale, y = Z, color = BrNum)) +
+#     geom_point() +
+#     geom_line(aes(group = BrNum))
+
+
+crawdad_data |> 
+    filter(reference == 'Oligo.3', neighbor =='Astro.1') |>
+    group_by(id = BrNum, neighbor, scale, reference) |>
+    summarize(Z = mean(Z)) |> 
+    vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig)
+
 min_num_signif = 5
 
 crawdad_data_summary <- crawdad_data |>
@@ -57,6 +72,19 @@ crawdad_data_summary <- crawdad_data |>
     #   Cap Z-score at twice the magnitude of the significance threshold
     mutate(Z = sign(Z) * pmin(abs(Z), z_sig * 2))
 
+
+crawdad_data_summary |>
+    filter(reference == "Oligo.3")
+
+crawdad_data_summary |>
+    filter(reference == "Oligo.5")
+
+crawdad_data_summary |>
+    filter(neighbor == "Oligo.3")
+
+crawdad_data_summary |>
+    filter(neighbor == "Astro.4")
+    
 
 #### custom dot plot ####
 
@@ -89,3 +117,57 @@ dotplot <- custom_dotplot(crawdad_data_summary, z_sig)
 
 ggsave(dotplot, filename = here(plot_dir, 'erc_xenium_CRAWDAD_dot_plot.png'), height = 12 , width = 12)
 
+
+#### Visualize in Sections ####
+
+## load spe  data 
+message(Sys.time(), " - Load SPE data")
+spe <- qs2::qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+
+spe_test <- spe[,spe$BrNum == "Br1039"]
+
+summary(spatialCoords(spe_test)[,"x_centroid"])
+summary(spatialCoords(spe_test)[,"y_centroid"])
+
+
+spe_test[, spatialCoords(spe_test)[,"x_centroid"] < 850]
+
+cell_type_vis_clus <- vis_clus(spe,
+         sampleid = "Br1039",
+        clustervar = "cell_type_anno",
+        datatype = "Xenium",
+        colors = cell_type_colors$anno, 
+        point_size = 1) +
+    theme_bw() +
+    geom_hline(yintercept = min(spatialCoords(spe_test)[,"y_centroid"]) + c(100, 200, 500, 1000, 5000))
+
+ggsave(cell_type_vis_clus, filename = here(plot_dir, "vis_clus_cell_type.png"), height = 10, width = 10)
+
+plot_ref_neighbor_pair <- function(spe, sampleid = "Br1039", ref, neighbor){
+    
+    spe$ref_neighbor <- spe$cell_type_anno
+    
+    spe$ref_neighbor[!spe$ref_neighbor %in% c(ref, neighbor)] <- NA
+    spe$ref_neighbor <- droplevels(spe$ref_neighbor)
+    
+    ref_neighbor_colors <- c("red", "blue")
+    names(ref_neighbor_colors) <- c(ref, neighbor)
+    
+    cell_type_vis_clus <- vis_clus(spe,
+                                   sampleid = sampleid,
+                                   clustervar = "ref_neighbor",
+                                   datatype = "Xenium",
+                                   colors = ref_neighbor_colors, 
+                                   point_size = 1.5)
+    
+    ggsave(cell_type_vis_clus, filename = here(plot_dir, sprintf("vis_clus_%s_%s_%s.png", sampleid, ref, neighbor)), height = 10, width = 10)
+    
+}
+
+crawdad_data_summary |>
+    filter(reference == "Oligo.3")
+
+plot_ref_neighbor_pair(spe, ref = "Astro.1", neighbor = "Vasc.Endo")
+plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Oligo.1")
+plot_ref_neighbor_pair(spe, ref = "Oligo.1", neighbor = "Excit.L5.2")
+plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Excit.L5.2")
