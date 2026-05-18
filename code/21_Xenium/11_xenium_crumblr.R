@@ -22,37 +22,17 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### Load data ####
 message(Sys.time(), "- Load xenium data")
-spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
-
-message(Sys.time(), "- Load rctd data")
-rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
-
-names(rctd_data@results)
-
-head(rctd_data@results$results_df)
-
-# spot_class first_type second_type first_class second_class min_score singlet_score conv_all
-# Br1039_aaaaabke-1 doublet_certain  Vasc.Endo     Oligo.4       FALSE         TRUE 181.70462      215.9917     TRUE
-# Br1039_aaaaepee-1         singlet    Astro.4     Oligo.3        TRUE        FALSE 117.32119      133.8569     TRUE
-# Br1039_aaagdfnc-1         singlet    Astro.2     Oligo.2       FALSE        FALSE 235.05667      237.8763     TRUE
-# Br1039_aaajpooh-1         singlet    Astro.5     Oligo.3       FALSE        FALSE  94.88785      107.9397     TRUE
-# Br1039_aaalplmo-1          reject    Astro.5     Oligo.3       FALSE        FALSE 157.67283      197.6728     TRUE
-# Br1039_aaamomng-1 doublet_certain    Oligo.3     Micro.2       FALSE        FALSE 194.25099      226.9972     TRUE
-# conv_doublet
-# Br1039_aaaaabke-1         TRUE
-# Br1039_aaaaepee-1         TRUE
-# Br1039_aaagdfnc-1         TRUE
-# Br1039_aaajpooh-1         TRUE
-# Br1039_aaalplmo-1         TRUE
-# Br1039_aaamomng-1         TRUE
-
-# boolean variables `first_class` and
-# `second_class` represent, for the first and second cell type,
-# respectively, whether an assignment was made on the class level
-
-
+spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
 
 #### Compare proportions to sn-RNA seq data ####
+
+## xenium proportions
+rcdt_results_summary <- as.data.frame(colData(spe)) |>
+    group_by(sample_id, cell_type_anno) |>
+    summarise(xenium_n = n()) |>
+    group_by(sample_id) |>
+    mutate(xenium_prop = xenium_n/sum(xenium_n))
+
 
 # cell_type_proportions
 load(here("processed-data", "04_snRNA-seq", "28_subcluster_update_sce","cell_type_proportions.Rdata"), verbose = TRUE)
@@ -141,7 +121,6 @@ vp <- fitExtractVarPartModel(cobj, form, erc_info)
 
 # Plot variance fractions
 fig.vp <- plotPercentBars(vp)
-fig.vp
 
 ggsave(fig.vp + 
            theme_bw() + 
@@ -155,6 +134,10 @@ pdf(here(plot_dir, "xenium_variable_CorrMatrix.pdf"), height = 5, width = 5)
 plotCorrMatrix(C)
 dev.off()
 
+
+# High colinearity between variables:
+#     Run and chip
+
 #### Crumblr PCA ####
 pca <- prcomp(t(standardize(cobj)))
 
@@ -162,7 +145,6 @@ pca <- prcomp(t(standardize(cobj)))
 df_pca <- merge(pca$x, erc_info, by = "row.names")
 
 # Plot PCA
-#   shape by Stimulated vs unstimulated
 cobj_pca <- ggplot(df_pca, aes(PC1, PC2, color = Run, shape = APOE)) +
     geom_point(size = 3) +
     theme_classic() +
@@ -342,17 +324,32 @@ prop_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
 
 ggsave(prop_boxplot_APOE_carrier_Oligo, filename = here(plot_dir, "xenium_prop_boxplot_APOE_carrier_Oligo.png"), height = 4, width = 8)
 
+clr_boxplot_APOE_carrier_Micro <- clr_prop_long |>
+    filter(grepl("Micro", cell_type_anno)) |>
+    ggplot(aes(x = APOE_carrier, y = CLR_cleanY, fill = APOE_carrier)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = .1, aes(color = APOE)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
+
+ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Micro.png"), height = 4, width = 8)
+
+
+
 #### fit Sex ####
 
 # Extract results for each cell type
 (diff_prop_Sex <- topTable(fit, coef = "SexM", number = Inf))
 
-#                        logFC     AveExpr           t     P.Value  adj.P.Val         B
-# Oligo.5          -0.94666061  1.16152659 -3.29523642 0.003352853 0.07350752 -1.705243
-# Oligo.3          -1.19927385  1.73901614 -3.22491808 0.003955976 0.07350752 -1.849009
-# Micro.3           1.09017877  0.07707637  2.98973855 0.006836606 0.07350752 -2.419935
-# Micro.4           0.85464395  0.09432697  2.93586040 0.007737634 0.07350752 -2.538259
-# Astro.5          -0.89531742 -0.49334478 -2.76536537 0.011398815 0.08663099 -2.734235
+#                   logFC     AveExpr           t     P.Value  adj.P.Val         B
+# Macro             1.99051694 -0.6335688  2.43415100 0.03533249 0.7314477 -4.509818
+# OPC.1             1.42682280 -4.3314793  2.03835503 0.06900192 0.7314477 -4.551939
+# Micro.2           0.84770877  1.3614673  1.99108878 0.07465394 0.7314477 -4.560956
+# Micro.1           1.71162443 -3.4181275  1.81243561 0.10018125 0.7314477 -4.529114
+# Excit.L2_5.1     -1.01489921  0.7277704 -1.77773943 0.10599298 0.7314477 -4.557097
 
 write.csv(diff_prop_Sex, file = here(data_dir, "diff_prop_Sex.csv"))
 
@@ -411,7 +408,7 @@ clr_boxplot_Sex_Micro <- clr_prop_long |>
     theme_bw() +
     theme(legend.position = "None")
 
-ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, "clr_boxplot_Sex_Micro.png"), height = 4, width = 6)
+ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, "xenium_clr_boxplot_Sex_Micro.png"), height = 4, width = 6)
 
 clr_boxplot_Sex_Oligo <- clr_prop_long |>
     filter(grepl("Oligo", cell_type_anno)) |>
@@ -423,7 +420,7 @@ clr_boxplot_Sex_Oligo <- clr_prop_long |>
     theme_bw() +
     theme(legend.position = "None")
 
-ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
+ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
 
 
 #### Plot cleanY on cobj Sex + APOE carrier ####
@@ -451,7 +448,7 @@ clr_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(clr_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+ggsave(clr_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
 
 ## plot prop
 prop_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
@@ -466,7 +463,7 @@ prop_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(prop_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "prop_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+ggsave(prop_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "xenium_prop_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
 
 
 clr_boxplot_Sex_carrier_Astro <- clr_prop_long |>
@@ -481,7 +478,7 @@ clr_boxplot_Sex_carrier_Astro <- clr_prop_long |>
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(clr_boxplot_Sex_carrier_Astro, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Astro.png"), height = 4, width = 6)
+ggsave(clr_boxplot_Sex_carrier_Astro, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Astro.png"), height = 4, width = 6)
 
 clr_boxplot_Sex_carrier_Micro <- clr_prop_long |>
     filter(grepl("Micro", cell_type_anno)) |>
@@ -495,7 +492,7 @@ clr_boxplot_Sex_carrier_Micro <- clr_prop_long |>
     theme(legend.position = "None",
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "clr_boxplot_Sex_carrier_Micro.png"), height = 4, width = 6)
+ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Micro.png"), height = 4, width = 6)
 
 
 #### fit Age ####
@@ -508,7 +505,7 @@ ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "clr_boxplot_Sex
 # Oligo.3           0.0367116103  1.73901614  2.36749646 0.0272914275 0.48068363 -3.8912433
 # Oligo.4           0.0317998131  1.65924744  2.21071638 0.0379487078 0.48068363 -4.1927394
 
-write.csv(diff_prop_Age, file = here(data_dir, "diff_prop_Age.csv"))
+write.csv(diff_prop_Age, file = here(data_dir, "xenium_diff_prop_Age.csv"))
 
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
@@ -516,22 +513,22 @@ res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
 res_tb <- res |> as_tibble()
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Age.csv"))
+res_tb |> write_csv(here(data_dir, "xenium_sn_diff_prop_tree_test_Age.csv"))
 
 # Plot hierarchy and testing results
 tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_FDR.png"))
+ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
-ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_beta.png"), width = 4, height = 7)
+ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_beta.png"), width = 4, height = 7)
 
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE) 
-ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Age_forest.png"), width = 4, height = 7)
+ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_forest.png"), width = 4, height = 7)
 
 #### Plot cleanY CLR for Age ####
 
@@ -555,7 +552,7 @@ clr_sactter_Age_Oligo <- clr_prop_long |>
     facet_wrap(~cell_type_anno, nrow = 1) +
     theme_bw() 
 
-ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "clr_sactter_Age_Oligo.png"), height = 4, width =10)
+ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "xenium_clr_sactter_Age_Oligo.png"), height = 4, width =10)
 
 
 #### Plot cleanY CLR for Age & APOE ####
@@ -582,7 +579,7 @@ clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
     theme_bw() +
     theme(legend.position = "bottom")
 
-ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
+ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "xenium_clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
 
 
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 22_crumblr_sn.R")
