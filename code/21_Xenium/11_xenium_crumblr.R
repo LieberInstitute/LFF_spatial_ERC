@@ -39,7 +39,7 @@ load(here("processed-data", "04_snRNA-seq", "28_subcluster_update_sce","cell_typ
 
 cell_type_proportions_xenium <- cell_type_proportions |>
     mutate(cell_type_broad = factor(gsub("\\..*", "", cell_type_anno), levels = names(cell_type_colors$broad)), .before = 10) |>
-    select(-exp_round, -seq_round) |> 
+    select(-chip, -seq_round) |> 
     inner_join(rcdt_results_summary)
 
 write_csv(clr_prop_long, here(data_dir, "cell_type_proportions_xenium.csv"))
@@ -364,7 +364,7 @@ clr_boxplot_APOE_carrier_Micro <- clr_prop_long |>
 
 ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Micro.png"), height = 4, width = 8)
 
-#### compare to snRNA-seq test ####
+#### compare to snRNA-seq crumblr Carrier tests ####
 sn_diff_prop_APOE_carrier <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_APOE_carrier.csv")) |>
     rename(cell_type = `...1`)
 
@@ -407,7 +407,7 @@ tree_compare_beta_scatter <- diff_prop_tree_APOE_carrier_compare |>
     ggrepel::geom_text_repel(aes(label = label_simple2), size = 1.7) +
     scale_color_manual(values = signif_colors) +
     theme_bw() +
-    labs(x = "snRNA-seq beta", y = "snRNA-seq beta") 
+    labs(x = "snRNA-seq beta", y = "Xenium beta") 
 
 ggsave(tree_compare_beta_scatter, 
        filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier.png"), width = 6, height = 5)
@@ -422,7 +422,8 @@ tree_compare_beta_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
     geom_abline(color = "red", linetype = "dashed") +
     ggrepel::geom_text_repel(aes(label = label_simple2), size = 1.7) +
     scale_color_manual(values = cell_type_colors$broad) +
-    theme_bw() 
+    theme_bw()  +
+    labs(x = "snRNA-seq beta", y = "Xenium beta") 
 
 ggsave(tree_compare_beta_scatter_ct_broad, filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier_ct_broad.png"), width = 6, height = 5)
 
@@ -434,7 +435,8 @@ tree_compare_stat_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
     # geom_abline(color = "red", linetype = "dashed") +
     ggrepel::geom_text_repel(aes(label = label_simple2), size = 2) +
     # scale_color_manual(values = cell_type_colors$broad) +
-    theme_bw()
+    theme_bw() +
+    labs(x = "snRNA-seq stat", y = "Xenium stat") 
     # facet_wrap(~type)
 
 ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, "tree_compare_stat_scatter_APOE_carrier_ct_broad.png"))
@@ -459,22 +461,24 @@ res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "SexM")
 res_tb <- res |> as_tibble()
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Sex.csv"))
+res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
+
+# res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
 
 # Plot hierarchy and testing results
 tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_FDR.png"))
+ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']]) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
-ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_beta.png"), width = 4, height = 7)
+ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_beta.png"), width = 4, height = 7)
 
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE, low = sex_colors[['F']], high = sex_colors[['M']]) 
-ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_forest.png"), width = 4, height = 7)
+ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_forest.png"), width = 4, height = 7)
 
 
 # combined_fig <- fig.vp +
@@ -487,8 +491,8 @@ ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_forest.png"
 
 #### Plot cleanY on cobj Sex ####
 
-mod <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + exp_round , erc_info)
-cleanY_cobj_sex <- cleaningY(cobj$E , mod, P=3)
+mod <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + chip , erc_info)
+cleanY_cobj_sex <- jaffelab::cleaningY(cobj$E , mod, P=3)
 
 clr_prop_long <- clr_prop_long |> 
     left_join(cleanY_cobj_sex |>
@@ -525,7 +529,7 @@ ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_
 
 #### Plot cleanY on cobj Sex + APOE carrier ####
 
-mod <- model.matrix( ~ Sex + APOE_carrier + Age + Anc_Afr + exp_round , erc_info)
+mod <- model.matrix( ~ Sex + APOE_carrier + Age + Anc_Afr + chip , erc_info)
 cleanY_cobj_carrier_sex <- cleaningY(cobj$E , mod, P=3)
 
 clr_prop_long <- clr_prop_long |> 
@@ -594,16 +598,59 @@ clr_boxplot_Sex_carrier_Micro <- clr_prop_long |>
 
 ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Micro.png"), height = 4, width = 6)
 
+#### compare to snRNA-seq crumblr Sex tests ####
+sn_diff_prop_Sex <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_Sex.csv")) 
+
+diff_prop_tree_APOE_carrier_compare <- res_tb |> 
+    rename_at(5:12, x_name) |>
+    select(-branch.length) |> ## stored branch lengths cause buggy join
+    full_join(sn_diff_prop_Sex) |>
+    mutate(
+        label_multi = label |> str_split("/"),
+        n_labels = lengths(label_multi),
+        label_simple = map_chr(label_multi, ~ .x |>
+                                   str_remove_all("\\.[A-Za-z0-9_]+") |>
+                                   unique() |>
+                                   paste(collapse = "/")
+        ),
+        label_simple2 = ifelse(n_labels < 3, label, paste0(label_simple, '[', node,']')),
+        cell_type_broad = ifelse(grepl("/", label_simple), "MULTI", label_simple),
+        signif_cat = case_when(
+            pvalue < p_cutoff  & x_pvalue < p_cutoff ~ "both",
+            pvalue < p_cutoff  & x_pvalue >= p_cutoff ~ "sn only",
+            pvalue >= p_cutoff & x_pvalue < p_cutoff ~ "xenium only",
+            pvalue >= p_cutoff & x_pvalue >= p_cutoff ~ "neither"),
+        type = ifelse(n_labels > 1, "node", "leaf")
+    )
+
+signif_colors <- c(both = "purple", `xenium only` = "blue", `sn only` = "red")
+
+tree_compare_beta_scatter <- diff_prop_tree_APOE_carrier_compare |>
+    ggplot(aes(beta, x_beta, color = signif_cat)) +
+    geom_point() +
+    geom_abline(color = "red", linetype = "dashed") +
+    ggrepel::geom_text_repel(aes(label = label_simple2), size = 1.7) +
+    scale_color_manual(values = signif_colors) +
+    theme_bw() +
+    labs(x = "snRNA-seq beta", y = "Xenium beta", title = "Crumblr: ~Sex") 
+
+ggsave(tree_compare_beta_scatter, 
+       filename = here(plot_dir, "tree_compare_beta_scatter_Sex.png"), width = 6, height = 5)
+
+ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1), 
+       filename = here(plot_dir, "tree_compare_beta_scatter_Sex_facet.png"), width = 11, height = 5)
+
+
 
 #### fit Age ####
 
 # Extract results for each cell type
 (diff_prop_Age<- topTable(fit, coef = "Age", number = Inf))
 
-#                           logFC     AveExpr           t      P.Value  adj.P.Val          B
-# Oligo.5           0.0445079005  1.16152659  3.88315362 0.0008221231 0.03124068 -0.6656332
-# Oligo.3           0.0367116103  1.73901614  2.36749646 0.0272914275 0.48068363 -3.8912433
-# Oligo.4           0.0317998131  1.65924744  2.21071638 0.0379487078 0.48068363 -4.1927394
+#                           logFC    AveExpr           t    P.Value adj.P.Val         B
+# Excit.L6_CT       0.0315704435 -0.6400153  1.97599387 0.07654914 0.9377408 -5.107210
+# Astro.4           0.0437897522  1.0228549  1.92446545 0.08336477 0.9377408 -4.762592
+# Micro.4          -0.0478180550 -3.3833630 -1.86252019 0.09230820 0.9377408 -5.250839
 
 write.csv(diff_prop_Age, file = here(data_dir, "xenium_diff_prop_Age.csv"))
 
@@ -613,7 +660,9 @@ res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
 res_tb <- res |> as_tibble()
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "xenium_sn_diff_prop_tree_test_Age.csv"))
+res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
+
+# res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
 
 # Plot hierarchy and testing results
 tree_fdr_plot <- plotTreeTest(res)
@@ -632,7 +681,7 @@ ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_fore
 
 #### Plot cleanY CLR for Age ####
 
-mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + exp_round , erc_info)
+mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + chip , erc_info)
 cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=2)
 
 clr_prop_long$CLR_cleanY_Age <- NULL
@@ -657,8 +706,8 @@ ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "xenium_clr_sactter_Age_
 
 #### Plot cleanY CLR for Age & APOE ####
 
-# mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + exp_round , erc_info)
-cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=3)
+# mod <- model.matrix( ~ Age + APOE_carrier + Sex + Anc_Afr + chip , erc_info)
+cleanY_cobj_Age <- jaffelab::cleaningY(cobj$E , mod, P=3)
 
 clr_prop_long$CLR_cleanY_carrier_Age <- NULL
 
@@ -680,6 +729,49 @@ clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
     theme(legend.position = "bottom")
 
 ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "xenium_clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
+
+#### compare to snRNA-seq crumblr Sex tests ####
+sn_diff_prop_Age <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_Age.csv")) 
+
+diff_prop_tree_APOE_carrier_compare <- res_tb |> 
+    rename_at(5:12, x_name) |>
+    select(-branch.length) |> ## stored branch lengths cause buggy join
+    full_join(sn_diff_prop_Age) |>
+    mutate(
+        label_multi = label |> str_split("/"),
+        n_labels = lengths(label_multi),
+        label_simple = map_chr(label_multi, ~ .x |>
+                                   str_remove_all("\\.[A-Za-z0-9_]+") |>
+                                   unique() |>
+                                   paste(collapse = "/")
+        ),
+        label_simple2 = ifelse(n_labels < 3, label, paste0(label_simple, '[', node,']')),
+        cell_type_broad = ifelse(grepl("/", label_simple), "MULTI", label_simple),
+        signif_cat = case_when(
+            pvalue < p_cutoff  & x_pvalue < p_cutoff ~ "both",
+            pvalue < p_cutoff  & x_pvalue >= p_cutoff ~ "sn only",
+            pvalue >= p_cutoff & x_pvalue < p_cutoff ~ "xenium only",
+            pvalue >= p_cutoff & x_pvalue >= p_cutoff ~ "neither"),
+        type = ifelse(n_labels > 1, "node", "leaf")
+    )
+
+signif_colors <- c(both = "purple", `xenium only` = "blue", `sn only` = "red")
+
+tree_compare_beta_scatter <- diff_prop_tree_APOE_carrier_compare |>
+    ggplot(aes(beta, x_beta, color = signif_cat)) +
+    geom_point() +
+    geom_abline(color = "red", linetype = "dashed") +
+    ggrepel::geom_text_repel(aes(label = label_simple2), size = 1.7) +
+    scale_color_manual(values = signif_colors) +
+    theme_bw() +
+    labs(x = "snRNA-seq beta", y = "Xenium beta", title = "Crumblr: ~Age") 
+
+ggsave(tree_compare_beta_scatter, 
+       filename = here(plot_dir, "tree_compare_beta_scatter_Age.png"), width = 6, height = 5)
+
+ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1), 
+       filename = here(plot_dir, "tree_compare_beta_scatter_Age_facet.png"), width = 11, height = 5)
+
 
 
 # slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 22_crumblr_sn.R")
