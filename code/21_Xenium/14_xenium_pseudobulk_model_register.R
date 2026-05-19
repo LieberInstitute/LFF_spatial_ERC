@@ -10,11 +10,19 @@ library("tidyverse")
 library("qs2")
 library("spatialLIBD")
 library("scDotPlot")
+library("getopt")
 
-data_dir <- here("processed-data", "21_Xenium", "14_xenium_bansky_model_register")
+# Import command-line parameters
+scec <- matrix(
+    c("brnum", "b", "1", "character", "BrNum of selected sample"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
+data_dir <- here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "21_Xenium", "14_xenium_bansky_model_register")
+plot_dir <- here("plots", "21_Xenium", "14_xenium_pseudobulk_model_register")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
@@ -46,7 +54,7 @@ message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, "xenium_modeling_results-SpX.rds"))
 
 #### Extract Top Layer Enrichment Genes ####
-spe_pb <- readRDS(here(data_dir, "spe_xenium_pseudobulk-SpX.rds"))
+(spe_pb <- readRDS(here(data_dir, "spe_xenium_pseudobulk-SpX.rds")))
 
 top_DEGs <- sig_genes_extract(n = 10,
                               modeling_results = modeling_results,
