@@ -142,7 +142,30 @@ crawdad_data_summary |>
 
 dev.off()
 
+pdf(here(plot_dir, "xenium_CRAWDAD_trend_plots_Astro.4.pdf"))
 
+crawdad_data_summary |>
+    filter(reference == "Astro.4") |>
+    dplyr::select(ref = reference, nei = neighbor, summary_scale = scale, Z_real)|>
+    pmap(function(ref, nei, summary_scale, Z_real){
+        
+        trend_plot <- crawdad_data |> 
+            filter(reference == ref, neighbor == nei)  |>
+            group_by(id = BrNum, neighbor, scale, reference) |>
+            summarize(Z = mean(Z)) |>
+            vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig) +
+            labs(title = sprintf("Z=%.2f, scale=%.2f", Z_real, summary_scale))
+        
+        return(trend_plot)
+        
+    })
+
+dev.off()
+
+## TODO check this
+crawdad_data |>
+    filter(reference == "Astro.4", 
+           grepl("Vasc", neighbor))
 
 #### custom dot plot ####
 
