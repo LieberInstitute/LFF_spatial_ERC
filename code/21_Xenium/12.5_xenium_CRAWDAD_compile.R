@@ -79,12 +79,21 @@ crawdad_data_summary <- crawdad_data |>
     mutate(Z_real = Z,
            Z = sign(Z) * pmin(abs(Z), z_sig * 2))
 
+write_csv(crawdad_data_summary, file = here(data_dir, "ERC_xenium_crawdad_data_summary.csv"))
 
 crawdad_data_summary |>
     filter(reference == "Oligo.3", neighbor == "Oligo.1")
 
 crawdad_data_summary |>
-    filter(reference == "Oligo.3") |> arrange(-Z_real) |>
+    # filter(reference == "Oligo.3") |> 
+    filter(neighbor == "Oligo.3") |> 
+    arrange(-Z_real) |>
+    print(n=30)
+
+crawdad_data_summary |>
+    # filter(grepl("Vasc", reference) & grepl("Astro", neighbor) ) |> 
+    filter(grepl("Astro", reference) & grepl("Vasc", neighbor) ) |> 
+    arrange(-Z_real) |>
     print(n=30)
 
 crawdad_data_summary |>
@@ -96,7 +105,9 @@ crawdad_data_summary |>
     filter(reference == "Oligo.5")
 
 crawdad_data_summary |>
-    filter(neighbor == "Astro.4")
+    # filter(reference == "Astro.4") |>
+    filter(neighbor == "Astro.4") |>
+    arrange(-Z_real) 
 
 crawdad_data_summary_top <- crawdad_data_summary |>
     group_by(reference) |>
