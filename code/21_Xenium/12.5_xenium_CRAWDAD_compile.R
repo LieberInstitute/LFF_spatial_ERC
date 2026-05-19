@@ -26,30 +26,36 @@ crawdad_data_dir <- here("processed-data", "21_Xenium", "12_xenium_CRAWDAD")
 
 crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), read_csv)  |>
     mutate(
+        id = BrNum,
         reference = factor(reference, levels = cell_type_levels),
         neighbor = factor(neighbor, levels = cell_type_levels)
     )
 
 #   Get the Z-score significance threshold (same in all samples)
-z_sig <- crawdad_data |> filter(BrNum == "Br5460") |> correctZBonferroni()
+(z_sig <- crawdad_data |> filter(BrNum == "Br5460") |> correctZBonferroni())
 # [1] 4.12
 
-# crawdad_data |> 
-#     filter(reference == 'Vasc.VLMC', neighbor =='Astro.4') |>
-#     group_by(BrNum, neighbor, scale, reference) |>
-#     summarize(Z = mean(Z)) |>
-#     ggplot(aes(x = scale, y = Z, color = BrNum)) +
-#     geom_point() +
-#     geom_line(aes(group = BrNum))
+crawdad_data |>
+    filter(reference == 'Oligo.3', neighbor =='Oligo.1') |>
+    group_by(BrNum, neighbor, scale, reference) |>
+    summarize(Z = mean(Z)) |>
+    ungroup() |>
+    #   Then filter to the smallest spatial scale with significant Z-scores
+    filter(abs(Z) >= z_sig) |>
+    group_by(BrNum, neighbor, reference) |>
+    filter(scale == min(scale)) |>
+    arrange(Z)
 
 
-crawdad_data |> 
-    filter(reference == 'Oligo.3', neighbor =='Astro.1') |>
+trend_test <- crawdad_data |> 
+    filter(reference == 'Oligo.3', neighbor =='Vasc.Endo') |>
     group_by(id = BrNum, neighbor, scale, reference) |>
     summarize(Z = mean(Z)) |> 
     vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig)
 
-min_num_signif = 5
+ggsave(trend_test, filename  = here(plot_dir, "xenium_CRAWDAD_trend_test.png"))
+
+min_num_signif = 4
 
 crawdad_data_summary <- crawdad_data |>
     group_by(BrNum, neighbor, scale, reference) |>
@@ -69,22 +75,74 @@ crawdad_data_summary <- crawdad_data |>
     group_by(neighbor, reference) |>
     summarize(scale = mean(scale), Z = mean(Z)) |>
     ungroup() |>
-    #   Cap Z-score at twice the magnitude of the significance threshold
-    mutate(Z = sign(Z) * pmin(abs(Z), z_sig * 2))
+    #   Cap Z-score at twice the magnitude of the significance threshold 
+    mutate(Z_real = Z,
+           Z = sign(Z) * pmin(abs(Z), z_sig * 2))
 
 
 crawdad_data_summary |>
-    filter(reference == "Oligo.3")
+    filter(reference == "Oligo.3", neighbor == "Oligo.1")
+
+crawdad_data_summary |>
+    filter(reference == "Oligo.3") |> arrange(-Z_real) |>
+    print(n=30)
+
+crawdad_data_summary |>
+    filter(neighbor == "Astro.4") |> 
+    arrange(-Z_real) |>
+    print(n=30)
 
 crawdad_data_summary |>
     filter(reference == "Oligo.5")
 
 crawdad_data_summary |>
-    filter(neighbor == "Oligo.3")
+    filter(neighbor == "Astro.4")
+
+crawdad_data_summary_top <- crawdad_data_summary |>
+    group_by(reference) |>
+    slice_max(abs(Z)) |>
+    slice_min(scale)
+
+pdf(here(plot_dir, "xenium_CRAWDAD_trend_plots.pdf"))
+
+crawdad_data_summary_top |>
+    dplyr::select(ref = reference, nei = neighbor, summary_scale = scale, Z_real)|>
+    pmap(function(ref, nei, summary_scale, Z_real){
+        
+        trend_plot <- crawdad_data |> 
+            filter(reference == ref, neighbor == nei)  |>
+            group_by(id = BrNum, neighbor, scale, reference) |>
+            summarize(Z = mean(Z)) |>
+            vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig) +
+            labs(title = sprintf("Z=%.2f, scale=%.2f", Z_real, summary_scale))
+        
+        return(trend_plot)
+        
+    })
+
+dev.off()
+
+pdf(here(plot_dir, "xenium_CRAWDAD_trend_plots_Oligo.3.pdf"))
 
 crawdad_data_summary |>
-    filter(neighbor == "Astro.4")
-    
+    filter(reference == "Oligo.3") |>
+    dplyr::select(ref = reference, nei = neighbor, summary_scale = scale, Z_real)|>
+    pmap(function(ref, nei, summary_scale, Z_real){
+        
+        trend_plot <- crawdad_data |> 
+            filter(reference == ref, neighbor == nei)  |>
+            group_by(id = BrNum, neighbor, scale, reference) |>
+            summarize(Z = mean(Z)) |>
+            vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig) +
+            labs(title = sprintf("Z=%.2f, scale=%.2f", Z_real, summary_scale))
+        
+        return(trend_plot)
+        
+    })
+
+dev.off()
+
+
 
 #### custom dot plot ####
 
@@ -165,9 +223,25 @@ plot_ref_neighbor_pair <- function(spe, sampleid = "Br1039", ref, neighbor){
 }
 
 crawdad_data_summary |>
-    filter(reference == "Oligo.3")
+    filter(reference == "Oligo.3") |>
+    arrange(Z_real)
 
 plot_ref_neighbor_pair(spe, ref = "Astro.1", neighbor = "Vasc.Endo")
 plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Oligo.1")
+
+plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Astro.1")
+plot_ref_neighbor_pair(spe, sampleid = "Br5941", ref = "Oligo.3", neighbor = "Astro.1")
+plot_ref_neighbor_pair(spe, sampleid = "Br6098", ref = "Oligo.3", neighbor = "Astro.1")
+
+
+plot_ref_neighbor_pair(spe, sampleid = "Br5460", ref = "Oligo.3", neighbor = "Astro.1")
+plot_ref_neighbor_pair(spe, sampleid = "Br5460", ref = "Oligo.3", neighbor = "Astro.2")
+plot_ref_neighbor_pair(spe, sampleid = "Br5460", ref = "Oligo.3", neighbor = "Astro.3")
+
+plot_ref_neighbor_pair(spe, sampleid = "Br5460", ref = "Oligo.3", neighbor = "Vasc.Endo")
+plot_ref_neighbor_pair(spe, sampleid = "Br5460", ref = "Oligo.5", neighbor = "Vasc.Endo")
+plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Oligo.4")
+
+
 plot_ref_neighbor_pair(spe, ref = "Oligo.1", neighbor = "Excit.L5.2")
 plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Excit.L5.2")
