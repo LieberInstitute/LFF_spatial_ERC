@@ -14,7 +14,7 @@ library("getopt")
 
 # Import command-line parameters
 scec <- matrix(
-    c("brnum", "b", "1", "character", "BrNum of selected sample"),
+    c("var", "v", "1", "character", "registration variable"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -27,34 +27,50 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
 
-spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
+if(opt$var == "SpX"){
+    ## load SpX version of spe (NOT filtered to singlets)
+    spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
+} else {
+    ## load cell type version of spe (filtered to singlets ONLY)
+    spe_fn <- here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2")
+}
 
-## add syntacticly valid version of SpX
-spe$SpX_syn <- gsub("~", "_", spe$SpX)
-table(spe$SpX_syn)
+message(Sys.time(), " - load data from: ", basename(spe_fn))
+(spe <- qs_read(spe_fn))
 
 ## make APOE syntatic
 spe$APOE <- gsub("/", "", spe$APOE)
 
+var_reg <- opt$var
+if(opt$var == "SpX"){
+    
+    ## add syntacticly valid version of SpX
+    spe$SpX_syn <- gsub("~", "_", spe$SpX)
+    table(spe$SpX_syn)
+    
+    var_reg <- "SpX_syn"
+} 
+
 #### Run Spatial Registration Function ####
-message(Sys.time(), " - Running Spatial Registration on: SpX_syn")
+message(Sys.time(), " - Running Spatial Registration on: ", var_reg)
+stopifnot(var_reg %in% colnames(colData(spe)))
 
 modeling_results <-registration_wrapper(
     sce = spe,
-    var_registration = "SpX_syn",
+    var_registration = var_reg,
     var_sample_id = "sample_id",
     covars = c("APOE", "Sex", "Age", "Anc_Afr"),
     gene_ensembl = "ID",
     gene_name = "Symbol",
     min_ncells = 10,
-    pseudobulk_rds_file = here(data_dir, "spe_xenium_pseudobulk-SpX.rds")
+    pseudobulk_rds_file = here(data_dir, sprintf("spe_xenium_pseudobulk-%s.rds", opt$var))
 )
 
 message(Sys.time(), " - Saving Data")
-saveRDS(modeling_results, file = here(data_dir, "xenium_modeling_results-SpX.rds"))
+saveRDS(modeling_results, file = here(data_dir, sprintf("xenium_modeling_results-%s.rds", opt$var)))
 
 #### Extract Top Layer Enrichment Genes ####
-(spe_pb <- readRDS(here(data_dir, "spe_xenium_pseudobulk-SpX.rds")))
+(spe_pb <- readRDS(here(data_dir, sprintf("spe_xenium_pseudobulk-%s.rds", opt$var))))
 
 top_DEGs <- sig_genes_extract(n = 10,
                               modeling_results = modeling_results,
@@ -64,29 +80,65 @@ top_DEGs <- sig_genes_extract(n = 10,
 
 top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
-write.csv(top_DEGs, file = here(data_dir, "enrichment_modeling_SpX_top100.csv"), row.names = FALSE)
+write.csv(top_DEGs, file = here(data_dir, sprintf("xenium_enrichment_modeling_%s_top100.csv", opt$var)), row.names = FALSE)
 
 
-#### Register to Visium SpD ####
+if(opt$var == "SpX"){
+    ref_name <- "visium_SpD"
+    
+    #### Register to Visium SpD ####
+    reference_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+    colnames(reference_modeling$enrichment) <- gsub("_Sp", "~Sp", colnames(reference_modeling$enrichment))
+    colnames(reference_modeling$enrichment) 
+    
+    ref_colors
+   
+} else if(opt$var == "cell_type_anno") {
+    ref_name <- "sn_cell_type"
+    
+    reference_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
+    
+    load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
+    
+    ref_colors <- cell_type_colors$anno
+    q_colors <- cell_type_colors$anno
+}
 
-layer_modeling_visium <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-colnames(layer_modeling_visium$enrichment) <- gsub("_Sp", "~Sp", colnames(layer_modeling_visium$enrichment))
-colnames(layer_modeling_visium$enrichment) 
+
 
 cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
-                            modeling_results = layer_modeling_visium,
+                            modeling_results = reference_modeling,
                             model_type = "enrichment",
                             top_n = 100)
 
+anno <- annotate_registered_clusters(
+    cor_stats_layer = cor_layer,
+    confidence_threshold = 0.6,
+    cutoff_merge_ratio = 0.01
+)
 
-pdf(here(plot_dir, "xenium_SpX_v_visium_SpD_layer_stat_cor.pdf"))
+
+pdf(here(plot_dir, sprintf("xenium_%s_v_%s_layer_stat_cor.pdf", opt$var, ref_name)),
+    height = 7 + ncol(cor_layer)/10,
+    width = 7 + ncol(cor_layer)/10)
 print(layer_stat_cor_plot(cor_stats_layer = cor_layer,
                           cluster_rows =TRUE,
-                          cluster_columns = TRUE))
-    # ,
-    # reference_colors = layer_colors[[ref]],
-    # annotation = anno[[ref]],
-    # query_colors = cell_type_colors$anno
+                          cluster_columns = TRUE,
+                          reference_colors = ref_colors,
+                          annotation = anno,
+                          query_colors = q_colors,
+                          column_title = ref_name,
+                          row_title = paste0("Xenium_", opt$var)
+))
 dev.off()
+
+# slurmjobs::job_single('08_xenium_QC_normalize', create_shell = TRUE, memory = '100G', command = "Rscript 08_xenium_QC_normalize.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
 
