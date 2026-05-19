@@ -42,6 +42,9 @@ cell_type_proportions_xenium <- cell_type_proportions |>
     select(-exp_round, -seq_round) |> 
     inner_join(rcdt_results_summary)
 
+write_csv(clr_prop_long, here(data_dir, "cell_type_proportions_xenium.csv"))
+
+
 sn_vs_xenium_n_scatter <- cell_type_proportions_xenium |>
     ggplot(aes(n, xenium_n, color = cell_type_anno)) +
     geom_point() +
@@ -206,6 +209,10 @@ clr_boxplot_chip <- clr_prop_long |>
 
 ggsave(clr_boxplot_chip, filename = here(plot_dir, "xenium_clr_boxplot_chip.png"), width = 10)
 
+#### Save CLR + proprotion data ####
+
+write_csv(clr_prop_long, here(data_dir, "xenium_clr_prop_long.csv"))
+
 #### Run DREAM + eBayes on cobj ####
 fit <- dream(cobj, ~ APOE_carrier + Sex + Age + Anc_Afr + chip , erc_info) 
 fit <- eBayes(fit = fit)
@@ -227,6 +234,7 @@ load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_clust
 # Excit.L2          0.75563619  1.523895447  2.66028590 0.024006653 0.22806320 -3.201613
 
 write.csv(diff_prop_APOE_carrier, file = here(data_dir, "xenium_diff_prop_APOE_carrier.csv"))
+
 
 #### cleanY on cobj  APOE_carrier ####
 
@@ -277,7 +285,8 @@ clr_boxplot_APOE_carrier_Excit  <- clr_prop_long |>
     facet_wrap(~cell_type_anno, scales = "free_y") +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw() +
-    theme(legend.position = "None")
+    theme(legend.position = "None") +
+    labs(y = "Xenium CLR cleanY")
 
 ggsave(clr_boxplot_APOE_carrier_Excit , filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Excit.png"), height = 4, width = 4)
 
@@ -291,7 +300,8 @@ clr_boxplot_APOE_carrier_OligoOPC <- clr_prop_long |>
     facet_wrap(~cell_type_anno, nrow = 1) +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw() +
-    theme(legend.position = "None")
+    theme(legend.position = "None")  +
+    labs(y = "Xenium CLR cleanY")
 
 ggsave(clr_boxplot_APOE_carrier_OligoOPC, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_OligoOPC.png"), height = 4, width = 8)
 
@@ -320,9 +330,26 @@ prop_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
     scale_fill_manual(values = APOE_carrier_colors) +
     scale_color_manual(values = APOE_genotype_colors) +
     theme_bw() +
-    theme(legend.position = "None")
+    # theme(legend.position = "None") +
+    labs(y = "Xenium prop")
 
 ggsave(prop_boxplot_APOE_carrier_Oligo, filename = here(plot_dir, "xenium_prop_boxplot_APOE_carrier_Oligo.png"), height = 4, width = 8)
+
+prop_boxplot_APOE_carrier_OPC <- clr_prop_long |>
+    filter(grepl("OPC", cell_type_anno)) |>
+    ggplot(aes(x = APOE_carrier, y = prop, fill = APOE_carrier)) +
+    # geom_boxplot() +
+    geom_boxplot(outlier.shape = NA) +
+    # geom_jitter(aes(color = error), width = .1) +
+    geom_jitter(width = .1, aes(color = APOE)) +
+    facet_wrap(~cell_type_anno, nrow = 1) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    scale_color_manual(values = APOE_genotype_colors) +
+    theme_bw() +
+    # theme(legend.position = "None") +
+    labs(y = "Xenium prop")
+
+ggsave(prop_boxplot_APOE_carrier_OPC, filename = here(plot_dir, "xenium_prop_boxplot_APOE_carrier_OPC.png"), height = 4, width = 8)
 
 clr_boxplot_APOE_carrier_Micro <- clr_prop_long |>
     filter(grepl("Micro", cell_type_anno)) |>
@@ -337,7 +364,80 @@ clr_boxplot_APOE_carrier_Micro <- clr_prop_long |>
 
 ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Micro.png"), height = 4, width = 8)
 
+#### compare to snRNA-seq test ####
+sn_diff_prop_APOE_carrier <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_APOE_carrier.csv")) |>
+    rename(cell_type = `...1`)
 
+x_name <- function(name) paste0("x_", name)
+p_cutoff <- 0.1
+
+diff_prop_tree_APOE_carrier_compare <- res_tb |> 
+    rename_at(5:12, x_name) |>
+    select(-branch.length) |> ## stored branch lengths cause buggy join
+    full_join(sn_diff_prop_APOE_carrier) |>
+    mutate(
+        label_multi = label |> str_split("/"),
+        n_labels = lengths(label_multi),
+        label_simple = map_chr(label_multi, ~ .x |>
+                                   str_remove_all("\\.[A-Za-z0-9_]+") |>
+                                   unique() |>
+                                   paste(collapse = "/")
+        ),
+        label_simple2 = ifelse(n_labels < 3, label, paste0(label_simple, '[', node,']')),
+        cell_type_broad = ifelse(grepl("/", label_simple), "MULTI", label_simple),
+        signif_cat = case_when(
+            pvalue < p_cutoff  & x_pvalue < p_cutoff ~ "both",
+            pvalue < p_cutoff  & x_pvalue >= p_cutoff ~ "sn only",
+            pvalue >= p_cutoff & x_pvalue < p_cutoff ~ "xenium only",
+            pvalue >= p_cutoff & x_pvalue >= p_cutoff ~ "neither"),
+        type = ifelse(n_labels > 1, "node", "leaf")
+    )
+
+diff_prop_tree_APOE_carrier_compare |> filter(n_labels == 2) |> select(label, n_labels, label_multi, label_simple, label_simple2, cell_type_broad) 
+diff_prop_tree_APOE_carrier_compare |> dplyr::count(label_simple)
+
+diff_prop_tree_APOE_carrier_compare$label
+
+signif_colors <- c(both = "purple", `xenium only` = "blue", `sn only` = "red")
+
+tree_compare_beta_scatter <- diff_prop_tree_APOE_carrier_compare |>
+    ggplot(aes(beta, x_beta, color = signif_cat)) +
+    geom_point() +
+    geom_abline(color = "red", linetype = "dashed") +
+    ggrepel::geom_text_repel(aes(label = label_simple2), size = 1.7) +
+    scale_color_manual(values = signif_colors) +
+    theme_bw() +
+    labs(x = "snRNA-seq beta", y = "snRNA-seq beta") 
+
+ggsave(tree_compare_beta_scatter, 
+       filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier.png"), width = 6, height = 5)
+
+ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1), 
+       filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier_facet.png"), width = 11, height = 5)
+
+
+tree_compare_beta_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
+    ggplot(aes(beta, x_beta, color = cell_type_broad, shape = signif_cat)) +
+    geom_point() +
+    geom_abline(color = "red", linetype = "dashed") +
+    ggrepel::geom_text_repel(aes(label = label_simple2), size = 1.7) +
+    scale_color_manual(values = cell_type_colors$broad) +
+    theme_bw() 
+
+ggsave(tree_compare_beta_scatter_ct_broad, filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier_ct_broad.png"), width = 6, height = 5)
+
+
+tree_compare_stat_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
+    # filter(cell_type_broad != "MULTI") |>
+    ggplot(aes(stat, x_stat, color = signif_cat, shape = pvalue < 0.1)) +
+    geom_point() +
+    # geom_abline(color = "red", linetype = "dashed") +
+    ggrepel::geom_text_repel(aes(label = label_simple2), size = 2) +
+    # scale_color_manual(values = cell_type_colors$broad) +
+    theme_bw()
+    # facet_wrap(~type)
+
+ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, "tree_compare_stat_scatter_APOE_carrier_ct_broad.png"))
 
 #### fit Sex ####
 
