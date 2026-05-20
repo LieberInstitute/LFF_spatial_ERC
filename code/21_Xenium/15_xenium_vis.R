@@ -36,7 +36,7 @@ marker_stats_top <- marker_stats |>
 marker_stats_top |> filter(grepl("WM", SpD))
 
 
-map(c("ERMN"), function(gene){
+map(c("MBP", "MBP", "ERMN"), function(gene){
     walk(unique(spe$BrNum), function(samp){
         vis_clus_class <- spatialLIBD::vis_gene(spe,
                                                 sampleid = samp,
@@ -49,5 +49,18 @@ map(c("ERMN"), function(gene){
         
     })
 })
+
+
+SpX_markers <- list(
+    `Inhib~Sp9X5`  = "VIP",        # canonical inhibitory marker, highest logFC (2.39) of specific markers
+    `L1~Sp9X6`     = "SFRP2",      # highest logFC (4.02) of any L1 gene, astrocyte/L1 specific
+    `L1~Sp9X7`     = "FGFR3",      # clean homeostatic astrocyte marker, strong stat (8.01)
+    `L2.3~Sp9X4`   = "ADAMTS3",    # top stat (13.44), validated L2 specific marker in your panel
+    `L5~Sp9X1`     = "PCSK1",      # L5_ET base probe, strong logFC (2.08), projection neuron specific
+    `L6~Sp9X9`     = "RXFP1",      # top 3 stat (13.11), highest logFC (2.94), clean L6 specificity
+    `LD~Sp9X8`     = "CNDP1",      # top stat for LD, Oligo base probe
+    `Vasc~Sp9X3`   = "PECAM1",     # canonical endothelial marker
+    `WM~Sp9X2`     = "ERBB3"       # Oligo base probe, strong stat (11.31), clean WM biology
+)
 
     
