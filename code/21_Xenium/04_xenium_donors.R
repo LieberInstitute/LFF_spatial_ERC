@@ -4,6 +4,7 @@
 #### Set up ####
 library("tidyverse")
 library("here")
+library("tidyverse")
 
 data_dir <- here("processed-data", "21_Xenium", "04_xenium_donors")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -151,6 +152,37 @@ vis_clus_plots <- vis_grid_clus(
     pdf_file = here(plot_dir, "Visium_SpD_xenium_samples.pdf")
 )
 
+#### Organize sample info ####
+
+donor_info <- read.csv(here("processed-data", "00_project_prep", "05_pathology", "sample_taupathy.csv")) |>
+    mutate(Ancestry = factor(Ancestry),
+           APOE = factor(APOE),
+           APOE_carrier = factor(APOE_carrier),
+           Sex = factor(Sex)
+    )
+
+experiment_info <- read_csv(here("processed-data", "21_Xenium", "07_xenium_build_spe", "xenium_experiment_details.csv")) 
+
+xenium_sample_info <- donor_info |>
+    inner_join(experiment_info)
 
 
+table(xenium_sample_info$APOE_carrier)
+table(xenium_sample_info$Sex)
+# F  M 
+# 4 12
+
+table(xenium_sample_info$APOE_carrier, xenium_sample_info$Sex)
+#     F M
+# E2+ 3 5
+# E4+ 1 7
+
+table(xenium_sample_info$APOE_carrier, xenium_sample_info$Ancestry)
+#     AA EA
+# E2+  4  4
+# E4+  4  4
+
+write_csv(xenium_sample_info, file = here("processed-data", "21_Xenium", "ERC_Xenium_sample_info.csv"))
+
+#### Tile plots ####
 
