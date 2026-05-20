@@ -59,7 +59,7 @@ modeling_results <-registration_wrapper(
     sce = spe,
     var_registration = var_reg,
     var_sample_id = "sample_id",
-    covars = c("APOE", "Sex", "Age", "Anc_Afr"),
+    covars = c("APOE_syn", "Sex", "Age", "Anc_Afr"),
     gene_ensembl = "ID",
     gene_name = "Symbol",
     min_ncells = 10,
