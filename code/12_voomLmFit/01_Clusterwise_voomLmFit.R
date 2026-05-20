@@ -33,6 +33,9 @@ if(opt$datatype == "Visium"){
 }else if(opt$datatype == "sn_fine"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS")
     batch <- "exp_round"
+}else if(opt$datatype == "Xenium"){
+    pb_fn <- here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "spe_xenium_pseudobulk-cell_type_anno.rds")
+    batch <- "chip"
 } else {
     stop("non-valid datatype")
 }
@@ -60,9 +63,14 @@ message(Sys.time(), " - Loop voomlmFit by cluster")
 lmf_summary <- map_dfr(clusters, function(clus){
     
     dge <- sce_pb[,sce_pb$registration_variable ==clus]
+    
+    if(opt$datatype == "Xenium"){
+        des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr , data = colData(dge)) ## no Mito ratio for Xenium
+    } else {
+        des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(dge))
+        }
 
-    des <- model.matrix(~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio, data = colData(dge))
-    des <- as.data.frame(des)
+   des <- as.data.frame(des)
     
     # filter low expression genes
     dge <- edgeR::calcNormFactors(dge)
