@@ -39,7 +39,7 @@ message(Sys.time(), " - load data from: ", basename(spe_fn))
 (spe <- qs_read(spe_fn))
 
 ## make APOE syntatic
-spe$APOE <- gsub("/", "", spe$APOE)
+spe$APOE_syn <- gsub("/", "", spe$APOE)
 
 var_reg <- opt$var
 if(opt$var == "SpX"){
