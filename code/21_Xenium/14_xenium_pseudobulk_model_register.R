@@ -66,6 +66,8 @@ modeling_results <-registration_wrapper(
     pseudobulk_rds_file = here(data_dir, sprintf("spe_xenium_pseudobulk-%s.rds", opt$var))
 )
 
+if(opt$var == "SpX") colnames(modeling_results$enrichment) <- gsub("_Sp", "~Sp", colnames(modeling_results$enrichment))
+
 message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, sprintf("xenium_modeling_results-%s.rds", opt$var)))
 
@@ -78,7 +80,7 @@ top_DEGs <- sig_genes_extract(n = 10,
                               sce_layer = spe_pb,
                               gene_name = "Symbol") 
 
-top_DEGs$test <- gsub("_", "~", top_DEGs$test)
+if(opt$var == "SpX") top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
 write.csv(top_DEGs, file = here(data_dir, sprintf("xenium_enrichment_modeling_%s_top100.csv", opt$var)), row.names = FALSE)
 
@@ -91,7 +93,9 @@ if(opt$var == "SpX"){
     colnames(reference_modeling$enrichment) <- gsub("_Sp", "~Sp", colnames(reference_modeling$enrichment))
     colnames(reference_modeling$enrichment) 
     
-    ref_colors
+    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+    ref_colors <- SpD_colors
+    q_colors <- metadata(spe)$SpX_colors
    
 } else if(opt$var == "cell_type_anno") {
     ref_name <- "sn_cell_type"
@@ -114,7 +118,7 @@ cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
 anno <- annotate_registered_clusters(
     cor_stats_layer = cor_layer,
     confidence_threshold = 0.6,
-    cutoff_merge_ratio = 0.01
+    cutoff_merge_ratio = 0.05 ## very strict annotation merge
 )
 
 
@@ -132,7 +136,7 @@ print(layer_stat_cor_plot(cor_stats_layer = cor_layer,
 ))
 dev.off()
 
-# slurmjobs::job_single('08_xenium_QC_normalize', create_shell = TRUE, memory = '100G', command = "Rscript 08_xenium_QC_normalize.R")
+# slurmjobs::job_single('14_xenium_pseudobulk_model_register', create_shell = TRUE, memory = '10G', command = "Rscript 14_xenium_pseudobulk_model_register.R --var cell_type_anno")
 
 ## Reproducibility information
 print("Reproducibility information:")
