@@ -9,7 +9,7 @@ library("here")
 library("sessioninfo")
 library("tidyverse")
 
-data_dir <- here("processed-data", "21_Xenium", "15_xenium_app_prep")
+data_dir <- here("processed-data", "21_Xenium", "16_xenium_app_prep")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### load data ####
