@@ -32,6 +32,9 @@ if(opt$datatype == "Visium"){
 }else if(opt$datatype == "sn_fine"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_anno.RDS")
     batch <- "exp_round"
+} else if(opt$datatype == "Xenium"){
+    pb_fn <- here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "spe_xenium_pseudobulk-cell_type_anno.rds")
+    batch <- "chip"
 } else {
     stop("non-valid datatype")
 }
@@ -64,8 +67,12 @@ vlmf_summary <- map_dfr(clusters, function(clus){
     dge <- sce_pb[,sce_pb$registration_variable == clus]
     
     # table(dge$carrier_Anc)
+    if(opt$datatype == "Xenium"){
+        des <- model.matrix(~0 + carrier_Anc + Sex + Age , data = colData(dge)) ## no Mito ratio for Xenium
+    } else {
+        des <- model.matrix(~0 + carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
+    }
     
-    des <- model.matrix(~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio, data = colData(dge))
     des <- as.data.frame(des)
     
     # filter low expression genes
@@ -130,7 +137,7 @@ vlmf_summary <- vlmf_summary |>
 
 write.csv(vlmf_summary, file = here(data_dir, sprintf("vlmf_ancestry_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_sn_broad', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype sn_broad")
+# slurmjobs::job_single('04_Clusterwise_voomLmFit_ancestry_Xenium', create_shell = TRUE, memory = '10G', command = "Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype Xenium")
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
