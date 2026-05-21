@@ -13,10 +13,10 @@ options(repos = BiocManager::repositories())
 
 #### load data ####
 ## main spe object
-spe <- qs2::qs_read(here::here("processed-data", "21_Xenium", "16_xenium_app_prep","spe_xenium_app.qs2"))
+spe <- qs2::qs_read(here::here("spe_xenium_app.qs2"))
 
 ## k09 pseudobulk +modeling data
-spe_pb <- readRDS(here::here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "spe_xenium_pseudobulk-SpX.rds"))
+spe_pb <- readRDS(here::here("spe_xenium_pseudobulk-SpX.rds"))
 colnames(rowData(spe_pb))[1:2] <- c('gene_id', "gene_name")
 rowData(spe_pb)$gene_search <- paste0(rowData(spe)$gene_name, "; ", rowData(spe)$gene_id)
 
@@ -28,7 +28,7 @@ spe_pb$spatialLIBD <- spe_pb$SpX
 
 # here::here("processed-data","05_spe_correct_cluster","20_model_pseudobulk_anno","spe_pseudobulk-SpD.rds")
 
-modeling_results <- readRDS(here::here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "xenium_modeling_results-SpX.rds"))
+modeling_results <- readRDS(here::here("xenium_modeling_results-SpX.rds"))
 
 sig_genes <-
     spatialLIBD::sig_genes_extract_all(
