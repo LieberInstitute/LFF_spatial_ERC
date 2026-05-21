@@ -75,24 +75,6 @@ table(is_GEX, is_anyneg)
 # FALSE    53  122
 # TRUE    366    0
 
-#### Drop off tissue spots ####
-
-off_tissue_annotation <- map_dfr(list.files(here(data_dir, "off_tissue"), full.names = TRUE), read.csv) |>
-    mutate(ManualAnnotation = tolower(ManualAnnotation)) |>
-    unique()
-
-
-spe$off_tissue <- colnames(spe) %in% off_tissue_annotation$spot_name
-
-table(spe$off_tissue)
-
-vis_grid_clus(
-  spe,
-  clustervar = "off_tissue",
-  pdf_file = here(plot_dir, "xenium_off_tissue.pdf"),
-  datatype =  "Xenium"
-)
-
 #### Evaluate QC metrics scuttle::isOuliter() ####
 spe <- scuttle::addPerCellQCMetrics(spe, subsets = list(negProbe = is_neg,
                                                         negCodeword = is_neg2,
@@ -338,6 +320,27 @@ table(spe$global_outliers)
 spe <- spe[,!spe$global_outliers]
 dim(spe)
 
+#### Drop off tissue spots ####
+
+off_tissue_annotation <- map_dfr(list.files(here(data_dir, "off_tissue"), full.names = TRUE), read.csv) |>
+    mutate(ManualAnnotation = tolower(ManualAnnotation)) |>
+    unique()
+
+
+spe$off_tissue <- colnames(spe) %in% off_tissue_annotation$spot_name
+
+table(spe$off_tissue)
+
+vis_grid_clus(
+    spe,
+    clustervar = "off_tissue",
+    pdf_file = here(plot_dir, "xenium_off_tissue.pdf"),
+    datatype =  "Xenium"
+)
+
+## drop off tissue spots
+spe <- spe[,!spe$off_tissue]
+
 #### Normalize ####
 ## adapted from https://github.com/LieberInstitute/xenium_NAC/blob/54a6bd78ef1127d0e41f037bd6a080579dad9020/code/04_normalization/01_area_based_norm.R
 ## Goal: Calculate size factors based on nucleus and cell area
@@ -393,21 +396,6 @@ spe <- runPCA(spe,
               BPPARAM = bp
 )
 
-message(Sys.time(), " - running TSNE")
-spe <- runTSNE(spe, dimred = "PCA", BPPARAM = bp, n_dimred = 10)
-
-message(Sys.time(), " - running UMAP")
-spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp, n_dimred = 10)
-
-# Print reduced dimension names
-message("\n\n", "Reduced Dim Names:\n")
-reducedDimNames(spe)
-
-
-#Save cleaned SPE
-message(Sys.time(), " - Saving cleaned SPE object")
-qs2::qs_save(spe, here(data_dir, "spe_xenium_QC.qs2"))
-
 # elbow plot
 # get variance explained
 pca_var <- attr(reducedDim(spe, "PCA"), "varExplained")
@@ -424,6 +412,23 @@ var_explained_elbow <- var_explained |>
     theme_bw()
 
 ggsave(var_explained_elbow, filename = here(plot_dir, "var_explained_elbow.png"))
+
+
+message(Sys.time(), " - running TSNE")
+spe <- runTSNE(spe, dimred = "PCA", BPPARAM = bp, n_dimred = 10)
+
+message(Sys.time(), " - running UMAP")
+spe <- runUMAP(spe, dimred = "PCA", BPPARAM = bp, n_dimred = 10)
+
+# Print reduced dimension names
+message("\n\n", "Reduced Dim Names:\n")
+reducedDimNames(spe)
+
+
+#Save cleaned SPE
+message(Sys.time(), " - Saving cleaned SPE object")
+qs2::qs_save(spe, here(data_dir, "spe_xenium_QC.qs2"))
+
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
