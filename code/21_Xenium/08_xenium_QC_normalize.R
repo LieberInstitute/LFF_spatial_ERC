@@ -5,7 +5,7 @@
 #### Set up ####
 
 library("here")
-library("SpatialExperiment")
+library("spatialLIBD")
 library("qs2")
 library("scater")
 library("tidyverse")
@@ -74,6 +74,24 @@ table(is_GEX, is_anyneg)
 # is_GEX  FALSE TRUE
 # FALSE    53  122
 # TRUE    366    0
+
+#### Drop off tissue spots ####
+
+off_tissue_annotation <- map_dfr(list.files(here(data_dir, "off_tissue"), full.names = TRUE), read.csv) |>
+    mutate(ManualAnnotation = tolower(ManualAnnotation)) |>
+    unique()
+
+
+spe$off_tissue <- colnames(spe) %in% off_tissue_annotation$spot_name
+
+table(spe$off_tissue)
+
+vis_grid_clus(
+  spe,
+  clustervar = "off_tissue",
+  pdf_file = here(plot_dir, "xenium_off_tissue.pdf"),
+  datatype =  "Xenium"
+)
 
 #### Evaluate QC metrics scuttle::isOuliter() ####
 spe <- scuttle::addPerCellQCMetrics(spe, subsets = list(negProbe = is_neg,
