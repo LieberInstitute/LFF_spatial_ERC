@@ -335,7 +335,8 @@ vis_grid_clus(
     spe,
     clustervar = "off_tissue",
     pdf_file = here(plot_dir, "xenium_off_tissue.pdf"),
-    datatype =  "Xenium"
+    datatype =  "Xenium",
+    point_size = 1
 )
 
 ## drop off tissue spots
