@@ -212,8 +212,12 @@ table(spe$SpX, spe$clust_HARMONY_kmeans9)
 message(Sys.time(), "- Load rctd data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
 
-ncol(spe) == nrow(rctd_data@results$results_df)
+rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
+
 identical(colnames(spe), rownames(rctd_data@results$results_df))
+
+spe$cell_id <- colnames(spe)
+colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 

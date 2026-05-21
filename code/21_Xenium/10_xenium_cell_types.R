@@ -23,7 +23,7 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 #### Load data ####
 message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
-spe$sample_id <- spe$BrNum
+
 
 #### Add RCTD cell types to spe ####
 message(Sys.time(), "- Load rctd data")
@@ -33,11 +33,14 @@ names(rctd_data@results)
 
 head(rctd_data@results$results_df)
 
-ncol(spe) == nrow(rctd_data@results$results_df)
+nrow(rctd_data@results$results_df) - ncol(spe) # 3124 dropped edge spots
+all(colnames(spe) %in% rownames(rctd_data@results$results_df))
+
+rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
+
 identical(colnames(spe), rownames(rctd_data@results$results_df))
 
 spe$cell_id <- colnames(spe)
-
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
 ## Define typical cell type columns
