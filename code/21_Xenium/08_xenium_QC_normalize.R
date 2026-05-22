@@ -260,6 +260,11 @@ ggsave(gg_QC_plot, filename = here(plot_dir, "xenium_QC_metrics_ggpairs_plot.png
 gg_QC_plot_out <- ggpairs(pd, columns = c("sum_gex", "detected_gex", "cell_area"), aes(colour = global_outliers)) + theme_bw()
 ggsave(gg_QC_plot_out, filename = here(plot_dir, "xenium_QC_metrics_ggpairs_plot_outliers.png"), height = 12, width = 12)
 
+#### 
+
+
+
+
 #### Spot Sweeper ####
 
 walk2(c("sum_gex", "detected_gex", "cell_area"),
@@ -357,6 +362,30 @@ message("nucleus_area.sf")
 spe$nucleus_area.sf <- spe$nucleus_area / median(spe$nucleus_area)
 summary(spe$nucleus_area.sf)
 
+#### Orient samples to match Visium data ####
+
+vis_grid_gene(
+    spe = spe,
+    geneid = "MBP",
+    pdf = here(plot_dir, "xenium_vis_gene_MBP.pdf"),
+    assayname = "logcounts",
+    point_size = 1.2,
+    sample_order = sort(unique(spe$sample_id)),
+    datatype = "Xenium")
+
+
+spe_test <- SpatialExperiment::rotateCoords(spe, sample_id = "Br1039", degrees = 90)
+colnames(spatialCoords(spe)) <- c('x_centroid', 'y_centroid')
+
+vis_test <- vis_gene(
+    spe = spe,
+    sample_id = "Br1039",
+    geneid = "MBP",
+    assayname = "logcounts",
+    point_size = 1.2,
+    datatype = "Xenium")
+
+ggsave(vis_test, filename = here(plot_dir, "vis_test.png"))
 
 #Generate histograms 
 cell_area_hist <- ggplot(colData(spe),aes(x = cell_area.sf)) +
