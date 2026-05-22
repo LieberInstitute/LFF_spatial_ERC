@@ -1,11 +1,12 @@
 **** Job starts ****
-Wed May 20 01:10:31 PM EDT 2026
+Wed May 20 01:44:11 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32037208
+Job id: 32037251
 Job name: 14_xenium_pseudobulk_model_register
-Node name: compute-169
+Node name: compute-178
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -124,7 +125,7 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-05-20 13:10:44.603274 - load data from: spe_xenium_cell_types.qs2
+2026-05-20 13:44:23.668793 - load data from: spe_xenium_cell_types.qs2
 class: SpatialExperiment 
 dim: 366 304401 
 metadata(16): Samples Samples ... Samples Samples
@@ -139,21 +140,21 @@ mainExpName: NULL
 altExpNames(0):
 spatialCoords names(2) : x_centroid y_centroid
 imgData names(1): sample_id
-2026-05-20 13:10:55.913205 - Running Spatial Registration on: cell_type_anno
-2026-05-20 13:10:56.095614 make pseudobulk object
-2026-05-20 13:11:02.884314 dropping 50 pseudo-bulked samples that are below 'min_ncells'.
-2026-05-20 13:11:02.935969 drop lowly expressed genes
-2026-05-20 13:11:03.067692 normalize expression
-2026-05-20 13:11:03.266983 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-cell_type_anno.rds
-2026-05-20 13:11:03.411457 create model matrix
-2026-05-20 13:11:03.474298 run duplicateCorrelation()
-2026-05-20 13:11:05.290705 The estimated correlation is: 0.107191499959688
-2026-05-20 13:11:05.29328 computing enrichment statistics
-2026-05-20 13:11:09.279107 extract and reformat enrichment results
-2026-05-20 13:11:09.297954 running the baseline pairwise model
-2026-05-20 13:11:09.364205 computing pairwise statistics
-2026-05-20 13:11:09.899987 computing F-statistics
-2026-05-20 13:11:09.977469 - Saving Data
+2026-05-20 13:44:34.444319 - Running Spatial Registration on: cell_type_anno
+2026-05-20 13:44:34.628353 make pseudobulk object
+2026-05-20 13:44:41.565485 dropping 50 pseudo-bulked samples that are below 'min_ncells'.
+2026-05-20 13:44:41.621608 drop lowly expressed genes
+2026-05-20 13:44:41.759097 normalize expression
+2026-05-20 13:44:41.967157 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-cell_type_anno.rds
+2026-05-20 13:44:42.114987 create model matrix
+2026-05-20 13:44:42.179881 run duplicateCorrelation()
+2026-05-20 13:44:44.029973 The estimated correlation is: 0.107191499959688
+2026-05-20 13:44:44.032545 computing enrichment statistics
+2026-05-20 13:44:48.031154 extract and reformat enrichment results
+2026-05-20 13:44:48.049898 running the baseline pairwise model
+2026-05-20 13:44:48.112631 computing pairwise statistics
+2026-05-20 13:44:48.640508 computing F-statistics
+2026-05-20 13:44:48.717786 - Saving Data
 class: SpatialExperiment 
 dim: 366 528 
 metadata(16): Samples Samples ... Samples Samples
@@ -174,9 +175,9 @@ Loading objects:
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-20 13:11:14 EDT"
+[1] "2026-05-20 13:44:53 EDT"
    user  system elapsed 
- 36.442   1.702  42.240 
+ 37.148   1.522  41.258 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -531,7 +532,7 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-05-20 13:11:25.71679 - load data from: spe_xenium_bansky.qs2
+2026-05-20 13:45:05.357408 - load data from: spe_xenium_bansky.qs2
 class: SpatialExperiment 
 dim: 366 450307 
 metadata(18): Samples Samples ... BANKSY_params SpX_colors
@@ -546,21 +547,21 @@ mainExpName: NULL
 altExpNames(0):
 spatialCoords names(2) : x_centroid y_centroid
 imgData names(1): sample_id
-2026-05-20 13:12:09.00141 - Running Spatial Registration on: SpX_syn
-2026-05-20 13:12:09.243153 make pseudobulk object
-2026-05-20 13:12:15.733239 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2026-05-20 13:12:15.771335 drop lowly expressed genes
-2026-05-20 13:12:15.86156 normalize expression
-2026-05-20 13:12:15.97503 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-SpX.rds
-2026-05-20 13:12:16.051538 create model matrix
-2026-05-20 13:12:16.120237 run duplicateCorrelation()
-2026-05-20 13:12:16.439298 The estimated correlation is: 0.395621252467338
-2026-05-20 13:12:16.441513 computing enrichment statistics
-2026-05-20 13:12:17.197352 extract and reformat enrichment results
-2026-05-20 13:12:17.212385 running the baseline pairwise model
-2026-05-20 13:12:17.223535 computing pairwise statistics
-2026-05-20 13:12:17.30682 computing F-statistics
-2026-05-20 13:12:17.332713 - Saving Data
+2026-05-20 13:45:29.917066 - Running Spatial Registration on: SpX_syn
+2026-05-20 13:45:30.1654 make pseudobulk object
+2026-05-20 13:45:36.739734 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2026-05-20 13:45:36.779457 drop lowly expressed genes
+2026-05-20 13:45:36.87003 normalize expression
+2026-05-20 13:45:36.987884 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-SpX.rds
+2026-05-20 13:45:37.041992 create model matrix
+2026-05-20 13:45:37.107999 run duplicateCorrelation()
+2026-05-20 13:45:37.412423 The estimated correlation is: 0.395621252467338
+2026-05-20 13:45:37.414891 computing enrichment statistics
+2026-05-20 13:45:38.17108 extract and reformat enrichment results
+2026-05-20 13:45:38.186943 running the baseline pairwise model
+2026-05-20 13:45:38.197912 computing pairwise statistics
+2026-05-20 13:45:38.28054 computing F-statistics
+2026-05-20 13:45:38.307169 - Saving Data
 class: SpatialExperiment 
 dim: 366 144 
 metadata(18): Samples Samples ... BANKSY_params SpX_colors
@@ -581,9 +582,9 @@ Loading objects:
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-20 13:12:18 EDT"
+[1] "2026-05-20 13:45:39 EDT"
    user  system elapsed 
- 37.850   2.796  62.791 
+ 38.162   2.425  45.140 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -829,4 +830,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed May 20 01:12:18 PM EDT 2026
+Wed May 20 01:45:39 PM EDT 2026

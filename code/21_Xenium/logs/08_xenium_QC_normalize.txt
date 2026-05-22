@@ -1,11 +1,12 @@
 **** Job starts ****
-Mon May 11 11:15:54 PM EDT 2026
+Wed May 20 09:30:33 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31871505
+Job id: 32085409
 Job name: 08_xenium_QC_normalize
-Node name: compute-148
+Node name: compute-113
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -15,6 +16,7 @@ Currently Loaded Modules:
  
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SpatialExperiment
 Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
@@ -100,12 +102,6 @@ The following objects are masked from ‘package:matrixStats’:
 
     anyMissing, rowMedians
 
-Registered S3 methods overwritten by 'GenomeInfoDb':
-  method                from   
-  as.data.frame.Seqinfo Seqinfo
-  merge.Seqinfo         Seqinfo
-  summary.Seqinfo       Seqinfo
-  update.Seqinfo        Seqinfo
 qs2 0.2.1
 Loading required package: scuttle
 Loading required package: ggplot2
@@ -131,7 +127,7 @@ Loading required package: ggplot2
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-05-11 23:16:05.391493- Load xenium data
+2026-05-20 21:31:10.445583- Load xenium data
 class: SpatialExperiment 
 dim: 541 473611 
 metadata(16): Samples Samples ... Samples Samples
@@ -264,25 +260,29 @@ There were 16 warnings (use warnings() to see them)
  FALSE   TRUE 
 450307  22645 
 [1]    366 450307
+
+ FALSE   TRUE 
+447183   3124 
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/08_xenium_QC_normalize/xenium_off_tissue.pdf"
 cell_area.sf
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.05125 0.73078 1.00000 1.02332 1.28918 2.40005 
+0.05117 0.73095 1.00000 1.02304 1.28845 2.39618 
 nucleus_area.sf
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.06642 0.59023 1.00000 1.03913 1.35088 5.96867 
+0.06642 0.59023 1.00000 1.03974 1.35213 5.96867 
 Saving 7 x 7 in image
 Saving 7 x 7 in image
-2026-05-11 23:21:32.243243 -  Normalize by size factors
-2026-05-11 23:21:39.562629 - running PCA
-2026-05-11 23:55:19.503912 - running TSNE
-2026-05-12 00:59:30.746584 - running UMAP
+2026-05-20 21:43:45.092526 -  Normalize by size factors
+2026-05-20 21:43:57.279616 - running PCA
+Saving 7 x 7 in image
+2026-05-20 22:38:40.799556 - running TSNE
+2026-05-21 00:11:06.841282 - running UMAP
 
 
 Reduced Dim Names:
 
 [1] "PCA"  "TSNE" "UMAP"
-2026-05-12 01:09:07.807899 - Saving cleaned SPE object
-Saving 7 x 7 in image
+2026-05-21 00:24:09.274866 - Saving cleaned SPE object
 Loading objects:
   ancestry_colors
   sex_colors
@@ -320,10 +320,4 @@ ERC_xenium_UMAP_express-PDGFRA-OPC.png - Saving 7 x 7 in image
 Replace 0's with NAs
 ERC_xenium_UMAP_express-PECAM1-Vasc.png - Saving 7 x 7 in image
 Replace 0's with NAs
-ERC_xenium_UMAP_express-SLC17A7-Excit.png - Saving 7 x 7 in image
-Replace 0's with NAs
-ERC_xenium_UMAP_express-GAD1-Inhib.png - Saving 7 x 7 in image
-Replace 0's with NAs
-ERC_xenium_TSNE_express-AQP4-Astro.png - Saving 7 x 7 in image
-Replace 0's with NAs
-slurmstepd: error: *** JOB 31871505 ON compute-148 CANCELLED AT 2026-05-12T23:15:58 DUE TO TIME LIMIT ***
+slurmstepd: error: *** JOB 32085409 ON compute-113 CANCELLED AT 2026-05-21T21:30:35 DUE TO TIME LIMIT ***
