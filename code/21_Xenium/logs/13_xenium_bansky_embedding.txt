@@ -1,16 +1,17 @@
 **** Job starts ****
-Fri May 15 09:03:59 AM EDT 2026
+Thu May 21 07:45:37 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31903836
+Job id: 32089404
 Job name: 13_xenium_bansky_embedding
-Node name: compute-106
+Node name: compute-129
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
 
  
 
@@ -131,9 +132,9 @@ Loading required package: ggplot2
 ✖ lubridate::stamp()    masks cowplot::stamp()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-05-15 09:04:11.65466 - Load spe data
-2026-05-15 09:04:29.098051 | Staggering spatial coordinates
-2026-05-15 09:04:29.398368 | Running computeBanksy on full dataset
+2026-05-21 07:45:54.18657 - Load spe data
+2026-05-21 07:46:10.657636 | Staggering spatial coordinates
+2026-05-21 07:46:11.868867 | Running computeBanksy on full dataset
 Computing neighbors...
 Spatial mode is kNN_median
 Parameters: k_geom=25
@@ -148,14 +149,14 @@ Done
 Warning message:
 In asMethod(object) :
   sparse->dense coercion: allocating vector of size 1.2 GiB
-2026-05-15 09:08:57.687521 | Running PCA on embedding
+2026-05-21 07:49:13.69787 | Running PCA on embedding
 Using seed=514
 Warning message:
 In asMethod(object) :
   sparse->dense coercion: allocating vector of size 1.2 GiB
-2026-05-15 09:10:47.055091 | Running UMAP on embedding
+2026-05-21 07:50:55.304818 | Running UMAP on embedding
 Using seed=514
-2026-05-15 09:21:50.788791 | Running Harmony...
+2026-05-21 07:59:24.327492 | Running Harmony...
 Transposing data matrix
 Using automatic lambda estimation
 Thetas: 2
@@ -202,17 +203,17 @@ Harmony 5/10
 Harmony converged after 5 iterations
 null device 
           1 
-2026-05-15 09:24:26.723525 | Running UMAP on Harmony-corrected embedding
+2026-05-21 08:01:15.038181 | Running UMAP on Harmony-corrected embedding
 Using seed=514
 null device 
           1 
-2026-05-15 09:35:57.220418 | Performing clustering
+2026-05-21 08:10:08.474932 | Performing clustering
 Using seed=514
 Warning message:
-Quick-TRANSfer stage steps exceeded maximum (= 22515350) 
+did not converge in 10 iterations 
 
-    1     2     3     4     5     6     7     8     9 
-85799 68858 50633 38792 26985 30034 38133 65219 45854 
-2026-05-15 09:36:00.201763 - Saving SPE object
-Error: 'spe$sample_id' must exist and contain the ID Br1556
+    1     2     3     4     5     6     7     8     9    10    11    12 
+38647 66638 30344 36327 62374  5033 33558 21744 41395 70249 23247 17627 
+Error in base::table(...) : all arguments must have the same length
+Calls: table ... standardGeneric -> eval -> eval -> eval -> table -> <Anonymous>
 Execution halted
