@@ -9,7 +9,7 @@ library("here")
 library("sessioninfo")
 library("tidyverse")
 
-data_dir <- here("processed-data", "21_Xenium", "16_xenium_app_prep")
+data_dir <- here("code", "23_spatialLIBD_app_Xenium")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### load data ####
@@ -62,5 +62,11 @@ check_spe(spe,
 
 message(Sys.time(), " - Save qs2")
 qs2::qs_save(spe, file = here(data_dir, "spe_xenium_app.qs2"))
+saveRDS(spe, file = here(data_dir, "spe_xenium_app.rds"))
 
+spe_pb <- readRDS(here::here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "spe_xenium_pseudobulk-SpX.rds"))
+saveRDS(spe_pb, file = here(data_dir, "spe_xenium_pseudobulk-SpX.rds"))
+
+modeling_results <- readRDS(here::here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "xenium_modeling_results-SpX.rds"))
+saveRDS(modeling_results, file = here(data_dir, "xenium_modeling_results-SpX.rds"))
 
