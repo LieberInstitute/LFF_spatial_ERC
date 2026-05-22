@@ -38,6 +38,10 @@ any(duplicated(colnames(spe)))
 
 spe$APOE_ancestry <- paste0(gsub("\\+", "_", spe$APOE_carrier), spe$Ancestry)
 
+## fix rowDAta
+colnames(rowData(spe))[1:2] <- c('gene_id', "gene_name")
+rowData(spe)$gene_search <- paste0(rowData(spe)$gene_name, "; ", rowData(spe)$gene_id)
+
 sample_nCells_preQC <- as.data.frame(colData(spe)) |>
     group_by(BrNum, APOE_carrier, Ancestry, APOE_ancestry, Run, chip) |>
     summarize(nCells_preQC = n()) 
@@ -364,28 +368,55 @@ summary(spe$nucleus_area.sf)
 
 #### Orient samples to match Visium data ####
 
+## refernce plots 
 vis_grid_gene(
     spe = spe,
     geneid = "MBP",
-    pdf = here(plot_dir, "xenium_vis_gene_MBP.pdf"),
+    pdf = here(plot_dir, "xenium_vis_gene_MBP_pre-Orient.pdf"),
     assayname = "logcounts",
     point_size = 1.2,
     sample_order = sort(unique(spe$sample_id)),
     datatype = "Xenium")
 
+source(here("code", "21_Xenium", "xenium_mirror_rotate.R"))
 
-spe_test <- SpatialExperiment::rotateCoords(spe, sample_id = "Br1039", degrees = 90)
-colnames(spatialCoords(spe)) <- c('x_centroid', 'y_centroid')
+spe[,spe$sample_id == "Br1039"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br1039", degrees = 270), axis = "v")
+spe[,spe$sample_id == "Br1556"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br1556", degrees = 270), axis = "v")
+# spe[,spe$sample_id == "Br1706"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br1706", degrees = 90), axis = "v")
+spe[,spe$sample_id == "Br1706"] <- xenium_rotate(spe, sample_id =  "Br1706", degrees = 90)
+spe[,spe$sample_id == "Br2582"] <- xenium_mirror(spe, sample_id =  "Br2582", axis = "v")
+spe[,spe$sample_id == "Br5161"] <- xenium_mirror(spe, sample_id =  "Br5161", axis = "v")
+spe[,spe$sample_id == "Br5367"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br5367", degrees = 90), axis = "h")
+spe[,spe$sample_id == "Br5415"] <- xenium_mirror(spe, sample_id =  "Br5415", axis = "v")
+spe[,spe$sample_id == "Br5426"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br5426", degrees = 180), axis = "v") ## double check
+spe[,spe$sample_id == "Br5460"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br5460", degrees = 270), axis = "v")
+spe[,spe$sample_id == "Br5517"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br5517", degrees = 270), axis = "h")
+spe[,spe$sample_id == "Br5599"] <- xenium_rotate(spe, sample_id =  "Br5599", degrees = 270)
+spe[,spe$sample_id == "Br5634"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br5634", degrees = 90), axis = "v")
+spe[,spe$sample_id == "Br5854"] <- xenium_mirror(xenium_mirror(spe, sample_id =  "Br5854", axis = "v"), axis = "h") ## double check
+spe[,spe$sample_id == "Br5941"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br5941", degrees = 90), axis = "v")
+spe[,spe$sample_id == "Br6098"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br6098", degrees = 90), axis = "h")
+spe[,spe$sample_id == "Br6538"] <- xenium_rotate(spe, sample_id =  "Br6538", degrees = 180) ## tricky match
 
-vis_test <- vis_gene(
+# spe_test <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br6098", degrees = 90), axis = "h")
+# spe_test <- xenium_rotate(spe, sample_id =  "Br6538", degrees = 180)
+# spe_test <- xenium_mirror(spe, sample_id =  "Br5854", axis = "h")
+# 
+# vis_clus(
+#     spe = spe_test,
+#     clustervar = "SpX",
+#     point_size = 1.2,
+#     datatype = "Xenium")
+
+
+vis_grid_gene(
     spe = spe,
-    sample_id = "Br1039",
     geneid = "MBP",
+    pdf = here(plot_dir, "xenium_vis_gene_MBP_post-Orient.pdf"),
     assayname = "logcounts",
     point_size = 1.2,
+    sample_order = sort(unique(spe$sample_id)),
     datatype = "Xenium")
-
-ggsave(vis_test, filename = here(plot_dir, "vis_test.png"))
 
 #Generate histograms 
 cell_area_hist <- ggplot(colData(spe),aes(x = cell_area.sf)) +
