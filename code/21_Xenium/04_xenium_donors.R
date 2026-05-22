@@ -147,9 +147,22 @@ vis_clus_plots <- vis_grid_clus(
     colors = metadata(spe)$SpD_colors,
     sort_clust = FALSE,
     return_plots = FALSE,
+    sample_order = sort(sample_info$BrNum),
     point_size = 2,
     guide_point_size = 3,
     pdf_file = here(plot_dir, "Visium_SpD_xenium_samples.pdf")
+)
+
+rownames(spe) <- rowData(spe)$gene_name
+
+vis_clus_plots <- vis_grid_gene(
+    spe = spe[, spe$BrNum %in% sample_info$BrNum],
+    geneid = "MBP",
+    return_plots = FALSE,
+    sample_order = sort(sample_info$BrNum),
+    point_size = 2,
+    guide_point_size = 3,
+    pdf_file = here(plot_dir, "Visium_vis_gene_MBP_xenium_samples.pdf")
 )
 
 #### Organize sample info ####
@@ -181,6 +194,10 @@ table(xenium_sample_info$APOE_carrier, xenium_sample_info$Ancestry)
 #     AA EA
 # E2+  4  4
 # E4+  4  4
+
+summary(xenium_sample_info$Age)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 29.95   47.11   51.28   51.38   60.83   68.38 
 
 write_csv(xenium_sample_info, file = here("processed-data", "21_Xenium", "ERC_Xenium_sample_info.csv"))
 
