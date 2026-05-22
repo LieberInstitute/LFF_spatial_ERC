@@ -366,6 +366,37 @@ message("nucleus_area.sf")
 spe$nucleus_area.sf <- spe$nucleus_area / median(spe$nucleus_area)
 summary(spe$nucleus_area.sf)
 
+
+#Generate histograms 
+cell_area_hist <- ggplot(colData(spe),aes(x = cell_area.sf)) +
+    geom_histogram(bins = 50,fill = "#70bbfe",color = "#FFF") +
+    labs(x = "Scaling Factor",
+         y = "Frequency",
+         title = "Cell area") +
+    theme_bw() +
+    theme(plot.title = element_text(hjust= 0.5))
+
+ggsave(plot = cell_area_hist, filename = here(plot_dir,"cell_area_scaling_hist.pdf"))
+
+nuc_area_hist <- ggplot(colData(spe),aes(x = nucleus_area.sf)) +
+    geom_histogram(bins = 50,fill = "#70bbfe",color = "#FFF") +
+    labs(x = "Scaling Factor",
+         y = "Frequency",
+         title = "Nucleus area") +
+    theme_bw() +
+    theme(plot.title = element_text(hjust= 0.5))
+
+ggsave(plot = nuc_area_hist, filename = here(plot_dir,"nucleus_area_scaling_hist.pdf"))
+
+# From https://github.com/LieberInstitute/spatialAmygdala/blob/77670e73360a112945a4b8257557194f9212bdb6/code/Xenium/03_quality_control/perCellQC/01_perCellQC.R#L102-L103
+# normalize the counts by the nucleus and cell area scaling factors
+message(Sys.time(), " -  Normalize by size factors")
+assay(spe, "nucleus_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts") ## segmentation of nuclei is more relable
+assay(spe, "cell_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$cell_area.sf, transform="log", assay.type="counts")
+
+## regular logcounts
+spe <- logNormCounts(spe, assay.type = "counts")
+
 #### Orient samples to match Visium data ####
 
 ## refernce plots 
@@ -418,35 +449,6 @@ vis_grid_gene(
     sample_order = sort(unique(spe$sample_id)),
     datatype = "Xenium")
 
-#Generate histograms 
-cell_area_hist <- ggplot(colData(spe),aes(x = cell_area.sf)) +
-    geom_histogram(bins = 50,fill = "#70bbfe",color = "#FFF") +
-    labs(x = "Scaling Factor",
-         y = "Frequency",
-         title = "Cell area") +
-    theme_bw() +
-    theme(plot.title = element_text(hjust= 0.5))
-
-ggsave(plot = cell_area_hist, filename = here(plot_dir,"cell_area_scaling_hist.pdf"))
-
-nuc_area_hist <- ggplot(colData(spe),aes(x = nucleus_area.sf)) +
-    geom_histogram(bins = 50,fill = "#70bbfe",color = "#FFF") +
-    labs(x = "Scaling Factor",
-         y = "Frequency",
-         title = "Nucleus area") +
-    theme_bw() +
-    theme(plot.title = element_text(hjust= 0.5))
-
-ggsave(plot = nuc_area_hist, filename = here(plot_dir,"nucleus_area_scaling_hist.pdf"))
-
-# From https://github.com/LieberInstitute/spatialAmygdala/blob/77670e73360a112945a4b8257557194f9212bdb6/code/Xenium/03_quality_control/perCellQC/01_perCellQC.R#L102-L103
-# normalize the counts by the nucleus and cell area scaling factors
-message(Sys.time(), " -  Normalize by size factors")
-assay(spe, "nucleus_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$nucleus_area.sf, transform="log", assay.type="counts") ## segmentation of nuclei is more relable
-assay(spe, "cell_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$cell_area.sf, transform="log", assay.type="counts")
-
-## regular logcounts
-spe <- logNormCounts(spe, assay.type = "counts")
 
 #### Reduced dims ####
 
