@@ -3,7 +3,7 @@
 
 #### Set Up ####
 
-library("SpatialLIBD")
+library("spatialLIBD")
 library("qs2")
 library("here")
 library("sessioninfo")
@@ -20,6 +20,8 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 message(Sys.time(), " - Load SPE data")
 spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
 
+## local
+# spe <- qs2::qs_read(here::here("code","23_spatialLIBD_app_Xenium","spe_xenium_app.qs2"))
 
 #### Layer markers ####
 
@@ -62,5 +64,29 @@ SpX_markers <- list(
     `Vasc~Sp9X3`   = "PECAM1",     # canonical endothelial marker
     `WM~Sp9X2`     = "ERBB3"       # Oligo base probe, strong stat (11.31), clean WM biology
 )
+
+#### Vis clus ####
+SpX_colors <- metadata(spe)$SpX_colors
+
+samp = "Br6538"
+vis_clus_class <- spatialLIBD::vis_clus(spe,
+                                        sampleid = samp,
+                                        clustervar = "SpX",
+                                        datatype = "Xenium",
+                                        point_size = 1.5,
+                                        # alpha = 0.5,
+                                        colors = SpX_colors,
+                                        guide_point_size = 3)
+
+ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_SpX_%s.png", samp)), width = 12, height = 11)
+
+
+vis_grid_clus(spe,
+              clustervar = "SpX",
+              pdf_file = here(plot_dir, "xenium_orient_test_SpX.pdf"),
+              colors = SpX_colors,
+              point_size = 1,
+              sample_order = sort(unique(spe$sample_id)),
+              datatype = "Xenium")
 
     
