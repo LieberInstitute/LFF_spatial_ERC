@@ -382,7 +382,6 @@ source(here("code", "21_Xenium", "xenium_mirror_rotate.R"))
 
 spe[,spe$sample_id == "Br1039"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br1039", degrees = 270), axis = "v")
 spe[,spe$sample_id == "Br1556"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br1556", degrees = 270), axis = "v")
-# spe[,spe$sample_id == "Br1706"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br1706", degrees = 90), axis = "v")
 spe[,spe$sample_id == "Br1706"] <- xenium_rotate(spe, sample_id =  "Br1706", degrees = 90)
 spe[,spe$sample_id == "Br2582"] <- xenium_mirror(spe, sample_id =  "Br2582", axis = "v")
 spe[,spe$sample_id == "Br5161"] <- xenium_mirror(spe, sample_id =  "Br5161", axis = "v")
@@ -398,9 +397,10 @@ spe[,spe$sample_id == "Br5941"] <- xenium_mirror(xenium_rotate(spe, sample_id = 
 spe[,spe$sample_id == "Br6098"] <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br6098", degrees = 90), axis = "h")
 spe[,spe$sample_id == "Br6538"] <- xenium_rotate(spe, sample_id =  "Br6538", degrees = 180) ## tricky match
 
+## test
 # spe_test <- xenium_mirror(xenium_rotate(spe, sample_id =  "Br6098", degrees = 90), axis = "h")
-# spe_test <- xenium_rotate(spe, sample_id =  "Br6538", degrees = 180)
-# spe_test <- xenium_mirror(spe, sample_id =  "Br5854", axis = "h")
+# spe_test <- xenium_rotate(spe, sample_id =  "Br1706", degrees = 90)
+# spe_test <- xenium_mirror(spe, sample_id =  "Br1706", axis = "h")
 # 
 # vis_clus(
 #     spe = spe_test,
