@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=20G
+#SBATCH --mem=100G
 #SBATCH --job-name=08_xenium_QC_normalize
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
