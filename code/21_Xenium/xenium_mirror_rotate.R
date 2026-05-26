@@ -58,7 +58,7 @@ xenium_rotate <- function(spe, sample_id = unique(spe$sample_id)[1], degrees = 9
     #   Return the "rectangle" such that its top-left corner is at the spot
     #   where its previous top-left corner was
     if (degrees %% 360 == 90) {
-        new_coords <- new_coords + c(dim_x_max[1], 0)
+        new_coords <- new_coords + c(dim_max[1], 0)
     } else if (degrees %% 360 == 180) {
         new_coords <- new_coords + rev(dim_max)
     } else if (degrees %% 360 == 270) {

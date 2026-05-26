@@ -398,6 +398,7 @@ assay(spe, "cell_normcounts") <- scuttle::normalizeCounts(spe, size.factors=spe$
 spe <- logNormCounts(spe, assay.type = "counts")
 
 #### Orient samples to match Visium data ####
+message(Sys.time(), " - Orient samples")
 
 ## refernce plots 
 vis_grid_gene(
