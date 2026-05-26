@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 01_Clusterwise_voomLmFit.R --datatype Xenium
+Rscript 01_Clusterwise_voomLmFit_Xenium.R
 
 echo "**** Job ends ****"
 date
