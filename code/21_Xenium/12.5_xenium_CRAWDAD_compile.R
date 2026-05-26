@@ -31,6 +31,14 @@ crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), read_cs
         neighbor = factor(neighbor, levels = cell_type_levels)
     )
 
+
+crawdad_data |>
+    filter(reference == "Astro.4") |>
+    # dplyr::count(neighbor) |>
+    filter(grepl("Vasc", neighbor)) |>
+    dplyr::count(is.na(Z))
+
+
 #   Get the Z-score significance threshold (same in all samples)
 (z_sig <- crawdad_data |> filter(BrNum == "Br5460") |> correctZBonferroni())
 # [1] 4.12
@@ -55,34 +63,48 @@ trend_test <- crawdad_data |>
 
 ggsave(trend_test, filename  = here(plot_dir, "xenium_CRAWDAD_trend_test.png"))
 
+trend_test <- crawdad_data |> 
+    filter(reference == 'Astro.4', neighbor =='Vasc.Endo') |>
+    group_by(id = BrNum, neighbor, scale, reference) |>
+    summarize(Z = mean(Z)) |> 
+    vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig)
+
+ggsave(trend_test, filename  = here(plot_dir, "xenium_CRAWDAD_trend_Astro.4_test.png"))
+
 min_num_signif = 4
 
 crawdad_data_summary <- crawdad_data |>
     group_by(BrNum, neighbor, scale, reference) |>
-    summarize(Z = mean(Z)) |>
+    summarize(Z = mean(Z, na.rm = TRUE)) |>
     ungroup() |>
     #   Then filter to the smallest spatial scale with significant Z-scores
     filter(abs(Z) >= z_sig) |>
     group_by(BrNum, neighbor, reference) |>
-    filter(scale == min(scale)) |>
+    filter(scale == min(scale, na.rm = TRUE)) |>
     #   Retain pairs where all samples all signs of Z scores agree across
     #   samples, and significance is achieved in some sufficient number of
     #   samples 
     group_by(reference, neighbor) |>
-    filter(all(Z > 0) | all(Z < 0)) |>
+    filter(mean(Z > 0) >= .8 | mean(Z < 0) >= 0.8) |> ## allows 20% disagreement 
     filter(n() >= min_num_signif) |>
     #   Take the mean Z-score and scale across samples
     group_by(neighbor, reference) |>
-    summarize(scale = mean(scale), Z = mean(Z)) |>
+    summarize(scale = mean(scale, na.rm = TRUE), Z = mean(Z, na.rm = TRUE)) |>
     ungroup() |>
     #   Cap Z-score at twice the magnitude of the significance threshold 
     mutate(Z_real = Z,
-           Z = sign(Z) * pmin(abs(Z), z_sig * 2))
+           Z = sign(Z) * pmin(abs(Z), z_sig * 2, na.rm = TRUE))
 
 write_csv(crawdad_data_summary, file = here(data_dir, "ERC_xenium_crawdad_data_summary.csv"))
 
 crawdad_data_summary |>
-    filter(reference == "Oligo.3", neighbor == "Oligo.1")
+    filter(reference == "Oligo.3") |>
+    arrange(-Z_real)
+
+crawdad_data_summary |>
+    filter(reference == "Astro.4") |>
+    arrange(-Z_real) |>
+    print(n = 32)
 
 crawdad_data_summary |>
     # filter(reference == "Oligo.3") |> 
@@ -163,7 +185,7 @@ crawdad_data_summary |>
         trend_plot <- crawdad_data |> 
             filter(reference == ref, neighbor == nei)  |>
             group_by(id = BrNum, neighbor, scale, reference) |>
-            summarize(Z = mean(Z)) |>
+            summarize(Z = mean(Z, na.rm = TRUE)) |>
             vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig) +
             labs(title = sprintf("Z=%.2f, scale=%.2f", Z_real, summary_scale))
         
@@ -215,14 +237,17 @@ ggsave(dotplot, filename = here(plot_dir, 'erc_xenium_CRAWDAD_dot_plot.png'), he
 ## load spe  data 
 message(Sys.time(), " - Load SPE data")
 spe <- qs2::qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+spe <- qs2::qs_read(here::here("processed-data", "21_Xenium", "16_xenium_app_prep","spe_xenium_app.qs2"))
 
-spe_test <- spe[,spe$BrNum == "Br1039"]
+spe <- spe[,spot_class == "singlet"]
 
-summary(spatialCoords(spe_test)[,"x_centroid"])
-summary(spatialCoords(spe_test)[,"y_centroid"])
-
-
-spe_test[, spatialCoords(spe_test)[,"x_centroid"] < 850]
+# spe_test <- spe[,spe$BrNum == "Br1039"]
+# 
+# summary(spatialCoords(spe_test)[,"x_centroid"])
+# summary(spatialCoords(spe_test)[,"y_centroid"])
+# 
+# 
+# spe_test[, spatialCoords(spe_test)[,"x_centroid"] < 850]
 
 cell_type_vis_clus <- vis_clus(spe,
          sampleid = "Br1039",
@@ -261,6 +286,7 @@ crawdad_data_summary |>
     arrange(Z_real)
 
 plot_ref_neighbor_pair(spe, ref = "Astro.1", neighbor = "Vasc.Endo")
+plot_ref_neighbor_pair(spe, ref = "Astro.4", neighbor = "Vasc.Endo")
 plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Oligo.1")
 
 plot_ref_neighbor_pair(spe, ref = "Oligo.3", neighbor = "Astro.1")
