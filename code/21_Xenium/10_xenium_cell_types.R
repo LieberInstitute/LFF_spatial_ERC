@@ -140,7 +140,7 @@ rcdt_results_doublets |> count(spot_class, type)
 
 rcdt_results_doublets |> 
     filter(spot_class == "doublet_certain") |>
-    count(first_type, second_type)
+    count(type, cell_type_anno)
 
 doublet_combos <- rcdt_results_doublets |> 
     filter(spot_class == "doublet_certain") |>
