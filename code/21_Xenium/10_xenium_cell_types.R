@@ -487,7 +487,7 @@ plot_marker_express_List(
     gene_list = broad_markers,
     pdf_fn = here(plot_dir, "xenium_rcdt_singlets_broad_marker_expres_violin.pdf"),
     cellType_col = "first_type",
-    gene_name_col = "Symbol",
+    gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
 )
 
@@ -496,7 +496,7 @@ plot_marker_express_List(
     gene_list = broad_markers,
     pdf_fn = here(plot_dir, "xenium_rcdt_singlets_broad_marker_expres_violin.pdf"),
     cellType_col = "first_type",
-    gene_name_col = "Symbol",
+    gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
 )
 
@@ -505,7 +505,7 @@ plot_marker_express_List(
     gene_list = broad_markers,
     pdf_fn = here(plot_dir, "xenium_singleR_broad_marker_expres_violin.pdf"),
     cellType_col = "singleR_label",
-    gene_name_col = "Symbol",
+    gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
 )
 
@@ -528,7 +528,7 @@ plot_marker_express_List(
     gene_list = erc_oligo_key_genes,
     pdf_fn = here(plot_dir, "xenium_rcdt_singlets_Oligo_marker_expres_violin.pdf"),
     cellType_col = "first_type",
-    gene_name_col = "Symbol",
+    gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
 )
 
@@ -537,7 +537,7 @@ plot_marker_express_List(
     gene_list = erc_oligo_key_genes,
     pdf_fn = here(plot_dir, "xenium_singleR_singlets_Oligo_marker_expres_violin.pdf"),
     cellType_col = "singleR_label",
-    gene_name_col = "Symbol",
+    gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
 )
 
