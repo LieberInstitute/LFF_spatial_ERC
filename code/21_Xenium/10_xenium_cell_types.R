@@ -9,7 +9,7 @@ library("sessioninfo")
 library("tidyverse")
 library("spatialLIBD")
 library("DeconvoBuddies")
-
+library("scDotPlot")
 
 data_dir <- here("processed-data", "21_Xenium", "10_xenium_cell_types")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -58,7 +58,7 @@ qs2::qs_save(spe_singlet, here(data_dir, "spe_xenium_cell_types.qs2"))
 rm(spe_singlet)
 
 #### Explore RCTD results ####
-
+message(Sys.time(), "Load and add RCTD results")
 table(is.na(spe$spot_class), spe$sum_gex < 100)
 
 ## from before sum_gex < 100 filter
@@ -202,11 +202,12 @@ ggsave(rctd_class_ct_prop_bar_plot, filename = here(plot_dir, "xenium_rctd_class
 write_csv(cell_type_class_summary, file = here(data_dir, "RCTD_cell_type_class_summary.csv"))
 
 #### load SingleR results ####
-
+message(Sys.time(), "Check SingleR results")
 singleR_results <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_singleR", "SingleR_results_xenium.qs2"))
 dim(singleR_results)
 head(singleR_results)
 
+singleR_results <- singleR_results[colnames(spe), ]
 identical(rownames(singleR_results), colnames(spe))
 
 ## cell types
@@ -219,6 +220,7 @@ spe$singleR_delta <- singleR_results$delta.next
 summary(spe$singleR_delta)
 
 #### quality metrics vs. RCTD class ####
+message(Sys.time(), " - Check quality metrics")
 
 rctd_qc_summary <- as.data.frame(colData(spe)) |>
     group_by(spot_class) |>
@@ -256,6 +258,8 @@ delta_distibution <- as.data.frame(colData(spe)) |>
 ggsave(delta_distibution, filename = here(plot_dir, "singleR_delta_distibution.png"))
 
 ## compare cell type calls ####
+message(Sys.time(), " - Comapre RCTD and SingleR calls")
+
 table(singleR_results$labels == spe$first_type, spe$spot_class)
 
 table(singleR_results$labels == spe$first_type, spe$spot_class)
@@ -291,6 +295,8 @@ walk2(jacc.mat, levels(spe$spot_class),
 dev.off()
 
 #### Plot cell types in Reduced Dims ####
+message(Sys.time(), " - plot Reduced dims")
+
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 ## categorical
@@ -346,6 +352,7 @@ rctd_tb_doublet_tile <- rctd_tb_doublet_counts |>
 ggsave(rctd_tb_doublet_tile, filename = here(plot_dir, "xenium_rctd_doublet_tile.png"))
 
 #### Spatial plots ####
+message(Sys.time(), " - Spatial plots")
 
 spe$Oligo <- droplevels(spe$first_type)
 spe$Oligo[!grepl("Oligo", spe$Oligo)] <- NA
@@ -421,6 +428,7 @@ walk(unique(spe$BrNum), function(samp){
 
 
 #### Check marker gene expression ####
+message(Sys.time(), " - Marker Gene Expression")
 
 probes_long <- readxl::read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_ALL_probes_long.xlsx"))
 
@@ -534,8 +542,7 @@ plot_marker_express_List(
 )
 
 #### scDot plots ####
-
-library("scDotPlot")
+message(Sys.time(), " - scDot plots")
 
 broad_markers2 <- AnnotationDbi::unlist2(broad_markers)
 
