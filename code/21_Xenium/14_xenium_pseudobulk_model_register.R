@@ -30,13 +30,17 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 if(opt$var == "SpX"){
     ## load SpX version of spe (NOT filtered to singlets)
     spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
-} else {
+} else if(opt$var == "cell_type_anno"){
     ## load cell type version of spe (filtered to singlets ONLY)
     spe_fn <- here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2")
+} else {
+    stop("invalid opt")
 }
 
 message(Sys.time(), " - load data from: ", basename(spe_fn))
 (spe <- qs_read(spe_fn))
+
+message("ncells: ", ncol(spe))
 
 ## make APOE syntatic
 spe$APOE_syn <- gsub("/", ".", spe$APOE)
@@ -59,9 +63,9 @@ modeling_results <-registration_wrapper(
     sce = spe,
     var_registration = var_reg,
     var_sample_id = "sample_id",
-    covars = c("APOE_syn", "Sex", "Age", "Anc_Afr"),
-    gene_ensembl = "ID",
-    gene_name = "Symbol",
+    covars = c("APOE_syn", "Age", "Anc_Afr"),
+    gene_ensembl = "gene_id",
+    gene_name = "gene_name",
     min_ncells = 10,
     pseudobulk_rds_file = here(data_dir, sprintf("spe_xenium_pseudobulk-%s.rds", opt$var))
 )
