@@ -774,7 +774,7 @@ ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1),
 
 
 
-# slurmjobs::job_single('22_crumblr_sn', create_shell = TRUE, memory = '25G', command = "Rscript 22_crumblr_sn.R")
+# slurmjobs::job_single('11_xenium_crumblr', create_shell = TRUE, memory = '10G', command = "Rscript 11_xenium_crumblr.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
