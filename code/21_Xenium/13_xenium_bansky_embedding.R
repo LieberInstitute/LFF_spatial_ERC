@@ -184,8 +184,8 @@ spe = clusterBanksy(
 # table(spe_app[, colnames(spe)]$clust_HARMONY_kmeans9)
 # table(spe_app[, colnames(spe)]$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans9)
 
-spe$clust_HARMONY_kmeans9 <- spe_app[, colnames(spe)]$clust_HARMONY_kmeans9
-spe$clust_HARMONY_kmeans12 <- spe_app[, colnames(spe)]$clust_HARMONY_kmeans12
+# spe$clust_HARMONY_kmeans9 <- spe_app[, colnames(spe)]$clust_HARMONY_kmeans9
+# spe$clust_HARMONY_kmeans12 <- spe_app[, colnames(spe)]$clust_HARMONY_kmeans12
 
 table(spe$clust_HARMONY_kmeans9)
 
