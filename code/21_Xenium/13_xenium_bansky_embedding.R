@@ -164,7 +164,50 @@ print(p)
 dev.off()
 
 #### Bansky clustering ####
-message(Sys.time(), ' | Performing clustering')
+message(Sys.time(), ' | Performing clustering k=9')
+spe = clusterBanksy(
+    spe, 
+    use_agf = TRUE, 
+    lambda = lambda,
+    seed = random_seed,
+    algo = "kmeans", 
+    # resolution = res, 
+    dimred = "HARMONY",
+    kmeans.centers = 9
+)
+
+table(spe$clust_HARMONY_kmeans9)
+
+cluster_colors <- c("#f62062",
+                    "#f45e28",
+                    "#cf9800",
+                    "#608d00",
+                    "#01e090",
+                    "#3ed9e6",
+                    "#0064ca",
+                    "#9215a3",
+                    "#ff8ee2",
+                    "black",
+                    "grey",
+                    "brown")
+
+samp <- "Br1556"
+
+map(unique(spe$BrNum), function(samp){
+    vis_clus_class <- spatialLIBD::vis_clus(spe,
+                                            sampleid = samp,
+                                            clustervar = "clust_HARMONY_kmeans9",
+                                            datatype = "Xenium",
+                                            point_size = 1.5,
+                                            # alpha = 0.5,
+                                            colors = cluster_colors,
+                                            guide_point_size = 3)
+    
+    ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k9_%s.png", samp)), width = 12)
+    
+})
+
+message(Sys.time(), ' | Performing clustering k=12')
 spe = clusterBanksy(
     spe, 
     use_agf = TRUE, 
@@ -185,10 +228,10 @@ SpX_colors = c('Vasc~Sp9X3' = "#E05AD2",
                'L1~Sp9X6' = "#9AA7FE",
                'L1~Sp9X7' = "#0220DE",
                'L2.3~Sp9X4' = "#FEAF16",
-               'LD~Sp9X8' = "#00BCF9",
                'Inhib~Sp9X5' = "#C82100",
                'L5~Sp9X1' = "#16FF32",
                'L6~Sp9X9' = "#178C6D",
+               'WMtz~Sp9X8' = "grey",
                'WM~Sp9X2'= "#581009")
 
 cluster_anno <- readxl::read_xlsx(here("processed-data", "21_Xenium", "Bansky_cluster_notes.xlsx")) |>
@@ -241,40 +284,9 @@ qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
 #### Plot Vis clus ####
 
-
-
 # pdf(here(plot_dir, "Bansky_k9_cluster_v_cell_type_broad.pdf"))
 # ComplexHeatmap::Heatmap(table(spe$clust_HARMONY_kmeans9, spe$cell_type_broad))
 # dev.off()
-
-cluster_colors <- c("#f62062",
-                    "#f45e28",
-                    "#cf9800",
-                    "#608d00",
-                    "#01e090",
-                    "#3ed9e6",
-                    "#0064ca",
-                    "#9215a3",
-                    "#ff8ee2",
-                    "black",
-                    "grey",
-                    "brown")
-
-samp <- "Br1556"
-
-map(unique(spe$BrNum), function(samp){
-    vis_clus_class <- spatialLIBD::vis_clus(spe,
-                                            sampleid = samp,
-                                            clustervar = "clust_HARMONY_kmeans9",
-                                            datatype = "Xenium",
-                                            point_size = 1.5,
-                                            # alpha = 0.5,
-                                            colors = cluster_colors,
-                                            guide_point_size = 3)
-    
-    ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_bansky_k9_%s.png", samp)), width = 12)
-    
-})
 
 map(unique(spe$BrNum), function(samp){
     vis_clus_class <- spatialLIBD::vis_clus(spe,
