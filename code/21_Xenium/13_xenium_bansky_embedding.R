@@ -25,9 +25,7 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data #### 
 message(Sys.time(), " - Load spe data")
-# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
 spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe_xenium_QC.qs2"))
-spe$sample_id <- spe$BrNum
 
 #### set up params ####
 random_seed = 514
@@ -164,6 +162,9 @@ print(p)
 dev.off()
 
 #### Bansky clustering ####
+# swap back to OG coords
+spatialCoords(spe) <- orginal_coords
+
 message(Sys.time(), ' | Performing clustering k=9')
 spe = clusterBanksy(
     spe, 
@@ -273,8 +274,6 @@ table(spe$SpX, spe$spot_class)
 
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
-
-spatialCoords(spe) <- orginal_coords
 
 metadata(spe)$SpX_colors <- SpX_colors
 
