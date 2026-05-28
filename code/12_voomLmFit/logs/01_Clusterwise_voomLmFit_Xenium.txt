@@ -1,0 +1,484 @@
+**** Job starts ****
+Thu May 28 02:31:01 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 32248674
+Job name: 01_Clusterwise_voomLmFit_Xenium
+Node name: compute-119
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: limma
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:limma’:
+
+    plotMA
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:data.table’:
+
+    first, second
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:data.table’:
+
+    shift
+
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘SingleCellExperiment’
+
+The following objects are masked from ‘package:edgeR’:
+
+    cpm, tpm
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::between()      masks data.table::between()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first(), data.table::first()
+✖ lubridate::hour()     masks data.table::hour()
+✖ lubridate::isoweek()  masks data.table::isoweek()
+✖ lubridate::isoyear()  masks data.table::isoyear()
+✖ dplyr::lag()          masks stats::lag()
+✖ dplyr::last()         masks data.table::last()
+✖ lubridate::mday()     masks data.table::mday()
+✖ lubridate::minute()   masks data.table::minute()
+✖ lubridate::month()    masks data.table::month()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ lubridate::quarter()  masks data.table::quarter()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second(), data.table::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ purrr::transpose()    masks data.table::transpose()
+✖ lubridate::wday()     masks data.table::wday()
+✖ lubridate::week()     masks data.table::week()
+✖ lubridate::yday()     masks data.table::yday()
+✖ lubridate::year()     masks data.table::year()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+2026-05-28 14:31:14.055278 - Datatype = Xenium, loading 'spe_xenium_pseudobulk-cell_type_anno.rds'
+Loading required namespace: SpatialExperiment
+[1] 366 528
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+              16               16               15               16 
+         Astro.5            Macro          Micro.1          Micro.2 
+              16               15                4               16 
+         Micro.3          Micro.4          Micro.5            OPC.2 
+              14                4               16               16 
+           OPC.4            OPC.5          Oligo.1          Oligo.2 
+              16               16               16               16 
+         Oligo.3          Oligo.4          Oligo.5        Vasc.Endo 
+              16               16               16               16 
+         Vasc.PC        Vasc.VLMC         Excit.L2     Excit.L2_5.1 
+              16               16               16               16 
+    Excit.L2_5.2       Excit.L5.1       Excit.L5.2    Excit.L5_6_NP 
+              13               16               14                4 
+     Excit.L6_CT        Excit.L6b Inhib.Chandelier Inhib.Lamp5_Lhx6 
+              15               14               16               16 
+      Inhib.Pax6      Inhib.Pvalb        Inhib.Sst        Inhib.Vip 
+              16               16               16               16 
+
+ E2  E4 
+271 257 
+2026-05-28 14:31:14.623659 - Loop voomlmFit by cluster
+2026-05-28 14:31:15.9876 - voomLmFit - cluster: Astro.1, block= 'chip', ncol: 16, ngene: 348
+First sample weights (min/max) 0.4364841/1.6516100
+First intra-block correlation  0.0820544
+Final sample weights (min/max) 0.4373859/1.6761340
+Final intra-block correlation  0.08231394
+Done - Save data
+2026-05-28 14:31:17.666618 - voomLmFit - cluster: Astro.2, block= 'chip', ncol: 16, ngene: 356
+First sample weights (min/max) 0.4502671/1.5943841
+First intra-block correlation  0.05584284
+Final sample weights (min/max) 0.4537631/1.5810470
+Final intra-block correlation  0.05606073
+Done - Save data
+2026-05-28 14:31:19.137955 - voomLmFit - cluster: Astro.3, block= 'chip', ncol: 15, ngene: 193
+First sample weights (min/max) 0.5139388/1.5868181
+First intra-block correlation  -0.02597675
+Final sample weights (min/max) 0.5150043/1.5487337
+Final intra-block correlation  -0.02626888
+Done - Save data
+2026-05-28 14:31:20.14666 - voomLmFit - cluster: Astro.4, block= 'chip', ncol: 16, ngene: 312
+First sample weights (min/max) 0.3609859/2.0578362
+First intra-block correlation  -0.02973313
+Final sample weights (min/max) 0.3563879/2.0270857
+Final intra-block correlation  -0.02963123
+Done - Save data
+2026-05-28 14:31:21.482988 - voomLmFit - cluster: Astro.5, block= 'chip', ncol: 16, ngene: 364
+First sample weights (min/max) 0.3391542/1.9212453
+First intra-block correlation  -0.01349126
+Final sample weights (min/max) 0.3449861/1.9066962
+Final intra-block correlation  -0.01349676
+Done - Save data
+2026-05-28 14:31:23.11337 - voomLmFit - cluster: Macro, block= 'chip', ncol: 15, ngene: 200
+First sample weights (min/max) 0.1893646/1.4304871
+First intra-block correlation  0.0009309061
+Final sample weights (min/max) 0.1840458/1.4064417
+Final intra-block correlation  0.003307128
+Done - Save data
+2026-05-28 14:31:24.346861 - voomLmFit - cluster: Micro.2, block= 'chip', ncol: 16, ngene: 343
+First sample weights (min/max) 0.3041486/2.1903609
+First intra-block correlation  0.03222609
+Final sample weights (min/max) 0.301805/2.195107
+Final intra-block correlation  0.03280376
+Done - Save data
+2026-05-28 14:31:25.730479 - voomLmFit - cluster: Micro.3, block= 'chip', ncol: 14, ngene: 174
+First sample weights (min/max) 0.390780/1.611076
+First intra-block correlation  -0.02044712
+Final sample weights (min/max) 0.3870877/1.5900090
+Final intra-block correlation  -0.02066854
+Done - Save data
+2026-05-28 14:31:26.809174 - voomLmFit - cluster: Micro.4, block= 'chip', ncol: 4, ngene: 85
+2026-05-28 14:31:27.132245 - voomLmFit - cluster: Micro.5, block= 'chip', ncol: 16, ngene: 350
+First sample weights (min/max) 0.3859692/1.9758755
+First intra-block correlation  0.006127812
+Final sample weights (min/max) 0.3924952/1.9579124
+Final intra-block correlation  0.00636771
+Done - Save data
+2026-05-28 14:31:28.855884 - voomLmFit - cluster: OPC.2, block= 'chip', ncol: 16, ngene: 345
+First sample weights (min/max) 0.4539159/1.8681990
+First intra-block correlation  -0.008019675
+Final sample weights (min/max) 0.4611783/1.8632990
+Final intra-block correlation  -0.008109904
+Done - Save data
+2026-05-28 14:31:30.688486 - voomLmFit - cluster: OPC.4, block= 'chip', ncol: 16, ngene: 232
+First sample weights (min/max) 0.5660091/1.5150233
+First intra-block correlation  -0.03475363
+Final sample weights (min/max) 0.5670418/1.5065965
+Final intra-block correlation  -0.03433688
+Done - Save data
+2026-05-28 14:31:31.972546 - voomLmFit - cluster: OPC.5, block= 'chip', ncol: 16, ngene: 341
+First sample weights (min/max) 0.592047/1.602398
+First intra-block correlation  0.01584742
+Final sample weights (min/max) 0.5899307/1.5953647
+Final intra-block correlation  0.01619888
+Done - Save data
+2026-05-28 14:31:33.7021 - voomLmFit - cluster: Oligo.1, block= 'chip', ncol: 16, ngene: 322
+First sample weights (min/max) 0.3858244/2.0372271
+First intra-block correlation  0.05100419
+Final sample weights (min/max) 0.3770138/2.0456448
+Final intra-block correlation  0.05159498
+Done - Save data
+2026-05-28 14:31:35.361208 - voomLmFit - cluster: Oligo.2, block= 'chip', ncol: 16, ngene: 309
+First sample weights (min/max) 0.291358/1.528495
+First intra-block correlation  0.08408223
+Final sample weights (min/max) 0.2956552/1.5374190
+Final intra-block correlation  0.08444062
+Done - Save data
+2026-05-28 14:31:36.909467 - voomLmFit - cluster: Oligo.3, block= 'chip', ncol: 16, ngene: 366
+First sample weights (min/max) 0.416709/2.294030
+First intra-block correlation  0.01784525
+Final sample weights (min/max) 0.419275/2.292639
+Final intra-block correlation  0.01772097
+Done - Save data
+2026-05-28 14:31:38.603574 - voomLmFit - cluster: Oligo.4, block= 'chip', ncol: 16, ngene: 365
+First sample weights (min/max) 0.2559056/2.7654922
+First intra-block correlation  0.05635025
+Final sample weights (min/max) 0.2566029/2.7682492
+Final intra-block correlation  0.05653013
+Done - Save data
+2026-05-28 14:31:40.305814 - voomLmFit - cluster: Oligo.5, block= 'chip', ncol: 16, ngene: 251
+First sample weights (min/max) 0.4532071/1.6956447
+First intra-block correlation  -0.01076223
+Final sample weights (min/max) 0.4587655/1.6752614
+Final intra-block correlation  -0.009577652
+Done - Save data
+2026-05-28 14:31:41.457974 - voomLmFit - cluster: Vasc.Endo, block= 'chip', ncol: 16, ngene: 365
+First sample weights (min/max) 0.2097731/2.0740943
+First intra-block correlation  0.1117538
+Final sample weights (min/max) 0.2111032/2.0645657
+Final intra-block correlation  0.1118228
+Done - Save data
+2026-05-28 14:31:42.97138 - voomLmFit - cluster: Vasc.PC, block= 'chip', ncol: 16, ngene: 355
+First sample weights (min/max) 0.176167/1.810068
+First intra-block correlation  0.1827029
+Final sample weights (min/max) 0.1694711/1.7805374
+Final intra-block correlation  0.1818182
+Done - Save data
+2026-05-28 14:31:44.444295 - voomLmFit - cluster: Vasc.VLMC, block= 'chip', ncol: 16, ngene: 290
+First sample weights (min/max) 0.2095033/2.1962700
+First intra-block correlation  0.07062065
+Final sample weights (min/max) 0.1991712/2.1695327
+Final intra-block correlation  0.07008166
+Done - Save data
+2026-05-28 14:31:45.716903 - voomLmFit - cluster: Excit.L2, block= 'chip', ncol: 16, ngene: 361
+First sample weights (min/max) 0.3119551/1.5723070
+First intra-block correlation  0.08255721
+Final sample weights (min/max) 0.3164117/1.5992445
+Final intra-block correlation  0.08290112
+Done - Save data
+2026-05-28 14:31:47.161059 - voomLmFit - cluster: Excit.L2_5.1, block= 'chip', ncol: 16, ngene: 329
+First sample weights (min/max) 0.3300377/1.9341820
+First intra-block correlation  0.01429065
+Final sample weights (min/max) 0.3261834/1.9304551
+Final intra-block correlation  0.01394693
+Done - Save data
+2026-05-28 14:31:48.572339 - voomLmFit - cluster: Excit.L2_5.2, block= 'chip', ncol: 13, ngene: 331
+First sample weights (min/max) 0.3691317/1.7165138
+First intra-block correlation  0.02870293
+Final sample weights (min/max) 0.3750755/1.7182329
+Final intra-block correlation  0.02798505
+Done - Save data
+2026-05-28 14:31:50.234777 - voomLmFit - cluster: Excit.L5.1, block= 'chip', ncol: 16, ngene: 311
+First sample weights (min/max) 0.3232351/1.8788279
+First intra-block correlation  0.02163747
+Final sample weights (min/max) 0.3154964/1.8662391
+Final intra-block correlation  0.02156991
+Done - Save data
+2026-05-28 14:31:51.667004 - voomLmFit - cluster: Excit.L5.2, block= 'chip', ncol: 14, ngene: 277
+First sample weights (min/max) 0.4685031/1.6226252
+First intra-block correlation  -0.02106992
+Final sample weights (min/max) 0.4687088/1.6228384
+Final intra-block correlation  -0.02520229
+Done - Save data
+2026-05-28 14:31:53.144907 - voomLmFit - cluster: Excit.L5_6_NP, block= 'chip', ncol: 4, ngene: 271
+2026-05-28 14:31:53.497414 - voomLmFit - cluster: Excit.L6_CT, block= 'chip', ncol: 15, ngene: 253
+First sample weights (min/max) 0.3879512/2.0244559
+First intra-block correlation  0.1145963
+Final sample weights (min/max) 0.3812249/2.0280987
+Final intra-block correlation  0.1144294
+Done - Save data
+2026-05-28 14:31:54.770502 - voomLmFit - cluster: Excit.L6b, block= 'chip', ncol: 14, ngene: 271
+First sample weights (min/max) 0.3488195/1.7507461
+First intra-block correlation  0.02138261
+Final sample weights (min/max) 0.3337778/1.7741045
+Final intra-block correlation  0.02137796
+Done - Save data
+2026-05-28 14:31:56.287154 - voomLmFit - cluster: Inhib.Chandelier, block= 'chip', ncol: 16, ngene: 241
+First sample weights (min/max) 0.5846986/1.3734235
+First intra-block correlation  -0.004594522
+Final sample weights (min/max) 0.5826911/1.3710521
+Final intra-block correlation  -0.004506973
+Done - Save data
+2026-05-28 14:31:57.632299 - voomLmFit - cluster: Inhib.Lamp5_Lhx6, block= 'chip', ncol: 16, ngene: 308
+First sample weights (min/max) 0.5754896/1.4935353
+First intra-block correlation  0.04394383
+Final sample weights (min/max) 0.5750201/1.4942601
+Final intra-block correlation  0.04405892
+Done - Save data
+2026-05-28 14:31:59.194247 - voomLmFit - cluster: Inhib.Pax6, block= 'chip', ncol: 16, ngene: 235
+First sample weights (min/max) 0.4456777/1.4840583
+First intra-block correlation  0.0007653223
+Final sample weights (min/max) 0.4435385/1.4922110
+Final intra-block correlation  0.0005860163
+Done - Save data
+2026-05-28 14:32:00.547416 - voomLmFit - cluster: Inhib.Pvalb, block= 'chip', ncol: 16, ngene: 315
+First sample weights (min/max) 0.5599951/1.6587472
+First intra-block correlation  0.02269746
+Final sample weights (min/max) 0.5621723/1.6548156
+Final intra-block correlation  0.02180803
+Done - Save data
+2026-05-28 14:32:03.150661 - voomLmFit - cluster: Inhib.Sst, block= 'chip', ncol: 16, ngene: 285
+First sample weights (min/max) 0.5310271/1.5621348
+First intra-block correlation  -0.005915345
+Final sample weights (min/max) 0.5255467/1.5637888
+Final intra-block correlation  -0.00530851
+Done - Save data
+2026-05-28 14:32:04.500984 - voomLmFit - cluster: Inhib.Vip, block= 'chip', ncol: 16, ngene: 334
+First sample weights (min/max) 0.5298385/1.5650875
+First intra-block correlation  0.03306921
+Final sample weights (min/max) 0.5304735/1.5663215
+Final intra-block correlation  0.0331585
+Done - Save data
+Warning messages:
+1: In voomLmFit(dge, design = des, block = as.factor(dge$samples[[batch]]),  :
+  The experimental design has no replication. Setting weights to 1.
+2: In voomLmFit(dge, design = des, block = as.factor(dge$samples[[batch]]),  :
+  The experimental design has no replication. Setting weights to 1.
+[1] "Reproducibility information:"
+[1] "2026-05-28 14:32:05 EDT"
+   user  system elapsed 
+ 59.643   2.006  62.846 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-05-28
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ Biobase              * 2.70.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
+ data.table           * 1.18.2.1 2026-01-27 [1] CRAN (R 4.5.0)
+ DelayedArray           0.36.1   2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1    2026-04-03 [1] CRAN (R 4.5.0)
+ edgeR                * 4.8.2    2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.1    2025-09-25 [1] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1   2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1   2026-04-27 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3    2026-04-22 [1] CRAN (R 4.5.0)
+ glue                   1.8.1    2026-04-17 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2    2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4    2025-10-17 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.5    2026-01-08 [1] CRAN (R 4.5.0)
+ limma                * 3.66.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ locfit                 1.5-9.12 2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.5    2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5    2026-04-04 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ pillar                 1.11.1   2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ purrr                * 1.2.1    2026-01-09 [1] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1    2026-01-10 [1] CRAN (R 4.5.0)
+ readr                * 2.2.0    2026-02-19 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0    2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1    2025-08-26 [1] CRAN (R 4.5.0)
+ S4Arrays               1.10.1   2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1   2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2    2026-04-22 [1] CRAN (R 4.5.0)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.3    2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10  2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment      1.20.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ statmod                1.5.2    2026-05-17 [1] CRAN (R 4.5.0)
+ stringi                1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0    2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ tibble               * 3.3.1    2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2    2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0    2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ vctrs                  0.7.3    2026-04-11 [1] CRAN (R 4.5.0)
+ withr                  3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.50.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu May 28 02:32:06 PM EDT 2026
