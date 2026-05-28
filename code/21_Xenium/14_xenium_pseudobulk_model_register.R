@@ -40,6 +40,8 @@ if(opt$var == "SpX"){
 message(Sys.time(), " - load data from: ", basename(spe_fn))
 (spe <- qs_read(spe_fn))
 
+rownames(spe) <- rowData(spe)$gene_id
+
 message("ncells: ", ncol(spe))
 
 ## make APOE syntatic
@@ -82,7 +84,7 @@ top_DEGs <- sig_genes_extract(n = 10,
                               modeling_results = modeling_results,
                               model_type = "enrichment",
                               sce_layer = spe_pb,
-                              gene_name = "Symbol") 
+                              gene_name = "gene_name") 
 
 if(opt$var == "SpX") top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
