@@ -42,7 +42,7 @@ cell_type_proportions_xenium <- cell_type_proportions |>
     select(-exp_round, -seq_round) |>
     inner_join(rcdt_results_summary)
 
-write_csv(clr_prop_long, here(data_dir, "cell_type_proportions_xenium.csv"))
+write_csv(cell_type_proportions_xenium, here(data_dir, "cell_type_proportions_xenium.csv"))
 
 
 sn_vs_xenium_n_scatter <- cell_type_proportions_xenium |>
@@ -162,9 +162,9 @@ ggsave(cobj_pca, filename = here(plot_dir, "xenium_crumblr_pca.png"))
 
 clr_prop_long |> filter(cell_type_anno == "Oligo.3") |> arrange(-prop)
 
-clr_v_prop <- clr_prop_long |>
-    ggplot(aes(prop, CLR, color = error)) +
-    geom_point()
+# clr_v_prop <- clr_prop_long |>
+#     ggplot(aes(prop, CLR, color = error)) +
+#     geom_point()
 
 clr_boxplot_APOE <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
