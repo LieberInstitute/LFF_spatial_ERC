@@ -179,13 +179,11 @@ spe = clusterBanksy(
     kmeans.centers = 9
 )
 
+## app data check
 # spe_app <- qs_read(here("code", "23_spatialLIBD_app_Xenium", "spe_xenium_app.qs2"))
-# 
 # table(spe_app[, colnames(spe)]$clust_HARMONY_kmeans9)
 # table(spe_app[, colnames(spe)]$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans9)
-
-# spe$clust_HARMONY_kmeans9 <- spe_app[, colnames(spe)]$clust_HARMONY_kmeans9
-# spe$clust_HARMONY_kmeans12 <- spe_app[, colnames(spe)]$clust_HARMONY_kmeans12
+# colData(spe)[,duplicated(colnames(colData(spe)))] <- NULL
 
 table(spe$clust_HARMONY_kmeans9)
 
@@ -247,7 +245,6 @@ map(unique(spe$BrNum), function(samp){
 table(spe$clust_HARMONY_kmeans12)
 table(spe$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans12)
 
-colData(spe)
 
 #### Annotate bansky clus ####
 
@@ -330,7 +327,7 @@ map(unique(spe$BrNum), function(samp){
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 
-walk2(c("clust_HARMONY_kmeans9", "SpX"), list(cluster_colors, SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("clust_HARMONY_kmeans9","clust_HARMONY_kmeans12", "SpX"), list(cluster_colors,cluster_colors, SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
 
 
 #### SpD gene expression ####
@@ -348,24 +345,26 @@ marker_stats_top <- marker_stats |>
 spd_marker_list <- map(rafalib::splitit(marker_stats_top$SpD), ~marker_stats_top$gene[.x])
 spd_marker_list <- spd_marker_list[map_int(spd_marker_list, length) > 0]
 
-map(lit_markers_list, ~all(.x %in% rownames(spe)))
-map(lit_markers_list, ~all(.x %in% rownames(spe)))
+map(spd_marker_list, ~all(.x %in% rownames(spe)))
+map(spd_marker_list, ~all(.x %in% rownames(spe)))
 
 DeconvoBuddies::plot_marker_express_List(sce = spe, 
                                          spd_marker_list, 
                                          color_pal = cluster_colors,
                                          cellType_col = "clust_HARMONY_kmeans9",
                                          pdf = here(plot_dir, "xenium_bansky_cluster_k9_SpD_markers.pdf"),
-                                         gene_name_col = "Symbol")
+                                         gene_name_col = "gene_name")
 
 DeconvoBuddies::plot_marker_express_List(sce = spe, 
                                          spd_marker_list, 
                                          color_pal = SpX_colors,
                                          cellType_col = "SpX",
                                          pdf = here(plot_dir, "xenium_bansky_SpX_SpD_markers.pdf"),
-                                         gene_name_col = "Symbol")
+                                         gene_name_col = "gene_name")
 
 #### scDot plots ####
+
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 rowData(spe)$SpD_marker <- NULL
 rowData(spe)$SpD_marker <- marker_stats_top$SpD[match(rownames(spe), marker_stats_top$gene)] 
@@ -397,10 +396,22 @@ spe |>
               clusterRows = FALSE,
               clusterColumns = TRUE,
               groupLegends = FALSE)
+
+spe |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "SpX",
+              groupAnno = "SpX",
+              featureAnno = "SpD_marker",
+              scale = TRUE,
+              annoColors = list(SpX = SpX_colors,
+                                SpD_marker = SpD_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
 dev.off()
 
 #### Cell Type vs. SpX heatmap ####
-library(ComplexHeatmap)
+library("ComplexHeatmap")
 
 load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
@@ -414,7 +425,38 @@ rowSums(cell_prop_v_SpX)
 cell_v_SpX_prop <- sweep(cell_v_SpX, 2, colSums(cell_v_SpX), FUN = "/")
 colSums(cell_v_SpX_prop)
 
+## save & order proportion data 
 
+cell_v_SpX_prop_long <- cell_v_SpX |> 
+    reshape2::melt() |>
+    rename(SpX = Var1, cell_type_anno = Var2, n_cell = value) |>
+    left_join(cell_prop_v_SpX |> 
+                  reshape2::melt() |>
+                  rename(SpX = Var1, cell_type_anno = Var2, prop_cell_type = value)) |>
+    left_join(cell_v_SpX_prop |> 
+                  reshape2::melt() |>
+                  rename(SpX = Var1, cell_type_anno = Var2, prop_SpX = value)) |>
+    as_tibble()
+
+write.csv(cell_v_SpX_prop_long, file = here(data_dir, "cell_v_SpX_prop_long.csv"))
+
+cell_v_SpX_max <- cell_v_SpX_prop_long |> 
+    group_by(cell_type_anno) |>
+    slice_max(n_cell) |> 
+    arrange(SpX, cell_type_anno) |>
+    print(n= 38)
+
+
+cell_v_SpX_prop_long |> 
+    filter(cell_type_anno == "Oligo.3") |>
+    arrange(-n_cell)
+
+## reorder cell types by max SpX
+cell_v_SpX <- cell_v_SpX[, cell_v_SpX_max$cell_type_anno]
+cell_prop_v_SpX <- cell_prop_v_SpX[, cell_v_SpX_max$cell_type_anno]
+cell_v_SpX_prop <- cell_v_SpX_prop[, cell_v_SpX_max$cell_type_anno]
+
+## create annotations 
 SpX_row_ha <- rowAnnotation(
     SpX = rownames(cell_v_SpX),
     col = list(SpX = SpX_colors),
@@ -428,6 +470,7 @@ cell_type_col_ha <- HeatmapAnnotation(
     col = list(cell_type = cell_type_colors$anno),
     show_legend = FALSE
 )
+
 
 ## PLOT HEATMAPS
 pdf(here(plot_dir, "Xenium_bansky_SpX_v_cell_type_heatmap.pdf"), width = 10)
@@ -453,7 +496,7 @@ ComplexHeatmap::Heatmap(cell_prop_v_SpX,
                         name = "prop cell type\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = FALSE,
-                        cluster_rows = TRUE, 
+                        cluster_rows = TRUE,  ## cluster SpX
                         left_annotation = SpX_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
@@ -482,6 +525,9 @@ ComplexHeatmap::Heatmap(cell_v_SpX_prop,
                         left_annotation = SpX_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 dev.off()
+
+
+
 
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
