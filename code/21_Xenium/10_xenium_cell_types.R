@@ -368,61 +368,40 @@ Oligo_colors <- c(Oligo.1  = "#57DBCE",
 
 walk(unique(spe$BrNum), function(samp){
     
-    # vis_clus_class <- vis_clus(spe, 
-    #                            sampleid = samp,
-    #                            clustervar = "spot_class",
-    #                            datatype = "Xenium", 
-    #                            point_size = 1.5,
-    #                            # alpha = 0.5,
-    #                            colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"),
-    #                            guide_point_size = 2)
-    # 
-    # ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_vis_spot_class_%s.png", samp)), width = 12)
-    # 
-    
-    # vis_clus_first_type <- vis_clus(spe, 
-    #                                 sampleid = "Br1556",
-    #                                 clustervar = "first_type",
-    #                                 datatype = "Xenium", 
-    #                                 point_size = 1.5,
-    #                                 colors = cell_type_colors$anno,
-    #                                 guide_point_size = 2)
-    # 
-    # ggsave(vis_clus_first_type, filename = here(plot_dir, "Xenium_vis_first_type_Br1556.png"), width = 12)
-    # 
-    
-    # vis_clus_first_type_singlet <- vis_clus(spe[, spe$spot_class == "singlet"], 
-    #                                         sampleid = samp,
-    #                                         clustervar = "first_type",
-    #                                         datatype = "Xenium", 
-    #                                         point_size = 1.5,
-    #                                         colors = cell_type_colors$anno,
-    #                                         guide_point_size = 2)
-    # 
-    # ggsave(vis_clus_first_type_singlet, filename = here(plot_dir, sprintf("Xenium_vis_first_type_singlet_%s.png", samp)), width = 12)
-    # 
-    
-    # vis_clus_first_type_Oligo.3 <- vis_clus(spe[, spe$spot_class == "singlet" & spe$first_type == "Oligo.3"], 
-    #                                         sampleid = "Br1556",
-    #                                         clustervar = "first_type",
-    #                                         datatype = "Xenium", 
-    #                                         point_size = 1.5,
-    #                                         colors = cell_type_colors$anno,
-    #                                         guide_point_size = 2)
-    # 
-    # ggsave(vis_clus_first_type_Oligo.3, filename = here(plot_dir, "Xenium_vis_first_type_Oligo.3_Br1556.png"), width = 12)
-    # 
-    vis_clus_first_type_Oligo <- vis_clus(spe[, spe$spot_class == "singlet"], 
+    vis_clus_class <- vis_clus(spe,
+                               sampleid = samp,
+                               clustervar = "spot_class",
+                               datatype = "Xenium",
+                               point_size = 1.5,
+                               # alpha = 0.5,
+                               colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"),
+                               guide_point_size = 2)
+
+    ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_vis_spot_class_%s.png", samp)), width = 12)
+
+
+    vis_clus_first_type_singlet <- vis_clus(spe[, spe$spot_class == "singlet"],
+                                            sampleid = samp,
+                                            clustervar = "first_type",
+                                            datatype = "Xenium",
+                                            point_size = 1.5,
+                                            colors = cell_type_colors$anno,
+                                            guide_point_size = 2)
+
+    ggsave(vis_clus_first_type_singlet, filename = here(plot_dir, sprintf("Xenium_vis_first_type_singlet_%s.png", samp)), width = 12)
+
+
+    vis_clus_first_type_Oligo <- vis_clus(spe[, spe$spot_class == "singlet"],
                                             sampleid = samp,
                                             clustervar = "Oligo",
-                                            datatype = "Xenium", 
+                                            datatype = "Xenium",
                                             point_size = 1.5,
                                             colors = Oligo_colors,
                                             guide_point_size = 2)
-    
+
     ggsave(vis_clus_first_type_Oligo, filename = here(plot_dir, sprintf("Xenium_vis_first_type_Oligo_%s.png", samp)), width = 12)
-    
-    
+
+
 })
 
 
