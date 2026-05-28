@@ -25,7 +25,7 @@ message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
 
 #### Compare proportions to sn-RNA seq data ####
-
+message(Sys.time(), "- Comapre with snRNA prop")
 ## xenium proportions
 rcdt_results_summary <- as.data.frame(colData(spe)) |>
     group_by(sample_id, cell_type_anno) |>
@@ -131,6 +131,8 @@ ggsave(fig.vp +
        filename = here(plot_dir, "xenium_crumblr_cell_type_vp.png"), width = 4.5, height = 7)
 
 #### variable correlation ####
+message(Sys.time(), "- Check variable cor")
+
 C <- canCorPairs(form, erc_info)
 # APOE and APOE_carrier
 pdf(here(plot_dir, "xenium_variable_CorrMatrix.pdf"), height = 5, width = 5)
@@ -142,6 +144,8 @@ dev.off()
 #     Run and chip
 
 #### Crumblr PCA ####
+message(Sys.time(), "- CRUMBLR PCA")
+
 pca <- prcomp(t(standardize(cobj)))
 
 # merge with metadata
@@ -159,6 +163,7 @@ cobj_pca <- ggplot(df_pca, aes(PC1, PC2, color = Run, shape = APOE)) +
 ggsave(cobj_pca, filename = here(plot_dir, "xenium_crumblr_pca.png"))
 
 #### CLR plots ####
+message(Sys.time(), "- CLR plots")
 
 clr_prop_long |> filter(cell_type_anno == "Oligo.3") |> arrange(-prop)
 
@@ -210,10 +215,13 @@ clr_boxplot_chip <- clr_prop_long |>
 ggsave(clr_boxplot_chip, filename = here(plot_dir, "xenium_clr_boxplot_chip.png"), width = 10)
 
 #### Save CLR + proprotion data ####
+message(Sys.time(), "Save data")
 
 write_csv(clr_prop_long, here(data_dir, "xenium_clr_prop_long.csv"))
 
 #### Run DREAM + eBayes on cobj ####
+message(Sys.time(), "- Run DREAM + eBayes")
+
 fit <- dream(cobj, ~ APOE_carrier + Age + Anc_Afr + chip , erc_info) 
 fit <- eBayes(fit = fit)
 
@@ -237,6 +245,7 @@ write.csv(diff_prop_APOE_carrier, file = here(data_dir, "xenium_diff_prop_APOE_c
 
 
 #### cleanY on cobj  APOE_carrier ####
+message(Sys.time(), "- Run cleanY")
 
 mod <- model.matrix( ~ APOE_carrier + Sex + Age + Anc_Afr + chip , erc_info)
 cleanY_cobj <- jaffelab::cleaningY(cobj$E , mod, P=2)
@@ -365,6 +374,8 @@ clr_boxplot_APOE_carrier_Micro <- clr_prop_long |>
 ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Micro.png"), height = 4, width = 8)
 
 #### compare to snRNA-seq crumblr Carrier tests ####
+message(Sys.time(), "- compare to snRNA-seq crumblr Carrier tests")
+
 sn_diff_prop_APOE_carrier <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_APOE_carrier.csv")) |>
     rename(cell_type = `...1`)
 
@@ -643,6 +654,7 @@ ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_
 # 
 
 #### fit Age ####
+message(Sys.time(), " - Fit Age")
 
 # Extract results for each cell type
 (diff_prop_Age<- topTable(fit, coef = "Age", number = Inf))
@@ -680,6 +692,7 @@ forest_plot <- plotForest(res, hide = FALSE)
 ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_forest.png"), width = 4, height = 7)
 
 #### Plot cleanY CLR for Age ####
+message(Sys.time(), " - cleanY Age")
 
 mod <- model.matrix( ~ Age + APOE_carrier + Anc_Afr + chip , erc_info)
 cleanY_cobj_Age <- cleaningY(cobj$E , mod, P=2)
@@ -705,6 +718,7 @@ ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "xenium_clr_sactter_Age_
 
 
 #### Plot cleanY CLR for Age & APOE ####
+message(Sys.time(), " - plot CLR for AGE")
 
 # mod <- model.matrix( ~ Age + APOE_carrier + Anc_Afr + chip , erc_info)
 cleanY_cobj_Age <- jaffelab::cleaningY(cobj$E , mod, P=3)
@@ -731,6 +745,8 @@ clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
 ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "xenium_clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
 
 #### compare to snRNA-seq crumblr Age tests ####
+message(Sys.time(), " - compare to snRNA-seq crumblr Age")
+
 sn_diff_prop_Age <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_Age.csv")) 
 
 diff_prop_tree_APOE_carrier_compare <- res_tb |> 
