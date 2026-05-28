@@ -6,7 +6,7 @@ library("SpatialExperiment")
 library("qs2")
 library("here")
 library("sessioninfo")
-
+library("jaffelab")
 library("tidyverse")
 library("crumblr")
 library("variancePartition")
