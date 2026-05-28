@@ -235,11 +235,12 @@ load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_clust
 # Extract results for each cell type
 (diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
 
-#                        logFC      AveExpr           t     P.Value  adj.P.Val         B
-# Micro.3          -1.13696090 -0.565597771 -3.78059401 0.003638408 0.06372119 -1.577516
-# Micro.4          -0.89867263 -2.188224745 -3.77484929 0.003672728 0.06372119 -1.654127
-# Micro.1          -0.73505706 -2.108237036 -3.58366692 0.005030621 0.06372119 -1.862773
-# Excit.L2          0.75563619  1.523895447  2.66028590 0.024006653 0.22806320 -3.201613
+#                         logFC    AveExpr           t    P.Value adj.P.Val         B
+# Astro.5           0.536476892  2.6131444  3.01008684 0.01196180 0.3026889 -3.403692
+# Micro.3          -1.076747228 -1.0925486 -2.69203615 0.02108404 0.3026889 -3.302067
+# OPC.5             0.451219869  1.3098030  2.44133565 0.03290517 0.3026889 -3.753504
+# Micro.1          -1.269563402 -3.4182770 -2.37828394 0.03677932 0.3026889 -3.606209
+# Excit.L2          0.679411326  1.5634345  2.17298967 0.05269257 0.3026889 -4.005760
 
 write.csv(diff_prop_APOE_carrier, file = here(data_dir, "xenium_diff_prop_APOE_carrier.csv"))
 
