@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed May 20 01:44:11 PM EDT 2026
+Thu May 28 02:20:48 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32037251
+Job id: 32248551
 Job name: 14_xenium_pseudobulk_model_register
-Node name: compute-178
+Node name: compute-168
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -125,46 +125,47 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-05-20 13:44:23.668793 - load data from: spe_xenium_cell_types.qs2
+2026-05-28 14:21:03.949613 - load data from: spe_xenium_cell_types.qs2
 class: SpatialExperiment 
-dim: 366 304401 
+dim: 366 302279 
 metadata(16): Samples Samples ... Samples Samples
 assays(4): counts nucleus_normcounts cell_normcounts logcounts
 rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
-rowData names(8): ID Symbol ... subsets_any_neg subsets_GEX
-colnames(304401): Br1039_aaaaepee-1 Br1039_aaagdfnc-1 ...
+rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
+colnames(302279): Br1039_aaaaepee-1 Br1039_aaagdfnc-1 ...
   Br5854_oiphphbd-1 Br5854_ojaapmlh-1
-colData names(73): Sample Barcode ... cell_type_anno cell_type_broad
+colData names(74): Sample Barcode ... cell_type_anno cell_type_broad
 reducedDimNames(3): PCA TSNE UMAP
 mainExpName: NULL
 altExpNames(0):
 spatialCoords names(2) : x_centroid y_centroid
 imgData names(1): sample_id
-2026-05-20 13:44:34.444319 - Running Spatial Registration on: cell_type_anno
-2026-05-20 13:44:34.628353 make pseudobulk object
-2026-05-20 13:44:41.565485 dropping 50 pseudo-bulked samples that are below 'min_ncells'.
-2026-05-20 13:44:41.621608 drop lowly expressed genes
-2026-05-20 13:44:41.759097 normalize expression
-2026-05-20 13:44:41.967157 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-cell_type_anno.rds
-2026-05-20 13:44:42.114987 create model matrix
-2026-05-20 13:44:42.179881 run duplicateCorrelation()
-2026-05-20 13:44:44.029973 The estimated correlation is: 0.107191499959688
-2026-05-20 13:44:44.032545 computing enrichment statistics
-2026-05-20 13:44:48.031154 extract and reformat enrichment results
-2026-05-20 13:44:48.049898 running the baseline pairwise model
-2026-05-20 13:44:48.112631 computing pairwise statistics
-2026-05-20 13:44:48.640508 computing F-statistics
-2026-05-20 13:44:48.717786 - Saving Data
+ncells: 302279
+2026-05-28 14:21:16.252834 - Running Spatial Registration on: cell_type_anno
+2026-05-28 14:21:16.497327 make pseudobulk object
+2026-05-28 14:21:26.123126 dropping 50 pseudo-bulked samples that are below 'min_ncells'.
+2026-05-28 14:21:26.199089 drop lowly expressed genes
+2026-05-28 14:21:26.334099 normalize expression
+2026-05-28 14:21:26.696694 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-cell_type_anno.rds
+2026-05-28 14:21:26.922807 create model matrix
+2026-05-28 14:21:27.018619 run duplicateCorrelation()
+2026-05-28 14:21:29.584065 The estimated correlation is: 0.105985111617306
+2026-05-28 14:21:29.586597 computing enrichment statistics
+2026-05-28 14:21:35.277055 extract and reformat enrichment results
+2026-05-28 14:21:35.303816 running the baseline pairwise model
+2026-05-28 14:21:35.391204 computing pairwise statistics
+2026-05-28 14:21:36.098316 computing F-statistics
+2026-05-28 14:21:36.207757 - Saving Data
 class: SpatialExperiment 
 dim: 366 528 
 metadata(16): Samples Samples ... Samples Samples
 assays(2): counts logcounts
 rownames(366): ENSG00000181409 ENSG00000141338 ... ENSG00000188818
   ENSG00000184307
-rowData names(8): ID Symbol ... subsets_any_neg subsets_GEX
+rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
 colnames(528): Br1039_Astro.1 Br1556_Astro.1 ... Br6098_Inhib.Vip
   Br6538_Inhib.Vip
-colData names(78): Sample Barcode ... ncells pseudo_sum_umi
+colData names(79): Sample Barcode ... ncells pseudo_sum_umi
 reducedDimNames(3): PCA TSNE UMAP
 mainExpName: NULL
 altExpNames(0):
@@ -175,9 +176,9 @@ Loading objects:
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-20 13:44:53 EDT"
+[1] "2026-05-28 14:21:42 EDT"
    user  system elapsed 
- 37.148   1.522  41.258 
+ 49.535   2.079  52.882 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -188,7 +189,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-20
+ date     2026-05-28
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -215,10 +216,10 @@ null device
  BiocVersion            3.22.0    2025-10-07 [1] Bioconductor 3.22 (R 4.5.0)
  Biostrings             2.78.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.8.0     2026-04-21 [1] CRAN (R 4.5.0)
+ bit64                  4.8.2     2026-05-19 [1] CRAN (R 4.5.0)
  bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
  blob                   1.3.0     2026-01-14 [1] CRAN (R 4.5.0)
- bslib                  0.10.0    2026-01-26 [1] CRAN (R 4.5.0)
+ bslib                  0.11.0    2026-05-16 [1] CRAN (R 4.5.0)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
  Cairo                  1.7-0     2025-10-29 [1] CRAN (R 4.5.0)
  cigarillo              1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
@@ -379,15 +380,15 @@ null device
  spam                   2.11-3    2026-01-08 [1] CRAN (R 4.5.0)
  SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
  SpatialExperiment    * 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
- spatialLIBD          * 1.23.3    2026-05-12 [1] Github (LieberInstitute/spatialLIBD@3f56fba)
+ spatialLIBD          * 1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
  spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
  spatstat.explore       3.8-0     2026-03-22 [1] CRAN (R 4.5.0)
  spatstat.geom          3.7-3     2026-03-23 [1] CRAN (R 4.5.0)
  spatstat.random        3.4-5     2026-03-22 [1] CRAN (R 4.5.0)
  spatstat.sparse        3.1-0     2024-06-21 [2] CRAN (R 4.5.0)
- spatstat.univar        3.1-7     2026-03-18 [1] CRAN (R 4.5.0)
+ spatstat.univar        3.2-0     2026-05-18 [1] CRAN (R 4.5.0)
  spatstat.utils         3.2-3     2026-05-10 [1] CRAN (R 4.5.0)
- statmod                1.5.1     2025-10-09 [1] CRAN (R 4.5.0)
+ statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
  stringfish             0.19.0    2026-04-21 [1] CRAN (R 4.5.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
  stringr              * 1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
@@ -532,46 +533,47 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-05-20 13:45:05.357408 - load data from: spe_xenium_bansky.qs2
+2026-05-28 14:21:56.017795 - load data from: spe_xenium_bansky.qs2
 class: SpatialExperiment 
-dim: 366 450307 
+dim: 366 447183 
 metadata(18): Samples Samples ... BANKSY_params SpX_colors
 assays(6): counts nucleus_normcounts ... H0 H1
 rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
-rowData names(9): ID Symbol ... subsets_GEX SpD_marker
-colnames(450307): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
+rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
+colnames(447183): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
   Br5854_oiphphbd-1 Br5854_ojaapmlh-1
-colData names(76): Sample Barcode ... cell_type_anno cell_type_broad
+colData names(77): Sample Barcode ... cell_type_anno cell_type_broad
 reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
 mainExpName: NULL
 altExpNames(0):
 spatialCoords names(2) : x_centroid y_centroid
 imgData names(1): sample_id
-2026-05-20 13:45:29.917066 - Running Spatial Registration on: SpX_syn
-2026-05-20 13:45:30.1654 make pseudobulk object
-2026-05-20 13:45:36.739734 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2026-05-20 13:45:36.779457 drop lowly expressed genes
-2026-05-20 13:45:36.87003 normalize expression
-2026-05-20 13:45:36.987884 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-SpX.rds
-2026-05-20 13:45:37.041992 create model matrix
-2026-05-20 13:45:37.107999 run duplicateCorrelation()
-2026-05-20 13:45:37.412423 The estimated correlation is: 0.395621252467338
-2026-05-20 13:45:37.414891 computing enrichment statistics
-2026-05-20 13:45:38.17108 extract and reformat enrichment results
-2026-05-20 13:45:38.186943 running the baseline pairwise model
-2026-05-20 13:45:38.197912 computing pairwise statistics
-2026-05-20 13:45:38.28054 computing F-statistics
-2026-05-20 13:45:38.307169 - Saving Data
+ncells: 447183
+2026-05-28 14:23:07.507501 - Running Spatial Registration on: SpX_syn
+2026-05-28 14:23:07.80571 make pseudobulk object
+2026-05-28 14:23:16.92417 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2026-05-28 14:23:16.974983 drop lowly expressed genes
+2026-05-28 14:23:17.094916 normalize expression
+2026-05-28 14:23:17.270668 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-SpX.rds
+2026-05-28 14:23:17.363074 create model matrix
+2026-05-28 14:23:17.454506 run duplicateCorrelation()
+2026-05-28 14:23:17.877149 The estimated correlation is: 0.407969952861648
+2026-05-28 14:23:17.880671 computing enrichment statistics
+2026-05-28 14:23:18.926404 extract and reformat enrichment results
+2026-05-28 14:23:18.947285 running the baseline pairwise model
+2026-05-28 14:23:18.963107 computing pairwise statistics
+2026-05-28 14:23:19.076819 computing F-statistics
+2026-05-28 14:23:19.112381 - Saving Data
 class: SpatialExperiment 
 dim: 366 144 
 metadata(18): Samples Samples ... BANKSY_params SpX_colors
 assays(2): counts logcounts
 rownames(366): ENSG00000181409 ENSG00000141338 ... ENSG00000188818
   ENSG00000184307
-rowData names(9): ID Symbol ... subsets_GEX SpD_marker
-colnames(144): Br1039_Inhib_Sp9X5 Br1556_Inhib_Sp9X5 ...
-  Br6098_WM_Sp9X2 Br6538_WM_Sp9X2
-colData names(82): Sample Barcode ... ncells pseudo_sum_umi
+rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
+colnames(144): Br1039_Inhib_SpX5 Br1556_Inhib_SpX5 ... Br6098_WMtz_SpX8
+  Br6538_WMtz_SpX8
+colData names(83): Sample Barcode ... ncells pseudo_sum_umi
 reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
 mainExpName: NULL
 altExpNames(0):
@@ -582,9 +584,9 @@ Loading objects:
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-20 13:45:39 EDT"
+[1] "2026-05-28 14:23:20 EDT"
    user  system elapsed 
- 38.162   2.425  45.140 
+ 48.116   3.048  97.581 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -595,7 +597,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-20
+ date     2026-05-28
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -622,10 +624,10 @@ null device
  BiocVersion            3.22.0    2025-10-07 [1] Bioconductor 3.22 (R 4.5.0)
  Biostrings             2.78.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.8.0     2026-04-21 [1] CRAN (R 4.5.0)
+ bit64                  4.8.2     2026-05-19 [1] CRAN (R 4.5.0)
  bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
  blob                   1.3.0     2026-01-14 [1] CRAN (R 4.5.0)
- bslib                  0.10.0    2026-01-26 [1] CRAN (R 4.5.0)
+ bslib                  0.11.0    2026-05-16 [1] CRAN (R 4.5.0)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
  Cairo                  1.7-0     2025-10-29 [1] CRAN (R 4.5.0)
  cigarillo              1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
@@ -786,15 +788,15 @@ null device
  spam                   2.11-3    2026-01-08 [1] CRAN (R 4.5.0)
  SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
  SpatialExperiment    * 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
- spatialLIBD          * 1.23.3    2026-05-12 [1] Github (LieberInstitute/spatialLIBD@3f56fba)
+ spatialLIBD          * 1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
  spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
  spatstat.explore       3.8-0     2026-03-22 [1] CRAN (R 4.5.0)
  spatstat.geom          3.7-3     2026-03-23 [1] CRAN (R 4.5.0)
  spatstat.random        3.4-5     2026-03-22 [1] CRAN (R 4.5.0)
  spatstat.sparse        3.1-0     2024-06-21 [2] CRAN (R 4.5.0)
- spatstat.univar        3.1-7     2026-03-18 [1] CRAN (R 4.5.0)
+ spatstat.univar        3.2-0     2026-05-18 [1] CRAN (R 4.5.0)
  spatstat.utils         3.2-3     2026-05-10 [1] CRAN (R 4.5.0)
- statmod                1.5.1     2025-10-09 [1] CRAN (R 4.5.0)
+ statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
  stringfish             0.19.0    2026-04-21 [1] CRAN (R 4.5.0)
  stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
  stringr              * 1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
@@ -830,4 +832,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed May 20 01:45:39 PM EDT 2026
+Thu May 28 02:23:20 PM EDT 2026

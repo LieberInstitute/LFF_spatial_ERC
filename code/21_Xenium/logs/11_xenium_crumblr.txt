@@ -1,0 +1,612 @@
+**** Job starts ****
+Thu May 28 02:26:19 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 32248656
+Job name: 11_xenium_crumblr
+Node name: compute-119
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+qs2 0.2.1
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: rafalib
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading required package: BiocParallel
+
+Attaching package: ‘variancePartition’
+
+The following objects are masked from ‘package:limma’:
+
+    eBayes, topTable
+
+Loading objects:
+  cell_type_colors
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+  APOE_carrier_anc_colors
+2026-05-28 14:26:35.197513- Load xenium data
+2026-05-28 14:26:51.380367- Comapre with snRNA prop
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by sample_id and cell_type_anno.
+ℹ Output is grouped by sample_id.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(sample_id, cell_type_anno))` for per-operation
+  grouping (`?dplyr::dplyr_by`) instead.
+Loading objects:
+  cell_type_proportions
+Joining with `by = join_by(sample_id, cell_type_anno)`
+Adding missing grouping variables: `APOE`, `Sex`, `Ancestry`
+Joining with `by = join_by(sample_id)`
+[1] TRUE
+[1] TRUE
+Joining with `by = join_by(sample_id)`
+Joining with `by = join_by(cell_type_anno, sample_id, Sex, Ancestry, APOE)`
+2026-05-28 14:27:01.867593- Check variable cor
+Warning messages:
+1: the ‘subbars’ function has moved to the reformulas package. Please update your imports, or ask an upstream package maintainer to do so.
+This warning is displayed once per session. 
+2: In canCorPairs(form, erc_info) : Regression model may be problematic.
+High colinearity between variables:
+  Run and chip
+null device 
+          1 
+2026-05-28 14:27:02.079576- CRUMBLR PCA
+Saving 7 x 7 in image
+2026-05-28 14:27:02.552045- CLR plots
+# A tibble: 16 × 14
+   cell_type_anno sample_id   CLR   Age Sex   Ancestry Anc_Afr APOE_carrier
+   <chr>          <chr>     <dbl> <dbl> <chr> <chr>      <dbl> <chr>       
+ 1 Oligo.3        Br5854     3.54  68.4 M     AA         0.578 E2+         
+ 2 Oligo.3        Br1039     3.84  51.4 F     AA         0.719 E4+         
+ 3 Oligo.3        Br6098     3.67  50.2 M     AA         0.997 E4+         
+ 4 Oligo.3        Br1706     3.55  50.1 M     EA         0.003 E4+         
+ 5 Oligo.3        Br6538     3.70  60.8 M     EA         0     E2+         
+ 6 Oligo.3        Br5941     3.24  42.2 M     AA         0.884 E4+         
+ 7 Oligo.3        Br5161     3.33  54.4 M     EA         0.001 E4+         
+ 8 Oligo.3        Br5367     3.24  31.3 F     EA         0.001 E2+         
+ 9 Oligo.3        Br5517     3.30  64.0 M     EA         0.073 E4+         
+10 Oligo.3        Br5426     3.14  48.8 F     AA         0.86  E2+         
+11 Oligo.3        Br5460     3.05  61.3 M     AA         0.846 E4+         
+12 Oligo.3        Br2582     2.69  41.4 M     EA         0     E2+         
+13 Oligo.3        Br1556     2.73  30.0 F     AA         0.845 E2+         
+14 Oligo.3        Br5415     2.30  60.8 M     AA         0.788 E2+         
+15 Oligo.3        Br5634     2.47  51.1 M     EA         0.001 E2+         
+16 Oligo.3        Br5599     2.94  55.9 M     EA         0.001 E4+         
+# ℹ 6 more variables: APOE <chr>, Run <chr>, chip <chr>, prop <dbl>,
+#   error <dbl>, anno <chr>
+Saving 10 x 7 in image
+Saving 10 x 7 in image
+Saving 7 x 7 in image
+Saving 10 x 7 in image
+2026-05-28 14:27:24.636625Save data
+2026-05-28 14:27:24.655851- Run DREAM + eBayes
+Loading objects:
+  dend
+  tree.clusCollapsed
+  dist.clusCollapsed
+                        logFC    AveExpr           t    P.Value adj.P.Val
+Astro.5           0.536476892  2.6131444  3.01008684 0.01196180 0.3026889
+Micro.3          -1.076747228 -1.0925486 -2.69203615 0.02108404 0.3026889
+OPC.5             0.451219869  1.3098030  2.44133565 0.03290517 0.3026889
+Micro.1          -1.269563402 -3.4182770 -2.37828394 0.03677932 0.3026889
+Excit.L2          0.679411326  1.5634345  2.17298967 0.05269257 0.3026889
+OPC.3            -0.724085986 -4.9198431 -2.17177756 0.05280371 0.3026889
+Micro.4          -0.935729246 -3.3770967 -2.12842461 0.05692866 0.3026889
+Oligo.5          -0.619606334 -0.2567945 -1.97093663 0.07462050 0.3026889
+Excit.L5_6_NP    -1.707838695 -3.7638956 -1.86908023 0.08866560 0.3026889
+Astro.2           0.355994722  1.9380143  1.83482452 0.09391145 0.3026889
+Inhib.Vip         0.329795370  1.0976512  1.80301694 0.09903498 0.3026889
+Oligo.2          -0.795535914  1.0786580 -1.72939087 0.11188251 0.3026889
+OPC.1             0.531155208 -4.3571396  1.67126188 0.12306537 0.3026889
+Inhib.Chandelier  0.337408911 -1.2246961  1.64975280 0.12744962 0.3026889
+Astro.3           0.244467914 -1.2961123  1.57902560 0.14285669 0.3026889
+Excit.L6_CT      -0.412235268 -0.6337490 -1.57034166 0.14485684 0.3026889
+OPC.2             0.245206031  1.2699140  1.55390317 0.14871014 0.3026889
+Oligo.4          -0.359574635  2.5650570 -1.55189908 0.14918597 0.3026889
+Oligo.3           0.378755425  3.1707710  1.54287728 0.15134447 0.3026889
+Excit.L2_5.1      0.446804248  0.7045779  1.43830719 0.17840070 0.3346226
+Astro.4          -0.467313700  1.0095191 -1.41514308 0.18492301 0.3346226
+Vasc.Endo         0.193671901  2.5883337  1.30585880 0.21845653 0.3760888
+Inhib.Pax6        0.328301220 -1.3240859  1.27838566 0.22763268 0.3760888
+Inhib.Lamp5_Lhx6  0.183713661  0.2333279  1.15062262 0.27447570 0.4014761
+Oligo.1          -0.441737518  1.3222767 -1.15054975 0.27450444 0.4014761
+Macro             0.597214896 -0.6293188  1.15006876 0.27469414 0.4014761
+Vasc.PC           0.223330117  2.1651587  0.97029018 0.35291574 0.4966962
+Micro.5           0.141292950  1.6754060  0.83707048 0.42050592 0.5706866
+Vasc.VLMC         0.290320668  0.3880848  0.60216035 0.55937054 0.7329683
+Excit.L6b        -0.177203443 -0.8165927 -0.45440261 0.65844402 0.8340291
+Excit.L5.1       -0.136316402 -0.1322125 -0.33454141 0.74431232 0.9123828
+Excit.L2_5.2     -0.217298142 -0.4745230 -0.27985989 0.78481835 0.9156293
+Excit.L5.2       -0.214662203 -1.9037259 -0.26606099 0.79515177 0.9156293
+Micro.2          -0.019439626  1.3640698 -0.08495791 0.93383340 0.9749229
+Astro.1           0.026769572  1.6054622  0.07340088 0.94281519 0.9749229
+Inhib.Pvalb      -0.009581247  0.3139088 -0.06318426 0.95076222 0.9749229
+OPC.4            -0.007417791 -0.2089436 -0.04117721 0.96789831 0.9749229
+Inhib.Sst         0.007295781 -0.1470182  0.03216286 0.97492287 0.9749229
+                         B
+Astro.5          -3.403692
+Micro.3          -3.302067
+OPC.5            -3.753504
+Micro.1          -3.606209
+Excit.L2         -4.005760
+OPC.3            -3.971905
+Micro.4          -3.834543
+Oligo.5          -4.063842
+Excit.L5_6_NP    -4.125021
+Astro.2          -4.191339
+Inhib.Vip        -4.239386
+Oligo.2          -4.262669
+OPC.1            -4.275918
+Inhib.Chandelier -4.302190
+Astro.3          -4.350232
+Excit.L6_CT      -4.365597
+OPC.2            -4.385290
+Oligo.4          -4.375055
+Oligo.3          -4.380544
+Excit.L2_5.1     -4.446849
+Astro.4          -4.461083
+Vasc.Endo        -4.524671
+Inhib.Pax6       -4.552782
+Inhib.Lamp5_Lhx6 -4.601973
+Oligo.1          -4.611939
+Macro            -4.636573
+Vasc.PC          -4.686704
+Micro.5          -4.755348
+Vasc.VLMC        -4.938125
+Excit.L6b        -5.110730
+Excit.L5.1       -5.050541
+Excit.L2_5.2     -5.185287
+Excit.L5.2       -5.120618
+Micro.2          -4.918216
+Astro.1          -4.920566
+Inhib.Pvalb      -4.898874
+OPC.4            -4.894023
+Inhib.Sst        -4.895281
+2026-05-28 14:27:24.717625- Run cleanY
+            Br1039     Br1556     Br1706     Br2582       Br5161     Br5367
+Astro.1  2.3976246  3.5149065  3.3578443  2.4207434  3.949447749  3.5245148
+Astro.2  2.2271294  2.3118108  2.5096473  2.2923345  2.872029366  1.7848152
+Astro.3  0.2192249 -0.7355497  0.4205604  0.7440104 -0.009819488 -0.2386592
+Astro.4 -0.1241565  0.4282500 -0.7090639 -0.3444789 -0.792336031 -1.5357271
+Astro.5  2.6088090  2.1912029  2.6955153  2.3379180  2.689742947  1.7956971
+Macro   -1.7250664 -0.4467093  0.2061824 -0.6303456 -1.312955933 -1.4058777
+            Br5415     Br5426      Br5460     Br5517     Br5599     Br5634
+Astro.1  4.0542082  3.8827418  3.85871032  3.2965633  4.0047458  3.4668854
+Astro.2  2.3868540  2.3493316  2.49164285  2.0214839  2.6299486  1.7535688
+Astro.3 -0.1479537  0.8182909 -0.29888639 -2.4776597  0.4248022 -0.1302475
+Astro.4 -0.7959568 -0.5800196 -1.36524486 -0.8770008 -1.0621695  0.4804473
+Astro.5  1.6993196  1.9060046  2.39616106  2.3454230  2.4208934  1.4592509
+Macro   -1.8309150 -0.6700906 -0.03045653 -0.7697753 -0.3740196 -2.4075882
+            Br5854     Br5941     Br6098     Br6538
+Astro.1  2.1667482  2.6649199  3.8417431  3.3648193
+Astro.2  1.8364631  1.9874409  2.2905541  2.0697619
+Astro.3  0.1087716 -1.0977168  0.5851766  0.4949283
+Astro.4 -0.6166696 -1.0939304 -0.4923038  0.3051479
+Astro.5  2.4714474  2.5089582  2.4272567  2.1128092
+Macro   -0.2006724 -0.8315093 -1.8814615 -1.4954311
+Joining with `by = join_by(cell_type_anno, sample_id)`
+ℹ invalid tbl_tree object. Missing column: parent,node.
+# A tibble: 75 × 4
+   label     beta pvalue   FDR
+   <chr>    <dbl>  <dbl> <dbl>
+ 1 Astro.2  0.356 0.0939 0.447
+ 2 Astro.3  0.244 0.143  0.447
+ 3 Astro.4 -0.467 0.185  0.447
+ 4 Astro.5  0.536 0.0120 0.447
+ 5 Micro.1 -1.27  0.0368 0.447
+ 6 Micro.3 -1.08  0.0211 0.447
+ 7 Micro.4 -0.936 0.0569 0.447
+ 8 OPC.1    0.531 0.123  0.447
+ 9 OPC.2    0.245 0.149  0.447
+10 OPC.3   -0.724 0.0528 0.447
+# ℹ 65 more rows
+Saving 7 x 7 in image
+2026-05-28 14:29:11.382857- compare to snRNA-seq crumblr Carrier tests
+Joining with `by = join_by(parent, node, label)`
+Saving 7 x 7 in image
+2026-05-28 14:29:17.840757 - Fit Age
+                        logFC    AveExpr           t    P.Value adj.P.Val
+Excit.L6_CT       0.032451198 -0.6337490  2.14912233 0.05492252 0.7199901
+Astro.4           0.042038958  1.0095191  2.10893149 0.05888141 0.7199901
+Inhib.Chandelier -0.022032411 -1.2246961 -1.82033514 0.09621461 0.7199901
+Excit.L6b         0.040174963 -0.8165927  1.76782224 0.10499958 0.7199901
+Oligo.5           0.030384503 -0.2567945  1.65164656 0.12705811 0.7199901
+Excit.L2_5.1     -0.030814107  0.7045779 -1.63356606 0.13083986 0.7199901
+Micro.4          -0.042379936 -3.3770967 -1.57950331 0.14274737 0.7199901
+Oligo.4           0.020791977  2.5650570  1.47386193 0.16877028 0.7199901
+Vasc.PC           0.018904770  2.1651587  1.36049820 0.20110932 0.7199901
+Excit.L5_6_NP     0.064392978 -3.7638956  1.21501113 0.24999546 0.7199901
+Inhib.Sst        -0.016599659 -0.1470182 -1.18825652 0.25994863 0.7199901
+OPC.1             0.020320824 -4.3571396  1.16757344 0.26785573 0.7199901
+Vasc.VLMC         0.032083657  0.3880848  1.12859752 0.28326708 0.7199901
+Micro.5          -0.011525229  1.6754060 -1.12382466 0.28520062 0.7199901
+OPC.5            -0.012840151  1.3098030 -1.11701555 0.28797668 0.7199901
+Excit.L2         -0.019611389  1.5634345 -1.02444138 0.32779925 0.7199901
+Astro.1          -0.022979889  1.6054622 -1.01026368 0.33424414 0.7199901
+Macro             0.026565183 -0.6293188  0.92450678 0.37521290 0.7199901
+OPC.3             0.019013079 -4.9198431  0.91206149 0.38144263 0.7199901
+Astro.5           0.009841691  2.6131444  0.90330939 0.38586687 0.7199901
+Oligo.3           0.012957489  3.1707710  0.86109303 0.40770812 0.7199901
+Vasc.Endo         0.007649311  2.5883337  0.84390741 0.41683640 0.7199901
+Oligo.2           0.019356012  1.0786580  0.73614545 0.47716774 0.7322067
+Excit.L5.1       -0.018467114 -0.1322125 -0.71348921 0.49052016 0.7322067
+Inhib.Vip        -0.007596426  1.0976512 -0.68213572 0.50937215 0.7322067
+OPC.2            -0.006375832  1.2699140 -0.66619394 0.51912173 0.7322067
+Inhib.Pax6       -0.009808193 -1.3240859 -0.66435711 0.52025213 0.7322067
+Micro.2           0.008082212  1.3640698  0.58786679 0.56858674 0.7716534
+Inhib.Lamp5_Lhx6 -0.005277880  0.2333279 -0.54415294 0.59727827 0.7826405
+Excit.L2_5.2      0.020338499 -0.4745230  0.44041901 0.66822991 0.8003455
+Micro.1           0.011970841 -3.4182770  0.40913671 0.69035409 0.8003455
+Inhib.Pvalb       0.003696252  0.3139088  0.39822084 0.69814734 0.8003455
+Astro.3           0.003865382 -1.2961123  0.37883722 0.71207557 0.8003455
+Oligo.1           0.008460342  1.3222767  0.37326727 0.71609857 0.8003455
+OPC.4             0.003421703 -0.2089436  0.33132905 0.74667110 0.8106715
+Astro.2          -0.003478667  1.9380143 -0.29091730 0.77656897 0.8197117
+Excit.L5.2       -0.005251285 -1.9037259 -0.10488342 0.91837118 0.9431920
+Micro.3           0.001037257 -1.0925486  0.04539545 0.96461213 0.9646121
+                         B
+Excit.L6_CT      -4.842159
+Astro.4          -4.515648
+Inhib.Chandelier -5.078281
+Excit.L6b        -5.468219
+Oligo.5          -5.342683
+Excit.L2_5.1     -5.268202
+Micro.4          -5.680337
+Oligo.4          -5.474454
+Vasc.PC          -5.548970
+Excit.L5_6_NP    -5.971231
+Inhib.Sst        -5.695420
+OPC.1            -6.124625
+Vasc.VLMC        -6.089570
+Micro.5          -5.858056
+OPC.5            -5.892655
+Excit.L2         -5.899960
+Astro.1          -5.923557
+Macro            -6.287508
+OPC.3            -6.044381
+Astro.5          -6.085921
+Oligo.3          -6.145568
+Vasc.Endo        -6.129268
+Oligo.2          -6.289566
+Excit.L5.1       -6.451530
+Inhib.Vip        -6.182140
+OPC.2            -6.196227
+Inhib.Pax6       -6.435819
+Micro.2          -6.293547
+Inhib.Lamp5_Lhx6 -6.295142
+Excit.L2_5.2     -6.867515
+Micro.1          -6.860533
+Inhib.Pvalb      -6.330871
+Astro.3          -6.474941
+Oligo.1          -6.470197
+OPC.4            -6.408551
+Astro.2          -6.458987
+Excit.L5.2       -6.824187
+Micro.3          -6.908061
+ℹ invalid tbl_tree object. Missing column: parent,node.
+# A tibble: 75 × 4
+   label       beta pvalue   FDR
+   <chr>      <dbl>  <dbl> <dbl>
+ 1 Astro.1 -0.0230  0.334  0.910
+ 2 Astro.3  0.00387 0.712  0.910
+ 3 Astro.4  0.0420  0.0589 0.910
+ 4 Astro.5  0.00984 0.386  0.910
+ 5 Macro    0.0266  0.375  0.910
+ 6 Micro.1  0.0120  0.690  0.910
+ 7 Micro.2  0.00808 0.569  0.910
+ 8 Micro.4 -0.0424  0.143  0.910
+ 9 Micro.5 -0.0115  0.285  0.910
+10 OPC.1    0.0203  0.268  0.910
+# ℹ 65 more rows
+Saving 7 x 7 in image
+2026-05-28 14:31:02.486691 - cleanY Age
+Joining with `by = join_by(cell_type_anno, sample_id)`
+`geom_smooth()` using formula = 'y ~ x'
+2026-05-28 14:31:03.642929 - plot CLR for AGE
+Joining with `by = join_by(cell_type_anno, sample_id)`
+`geom_smooth()` using formula = 'y ~ x'
+2026-05-28 14:31:04.770562 - compare to snRNA-seq crumblr Age
+Rows: 75 Columns: 12
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): label, method
+dbl (10): parent, node, branch.length, beta, se, stat, pvalue, n_features, l...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Joining with `by = join_by(parent, node, label)`
+[1] "Reproducibility information:"
+[1] "2026-05-28 14:31:08 EDT"
+   user  system elapsed 
+275.528   5.447 287.093 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-05-28
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+ aod                    1.3.3      2023-12-13 [1] CRAN (R 4.5.0)
+ ape                    5.8-1      2024-12-16 [1] CRAN (R 4.5.0)
+ aplot                  0.2.9      2025-09-12 [1] CRAN (R 4.5.0)
+ backports              1.5.1      2026-04-03 [1] CRAN (R 4.5.0)
+ Biobase              * 2.70.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel         * 1.44.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2      2026-05-19 [1] CRAN (R 4.5.0)
+ bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+ boot                   1.3-31     2024-08-28 [3] CRAN (R 4.5.0)
+ broom                  1.0.13     2026-05-14 [1] CRAN (R 4.5.0)
+ caTools                1.18.3     2024-09-04 [2] CRAN (R 4.5.0)
+ cli                    3.6.6      2026-04-09 [1] CRAN (R 4.5.0)
+ codetools              0.2-20     2024-03-31 [3] CRAN (R 4.5.0)
+ corpcor                1.6.10     2021-09-16 [2] CRAN (R 4.5.0)
+ crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+ crumblr              * 1.2.0      2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ DelayedArray           0.36.1     2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1    2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39     2025-11-19 [1] CRAN (R 4.5.0)
+ dplyr                * 1.2.1      2026-04-03 [1] CRAN (R 4.5.0)
+ EnvStats               3.1.0      2025-04-24 [1] CRAN (R 4.5.0)
+ fANCOVA                0.6-1      2020-11-13 [1] CRAN (R 4.5.0)
+ farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+ fontBitstreamVera      0.1.1      2017-02-01 [1] CRAN (R 4.5.0)
+ fontLiberation         0.1.0      2016-10-15 [1] CRAN (R 4.5.0)
+ fontquiver             0.2.1      2017-02-01 [1] CRAN (R 4.5.0)
+ forcats              * 1.0.1      2025-09-25 [1] CRAN (R 4.5.0)
+ fs                     2.1.0      2026-04-18 [1] CRAN (R 4.5.0)
+ gargle                 1.5.2      2023-07-20 [2] CRAN (R 4.5.0)
+ gdtools                0.5.0      2026-02-09 [1] CRAN (R 4.5.0)
+ generics             * 0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1     2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ ggfun                  0.2.0      2025-07-15 [1] CRAN (R 4.5.0)
+ ggiraph                0.9.6      2026-02-21 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3      2026-04-22 [1] CRAN (R 4.5.0)
+ ggplotify              0.1.3      2025-09-20 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.8      2026-03-17 [1] CRAN (R 4.5.0)
+ ggtree                 4.0.5      2026-03-17 [1] Bioconductor 3.22 (R 4.5.0)
+ glue                   1.8.1      2026-04-17 [1] CRAN (R 4.5.0)
+ googledrive            2.1.1      2023-06-11 [2] CRAN (R 4.5.0)
+ gplots                 3.3.0      2025-11-30 [1] CRAN (R 4.5.0)
+ gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
+ gridGraphics           0.5-1      2020-12-13 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+ gtools                 3.9.5      2023-11-20 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2      2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4      2025-10-17 [1] CRAN (R 4.5.0)
+ htmltools              0.5.9      2025-12-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
+ IRanges              * 2.44.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+ jaffelab             * 0.99.34    2025-05-27 [1] Github (LieberInstitute/jaffelab@e7a26ca)
+ jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+ KernSmooth             2.23-26    2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
+ lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.3      2026-04-04 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.5      2026-01-08 [1] CRAN (R 4.5.0)
+ limma                * 3.66.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ lme4                   2.0-1      2026-03-05 [1] CRAN (R 4.5.0)
+ lmerTest               3.2-1      2026-03-05 [1] CRAN (R 4.5.0)
+ lubridate            * 1.9.5      2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1      2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5      2026-04-04 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65     2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3      2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+ mgcv                   1.9-3      2025-04-04 [3] CRAN (R 4.5.0)
+ minqa                  1.2.8      2024-08-17 [2] CRAN (R 4.5.0)
+ mvtnorm                1.3-7      2026-04-15 [1] CRAN (R 4.5.0)
+ nlme                   3.1-168    2025-03-31 [3] CRAN (R 4.5.0)
+ nloptr                 2.2.1      2025-03-17 [2] CRAN (R 4.5.0)
+ numDeriv               2016.8-1.1 2019-06-06 [2] CRAN (R 4.5.0)
+ patchwork              1.3.2      2025-08-25 [1] CRAN (R 4.5.0)
+ pbkrtest               0.5.5      2025-07-18 [1] CRAN (R 4.5.0)
+ pillar                 1.11.1     2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ purrr                * 1.2.1      2026-01-09 [1] CRAN (R 4.5.0)
+ qs2                  * 0.2.1      2026-05-04 [1] CRAN (R 4.5.0)
+ R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+ rafalib              * 1.0.4      2025-04-08 [1] CRAN (R 4.5.0)
+ ragg                   1.5.2      2026-03-23 [1] CRAN (R 4.5.0)
+ rappdirs               0.3.4      2026-01-17 [1] CRAN (R 4.5.0)
+ rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1      2026-01-10 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2   2026-03-05 [1] CRAN (R 4.5.0)
+ Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+ readr                * 2.2.0      2026-02-19 [1] CRAN (R 4.5.0)
+ reformulas             0.4.4      2026-02-02 [1] CRAN (R 4.5.0)
+ remaCor                0.0.20     2025-08-20 [1] CRAN (R 4.5.0)
+ reshape2               1.4.5      2025-11-12 [1] CRAN (R 4.5.0)
+ Rfast                  2.1.5.2    2025-10-10 [1] CRAN (R 4.5.0)
+ RhpcBLASctl            0.23-42    2023-02-11 [2] CRAN (R 4.5.0)
+ rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0      2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1      2025-08-26 [1] CRAN (R 4.5.0)
+ S4Arrays               1.10.1     2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1     2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2      2026-04-22 [1] CRAN (R 4.5.0)
+ scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+ segmented              2.2-1      2026-01-29 [1] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0      2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10    2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment    * 1.20.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ statmod                1.5.2      2026-05-17 [1] CRAN (R 4.5.0)
+ stringfish             0.19.0     2026-04-21 [1] CRAN (R 4.5.0)
+ stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0      2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ systemfonts            1.3.2      2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping            1.0.5      2026-03-06 [1] CRAN (R 4.5.0)
+ tibble               * 3.3.1      2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2      2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+ tidytree               0.4.7      2026-01-08 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0      2026-01-29 [1] CRAN (R 4.5.0)
+ treeio                 1.34.0     2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6      2025-06-08 [1] CRAN (R 4.5.0)
+ variancePartition    * 1.40.2     2026-03-19 [1] Bioconductor 3.22 (R 4.5.0)
+ vctrs                  0.7.3      2026-04-11 [1] CRAN (R 4.5.0)
+ viridis                0.6.5      2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3      2026-02-04 [1] CRAN (R 4.5.0)
+ vroom                  1.7.1      2026-03-31 [1] CRAN (R 4.5.0)
+ withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.50.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ yulab.utils            0.2.4      2026-02-02 [1] CRAN (R 4.5.0)
+ zigg                   0.0.2      2025-02-07 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu May 28 02:31:09 PM EDT 2026

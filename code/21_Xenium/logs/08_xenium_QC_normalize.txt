@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed May 20 09:30:33 PM EDT 2026
+Tue May 26 03:20:40 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32085409
+Job id: 32186150
 Job name: 08_xenium_QC_normalize
-Node name: compute-113
+Node name: compute-129
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -127,7 +127,7 @@ Loading required package: ggplot2
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-05-20 21:31:10.445583- Load xenium data
+2026-05-26 15:20:54.87053- Load xenium data
 class: SpatialExperiment 
 dim: 541 473611 
 metadata(16): Samples Samples ... Samples Samples
@@ -272,17 +272,20 @@ nucleus_area.sf
 0.06642 0.59023 1.00000 1.03974 1.35213 5.96867 
 Saving 7 x 7 in image
 Saving 7 x 7 in image
-2026-05-20 21:43:45.092526 -  Normalize by size factors
-2026-05-20 21:43:57.279616 - running PCA
+2026-05-26 15:25:28.875798 -  Normalize by size factors
+2026-05-26 15:25:33.641059 - Orient samples
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/08_xenium_QC_normalize/xenium_vis_gene_MBP_pre-Orient.pdf"
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/08_xenium_QC_normalize/xenium_vis_gene_MBP_post-Orient.pdf"
+2026-05-26 15:27:26.043276 - running PCA
 Saving 7 x 7 in image
-2026-05-20 22:38:40.799556 - running TSNE
-2026-05-21 00:11:06.841282 - running UMAP
+2026-05-26 15:55:15.188159 - running TSNE
+2026-05-26 16:53:06.650425 - running UMAP
 
 
 Reduced Dim Names:
 
 [1] "PCA"  "TSNE" "UMAP"
-2026-05-21 00:24:09.274866 - Saving cleaned SPE object
+2026-05-26 17:01:40.922514 - Saving cleaned SPE object
 Loading objects:
   ancestry_colors
   sex_colors
@@ -320,4 +323,12 @@ ERC_xenium_UMAP_express-PDGFRA-OPC.png - Saving 7 x 7 in image
 Replace 0's with NAs
 ERC_xenium_UMAP_express-PECAM1-Vasc.png - Saving 7 x 7 in image
 Replace 0's with NAs
-slurmstepd: error: *** JOB 32085409 ON compute-113 CANCELLED AT 2026-05-21T21:30:35 DUE TO TIME LIMIT ***
+ERC_xenium_UMAP_express-SLC17A7-Excit.png - Saving 7 x 7 in image
+Replace 0's with NAs
+ERC_xenium_UMAP_express-GAD1-Inhib.png - Saving 7 x 7 in image
+Replace 0's with NAs
+ERC_xenium_TSNE_express-AQP4-Astro.png - Saving 7 x 7 in image
+Replace 0's with NAs
+ERC_xenium_TSNE_express-CTSH-Micro.png - Saving 7 x 7 in image
+Replace 0's with NAs
+slurmstepd: error: *** JOB 32186150 ON compute-129 CANCELLED AT 2026-05-27T15:20:51 DUE TO TIME LIMIT ***

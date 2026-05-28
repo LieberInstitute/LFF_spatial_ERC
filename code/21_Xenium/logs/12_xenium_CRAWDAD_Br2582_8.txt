@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon May 18 03:28:54 PM EDT 2026
+Wed May 27 10:28:07 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31972269
+Job id: 32207610
 Job name: 12_xenium_CRAWDAD
-Node name: compute-100
+Node name: compute-109
 Task id: 8
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -125,8 +125,8 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-05-18 15:29:09.751947 - Load SPE data, subset to: Br2582
-ncells:22280
+2026-05-27 10:28:18.149599 - Load SPE data, subset to: Br2582
+ncells:22279
 
          Astro.1          Astro.2          Astro.3          Astro.4 
              460             1212               47              296 
@@ -145,26 +145,26 @@ ncells:22280
       Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
               66                0               52               33 
 Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
-              55              187               53              138 
+              54              187               53              138 
        Inhib.Sst        Inhib.Vip 
              133              348 
 
 Astro Macro Micro Oligo   OPC  Vasc Excit Inhib 
- 4996   232  2338  5990  1424  5156  1230   914 
+ 4996   232  2338  5990  1424  5156  1230   913 
 creating `sf` object
 Simple feature collection with 6 features and 1 field
 Attribute-geometry relationship: constant (1)
 Geometry type: POINT
 Dimension:     XY
-Bounding box:  xmin: 739.3938 ymin: 1459.417 xmax: 899.0265 ymax: 1525.484
+Bounding box:  xmin: 7379 ymin: 1459 xmax: 7539 ymax: 1525
 CRS:           NA
-     celltypes                  geometry
-1      Astro.5 POINT (899.0265 1475.096)
-2    Vasc.Endo  POINT (824.9449 1513.76)
-3 Excit.L2_5.1 POINT (820.0048 1497.429)
-4    Inhib.Sst POINT (754.9749 1460.015)
-5      Astro.5 POINT (739.3938 1459.417)
-6        OPC.2 POINT (771.2635 1525.484)
+     celltypes          geometry
+1      Astro.5 POINT (7379 1475)
+2    Vasc.Endo POINT (7453 1513)
+3 Excit.L2_5.1 POINT (7458 1497)
+4    Inhib.Sst POINT (7523 1460)
+5      Astro.5 POINT (7539 1459)
+6        OPC.2 POINT (7507 1525)
  [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
  [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
  [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.2"           
@@ -190,28 +190,28 @@ CRS:           NA
     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1       Excit.L5.2 
              512              253               67               66 
      Excit.L6_CT        Excit.L6b Inhib.Chandelier Inhib.Lamp5_Lhx6 
-              52               33               55              187 
+              52               33               54              187 
       Inhib.Pax6      Inhib.Pvalb        Inhib.Sst        Inhib.Vip 
               53              138              133              348 
 Run on 1cores
 shuffling permutation 1 using seed 1
 50 unit scale
-15288 tiles to shuffle...
+15132 tiles to shuffle...
 shuffling permutation 2 using seed 2
 50 unit scale
-15288 tiles to shuffle...
+15132 tiles to shuffle...
 shuffling permutation 3 using seed 3
 50 unit scale
-15444 tiles to shuffle...
+15132 tiles to shuffle...
 shuffling permutation 1 using seed 1
 100 unit scale
 3822 tiles to shuffle...
 shuffling permutation 2 using seed 2
 100 unit scale
-3900 tiles to shuffle...
+3822 tiles to shuffle...
 shuffling permutation 3 using seed 3
 100 unit scale
-3950 tiles to shuffle...
+3871 tiles to shuffle...
 shuffling permutation 1 using seed 1
 200 unit scale
 975 tiles to shuffle...
@@ -220,7 +220,7 @@ shuffling permutation 2 using seed 2
 1000 tiles to shuffle...
 shuffling permutation 3 using seed 3
 200 unit scale
-1040 tiles to shuffle...
+1000 tiles to shuffle...
 shuffling permutation 1 using seed 1
 300 unit scale
 442 tiles to shuffle...
@@ -244,7 +244,7 @@ shuffling permutation 1 using seed 1
 160 tiles to shuffle...
 shuffling permutation 2 using seed 2
 500 unit scale
-176 tiles to shuffle...
+160 tiles to shuffle...
 shuffling permutation 3 using seed 3
 500 unit scale
 187 tiles to shuffle...
@@ -266,7 +266,7 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 5000 unit scale
 6 tiles to shuffle...
-Time was 68.63 mins
+Time was 39.69 mins
 There were 50 or more warnings (use warnings() to see the first 50)
 Evaluating significance for each cell type
 using neighbor distance of 50
@@ -307,16 +307,16 @@ Inhib.Pax6
 Inhib.Pvalb
 Inhib.Sst
 Inhib.Vip
-Time was 14.41 mins
+Time was 10.07 mins
 this function will be deprecated, use vizRelationships instead
 Scale for x is already present.
 Adding another scale for x, which will replace the existing scale.
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-18 16:52:32 EDT"
+[1] "2026-05-27 11:18:17 EDT"
     user   system  elapsed 
-4970.851   18.976 5016.695 
+2984.927    6.140 3008.213 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -327,7 +327,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-18
+ date     2026-05-27
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -338,7 +338,7 @@ null device
  BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  BiocParallel         * 1.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  bit                    4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.8.0    2026-04-21 [1] CRAN (R 4.5.0)
+ bit64                  4.8.2    2026-05-19 [1] CRAN (R 4.5.0)
  class                  7.3-23   2025-01-01 [3] CRAN (R 4.5.0)
  classInt               0.4-11   2025-01-08 [2] CRAN (R 4.5.0)
  cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
@@ -420,4 +420,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon May 18 04:52:32 PM EDT 2026
+Wed May 27 11:18:17 AM EDT 2026

@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon May 18 03:28:54 PM EDT 2026
+Wed May 27 10:28:07 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31972266
+Job id: 32207607
 Job name: 12_xenium_CRAWDAD
-Node name: compute-100
+Node name: compute-169
 Task id: 5
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -125,7 +125,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-05-18 15:29:09.666745 - Load SPE data, subset to: Br5415
+2026-05-27 10:28:14.937184 - Load SPE data, subset to: Br5415
 ncells:17917
 
          Astro.1          Astro.2          Astro.3          Astro.4 
@@ -156,15 +156,15 @@ Simple feature collection with 6 features and 1 field
 Attribute-geometry relationship: constant (1)
 Geometry type: POINT
 Dimension:     XY
-Bounding box:  xmin: 602.8181 ymin: 1172.421 xmax: 1123.909 ymax: 1214.098
+Bounding box:  xmin: 4560 ymin: 1172 xmax: 5081 ymax: 1214
 CRS:           NA
-   celltypes                  geometry
-1    Astro.2  POINT (602.8181 1185.26)
-2 Excit.L5.2 POINT (645.3727 1204.792)
-3      OPC.2 POINT (1061.611 1198.689)
-4    Astro.1 POINT (764.4099 1214.098)
-5    Astro.1 POINT (758.3646 1186.019)
-6    Astro.5 POINT (1123.909 1172.421)
+   celltypes          geometry
+1    Astro.2 POINT (5081 1185)
+2 Excit.L5.2 POINT (5038 1204)
+3      OPC.2 POINT (4622 1198)
+4    Astro.1 POINT (4919 1214)
+5    Astro.1 POINT (4925 1186)
+6    Astro.5 POINT (4560 1172)
  [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
  [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
  [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
@@ -269,7 +269,7 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 5000 unit scale
 4 tiles to shuffle...
-Time was 45.2 mins
+Time was 15.58 mins
 There were 50 or more warnings (use warnings() to see the first 50)
 Evaluating significance for each cell type
 using neighbor distance of 50
@@ -311,16 +311,16 @@ Inhib.Pax6
 Inhib.Pvalb
 Inhib.Sst
 Inhib.Vip
-Time was 13.8 mins
+Time was 9.45 mins
 this function will be deprecated, use vizRelationships instead
 Scale for x is already present.
 Adding another scale for x, which will replace the existing scale.
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-18 16:28:29 EDT"
+[1] "2026-05-27 10:53:28 EDT"
     user   system  elapsed 
-3540.400   13.212 3574.011 
+1511.164    4.289 1519.970 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -331,7 +331,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-18
+ date     2026-05-27
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -342,7 +342,7 @@ null device
  BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  BiocParallel         * 1.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  bit                    4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.8.0    2026-04-21 [1] CRAN (R 4.5.0)
+ bit64                  4.8.2    2026-05-19 [1] CRAN (R 4.5.0)
  class                  7.3-23   2025-01-01 [3] CRAN (R 4.5.0)
  classInt               0.4-11   2025-01-08 [2] CRAN (R 4.5.0)
  cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
@@ -424,4 +424,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon May 18 04:28:30 PM EDT 2026
+Wed May 27 10:53:28 AM EDT 2026

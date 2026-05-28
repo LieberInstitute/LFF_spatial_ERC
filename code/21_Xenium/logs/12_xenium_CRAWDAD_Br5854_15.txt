@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon May 18 04:51:07 PM EDT 2026
+Wed May 27 11:08:48 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31973593
+Job id: 32207719
 Job name: 12_xenium_CRAWDAD
-Node name: compute-100
+Node name: compute-122
 Task id: 15
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -125,7 +125,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-05-18 16:51:22.799235 - Load SPE data, subset to: Br5854
+2026-05-27 11:08:59.09536 - Load SPE data, subset to: Br5854
 ncells:15990
 
          Astro.1          Astro.2          Astro.3          Astro.4 
@@ -156,15 +156,15 @@ Simple feature collection with 6 features and 1 field
 Attribute-geometry relationship: constant (1)
 Geometry type: POINT
 Dimension:     XY
-Bounding box:  xmin: 583.2246 ymin: 4335.834 xmax: 722.3145 ymax: 4396.383
+Bounding box:  xmin: 5067 ymin: 810 xmax: 5206 ymax: 871
 CRS:           NA
-  celltypes                  geometry
-1   Oligo.3 POINT (716.7686 4355.989)
-2   Oligo.1 POINT (716.4117 4396.383)
-3   Astro.5 POINT (583.2246 4393.964)
-4   Astro.5 POINT (700.1048 4348.562)
-5 Vasc.Endo POINT (722.3145 4335.834)
-6 Vasc.Endo POINT (720.1415 4345.258)
+  celltypes         geometry
+1   Oligo.3 POINT (5072 851)
+2   Oligo.1 POINT (5072 810)
+3   Astro.5 POINT (5206 813)
+4   Astro.5 POINT (5089 858)
+5 Vasc.Endo POINT (5067 871)
+6 Vasc.Endo POINT (5069 861)
  [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
  [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
  [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
@@ -269,7 +269,7 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 5000 unit scale
 4 tiles to shuffle...
-Time was 28.28 mins
+Time was 18.29 mins
 There were 50 or more warnings (use warnings() to see the first 50)
 Evaluating significance for each cell type
 using neighbor distance of 50
@@ -311,16 +311,16 @@ Inhib.Pax6
 Inhib.Pvalb
 Inhib.Sst
 Inhib.Vip
-Time was 13.59 mins
+Time was 14.56 mins
 this function will be deprecated, use vizRelationships instead
 Scale for x is already present.
 Adding another scale for x, which will replace the existing scale.
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-18 17:33:34 EDT"
+[1] "2026-05-27 11:42:07 EDT"
     user   system  elapsed 
-2520.604   10.280 2545.164 
+1973.845    8.541 1997.748 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -331,7 +331,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-18
+ date     2026-05-27
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -342,7 +342,7 @@ null device
  BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  BiocParallel         * 1.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  bit                    4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
- bit64                  4.8.0    2026-04-21 [1] CRAN (R 4.5.0)
+ bit64                  4.8.2    2026-05-19 [1] CRAN (R 4.5.0)
  class                  7.3-23   2025-01-01 [3] CRAN (R 4.5.0)
  classInt               0.4-11   2025-01-08 [2] CRAN (R 4.5.0)
  cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
@@ -424,4 +424,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon May 18 05:33:34 PM EDT 2026
+Wed May 27 11:42:07 AM EDT 2026
