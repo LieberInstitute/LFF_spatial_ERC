@@ -404,10 +404,10 @@ diff_prop_tree_APOE_carrier_compare <- res_tb |>
         type = ifelse(n_labels > 1, "node", "leaf")
     )
 
-diff_prop_tree_APOE_carrier_compare |> filter(n_labels == 2) |> select(label, n_labels, label_multi, label_simple, label_simple2, cell_type_broad) 
-diff_prop_tree_APOE_carrier_compare |> dplyr::count(label_simple)
-
-diff_prop_tree_APOE_carrier_compare$label
+# diff_prop_tree_APOE_carrier_compare |> filter(n_labels == 2) |> select(label, n_labels, label_multi, label_simple, label_simple2, cell_type_broad) 
+# diff_prop_tree_APOE_carrier_compare |> dplyr::count(label_simple)
+# 
+# diff_prop_tree_APOE_carrier_compare$label
 
 signif_colors <- c(both = "purple", `xenium only` = "blue", `sn only` = "red")
 
@@ -452,91 +452,91 @@ tree_compare_stat_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
 
 ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, "tree_compare_stat_scatter_APOE_carrier_ct_broad.png"))
 
-#### fit Sex ####
-
-# Extract results for each cell type
-(diff_prop_Sex <- topTable(fit, coef = "SexM", number = Inf))
-
-#                   logFC     AveExpr           t     P.Value  adj.P.Val         B
-# Macro             1.99051694 -0.6335688  2.43415100 0.03533249 0.7314477 -4.509818
-# OPC.1             1.42682280 -4.3314793  2.03835503 0.06900192 0.7314477 -4.551939
-# Micro.2           0.84770877  1.3614673  1.99108878 0.07465394 0.7314477 -4.560956
-# Micro.1           1.71162443 -3.4181275  1.81243561 0.10018125 0.7314477 -4.529114
-# Excit.L2_5.1     -1.01489921  0.7277704 -1.77773943 0.10599298 0.7314477 -4.557097
-
-write.csv(diff_prop_Sex, file = here(data_dir, "diff_prop_Sex.csv"))
-
-# Perform multivariate test across the hierarchy
-res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "SexM")
-
-res_tb <- res |> as_tibble()
-
-res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
-
-# res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
-
-# Plot hierarchy and testing results
-tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_FDR.png"))
-
-# Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']]) +
-    theme(legend.position = "left" 
-          # legend.box = "vertical"
-    )
-ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_beta.png"), width = 4, height = 7)
-
-# forest plots
-forest_plot <- plotForest(res, hide = FALSE, low = sex_colors[['F']], high = sex_colors[['M']]) 
-ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_forest.png"), width = 4, height = 7)
-
-
-# combined_fig <- fig.vp +
-#     theme(legend.position = "left") |
-#     tree_beta_plot |
-#     forest_plot
+# #### fit Sex ####
 # 
-# ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_Sex.png"), width = 10)
-
-
-#### Plot cleanY on cobj Sex ####
-
-mod <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + chip , erc_info)
-cleanY_cobj_sex <- jaffelab::cleaningY(cobj$E , mod, P=3)
-
-clr_prop_long <- clr_prop_long |> 
-    left_join(cleanY_cobj_sex |>
-                  as.data.frame() |>
-                  rownames_to_column("cell_type_anno") |>
-                  pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_Sex")) 
-
-## clr plot of top results
-clr_boxplot_Sex_Micro <- clr_prop_long |>
-    filter(grepl("Micro", cell_type_anno)) |>
-    ggplot(aes(x = Sex, y = CLR_cleanY_Sex, fill = Sex)) +
-    geom_boxplot(outlier.shape = NA) +
-    # geom_jitter(aes(color = error), width = .1) +
-    geom_jitter(width = .1) +
-    facet_wrap(~cell_type_anno, nrow = 1) +
-    scale_fill_manual(values = sex_colors) +
-    theme_bw() +
-    theme(legend.position = "None")
-
-ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, "xenium_clr_boxplot_Sex_Micro.png"), height = 4, width = 6)
-
-clr_boxplot_Sex_Oligo <- clr_prop_long |>
-    filter(grepl("Oligo", cell_type_anno)) |>
-    ggplot(aes(x = Sex, y = CLR_cleanY_Sex, fill = Sex)) +
-    geom_boxplot(outlier.shape = NA) +
-    geom_jitter(width = .1) +
-    facet_wrap(~cell_type_anno, nrow = 1) +
-    scale_fill_manual(values = sex_colors) +
-    theme_bw() +
-    theme(legend.position = "None")
-
-ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
-
+# # Extract results for each cell type
+# (diff_prop_Sex <- topTable(fit, coef = "SexM", number = Inf))
+# 
+# #                   logFC     AveExpr           t     P.Value  adj.P.Val         B
+# # Macro             1.99051694 -0.6335688  2.43415100 0.03533249 0.7314477 -4.509818
+# # OPC.1             1.42682280 -4.3314793  2.03835503 0.06900192 0.7314477 -4.551939
+# # Micro.2           0.84770877  1.3614673  1.99108878 0.07465394 0.7314477 -4.560956
+# # Micro.1           1.71162443 -3.4181275  1.81243561 0.10018125 0.7314477 -4.529114
+# # Excit.L2_5.1     -1.01489921  0.7277704 -1.77773943 0.10599298 0.7314477 -4.557097
+# 
+# write.csv(diff_prop_Sex, file = here(data_dir, "diff_prop_Sex.csv"))
+# 
+# # Perform multivariate test across the hierarchy
+# res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "SexM")
+# 
+# res_tb <- res |> as_tibble()
+# 
+# res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
+# res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
+# 
+# # res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
+# 
+# # Plot hierarchy and testing results
+# tree_fdr_plot <- plotTreeTest(res)
+# ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_FDR.png"))
+# 
+# # Plot hierarchy and regression coefficients
+# tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']]) +
+#     theme(legend.position = "left" 
+#           # legend.box = "vertical"
+#     )
+# ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_beta.png"), width = 4, height = 7)
+# 
+# # forest plots
+# forest_plot <- plotForest(res, hide = FALSE, low = sex_colors[['F']], high = sex_colors[['M']]) 
+# ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_forest.png"), width = 4, height = 7)
+# 
+# 
+# # combined_fig <- fig.vp +
+# #     theme(legend.position = "left") |
+# #     tree_beta_plot |
+# #     forest_plot
+# # 
+# # ggsave(combined_fig, filename = here(plot_dir, "crumblr_cell_type_combined_Sex.png"), width = 10)
+# 
+# 
+# #### Plot cleanY on cobj Sex ####
+# 
+# mod <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + chip , erc_info)
+# cleanY_cobj_sex <- jaffelab::cleaningY(cobj$E , mod, P=3)
+# 
+# clr_prop_long <- clr_prop_long |> 
+#     left_join(cleanY_cobj_sex |>
+#                   as.data.frame() |>
+#                   rownames_to_column("cell_type_anno") |>
+#                   pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_Sex")) 
+# 
+# ## clr plot of top results
+# clr_boxplot_Sex_Micro <- clr_prop_long |>
+#     filter(grepl("Micro", cell_type_anno)) |>
+#     ggplot(aes(x = Sex, y = CLR_cleanY_Sex, fill = Sex)) +
+#     geom_boxplot(outlier.shape = NA) +
+#     # geom_jitter(aes(color = error), width = .1) +
+#     geom_jitter(width = .1) +
+#     facet_wrap(~cell_type_anno, nrow = 1) +
+#     scale_fill_manual(values = sex_colors) +
+#     theme_bw() +
+#     theme(legend.position = "None")
+# 
+# ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, "xenium_clr_boxplot_Sex_Micro.png"), height = 4, width = 6)
+# 
+# clr_boxplot_Sex_Oligo <- clr_prop_long |>
+#     filter(grepl("Oligo", cell_type_anno)) |>
+#     ggplot(aes(x = Sex, y = CLR_cleanY_Sex, fill = Sex)) +
+#     geom_boxplot(outlier.shape = NA) +
+#     geom_jitter(width = .1) +
+#     facet_wrap(~cell_type_anno, nrow = 1) +
+#     scale_fill_manual(values = sex_colors) +
+#     theme_bw() +
+#     theme(legend.position = "None")
+# 
+# ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
+# 
 
 # #### Plot cleanY on cobj Sex + APOE carrier ####
 # 
