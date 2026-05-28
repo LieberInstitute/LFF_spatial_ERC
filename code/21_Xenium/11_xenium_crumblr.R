@@ -39,7 +39,7 @@ load(here("processed-data", "04_snRNA-seq", "28_subcluster_update_sce","cell_typ
 
 cell_type_proportions_xenium <- cell_type_proportions |>
     mutate(cell_type_broad = factor(gsub("\\..*", "", cell_type_anno), levels = names(cell_type_colors$broad)), .before = 10) |>
-    select(-chip, -seq_round) |> 
+    select(-exp_round, -seq_round) |>
     inner_join(rcdt_results_summary)
 
 write_csv(clr_prop_long, here(data_dir, "cell_type_proportions_xenium.csv"))
