@@ -377,8 +377,7 @@ ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, "xenium_clr_box
 #### compare to snRNA-seq crumblr Carrier tests ####
 message(Sys.time(), "- compare to snRNA-seq crumblr Carrier tests")
 
-sn_diff_prop_APOE_carrier <- read_csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_APOE_carrier.csv")) |>
-    rename(cell_type = `...1`)
+sn_diff_prop_APOE_carrier <- read.csv(here("processed-data", "04_snRNA-seq", "22_crumblr_sn", "sn_diff_prop_tree_test_APOE_carrier.csv")) 
 
 x_name <- function(name) paste0("x_", name)
 p_cutoff <- 0.1
