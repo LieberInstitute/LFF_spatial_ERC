@@ -1,0 +1,276 @@
+**** Job starts ****
+Fri May 29 02:39:16 PM EDT 2026
+**** JHPCE info ****
+User: neagles
+Job id: 32265109
+Job name: 01_to_python
+Node name: compute-169
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+qs2 0.1.7
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: GiottoClass
+Newer devel version of GiottoClass on GitHub: 0.5.1
+Giotto Suite 4.2.2
+
+Attaching package: ‘Giotto’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotPCA
+
+a python path has been provided
+Using python path:
+ "/users/neagles/.conda/envs/giotto_env/bin/python"
+[1] "/users/neagles/.conda/envs/giotto_env/bin/python"
+python already initialized in this session
+ active environment : 'giotto_env'
+ python version : 3.10
+Creating Giotto object with logcounts matrix
+Copying phenotype data
+Copying feature metadata
+Copying reduced dimensions
+Copying reduced dimensions
+Copying reduced dimensions
+Copying spatial locations
+> raw already exists and will be replaced with new spatial
+ locations
+Directory
+ /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/24_xenium_liana/01_to_python/
+ found. The converted Giotto object will be saved here as an
+ .h5ad file.
+Spatial unit(s) cell will be used in conversion.
+Feature type(s) rna will be used in conversion.
+/users/neagles/.local/lib/python3.10/site-packages/anndata/_core/anndata.py:430: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+  warnings.warn(
+
+Spatial unit cell and feature type rna converted to:
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/24_xenium_liana/01_to_python/cell_rna_converted_gobject.h5ad
+
+Giotto object successfully converted to .h5ad file(s)
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/24_xenium_liana/01_to_python/cell_rna_converted_gobject.h5ad"
+
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-05-29
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   1.9.37 @ /users/neagles/.positron-server/bin/1b5dfba9314510340cb08f2fedccc5ffba822beb/quarto/bin/quarto
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package              * version date (UTC) lib source
+ abind                  1.4-8   2024-09-12 [1] CRAN (R 4.5.0)
+ backports              1.5.0   2024-05-23 [1] CRAN (R 4.5.0)
+ Biobase              * 2.68.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0  2025-04-15 [1] Bioconduc~
+ BiocNeighbors          2.2.0   2025-04-15 [1] Bioconduc~
+ BiocParallel           1.42.1  2025-06-01 [1] Bioconduc~
+ bluster                1.18.0  2025-04-15 [1] Bioconduc~
+ cachem                 1.1.0   2024-05-16 [1] CRAN (R 4.5.0)
+ checkmate              2.3.2   2024-07-29 [1] CRAN (R 4.5.0)
+ cli                    3.6.5   2025-04-23 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1 2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20  2024-03-31 [3] CRAN (R 4.5.0)
+ colorRamp2             0.1.0   2022-12-21 [1] CRAN (R 4.5.0)
+ colorspace             2.1-1   2024-07-26 [1] CRAN (R 4.5.0)
+ cowplot                1.2.0   2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3   2024-06-20 [1] CRAN (R 4.5.0)
+ data.table             1.17.8  2025-07-10 [1] CRAN (R 4.5.0)
+ DelayedArray           0.34.1  2025-04-17 [1] Bioconduc~
+ dichromat              2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.37  2024-08-19 [1] CRAN (R 4.5.0)
+ dplyr                  1.1.4   2023-11-17 [1] CRAN (R 4.5.0)
+ farver                 2.1.2   2024-05-13 [1] CRAN (R 4.5.0)
+ fastmap                1.2.0   2024-05-15 [1] CRAN (R 4.5.0)
+ generics             * 0.1.4   2025-05-09 [1] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14  2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0  2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ggforce                0.5.0   2025-06-18 [1] CRAN (R 4.5.0)
+ ggplot2                3.5.2   2025-04-09 [1] CRAN (R 4.5.0)
+ ggraph                 2.2.1   2024-03-07 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.6   2024-09-07 [1] CRAN (R 4.5.0)
+ Giotto               * 4.2.2   2025-08-11 [1] Github (drieslab/Giotto@a560936)
+ GiottoClass          * 0.4.9   2025-08-11 [1] Github (drieslab/GiottoClass@83708df)
+ GiottoUtils            0.2.5   2025-08-11 [1] Github (drieslab/GiottoUtils@1ce82e5)
+ GiottoVisuals          0.2.12  2025-08-11 [1] Github (drieslab/GiottoVisuals@de3d867)
+ glue                   1.8.0   2024-09-30 [1] CRAN (R 4.5.0)
+ graphlayouts           1.2.2   2025-01-23 [1] CRAN (R 4.5.0)
+ gridExtra              2.3     2017-09-09 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6   2024-10-25 [1] CRAN (R 4.5.0)
+ gtools                 3.9.5   2023-11-20 [1] CRAN (R 4.5.0)
+ here                 * 1.0.1   2020-12-13 [1] CRAN (R 4.5.0)
+ htmltools              0.5.8.1 2024-04-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4   2023-12-06 [1] CRAN (R 4.5.0)
+ httr                   1.4.7   2023-08-15 [1] CRAN (R 4.5.0)
+ igraph                 2.1.4   2025-01-23 [1] CRAN (R 4.5.0)
+ IRanges              * 2.42.0  2025-04-15 [1] Bioconduc~
+ jsonlite               2.0.0   2025-03-27 [1] CRAN (R 4.5.0)
+ lattice                0.22-7  2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.2   2019-03-15 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.4   2023-11-07 [1] CRAN (R 4.5.0)
+ magick                 2.8.6   2025-03-23 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3   2022-03-30 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65  2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3   2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0  2025-04-15 [1] Bioconduc~
+ matrixStats          * 1.5.0   2025-01-07 [1] CRAN (R 4.5.0)
+ memoise                2.0.1   2021-11-26 [1] CRAN (R 4.5.0)
+ pillar                 1.11.0  2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3   2019-09-22 [1] CRAN (R 4.5.0)
+ plotly                 4.11.0  2025-06-19 [1] CRAN (R 4.5.0)
+ png                    0.1-8   2022-11-29 [1] CRAN (R 4.5.0)
+ polyclip               1.10-7  2024-07-23 [1] CRAN (R 4.5.0)
+ purrr                  1.1.0   2025-07-10 [1] CRAN (R 4.5.0)
+ qs2                  * 0.1.7   2026-01-20 [1] CRAN (R 4.5.0)
+ R6                     2.6.1   2025-02-15 [1] CRAN (R 4.5.0)
+ rappdirs               0.3.3   2021-01-31 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3   2022-04-03 [1] CRAN (R 4.5.0)
+ Rcpp                   1.1.0   2025-07-02 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.10  2025-01-24 [2] CRAN (R 4.5.0)
+ reticulate             1.43.0  2025-07-21 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23  2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6   2025-04-11 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.0   2025-07-12 [1] CRAN (R 4.5.0)
+ S4Arrays               1.8.1   2025-06-01 [1] Bioconduc~
+ S4Vectors            * 0.48.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ scales                 1.4.0   2025-04-24 [1] CRAN (R 4.5.0)
+ scattermore            1.2     2023-06-12 [1] CRAN (R 4.5.0)
+ sessioninfo          * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1  2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.1   2025-07-23 [1] Bioconduc~
+ SpatialExperiment    * 1.18.1  2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ stringfish             0.18.0  2026-01-18 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1  2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ terra                  1.8-60  2025-07-21 [1] CRAN (R 4.5.0)
+ tibble                 3.3.0   2025-06-08 [1] CRAN (R 4.5.0)
+ tidygraph              1.3.1   2024-01-30 [1] CRAN (R 4.5.0)
+ tidyr                  1.3.1   2024-01-24 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1   2024-03-11 [1] CRAN (R 4.5.0)
+ tweenr                 2.0.3   2024-02-26 [1] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ vctrs                  0.6.5   2023-12-01 [1] CRAN (R 4.5.0)
+ viridis                0.6.5   2024-01-29 [1] CRAN (R 4.5.0)
+ viridisLite            0.4.2   2023-05-02 [1] CRAN (R 4.5.0)
+ withr                  3.0.2   2024-10-28 [1] CRAN (R 4.5.0)
+ XVector                0.48.0  2025-04-15 [1] Bioconduc~
+
+ [1] /users/neagles/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+─ Python configuration ───────────────────────────────────────────────────────
+ python:         /users/neagles/.conda/envs/giotto_env/bin/python
+ libpython:      /users/neagles/.conda/envs/giotto_env/lib/libpython3.10.so
+ pythonhome:     /users/neagles/.conda/envs/giotto_env:/users/neagles/.conda/envs/giotto_env
+ version:        3.10.2 | packaged by conda-forge | (main, Mar  8 2022, 15:53:57) [GCC 9.4.0]
+ numpy:          /users/neagles/.local/lib/python3.10/site-packages/numpy
+ numpy_version:  1.26.4
+ 
+ NOTE: Python version was forced by use_python() function
+
+──────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri May 29 02:39:56 PM EDT 2026
