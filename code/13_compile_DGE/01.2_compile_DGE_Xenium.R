@@ -181,24 +181,45 @@ write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_carrier_%s.cs
 
 #### Xenium vs. snRNA-seq correlation ####
 
-sn_xenium_cor <- vlmf_data_tb |>
+sn_xenium_all_pairs <- vlmf_data_tb |>
     select(cluster, gene_id, gene_name, starts_with("vlmf")) |> 
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_")) |>
     rename(cluster_xenium = cluster) |>
-    inner_join(sn_DEG_data |> rename(cluster_sn = cluster), relationship = "many-to-many") |>
-    group_by(cluster_sn, cluster_xenium) |>
+    inner_join(sn_DEG_data |> rename(cluster_sn = cluster), relationship = "many-to-many")
+    
+sn_xenium_cor <- sn_xenium_all_pairs |> group_by(cluster_sn, cluster_xenium) |>
     summarise(
         cor = cor(vlmf_sn_t, vlmf_xenium_t, use = "complete.obs", method = "spearman"),
         n_genes  = n(),
         .groups  = "drop"
-    ) |>
+    ) |> 
+    left_join(sn_xenium_all_pairs |> 
+                       filter(vlmf_sn_P.Value < 0.1) |>
+                       group_by(cluster_sn, cluster_xenium) |>
+                       summarise(
+                           cor_p01 = cor(vlmf_sn_t, vlmf_xenium_t, use = "complete.obs", method = "spearman"),
+                           n_genes_p01  = n(),
+                           .groups  = "drop"
+                       ) ) |>
     mutate(cluster_match = cluster_sn == cluster_xenium)
 
+sn_xenium_cor |>
+    filter(cluster_match) |>
+    print(n = 31)
+    
 sn_xenium_cor |>
     group_by(cluster_sn) |> 
     slice_max(cor)|> 
     arrange(-cluster_match, -cor) |> 
     print(n = 35) 
+
+sn_xenium_cor_v_genes <- sn_xenium_cor |>
+    ggplot(aes(x = n_genes, y = cor, color = cluster_match)) +
+    geom_point() +
+    theme_bw()
+
+ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_v_genes.png"), width =8)
+
 
 sn_xenium_cor_heatmap <- sn_xenium_cor |>
     ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
@@ -214,6 +235,21 @@ sn_xenium_cor_heatmap <- sn_xenium_cor |>
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ggsave(sn_xenium_cor_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_heatmap.png"), width =8)
+
+sn_xenium_cor_signif_heatmap <- sn_xenium_cor |>
+    ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
+    geom_tile(aes(fill = cor_p01)) +
+    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    ) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(sn_xenium_cor_signif_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_signif_heatmap.png"), width =8)
 
 
 sn_xenium_cor_boxplot <- sn_xenium_cor |>
