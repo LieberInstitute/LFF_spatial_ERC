@@ -168,17 +168,232 @@ sn_DEG_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE"
     select(cluster, gene_id, gene_name, starts_with("vlmf")) |>
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_sn_"), starts_with("vlmf_"))
 
-vlmf_data_tb <- vlmf_data_tb |>
+vlmf_data_tb_xenium <- vlmf_data_tb |>
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
-    left_join(sn_DEG_data)
+    left_join(sn_DEG_data) |>
+    mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
+           signif_sn = vlmf_sn_adj.P.Val < 0.05,
+           signif_both = signif_xenium & signif_sn,
+           dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0))
 
 ## save data
 saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 write.csv(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_carrier_%s.csv", opt$datatype)), row.names = FALSE)
 
-#### compare t-stats ####
+#### Summarize validation experiments ####
 
-comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = "vlmf_xenium", FDR_cut_mX = 0.05, pval_cut_mY = 0.05, model_name){
+validation_summary <- vlmf_data_tb_xenium |> 
+    filter(!is.na(vlmf_sn_P.Value)) |> 
+    group_by(cluster) |>
+    summarise(n_signif_xenium = sum(signif_xenium),
+              n_signif_sn = sum(signif_sn),
+              n_signif_both = sum(signif_both),
+              n_signif_both_dir = sum(signif_both & dir_match),
+              per_valid = 100*n_signif_both_dir/n_signif_sn)
+
+validation_summary |>
+    filter(n_signif_sn > 0)
+
+
+vlmf_data_tb_xenium |> 
+    # filter(cluster == "Oligo.3", signif_both) |>
+    filter(grepl("Astro", cluster), signif_both) |>
+    select(cluster, gene_id, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value)
+
+# cluster gene_id         gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value
+# <fct>   <chr>           <chr>             <dbl>             <dbl>             <dbl>               <dbl>
+# 1 Oligo.3 ENSG00000104888 SLC17A7           1.47             0.0388             0.234              0.0453
+# 2 Oligo.3 ENSG00000171617 ENC1              1.61             0.0238             0.246              0.0530
+# 3 Oligo.3 ENSG00000221890 NPTXR             1.21             0.0178             0.399              0.0497
+# 4 Oligo.3 ENSG00000135426 TESPA1            2.01             0.0171             0.366              0.0492
+# 5 Oligo.3 ENSG00000134508 CABLES1           2.19             0.0124             0.382              0.0515
+# 6 Oligo.3 ENSG00000064989 CALCRL            1.79             0.0238            -0.325              0.0588
+# 7 Oligo.3 ENSG00000150656 CNDP1            -0.686            0.0466            -0.249              0.0971
+
+# cluster gene_id         gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value
+# <fct>   <chr>           <chr>             <dbl>             <dbl>             <dbl>               <dbl>
+# 1 Astro.1 ENSG00000221890 NPTXR             0.751            0.0310             0.307              0.0536
+# 2 Astro.2 ENSG00000177283 FZD8              1.01             0.0261             0.269              0.0603
+# 3 Astro.2 ENSG00000255690 TRIL              0.724            0.0440             0.174              0.0964
+# 4 Astro.2 ENSG00000183098 GPC6             -1.14             0.0412            -0.392              0.0997
+# 5 Astro.3 ENSG00000197971 MBP              -1.21             0.0393            -0.380              0.0565
+     
+# vlmf_data_tb_xenium |> select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_t) |> mutate(dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0)) |> print(n = 20)
+
+#### Xenium vs. snRNA-seq correlation ####
+
+sn_xenium_all_pairs <- vlmf_data_tb |>
+    select(cluster, gene_id, gene_name, starts_with("vlmf")) |> 
+    rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_")) |>
+    rename(cluster_xenium = cluster) |>
+    inner_join(sn_DEG_data |> rename(cluster_sn = cluster), relationship = "many-to-many")
+    
+sn_xenium_cor <- sn_xenium_all_pairs |> group_by(cluster_sn, cluster_xenium) |>
+    summarise(
+        cor = cor(vlmf_sn_t, vlmf_xenium_t, use = "complete.obs", method = "spearman"),
+        n_genes  = n(),
+        .groups  = "drop"
+    ) |> 
+    left_join(sn_xenium_all_pairs |> 
+                       filter(vlmf_sn_P.Value < 0.1) |>
+                       group_by(cluster_sn, cluster_xenium) |>
+                       summarise(
+                           cor_p01 = cor(vlmf_sn_t, vlmf_xenium_t, use = "complete.obs", method = "spearman"),
+                           n_genes_p01  = n(),
+                           .groups  = "drop"
+                       ) ) |>
+    mutate(cluster_match = cluster_sn == cluster_xenium)
+
+
+summary(sn_xenium_cor$n_genes)
+
+sn_xenium_cor |>
+    filter(cluster_match) |>
+    print(n = 31)
+    
+sn_xenium_cor |>
+    group_by(cluster_sn) |> 
+    slice_max(cor)|> 
+    arrange(-cluster_match, -cor) |> 
+    print(n = 35) 
+
+sn_xenium_cor_v_genes <- sn_xenium_cor |>
+    ggplot(aes(x = n_genes, y = cor, color = cluster_match)) +
+    geom_point() +
+    theme_bw()
+
+ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_v_genes.png"), width =8)
+
+## summary with matching clusters
+
+validation_summary_cor <- validation_summary |>
+    left_join(sn_xenium_cor |> 
+                  filter(cluster_match) |>
+                  select(cluster = cluster_sn,
+                         n_genes, cor, 
+                         n_genes_p01, cor_p01))
+
+write_csv(validation_summary_cor, file = here(data_dir, "xeniumf_DEG_validation_summary.csv"))
+
+
+sn_xenium_cor_heatmap <- sn_xenium_cor |>
+    ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
+    geom_tile(aes(fill = cor)) +
+    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    ) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(sn_xenium_cor_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_heatmap.png"), width =8)
+
+sn_xenium_cor_signif_heatmap <- sn_xenium_cor |>
+    ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
+    geom_tile(aes(fill = cor_p01)) +
+    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    ) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(sn_xenium_cor_signif_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_signif_heatmap.png"), width =8)
+
+
+sn_xenium_cor_boxplot <- sn_xenium_cor |>
+    ggplot(aes(x = cluster_match, y = cor)) +
+    geom_boxplot() +
+    theme_bw()
+
+ggsave(sn_xenium_cor_boxplot, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_boxplot.png"))
+
+
+## Xenium vs. Xenium
+xenium_xenium_cor <- vlmf_data_tb |>
+    select(cluster, gene_id, vlmf_t) |>
+    pivot_wider(names_from=cluster, values_from=vlmf_t) |>
+    select(-gene_id) |>
+    cor(use="pairwise.complete.obs", method = "spearman") |>
+    reshape2::melt() |>
+    rename(cluster_xenium1 = Var1, cluster_xenium2 = Var2, cor = value)|>
+    mutate(cluster_xenium1 = factor(cluster_xenium1, levels = cluster_levels),
+           cluster_xenium2 = factor(cluster_xenium2, levels = cluster_levels),
+           cluster_match = cluster_xenium1 == cluster_xenium2)
+
+xenium_xenium_cor_heatmap <- xenium_xenium_cor |>
+    ggplot(aes(x = cluster_xenium1, y = cluster_xenium2)) +
+    geom_tile(aes(fill = cor)) +
+    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    ) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(xenium_xenium_cor_heatmap, filename = here(plot_dir, "xenium_v_xenium_t_stat_cor_heatmap.png"), width =8)
+
+# sn vs. sn
+sn_sn_cor <- sn_DEG_data |>
+    select(cluster, gene_id, vlmf_sn_t) |>
+    pivot_wider(names_from=cluster, values_from=vlmf_sn_t) |>
+    select(-gene_id) |>
+    cor(use="pairwise.complete.obs", method = "spearman") |>
+    reshape2::melt() |>
+    rename(cluster_sn1 = Var1, cluster_sn2 = Var2, cor = value) |>
+    mutate(cluster_sn1 = factor(cluster_sn1, levels = cluster_levels),
+           cluster_sn2 = factor(cluster_sn2, levels = cluster_levels),
+           cluster_match = cluster_sn1 == cluster_sn2)
+
+sn_sn_cor_heatmap <- sn_sn_cor |>
+    ggplot(aes(x = cluster_sn1, y = cluster_sn2)) +
+    geom_tile(aes(fill = cor)) +
+    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    ) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(sn_sn_cor_heatmap, filename = here(plot_dir, "sn_v_sn_t_stat_cor_heatmap.png"), width =8)
+
+
+diff_cor <- sn_xenium_cor |>
+    inner_join(sn_sn_cor |> 
+                  rename(cluster_sn = cluster_sn1, cluster_xenium = cluster_sn2, sn_sn_cor = cor)) |>
+    mutate(cor_diff = cor - sn_sn_cor)
+    
+cor_diff_heatmap <- diff_cor |>
+    ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
+    geom_tile(aes(fill = cor_diff)) +
+    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    ) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(cor_diff_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_diff_heatmap.png"), width =8)
+
+
+#### compare t-stats scatter plots ####
+
+comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = "vlmf_xenium", FDR_cut_mX = 0.05, pval_cut_mY = 0.1, model_name){
 
     ## define vars
     statX <- paste0(mX, "_", stat)
@@ -218,6 +433,9 @@ comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = 
 map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb, ctb = .x, model_name = "carrier"))
 map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb, ctb = .x, stat = "logFC", model_name = "carrier"))
 
+
+vlmf_data_tb |> filter(cluster == "Oligo.3") |> filter(vlmf_xenium =)
+
 #### compare stats cluster vs. cluster 
 carrier_data_wide_t <- vlmf_data_tb |>
     select(gene_id, gene_id, cluster, vlmf_xenium_t) |>
@@ -234,6 +452,10 @@ map(cell_type_broad_levels, function(ctb){
     ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("xenium_t_stat_ggpairs-%s.png", ctb)))
     
 })
+
+
+
+
 
 # slurmjobs::job_single('01.2_compile_DGE_Xenium', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R")
 
