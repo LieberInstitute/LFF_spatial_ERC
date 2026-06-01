@@ -66,28 +66,19 @@ avg_lr = (
     .mean()
 )
 
-#   Compute lr_specificity: mean lr_mean per source-LR-target (across all samples)
-#   divided by the max mean lr_mean for that LR pair across all source-target combos
-lr_means = (
-    global_interactions
-    .groupby(['source', 'ligand_complex', 'receptor_complex', 'target'], as_index=False)['lr_mean']
-    .mean()
-    .rename(columns={'lr_mean': 'mean_lr_mean'})
-)
+#   Compute lr_specificity: lr_mean in avg_lr divided by the max lr_mean for
+#   that LR pair across all significant source-target combos
 lr_max_per_pair = (
-    lr_means
-    .groupby(['ligand_complex', 'receptor_complex'], as_index=False)['mean_lr_mean']
+    avg_lr
+    .groupby(['ligand_complex', 'receptor_complex'], as_index=False)['lr_mean']
     .max()
-    .rename(columns={'mean_lr_mean': 'max_lr_mean'})
+    .rename(columns={'lr_mean': 'max_lr_mean'})
 )
-lr_specificity = (
-    lr_means
+avg_lr = (
+    avg_lr
     .merge(lr_max_per_pair, on=['ligand_complex', 'receptor_complex'])
-    .assign(lr_specificity=lambda x: x['mean_lr_mean'] / x['max_lr_mean'])
-    [['source', 'ligand_complex', 'receptor_complex', 'target', 'lr_specificity']]
-)
-avg_lr = avg_lr.merge(
-    lr_specificity, on=['source', 'ligand_complex', 'receptor_complex', 'target']
+    .assign(lr_specificity=lambda x: x['lr_mean'] / x['max_lr_mean'])
+    .drop(columns='max_lr_mean')
 )
 
 avg_lr.to_csv(out_path, index=False)
