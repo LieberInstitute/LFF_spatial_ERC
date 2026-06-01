@@ -127,4 +127,40 @@ p.save(
     verbose=False
 )
 
+#################################################################################
+#   SPON1->APP heatmap
+#################################################################################
+
+spon1_app_df = (
+    avg_lr
+    .query("ligand_complex == 'SPON1' and receptor_complex == 'APP'")
+    .merge(full_grid, on=['source', 'target'], how='right')
+    .fillna({'lr_mean': 0, 'ligand_complex': 'SPON1', 'receptor_complex': 'APP'})
+)
+
+p_spon1 = (
+    p9.ggplot(spon1_app_df, p9.aes(x='target', y='source', fill='lr_mean'))
+    + p9.geom_tile()
+    + p9.scale_fill_gradientn(
+        colors=['lightgray', '#440154', '#31688e', '#35b779', '#fde725'],
+        values=[0, 1e-6, 0.33, 0.66, 1],
+        name='Mean\nlr_mean'
+    )
+    + p9.labs(
+        x='Target',
+        y='Source',
+        title=f'SPON1→APP: mean lr_mean\n(significant in ≥{n_samples_sig} samples)'
+    )
+    + p9.theme_bw()
+    + p9.theme(
+        axis_text_x=p9.element_text(rotation=90, ha='center'),
+        figure_size=(10, 8)
+    )
+)
+
+p_spon1.save(
+    filename=str(plot_dir / f'spon1_app_heatmap_sig{n_samples_sig}.pdf'),
+    verbose=False
+)
+
 session_info.show()
