@@ -273,6 +273,9 @@ spe$SpX <- cluster_anno$SpX[match(spe$clust_HARMONY_kmeans9, cluster_anno$Xenium
 
 table(spe$SpX, spe$clust_HARMONY_kmeans9)
 
+cluster_data <- as.data.frame(colData(spe)[,c("sample_id", "Barcode", "clust_HARMONY_kmeans9", "clust_HARMONY_kmeans12", "SpX")])
+write.csv(cluster_data, file = here(data_dir, "Xenium_bansky_cluster_data.csv"))
+
 #### Add RCTD data ###
 
 message(Sys.time(), "- Load rctd data")
