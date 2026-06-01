@@ -83,7 +83,7 @@ table(cells$celltypes)
 # dev.off()
 
 ## define the scales to analyze the data
-scales = c(50, 100, 200, 300, 400, 500, 1000, 5000)
+scales = c(25, 50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000)
 random_seed = 513
 
 num_cores = as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
@@ -113,7 +113,7 @@ results <- crawdad::findTrends(cells,
 
 dat <- crawdad::meltResultsList(results, withPerms = TRUE)
 
-write_csv(dat |> mutate(BrNum = opt$brnum, .before = 1), file = here(data_dir, sprintf("xenium_CRAWDAD_results_%s_%s.csv", opt$region, opt$brnum)))
+write_csv(dat |> mutate(BrNum = opt$brnum, region = opt$region, .before = 1), file = here(data_dir, sprintf("xenium_CRAWDAD_results_%s_%s.csv", opt$region, opt$brnum)))
 
 ## calculate the zscore for the multiple-test correction
 zsig <- correctZBonferroni(dat)
@@ -127,7 +127,7 @@ dev.off()
 
 
 #### slurm job ####
-xenium_experiment_info <- read.csv(here("processed-data", "21_Xenium", "07_xenium_build_spe", "xenium_experiment_details.csv"))
+# xenium_experiment_info <- read.csv(here("processed-data", "21_Xenium", "07_xenium_build_spe", "xenium_experiment_details.csv"))
 
 # slurmjobs::job_loop(
 #     loops = list(brnum = xenium_experiment_info$BrNum,
