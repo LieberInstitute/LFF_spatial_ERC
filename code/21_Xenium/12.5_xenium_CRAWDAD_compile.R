@@ -10,6 +10,7 @@ library("crawdad")
 library("tidyverse")
 library("spatialLIBD")
 library("scales")
+library("qs2")
 
 data_dir <- here("processed-data", "21_Xenium", "12.5_xenium_CRAWDAD_compile")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -237,28 +238,42 @@ ggsave(dotplot, filename = here(plot_dir, 'erc_xenium_CRAWDAD_dot_plot.png'), he
 ## load spe  data 
 message(Sys.time(), " - Load SPE data")
 spe <- qs2::qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
-spe <- qs2::qs_read(here::here("processed-data", "21_Xenium", "16_xenium_app_prep","spe_xenium_app.qs2"))
+spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
 
-spe <- spe[,spot_class == "singlet"]
+spe <- spe[,spe$spot_class == "singlet"]
 
-# spe_test <- spe[,spe$BrNum == "Br1039"]
-# 
-# summary(spatialCoords(spe_test)[,"x_centroid"])
-# summary(spatialCoords(spe_test)[,"y_centroid"])
-# 
-# 
-# spe_test[, spatialCoords(spe_test)[,"x_centroid"] < 850]
 
-cell_type_vis_clus <- vis_clus(spe,
+region_tb <- list("WM"= c('WMtz~SpX8', 'WM~SpX2'),
+     "GM"= c("L2.3~SpX4", "Inhib~SpX5", "L5~SpX1", "L6~SpX9"),
+     "Vasc"= c("Vasc~SpX3", "L1~SpX6", "L1~SpX7"))  |>
+    enframe(name="group", value="cluster") |>
+    unnest(cluster) |>
+    dplyr::rename(region = group, SpX = cluster)
+
+
+spe$region <- region_tb$region[match(spe$SpX, region_tb$SpX)]
+
+table(spe$SpX, spe$region)
+
+spe_test <- spe[,spe$BrNum == "Br1039"]
+
+summary(spatialCoords(spe_test)[,"x_centroid"])
+summary(spatialCoords(spe_test)[,"y_centroid"])
+
+
+spe_test[, spatialCoords(spe_test)[,"y_centroid"] < 850]
+
+vis_clus_region <- vis_clus(spe,
          sampleid = "Br1039",
-        clustervar = "cell_type_anno",
+        clustervar = "region",
         datatype = "Xenium",
-        colors = cell_type_colors$anno, 
+        # colors = cell_type_colors$anno, 
         point_size = 1) +
     theme_bw() +
-    geom_hline(yintercept = min(spatialCoords(spe_test)[,"y_centroid"]) + c(100, 200, 500, 1000, 5000))
+    geom_hline(yintercept = min(spatialCoords(spe_test)[,"y_centroid"]) + c(50, 100, 200, 300, 400, 500, 1000, 5000))
 
-ggsave(cell_type_vis_clus, filename = here(plot_dir, "vis_clus_cell_type.png"), height = 10, width = 10)
+ggsave(vis_clus_region, filename = here(plot_dir, "vis_clus_region_scales.png"), height = 10, width = 10)
+
 
 plot_ref_neighbor_pair <- function(spe, sampleid = "Br1039", ref, neighbor){
     
