@@ -15,7 +15,8 @@ library("BiocParallel")
 
 # Import command-line parameters
 scec <- matrix(
-    c("brnum", "b", "1", "character", "BrNum of selected sample"),
+    c("brnum", "b", "1", "character", "BrNum of selected sample",
+      "region", "r", "1", "character", "region to run CRAWDAD"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -34,6 +35,22 @@ message(Sys.time(), " - Load SPE data, subset to: ", opt$brnum)
 spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
 
 spe <- spe[, spe$BrNum == opt$brnum]
+
+
+message("subset to region:", opt$region)
+#"Vasc~SpX3"  "L1~SpX6"    "L1~SpX7"    "L2.3~SpX4"  "Inhib~SpX5" "L5~SpX1"    "L6~SpX9"    "WMtz~SpX8"  "WM~SpX2"
+
+if(opt$region == "WM"){
+    spe <- spe[,spe$SpX %in% c('WMtz~SpX8', 'WM~SpX2')]
+}else if(opt$region == "GM"){
+    spe <- spe[,spe$SpX %in% c("L2.3~SpX4", "Inhib~SpX5", "L5~SpX1", "L6~SpX9")]
+}else if(opt$region == "Vasc"){
+    spe <- spe[,spe$SpX %in% c("Vasc~SpX3", "L1~SpX6", "L1~SpX7")]
+} else if(opt$region == "ALL") {
+    message("All region - no subset")
+} else {
+    stop("Invalid region")
+}
 
 message("ncells:", ncol(spe))
 
@@ -94,13 +111,13 @@ results <- crawdad::findTrends(cells,
 
 dat <- crawdad::meltResultsList(results, withPerms = TRUE)
 
-write_csv(dat |> mutate(BrNum = opt$brnum, .before = 1), file = here(data_dir, sprintf("xenium_CRAWDAD_results_%s.csv", opt$brnum)))
+write_csv(dat |> mutate(BrNum = opt$brnum, .before = 1), file = here(data_dir, sprintf("xenium_CRAWDAD_results_%s_%s.csv", opt$region, opt$brnum)))
 
 ## calculate the zscore for the multiple-test correction
 zsig <- correctZBonferroni(dat)
 ## summary visualization
 
-pdf(here(plot_dir, sprintf("xenium_CRAWDAD_colloc_dotplot_%s.pdf", opt$brnum)), height = 8, width = 10)
+pdf(here(plot_dir, sprintf("xenium_CRAWDAD_colloc_dotplot_%s_%s.pdf", opt$region, opt$brnum)), height = 8, width = 10)
 vizColocDotplot(dat, zSigThresh = zsig, zScoreLimit = 2*zsig, 
                 dotSizes = c(3,15)) +
     theme(axis.text.x = element_text(angle = 35, h = 0))
@@ -108,10 +125,11 @@ dev.off()
 
 
 #### slurm job ####
-# xenium_experiment_info <- read.csv(here("processed-data", "21_Xenium", "07_xenium_build_spe", "xenium_experiment_details.csv"))
-# 
+xenium_experiment_info <- read.csv(here("processed-data", "21_Xenium", "07_xenium_build_spe", "xenium_experiment_details.csv"))
+
 # slurmjobs::job_loop(
-#     loops = list(brnum = xenium_experiment_info$BrNum),
+#     loops = list(brnum = xenium_experiment_info$BrNum,
+#                  region = c("ALL", "WM", "GM", "Vasc")),
 #     name = "12_xenium_CRAWDAD",
 #     create_shell = TRUE,
 #     create_script = FALSE
