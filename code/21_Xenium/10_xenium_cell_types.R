@@ -53,7 +53,25 @@ table(spe$cell_type_broad)
 message(Sys.time(), " - Saving singlet only SPE object")
 
 spe_singlet <- spe[, spe$spot_class == "singlet"]
+
+## Add bansky clusters
+cluster_data <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_bansky_cluster_data.csv"))
+SpX_colors = c('Vasc~SpX3' = "#E05AD2",
+               'L1~SpX6' = "#9AA7FE",
+               'L1~SpX7' = "#0220DE",
+               'L2.3~SpX4' = "#FEAF16",
+               'Inhib~SpX5' = "#C82100",
+               'L5~SpX1' = "#16FF32",
+               'L6~SpX9' = "#178C6D",
+               'WMtz~SpX8' = "grey",
+               'WM~SpX2'= "#581009")
+
+spe_singlet$SpX <- factor(cluster_data[colnames(spe_singlet),]$SpX, levels = names(SpX_colors))
+metadata(spe)$SpX_colors <- SpX_colors
+
 qs2::qs_save(spe_singlet, here(data_dir, "spe_xenium_cell_types.qs2"))
+
+# spe_singlet <- qs2::qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types", "spe_xenium_cell_types.qs2"))
 
 rm(spe_singlet)
 
