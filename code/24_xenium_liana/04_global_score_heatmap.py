@@ -8,9 +8,14 @@ import session_info
 
 data_dir = here('processed-data', '24_xenium_liana', '03_inflow_score')
 plot_dir = here('plots', '24_xenium_liana', '04_global_score_heatmap')
+out_path = here(
+    'processed-data', '24_xenium_liana', '04_global_score_heatmap',
+    'global_interactions_summary.csv'
+)
 n_samples_sig = 4
 
 os.makedirs(plot_dir, exist_ok=True)
+os.makedirs(out_path.parent, exist_ok=True)
 
 #################################################################################
 #   Gather global scores for all samples
@@ -60,6 +65,32 @@ avg_lr = (
     .groupby(['source', 'ligand_complex', 'receptor_complex', 'target'], as_index=False)['lr_mean']
     .mean()
 )
+
+#   Compute lr_specificity: mean lr_mean per source-LR-target (across all samples)
+#   divided by the max mean lr_mean for that LR pair across all source-target combos
+lr_means = (
+    global_interactions
+    .groupby(['source', 'ligand_complex', 'receptor_complex', 'target'], as_index=False)['lr_mean']
+    .mean()
+    .rename(columns={'lr_mean': 'mean_lr_mean'})
+)
+lr_max_per_pair = (
+    lr_means
+    .groupby(['ligand_complex', 'receptor_complex'], as_index=False)['mean_lr_mean']
+    .max()
+    .rename(columns={'mean_lr_mean': 'max_lr_mean'})
+)
+lr_specificity = (
+    lr_means
+    .merge(lr_max_per_pair, on=['ligand_complex', 'receptor_complex'])
+    .assign(lr_specificity=lambda x: x['mean_lr_mean'] / x['max_lr_mean'])
+    [['source', 'ligand_complex', 'receptor_complex', 'target', 'lr_specificity']]
+)
+avg_lr = avg_lr.merge(
+    lr_specificity, on=['source', 'ligand_complex', 'receptor_complex', 'target']
+)
+
+avg_lr.to_csv(out_path, index=False)
 
 #################################################################################
 #   Global communication heatmap
