@@ -32,7 +32,9 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load data ####
 message(Sys.time(), " - Load SPE data, subset to: ", opt$brnum)
-spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+# spe <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2"))
+spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
+spe <- spe[,spe$spot_class == "singlet"]
 
 spe <- spe[, spe$BrNum == opt$brnum]
 
