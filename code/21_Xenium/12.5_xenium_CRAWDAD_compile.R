@@ -25,13 +25,29 @@ cell_type_levels <- names(cell_type_colors$anno)
 
 crawdad_data_dir <- here("processed-data", "21_Xenium", "12_xenium_CRAWDAD")
 
-crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), read_csv)  |>
+crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), ~read_csv(.x, show_col_types = FALSE) |>
+                            mutate(file = basename(.x)))  |>
     mutate(
         id = BrNum,
         reference = factor(reference, levels = cell_type_levels),
         neighbor = factor(neighbor, levels = cell_type_levels)
     )
 
+## Missing data - resubmit jobs
+# crawdad_data |> count(region)
+# 
+# missing_brnum <- crawdad_data |> filter(is.na(region)) |> count(BrNum) |> pull(BrNum)
+# 
+# logs_tb <- tibble(log_fn = list.files(here("code", "21_Xenium", "logs"), pattern = "12_xenium_CRAWDAD")) |>
+#     separate(log_fn, into = c(NA, NA, NA, "BrNum", "region", "jobid"), remove = FALSE)
+# 
+# missing_brnum_region <- tidyr::expand_grid(BrNum = missing_brnum, region = c("ALL", "Vasc", "GM", "WM")) |>
+#     anti_join(crawdad_data |> filter(BrNum %in% missing_brnum) |> count(BrNum, region)) |>
+#     left_join(logs_tb) |>
+#     mutate(jobid = as.numeric(jobid))|>
+#     arrange(jobid)
+# 
+# cat(missing_brnum_region$jobid, sep = ", ")
 
 crawdad_data |>
     filter(reference == "Astro.4") |>

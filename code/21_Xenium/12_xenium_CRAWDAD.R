@@ -137,6 +137,12 @@ dev.off()
 #     create_script = FALSE
 # )
 
+# slurmjobs::array_submit(
+#     name = "12_xenium_CRAWDAD",
+#     task_ids = c(9, 14, 15, 16, 17, 18, 47, 49, 51),
+#     submit = TRUE
+# )
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
