@@ -1,11 +1,11 @@
 **** Job starts ****
-Mon Jun  1 03:48:01 PM EDT 2026
+Mon Jun  1 04:34:40 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32381384
+Job id: 32385211
 Job name: 12_xenium_CRAWDAD
 Node name: compute-120
-Task id: 38
+Task id: 49
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -124,187 +124,184 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-06-01 15:48:13.061562 - Load SPE data, subset to: Br5426
-subset to region:GM
-ncells:9522
+2026-06-01 16:34:50.337978 - Load SPE data, subset to: Br5161
+subset to region:WM
+ncells:3865
 
          Astro.1          Astro.2          Astro.3          Astro.4 
-             953              350               19                4 
+             146              180                8               31 
          Astro.5            Macro          Micro.1          Micro.2 
-             533                2                1              173 
+             293                1                0              118 
          Micro.3          Micro.4          Micro.5            OPC.1 
-               2                1              354                0 
+              14                3              217                0 
            OPC.2            OPC.3            OPC.4            OPC.5 
-             436                0               72              259 
+              76                0               14              124 
          Oligo.1          Oligo.2          Oligo.3          Oligo.4 
-              72               25             1276              387 
+              82               45             1383              445 
          Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
-              39              635              289                8 
+              27              312              105                9 
         Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
-            1346              526              100              270 
+              38               64               19               10 
       Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
-             170               11               77               75 
+               0                1                0                0 
 Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
-              43              160               58              166 
+               5               12                6               30 
        Inhib.Sst        Inhib.Vip 
-             112              518 
+              14               33 
 
 Astro Macro Micro Oligo   OPC  Vasc Excit Inhib 
- 1859     2   531  1799   767   932  2575  1057 
+  658     1   352  1982   214   426   132   100 
 creating `sf` object
 Simple feature collection with 6 features and 1 field
 Attribute-geometry relationship: constant (1)
 Geometry type: POINT
 Dimension:     XY
-Bounding box:  xmin: -262 ymin: 3451 xmax: 315 ymax: 3685
+Bounding box:  xmin: 7701 ymin: 1638 xmax: 7953 ymax: 1992
 CRS:           NA
-     celltypes          geometry
-1      Oligo.4 POINT (-262 3644)
-2      Oligo.3 POINT (-234 3685)
-3      Vasc.PC POINT (-173 3553)
-4      Oligo.3 POINT (-165 3551)
-5 Excit.L2_5.2  POINT (315 3501)
-6      Oligo.4  POINT (225 3451)
+  celltypes          geometry
+1   Oligo.4 POINT (7953 1638)
+2   Oligo.4 POINT (7922 1654)
+3   Oligo.4 POINT (7932 1656)
+4   Astro.4 POINT (7729 1947)
+5   Oligo.4 POINT (7701 1992)
+6   Oligo.1 POINT (7733 1983)
  [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
- [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
- [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.2"           
-[13] "OPC.4"            "OPC.5"            "Oligo.1"          "Oligo.2"         
-[17] "Oligo.3"          "Oligo.4"          "Oligo.5"          "Vasc.Endo"       
-[21] "Vasc.PC"          "Vasc.VLMC"        "Excit.L2"         "Excit.L2_5.1"    
-[25] "Excit.L2_5.2"     "Excit.L5.1"       "Excit.L5.2"       "Excit.L5_6_NP"   
-[29] "Excit.L6_CT"      "Excit.L6b"        "Inhib.Chandelier" "Inhib.Lamp5_Lhx6"
-[33] "Inhib.Pax6"       "Inhib.Pvalb"      "Inhib.Sst"        "Inhib.Vip"       
+ [5] "Astro.5"          "Macro"            "Micro.2"          "Micro.3"         
+ [9] "Micro.4"          "Micro.5"          "OPC.2"            "OPC.4"           
+[13] "OPC.5"            "Oligo.1"          "Oligo.2"          "Oligo.3"         
+[17] "Oligo.4"          "Oligo.5"          "Vasc.Endo"        "Vasc.PC"         
+[21] "Vasc.VLMC"        "Excit.L2"         "Excit.L2_5.1"     "Excit.L2_5.2"    
+[25] "Excit.L5.1"       "Excit.L5_6_NP"    "Inhib.Chandelier" "Inhib.Lamp5_Lhx6"
+[29] "Inhib.Pax6"       "Inhib.Pvalb"      "Inhib.Sst"        "Inhib.Vip"       
 
          Astro.1          Astro.2          Astro.3          Astro.4 
-             953              350               19                4 
-         Astro.5            Macro          Micro.1          Micro.2 
-             533                2                1              173 
-         Micro.3          Micro.4          Micro.5            OPC.2 
-               2                1              354              436 
-           OPC.4            OPC.5          Oligo.1          Oligo.2 
-              72              259               72               25 
-         Oligo.3          Oligo.4          Oligo.5        Vasc.Endo 
-            1276              387               39              635 
-         Vasc.PC        Vasc.VLMC         Excit.L2     Excit.L2_5.1 
-             289                8             1346              526 
-    Excit.L2_5.2       Excit.L5.1       Excit.L5.2    Excit.L5_6_NP 
-             100              270              170               11 
-     Excit.L6_CT        Excit.L6b Inhib.Chandelier Inhib.Lamp5_Lhx6 
-              77               75               43              160 
+             146              180                8               31 
+         Astro.5            Macro          Micro.2          Micro.3 
+             293                1              118               14 
+         Micro.4          Micro.5            OPC.2            OPC.4 
+               3              217               76               14 
+           OPC.5          Oligo.1          Oligo.2          Oligo.3 
+             124               82               45             1383 
+         Oligo.4          Oligo.5        Vasc.Endo          Vasc.PC 
+             445               27              312              105 
+       Vasc.VLMC         Excit.L2     Excit.L2_5.1     Excit.L2_5.2 
+               9               38               64               19 
+      Excit.L5.1    Excit.L5_6_NP Inhib.Chandelier Inhib.Lamp5_Lhx6 
+              10                1                5               12 
       Inhib.Pax6      Inhib.Pvalb        Inhib.Sst        Inhib.Vip 
-              58              166              112              518 
+               6               30               14               33 
 Run on 1cores
 shuffling permutation 1 using seed 1
 25 unit scale
-66340 tiles to shuffle...
+68997 tiles to shuffle...
 shuffling permutation 2 using seed 2
 25 unit scale
-66340 tiles to shuffle...
+69536 tiles to shuffle...
 shuffling permutation 3 using seed 3
 25 unit scale
-66340 tiles to shuffle...
+69536 tiles to shuffle...
 shuffling permutation 1 using seed 1
 50 unit scale
-16585 tiles to shuffle...
+17384 tiles to shuffle...
 shuffling permutation 2 using seed 2
 50 unit scale
-16585 tiles to shuffle...
+17384 tiles to shuffle...
 shuffling permutation 3 using seed 3
 50 unit scale
-16848 tiles to shuffle...
+17655 tiles to shuffle...
 shuffling permutation 1 using seed 1
 75 unit scale
-7488 tiles to shuffle...
+7739 tiles to shuffle...
 shuffling permutation 2 using seed 2
 75 unit scale
-7488 tiles to shuffle...
+7810 tiles to shuffle...
 shuffling permutation 3 using seed 3
 75 unit scale
-7488 tiles to shuffle...
+7810 tiles to shuffle...
 shuffling permutation 1 using seed 1
 100 unit scale
-4212 tiles to shuffle...
+4346 tiles to shuffle...
 shuffling permutation 2 using seed 2
 100 unit scale
-4212 tiles to shuffle...
+4482 tiles to shuffle...
 shuffling permutation 3 using seed 3
 100 unit scale
-4212 tiles to shuffle...
+4482 tiles to shuffle...
 shuffling permutation 1 using seed 1
 200 unit scale
-1053 tiles to shuffle...
+1107 tiles to shuffle...
 shuffling permutation 2 using seed 2
 200 unit scale
-1053 tiles to shuffle...
+1134 tiles to shuffle...
 shuffling permutation 3 using seed 3
 200 unit scale
-1120 tiles to shuffle...
+1176 tiles to shuffle...
 shuffling permutation 1 using seed 1
 300 unit scale
-468 tiles to shuffle...
+504 tiles to shuffle...
 shuffling permutation 2 using seed 2
 300 unit scale
-513 tiles to shuffle...
+504 tiles to shuffle...
 shuffling permutation 3 using seed 3
 300 unit scale
-513 tiles to shuffle...
+532 tiles to shuffle...
 shuffling permutation 1 using seed 1
 400 unit scale
-280 tiles to shuffle...
+294 tiles to shuffle...
 shuffling permutation 2 using seed 2
 400 unit scale
-280 tiles to shuffle...
+294 tiles to shuffle...
 shuffling permutation 3 using seed 3
 400 unit scale
-280 tiles to shuffle...
+308 tiles to shuffle...
 shuffling permutation 1 using seed 1
 500 unit scale
-176 tiles to shuffle...
+187 tiles to shuffle...
 shuffling permutation 2 using seed 2
 500 unit scale
-176 tiles to shuffle...
+187 tiles to shuffle...
 shuffling permutation 3 using seed 3
 500 unit scale
-204 tiles to shuffle...
+216 tiles to shuffle...
 shuffling permutation 1 using seed 1
 600 unit scale
+126 tiles to shuffle...
+shuffling permutation 2 using seed 2
+600 unit scale
+140 tiles to shuffle...
+shuffling permutation 3 using seed 3
+600 unit scale
+150 tiles to shuffle...
+shuffling permutation 1 using seed 1
+700 unit scale
+96 tiles to shuffle...
+shuffling permutation 2 using seed 2
+700 unit scale
+104 tiles to shuffle...
+shuffling permutation 3 using seed 3
+700 unit scale
 117 tiles to shuffle...
-shuffling permutation 2 using seed 2
-600 unit scale
-140 tiles to shuffle...
-shuffling permutation 3 using seed 3
-600 unit scale
-140 tiles to shuffle...
-shuffling permutation 1 using seed 1
-700 unit scale
-96 tiles to shuffle...
-shuffling permutation 2 using seed 2
-700 unit scale
-96 tiles to shuffle...
-shuffling permutation 3 using seed 3
-700 unit scale
-108 tiles to shuffle...
 shuffling permutation 1 using seed 1
 800 unit scale
-70 tiles to shuffle...
+77 tiles to shuffle...
 shuffling permutation 2 using seed 2
 800 unit scale
-70 tiles to shuffle...
+77 tiles to shuffle...
 shuffling permutation 3 using seed 3
 800 unit scale
 88 tiles to shuffle...
 shuffling permutation 1 using seed 1
 900 unit scale
-54 tiles to shuffle...
+60 tiles to shuffle...
 shuffling permutation 2 using seed 2
 900 unit scale
-63 tiles to shuffle...
+70 tiles to shuffle...
 shuffling permutation 3 using seed 3
 900 unit scale
 70 tiles to shuffle...
 shuffling permutation 1 using seed 1
 1000 unit scale
-48 tiles to shuffle...
+54 tiles to shuffle...
 shuffling permutation 2 using seed 2
 1000 unit scale
 54 tiles to shuffle...
@@ -313,7 +310,7 @@ shuffling permutation 3 using seed 3
 54 tiles to shuffle...
 shuffling permutation 1 using seed 1
 2000 unit scale
-12 tiles to shuffle...
+15 tiles to shuffle...
 shuffling permutation 2 using seed 2
 2000 unit scale
 15 tiles to shuffle...
@@ -325,13 +322,13 @@ shuffling permutation 1 using seed 1
 6 tiles to shuffle...
 shuffling permutation 2 using seed 2
 3000 unit scale
-9 tiles to shuffle...
+12 tiles to shuffle...
 shuffling permutation 3 using seed 3
 3000 unit scale
 12 tiles to shuffle...
 shuffling permutation 1 using seed 1
 4000 unit scale
-4 tiles to shuffle...
+6 tiles to shuffle...
 shuffling permutation 2 using seed 2
 4000 unit scale
 6 tiles to shuffle...
@@ -347,15 +344,15 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 5000 unit scale
 6 tiles to shuffle...
-Time was 100.58 mins
+Time was 43.69 mins
 There were 50 or more warnings (use warnings() to see the first 50)
 Evaluating significance for each cell type
 using neighbor distance of 50
 Calculating for pairwise combinations
 Astro.1
 Error: BiocParallel errors
-  1 remote errors, element index: 4
-  13 unevaluated and other errors
+  1 remote errors, element index: 1
+  16 unevaluated and other errors
   first remote error:
 Error in y1 + y2: non-conformable arrays
 Execution halted
