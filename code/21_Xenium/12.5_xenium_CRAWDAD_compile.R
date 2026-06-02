@@ -11,6 +11,7 @@ library("tidyverse")
 library("spatialLIBD")
 library("scales")
 library("qs2")
+library("patchwork")
 
 data_dir <- here("processed-data", "21_Xenium", "12.5_xenium_CRAWDAD_compile")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -49,6 +50,8 @@ crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), ~read_c
 # 
 # cat(missing_brnum_region$jobid, sep = ", ")
 
+crawdad_data <- crawdad_data |> filter(!is.na(region))
+
 crawdad_data |>
     filter(reference == "Astro.4") |>
     # dplyr::count(neighbor) |>
@@ -57,66 +60,86 @@ crawdad_data |>
 
 
 #   Get the Z-score significance threshold (same in all samples)
-(z_sig <- crawdad_data |> filter(BrNum == "Br5460") |> correctZBonferroni())
+(z_sig <- crawdad_data |> filter(BrNum == "Br1706") |> correctZBonferroni())
 # [1] 4.12
 
 crawdad_data |>
     filter(reference == 'Oligo.3', neighbor =='Oligo.1') |>
-    group_by(BrNum, neighbor, scale, reference) |>
+    group_by(BrNum, region, neighbor, scale, reference) |>
     summarize(Z = mean(Z)) |>
     ungroup() |>
     #   Then filter to the smallest spatial scale with significant Z-scores
     filter(abs(Z) >= z_sig) |>
-    group_by(BrNum, neighbor, reference) |>
+    group_by(BrNum, region, neighbor, reference) |>
     filter(scale == min(scale)) |>
     arrange(Z)
 
 
 trend_test <- crawdad_data |> 
-    filter(reference == 'Oligo.3', neighbor =='Vasc.Endo') |>
+    filter(reference == 'Oligo.3', neighbor =='Vasc.Endo', region == "ALL") |>
     group_by(id = BrNum, neighbor, scale, reference) |>
     summarize(Z = mean(Z)) |> 
     vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig)
 
 ggsave(trend_test, filename  = here(plot_dir, "xenium_CRAWDAD_trend_test.png"))
 
-trend_test <- crawdad_data |> 
-    filter(reference == 'Astro.4', neighbor =='Vasc.Endo') |>
+trend_test <- map(c("ALL", "Vasc", "GM", "WM"), ~crawdad_data |> 
+    filter(reference == 'Astro.4', neighbor =='Vasc.Endo', region == .x) |>
     group_by(id = BrNum, neighbor, scale, reference) |>
     summarize(Z = mean(Z)) |> 
-    vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig)
+    vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig) +
+    labs(title = paste("region:", .x)))
 
-ggsave(trend_test, filename  = here(plot_dir, "xenium_CRAWDAD_trend_Astro.4_test.png"))
+ggsave(wrap_plots(trend_test, ncol=2), filename  = here(plot_dir, "xenium_CRAWDAD_trend_Astro.4_test.png"), height = 12, width = 12)
 
+trend_test_O3 <- map(c("ALL", "Vasc", "GM", "WM"), ~crawdad_data |> 
+    filter(reference == 'Oligo.3', neighbor =='Excit.L2', region == .x) |>
+    group_by(id = BrNum, neighbor, scale, reference) |>
+    summarize(Z = mean(Z)) |> 
+    vizTrends(lines = TRUE, withPerms = TRUE, zSigThresh = z_sig) +
+    labs(title = paste("region:", .x)))
+
+ggsave(wrap_plots(trend_test_O3, ncol=2), filename  = here(plot_dir, "xenium_CRAWDAD_trend_Oligo.3_Excit.L2.png"), height = 12, width = 12)
+
+
+crawdad_data |> count(is.na(Z))
+crawdad_data |> filter(is.na(Z)) |> count(region, reference) |> arrange(-n)
+
+#### Summarize across samples and regions ####
 min_num_signif = 4
 
 crawdad_data_summary <- crawdad_data |>
-    group_by(BrNum, neighbor, scale, reference) |>
-    summarize(Z = mean(Z, na.rm = TRUE)) |>
+    filter(!is.na(Z)) |> ## filter missing scores
+    group_by(region, BrNum, neighbor, scale, reference) |>
+    summarize(Z = mean(Z)) |>
     ungroup() |>
     #   Then filter to the smallest spatial scale with significant Z-scores
     filter(abs(Z) >= z_sig) |>
-    group_by(BrNum, neighbor, reference) |>
-    filter(scale == min(scale, na.rm = TRUE)) |>
+    group_by(region, BrNum, neighbor, reference) |>
+    filter(scale == min(scale)) |>
     #   Retain pairs where all samples all signs of Z scores agree across
     #   samples, and significance is achieved in some sufficient number of
     #   samples 
-    group_by(reference, neighbor) |>
+    group_by(region, reference, neighbor) |>
     filter(mean(Z > 0) >= .8 | mean(Z < 0) >= 0.8) |> ## allows 20% disagreement 
     filter(n() >= min_num_signif) |>
     #   Take the mean Z-score and scale across samples
-    group_by(neighbor, reference) |>
-    summarize(scale = mean(scale, na.rm = TRUE), Z = mean(Z, na.rm = TRUE)) |>
+    group_by(region, neighbor, reference) |>
+    summarize(scale = mean(scale), Z = mean(Z)) |>
     ungroup() |>
     #   Cap Z-score at twice the magnitude of the significance threshold 
     mutate(Z_real = Z,
-           Z = sign(Z) * pmin(abs(Z), z_sig * 2, na.rm = TRUE))
+           Z = sign(Z) * pmin(abs(Z), z_sig * 2))
 
 write_csv(crawdad_data_summary, file = here(data_dir, "ERC_xenium_crawdad_data_summary.csv"))
 
 crawdad_data_summary |>
+    filter(reference == "Oligo.3", neighbor == "Excit.L2")
+
+crawdad_data_summary |>
     filter(reference == "Oligo.3") |>
-    arrange(-Z_real)
+    arrange(-Z_real) |> 
+    print(n = 97)
 
 crawdad_data_summary |>
     filter(reference == "Astro.4") |>
