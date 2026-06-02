@@ -133,8 +133,11 @@ crawdad_data_summary <- crawdad_data |>
 
 write_csv(crawdad_data_summary, file = here(data_dir, "ERC_xenium_crawdad_data_summary.csv"))
 
+## check pairs of interest
 crawdad_data_summary |>
-    filter(reference == "Oligo.3", neighbor == "Excit.L2")
+    # filter(reference == "Oligo.3", neighbor == "Excit.L2")
+    # filter(reference == "Oligo.3", grepl("Astro", neighbor))
+    filter(neighbor == "Oligo.3", grepl("Astro", reference))
 
 crawdad_data_summary |>
     filter(reference == "Oligo.3") |>
@@ -242,9 +245,11 @@ crawdad_data |>
 
 #### custom dot plot ####
 
-custom_dotplot = function(result_df, z_sig) {
-    p = ggplot(
-        result_df, aes(x = reference, y = neighbor, color = Z, size = scale)
+custom_dotplot = function(result_df, z_sig, reg) {
+    p = result_df |>
+        filter(region == reg) |>
+        ggplot(
+        aes(x = reference, y = neighbor, color = Z, size = scale)
     ) +
         geom_point() +
         scale_color_gradientn(
@@ -262,14 +267,18 @@ custom_dotplot = function(result_df, z_sig) {
         ) +
         coord_fixed() +
         theme_bw(base_size = 20) +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+        labs(title = paste("region:", reg))
     
     return(p)
 }
 
-dotplot <- custom_dotplot(crawdad_data_summary, z_sig)
 
-ggsave(dotplot, filename = here(plot_dir, 'erc_xenium_CRAWDAD_dot_plot.png'), height = 12 , width = 12)
+walk(c("ALL", "Vasc", "GM", "WM"), function(reg){
+    dotplot <- custom_dotplot(crawdad_data_summary, z_sig, reg = reg)
+        ggsave(dotplot, filename = here(plot_dir, sprintf('erc_xenium_CRAWDAD_dot_plot-%s.png', reg)), height = 12 , width = 12)
+    
+})
 
 
 #### Visualize in Sections ####
