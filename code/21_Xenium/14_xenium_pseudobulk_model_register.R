@@ -18,6 +18,7 @@ scec <- matrix(
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
+# opt$var <- "SpX"
 
 data_dir <- here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -141,6 +142,21 @@ print(layer_stat_cor_plot(cor_stats_layer = cor_layer,
                           row_title = paste0("Xenium_", opt$var)
 ))
 dev.off()
+
+#### Expression of key genes
+library(DeconvoBuddies)
+
+rownames(spe_pb) <- rowData(spe_pb)$gene_name
+
+if(opt$var == "SpX"){
+
+    APOE_v_SpX <- plot_gene_express(spe_pb, genes = "APOE", category = "SpX", plot_type = 'boxplot', plot_points = TRUE, color_pal = metadata(spe_pb)$SpX_colors)
+    ggsave(APOE_v_SpX, filename = here(plot_dir, "expression_APOE_v_SpX.png"))
+    
+} else if(opt$var == "cell_type_anno") {
+
+}
+
 
 # slurmjobs::job_single('14_xenium_pseudobulk_model_register', create_shell = TRUE, memory = '10G', command = "Rscript 14_xenium_pseudobulk_model_register.R --var cell_type_anno")
 
