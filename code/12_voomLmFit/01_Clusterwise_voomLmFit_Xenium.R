@@ -16,7 +16,7 @@ opt <- List()
 opt$datatype <- "Xenium"
 
 
-pb_fn <- here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "spe_xenium_pseudobulk-cell_type_anno.rds")
+pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno.RDS")
 batch <- "chip"
 
 
