@@ -1,16 +1,16 @@
 **** Job starts ****
-Mon Jun  1 04:26:56 PM EDT 2026
+Tue Jun  2 08:46:06 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32385036
+Job id: 32389367
 Job name: 12_xenium_CRAWDAD
-Node name: compute-121
+Node name: compute-120
 Task id: 47
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   2) JHPCE_tools/3.0   3) ruby/3.2.2   4) rmate/1.5.10   5) conda/3-24.3.0   6) conda_R/4.5
 
  
 
@@ -124,7 +124,7 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-06-01 16:27:04.913146 - Load SPE data, subset to: Br6098
+2026-06-02 08:46:16.943661 - Load SPE data, subset to: Br6098
 subset to region:Vasc
 ncells:8412
 
@@ -347,7 +347,7 @@ shuffling permutation 2 using seed 2
 shuffling permutation 3 using seed 3
 5000 unit scale
 6 tiles to shuffle...
-Time was 95.07 mins
+Time was 100.98 mins
 There were 50 or more warnings (use warnings() to see the first 50)
 Evaluating significance for each cell type
 using neighbor distance of 50
