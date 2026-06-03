@@ -15,6 +15,8 @@ out_path = here(
     'lr_deg_overlap.csv'
 )
 
+dir.create(dirname(out_path), showWarnings = FALSE)
+
 pair_df = read_csv(pair_path, show_col_types = FALSE)
 
 #   Load DEG results and check whether any LR genes are significant in Xenium
