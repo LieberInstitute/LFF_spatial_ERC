@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri May 29 03:16:34 PM EDT 2026
+Wed Jun  3 12:18:34 PM EDT 2026
 **** JHPCE info ****
 User: neagles
-Job id: 32265195
+Job id: 32399587
 Job name: 02_bandwidth
-Node name: compute-175
+Node name: compute-099
 Task id: 
 Loading LIBD SLURM module for liana_plus/1.7.1
 
@@ -16,8 +16,8 @@ Currently Loaded Modules:
 
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/liana/utils/spatial_neighbors.py:149: ImplicitModificationWarning: Setting element `.obsp['spatial_connectivities']` of view, initializing view as actual.
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/liana/plotting/_connectivity_plot.py:38: FutureWarning: The method obsm_keys is deprecated and will be removed in the future. Use obsm instead of obsm_keys. (e.g. `k in adata.obsm` or `adata.obsm.keys() | {'u'}`)
-/jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('scanpy')` instead
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('anndata')` instead.
+/jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('scanpy')` instead
 -----
 anndata             0.12.11
 liana               1.7.1
@@ -30,6 +30,6 @@ session_info        v1.0.1
 Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:50:00) [GCC 14.3.0]
 Linux-5.14.0-427.13.1.el9_4.x86_64-x86_64-with-glibc2.34
 -----
-Session information updated at 2026-05-29 15:16
+Session information updated at 2026-06-03 12:19
 **** Job ends ****
-Fri May 29 03:16:46 PM EDT 2026
+Wed Jun  3 12:19:13 PM EDT 2026
