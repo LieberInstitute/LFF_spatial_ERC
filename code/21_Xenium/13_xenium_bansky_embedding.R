@@ -297,6 +297,28 @@ table(spe$cell_type_broad)
 table(spe$SpX, spe$cell_type_broad)
 table(spe$SpX, spe$spot_class)
 
+#### Annotate Regions ####
+
+region_tb <- list("Vasc"= c("Vasc~SpX3"),
+                  "GM_L1"= c("L1~SpX6", "L1~SpX7"),
+                  "GM_L2_6"= c("L2.3~SpX4", "Inhib~SpX5", "L5~SpX1", "L6~SpX9"),
+                  "WM"= c('WMtz~SpX8', 'WM~SpX2'))|>
+    enframe(name="group", value="cluster") |>
+    unnest(cluster) |>
+    transmute(region = factor(group, levels = c("Vasc", "GM_L1", "GM_L2_6", "WM")), 
+              SpX = cluster)
+
+spe$region <- region_tb$region[match(spe$SpX, region_tb$SpX)]
+
+table(spe$SpX, spe$region)
+
+region_colors = c('Vasc' = "#E05AD2",
+                  'GM_L1' = "#3446BD",
+                  'GM_L2_6' = '#3A8C16',
+                  'WM'= "#643834")
+
+metadata(spe)$region_colors <- region_colors
+
 #### Save SPE with bansky data ####
 message(Sys.time(), " - Saving SPE object")
 
@@ -323,6 +345,20 @@ map(unique(spe$BrNum), function(samp){
                                             guide_point_size = 3)
     
     ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_SpX_%s.png", samp)), width = 12)
+    
+})
+
+map(unique(spe$BrNum), function(samp){
+    vis_clus_class <- spatialLIBD::vis_clus(spe,
+                                            sampleid = samp,
+                                            clustervar = "region",
+                                            datatype = "Xenium",
+                                            point_size = 1.5,
+                                            # alpha = 0.5,
+                                            colors = region_colors,
+                                            guide_point_size = 3)
+    
+    ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_region_%s.png", samp)), width = 12)
     
 })
 
