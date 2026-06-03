@@ -566,7 +566,123 @@ ComplexHeatmap::Heatmap(cell_v_SpX_prop,
 dev.off()
 
 
+#### Cell Type vs. region heatmap ####
 
+cell_v_region <- table(spe[, spe$spot_class == "singlet"]$region, spe[, spe$spot_class == "singlet"]$cell_type_anno)
+
+## proportion cell type (region rows sum to 1)
+cell_prop_v_region <- sweep(cell_v_region, 1, rowSums(cell_v_region), FUN = "/")
+rowSums(cell_prop_v_region)
+
+## proportion region (cell type cols sum to 1)
+cell_v_region_prop <- sweep(cell_v_region, 2, colSums(cell_v_region), FUN = "/")
+colSums(cell_v_region_prop)
+
+## save & order proportion data 
+
+cell_v_region_prop_long <- cell_v_region |> 
+    reshape2::melt() |>
+    rename(region = Var1, cell_type_anno = Var2, n_cell = value) |>
+    left_join(cell_prop_v_region |> 
+                  reshape2::melt() |>
+                  rename(region = Var1, cell_type_anno = Var2, prop_cell_type = value)) |>
+    left_join(cell_v_region_prop |> 
+                  reshape2::melt() |>
+                  rename(region = Var1, cell_type_anno = Var2, prop_region = value)) |>
+    as_tibble()
+
+write.csv(cell_v_region_prop_long, file = here(data_dir, "cell_v_region_prop_long.csv"))
+
+cell_v_region_max <- cell_v_region_prop_long |> 
+    group_by(cell_type_anno) |>
+    slice_max(n_cell) |> 
+    arrange(region, cell_type_anno) 
+
+cell_v_region_max |>
+    print(n= 38)
+
+
+cell_v_region_prop_long |> 
+    filter(cell_type_anno == "Oligo.3") |>
+    arrange(-n_cell)
+
+## reorder cell types by max region
+cell_v_region <- cell_v_region[, cell_v_region_max$cell_type_anno]
+cell_prop_v_region <- cell_prop_v_region[, cell_v_region_max$cell_type_anno]
+cell_v_region_prop <- cell_v_region_prop[, cell_v_region_max$cell_type_anno]
+
+## create annotations 
+region_row_ha <- rowAnnotation(
+    region = rownames(cell_v_region),
+    col = list(region = region_colors),
+    show_legend = FALSE
+)
+
+all(colnames(cell_v_region) %in% names(cell_type_colors$anno))
+
+cell_type_col_ha <- HeatmapAnnotation(
+    cell_type = colnames(cell_v_region),
+    col = list(cell_type = cell_type_colors$anno),
+    show_legend = FALSE
+)
+
+
+## PLOT HEATMAPS
+pdf(here(plot_dir, "Xenium_bansky_region_v_cell_type_heatmap.pdf"), width = 10)
+
+## counts
+ComplexHeatmap::Heatmap(cell_v_region,
+                        name = "n singlet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_rows = FALSE, 
+                        left_annotation = region_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_v_region,
+                        name = "n singlet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = FALSE, 
+                        left_annotation = region_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+## proportion cell type (region row sum to 1)
+ComplexHeatmap::Heatmap(cell_prop_v_region,
+                        name = "prop cell type\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = TRUE,  ## cluster region
+                        left_annotation = region_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_prop_v_region,
+                        name = "prop cell type\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = FALSE, 
+                        left_annotation = region_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+## proportion region (cell type cols sum to 1)
+ComplexHeatmap::Heatmap(cell_v_region_prop,
+                        name = "prop region\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = TRUE,
+                        cluster_rows = FALSE, 
+                        left_annotation = region_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_v_region_prop,
+                        name = "prop region\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = FALSE,
+                        cluster_rows = FALSE, 
+                        left_annotation = region_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+dev.off()
+
+
+express_region_apoe <- plot_gene_express()
 
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
