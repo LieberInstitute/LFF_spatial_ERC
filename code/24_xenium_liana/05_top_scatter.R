@@ -13,6 +13,16 @@ dir.create(plot_dir, showWarnings = FALSE)
 
 score_df = read_csv(score_path, show_col_types = FALSE)
 
+#   APOE is involved in a bunch of interactions, but not between Oligo and Astro
+message('Cell types involved in APOE interactions:')
+score_df |>
+    filter(ligand_complex == 'APOE') |>
+    mutate(
+        source = sub('\\..*', '', source), target = sub('\\..*', '', target)
+    ) |>
+    distinct(source, target) |>
+    print(n = Inf)
+
 astro_oligo = score_df |>
     filter(grepl('^Astro', source), target == 'Oligo.3') |>
     mutate(lr_pair = paste0(ligand_complex, '->', receptor_complex))

@@ -8,14 +8,18 @@ import session_info
 
 data_dir = here('processed-data', '24_xenium_liana', '03_inflow_score')
 plot_dir = here('plots', '24_xenium_liana', '04_global_score_heatmap')
-out_path = here(
+out_summary_path = here(
     'processed-data', '24_xenium_liana', '04_global_score_heatmap',
     'global_interactions_summary.csv'
+)
+out_unique_path = here(
+    'processed-data', '24_xenium_liana', '04_global_score_heatmap',
+    'unique_ligand_receptor_pairs.csv'
 )
 n_samples_sig = 4
 
 os.makedirs(plot_dir, exist_ok=True)
-os.makedirs(out_path.parent, exist_ok=True)
+os.makedirs(out_summary_path.parent, exist_ok=True)
 
 #################################################################################
 #   Gather global scores for all samples
@@ -32,12 +36,14 @@ for path in sorted(data_dir.glob('lrdata_*.h5ad')):
 global_interactions = pd.concat(dfs, ignore_index=True)
 
 #   Note that there are only 36 LR pairs being assessed
-n_pairs = (
+unique_combos = (
     global_interactions[['ligand_complex', 'receptor_complex']]
     .drop_duplicates()
-    .shape[0]
 )
-print(f'Only {n_pairs} unique ligand-receptor pairs being assessed, ignoring cell type.')
+print(f'Only {unique_combos.shape[0]} unique ligand-receptor pairs being assessed, ignoring cell type.')
+print(f'"APOE" is present as a ligand in {(unique_combos['ligand_complex'] == 'APOE').sum()} unique interaction(s).')
+
+unique_combos.to_csv(out_unique_path, index=False)
 
 n_samples = global_interactions['sample_id'].nunique()
 
@@ -81,7 +87,7 @@ avg_lr = (
     .drop(columns='max_lr_mean')
 )
 
-avg_lr.to_csv(out_path, index=False)
+avg_lr.to_csv(out_summary_path, index=False)
 
 #################################################################################
 #   Global communication heatmap

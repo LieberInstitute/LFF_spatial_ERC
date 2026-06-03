@@ -27,8 +27,8 @@ plot, df = li.ut.query_bandwidth(
     interval_n=40    
 )
 
-#   Show that a bandwidth of 32 microns yields about 5 neighbors
-bandwidth = 32
+#   Show that a bandwidth of 42 microns yields about 5 neighbors
+bandwidth = 42
 plot = (
     plot + 
         p9.geom_vline(xintercept=bandwidth, linetype="dashed", color="red") + 

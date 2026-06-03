@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri May 29 03:41:35 PM EDT 2026
+Wed Jun  3 12:18:51 PM EDT 2026
 **** JHPCE info ****
 User: neagles
-Job id: 32265830
+Job id: 32399590
 Job name: 03_inflow_score
-Node name: compute-169
+Node name: compute-099
 Task id: 16
 Loading LIBD SLURM module for liana_plus/1.7.1
 
@@ -17,9 +17,9 @@ Currently Loaded Modules:
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/liana/utils/spatial_neighbors.py:149: ImplicitModificationWarning: Setting element `.obsp['spatial_connectivities']` of view, initializing view as actual.
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/legacy_api_wrap/__init__.py:88: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/liana/method/sp/_inflow.py:318: ImplicitModificationWarning: Trying to modify attribute `.var` of view, initializing view as actual.
-Processing sample Br6538 with bandwidth 32...
-/jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('scanpy')` instead
+Processing sample Br6538 with bandwidth 42...
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('anndata')` instead.
+/jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('scanpy')` instead
 -----
 anndata             0.12.11
 liana               1.7.1
@@ -30,6 +30,6 @@ session_info        v1.0.1
 Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:50:00) [GCC 14.3.0]
 Linux-5.14.0-427.13.1.el9_4.x86_64-x86_64-with-glibc2.34
 -----
-Session information updated at 2026-05-29 15:41
+Session information updated at 2026-06-03 12:19
 **** Job ends ****
-Fri May 29 03:41:58 PM EDT 2026
+Wed Jun  3 12:19:45 PM EDT 2026
