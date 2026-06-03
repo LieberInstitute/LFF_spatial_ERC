@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Jun  3 05:05:08 PM EDT 2026
+Wed Jun  3 05:21:09 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32408565
+Job id: 32409129
 Job name: 01.2_compile_DGE_Xenium
-Node name: compute-176
+Node name: compute-120
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -48,41 +48,34 @@ Loading objects:
 [29] "voomLmFit_Xenium_OPC.4"            "voomLmFit_Xenium_OPC.5"           
 [31] "voomLmFit_Xenium_Vasc.Endo"        "voomLmFit_Xenium_Vasc.PC"         
 [33] "voomLmFit_Xenium_Vasc.VLMC"       
-                data_type cluster contrast         gene_id gene_name
-ENSG00000133800    Xenium Astro.1  carrier ENSG00000133800     LYVE1
-ENSG00000064989    Xenium Astro.1  carrier ENSG00000064989    CALCRL
-ENSG00000135426    Xenium Astro.1  carrier ENSG00000135426    TESPA1
-ENSG00000250722    Xenium Astro.1  carrier ENSG00000250722   SELENOP
-ENSG00000104888    Xenium Astro.1  carrier ENSG00000104888   SLC17A7
-ENSG00000140479    Xenium Astro.1  carrier ENSG00000140479     PCSK6
-                           Type              gene_search subsets_negProbe
-ENSG00000133800 Gene Expression   LYVE1; ENSG00000133800            FALSE
-ENSG00000064989 Gene Expression  CALCRL; ENSG00000064989            FALSE
-ENSG00000135426 Gene Expression  TESPA1; ENSG00000135426            FALSE
-ENSG00000250722 Gene Expression SELENOP; ENSG00000250722            FALSE
-ENSG00000104888 Gene Expression SLC17A7; ENSG00000104888            FALSE
-ENSG00000140479 Gene Expression   PCSK6; ENSG00000140479            FALSE
-                subsets_negCodeword subsets_unassigned subsets_any_neg
-ENSG00000133800               FALSE              FALSE           FALSE
-ENSG00000064989               FALSE              FALSE           FALSE
-ENSG00000135426               FALSE              FALSE           FALSE
-ENSG00000250722               FALSE              FALSE           FALSE
-ENSG00000104888               FALSE              FALSE           FALSE
-ENSG00000140479               FALSE              FALSE           FALSE
-                subsets_GEX      logFC   AveExpr         t      P.Value
-ENSG00000133800        TRUE -0.6311546  8.953104 -4.477298 0.0003342069
-ENSG00000064989        TRUE -0.8633975  6.461810 -3.835538 0.0013321837
-ENSG00000135426        TRUE  0.7248200  8.482186  3.699099 0.0017906170
-ENSG00000250722        TRUE -0.4028425 10.676871 -3.606295 0.0021896005
-ENSG00000104888        TRUE  0.2791619 11.665166  3.358278 0.0037448481
-ENSG00000140479        TRUE  0.7605739  8.141371  3.177402 0.0055283041
-                adj.P.Val          B
-ENSG00000133800 0.1163040  0.3758524
-ENSG00000064989 0.1904952 -0.9298437
-ENSG00000135426 0.1904952 -1.1068573
-ENSG00000250722 0.1904952 -1.3588531
-ENSG00000104888 0.2606414 -1.9095964
-ENSG00000140479 0.3168142 -2.0850604
+        data_type cluster contrast         gene_id gene_name            Type
+LYVE1      Xenium Astro.1  carrier ENSG00000133800     LYVE1 Gene Expression
+CALCRL     Xenium Astro.1  carrier ENSG00000064989    CALCRL Gene Expression
+TESPA1     Xenium Astro.1  carrier ENSG00000135426    TESPA1 Gene Expression
+SELENOP    Xenium Astro.1  carrier ENSG00000250722   SELENOP Gene Expression
+SLC17A7    Xenium Astro.1  carrier ENSG00000104888   SLC17A7 Gene Expression
+PCSK6      Xenium Astro.1  carrier ENSG00000140479     PCSK6 Gene Expression
+                     gene_search subsets_negProbe subsets_negCodeword
+LYVE1     LYVE1; ENSG00000133800            FALSE               FALSE
+CALCRL   CALCRL; ENSG00000064989            FALSE               FALSE
+TESPA1   TESPA1; ENSG00000135426            FALSE               FALSE
+SELENOP SELENOP; ENSG00000250722            FALSE               FALSE
+SLC17A7 SLC17A7; ENSG00000104888            FALSE               FALSE
+PCSK6     PCSK6; ENSG00000140479            FALSE               FALSE
+        subsets_unassigned subsets_any_neg subsets_GEX      logFC   AveExpr
+LYVE1                FALSE           FALSE        TRUE -0.6311546  8.953104
+CALCRL               FALSE           FALSE        TRUE -0.8633975  6.461810
+TESPA1               FALSE           FALSE        TRUE  0.7248200  8.482186
+SELENOP              FALSE           FALSE        TRUE -0.4028425 10.676871
+SLC17A7              FALSE           FALSE        TRUE  0.2791619 11.665166
+PCSK6                FALSE           FALSE        TRUE  0.7605739  8.141371
+                t      P.Value adj.P.Val          B
+LYVE1   -4.477298 0.0003342069 0.1163040  0.3758524
+CALCRL  -3.835538 0.0013321837 0.1904952 -0.9298437
+TESPA1   3.699099 0.0017906170 0.1904952 -1.1068573
+SELENOP -3.606295 0.0021896005 0.1904952 -1.3588531
+SLC17A7  3.358278 0.0037448481 0.2606414 -1.9095964
+PCSK6    3.177402 0.0055283041 0.3168142 -2.0850604
 Warning: stack imbalance in '::', 52 then 54
 Warning: stack imbalance in '.Call', 36 then 38
 Warning: stack imbalance in '{', 29 then 31
