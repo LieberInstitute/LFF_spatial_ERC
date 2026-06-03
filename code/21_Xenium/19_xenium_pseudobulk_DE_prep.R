@@ -18,7 +18,7 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 # Import command-line parameters
 scec <- matrix(
-    c(  "cluster", "c", "1", "character", "Name of cluster"),
+    c("cluster", "c", "1", "character", "Name of cluster"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
@@ -92,7 +92,7 @@ colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
 message(Sys.time(), " - Save")
 saveRDS(sce_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
 
-# slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --var cell_type_anno")
+# slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno")
 
 ## Reproducibility information
 print("Reproducibility information:")

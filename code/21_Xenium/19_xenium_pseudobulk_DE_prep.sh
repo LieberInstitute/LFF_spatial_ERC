@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 19_xenium_pseudobulk_DE_prep.R --var cell_type_anno
+Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno
 
 echo "**** Job ends ****"
 date
