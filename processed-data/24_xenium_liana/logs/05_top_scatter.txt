@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Jun  1 01:39:05 PM EDT 2026
+Wed Jun  3 01:02:07 PM EDT 2026
 **** JHPCE info ****
 User: neagles
-Job id: 32323513
+Job id: 32400244
 Job name: 05_top_scatter
-Node name: compute-168
+Node name: compute-100
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -26,6 +26,27 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Cell types involved in APOE interactions:
+# A tibble: 17 × 2
+   source target
+   <chr>  <chr> 
+ 1 Astro  Micro 
+ 2 Astro  Astro 
+ 3 Astro  Macro 
+ 4 Excit  Micro 
+ 5 Excit  Excit 
+ 6 Inhib  Micro 
+ 7 Macro  Macro 
+ 8 Macro  Micro 
+ 9 Macro  Vasc  
+10 Micro  Micro 
+11 Micro  Macro 
+12 OPC    Micro 
+13 Oligo  Micro 
+14 Oligo  Macro 
+15 Vasc   Macro 
+16 Vasc   Micro 
+17 Vasc   Vasc  
 null device 
           1 
 null device 
@@ -40,7 +61,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-06-01
+ date     2026-06-03
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   1.9.37 @ /users/neagles/.positron-server/bin/1b5dfba9314510340cb08f2fedccc5ffba822beb/quarto/bin/quarto
 
@@ -84,6 +105,7 @@ null device
  tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
  timechange     0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
  tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
  vctrs          0.6.5   2023-12-01 [1] CRAN (R 4.5.0)
  vroom          1.6.5   2023-12-05 [2] CRAN (R 4.5.0)
  withr          3.0.2   2024-10-28 [1] CRAN (R 4.5.0)
@@ -95,4 +117,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Jun  1 01:39:08 PM EDT 2026
+Wed Jun  3 01:02:13 PM EDT 2026
