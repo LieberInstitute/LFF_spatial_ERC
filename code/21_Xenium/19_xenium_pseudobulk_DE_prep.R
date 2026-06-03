@@ -3,18 +3,27 @@
 
 #### Set Up ####
 
-library("here")
 library("qs2")
 library("spatialLIBD")
+library("dplyr")
+library("here")
+library("sessioninfo")
+library("getopt")
+library("scater")
 
 
 data_dir <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 
-## could use getopt
-opt <- list()
-opt$cluster <- c("cell_type_anno")
+# Import command-line parameters
+scec <- matrix(
+    c(  "cluster", "c", "1", "character", "Name of cluster"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+print(opt)
+
 
 spe_fn <- here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2")
 message(Sys.time(), " - load data from: ", basename(spe_fn))
