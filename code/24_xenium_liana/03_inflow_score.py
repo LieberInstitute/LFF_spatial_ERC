@@ -10,7 +10,7 @@ ad_path = here(
     'processed-data', '24_xenium_liana', '01_to_python',
     'cell_rna_converted_gobject.h5ad'
 )
-bandwidth = 32
+bandwidth = 42
 
 #   Read in just one sample depending on the array task ID
 adata = sc.read_h5ad(ad_path)
