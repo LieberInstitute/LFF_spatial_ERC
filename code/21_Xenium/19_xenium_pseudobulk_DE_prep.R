@@ -24,15 +24,16 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
+# opt$cluster <- "cell_type_anno"
 
 spe_fn <- here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2")
 message(Sys.time(), " - load data from: ", basename(spe_fn))
 (sce <- qs_read(spe_fn))
 
-message("ncells: ", ncol(spe))
+message("ncells: ", ncol(sce))
 
 ## make APOE syntatic
-sce$APOE_syn <- gsub("/", ".", spe$APOE)
+sce$APOE_syn <- gsub("/", ".", sce$APOE)
 
 
 #### run pseudobulk - cell_type_anno ####
@@ -90,8 +91,6 @@ colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
 ## save 
 message(Sys.time(), " - Save")
 saveRDS(sce_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
-
-
 
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --var cell_type_anno")
 
