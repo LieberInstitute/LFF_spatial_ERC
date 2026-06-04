@@ -65,4 +65,36 @@ pdf(file.path(plot_dir, 'lr_mean_distribution.pdf'), width = 9)
 print(p)
 dev.off()
 
+p = score_df |>
+    #   Basically Inhib.Vip <-> Astro or Oligo.3
+    filter(
+        grepl('^(Oligo.3|Astro|Inhib\\.Vip$)', source),
+        grepl('^(Oligo.3|Astro|Inhib\\.Vip$)', target),
+        source != target,
+        (source == 'Inhib.Vip' | target == 'Inhib.Vip')
+    ) |>
+    #   We get a lot of results. Show only the source-target pair with the
+    #   highest score for an LR pair
+    group_by(ligand_complex, receptor_complex) |>
+    slice_max(lr_mean, with_ties = FALSE) |>
+    ungroup() |>
+    #   Then show the top-10-scoring interactions
+    arrange(desc(lr_mean)) |>
+    slice_head(n = 10) |>
+    mutate(
+        lr_pair = paste0(ligand_complex, '->', receptor_complex),
+        ct_pair = paste(source, '->', target)
+    ) |>
+    ggplot(aes(x = lr_mean, y = lr_specificity, color = ct_pair)) +
+        geom_point() +
+        geom_text_repel(aes(label = lr_pair), size = 4) +
+        theme_bw(base_size = 20) +
+        labs(
+            x = 'Mean LR Score', y = 'LR Specificity',
+            color = 'Cell Types'
+        )
+pdf(file.path(plot_dir, 'Inhib_Vip_top_scatter.pdf'), width = 9)
+print(p)
+dev.off()
+
 session_info()
