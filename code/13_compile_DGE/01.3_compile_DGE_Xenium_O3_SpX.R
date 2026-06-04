@@ -463,6 +463,10 @@ ggsave(ggpair_t_stats, filename = here(plot_dir, "xenium_O3_SpX_t_stat_ggpairs.p
 
 library(ComplexHeatmap)
 
+sn_DEG_data_test <- sn_DEG_data |>
+    filter(vlmf_sn_adj.P.Val < 0.05, gene_name %in% vlmf_data_tb_xenium$gene_name) |>
+    arrange(vlmf_sn_t)
+
 t_stat_SpX_tile <- vlmf_data_tb_xenium |>
     filter(vlmf_sn_adj.P.Val < 0.05) |>
     ggplot(aes(x = gene_name, y = SpX, fill = vlmf_xenium_t)) +
@@ -485,15 +489,35 @@ t_stat_SpX_mat <- vlmf_data_tb_xenium |>
     column_to_rownames("gene_name") |>
     as.matrix()
 
-cell_type_col_ha <- HeatmapAnnotation(
-    cell_type = colnames(cell_v_SpX),
-    col = list(cell_type = cell_type_colors$anno),
-    show_legend = FALSE
+APOE_order <- c("L1~SpX7","L1~SpX6", "WMtz~SpX8","Inhib~SpX5","Vasc~SpX3", "L6~SpX9", "WM~SpX2", "L5~SpX1", "L2.3~SpX4")
+
+t_stat_SpX_mat <- t_stat_SpX_mat[sn_DEG_data_test$gene_name, APOE_order]
+t_stat_SpX_mat <- t_stat_SpX_mat[sn_DEG_data_test$gene_name, names(SpX_colors)]
+
+sn_DEG_data_test_df <- sn_DEG_data_test |> 
+    select(gene_name, vlmf_sn_t) |>
+    column_to_rownames("gene_name")
+
+sn_t_row_ha <- rowAnnotation(
+    df = sn_DEG_data_test_df
 )
 
 pdf(here(plot_dir, "xenium_O3_SpX_t_stat_heatmap.pdf"), height = 10)
 Heatmap(t_stat_SpX_mat, 
-        name = "t-stat")
+        name = "t-stat", 
+        right_annotation =  sn_t_row_ha)
+
+Heatmap(t_stat_SpX_mat, 
+        name = "t-stat", 
+        cluster_columns  = FALSE, 
+        cluster_rows = TRUE, 
+        right_annotation = sn_t_row_ha)
+
+Heatmap(t_stat_SpX_mat, 
+        name = "t-stat", 
+        cluster_columns  = FALSE, 
+        cluster_rows = FALSE, 
+        right_annotation = sn_t_row_ha)
 dev.off()
 
 #### qvalue ####
