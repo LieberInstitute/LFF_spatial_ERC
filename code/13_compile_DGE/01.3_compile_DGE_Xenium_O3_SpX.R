@@ -451,26 +451,52 @@ vlmf_data_tb |> filter(cluster == "Oligo.3") |> filter(vlmf_xenium =)
 
 #### compare stats cluster vs. cluster
 carrier_data_wide_t <- vlmf_data_tb |>
-    select(gene_id, gene_id, cluster, vlmf_xenium_t) |>
+    select(gene_id, gene_id, SpX, vlmf_t) |>
     # count(cluster)
-    pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster")
+    pivot_wider(values_from = "vlmf_t", names_from = "SpX")
 
 ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t))
 
-# ggsave(ggpair_t_stats, filename = "sn_fine_t_stat_ggpairs.png", height = 15, width = 15)    
+ggsave(ggpair_t_stats, filename = here(plot_dir, "xenium_O3_SpX_t_stat_ggpairs.png"), height = 15, width = 15)    
 
-map(cell_type_broad_levels, function(ctb){
-    message(ctb)
-    ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = grep(ctb, colnames(carrier_data_wide_t)), size = 0.5, alpha = 0.5)
-    ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("xenium_t_stat_ggpairs-%s.png", ctb)/////))
+#### tstat heatmap ####
+
+library(ComplexHeatmap)
+
+t_stat_SpX_tile <- vlmf_data_tb_xenium |>
+    filter(vlmf_sn_adj.P.Val < 0.05) |>
+    ggplot(aes(x = gene_name, y = SpX, fill = vlmf_xenium_t)) +
+    geom_tile() +
+    theme_bw() + 
+    scale_fill_gradient2(
+        low = "#2166AC",
+        mid = "white",
+        high = "#D6604D",
+        midpoint = 0
+    )
     
-})
+ggsave(t_stat_SpX_tile, filename = here(plot_dir, "xenium_O3_SpX_t_stat_tile.png"))
 
-#### tstat h/e//a//t////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+t_stat_SpX_mat <- vlmf_data_tb_xenium |>
+    filter(vlmf_sn_adj.P.Val < 0.05) |>
+    select(gene_name, SpX, vlmf_xenium_t) |>
+    pivot_wider(values_from = "vlmf_xenium_t", names_from = "SpX") |>
+    column_to_rownames("gene_name") |>
+    as.matrix()
+
+cell_type_col_ha <- HeatmapAnnotation(
+    cell_type = colnames(cell_v_SpX),
+    col = list(cell_type = cell_type_colors$anno),
+    show_legend = FALSE
+)
+
+pdf(here(plot_dir, "xenium_O3_SpX_t_stat_heatmap.pdf"), height = 10)
+Heatmap(t_stat_SpX_mat, 
+        name = "t-stat")
+dev.off()
 
 #### qvalue ####
-///////////////////////////////
 ## p-value distibutions
 
 xenium_p_val_ct_histo <- vlmf_data_tb |>
