@@ -1,46 +1,46 @@
-gene,subtype,notes
-GFAP,Astro.1,Canonical interlaminar marker; interlaminar astrocytes are GFAP-high relative to protoplasmic astrocytes
-S100B,Astro.1,Canonical interlaminar marker; co-validate with GFAP
-NRG1,Astro.1,Neuregulin ligand for ERBB4 (top hit); co-expression would confirm active NRG1-ERBB4 signaling axis
-GPC4,Astro.1,Heparan sulfate proteoglycan secreted by astrocytes to promote synapse formation
-GPC6,Astro.1,Heparan sulfate proteoglycan secreted by astrocytes to promote synapse formation
-SPARC,Astro.1,Secreted matricellular protein suppressing synapse formation; differentially expressed across cortical layers
-TSP1,Astro.1,Thrombospondin synaptogenic factor; enriched in superficial layer astrocytes
-TSP2,Astro.1,Thrombospondin synaptogenic factor; enriched in superficial layer astrocytes
-ALDH1L1,Astro.1,Pan-astrocyte reference marker; more reliable than GFAP for capturing full astrocyte population
-AQP4,Astro.2,Water channel; varicose projection and interlaminar astrocytes show diffuse expression vs. concentrated perivascular polarization in protoplasmic astrocytes
-CD44,Astro.2,Marks long-process astrocyte populations (interlaminar and VP) but not protoplasmic; should separate Astro.2 from Astro.1 if Astro.2 is CD44+
-DTNA,Astro.2,Dystrobrevin alpha; DAPC component like SNTA1 (top hit); co-enrichment would confirm DAPC-associated identity
-FABP7,Astro.2,Fatty acid binding protein 7 (BLBP); lipid chaperone enriched in outer layer astrocytes and transitional/progenitor-like astrocyte states
-PTGIS,Astro.2,Prostacyclin synthase; prostaglandin pathway complement to PTGDS (top hit); would further implicate subtype in eicosanoid signaling
-BCAS1,Astro.3,Top hit with logFC 2.68; validate at protein level — genuine astrocyte expression would be a novel finding; check for oligodendrocyte contamination
-OLIG2,Astro.3,Oligodendrocyte lineage TF; should be absent in bona fide astrocytes; presence suggests contamination or hybrid state
-OLIG1,Astro.3,Oligodendrocyte lineage TF; exclusion marker to confirm astrocyte identity of this cluster
-SOX10,Astro.3,Oligodendrocyte lineage TF; exclusion marker; any meaningful expression warrants cluster re-examination
-MAG,Astro.3,Mature myelin marker; exclusion marker; presence would suggest oligodendrocyte proximity artifact
-MBP,Astro.3,Mature myelin marker; exclusion marker; presence would suggest oligodendrocyte proximity artifact
-ID3,Astro.3,Transcription factor expressed in white matter-associated and layer VI astrocytes specifically
-ID4,Astro.3,Transcription factor expressed in white matter-associated and layer VI astrocytes specifically
-HOPX,Astro.3,Expressed in outer radial glia and persists in subset of adult astrocytes in deep cortical positions; good candidate for this zone
-NDRG2,Astro.3,Marker of mature protoplasmic astrocytes in deep layers in some datasets
-CP,Astro.4,Ceruloplasmin; already top hit with logFC 3.83 (highest in dataset); well-known marker of perivascular astrocytes; validate by IHC co-localizing with vessel markers
-KCNJ10,Astro.4,Kir4.1 inwardly rectifying K+ channel; co-localized with AQP4 at endfeet; should be strongly enriched in perivascular subtype
-AGRN,Astro.4,Agrin; extracellular matrix protein anchoring DAPC/AQP4 complex to vessel basement membrane; enrichment would confirm endfeet polarization machinery
-HTRA1,Astro.4,Serine protease expressed by perivascular astrocytes; implicated in CADASIL and vascular dementia
-VEGFA,Astro.4,Astrocyte-derived VEGF produced by perivascular astrocytes to maintain endothelial survival
-SLC1A2,Astro.4,EAAT2 glutamate transporter; protoplasmic and perivascular astrocytes are EAAT-high; helps distinguish Astro.4 from CD44+ long-process subtypes
-SLC1A3,Astro.4,EAAT1 glutamate transporter; protoplasmic and perivascular astrocytes are EAAT-high; helps distinguish Astro.4 from CD44+ long-process subtypes
-TFRC,Astro.4,Transferrin receptor; CP functions in iron loading onto transferrin; co-enrichment would confirm iron metabolism axis at vessel interface
-SLC17A7,Astro.5,VGLUT1; directly tests de Ceglia et al. 2023 hypothesis; expression would identify human cortical equivalent of glutamatergic astrocyte subpopulation
-SLC17A6,Astro.5,VGLUT2; directly tests de Ceglia et al. 2023 hypothesis; expression would identify human cortical equivalent of glutamatergic astrocyte subpopulation
-GAD1,Astro.5,GABAergic synthesis enzyme; check given NECAB1 link to inhibitory interneurons; expression in astrocytes would be remarkable
-GAD2,Astro.5,GABAergic synthesis enzyme; check given NECAB1 link to inhibitory interneurons; expression in astrocytes would be remarkable
-LHFPL3,Astro.5,Synaptic adhesion protein associated with inhibitory synapse specification; enrichment would support GABAergic synapse-associated identity
-LHFPL4,Astro.5,Synaptic adhesion protein associated with inhibitory synapse specification; enrichment would support GABAergic synapse-associated identity
-PVALB,Astro.5,Parvalbumin; check whether this inhibitory interneuron marker bleeds into cluster at low levels indicating close physical association or doublets
-SST,Astro.5,Somatostatin; check whether this inhibitory interneuron marker bleeds into cluster at low levels indicating close physical association or doublets
-SYN1,Astro.5,Synapsin 1; if expressed alongside SYT1 (top hit) would build compelling case for vesicular machinery in these astrocytes
-SYN2,Astro.5,Synapsin 2; if expressed alongside SYT1 (top hit) would build compelling case for vesicular machinery in these astrocytes
-GRM5,Astro.5,Metabotropic glutamate receptor 5; triggers astrocytic Ca2+ responses; co-enrichment with RYR2 (top hit) would suggest highly reactive calcium signaling phenotype
-GRM3,Astro.5,Metabotropic glutamate receptor 3; expressed on astrocytes; enrichment alongside RYR2 would support calcium signaling identity
-ITPR2,Astro.5,IP3 receptor 2; primary InsP3 receptor in astrocytes mediating ER calcium release; co-enrichment with RYR2 (top hit) would define dual ER calcium release mechanism
+gene,subtype,expected_astrocyte_expression,contamination_risk,astrocyte_subtype,priority_tier,notes
+GFAP,Astro.1,high,none,interlaminar astrocyte,1,Canonical interlaminar marker; interlaminar astrocytes are GFAP-high relative to protoplasmic astrocytes
+S100B,Astro.1,high,none,interlaminar astrocyte,1,Canonical interlaminar marker; co-validate with GFAP
+NRG1,Astro.1,low,none,interlaminar astrocyte,2,Neuregulin ligand for ERBB4 (top hit); co-expression would confirm active NRG1-ERBB4 signaling axis
+GPC4,Astro.1,medium,none,interlaminar astrocyte,2,Heparan sulfate proteoglycan secreted by astrocytes to promote synapse formation
+GPC6,Astro.1,low,none,interlaminar astrocyte,3,Heparan sulfate proteoglycan secreted by astrocytes to promote synapse formation
+SPARC,Astro.1,medium,none,interlaminar astrocyte,2,Secreted matricellular protein suppressing synapse formation; differentially expressed across cortical layers
+TSP1,Astro.1,medium,none,interlaminar astrocyte,2,Thrombospondin synaptogenic factor; enriched in superficial layer astrocytes
+TSP2,Astro.1,low,none,interlaminar astrocyte,3,Thrombospondin synaptogenic factor; enriched in superficial layer astrocytes
+ALDH1L1,Astro.1,high,none,pan-astrocyte,1,Pan-astrocyte reference marker; more reliable than GFAP for capturing full astrocyte population
+AQP4,Astro.2,medium,none,varicose projection astrocyte,1,Water channel; varicose projection and interlaminar astrocytes show diffuse expression vs. concentrated perivascular polarization in protoplasmic astrocytes
+CD44,Astro.2,medium,none,varicose projection astrocyte,1,Marks long-process astrocyte populations (interlaminar and VP) but not protoplasmic; should separate Astro.2 from Astro.1 if Astro.2 is CD44+
+DTNA,Astro.2,medium,none,varicose projection astrocyte,2,Dystrobrevin alpha; DAPC component like SNTA1 (top hit); co-enrichment would confirm DAPC-associated identity
+FABP7,Astro.2,medium,none,varicose projection astrocyte,2,Fatty acid binding protein 7 (BLBP); lipid chaperone enriched in outer layer astrocytes and transitional/progenitor-like astrocyte states
+PTGIS,Astro.2,low,none,varicose projection astrocyte,3,Prostacyclin synthase; prostaglandin pathway complement to PTGDS (top hit); would further implicate subtype in eicosanoid signaling
+BCAS1,Astro.3,low,none,white matter boundary astrocyte,1,Top enrichment hit (logFC 2.68); reduced concern for OL contamination given WM transition zone location; validate at protein level — genuine astrocyte expression would be novel
+OLIG2,Astro.3,FALSE,oligodendrocyte,NA,1,Oligodendrocyte lineage TF; exclusion marker — presence suggests contamination or hybrid state; run alongside positive astrocyte markers
+OLIG1,Astro.3,FALSE,oligodendrocyte,NA,1,Oligodendrocyte lineage TF; exclusion marker to confirm astrocyte identity of this cluster
+SOX10,Astro.3,FALSE,oligodendrocyte,NA,1,Oligodendrocyte lineage TF; exclusion marker; any meaningful expression warrants cluster re-examination
+MAG,Astro.3,FALSE,oligodendrocyte,NA,2,Mature myelin marker; exclusion marker; presence would suggest oligodendrocyte proximity artifact
+MBP,Astro.3,FALSE,oligodendrocyte,NA,2,Mature myelin marker; exclusion marker; presence would suggest oligodendrocyte proximity artifact
+ID3,Astro.3,medium,none,white matter boundary astrocyte,1,TF expressed in WM-associated and layer VI astrocytes specifically; now primary positive identity marker given WM transition zone reclassification
+ID4,Astro.3,medium,none,white matter boundary astrocyte,1,TF expressed in WM-associated and layer VI astrocytes specifically; now primary positive identity marker given WM transition zone reclassification
+HOPX,Astro.3,medium,none,white matter boundary astrocyte,1,Expressed in outer radial glia and persists in subset of adult astrocytes at grey-white boundary; strong candidate given WM transition zone location
+NDRG2,Astro.3,medium,none,protoplasmic astrocyte,2,Marker of mature protoplasmic astrocytes in deep layers in some datasets; useful to assess protoplasmic contribution at WM boundary
+CP,Astro.4,high,none,perivascular astrocyte,1,Ceruloplasmin; top hit with logFC 3.83 (highest in dataset); well-established marker of perivascular astrocytes; validate by IHC co-localizing with vessel markers
+KCNJ10,Astro.4,high,none,perivascular astrocyte,1,Kir4.1 inwardly rectifying K+ channel; co-localized with AQP4 at endfeet; should be strongly enriched in perivascular subtype
+AGRN,Astro.4,medium,none,perivascular astrocyte,1,Agrin; extracellular matrix protein anchoring DAPC/AQP4 complex to vessel basement membrane; enrichment would confirm endfeet polarization machinery
+HTRA1,Astro.4,medium,none,perivascular astrocyte,2,Serine protease expressed by perivascular astrocytes; implicated in CADASIL and vascular dementia
+VEGFA,Astro.4,medium,none,perivascular astrocyte,2,Astrocyte-derived VEGF produced by perivascular astrocytes to maintain endothelial survival
+SLC1A2,Astro.4,high,none,perivascular astrocyte,2,EAAT2 glutamate transporter; protoplasmic and perivascular astrocytes are EAAT-high; helps distinguish Astro.4 from CD44+ long-process subtypes
+SLC1A3,Astro.4,high,none,perivascular astrocyte,2,EAAT1 glutamate transporter; protoplasmic and perivascular astrocytes are EAAT-high; helps distinguish Astro.4 from CD44+ long-process subtypes
+TFRC,Astro.4,medium,none,perivascular astrocyte,2,Transferrin receptor; CP functions in iron loading onto transferrin; co-enrichment would confirm iron metabolism axis at vessel interface
+SLC17A7,Astro.5,FALSE,neuron / glutamatergic astrocyte,NA,1,VGLUT1; directly tests de Ceglia et al. 2023 hypothesis; low/absent expected in astrocytes — expression would identify human cortical equivalent of glutamatergic astrocyte subpopulation
+SLC17A6,Astro.5,FALSE,neuron / glutamatergic astrocyte,NA,1,VGLUT2; directly tests de Ceglia et al. 2023 hypothesis; low/absent expected in astrocytes — expression would identify human cortical equivalent of glutamatergic astrocyte subpopulation
+GAD1,Astro.5,FALSE,interneuron,NA,1,GABAergic synthesis enzyme; exclusion marker for interneuron contamination; expression in astrocytes would be remarkable and warrant follow-up
+GAD2,Astro.5,FALSE,interneuron,NA,1,GABAergic synthesis enzyme; exclusion marker for interneuron contamination; expression in astrocytes would be remarkable and warrant follow-up
+LHFPL3,Astro.5,low,none,inhibitory synapse-associated astrocyte,2,Synaptic adhesion protein associated with inhibitory synapse specification; enrichment would support GABAergic synapse-associated identity
+LHFPL4,Astro.5,low,none,inhibitory synapse-associated astrocyte,2,Synaptic adhesion protein associated with inhibitory synapse specification; enrichment would support GABAergic synapse-associated identity
+PVALB,Astro.5,FALSE,PV interneuron,NA,1,Parvalbumin; exclusion marker — bleed-in at low levels would indicate close physical association with PV interneurons or doublets; reduced doublet concern at WM transition zone
+SST,Astro.5,FALSE,SST interneuron,NA,1,Somatostatin; exclusion marker — bleed-in at low levels would indicate close physical association with SST interneurons or doublets
+SYN1,Astro.5,FALSE,neuron / vesicular astrocyte,NA,1,Synapsin 1; if expressed alongside SYT1 (top hit) would build compelling case for vesicular machinery; canonical presynaptic marker — confirm not neuronal doublet
+SYN2,Astro.5,FALSE,neuron / vesicular astrocyte,NA,2,Synapsin 2; if expressed alongside SYT1 (top hit) would build compelling case for vesicular machinery; canonical presynaptic marker — confirm not neuronal doublet
+GRM5,Astro.5,medium,none,neuronal-coupled astrocyte,2,Metabotropic glutamate receptor 5; triggers astrocytic Ca2+ responses; co-enrichment with RYR2 (top hit) would suggest highly reactive calcium signaling phenotype
+GRM3,Astro.5,medium,none,neuronal-coupled astrocyte,2,Metabotropic glutamate receptor 3; expressed on astrocytes; enrichment alongside RYR2 would support calcium signaling identity
+ITPR2,Astro.5,high,none,neuronal-coupled astrocyte,1,IP3 receptor 2; primary InsP3 receptor in astrocytes mediating ER calcium release; co-enrichment with RYR2 (top hit) would define dual ER calcium release mechanism
