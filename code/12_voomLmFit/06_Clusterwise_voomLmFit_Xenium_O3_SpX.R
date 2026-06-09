@@ -13,16 +13,10 @@ library("sessioninfo")
 library("qs2")
 
 opt <- list()
-opt$datatype <- "Xenium"
+opt$datatype <- "Xenium_O3"
 
-message(Sys.time(), "- Load xenium data")
-spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
-
-spe <- spe[,spe$spot_class == "singlet"]
-
-spe
-
-message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, basename(pb_fn)))
+pb_fn <- here("processed-data", "21_Xenium", "17_xenium_OligoOPC", "spe_xenium_pseudo_DGE-O3_SpX.RDS")
+message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, pb_fn))
 
 #### Set up dirs ####
 data_dir <- here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", sprintf("vlmf_%s", opt$datatype))
@@ -37,8 +31,10 @@ table(sce_pb$registration_variable)
 sce_pb$APOE_carrier_syn <- gsub("\\+", "", sce_pb$APOE_carrier)
 table(sce_pb$APOE_carrier_syn)
 
-clusters <- levels(sce_pb$registration_variable)
+clusters <- unique(sce_pb$registration_variable)
 names(clusters) <- clusters
+
+batch = "chip"
 
 message(Sys.time(), " - Loop voomlmFit by cluster")
 
@@ -79,7 +75,7 @@ lmf_summary <- map_dfr(clusters, possibly(function(clus){
     
     message("Done - Save data")
     saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_%s_%s.rds", opt$datatype, clus)))
-    return(tibble(clsuter = clus ,pval05 = sum(v.swt.e.tt$P.Value < 0.05), FDR05 = sum(v.swt.e.tt$adj.P.Val < 0.05)))
+    return(tibble(cluster = clus ,pval05 = sum(v.swt.e.tt$P.Value < 0.05), FDR05 = sum(v.swt.e.tt$adj.P.Val < 0.05)))
 }, otherwise = NA)
 )
 
