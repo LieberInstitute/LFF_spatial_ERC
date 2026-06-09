@@ -97,6 +97,55 @@ if(FALSE){
     
 }
 
+# spe_pb_O3 <- readRDS(here("processed-data", "21_Xenium", "17_xenium_OligoOPC", "spe_xenium_pseudo_DGE-O3_SpX.RDS"))
+
+SpX_ct_prop <- colData(spe) |>
+    as.data.frame() |>
+    count(BrNum, SpX, cell_type_anno) |>
+    group_by(BrNum, SpX) |>
+    mutate(prop = n/sum(n))
+
+
+SpX_O3_prop_boxplot <- SpX_ct_prop |>
+    filter(cell_type_anno == "Oligo.3") |> 
+    ggplot(aes(x = SpX, y = prop, fill = SpX)) +
+    geom_boxplot() +
+    scale_fill_manual(values = metadata(spe)$SpX_colors) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+          legend.position = "None")+
+    labs(y = "proportion Oligo.3")
+
+ggsave(SpX_O3_prop_boxplot, filename = here(plot_dir, "SpX_O3_prop_boxplot.png"))
+
+
+ SpX_O3_n_boxplot <- SpX_ct_prop |>
+    filter(cell_type_anno == "Oligo.3") |> 
+    ggplot(aes(x = SpX, y = n, fill = SpX)) +
+    geom_boxplot() +
+    scale_fill_manual(values = metadata(spe)$SpX_colors) +
+    theme_bw() +
+     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+           legend.position = "None") +
+     labs(y = "n Oligo.3 cells")
+
+ggsave(SpX_O3_n_boxplot, filename = here(plot_dir, "SpX_O3_n_boxplot.png"))
+
+SpX_Astro_prop_boxplot <- SpX_ct_prop |>
+    filter(grepl("Astro", cell_type_anno)) |> 
+    ggplot(aes(x = SpX, y = prop, fill = SpX)) +
+    geom_boxplot() +
+    scale_fill_manual(values = metadata(spe)$SpX_colors) +
+    theme_bw() +
+    facet_wrap(~cell_type_anno,ncol = 1) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+          legend.position = "None")+
+    labs(y = "proportion Astrocyte")
+
+ggsave(SpX_Astro_prop_boxplot, filename = here(plot_dir, "SpX_Astro_prop_boxplot.png"))
+
+    
+    
 
 
 
