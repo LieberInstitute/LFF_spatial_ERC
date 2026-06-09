@@ -519,4 +519,55 @@ sce[, sce$cell_type_broad == "Astro"]|>
     )
 dev.off()
 
+Astro_explore_genes <- read_csv(here(data_dir, "astrocyte_marker_genes_claude.csv")) |>
+    select(-ERC_specific_notes) |>
+    filter(!gene %in% rownames(sce))
+
+Astro_explore_genes |> filter(gene %in% Astro_lit_markers)
+
+# rowData(sce)$astro_marker <- NULL
+# rowData(sce)$astro_marker <- names(Astro_lit_markers)[match(rownames(sce), Astro_lit_markers)] 
+# table(rowData(sce)$astro_marker)
+
+
+test <- sce[, sce$cell_type_broad == "Astro"]|> 
+    scDotPlot(features = Astro_explore_genes|> filter(contamination_risk == "none") |> pull(gene),
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "astro_marker",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = TRUE,
+                  groupLegends = FALSE
+)
+
+p_build <- ggplot_build(test)
+
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_explore.pdf")))
+
+sce[, sce$cell_type_broad == "Astro"]|>
+    scDotPlot(features = Astro_explore_genes|> filter(contamination_risk == "none") |> pull(gene),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = TRUE,
+              groupLegends = FALSE
+    )
+
+sce[, sce$cell_type_broad == "Astro"]|>
+    scDotPlot(features = Astro_explore_genes |> filter(contamination_risk != "none") |> pull(gene),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+
+dev.off()
+
 

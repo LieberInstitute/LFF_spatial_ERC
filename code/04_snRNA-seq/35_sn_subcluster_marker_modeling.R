@@ -804,14 +804,12 @@ if(celltype == "Oligo"){
     Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
     dev.off()
     
-    #### Astro cor Mathys 2024 ####       
-    Mathys_Astro_stats <- readxl::read_xlsx(here("external-data", "Mathys2024","Mathys2024_SuppTable2.xlsx"), sheet = "DEGs") |>
-        filter(cell.type == "astrocytes",
-        !is.na(avg_log2FC)) |>
-        mutate(Mathys_Astro = state)
+    #### Astro cor Mathys2024 ####       
+    Mathys_Astro_stats <- readxl::read_xlsx(here("external-data", "Mathys2024", "41586_2024_7606_MOESM3_ESM","Supplementary_Table_2_Gene_expression_marker_lists.xlsx"), sheet = "Marker_genes_Ast") |>
+        mutate(Mathys_Astro = gsub(" ", "_", cluster)) |>
+        select(-Column1)
 
-    Mathys_Astro_stats |> count(cell.type)
-        Mathys_Astro_stats |> count(Mathys_Astro)
+    Mathys_Astro_stats |> count(Mathys_Astro)
 
     erc_v_Mathys <- enrichment_genes |>
         inner_join(Mathys_Astro_stats, relationship = "many-to-many")
