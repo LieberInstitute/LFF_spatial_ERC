@@ -731,7 +731,7 @@ if(celltype == "Oligo"){
     #### Astro ####
     lit_markers <- list(disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
                         AD_risk = c("APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
-                        Mathys_subtypes <- c("GRM3","DPP10", "DCLK1" ,"LUZP2")
+                        Mathys_subtypes = c("GRM3","DPP10", "DCLK1" ,"LUZP2")
     )
     
     
@@ -759,7 +759,7 @@ if(celltype == "Oligo"){
                   group = "cell_type_anno",
                   groupAnno = "cell_type_anno",
                   featureAnno = "Marker",
-                  scale = TRUE,
+                  scale = FALSE,
                   annoColors = list("cell_type_anno" = cell_type_colors$anno),
                   clusterRows = FALSE,
                   groupLegends = FALSE)
@@ -802,6 +802,44 @@ if(celltype == "Oligo"){
 
     pdf(here(plot_dir, "Astro_Green_cor_logFC.pdf"), height = 4, width = 8)
     Heatmap(t(erc_v_Green_cor_wide), name = "logFC cor")
+    dev.off()
+    
+    #### Astro cor Mathys 2024 ####       
+    Mathys_Astro_stats <- readxl::read_xlsx(here("external-data", "Mathys2024","Mathys2024_SuppTable2.xlsx"), sheet = "DEGs") |>
+        filter(cell.type == "astrocytes",
+        !is.na(avg_log2FC)) |>
+        mutate(Mathys_Astro = state)
+
+    Mathys_Astro_stats |> count(cell.type)
+        Mathys_Astro_stats |> count(Mathys_Astro)
+
+    erc_v_Mathys <- enrichment_genes |>
+        inner_join(Mathys_Astro_stats, relationship = "many-to-many")
+
+    erc_v_Mathys_cor <- erc_v_Mathys |>
+        group_by(test, Mathys_Astro) |>
+        summarise(n = n(),
+                cor = cor(logFC, avg_log2FC))
+
+    write_csv(erc_v_Mathys_cor, file = here(data_dir, "erc_v_Mathys2024_Astro_cor.csv"))
+
+    erc_v_Mathys_cor |>
+        group_by(test) |> 
+        slice_max(cor)
+
+    erc_v_Mathys_cor |>
+        group_by(Mathys_Astro) |> 
+        slice_max(cor)
+
+
+    (erc_v_Mathys_cor_wide <- erc_v_Mathys_cor |>
+            select(-n) |>
+            pivot_wider(names_from = "test", values_from = "cor") |>
+            column_to_rownames("Mathys_Astro") |>
+            as.matrix())
+
+    pdf(here(plot_dir, "Astro_Mathys_cor_logFC.pdf"), height = 4, width = 8)
+    Heatmap(t(erc_v_Mathys_cor_wide), name = "logFC cor")
     dev.off()
     
 }else if(celltype == "Micro"){
