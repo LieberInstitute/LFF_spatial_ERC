@@ -23,7 +23,7 @@ print(opt)
 
 celltype <- opt$celltype
 
-# celltype = "Oligo"
+# celltype = "Astro"
 
 data_dir <- here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", celltype)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -173,6 +173,7 @@ top_enrichment_genes <- sig_genes_extract(
 )
 
 write.csv(top_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", celltype)), row.names = FALSE)
+# top_enrichment_genes <- read.csv(here(data_dir, sprintf("subtype_enrichment_top10_%s.csv", celltype)), row.names = 1)
 
 ## all signif
 top100_enrichment_genes <- sig_genes_extract(
@@ -195,6 +196,24 @@ top100_enrichment_genes |> filter(fdr < 0.05)  |> count(test)
 
 write.csv(top100_enrichment_genes, here(data_dir, sprintf("subtype_enrichment_top100_%s.csv", celltype)), row.names = FALSE)
 
+## Summary table
+
+marker_summary <- top_enrichment_genes |>
+    filter(top <= 5) |>
+    group_by(cell_type = test) |>
+    summarise(enrichment_top5 = paste(gene, collapse = ", ")) |>
+    left_join(top_MeanRatio_genes |>
+                  filter(MeanRatio.rank <= 5, MeanRatio > 1) |>
+                  group_by(cell_type = cellType.target) |>
+                  summarise(MeanRatio_top5 = paste(gene, collapse = ", "))) |>
+    left_join(top_enrichment_genes |> select(cell_type = test, gene) |>
+    inner_join(top_MeanRatio_genes |>
+                   filter(MeanRatio > 1) |>
+                  select(cell_type = cellType.target, gene)) |>
+    group_by(cell_type) |>
+    summarise(overlap_top10 = paste(gene, collapse = ", ")))
+
+write_csv(marker_summary, file = here(data_dir, sprintf("subtype_marker_summary_%s.csv", celltype)))
 
 #### Enrichment dot plots ####
 rowData(sce)$Marker <- NULL
@@ -763,6 +782,43 @@ if(celltype == "Oligo"){
                   annoColors = list("cell_type_anno" = cell_type_colors$anno),
                   clusterRows = FALSE,
                   groupLegends = FALSE)
+    dev.off()
+    
+    astro_subtype_markers <- list(
+        protoplasmic = c("SLC1A2", "SLC1A3", "GLUL", "GPC4", "NDRG2"),
+        fibrous      = c("GFAP", "VIM", "ID3", "ID4", "HOPX"),
+        perivascular = c("CP", "AQP4", "KCNJ10", "AGRN", "CD44")
+    )
+    
+    
+    astro_subtype_markers <- map(astro_subtype_markers, ~.x[.x %in% rownames(sce)])
+    
+    plot_marker_express_List(
+        sce,
+        gene_list = astro_subtype_markers,
+        cellType_col = "cell_type_anno",
+        pdf_fn = here(plot_dir, "sn_violin_Astro_suntype_markers.pdf"),
+        color_pal = cell_type_colors$anno
+    )
+    
+
+    ## lit gene dot plot
+    astro_subtype_markers <- AnnotationDbi::unlist2(astro_subtype_markers)
+    
+    rowData(sce)$AstroMarker <- NULL
+    rowData(sce)$AstroMarker <- names(astro_subtype_markers)[match(rownames(sce), astro_subtype_markers)] 
+    table(rowData(sce)$AstroMarker)
+    
+    pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_subtype.pdf", celltype)))
+    sce |>
+        scDotPlot(features = astro_subtype_markers,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "AstroMarker",
+                  scale = TRUE,
+                  annoColors = list("cell_type_anno" = cell_type_colors$anno),
+                  clusterRows = FALSE,
+                  groupLegends = TRUE)
     dev.off()
 
      #### Astro cor Green 2024 ####       
