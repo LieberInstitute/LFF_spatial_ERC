@@ -51,8 +51,8 @@ plot_df = tibble(
 clean_boxplot(plot_df, file.path(plot_dir, 'SpD_boxplot_all_cell_types.pdf'))
 clean_boxplot(
     plot_df |>
-        filter(cell_type == 'Astro.3'),
-    file.path(plot_dir, 'SpD_boxplot_astro_3.pdf')
+        filter(cell_type == 'Oligo.3'),
+    file.path(plot_dir, 'SpD_boxplot_oligo_3.pdf')
 )
 
 session_info()
