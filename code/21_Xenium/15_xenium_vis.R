@@ -89,4 +89,65 @@ vis_grid_clus(spe,
               sample_order = sort(unique(spe$sample_id)),
               datatype = "Xenium")
 
+#### Build Fig 1 vis_clus grid ####
+
+# representative sections:
+# Br1556	AA	E2
+# Br2582	EA	E2 (other sample Br6538 is the aligment issue)
+# Br5460	AA	E4 (Br1039 also okay)
+# Br5517	EA	E4	(adjacnet gyrus changes shapes between secitons)
+
+rep_sections <- c("Br1556", "Br2582", "Br5460", "Br5517")
+
+#### Spot plots for representative sections ####
+
+table(spe$SpD, spe$sample_id)
+
+rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
+    filter(rep_section)
+
+single_vis_clus <- vis_clus(
+    spe = spe,
+    point_size = 1.7,
+    colors = metadata(spe)$SpX_colors,
+    sampleid = "Br5517",
+    clustervar = "SpX",
+    spatial = FALSE,
+    guide_point_size = 5,
+    datatype = "Xenium"
+)
+
+ggsave(single_vis_clus, filename = here(plot_dir, "xenium_vis_clus_Br5517.png")) 
+
+library("patchwork")
+
+xenium_row_plots <- map(rep_sections, function(s) {
+    vis_clus_plot <- vis_clus(
+        spe = spe,
+        point_size = 1.2,
+        colors = metadata(spe)$SpX_colors,
+        sampleid = s,
+        clustervar = "SpX",
+        datatype = "Xenium",
+        guide_point_size = 5
+    ) +
+        labs(title = NULL)  +
+        theme(
+            legend.position = "None", ## using heat maps label colors
+            axis.title.x = element_blank(),
+            text = element_text(size = 14)
+        )
+    
+    return(vis_clus_plot)
+})
+
+## add legend to last plot
+xenium_row_plots[[4]] <- xenium_row_plots[[4]] + theme(legend.position = "right")
+
+xenium_row <- Reduce("|", xenium_row_plots)
+# ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.pdf"), width = 18, height = 9)
+
+ggsave(xenium_row, filename = here(plot_dir, "vis_SpX_rep_sections.png"), width = 18, height = 4.5)
+
+
     
