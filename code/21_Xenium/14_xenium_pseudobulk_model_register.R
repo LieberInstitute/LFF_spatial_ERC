@@ -93,18 +93,21 @@ write.csv(top_DEGs, file = here(data_dir, sprintf("xenium_enrichment_modeling_%s
 
 
 if(opt$var == "SpX"){
-    ref_name <- "visium_SpD"
+    ref_name <- "Visium_SpD"
     
     #### Register to Visium SpD ####
     reference_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-    colnames(reference_modeling$enrichment) <- gsub("_Sp", "~Sp", colnames(reference_modeling$enrichment))
+    colnames(reference_modeling$enrichment) <- gsub("_Sp09D0", "~SpD", colnames(reference_modeling$enrichment))
     colnames(reference_modeling$enrichment) 
     
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     ref_colors <- SpD_colors
+    names(ref_colors) <- gsub("Sp09D0", "SpD", names(ref_colors))
     q_colors <- metadata(spe)$SpX_colors
+    
    
 } else if(opt$var == "cell_type_anno") {
+    #### Register to cell type enrichemnt data ####
     ref_name <- "sn_cell_type"
     
     reference_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "29_sn_subcluster_model_pseudobulk", "sce_subcluster_modeling_results-cell_type_anno.rds"))
@@ -116,11 +119,19 @@ if(opt$var == "SpX"){
 }
 
 
-
 cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
                             modeling_results = reference_modeling,
                             model_type = "enrichment",
                             top_n = 100)
+
+## fix order to match levels
+ref_levels <- names(ref_colors)
+ref_levels <- ref_levels[ref_levels %in% colnames(cor_layer)]
+
+q_levels <- names(q_colors)
+q_levels <- q_levels[q_levels %in% rownames(cor_layer)]
+
+cor_layer <- cor_layer[q_levels ,ref_levels]
 
 anno <- annotate_registered_clusters(
     cor_stats_layer = cor_layer,
@@ -130,11 +141,21 @@ anno <- annotate_registered_clusters(
 
 
 pdf(here(plot_dir, sprintf("xenium_%s_v_%s_layer_stat_cor.pdf", opt$var, ref_name)),
-    height = 7 + ncol(cor_layer)/10,
-    width = 7 + ncol(cor_layer)/10)
+    height = 5 + ncol(cor_layer)/10,
+    width = 5 + ncol(cor_layer)/10)
 print(layer_stat_cor_plot(cor_stats_layer = cor_layer,
                           cluster_rows =TRUE,
                           cluster_columns = TRUE,
+                          reference_colors = ref_colors,
+                          annotation = anno,
+                          query_colors = q_colors,
+                          column_title = ref_name,
+                          row_title = paste0("Xenium_", opt$var)
+))
+
+print(layer_stat_cor_plot(cor_stats_layer = cor_layer,
+                          cluster_rows =FALSE,
+                          cluster_columns = FALSE,
                           reference_colors = ref_colors,
                           annotation = anno,
                           query_colors = q_colors,
@@ -218,6 +239,65 @@ if(opt$var == "SpX"){
     dev.off()
     
     
+}else if(opt$var == "cell_type_anno"){
+    
+    top_DEGs <- top_DEGs |> 
+        mutate(test = factor(test, ref_levels),
+               duplicated = duplicated(gene),
+               anno = paste0(top, ": logFC =", round(logFC, 2))) |>
+        group_by(gene) |> 
+        mutate(n = n()) |>
+        slice_max(logFC) |>
+        ungroup() |>
+        arrange(test, top) |>
+        mutate(cellType.target = droplevels(test))
+    
+    unique(top_DEGs$test)
+    
+    ## TODO
+    DeconvoBuddies::plot_marker_express_ALL(sce = spe, 
+                                        stats = top_DEGs,
+                                        n_genes = 6,
+                                        rank_col = "top",
+                                        anno_col = "anno",
+                                        color_pal = ref_colors,
+                                        cellType_col = "cell_type_anno",
+                                        pdf = here(plot_dir, "xenium_cell_type_anno_topEnrich_violin_express.pdf"))
+    
+    
+    rowData(spe)$cell_type_marker <- NULL
+    rowData(spe)$cell_type_marker <- top_DEGs$test[match(rownames(spe), top_DEGs$gene)] 
+    table(rowData(spe)$cell_type_marker)
+    
+    top2_DEGs <- top_DEGs |> group_by(test) |> slice(1:2) ## grab top 2
+    
+    pdf(here(plot_dir, "xenium_cell_type_anno_topEnrich_dotplot.pdf"), height = 10, width = 10)
+    
+    spe |>
+        scDotPlot(features = top2_DEGs$gene,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "cell_type_marker",
+                  scale = TRUE,
+                  annoColors = list(cell_type_anno = ref_colors,
+                                    cell_type_marker = ref_colors),
+                  clusterRows = FALSE,
+                  clusterColumns = FALSE,
+                  groupLegends = FALSE)
+    
+    spe |>
+        scDotPlot(features = top2_DEGs$gene,
+                  group = "cell_type_anno",
+                  groupAnno = "cell_type_anno",
+                  featureAnno = "cell_type_marker",
+                  scale = TRUE,
+                  annoColors = list(cell_type_anno = ref_colors,
+                                    cell_type_marker = ref_colors),
+                  clusterRows = TRUE,
+                  clusterColumns = TRUE,
+                  groupLegends = FALSE)
+    
+    dev.off()
 }
 
 
