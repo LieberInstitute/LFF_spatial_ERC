@@ -8,6 +8,7 @@ library("qs2")
 library("here")
 library("sessioninfo")
 library("tidyverse")
+library("patchwork")
 
 data_dir <- here("processed-data", "21_Xenium", "15_xenium_vis")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -101,11 +102,6 @@ rep_sections <- c("Br1556", "Br2582", "Br5460", "Br5517")
 
 #### Spot plots for representative sections ####
 
-table(spe$SpD, spe$sample_id)
-
-rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
-    filter(rep_section)
-
 single_vis_clus <- vis_clus(
     spe = spe,
     point_size = 1.7,
@@ -119,7 +115,6 @@ single_vis_clus <- vis_clus(
 
 ggsave(single_vis_clus, filename = here(plot_dir, "xenium_vis_clus_Br5517.png")) 
 
-library("patchwork")
 
 xenium_row_plots <- map(rep_sections, function(s) {
     vis_clus_plot <- vis_clus(
@@ -149,5 +144,39 @@ xenium_row <- Reduce("|", xenium_row_plots)
 
 ggsave(xenium_row, filename = here(plot_dir, "vis_SpX_rep_sections.png"), width = 18, height = 4.5)
 
+#### plot vis sections for Visium data ####
 
+message(Sys.time(), " - Load HDF5 SPE")
+spe_vis <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
+
+visium_row_plots <- map(rep_sections, function(s) {
+    vis_clus_plot <- vis_clus(
+        spe = spe_vis,
+        point_size = 1.3,
+        colors = metadata(spe_vis)$SpD_colors,
+        sampleid = s,
+        clustervar = "SpD",
+        guide_point_size = 5
+    ) +
+        labs(title = s)  +
+        theme(
+            legend.position = "None", ## using heat maps label colors
+            axis.title.x = element_blank(),
+            text = element_text(size = 14)
+        )
     
+    return(vis_clus_plot)
+}) 
+
+## add legend to last plot
+visium_row_plots[[4]] <- visium_row_plots[[4]] + theme(legend.position = "right")
+
+visium_row <- Reduce("|", visium_row_plots)
+# ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.pdf"), width = 18, height = 9)
+
+ggsave(visium_row, filename = here(plot_dir, "vis_SpD_rep_sections.png"), width = 18, height = 4.5)
+
+
+xen_vis_rep_grid <- visium_row / xenium_row
+ggsave(xen_vis_rep_grid, filename = here(plot_dir, "vis_SpD_SpX_rep_sections.png"), width = 18, height = 9)
+
