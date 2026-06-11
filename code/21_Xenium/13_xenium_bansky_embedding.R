@@ -249,8 +249,8 @@ table(spe$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans12)
 #### Annotate bansky clus ####
 
 SpX_colors = c('Vasc~SpX3' = "#E05AD2",
-               'L1~SpX6' = "#9AA7FE",
-               'L1~SpX7' = "#0220DE",
+               'L1a~SpX6' = "#9AA7FE",
+               'L1b~SpX7' = "#0220DE",
                'L2.3~SpX4' = "#FEAF16",
                'Inhib~SpX5' = "#C82100",
                'L5~SpX1' = "#16FF32",
@@ -261,6 +261,8 @@ SpX_colors = c('Vasc~SpX3' = "#E05AD2",
 cluster_anno <- readxl::read_xlsx(here("processed-data", "21_Xenium", "Bansky_cluster_notes.xlsx")) |>
     filter(!grepl("uf", Visium)) |>
     mutate(SpX = factor(paste0(Visium , "~SpX", Xenium_k9), levels = names(SpX_colors)))
+
+save(SpX_colors, file = here("processed-data", "SpX_colors.Rdata"))
 
 # load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 # SpD_colors
@@ -300,7 +302,7 @@ table(spe$SpX, spe$spot_class)
 #### Annotate Regions ####
 
 region_tb <- list("Vasc"= c("Vasc~SpX3"),
-                  "GM_L1"= c("L1~SpX6", "L1~SpX7"),
+                  "GM_L1"= c("L1a~SpX6", "L1b~SpX7"),
                   "GM_L2_6"= c("L2.3~SpX4", "Inhib~SpX5", "L5~SpX1", "L6~SpX9"),
                   "WM"= c('WMtz~SpX8', 'WM~SpX2'))|>
     enframe(name="group", value="cluster") |>
@@ -314,8 +316,8 @@ table(spe$SpX, spe$region)
 
 region_colors = c('Vasc' = "#E05AD2",
                   'GM_L1' = "#3446BD",
-                  'GM_L2_6' = '#3A8C16',
-                  'WM'= "#643834")
+                  'GM_L2_6' = "#67a75f",
+                  'WM'= "gray")
 
 metadata(spe)$region_colors <- region_colors
 
@@ -542,6 +544,14 @@ ComplexHeatmap::Heatmap(cell_prop_v_SpX,
 ComplexHeatmap::Heatmap(cell_prop_v_SpX,
                         name = "prop cell type\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = TRUE, ## Clsuter cell types
+                        cluster_rows = TRUE,  ## cluster SpX
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(cell_prop_v_SpX,
+                        name = "prop cell type\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
                         cluster_columns = FALSE,
                         cluster_rows = FALSE, 
                         left_annotation = SpX_row_ha, 
@@ -563,6 +573,37 @@ ComplexHeatmap::Heatmap(cell_v_SpX_prop,
                         cluster_rows = FALSE, 
                         left_annotation = SpX_row_ha, 
                         bottom_annotation = cell_type_col_ha)
+dev.off()
+
+
+## Add cell type hierarchical clusters 
+
+# ## Load Hierarchical clustering
+# load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_cluster","sn_subcluster_hierarchical_cluster.Rdata"), verbose = TRUE)
+
+## PLOT HEATMAPS
+pdf(here(plot_dir, "Xenium_bansky_SpX_v_cell_type_heatmap_broad.pdf"), width = 10)
+
+## proportion SpX (cell type cols sum to 1)
+ComplexHeatmap::Heatmap(cell_v_SpX_prop,
+                        name = "prop SpX\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        # cluster_columns = FALSE,
+                        column_split = gsub("\\..*", "", colnames(cell_v_SpX_prop)),
+                        # cluster_columns = cluster_within_group(cell_v_SpX_prop, gsub("\\..*", "", colnames(cell_v_SpX_prop))),
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha,
+                        bottom_annotation = cell_type_col_ha
+                        )
+
+ComplexHeatmap::Heatmap(cell_v_SpX,
+                        name = "n singlet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        column_split = gsub("\\..*", "", colnames(cell_v_SpX)),
+                        cluster_rows = FALSE, 
+                        left_annotation = SpX_row_ha,
+                        bottom_annotation = cell_type_col_ha
+                        )
 dev.off()
 
 
@@ -681,8 +722,6 @@ ComplexHeatmap::Heatmap(cell_v_region_prop,
                         bottom_annotation = cell_type_col_ha)
 dev.off()
 
-
-express_region_apoe <- plot_gene_express()
 
 
 # slurmjobs::job_single('13_xenium_bansky_embedding', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_embedding.R")
