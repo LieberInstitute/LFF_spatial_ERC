@@ -22,7 +22,27 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 cell_type_levels <- names(cell_type_colors$anno)
 
-#### Get data ####
+#### get layer organization ####
+SpX_colors = c('Vasc~SpX3' = "#E05AD2",
+               'L1~SpX6' = "#9AA7FE",
+               'L1~SpX7' = "#0220DE",
+               'L2.3~SpX4' = "#FEAF16",
+               'Inhib~SpX5' = "#C82100",
+               'L5~SpX1' = "#16FF32",
+               'L6~SpX9' = "#178C6D",
+               'WMtz~SpX8' = "grey",
+               'WM~SpX2'= "#581009")
+
+## cell type SpX organization
+cell_v_SpX_prop_long <- read.csv(file = here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_SpX_prop_long.csv"), row.names = 1)
+
+cell_v_SpX_max <- cell_v_SpX_prop_long |> 
+    mutate(SpX = factor(SpX, levels = names(SpX_colors))) |>
+    group_by(cell_type_anno) |>
+    slice_max(n_cell) |> 
+    arrange(SpX, cell_type_anno)
+
+#### Get CRAWDAD data ####
 
 crawdad_data_dir <- here("processed-data", "21_Xenium", "12_xenium_CRAWDAD")
 
@@ -50,13 +70,12 @@ crawdad_data <- map_dfr(list.files(crawdad_data_dir, full.names = TRUE), ~read_c
 # 
 # cat(missing_brnum_region$jobid, sep = ", ")
 
-crawdad_data <- crawdad_data |> filter(!is.na(region))
+any(is.na(crawdad_data$region))
 
 crawdad_data |>
-    filter(reference == "Astro.4") |>
-    # dplyr::count(neighbor) |>
-    filter(grepl("Vasc", neighbor)) |>
-    dplyr::count(is.na(Z))
+    dplyr::count(is.na(Z), 
+                 reference) |>
+    arrange(-n)
 
 
 #   Get the Z-score significance threshold (same in all samples)
@@ -174,9 +193,15 @@ crawdad_data_summary |>
     filter(neighbor == "Astro.4") |>
     arrange(-Z_real) 
 
+
+crawdad_data_summary |>
+    filter(reference == "Astro.1") |>
+    group_by(reference) |>
+    slice_max(abs(Z_real))
+
 crawdad_data_summary_top <- crawdad_data_summary |>
     group_by(reference) |>
-    slice_max(abs(Z)) |>
+    slice_max(abs(Z_real)) |>
     slice_min(scale)
 
 pdf(here(plot_dir, "xenium_CRAWDAD_trend_plots.pdf"))
@@ -277,6 +302,17 @@ custom_dotplot = function(result_df, z_sig, reg) {
 walk(c("ALL", "Vasc", "GM", "WM"), function(reg){
     dotplot <- custom_dotplot(crawdad_data_summary, z_sig, reg = reg)
         ggsave(dotplot, filename = here(plot_dir, sprintf('erc_xenium_CRAWDAD_dot_plot-%s.png', reg)), height = 12 , width = 12)
+    
+})
+
+
+crawdad_data_summary <- crawdad_data_summary |> 
+    mutate(referencer = factor(reference, levels = cell_v_SpX_max$cell_type_anno),
+           neighbor = factor(neighbor, levels = cell_v_SpX_max$cell_type_anno))
+
+walk(c("ALL", "Vasc", "GM", "WM"), function(reg){
+    dotplot <- custom_dotplot(crawdad_data_summary, z_sig, reg = reg)
+    ggsave(dotplot, filename = here(plot_dir, sprintf('erc_xenium_CRAWDAD_dot_plot_layer-%s.png', reg)), height = 12 , width = 12)
     
 })
 
