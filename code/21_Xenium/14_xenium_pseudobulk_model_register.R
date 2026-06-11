@@ -143,7 +143,86 @@ print(layer_stat_cor_plot(cor_stats_layer = cor_layer,
 ))
 dev.off()
 
-#### Expression of key genes
+#### Top Enrichment gene expression violin & dotplots ####
+
+rownames(spe) <- rowData(spe)$gene_name
+
+if(opt$var == "SpX"){
+    
+    top_DEGs <- top_DEGs |> 
+        mutate(test = factor(test, levels(spe_pb$SpX)),
+               duplicated = duplicated(gene),
+               anno = paste0(top, ": logFC =", round(logFC, 2)),
+               cellType.target = test) |>
+        group_by(gene) |> 
+        mutate(n = n()) |>
+        slice_max(logFC) |>
+        ungroup() |>
+        arrange(test, top)
+    
+    DeconvoBuddies::plot_marker_express_ALL(sce = spe, 
+                                        stats = top_DEGs,
+                                        n_genes = 6,
+                                        rank_col = "top",
+                                        anno_col = "anno",
+                                        color_pal = metadata(spe)$SpX_colors,
+                                        cellType_col = "SpX",
+                                        pdf = here(plot_dir, "xenium_SpX_topEnrich_violin_express.pdf"))
+    
+    
+    rowData(spe)$SpX_marker <- NULL
+    rowData(spe)$SpX_marker <- top_DEGs$test[match(rownames(spe), top_DEGs$gene)] 
+    table(rowData(spe)$SpX_marker)
+    
+    pdf(here(plot_dir, "xenium_SpX_topEnrich_dotplot.pdf"), height = 10)
+    
+    spe |>
+        scDotPlot(features = top_DEGs$gene,
+                  group = "SpX",
+                  groupAnno = "SpX",
+                  featureAnno = "SpX_marker",
+                  scale = TRUE,
+                  annoColors = list(SpX = metadata(spe)$SpX_colors,
+                                    SpX_marker = metadata(spe)$SpX_colors),
+                  clusterRows = FALSE,
+                  clusterColumns = FALSE,
+                  groupLegends = FALSE)
+    
+    spe |>
+        scDotPlot(features = top_DEGs$gene,
+                  group = "SpX",
+                  groupAnno = "SpX",
+                  featureAnno = "SpX_marker",
+                  scale = TRUE,
+                  annoColors = list(SpX = metadata(spe)$SpX_colors,
+                                    SpX_marker = metadata(spe)$SpX_colors),
+                  clusterRows = TRUE,
+                  clusterColumns = TRUE,
+                  groupLegends = FALSE)
+    
+    dev.off()
+    
+    ## just top5
+    pdf(here(plot_dir, "xenium_SpX_topEnrich_dotplot_top5.pdf"))
+    spe |>
+        scDotPlot(features = top_DEGs |> filter(top <=5) |> pull(gene),
+                  group = "SpX",
+                  groupAnno = "SpX",
+                  featureAnno = "SpX_marker",
+                  scale = TRUE,
+                  annoColors = list(SpX = metadata(spe)$SpX_colors,
+                                    SpX_marker = metadata(spe)$SpX_colors),
+                  clusterRows = FALSE,
+                  clusterColumns = FALSE,
+                  groupLegends = FALSE)
+    dev.off()
+    
+    
+}
+
+
+
+#### Expression of key genes ####
 library(DeconvoBuddies)
 
 rownames(spe_pb) <- rowData(spe_pb)$gene_name
