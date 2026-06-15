@@ -81,7 +81,7 @@ lmf_summary <- map_dfr(clusters, possibly(function(clus){
 
 write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('01_Clusterwise_voomLmFit_Xenium', create_shell = TRUE, memory = '25G', command = "Rscript 01_Clusterwise_voomLmFit.R --datatype Xenium")
+# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_SpX', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium_SpX.R")
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
