@@ -15,6 +15,9 @@ library("scater")
 data_dir <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
+plot_dir <- here("plots", "21_Xenium", "19_xenium_pseudobulk_DE_prep")
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
 
 # Import command-line parameters
 scec <- matrix(
@@ -89,7 +92,7 @@ message("Too few samples in: ",
 
 cell_type_count |>
     mutate(enough_samples = registration_variable %in% enough_samples)|>
-    write.csv(here(data_dir, sprintf("spe_xenium_psuedobulk_sample_count-%s.csv", opt$cluster)))
+    write.csv(here(data_dir, sprintf("spe_xenium_psuedobulk_sample_count-%s.csv", opt$cluster)), row.names = FALSE)
 
 ## drop too few sample cell types
 spe_pseudo <- spe_pseudo[, spe_pseudo$registration_variable %in% enough_samples]
@@ -111,6 +114,64 @@ colData(spe_pseudo) <- colData(spe_pseudo)[, names(all_na)[!all_na]]
 ## save 
 message(Sys.time(), " - Save")
 saveRDS(spe_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
+
+
+#### Explore number of cells + donors ####
+
+if(opt$cluster == "cell_type_anno_SpX"){
+    # spe_pseudo <- readRDS(here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS"))
+    
+    n_cells_tb <- colData(spe_pseudo) |>
+        as.data.frame() |>
+        select(cell_type_anno_SpX, cell_type_anno, SpX, ncells) |>
+        as_tibble()
+    
+    n_cells_tb |> 
+        group_by(cell_type_anno) |>
+        count(ncells < 50)
+    
+    n_cell_boxplot <- n_cells_tb |>
+        ggplot(aes(x = SpX, y = ncells)) +
+        geom_boxplot() +
+        facet_wrap(~cell_type_anno) +
+        ylim(0, 100)
+    
+    ggsave(n_cell_boxplot, filename = here(plot_dir, "xenium_pseudobulk_n_cell_boxplot.png"))
+    
+    
+    min_cell_tile <- n_cells_tb |>
+        group_by(SpX, cell_type_anno) |>
+        slice_min(ncells) |>
+        ggplot(aes(x = SpX, y = cell_type_anno, fill = ncells)) +
+        geom_tile() +
+        geom_text(aes(label = ncells, color = ncells < 50)) +
+        theme_bw()  +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    
+    ggsave(min_cell_tile, filename = here(plot_dir, "xenium_pseudobulk_min_cell_tile.png"))    
+    
+    median_cell_tile <- n_cells_tb |>
+        group_by(SpX, cell_type_anno) |>
+        summarise(median_cells = median(ncells)) |>
+        ggplot(aes(x = SpX, y = cell_type_anno, fill = median_cells)) +
+        geom_tile() +
+        geom_text(aes(label = median_cells, color = median_cells < 50), size = 2) +
+        theme_bw()  +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    
+    ggsave(median_cell_tile, filename = here(plot_dir, "xenium_pseudobulk_median_cell_tile.png"))
+    
+    
+    n_cell_histo <- n_cells_tb |>
+        ggplot(aes(x =  ncells)) +
+        geom_histogram(binwidth = 25) +
+        facet_grid(cell_type_anno~SpX) +
+        ylim(0, 100)
+    
+    ggsave(n_cell_histo, filename = here(plot_dir, "xenium_pseudobulk_n_cell_histo_grid.png"), height = 25, width = 9)
+    
+}
+
 
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno")
 
