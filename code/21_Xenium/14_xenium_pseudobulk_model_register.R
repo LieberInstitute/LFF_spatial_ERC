@@ -78,6 +78,8 @@ if(opt$var == "SpX") colnames(modeling_results$enrichment) <- gsub("_Sp", "~Sp",
 message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, sprintf("xenium_modeling_results-%s.rds", opt$var)))
 
+# modeling_results <- readRDS(here(data_dir, sprintf("xenium_modeling_results-%s.rds", opt$var)))
+
 #### Extract Top Layer Enrichment Genes ####
 (spe_pb <- readRDS(here(data_dir, sprintf("spe_xenium_pseudobulk-%s.rds", opt$var))))
 
@@ -90,6 +92,7 @@ top_DEGs <- sig_genes_extract(n = 10,
 if(opt$var == "SpX") top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
 write.csv(top_DEGs, file = here(data_dir, sprintf("xenium_enrichment_modeling_%s_top100.csv", opt$var)), row.names = FALSE)
+# top_DEGs <- read.csv(here(data_dir, sprintf("xenium_enrichment_modeling_%s_top100.csv", opt$var)))
 
 
 if(opt$var == "SpX"){
@@ -187,6 +190,7 @@ if(opt$var == "SpX"){
                                         rank_col = "top",
                                         anno_col = "anno",
                                         color_pal = metadata(spe)$SpX_colors,
+                                        gene_col = "gene",
                                         cellType_col = "SpX",
                                         pdf = here(plot_dir, "xenium_SpX_topEnrich_violin_express.pdf"))
     
@@ -262,6 +266,7 @@ if(opt$var == "SpX"){
                                         anno_col = "anno",
                                         color_pal = ref_colors,
                                         cellType_col = "cell_type_anno",
+                                        gene_col = "gene",
                                         pdf = here(plot_dir, "xenium_cell_type_anno_topEnrich_violin_express.pdf"))
     
     
