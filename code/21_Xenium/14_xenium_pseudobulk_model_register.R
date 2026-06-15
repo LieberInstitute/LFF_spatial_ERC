@@ -122,7 +122,7 @@ if(opt$var == "SpX"){
 cor_layer <- layer_stat_cor(stats = modeling_results$enrichment,
                             modeling_results = reference_modeling,
                             model_type = "enrichment",
-                            top_n = 100)
+                            top_n = NULL)
 
 ## fix order to match levels
 ref_levels <- names(ref_colors)
