@@ -4,8 +4,8 @@
 #SBATCH --job-name=19_xenium_pseudobulk_DE_prep
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/19_xenium_pseudobulk_DE_prep_cell_type_anno_SpX.txt
-#SBATCH -e logs/19_xenium_pseudobulk_DE_prep_cell_type_anno_SpX.txt
+#SBATCH -o logs/19_xenium_pseudobulk_DE_prep.txt
+#SBATCH -e logs/19_xenium_pseudobulk_DE_prep.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno_SpX
+Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno
 
 echo "**** Job ends ****"
 date
