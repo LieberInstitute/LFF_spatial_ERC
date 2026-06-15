@@ -41,6 +41,9 @@ message(Sys.time(), " - Loop voomlmFit by cluster")
 lmf_summary <- map_dfr(clusters, possibly(function(clus){
     
     dge <- sce_pb[,sce_pb$registration_variable ==clus]
+    
+    c_cell_type <- unique(dge$cell_type_anno)
+    c_SpX <- unique(dge$SpX)
 
     des <- model.matrix(~APOE_carrier_syn + Age + Anc_Afr , data = colData(dge)) ## no Mito ratio for Xenium
 
@@ -67,6 +70,8 @@ lmf_summary <- map_dfr(clusters, possibly(function(clus){
     v.swt.e.tt <- topTable(v.swt.fit.e,coef = "APOE_carrier_E4", number=Inf, adjust.method = "BH") |>
                                  mutate(data_type = opt$datatype, 
                                         cluster = clus,
+                                        cell_type_anno = c_cell_type,
+                                        SpX = c_SpX,
                                         contrast = "carrier", 
                                         .before = 1) |>
                                  arrange(adj.P.Val)
