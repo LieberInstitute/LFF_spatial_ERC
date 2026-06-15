@@ -24,20 +24,11 @@ AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
 
 #### colors and factors ####
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
 cluster_colors <- cell_type_colors$anno
 cluster_levels <- names(cell_type_colors$anno)
 cell_type_broad_levels <- names(cell_type_colors$broad)
 cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Other"]
-
-SpX_colors = c('Vasc~SpX3' = "#E05AD2",
-               'L1~SpX6' = "#9AA7FE",
-               'L1~SpX7' = "#0220DE",
-               'L2.3~SpX4' = "#FEAF16",
-               'Inhib~SpX5' = "#C82100",
-               'L5~SpX1' = "#16FF32",
-               'L6~SpX9' = "#178C6D",
-               'WMtz~SpX8' = "grey",
-               'WM~SpX2'= "#581009")
 
 
 #### voomLmFit data ####
@@ -61,10 +52,8 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_t = t,
                   vlmf_P.Value = P.Value,
                   vlmf_adj.P.Val = adj.P.Val,
-                  vlmf_B = B
-    )  |>
-    mutate(SpX = factor(gsub("_","~", cluster), names(SpX_colors))
-    ) |>
+                  vlmf_B = B )  |>
+    mutate(SpX = factor(gsub("_","~", cluster), names(SpX_colors))) |>
     as_tibble()
 
 levels(vlmf_data_tb$SpX)
