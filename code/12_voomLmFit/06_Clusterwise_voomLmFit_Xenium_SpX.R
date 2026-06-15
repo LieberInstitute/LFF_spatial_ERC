@@ -13,9 +13,9 @@ library("sessioninfo")
 library("qs2")
 
 opt <- list()
-opt$datatype <- "Xenium_O3"
+opt$datatype <- "Xenium_SpX"
 
-pb_fn <- here("processed-data", "21_Xenium", "17_xenium_OligoOPC", "spe_xenium_pseudo_DGE-O3_SpX.RDS")
+pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS")
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, pb_fn))
 
 #### Set up dirs ####
