@@ -24,22 +24,38 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
-# opt$cluster <- "cell_type_anno"
+# opt$cluster <- "cell_type_anno_SpX"
 
-spe_fn <- here("processed-data", "21_Xenium", "10_xenium_cell_types","spe_xenium_cell_types.qs2")
+spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
 message(Sys.time(), " - load data from: ", basename(spe_fn))
-(sce <- qs_read(spe_fn))
 
-message("ncells: ", ncol(sce))
+spe <- qs_read(spe_fn)
+
+spe <- spe[,spe$spot_class == "singlet"]
+(spe <- qs_read(spe_fn))
+
+message("ncells: ", ncol(spe))
 
 ## make APOE syntatic
-sce$APOE_syn <- gsub("/", ".", sce$APOE)
+spe$APOE_syn <- gsub("/", ".", spe$APOE)
+
+## Simplify SpX
+
+spe$SpX_simple <- factor(gsub("~SpX[0-9]", "", spe$SpX), levels = c("Vasc", "L1a", "L1b", "L2.3", "Inhib", "L5", "L6", "WMtz", "WM"))
+table(spe$SpX, spe$SpX_simple)
+
+if(opt$cluster == "cell_type_anno_SpX"){
+    spe$cell_type_anno_SpX <- paste0(spe$cell_type_anno, "_", spe$SpX_simple)
+    
+    message("cell type x SpX combindations: ", length(unique(spe$cell_type_anno_SpX)))
+}
+
 
 
 #### run pseudobulk - cell_type_anno ####
 message(Sys.time(), " - pseudobulk ", opt$cluster)
-sce_pseudo <- registration_pseudobulk(
-    sce,
+spe_pseudo <- registration_pseudobulk(
+    spe,
     var_registration = opt$cluster,
     var_sample_id = "sample_id",
     covars = NULL,
@@ -50,13 +66,15 @@ sce_pseudo <- registration_pseudobulk(
 
 message(Sys.time(), " - Done pseudobulk")
 
-message(sprintf("nrow: %d, ncol: %d", nrow(sce_pseudo), ncol(sce_pseudo)))
+message(sprintf("nrow: %d, ncol: %d", nrow(spe_pseudo), ncol(spe_pseudo)))
 
 #### Check n samples for each cell type ####
-table(sce_pseudo$APOE_carrier, sce_pseudo$cell_type_broad)
-table(sce_pseudo$APOE_carrier, sce_pseudo$registration_variable)
+table(spe_pseudo$APOE_carrier, spe_pseudo$cell_type_broad)
+table(spe_pseudo$APOE_carrier, spe_pseudo$registration_variable)
 
-cell_type_count <- colData(sce_pseudo) |> as.data.frame() |> dplyr::count(APOE_carrier, registration_variable)
+cell_type_count <- colData(spe_pseudo) |> as.data.frame() |> dplyr::count(APOE_carrier, registration_variable)
+
+cell_type_count_wide <- cell_type_count |> tidyr::pivot_wider(values_from = "n", names_from = "APOE_carrier")
 
 ## cell type must have two or more samples on either side of DEG split (APOE carrier)
 enough_samples <- cell_type_count |>
@@ -66,7 +84,7 @@ enough_samples <- cell_type_count |>
     dplyr::pull(registration_variable)
 
 message("Too few samples in: ", 
-        paste(levels(sce_pseudo$registration_variable)[!levels(sce_pseudo$registration_variable) %in% enough_samples], collapse = ", ")
+        paste(unique(spe_pseudo$registration_variable)[!unique(spe_pseudo$registration_variable) %in% enough_samples], collapse = ", ")
 )
 
 cell_type_count |>
@@ -74,23 +92,25 @@ cell_type_count |>
     write.csv(here(data_dir, sprintf("spe_xenium_psuedobulk_sample_count-%s.csv", opt$cluster)))
 
 ## drop too few sample cell types
-sce_pseudo <- sce_pseudo[, sce_pseudo$registration_variable %in% enough_samples]
-sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
+spe_pseudo <- spe_pseudo[, spe_pseudo$registration_variable %in% enough_samples]
+if(is.factor(spe_pseudo$registration_variable)){
+    spe_pseudo$registration_variable <- droplevels(spe_pseudo$registration_variable)
+}
 
 #### Add PCAs ####
-sce_pseudo <- scater::runPCA(sce_pseudo, 
+spe_pseudo <- scater::runPCA(spe_pseudo, 
                              ncomponents = 50,
                              name = "PCA")
 
 
 #### Additional edits + Save ####
 ## drop all NA cols
-all_na <- sapply(colData(sce_pseudo), function(x)all(is.na(x)))
-colData(sce_pseudo) <- colData(sce_pseudo)[, names(all_na)[!all_na]]
+all_na <- sapply(colData(spe_pseudo), function(x)all(is.na(x)))
+colData(spe_pseudo) <- colData(spe_pseudo)[, names(all_na)[!all_na]]
 
 ## save 
 message(Sys.time(), " - Save")
-saveRDS(sce_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
+saveRDS(spe_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
 
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno")
 
