@@ -11,7 +11,7 @@ library("GGally")
 library("broom")
 
 opt <- list()
-opt$datatype  <- "Xenium_O3_SpX"
+opt$datatype  <- "Xenium_SpX"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -32,10 +32,10 @@ cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Othe
 
 
 #### voomLmFit data ####
-vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", "vlmf_Xenium_O3"),
+vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", "vlmf_Xenium_SpX"),
                       full.names = TRUE, pattern = ".rds")
 
-names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_sn_fine_|.rds", "", basename(.x)))
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_Xenium_SpX_|.rds", "", basename(.x)))
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -53,16 +53,21 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_P.Value = P.Value,
                   vlmf_adj.P.Val = adj.P.Val,
                   vlmf_B = B )  |>
-    mutate(SpX = factor(gsub("_","~", cluster), names(SpX_colors))) |>
-    as_tibble()
+    mutate(SpX = factor(SpX, names(SpX_colors)),
+           cell_type_anno = droplevels(factor(cell_type_anno, cluster_levels))) |>
+    as_tibble() 
 
+unique(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$SpX)
+levels(vlmf_data_tb$cell_type_anno)
 
 vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) |> print(n = 35)
 
+vlmf_data_tb |> count(SpX)
+
 vlmf_model_summary <- vlmf_data_tb |> 
                                    mutate(mod = "carrier") |>
-                                   group_by(SpX, mod) |>
+                                   group_by(SpX, cell_type_anno, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
                                              n_pval05 = sum(vlmf_P.Value < 0.05),
@@ -77,24 +82,24 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     geom_col() +
     geom_text(aes(label = n_pval05), vjust=-.5) +
     scale_fill_manual(values = SpX_colors) +
-    # facet_grid(mod~cell_type_broad, scales = "free_x", space = "free") +
+    facet_wrap(~cell_type_anno) +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None")
 
-ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 10)
+ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 12)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_pval05, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
-    pivot_longer(!c(SpX, mod), names_to = "reg", values_to = "n_genes") |>
+    pivot_longer(!c(cell_type_anno, SpX, mod), names_to = "reg", values_to = "n_genes") |>
     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
     filter(mod == "carrier") |>
     ggplot(aes(x = SpX, y = n_genes, fill = reg)) +
     geom_col() +
     geom_text(aes(label = abs(n_genes))) +
-    facet_grid(mod~SpX, scales = "free_x", space = "free") +
+    facet_wrap(~cell_type_anno) +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
@@ -120,7 +125,8 @@ custom_volcano <- function(data, Pval_cut = 0.05, model_name){
         ggplot(aes(x = vlmf_logFC, y = -log10(vlmf_P.Value), color = DE_class)) +
         geom_point(alpha = 0.5, size = 0.5) +
         scale_color_manual(values = signif_colors) +
-        facet_wrap(~cluster) +
+        # facet_wrap(~cluster) +
+        facet_wrap(~SpX) +
         theme_bw() +
         labs(title = model_name)
     
@@ -133,28 +139,36 @@ custom_volcano <- function(data, Pval_cut = 0.05, model_name){
 }
 
 
+custom_volcano_ct_fine <- function(data, mod_name = "carrier"){
+    
+    map(levels(vlmf_data_tb$cell_type_anno), 
+        ~data |> 
+            filter(cell_type_anno == .x) |>
+            custom_volcano(, model_name = paste0(mod_name,"-", .x)) )
+    
+}
+
 
 ## plot volcanos
-custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-carrier"))
+custom_volcano_ct_fine(vlmf_data_tb)
 
-## filter to risk genes
-custom_volcano(data = vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-carrier-risk"))
+# ## filter to risk genes
+# custom_volcano(data = vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-carrier-risk"))
 
 #### Save vlmf data ####
 
 
 ## Add sn results
 sn_DEG_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine", "DGE_results_carrier_sn_fine.Rds")) |>
-    select(cluster, gene_id, gene_name, starts_with("vlmf")) |>
-    rename_with(~ str_replace(.x, "vlmf_", "vlmf_sn_"), starts_with("vlmf_")) |>
-    filter(cluster == "Oligo.3")
+    dplyr::select(cell_type_anno = cluster, gene_id, gene_name, starts_with("vlmf")) |>
+    rename_with(~ str_replace(.x, "vlmf_", "vlmf_sn_"), starts_with("vlmf_")) 
 
 sn_DEG_data |> count(vlmf_sn_adj.P.Val < 0.05, gene_name %in% vlmf_data_tb$gene_name)
 sn_DEG_data |> count(gene_name %in% vlmf_data_tb$gene_name)
 
 vlmf_data_tb_xenium <- vlmf_data_tb |>
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
-    left_join(sn_DEG_data |> select(-cluster)) |>
+    left_join(sn_DEG_data) |>
     mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
            signif_sn = vlmf_sn_adj.P.Val < 0.05,
            signif_both = signif_xenium & signif_sn,
@@ -175,7 +189,7 @@ write.csv(vlmf_data_tb_xenium, file = here(data_dir, sprintf("DGE_results_carrie
 
 validation_summary <- vlmf_data_tb_xenium |> 
     filter(!is.na(vlmf_sn_P.Value)) |> 
-    group_by(SpX) |>
+    group_by(cell_type_anno, SpX) |>
     summarise(n_signif_xenium = sum(signif_xenium),
               n_signif_sn = sum(signif_sn),
               n_signif_both = sum(signif_both),
@@ -185,11 +199,14 @@ validation_summary <- vlmf_data_tb_xenium |>
 validation_summary |>
     filter(n_signif_sn > 0)
 
+validation_summary |>
+    filter(cell_type_anno == "Oligo.3")
+
 vlmf_data_tb_xenium |>
     filter(validate) |> 
-    select(SpX, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_t) |> 
-    arrange(SpX) |>
-    print(n = 49)
+    select(cell_type_anno, SpX, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_t) |> 
+    arrange(cell_type_anno, SpX) |>
+    print(n = 79)
 
 vlmf_data_tb_xenium |> 
     filter(validate) |> 
