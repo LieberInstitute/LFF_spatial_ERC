@@ -1,0 +1,593 @@
+**** Job starts ****
+Mon Jun 15 10:26:23 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 32886660
+Job name: 19_xenium_pseudobulk_DE_prep
+Node name: compute-115
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+qs2 0.2.1
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:Biobase’:
+
+    combine
+
+The following objects are masked from ‘package:GenomicRanges’:
+
+    intersect, setdiff, union
+
+The following object is masked from ‘package:Seqinfo’:
+
+    intersect
+
+The following objects are masked from ‘package:IRanges’:
+
+    collapse, desc, intersect, setdiff, slice, union
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, intersect, rename, setdiff, setequal, union
+
+The following objects are masked from ‘package:BiocGenerics’:
+
+    combine, intersect, setdiff, setequal, union
+
+The following object is masked from ‘package:generics’:
+
+    explain
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: scuttle
+Loading required package: ggplot2
+$cluster
+[1] "cell_type_anno_SpX"
+
+attr(,"class")
+[1] "getopt"
+2026-06-15 10:26:58.078557 - load data from: spe_xenium_bansky.qs2
+class: SpatialExperiment 
+dim: 366 447183 
+metadata(19): Samples Samples ... SpX_colors region_colors
+assays(6): counts nucleus_normcounts ... H0 H1
+rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
+rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
+colnames(447183): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
+  Br5854_oiphphbd-1 Br5854_ojaapmlh-1
+colData names(78): Sample Barcode ... cell_type_broad region
+reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
+mainExpName: NULL
+altExpNames(0):
+spatialCoords names(2) : x_centroid y_centroid
+imgData names(1): sample_id
+ncells: 447183
+            
+              Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
+  Vasc~SpX3  50546     0     0     0     0     0     0     0     0
+  L1a~SpX6       0 29369     0     0     0     0     0     0     0
+  L1b~SpX7       0     0 37807     0     0     0     0     0     0
+  L2.3~SpX4      0     0     0 38282     0     0     0     0     0
+  Inhib~SpX5     0     0     0     0 26918     0     0     0     0
+  L5~SpX1        0     0     0     0     0 85468     0     0     0
+  L6~SpX9        0     0     0     0     0     0 45822     0     0
+  WMtz~SpX8      0     0     0     0     0     0     0 64747     0
+  WM~SpX2        0     0     0     0     0     0     0     0 68224
+cell type x SpX combindations: 342
+2026-06-15 10:29:19.171703 - pseudobulk cell_type_anno_SpX
+2026-06-15 10:29:20.191657 make pseudobulk object
+2026-06-15 10:32:33.182161 dropping 1434 pseudo-bulked samples that are below 'min_ncells'.
+2026-06-15 10:32:33.385452 normalize expression
+2026-06-15 10:32:37.988925 - Done pseudobulk
+nrow: 366, ncol: 3258
+     
+      Astro Macro Micro Oligo OPC Vasc Excit Inhib
+  E2+   245    26   193   297 184  163   248   266
+  E4+   254    40   161   289 191  167   243   291
+     
+      Astro.1_Inhib Astro.1_L1a Astro.1_L1b Astro.1_L2.3 Astro.1_L5 Astro.1_L6
+  E2+             8           6           8            8          8          8
+  E4+             8           6           8            8          8          6
+     
+      Astro.1_Vasc Astro.1_WM Astro.1_WMtz Astro.2_Inhib Astro.2_L1a
+  E2+            3          5            8             8           8
+  E4+            2          4            8             8           8
+     
+      Astro.2_L1b Astro.2_L2.3 Astro.2_L5 Astro.2_L6 Astro.2_Vasc Astro.2_WM
+  E2+           8            8          8          8            5          8
+  E4+           8            8          8          8            8          8
+     
+      Astro.2_WMtz Astro.3_Inhib Astro.3_L1a Astro.3_L1b Astro.3_L5 Astro.3_L6
+  E2+            8             0           3           1          2          4
+  E4+            8             1           1           1          4          3
+     
+      Astro.3_WM Astro.3_WMtz Astro.4_L1a Astro.4_L1b Astro.4_L6 Astro.4_Vasc
+  E2+          3            2           8           1          0            7
+  E4+          4            5           8           3          2            7
+     
+      Astro.4_WM Astro.4_WMtz Astro.5_Inhib Astro.5_L1a Astro.5_L1b
+  E2+          7            4             8           8           8
+  E4+          8            5             8           8           8
+     
+      Astro.5_L2.3 Astro.5_L5 Astro.5_L6 Astro.5_Vasc Astro.5_WM Astro.5_WMtz
+  E2+            8          8          8            8          8            8
+  E4+            8          8          8            8          8            8
+     
+      Excit.L2_5.1_Inhib Excit.L2_5.1_L1a Excit.L2_5.1_L1b Excit.L2_5.1_L2.3
+  E2+                  6                1                5                 8
+  E4+                  8                0                7                 8
+     
+      Excit.L2_5.1_L5 Excit.L2_5.1_L6 Excit.L2_5.1_Vasc Excit.L2_5.1_WM
+  E2+               8               8                 2               3
+  E4+               8               8                 5               5
+     
+      Excit.L2_5.1_WMtz Excit.L2_5.2_Inhib Excit.L2_5.2_L1b Excit.L2_5.2_L2.3
+  E2+                 8                  1                6                 4
+  E4+                 8                  2                5                 4
+     
+      Excit.L2_5.2_L5 Excit.L2_5.2_L6 Excit.L2_5.2_Vasc Excit.L2_5.2_WMtz
+  E2+               7               0                 1                 6
+  E4+               6               1                 2                 6
+     
+      Excit.L2_Inhib Excit.L2_L1b Excit.L2_L2.3 Excit.L2_L5 Excit.L2_L6
+  E2+              7            7             8           8           5
+  E4+              8            8             8           8           6
+     
+      Excit.L2_Vasc Excit.L2_WM Excit.L2_WMtz Excit.L5_6_NP_L1b
+  E2+             3           1             8                 1
+  E4+             6           1             8                 0
+     
+      Excit.L5_6_NP_L2.3 Excit.L5_6_NP_L5 Excit.L5_6_NP_L6 Excit.L5_6_NP_WM
+  E2+                  1                3                3                1
+  E4+                  0                2                2                0
+     
+      Excit.L5_6_NP_WMtz Excit.L5.1_Inhib Excit.L5.1_L1b Excit.L5.1_L2.3
+  E2+                  1                2              6               7
+  E4+                  1                1              2               3
+     
+      Excit.L5.1_L5 Excit.L5.1_L6 Excit.L5.1_Vasc Excit.L5.1_WM Excit.L5.1_WMtz
+  E2+             8             8               1             0               7
+  E4+             8             8               1             1               8
+     
+      Excit.L5.2_Inhib Excit.L5.2_L1b Excit.L5.2_L2.3 Excit.L5.2_L5
+  E2+                5              4               6             7
+  E4+                7              5               6             7
+     
+      Excit.L5.2_Vasc Excit.L5.2_WMtz Excit.L6_CT_L1b Excit.L6_CT_L5
+  E2+               0               1               1              5
+  E4+               1               1               0              3
+     
+      Excit.L6_CT_L6 Excit.L6_CT_Vasc Excit.L6_CT_WM Excit.L6_CT_WMtz
+  E2+              8                1              5                6
+  E4+              7                0              6                6
+     
+      Excit.L6b_L1a Excit.L6b_L2.3 Excit.L6b_L5 Excit.L6b_L6 Excit.L6b_WM
+  E2+             1              1            4            8            7
+  E4+             0              0            2            7            6
+     
+      Excit.L6b_WMtz Inhib.Chandelier_Inhib Inhib.Chandelier_L1b
+  E2+              8                      6                    0
+  E4+              6                      6                    4
+     
+      Inhib.Chandelier_L2.3 Inhib.Chandelier_L5 Inhib.Chandelier_L6
+  E2+                     5                   7                   0
+  E4+                     8                   8                   2
+     
+      Inhib.Chandelier_WMtz Inhib.Lamp5_Lhx6_Inhib Inhib.Lamp5_Lhx6_L1a
+  E2+                     3                      8                    7
+  E4+                     3                      8                    7
+     
+      Inhib.Lamp5_Lhx6_L1b Inhib.Lamp5_Lhx6_L2.3 Inhib.Lamp5_Lhx6_L5
+  E2+                    8                     7                   8
+  E4+                    8                     8                   8
+     
+      Inhib.Lamp5_Lhx6_L6 Inhib.Lamp5_Lhx6_Vasc Inhib.Lamp5_Lhx6_WM
+  E2+                   7                     1                   6
+  E4+                   7                     2                   5
+     
+      Inhib.Lamp5_Lhx6_WMtz Inhib.Pax6_Inhib Inhib.Pax6_L1a Inhib.Pax6_L1b
+  E2+                     8                8              2              6
+  E4+                     8                8              4              8
+     
+      Inhib.Pax6_L2.3 Inhib.Pax6_L5 Inhib.Pax6_Vasc Inhib.Pax6_WMtz
+  E2+               3             4               0               1
+  E4+               7             5               1               2
+     
+      Inhib.Pvalb_Inhib Inhib.Pvalb_L1b Inhib.Pvalb_L2.3 Inhib.Pvalb_L5
+  E2+                 8               7                8              8
+  E4+                 8               8                8              8
+     
+      Inhib.Pvalb_L6 Inhib.Pvalb_Vasc Inhib.Pvalb_WM Inhib.Pvalb_WMtz
+  E2+              8                0              4                8
+  E4+              6                1              4                8
+     
+      Inhib.Sst_Inhib Inhib.Sst_L1b Inhib.Sst_L2.3 Inhib.Sst_L5 Inhib.Sst_L6
+  E2+               8             7              7            8            8
+  E4+               8             8              8            8            6
+     
+      Inhib.Sst_WM Inhib.Sst_WMtz Inhib.Vip_Inhib Inhib.Vip_L1a Inhib.Vip_L1b
+  E2+            5              8               8             6             8
+  E4+            4              8               8             8             8
+     
+      Inhib.Vip_L2.3 Inhib.Vip_L5 Inhib.Vip_L6 Inhib.Vip_Vasc Inhib.Vip_WM
+  E2+              8            8            7              1            6
+  E4+              8            8            6              5            4
+     
+      Inhib.Vip_WMtz Macro_Inhib Macro_L1a Macro_L1b Macro_L2.3 Macro_L5
+  E2+              7           0         5         3          0        2
+  E4+              8           1         8         6          1        4
+     
+      Macro_L6 Macro_Vasc Macro_WM Macro_WMtz Micro.1_L1a Micro.1_L1b
+  E2+        0          7        3          6           1           1
+  E4+        1          8        4          7           0           0
+     
+      Micro.1_WM Micro.1_WMtz Micro.2_Inhib Micro.2_L1a Micro.2_L1b
+  E2+          4            1             8           8           8
+  E4+          0            0             8           8           8
+     
+      Micro.2_L2.3 Micro.2_L5 Micro.2_L6 Micro.2_Vasc Micro.2_WM Micro.2_WMtz
+  E2+            8          8          8            7          8            8
+  E4+            8          8          8            8          8            8
+     
+      Micro.3_Inhib Micro.3_L1a Micro.3_L1b Micro.3_L5 Micro.3_L6 Micro.3_Vasc
+  E2+             1           6           6          4          2            5
+  E4+             1           5           3          2          0            1
+     
+      Micro.3_WM Micro.3_WMtz Micro.4_L1a Micro.4_L6 Micro.4_WM Micro.4_WMtz
+  E2+          7            6           1          1          4            1
+  E4+          4            3           0          0          0            0
+     
+      Micro.5_Inhib Micro.5_L1a Micro.5_L1b Micro.5_L2.3 Micro.5_L5 Micro.5_L6
+  E2+             8           8           8            8          8          8
+  E4+             8           8           8            8          8          7
+     
+      Micro.5_Vasc Micro.5_WM Micro.5_WMtz Oligo.1_Inhib Oligo.1_L1a
+  E2+            7          8            8             8           8
+  E4+            8          7            8             8           8
+     
+      Oligo.1_L1b Oligo.1_L2.3 Oligo.1_L5 Oligo.1_L6 Oligo.1_Vasc Oligo.1_WM
+  E2+           7            7          8          8            5          8
+  E4+           8            7          8          7            3          8
+     
+      Oligo.1_WMtz Oligo.2_Inhib Oligo.2_L1a Oligo.2_L1b Oligo.2_L5 Oligo.2_L6
+  E2+            8             2           8           5          7          8
+  E4+            8             1           8           4          7          6
+     
+      Oligo.2_Vasc Oligo.2_WM Oligo.2_WMtz Oligo.3_Inhib Oligo.3_L1a
+  E2+            3          8            8             8           8
+  E4+            4          8            7             8           8
+     
+      Oligo.3_L1b Oligo.3_L2.3 Oligo.3_L5 Oligo.3_L6 Oligo.3_Vasc Oligo.3_WM
+  E2+           8            8          8          8            7          8
+  E4+           8            8          8          8            8          8
+     
+      Oligo.3_WMtz Oligo.4_Inhib Oligo.4_L1a Oligo.4_L1b Oligo.4_L2.3
+  E2+            8             8           8           8            7
+  E4+            8             8           8           8            8
+     
+      Oligo.4_L5 Oligo.4_L6 Oligo.4_Vasc Oligo.4_WM Oligo.4_WMtz Oligo.5_Inhib
+  E2+          8          8            7          8            8             2
+  E4+          8          8            8          8            8             1
+     
+      Oligo.5_L1a Oligo.5_L1b Oligo.5_L2.3 Oligo.5_L5 Oligo.5_L6 Oligo.5_WM
+  E2+           3           2            2          8          8          7
+  E4+           0           1            4          7          7          7
+     
+      Oligo.5_WMtz OPC.1_L2.3 OPC.2_Inhib OPC.2_L1a OPC.2_L1b OPC.2_L2.3
+  E2+            8          0           8         8         8          7
+  E4+            8          1           8         8         8          8
+     
+      OPC.2_L5 OPC.2_L6 OPC.2_Vasc OPC.2_WM OPC.2_WMtz OPC.4_Inhib OPC.4_L1a
+  E2+        8        8          5        8          8           5         7
+  E4+        8        7          7        7          8           8         8
+     
+      OPC.4_L1b OPC.4_L2.3 OPC.4_L5 OPC.4_L6 OPC.4_Vasc OPC.4_WM OPC.4_WMtz
+  E2+         5          5        8        7          0        8          8
+  E4+         8          6        8        5          1        5          7
+     
+      OPC.5_Inhib OPC.5_L1a OPC.5_L1b OPC.5_L2.3 OPC.5_L5 OPC.5_L6 OPC.5_Vasc
+  E2+           8         6         8          8        8        8          2
+  E4+           8         6         8          8        8        8          4
+     
+      OPC.5_WM OPC.5_WMtz Vasc.Endo_Inhib Vasc.Endo_L1a Vasc.Endo_L1b
+  E2+        7          8               8             8             8
+  E4+        7          8               8             8             8
+     
+      Vasc.Endo_L2.3 Vasc.Endo_L5 Vasc.Endo_L6 Vasc.Endo_Vasc Vasc.Endo_WM
+  E2+              8            8            8              8            8
+  E4+              8            8            7              8            8
+     
+      Vasc.Endo_WMtz Vasc.PC_Inhib Vasc.PC_L1a Vasc.PC_L1b Vasc.PC_L2.3
+  E2+              8             8           8           8            8
+  E4+              8             8           8           8            8
+     
+      Vasc.PC_L5 Vasc.PC_L6 Vasc.PC_Vasc Vasc.PC_WM Vasc.PC_WMtz Vasc.VLMC_L1a
+  E2+          8          8            8          8            8             3
+  E4+          8          7            8          7            8             6
+     
+      Vasc.VLMC_L1b Vasc.VLMC_L5 Vasc.VLMC_Vasc Vasc.VLMC_WM Vasc.VLMC_WMtz
+  E2+             2            1              8            1              4
+  E4+             3            2              8            1              6
+Too few samples in: Astro.3_Inhib, Astro.3_L1a, Astro.3_L1b, Astro.4_L1b, Astro.4_L6, Excit.L2_5.1_L1a, Excit.L2_5.2_Inhib, Excit.L2_5.2_L6, Excit.L2_5.2_Vasc, Excit.L2_WM, Excit.L5_6_NP_L1b, Excit.L5_6_NP_L2.3, Excit.L5_6_NP_WM, Excit.L5_6_NP_WMtz, Excit.L5.1_Inhib, Excit.L5.1_Vasc, Excit.L5.1_WM, Excit.L5.2_Vasc, Excit.L5.2_WMtz, Excit.L6_CT_L1b, Excit.L6_CT_Vasc, Excit.L6b_L1a, Excit.L6b_L2.3, Inhib.Chandelier_L1b, Inhib.Chandelier_L6, Inhib.Lamp5_Lhx6_Vasc, Inhib.Pax6_Vasc, Inhib.Pax6_WMtz, Inhib.Pvalb_Vasc, Inhib.Vip_Vasc, Macro_Inhib, Macro_L2.3, Macro_L6, Micro.1_L1a, Micro.1_L1b, Micro.1_WM, Micro.1_WMtz, Micro.3_Inhib, Micro.3_L6, Micro.3_Vasc, Micro.4_L1a, Micro.4_L6, Micro.4_WM, Micro.4_WMtz, Oligo.2_Inhib, Oligo.5_Inhib, Oligo.5_L1a, Oligo.5_L1b, OPC.1_L2.3, OPC.4_Vasc, Vasc.VLMC_L5, Vasc.VLMC_WM
+2026-06-15 10:32:39.988536 - Save
+[1] "Reproducibility information:"
+[1] "2026-06-15 10:32:42 EDT"
+   user  system elapsed 
+302.075  21.621 377.038 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-06-15
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
+ AnnotationDbi          1.72.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ AnnotationHub          4.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
+ beachmat               2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
+ benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
+ benchmarkmeData        2.0.0     2026-01-19 [1] CRAN (R 4.5.0)
+ Biobase              * 2.70.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocFileCache          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocIO                 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocManager            1.30.27   2025-11-14 [1] CRAN (R 4.5.0)
+ BiocNeighbors          2.4.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel           1.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocSingular           1.26.1    2025-11-17 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocVersion            3.22.0    2025-10-07 [1] Bioconductor 3.22 (R 4.5.0)
+ Biostrings             2.78.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2     2026-05-19 [1] CRAN (R 4.5.0)
+ bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
+ blob                   1.3.0     2026-01-14 [1] CRAN (R 4.5.0)
+ bslib                  0.11.0    2026-05-16 [1] CRAN (R 4.5.0)
+ cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
+ cigarillo              1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ circlize               0.4.18    2026-04-04 [1] CRAN (R 4.5.0)
+ cli                    3.6.6     2026-04-09 [1] CRAN (R 4.5.0)
+ clue                   0.3-68    2026-03-26 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-2     2025-09-22 [1] CRAN (R 4.5.0)
+ ComplexHeatmap         2.26.1    2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
+ config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
+ curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
+ data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
+ DBI                    1.3.0     2026-02-25 [1] CRAN (R 4.5.0)
+ dbplyr                 2.5.2     2026-02-13 [1] CRAN (R 4.5.0)
+ DelayedArray           0.36.1    2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1     2026-04-03 [1] CRAN (R 4.5.0)
+ DT                     0.34.0    2025-09-02 [1] CRAN (R 4.5.0)
+ edgeR                  4.8.2     2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
+ ExperimentHub          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicAlignments      1.46.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ GenomicRanges        * 1.62.1    2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1    2026-04-27 [1] CRAN (R 4.5.0)
+ GetoptLong             1.1.1     2026-04-08 [1] CRAN (R 4.5.0)
+ ggbeeswarm             0.7.3     2025-11-29 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3     2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.8     2026-03-17 [1] CRAN (R 4.5.0)
+ GlobalOptions          0.1.4     2026-04-08 [1] CRAN (R 4.5.0)
+ glue                   1.8.1     2026-04-17 [1] CRAN (R 4.5.0)
+ golem                  0.5.1     2024-08-27 [2] CRAN (R 4.5.0)
+ gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
+ gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2     2025-09-15 [1] CRAN (R 4.5.0)
+ htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv                 1.6.17    2026-03-18 [1] CRAN (R 4.5.0)
+ httr                   1.4.8     2026-02-13 [1] CRAN (R 4.5.0)
+ httr2                  1.2.2     2025-12-08 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ irlba                  2.3.7     2026-01-30 [1] CRAN (R 4.5.0)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
+ jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGREST               1.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ later                  1.4.5     2026-01-08 [1] CRAN (R 4.5.0)
+ lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.3     2026-04-04 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
+ limma                  3.66.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
+ magick                 2.9.1     2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5     2026-04-04 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
+ mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
+ otel                   0.2.0     2025-08-29 [1] CRAN (R 4.5.0)
+ paletteer              1.7.0     2026-01-08 [1] CRAN (R 4.5.0)
+ pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
+ plotly                 4.12.0    2026-01-24 [1] CRAN (R 4.5.0)
+ png                    0.1-9     2026-03-15 [1] CRAN (R 4.5.0)
+ promises               1.5.0     2025-11-01 [1] CRAN (R 4.5.0)
+ purrr                  1.2.1     2026-01-09 [1] CRAN (R 4.5.0)
+ qs2                  * 0.2.1     2026-05-04 [1] CRAN (R 4.5.0)
+ R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
+ rappdirs               0.3.4     2026-01-17 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1     2026-01-10 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2  2026-03-05 [1] CRAN (R 4.5.0)
+ RCurl                  1.98-1.19 2026-06-03 [1] CRAN (R 4.5.0)
+ rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
+ restfulr               0.0.17    2026-06-11 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0     2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
+ Rsamtools              2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ RSQLite                2.4.5     2025-11-30 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
+ rtracklayer            1.70.1    2025-12-22 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Arrays               1.10.1    2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1    2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2     2026-04-22 [1] CRAN (R 4.5.0)
+ sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
+ ScaledMatrix           1.18.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
+ scater               * 1.38.1    2026-03-20 [1] Bioconductor 3.22 (R 4.5.0)
+ scuttle              * 1.20.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ Seqinfo              * 1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4     2026-06-04 [1] CRAN (R 4.5.0)
+ shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
+ shiny                  1.13.0    2026-02-20 [1] CRAN (R 4.5.0)
+ shinyWidgets           0.9.1     2026-03-09 [1] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment    * 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ spatialLIBD          * 1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
+ statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
+ stringfish             0.19.0    2026-04-21 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ tibble                 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                  1.3.2     2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
+ vctrs                  0.7.3     2026-04-11 [1] CRAN (R 4.5.0)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3     2026-02-04 [1] CRAN (R 4.5.0)
+ withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
+ XML                    3.99-0.22 2026-02-10 [1] CRAN (R 4.5.0)
+ xtable                 1.8-8     2026-02-22 [1] CRAN (R 4.5.0)
+ XVector                0.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ yaml                   2.3.12    2025-12-10 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Mon Jun 15 10:32:44 AM EDT 2026
