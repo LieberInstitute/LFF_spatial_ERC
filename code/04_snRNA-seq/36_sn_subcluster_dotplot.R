@@ -482,9 +482,12 @@ dev.off()
 
 lit_markers |> filter(cell_type_broad == "Astro")
 
-Astro_lit_markers <- list(Astro = c("AQP4", "GFAP", "SLC1A2"),
-                          disease_associated = c("SERPINA3", "TNFRSF1A", "IL1B", "IL33", "HMOX1"), #https://doi.org/10.1038/s41593-025-01873-x
-                          AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+Astro_lit_markers <- list(disease_associated = c("SERPINA3", "TNFRSF1A", "IL1B", "IL33", "HMOX1"), #https://doi.org/10.1038/s41593-025-01873-x
+                          AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
+                          Protoplasmic = c("SLC1A2", "SLC1A3"), #Dai et al. https://doi.org/10.1186/s40478-023-01624-8
+                          Fibrous = c("GFAP", "CD44", "AQP1", "CPAMD8"),
+                          Reactive = c("VIM"),
+                          Homeostatic = c("NRXN1")
 )
 
 Astro_lit_markers <- AnnotationDbi::unlist2(Astro_lit_markers)
@@ -524,6 +527,8 @@ Astro_explore_genes <- read_csv(here(data_dir, "astrocyte_marker_genes_claude.cs
     filter(!gene %in% rownames(sce))
 
 Astro_explore_genes |> filter(gene %in% Astro_lit_markers)
+
+Astro_explore_genes |> filter()
 
 # rowData(sce)$astro_marker <- NULL
 # rowData(sce)$astro_marker <- names(Astro_lit_markers)[match(rownames(sce), Astro_lit_markers)] 
@@ -565,6 +570,25 @@ sce[, sce$cell_type_broad == "Astro"]|>
               scale = FALSE,
               annoColors = list("cell_type_anno" = cell_type_colors$anno),
               clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+
+dev.off()
+
+astro_genes2 <- c("GFAP", "ITGB4", "ANGPTL4", "SLC1A2")
+astro_genes2 %in% rownames(sce)
+astro_genes2 %in% Astro_explore_genes$gene
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_explore2.pdf")))
+
+sce[, sce$cell_type_broad == "Astro"]|>
+    scDotPlot(features = astro_genes2[astro_genes2 %in% rownames(sce)],
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = TRUE,
               groupLegends = FALSE
     )
 
