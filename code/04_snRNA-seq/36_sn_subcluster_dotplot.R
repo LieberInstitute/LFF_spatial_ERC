@@ -322,6 +322,21 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
               groupLegends = FALSE)
 dev.off()
 
+oligo_explore_genes <- c("FGFR3", "PLPP3", "NTSR2", "RYR3") ## Genes of interest from Bernie Jun 26, 2026
+all(oligo_explore_genes %in% rownames(sce))
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC_dotplot_explore.pdf"), width = 5)
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
+    scDotPlot(features = oligo_explore_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "oligo_lineage_markers",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
 ## Oligo Enrichment genes w/ OPC.5 outgroup
 
 oligo_enrichment_genes <- read_csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_enrichment_top10_Oligo.csv")) |>
