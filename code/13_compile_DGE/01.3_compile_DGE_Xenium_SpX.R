@@ -546,11 +546,16 @@ names(signif_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
 
 map(t_stat_SpX_mat, dim)
 
-APOE_order <- c("L1b~SpX7","L1a~SpX6", "WMtz~SpX8","Inhib~SpX5","Vasc~SpX3", "L6~SpX9", "WM~SpX2", "L5~SpX1", "L2.3~SpX4")
- 
-# t_stat_SpX_mat <- t_stat_SpX_mat[sn_DEG_data_test$gene_name, APOE_order]
-# t_stat_SpX_mat <- t_stat_SpX_mat[sn_DEG_data_test$gene_name, names(SpX_colors)]
 
+## cell type vs. SpX & APOE annotation data
+spx_cell_prop <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_SpX_prop_long.csv"), row.names = 1)
+spx_APOE <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_SpX_APOE_mean_logcount.csv"), row.names = 1) |>
+    rownames_to_column("SpX") |> arrange(-APOE_mean)
+
+APOE_order <- spx_APOE$SpX
+
+
+## plot for each cell type
 map(names(signif_SpX_mat), function(ct){
     
     sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
@@ -570,7 +575,7 @@ map(names(signif_SpX_mat), function(ct){
         col = list(vlmf_sn_t = sn_t_col_fun)
     )
     
-    APOE_order2 <- APOE_order[APOE_order %in% colnames(signif_SpX_mat[[ct]])]
+    SpX_order <- SpX_levels[SpX_levels %in% colnames(signif_SpX_mat[[ct]])]
     
     # col annotation by n validation
     SpX_val <- validation_summary |>
@@ -580,21 +585,42 @@ map(names(signif_SpX_mat), function(ct){
         select(SpX, n_validate, n_opp) |>
         column_to_rownames("SpX")
     
-    SpX_val <- SpX_val[APOE_order2,]
+    SpX_val <- SpX_val[SpX_order,]
     
     ha_SpX_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(SpX_val)))
     
+    # col annotation n_cells
+    spx_cell_prop_ct <- spx_cell_prop |>
+        filter(cell_type_anno == ct) |>
+        select(SpX, n_cell) |>
+        left_join(spx_APOE, by = join_by(SpX)) |> ## Add APOE expression
+        column_to_rownames("SpX")
+    
+    spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
+    
+    col_fun_n_cell = circlize::colorRamp2(c(0, max(spx_cell_prop_ct$n_cell)), c("white", "red"))
+    col_fun_APOE = circlize::colorRamp2(c(min(spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
+    
+    ha_SpX_cell <- HeatmapAnnotation(df = spx_cell_prop_ct,
+                                     col = list(n_cell = col_fun_n_cell,
+                                                APOE_mean = col_fun_APOE))
+    
     # reorder tabs 
-    signif_SpX_ct <- signif_SpX_mat[[ct]][rownames(sn_DEG_data_test_df),APOE_order2, drop = FALSE]
-    t_stat_SpX_ct <- t_stat_SpX_mat[[ct]][rownames(sn_DEG_data_test_df),APOE_order2, drop = FALSE]
+    signif_SpX_ct <- signif_SpX_mat[[ct]][rownames(sn_DEG_data_test_df),SpX_order, drop = FALSE]
+    t_stat_SpX_ct <- t_stat_SpX_mat[[ct]][rownames(sn_DEG_data_test_df),SpX_order, drop = FALSE]
     
     signif_SpX_ct[is.na(signif_SpX_ct)] <- ""
     
     ## color scale for xenium stats
-    xenium_t_col_fun = circlize::colorRamp2(c(min(t_stat_SpX_ct, na.rm = TRUE), 0, max(t_stat_SpX_ct, na.rm = TRUE)), 
-                                        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']]))
+    xenium_t_col_fun = circlize::colorRamp2(
+        c(min(c(-0.01,t_stat_SpX_ct), na.rm = TRUE), 
+          0, 
+          max(c(0.01, t_stat_SpX_ct), na.rm = TRUE)
+        ), 
+        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']])
+    )
     
-    pdf(here(plot_dir, sprintf("xenium_SpX_t_stat_heatmap-%s.pdf", ct)), height = 2 + nrow(t_stat_SpX_ct)/5)
+    pdf(here(plot_dir, sprintf("xenium_SpX_t_stat_heatmap-%s.pdf", ct)), height = 3 + nrow(t_stat_SpX_ct)/5)
     print(Heatmap(t_stat_SpX_ct, 
             name = "xenium\nt-stat",
             col = xenium_t_col_fun,
@@ -602,6 +628,7 @@ map(names(signif_SpX_mat), function(ct){
             cluster_columns = FALSE,
             right_annotation =  sn_t_row_ha,
             top_annotation = ha_SpX_val,
+            bottom_annotation = ha_SpX_cell,
             cell_fun = function(j, i, x, y, width, height, fill) {
                 grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
             },
