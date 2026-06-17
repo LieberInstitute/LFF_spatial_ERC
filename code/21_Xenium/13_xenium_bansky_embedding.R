@@ -403,6 +403,20 @@ DeconvoBuddies::plot_marker_express_List(sce = spe,
                                          pdf = here(plot_dir, "xenium_bansky_SpX_SpD_markers.pdf"),
                                          gene_name_col = "gene_name")
 
+## APOE expression
+spx_APOE <- DeconvoBuddies::plot_gene_express(sce = spe, 
+                                  genes = "APOE",
+                                  category = "SpX",
+                                  color_pal = SpX_colors
+                                  )
+
+ggsave(spx_APOE, filename = here(plot_dir, "xenium_bansky_SpX_APOE.png"))
+
+apoe_mean <- as.data.frame(map_dbl(rafalib::splitit(spe$SpX), ~mean(logcounts(spe)["APOE",.x])))
+colnames(apoe_mean) <- "APOE_mean"
+
+write.csv(apoe_mean, file = here(data_dir, "Xenium_SpX_APOE_mean_logcount.csv"))
+
 #### scDot plots ####
 
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
