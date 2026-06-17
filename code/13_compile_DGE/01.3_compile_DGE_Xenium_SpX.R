@@ -9,6 +9,7 @@ library("ggrepel")
 library("GGally")
 # library("getopt")
 library("broom")
+library("ComplexHeatmap")
 
 opt <- list()
 opt$datatype  <- "Xenium_SpX"
@@ -19,12 +20,14 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-load(here("processed-data", "project_colors.Rdata"))
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
 
 #### colors and factors ####
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
+SpX_levels <- names(SpX_colors)
+
 cluster_colors <- cell_type_colors$anno
 cluster_levels <- names(cell_type_colors$anno)
 cell_type_broad_levels <- names(cell_type_colors$broad)
@@ -59,7 +62,7 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
 
 unique(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$SpX)
-levels(vlmf_data_tb$cell_type_anno)
+cluster_levels <- levels(vlmf_data_tb$cell_type_anno)
 
 vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) |> print(n = 35)
 
@@ -246,6 +249,22 @@ vlmf_data_tb_xenium |>
 
 # vlmf_data_tb_xenium |> select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_t) |> mutate(dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0)) |> print(n = 20)
 
+#### Validation SpX barplot ####
+
+validation_spX_barplot <- validation_summary |>
+    filter(n_validate > 0) |>
+    mutate(cell_type_anno = droplevels(cell_type_anno)) |>
+    ggplot(aes(x = SpX, y = n_validate, fill = SpX)) +
+    geom_col() +
+    geom_text(aes(label = n_validate)) +
+    scale_fill_manual(values = SpX_colors) +
+    facet_wrap(~cell_type_anno, ncol = 1, strip.position="right") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+          legend.position = "None") 
+
+ggsave(validation_spX_barplot, filename = here(plot_dir, "validation_SpX_barplot.png"), height = 8)
+    
 #### Xenium vs. snRNA-seq correlation ####
 
 # sn_xenium_all_pairs <- vlmf_data_tb |>
@@ -477,50 +496,162 @@ map(levels(vlmf_data_tb_xenium$cell_type_anno), ~try(compare_stats_scatter(dge_t
 
 #### tstat heatmap ####
 
-library(ComplexHeatmap)
-
-
-sn_DEG_data_FDR05 <- sn_DEG_data |> filter(vlmf_sn_adj.P.Val < 0.05 & gene_name %in% vlmf_data_tb_xenium$gene_name)
+## select sn FDR < 0.05 genes we want to plot
+sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
+    filter(vlmf_sn_adj.P.Val < 0.05) |>
+    select(cell_type_anno, gene_name ,vlmf_sn_logFC, vlmf_sn_t, vlmf_sn_adj.P.Val) |>
+    unique() |>
+    arrange(cell_type_anno, vlmf_sn_t)
 
 sn_DEG_data_FDR05 |> count(cell_type_anno)
 
-t_stat_SpX_mat <- vlmf_data_tb_xenium |>
-    filter(vlmf_sn_adj.P.Val < 0.05) |>
-    select(gene_name, SpX, vlmf_xenium_t) |>
-    pivot_wider(values_from = "vlmf_xenium_t", names_from = "SpX") |>
-    column_to_rownames("gene_name") |>
-    as.matrix()
+## t-stat matrix
+t_stat_SpX_mat <- map(unique(sn_DEG_data_FDR05$cell_type_anno), 
+                      ~vlmf_data_tb_xenium |>
+                          filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
+                          select(gene_name, SpX, vlmf_xenium_t) |>
+                          pivot_wider(values_from = "vlmf_xenium_t", names_from = "SpX") |>
+                          column_to_rownames("gene_name") |>
+                          as.matrix())
 
-APOE_order <- c("L1~SpX7","L1~SpX6", "WMtz~SpX8","Inhib~SpX5","Vasc~SpX3", "L6~SpX9", "WM~SpX2", "L5~SpX1", "L2.3~SpX4")
+names(t_stat_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
 
-t_stat_SpX_mat <- t_stat_SpX_mat[sn_DEG_data_test$gene_name, APOE_order]
-t_stat_SpX_mat <- t_stat_SpX_mat[sn_DEG_data_test$gene_name, names(SpX_colors)]
+## pval/signif matrix
+p_SpX_mat <- map(unique(sn_DEG_data_FDR05$cell_type_anno), 
+                      ~vlmf_data_tb_xenium |>
+                          filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
+                          select(gene_name, SpX, vlmf_xenium_P.Value) |>
+                          pivot_wider(values_from = "vlmf_xenium_P.Value", names_from = "SpX") |>
+                          column_to_rownames("gene_name") |>
+                          as.matrix())
 
-sn_DEG_data_test_df <- sn_DEG_data_test |> 
-    select(gene_name, vlmf_sn_t) |>
-    column_to_rownames("gene_name")
+names(p_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
 
-sn_t_row_ha <- rowAnnotation(
-    df = sn_DEG_data_test_df
-)
+SpX_signif_sum <- map(p_SpX_mat, ~colSums(.x < 0.1, na.rm = TRUE))
 
-pdf(here(plot_dir, "xenium_O3_SpX_t_stat_heatmap.pdf"), height = 10)
-Heatmap(t_stat_SpX_mat, 
-        name = "t-stat", 
-        right_annotation =  sn_t_row_ha)
 
-Heatmap(t_stat_SpX_mat, 
-        name = "t-stat", 
-        cluster_columns  = FALSE, 
-        cluster_rows = TRUE, 
-        right_annotation = sn_t_row_ha)
+signif_SpX_mat <- map(unique(sn_DEG_data_FDR05$cell_type_anno), 
+                 ~vlmf_data_tb_xenium |>
+                     filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
+                     mutate(signif = case_when(signif_xenium & validate ~ "X",
+                                               signif_xenium ~ "*",
+                                               TRUE ~ "")) |>
+                     select(gene_name, SpX, signif) |>
+                     pivot_wider(values_from = "signif", names_from = "SpX") |>
+                     column_to_rownames("gene_name") |>
+                     as.matrix())
 
-Heatmap(t_stat_SpX_mat, 
-        name = "t-stat", 
-        cluster_columns  = FALSE, 
-        cluster_rows = FALSE, 
-        right_annotation = sn_t_row_ha)
-dev.off()
+names(signif_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
+
+
+map(t_stat_SpX_mat, dim)
+
+
+## cell type vs. SpX & APOE annotation data
+spx_cell_prop <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_SpX_prop_long.csv"), row.names = 1)
+spx_APOE <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_SpX_APOE_mean_logcount.csv"), row.names = 1) |>
+    rownames_to_column("SpX") |> arrange(-APOE_mean)
+
+APOE_order <- spx_APOE$SpX
+
+
+## plot for each cell type
+map(names(signif_SpX_mat), function(ct){
+    
+    sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
+        filter(cell_type_anno == ct) |>
+        select(gene_name, vlmf_sn_t) |>
+        column_to_rownames("gene_name")
+    
+    
+    # row annotation by sn t-stat
+    sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
+                                          0, 
+                                          max(c(0.01, sn_DEG_data_test_df$vlmf_sn_t))), 
+                                        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']]))
+    
+    sn_t_row_ha <- rowAnnotation(
+        df = sn_DEG_data_test_df,
+        col = list(vlmf_sn_t = sn_t_col_fun)
+    )
+    
+    SpX_order <- SpX_levels[SpX_levels %in% colnames(signif_SpX_mat[[ct]])]
+    
+    # col annotation by n validation
+    SpX_val <- validation_summary |>
+        filter(cell_type_anno == ct) |>
+        ungroup() |>
+        mutate(n_opp = n_signif_both - n_validate) |>
+        select(SpX, n_validate, n_opp) |>
+        column_to_rownames("SpX")
+    
+    SpX_val <- SpX_val[SpX_order,]
+    
+    ha_SpX_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(SpX_val)))
+    
+    # col annotation n_cells
+    spx_cell_prop_ct <- spx_cell_prop |>
+        filter(cell_type_anno == ct) |>
+        select(SpX, n_cell) |>
+        left_join(spx_APOE, by = join_by(SpX)) |> ## Add APOE expression
+        column_to_rownames("SpX")
+    
+    spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
+    
+    col_fun_n_cell = circlize::colorRamp2(c(0, max(spx_cell_prop_ct$n_cell)), c("white", "red"))
+    col_fun_APOE = circlize::colorRamp2(c(min(spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
+    
+    ha_SpX_cell <- HeatmapAnnotation(df = spx_cell_prop_ct,
+                                     col = list(n_cell = col_fun_n_cell,
+                                                APOE_mean = col_fun_APOE))
+    
+    # reorder tabs 
+    signif_SpX_ct <- signif_SpX_mat[[ct]][rownames(sn_DEG_data_test_df),SpX_order, drop = FALSE]
+    t_stat_SpX_ct <- t_stat_SpX_mat[[ct]][rownames(sn_DEG_data_test_df),SpX_order, drop = FALSE]
+    
+    signif_SpX_ct[is.na(signif_SpX_ct)] <- ""
+    
+    ## color scale for xenium stats
+    xenium_t_col_fun = circlize::colorRamp2(
+        c(min(c(-0.01,t_stat_SpX_ct), na.rm = TRUE), 
+          0, 
+          max(c(0.01, t_stat_SpX_ct), na.rm = TRUE)
+        ), 
+        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']])
+    )
+    
+    pdf(here(plot_dir, sprintf("xenium_SpX_t_stat_heatmap-%s.pdf", ct)), height = 3 + nrow(t_stat_SpX_ct)/5)
+    print(Heatmap(t_stat_SpX_ct, 
+            name = "xenium\nt-stat",
+            col = xenium_t_col_fun,
+            cluster_rows = FALSE,
+            cluster_columns = FALSE,
+            right_annotation =  sn_t_row_ha,
+            top_annotation = ha_SpX_val,
+            bottom_annotation = ha_SpX_cell,
+            cell_fun = function(j, i, x, y, width, height, fill) {
+                grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+            },
+            column_title = ct
+    ))
+    dev.off()
+    
+})
+
+
+
+# Heatmap(t_stat_SpX_mat, 
+#         name = "t-stat", 
+#         cluster_columns  = FALSE, 
+#         cluster_rows = TRUE, 
+#         right_annotation = sn_t_row_ha)
+# 
+# Heatmap(t_stat_SpX_mat, 
+#         name = "t-stat", 
+#         cluster_columns  = FALSE, 
+#         cluster_rows = FALSE, 
+#         right_annotation = sn_t_row_ha)
+# dev.off()
 
 #### qvalue ####
 ## p-value distibutions
