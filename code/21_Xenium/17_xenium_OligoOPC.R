@@ -11,6 +11,7 @@ library("tidyverse")
 library("crumblr")
 library("variancePartition")
 library("spatialLIBD")
+library("ComplexHeatmap")
 
 data_dir <- here("processed-data", "21_Xenium", "17_xenium_OligoOPC")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -19,9 +20,64 @@ plot_dir <- here("plots", "21_Xenium", "17_xenium_OligoOPC")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
+load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
 
-#### Load data ####
+#### Oligo + OPC heatmap by SpX ####
+
+oligo_trajectory_order <- c("OPC.3", "OPC.4", "OPC.1", "OPC.2", "OPC.5", "Oligo.3", "Oligo.5", "Oligo.4", "Oligo.1", "Oligo.2")
+
+cell_v_SpX_prop_long <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_SpX_prop_long.csv"), row.names = 1) |>
+    filter(cell_type_anno %in% oligo_trajectory_order)
+
+prop_SpX_mat <- cell_v_SpX_prop_long |>
+    select(SpX, cell_type_anno, prop_SpX) |>
+    pivot_wider(names_from = "cell_type_anno", values_from = "prop_SpX") |>
+    column_to_rownames("SpX") |>
+    as.matrix()
+
+prop_SpX_mat <- prop_SpX_mat[ ,oligo_trajectory_order]
+
+## create annotations 
+SpX_row_ha <- rowAnnotation(
+    SpX = rownames(prop_SpX_mat),
+    col = list(SpX = SpX_colors),
+    show_legend = FALSE
+)
+
+all(colnames(prop_SpX_mat) %in% names(Oligo_OPC_colors))
+
+cell_type_col_ha <- HeatmapAnnotation(
+    cell_type = colnames(prop_SpX_mat),
+    col = list(cell_type = Oligo_OPC_colors),
+    show_legend = FALSE
+)
+
+
+## PLOT HEATMAPS
+pdf(here(plot_dir, "Xenium_bansky_SpX_v_OligoOPC_heatmap.pdf"), width = 10)
+
+ComplexHeatmap::Heatmap(prop_SpX_mat,
+                        name = "prop SpX\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_rows = FALSE, 
+                        cluster_columns = FALSE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+ComplexHeatmap::Heatmap(prop_SpX_mat,
+                        name = "prop SpX\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_rows = FALSE, 
+                        cluster_columns = TRUE, 
+                        left_annotation = SpX_row_ha, 
+                        bottom_annotation = cell_type_col_ha)
+
+dev.off()
+
+
+#### Load full Xenium  data ####
 message(Sys.time(), "- Load xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
 
