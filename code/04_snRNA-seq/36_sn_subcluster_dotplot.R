@@ -499,10 +499,13 @@ lit_markers |> filter(cell_type_broad == "Astro")
 
 Astro_lit_markers <- list(disease_associated = c("SERPINA3", "TNFRSF1A", "IL1B", "IL33", "HMOX1"), #https://doi.org/10.1038/s41593-025-01873-x
                           AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
-                          Protoplasmic = c("SLC1A2", "SLC1A3"), #Dai et al. https://doi.org/10.1186/s40478-023-01624-8
-                          Fibrous = c("GFAP", "CD44", "AQP1", "CPAMD8"),
+                          Protoplasmic = c("SLC1A2", "SLC1A3"), #SLC from Dai et al. https://doi.org/10.1186/s40478-023-01624-8
+                          Fibrous = c("GFAP", "CD44", "AQP4", "CPAMD8"),
                           Reactive = c("VIM"),
-                          Homeostatic = c("NRXN1")
+                          Homeostatic = c("NRXN1"),
+                          Siletti_cortical = c("WIF1",   # grey matter 
+                                               "TNC",    # white matter 
+                                               "LMO2") # Interlaminar 
 )
 
 Astro_lit_markers <- AnnotationDbi::unlist2(Astro_lit_markers)
@@ -590,8 +593,16 @@ sce[, sce$cell_type_broad == "Astro"]|>
 
 dev.off()
 
-astro_genes2 <- c("GFAP", "ITGB4", "ANGPTL4", "SLC1A2")
-astro_genes2 %in% rownames(sce)
+# Allen brain atlas Astros 
+# WIF1+ — grey matter astrocytes
+# TNC+ — white matter astrocytes
+# LMO2+ — interlaminar astrocytes
+
+# Bhattacharjee et al. Layer 1 Astros superficial astrocyte state enriched for Id1 and Id3
+
+astro_genes2 <- c("GFAP", "ITGB4", "ANGPTL4", "SLC1A2", "WIF1", "TNC", "LMO2",
+                  "ID1", "ID3")
+all(astro_genes2 %in% rownames(sce))
 astro_genes2 %in% Astro_explore_genes$gene
 
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_explore2.pdf")))
@@ -600,7 +611,7 @@ sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = astro_genes2[astro_genes2 %in% rownames(sce)],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
-              featureAnno = "astro_marker",
+              # featureAnno = "astro_marker",
               scale = TRUE,
               annoColors = list("cell_type_anno" = cell_type_colors$anno),
               clusterRows = TRUE,
