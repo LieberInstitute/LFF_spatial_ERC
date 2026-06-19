@@ -51,7 +51,7 @@ if(opt$datatype == "sn"){
     
     message(Sys.time(), " - Load QS2 xenium data")
     sce <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
-    sce <- sce[,spe$spot_class == "singlet"]
+    sce <- sce[,sce$spot_class == "singlet"]
     
     message("Remove 0 count genes:", sum(rowSums(assay(sce, "counts")) == 0))
     sce <- sce[!rowSums(assay(sce, "counts")) == 0, ]
