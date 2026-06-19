@@ -25,8 +25,8 @@ opt <- getopt(scec)
 data_dir <- here("processed-data", "25_Seurat", "01_Seurat_conversion")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("processed-data", "25_Seurat", "01_Seurat_conversion")
-if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+# plot_dir <- here("processed-data", "25_Seurat", "01_Seurat_conversion")
+# if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load experiment  object containing normalized counts ####
 
@@ -97,6 +97,7 @@ message(Sys.time(), " - Save qs2")
 qs2::qs_save(seurat_obj, file = here(data_dir, sprintf("ERC_seurat_obj_%s.qs2", opt$datatype)))
 
 # slurmjobs::job_single('01_Seurat_conversion_Xenium', create_shell = TRUE, memory = '15G', command = "Rscript 01_Seurat_conversion.R --datatype Xenium")
+# slurmjobs::job_single('01_Seurat_conversion_sn', create_shell = TRUE, memory = '50G', command = "Rscript 01_Seurat_conversion.R --datatype sn")
 
 
 #### Reproducibility information ####
