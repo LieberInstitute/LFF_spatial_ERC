@@ -51,7 +51,11 @@ saveRDS(object = predictions, file = here(data_dir, "xenium_snRNA_predictions.Rd
 ## save updated xen object
 qs2::qs_save(xen, file = here(data_dir, "ERC_seurat_obj_Xenium_label_trasnfer.qs2"))
 
-###Reproduciblity
+#### Reproduciblity ####
+
+slurmjobs::job_single('02_Seurat_label_transfer', create_shell = TRUE, memory = '15G', command = "Rscript 02_Seurat_label_transfer.R")
+
+
 print("Reproducibility information:")
 Sys.time()
 proc.time()
