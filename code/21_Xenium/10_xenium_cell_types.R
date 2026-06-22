@@ -26,6 +26,8 @@ spe <- qs_read(here("processed-data", "21_Xenium", "08_xenium_QC_normalize","spe
 
 
 #### Add RCTD cell types to spe ####
+# info on RCTD output here: https://github.com/dmcable/spacexr/issues/45
+
 message(Sys.time(), "- Load rctd data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
 
