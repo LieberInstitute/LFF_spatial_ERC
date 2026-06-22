@@ -23,15 +23,9 @@ load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), ver
 
 #### Load Data ####
 message(Sys.time(), "- Load xenium data")
-xen <- qs_read(here("processed-data", "25_Seurat", "02_Seurat_label_transfer", "ERC_seurat_obj_Xenium_label_trasnfer.qs2"))
-
 prediction <- readRDS(here("processed-data", "25_Seurat", "02_Seurat_label_transfer", "xenium_snRNA_predictions.Rds"))
 
 table(prediction$predicted.id)
-
-# xen <- qs_read(here("processed-data", "25_Seurat", "01_Seurat_conversion","ERC_seurat_obj_Xenium.qs2"))
-
-xen
 
 message(Sys.time(), " - Load QS2 xenium data")
 spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
@@ -82,6 +76,18 @@ Heatmap(jacc.mat,
         column_title = "Seurat predictions"
 )
 dev.off()
+
+#### RCTD output ####
+# message(Sys.time(), "- Load rctd data")
+# rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
+# 
+# names(rctd_data@results)
+# 
+# head(rctd_data@results$results_df)
+# 
+# summary(rctd_data@results$results_df$min_score)
+# 
+# summary(spe$singlet_score)
 
 #### Score boxplots ####
 
