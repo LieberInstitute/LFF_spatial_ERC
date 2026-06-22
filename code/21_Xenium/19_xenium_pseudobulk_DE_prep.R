@@ -200,6 +200,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
 
 
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno")
+# slurmjobs::job_single('19_xenium_pseudobulk_DE_prep_cell_type_SpX', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno_SpX")
 
 ## Reproducibility information
 print("Reproducibility information:")
