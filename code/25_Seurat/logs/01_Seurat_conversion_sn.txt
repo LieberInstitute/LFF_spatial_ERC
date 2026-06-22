@@ -1,0 +1,237 @@
+**** Job starts ****
+Fri Jun 19 06:13:26 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 33025032
+Job name: 01_Seurat_conversion_sn
+Node name: compute-113
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SeuratObject
+Loading required package: sp
+
+Attaching package: ‘sp’
+
+The following object is masked from ‘package:IRanges’:
+
+    %over%
+
+
+Attaching package: ‘SeuratObject’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    Assays
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    intersect
+
+The following object is masked from ‘package:Seqinfo’:
+
+    intersect
+
+The following object is masked from ‘package:IRanges’:
+
+    intersect
+
+The following object is masked from ‘package:S4Vectors’:
+
+    intersect
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    intersect
+
+The following objects are masked from ‘package:base’:
+
+    intersect, t
+
+
+Attaching package: ‘Seurat’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    Assays
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+qs2 0.2.1
+2026-06-19 06:13:52.966663 - Load HDF5 sce
+Remove 0 count genes:1224
+2026-06-19 06:22:02.918067- Convert SCE counts to sparse Matrix
+2026-06-19 06:41:24.746369- Convert SCE  logcounts to sparse Matrix
+Any duplicated rownames: FALSE
+Any duplicated colnames: FALSE
+class: SingleCellExperiment 
+dim: 37382 122004 
+metadata(33): Samples Samples ... scDblFinder.threshold
+  cell_type_colors
+assays(3): counts logcounts binomial_deviance_residuals
+rownames(37382): ENSG00000290825 ENSG00000243485 ... ENSG00000278817
+  ENSG00000277196
+rowData names(6): source type ... gene_name gene_type
+colnames(122004): AAACCCAAGTTGGAGC-1_Br6476 AAACCCACAGGATGAC-1_Br6476
+  ... TTTGTTGGTCCTTTGC-1_Br5426 TTTGTTGTCTTGCAGA-1_Br5426
+colData names(45): Barcode sample_id ... cell_type_anno_r1
+  cell_type_broad_r1
+reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
+mainExpName: NULL
+altExpNames(0):
+2026-06-19 07:02:01.681808 - Convert to Seurat
+Warning messages:
+1: Keys should be one or more alphanumeric characters followed by an underscore, setting key from PC to PC_ 
+2: Keys should be one or more alphanumeric characters followed by an underscore, setting key from TSNE to TSNE_ 
+3: Keys should be one or more alphanumeric characters followed by an underscore, setting key from UMAP to UMAP_ 
+[1] "originalexp"
+2026-06-19 07:03:33.02829 - Run SEURAT PCA
+Calculating gene variances
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Calculating feature variances of standardized and clipped values
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Centering and scaling data matrix
+  |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
+PC_ 1 
+Positive:  ENSG00000118785, ENSG00000286749, ENSG00000228793, ENSG00000164741, ENSG00000234377, ENSG00000171885, ENSG00000106829, ENSG00000106571, ENSG00000164089, ENSG00000107099 
+	   ENSG00000152661, ENSG00000125148, ENSG00000286757, ENSG00000077420, ENSG00000251372, ENSG00000164188, ENSG00000151012, ENSG00000042980, ENSG00000082074, ENSG00000168918 
+	   ENSG00000139155, ENSG00000196569, ENSG00000081237, ENSG00000163513, ENSG00000173068, ENSG00000236197, ENSG00000137491, ENSG00000169313, ENSG00000185483, ENSG00000019582 
+Negative:  ENSG00000198010, ENSG00000153233, ENSG00000145087, ENSG00000225206, ENSG00000164588, ENSG00000167281, ENSG00000234423, ENSG00000139767, ENSG00000154556, ENSG00000133019 
+	   ENSG00000169933, ENSG00000070808, ENSG00000185760, ENSG00000125851, ENSG00000184611, ENSG00000145526, ENSG00000184613, ENSG00000185274, ENSG00000006116, ENSG00000291133 
+	   ENSG00000198216, ENSG00000107295, ENSG00000117114, ENSG00000289731, ENSG00000118733, ENSG00000184672, ENSG00000273032, ENSG00000113327, ENSG00000182674, ENSG00000186472 
+PC_ 2 
+Positive:  ENSG00000171189, ENSG00000128683, ENSG00000122584, ENSG00000109265, ENSG00000188730, ENSG00000151789, ENSG00000185736, ENSG00000231764, ENSG00000187416, ENSG00000136750 
+	   ENSG00000171094, ENSG00000151136, ENSG00000188803, ENSG00000188042, ENSG00000244128, ENSG00000005108, ENSG00000155974, ENSG00000164512, ENSG00000185053, ENSG00000157103 
+	   ENSG00000152932, ENSG00000144596, ENSG00000038427, ENSG00000134853, ENSG00000077943, ENSG00000120907, ENSG00000029534, ENSG00000286778, ENSG00000188158, ENSG00000144355 
+Negative:  ENSG00000216863, ENSG00000229618, ENSG00000146147, ENSG00000185518, ENSG00000196872, ENSG00000270069, ENSG00000115252, ENSG00000248673, ENSG00000154237, ENSG00000074706 
+	   ENSG00000251293, ENSG00000107099, ENSG00000042980, ENSG00000077420, ENSG00000168918, ENSG00000119042, ENSG00000137491, ENSG00000128573, ENSG00000111885, ENSG00000182601 
+	   ENSG00000082074, ENSG00000135426, ENSG00000287100, ENSG00000081237, ENSG00000184347, ENSG00000156140, ENSG00000285939, ENSG00000237720, ENSG00000280560, ENSG00000283445 
+PC_ 3 
+Positive:  ENSG00000234377, ENSG00000179399, ENSG00000138696, ENSG00000236197, ENSG00000106571, ENSG00000171885, ENSG00000164188, ENSG00000164089, ENSG00000286757, ENSG00000139155 
+	   ENSG00000151012, ENSG00000135063, ENSG00000251372, ENSG00000152661, ENSG00000083067, ENSG00000251165, ENSG00000115380, ENSG00000198963, ENSG00000289084, ENSG00000144908 
+	   ENSG00000048540, ENSG00000141469, ENSG00000165323, ENSG00000182050, ENSG00000104313, ENSG00000287544, ENSG00000125148, ENSG00000257060, ENSG00000260372, ENSG00000228412 
+Negative:  ENSG00000107099, ENSG00000077420, ENSG00000042980, ENSG00000168918, ENSG00000082074, ENSG00000137491, ENSG00000081237, ENSG00000249738, ENSG00000075884, ENSG00000280560 
+	   ENSG00000169313, ENSG00000159216, ENSG00000168329, ENSG00000151702, ENSG00000185811, ENSG00000155307, ENSG00000231131, ENSG00000163694, ENSG00000273409, ENSG00000106034 
+	   ENSG00000019582, ENSG00000074706, ENSG00000175899, ENSG00000124813, ENSG00000163219, ENSG00000182601, ENSG00000163513, ENSG00000113532, ENSG00000128573, ENSG00000154237 
+PC_ 4 
+Positive:  ENSG00000157890, ENSG00000278254, ENSG00000134853, ENSG00000187416, ENSG00000231424, ENSG00000224184, ENSG00000038427, ENSG00000165966, ENSG00000187323, ENSG00000264015 
+	   ENSG00000152128, ENSG00000064989, ENSG00000172995, ENSG00000249937, ENSG00000169181, ENSG00000152214, ENSG00000151952, ENSG00000144230, ENSG00000258081, ENSG00000185352 
+	   ENSG00000165973, ENSG00000162631, ENSG00000225649, ENSG00000156395, ENSG00000108018, ENSG00000150361, ENSG00000002746, ENSG00000183098, ENSG00000196090, ENSG00000169946 
+Negative:  ENSG00000182050, ENSG00000168843, ENSG00000231764, ENSG00000234377, ENSG00000106571, ENSG00000164188, ENSG00000286757, ENSG00000138696, ENSG00000188158, ENSG00000136750 
+	   ENSG00000151012, ENSG00000134533, ENSG00000139155, ENSG00000171885, ENSG00000164089, ENSG00000184349, ENSG00000152661, ENSG00000135063, ENSG00000188042, ENSG00000017427 
+	   ENSG00000236197, ENSG00000115380, ENSG00000251372, ENSG00000104313, ENSG00000114805, ENSG00000166006, ENSG00000163285, ENSG00000144596, ENSG00000145824, ENSG00000150556 
+PC_ 5 
+Positive:  ENSG00000152818, ENSG00000107099, ENSG00000168918, ENSG00000137491, ENSG00000042980, ENSG00000077420, ENSG00000173068, ENSG00000169313, ENSG00000151702, ENSG00000082074 
+	   ENSG00000175899, ENSG00000106034, ENSG00000081237, ENSG00000075884, ENSG00000280560, ENSG00000128573, ENSG00000159216, ENSG00000249738, ENSG00000163694, ENSG00000162670 
+	   ENSG00000155307, ENSG00000185811, ENSG00000231131, ENSG00000019582, ENSG00000168329, ENSG00000163513, ENSG00000273409, ENSG00000198846, ENSG00000163219, ENSG00000074706 
+Negative:  ENSG00000115252, ENSG00000286749, ENSG00000228793, ENSG00000117707, ENSG00000169855, ENSG00000259905, ENSG00000165124, ENSG00000075223, ENSG00000196569, ENSG00000286685 
+	   ENSG00000143473, ENSG00000234323, ENSG00000150394, ENSG00000164741, ENSG00000233828, ENSG00000180287, ENSG00000145147, ENSG00000230461, ENSG00000105976, ENSG00000198626 
+	   ENSG00000163377, ENSG00000118785, ENSG00000183454, ENSG00000251504, ENSG00000177614, ENSG00000112319, ENSG00000135750, ENSG00000249484, ENSG00000267452, ENSG00000156218 
+Warning message:
+Key ‘PC_’ taken, using ‘seuratpca_’ instead 
+An object of class Seurat 
+37382 features across 122004 samples within 1 assay 
+Active assay: originalexp (37382 features, 2000 variable features)
+ 3 layers present: counts, data, scale.data
+ 5 dimensional reductions calculated: GLMPCA_approx, TSNE, UMAP, HARMONY, seurat_pca
+2026-06-19 07:06:38.022549 - Save qs2
+[1] "Reproducibility information:"
+[1] "2026-06-19 07:07:35 EDT"
+    user   system  elapsed 
+3069.869  128.002 3247.372 
+**** Job ends ****
+Fri Jun 19 07:07:35 AM EDT 2026
