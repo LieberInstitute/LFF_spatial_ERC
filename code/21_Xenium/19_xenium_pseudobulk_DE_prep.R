@@ -30,8 +30,8 @@ print(opt)
 # opt$cluster <- "cell_type_anno_SpX"
 
 spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
-message(Sys.time(), " - load data from: ", basename(spe_fn))
 
+message(Sys.time(), " - load data from: ", basename(spe_fn))
 spe <- qs_read(spe_fn)
 
 ## make APOE syntatic
@@ -60,19 +60,25 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
     ## filter to Astro-Oligo.3 doublets
     
-    spe <- spe[,grepl("Oligo.3|Astro)", spe$first_type)]
-    spe <- spe[,grepl("Oligo.3|Astro)", spe$second_type)]
+    spe <- spe[,grepl("Oligo.3|Astro", spe$first_type)]
+    spe <- spe[,grepl("Oligo.3|Astro", spe$second_type)]
     
     pd_temp <- colData(spe) |>
         as.data.frame() |>
         mutate(first_type = as.character(first_type),
                second_type = as.character(second_type),
-               doublet=paste(pmin(first_type, second_type), 
+               doublet_fine = paste(pmin(first_type, second_type), 
                              pmax(first_type, second_type), 
-                             sep="_")
+                             sep="_"),
+               doublet = gsub("Astro\\.[1-5]", "Astro", doublet_fine)
                )
     
     
+    spe$doublet_fine <- pd_temp$doublet_fine
+    spe$doublet <- pd_temp$doublet
+    spe$doublet_Astro_Oligo.3 <- pd_temp$doublet
+    
+    table(spe$doublet)
 }
 
 message("check input: ")
@@ -101,12 +107,22 @@ message(sprintf("nrow: %d, ncol: %d", nrow(spe_pseudo), ncol(spe_pseudo)))
 table(spe_pseudo$APOE_carrier, spe_pseudo$cell_type_broad)
 table(spe_pseudo$APOE_carrier, spe_pseudo$registration_variable)
 
-cell_type_count <- colData(spe_pseudo) |> as.data.frame() |> dplyr::count(APOE_carrier, registration_variable)
+cell_type_count <- colData(spe_pseudo) |> 
+    as.data.frame() |> 
+    dplyr::group_by(APOE_carrier, registration_variable) |>
+    summarise(n = n(),
+              min_ncells = min(ncells),
+              median_ncells = median(ncells),
+              max_ncells = max(ncells),
+              )
 
-cell_type_count_wide <- cell_type_count |> tidyr::pivot_wider(values_from = "n", names_from = "APOE_carrier")
+cell_type_count_wide <- cell_type_count |> 
+    select(-ends_with("ncells")) |> 
+    tidyr::pivot_wider(values_from = "n", names_from = "APOE_carrier")
 
 ## cell type must have two or more samples on either side of DEG split (APOE carrier)
 enough_samples <- cell_type_count |>
+    ungroup() |>
     filter(n >=2) |>
     dplyr::count(registration_variable) |>
     filter(n >=2) |>
