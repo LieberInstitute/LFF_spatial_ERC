@@ -127,7 +127,23 @@ max_score_box_match <- ggplot(prediction,
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           legend.position = "none") 
 
-ggsave(max_score_box_match, filename = here(plot_dir, "Seurat_transfer_Max_score_boxplot_RCTD_match.png"), width )
+ggsave(max_score_box_match, filename = here(plot_dir, "Seurat_transfer_Max_score_boxplot_RCTD_match.png"), width = 12)
+
+
+max_score_density <- ggplot(prediction,
+                        aes(x = prediction.score.max,
+                            fill = RCTD_cell_type, 
+                            color = match_cell_type_anno)) +
+    geom_density() +
+    geom_hline(yintercept = 0.50) +
+    theme_bw() +
+    facet_wrap(~RCTD_cell_type) +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    scale_color_manual(values = c(`TRUE` = "black", `FALSE` = "red")) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.position = "none") 
+
+ggsave(max_score_density, filename = here(plot_dir, "Seurat_transfer_Max_score_density_RCTD_match.png"), width = 12)
 
 #### SEURAT pca ####
 head(rownames(xen))
