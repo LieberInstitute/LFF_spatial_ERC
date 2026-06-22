@@ -34,11 +34,6 @@ message(Sys.time(), " - load data from: ", basename(spe_fn))
 
 spe <- qs_read(spe_fn)
 
-spe <- spe[,spe$spot_class == "singlet"]
-(spe <- qs_read(spe_fn))
-
-message("ncells: ", ncol(spe))
-
 ## make APOE syntatic
 spe$APOE_syn <- gsub("/", ".", spe$APOE)
 
@@ -48,11 +43,42 @@ spe$SpX_simple <- factor(gsub("~SpX[0-9]", "", spe$SpX), levels = c("Vasc", "L1a
 table(spe$SpX, spe$SpX_simple)
 
 if(opt$cluster == "cell_type_anno_SpX"){
+    
+    ## filter to Singlets
+    spe <- spe[,spe$spot_class == "singlet"]
+    message("filter to singlets ncells: ", ncol(spe))
+    
     spe$cell_type_anno_SpX <- paste0(spe$cell_type_anno, "_", spe$SpX_simple)
     
     message("cell type x SpX combindations: ", length(unique(spe$cell_type_anno_SpX)))
+    
+} else if(opt$cluster == "doublet_Astro_Oligo.3"){
+    
+    ## filter to doublets
+    spe <- spe[,spe$spot_class == "doublet_certain"]
+    message("filter to doublet_certain, ncells: ", ncol(spe))
+    
+    ## filter to Astro-Oligo.3 doublets
+    
+    spe <- spe[,grepl("Oligo.3|Astro)", spe$first_type)]
+    spe <- spe[,grepl("Oligo.3|Astro)", spe$second_type)]
+    
+    pd_temp <- colData(spe) |>
+        as.data.frame() |>
+        mutate(first_type = as.character(first_type),
+               second_type = as.character(second_type),
+               doublet=paste(pmin(first_type, second_type), 
+                             pmax(first_type, second_type), 
+                             sep="_")
+               )
+    
+    
 }
 
+message("check input: ")
+table(spe$spot_class)
+
+table(spe$cell_type_anno)
 
 
 #### run pseudobulk - cell_type_anno ####
