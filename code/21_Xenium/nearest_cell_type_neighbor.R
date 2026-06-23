@@ -50,7 +50,7 @@ nearest_cell_type_neighbor <- function(spe,
     nearest_barcode <- barcodes[neighbor_idx[nn$nn.idx[1]]]
     nearest_dist <- nn$nn.dists[1]
     
-    list(reference_barcode = reference_barcode, neightbor_barcode=nearest_barcode, distance=nearest_dist)
+    list(reference_barcode = reference_barcode, neighbor_barcode=nearest_barcode, distance=nearest_dist)
 }
 
 
@@ -141,7 +141,7 @@ bpmap_nearest_cell_type_neighbor <- function(spe,
                                              BPPARAM = bpparam()) {
     
     if (is.null(donors)) donors <- unique(spe$BrNum)
-    message(Sys.time(), sprintf(" - Running across %i donors: %s", length(donors)))
+    message(Sys.time(), sprintf(" - Running across %i donors", length(donors)))
     
     results <- BiocParallel::bplapply(
         donors,
