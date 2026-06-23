@@ -43,19 +43,48 @@ neighbor_df <- bpmap_nearest_cell_type_neighbor(spe,
 
 # neighbor_df <- neighbor_df |> rename(neighbor_barcode = neightbor_barcode)
 
-
+#### Build neighbor detail table ####
 pd <- colData(spe) |>
     as.data.frame() |>
     select(cell_id, cell_type_anno, cell_type_broad, SpX, BrNum, APOE_carrier)
 
-neighbor_df_details <- neighbor_df |>
-    left_join(pd |> rename(neighbor_barcode = cell_id, neighbor_cell_type = cell_type_anno, neighbor_cell_type_broad = cell_type_anno_broad))
+median_dist <- median(neighbor_df$distance)
 
+neighbor_df$Astro_APOE <- logcounts(spe)["APOE", neighbor_df_details$neighbor_barcode]
+
+neighbor_df_details <- neighbor_df |>
+    left_join(pd |> rename(neighbor_barcode = cell_id, 
+                           neighbor_cell_type = cell_type_anno, 
+                           neighbor_cell_type_broad = cell_type_broad))  |>
+    mutate(dist_class = ifelse(distance < median_dist, "near", "far"))
+
+neighbor_APOE_cutoff <- neighbor_df_details |>
+    select(neighbor_barcode, neighbor_cell_type, Astro_APOE) |>
+    unique() |> ## rm repeats
+    group_by(neighbor_cell_type) |>
+    summarise(median_APOE = median(Astro_APOE))
+
+
+## annotate APOE expression
+neighbor_df_details <- neighbor_df_details |>
+    left_join(neighbor_APOE_cutoff) |>
+    mutate(APOE_level = ifelse(Astro_APOE < median_APOE, "low", "high"))
+
+neighbor_df_details |> count(APOE_level, dist_class)
+
+neighbor_df_details |> count(BrNum, APOE_level, dist_class) |> filter(n < 10)
+
+
+save(neighbor_df_details, file = here(data_dir, "Oligo3_Astro_neighbor_df.Rdata"))
 
 neighbor_df_details |>
-    mutate(dist_class = ifelse(distance < 50, "near", "far")) |>
     count(BrNum, dist_class) |>
     arrange(n)
+
+
+
+neighbor_df_details |> 
+    count(Astro_APOE < 1, dist_class)
 
 #### Neighbor Identity ####
 
@@ -135,5 +164,85 @@ distance_boxplot_donor <- neighbor_df_details |>
 
 ggsave(distance_boxplot_donor, filename = here(plot_dir, "xenium_Oligo3_Astro_distance_boxplot_donor.png"))
 
+
+#### Explore APOE expression ####
+
+library(DeconvoBuddies)
+
+astro_apoe_expres <- plot_gene_express(spe[,spe$cell_type_broad == "Astro"], 
+                                       genes = "APOE",
+                                       category = "cell_type_anno",
+                                       color_pal = cell_type_colors$anno)
+
+ggsave(astro_apoe_expres, filename = here(plot_dir, "xenium_Astro_APOE_expres_violin.png"))
+
+## Do nearest neighbor Astros express more APOE?
+
+pd <- pd |>
+    left_join(neighbor_df_details |>
+                  group_by(neighbor_barcode) |>
+                  slice_min(distance, with_ties = FALSE) |> 
+                  select(cell_id = neighbor_barcode, reference_barcode, dist_class)) |>
+    mutate(nn = ifelse(is.na(reference_barcode), "X", dist_class), # X = never a nearest neighbor
+           cell_type_nn = paste0(cell_type_anno, "_", nn)) |>
+    unique()
+
+pd |> count(nn)
+
+nrow(pd) == ncol(spe)
+
+spe$cell_type_nn <- pd$cell_type_nn
+spe$is_neighbor <- !is.na(pd$reference_barcode)
+
+astro_apoe_expres <- plot_gene_express(spe[,spe$cell_type_broad == "Astro"], 
+                                       genes = "APOE",
+                                       category = "cell_type_nn")
+
+ggsave(astro_apoe_expres, filename = here(plot_dir, "xenium_Astro_APOE_expres_violin_nn.png"))
+
+astro_apoe_expres_nn_only <- plot_gene_express(spe[,spe$is_neighbor], 
+                                       genes = "APOE",
+                                       category = "cell_type_anno",
+                                       color_pal = cell_type_colors$anno) +
+    ggplot2::stat_summary( ## TODO make summary stat adjustable in plot_gene_express
+        fun = median,
+        geom = "crossbar",
+        width = 0.3,
+        color = "blue"
+    )
+
+ggsave(astro_apoe_expres_nn_only, filename = here(plot_dir, "xenium_Astro_APOE_expres_violin_nn_only.png"))
+
+
+astro_apoe_expres_nn <- neighbor_df_details |>
+    ggplot(aes(x=neighbor_cell_type, y=Astro_APOE, fill=neighbor_cell_type)) +
+    geom_boxplot() +
+    scale_fill_manual(values=cell_type_colors$anno) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(astro_apoe_expres_nn, filename = here(plot_dir, "xenium_Astro_APOE_expres_boxplot_nn.png"))
+
+astro_apoe_expres_nn_dist <- neighbor_df_details |>
+    mutate(neighbor_cell_type_dist = paste(neighbor_cell_type,  dist_class)) |>
+    ggplot(aes(x=neighbor_cell_type_dist, y=Astro_APOE, fill=neighbor_cell_type, color=dist_class)) +
+    geom_boxplot() +
+    scale_fill_manual(values=cell_type_colors$anno) +
+    scale_color_manual(values=c(near = "black", far = "grey70")) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(astro_apoe_expres_nn_dist, filename = here(plot_dir, "xenium_Astro_APOE_expres_boxplot_nn_dist.png"))
+
+#### APOE vs. Oligo distance #####
+
+APOE_v_Oligo_dist <- neighbor_df_details |>
+    ggplot(aes(distance, Astro_APOE)) +
+    geom_point(size = 1, alpha = 0.1) +
+    geom_smooth(method = "lm") +
+    facet_wrap(~neighbor_cell_type) +
+    theme_bw()
+
+ggsave(APOE_v_Oligo_dist, filename = here(plot_dir, "xenium_Astro_APOE_v_Oligo_dist.png"))
 
 
