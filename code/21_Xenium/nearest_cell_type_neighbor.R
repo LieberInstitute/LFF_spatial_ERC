@@ -10,12 +10,15 @@
 #' @examples
 #' message(Sys.time(), " - Load SPE data")
 #' spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
-#' # filter to one sample and singlet cells
-#' spe <- spe[,spe$BrNum == "Br1039"]
+#' # filter to singlet cells
 #' spe <- spe[,spe$spot_class == "singlet"]
-#' ncol(spe) #23k
 #' 
-#' nearest_cell_type_neighbor(spe,
+#' ## filter to one sample to test 
+#' spe_test <- spe[,spe$BrNum == "Br1039"]
+#' 
+#' ncol(spe_test) #23k
+#' 
+#' nearest_cell_type_neighbor(spe = spe_test,
 #'                            reference_barcode = "Br1039_aabdmomo-1",
 #'                            neighbor = "Astro",
 #'                            neighbor_ct_col = "cell_type_broad")
@@ -82,7 +85,7 @@ map_nearest_cell_type_neighbor <- function(spe,
     spe <- spe[,spe$BrNum == donor]
     
     spe_ref <- spe[,spe[[reference_ct_col]] == reference]
-    message(Sys.time(), sprintf(" - %s reference cells: %s, ncells %i",donor, reference, ncol(spe_ref)))
+    # message(Sys.time(), sprintf(" - %s reference cells: %s, ncells %i",donor, reference, ncol(spe_ref)))
     
     neighbor_df <- map_dfr(spe_ref$cell_id, ~nearest_cell_type_neighbor(spe = spe, 
                                                          reference_barcode = .x, 
@@ -95,3 +98,61 @@ map_nearest_cell_type_neighbor <- function(spe,
     
 }
 
+#' Find the nearest neighbors for all references across all donors in parallel
+#'
+#' @param spe A SpatialExperiment object containing all donors
+#' @param donors Character vector of donor IDs (BrNum values). If NULL, uses all unique BrNum values.
+#' @param reference Cell type label for the reference cells
+#' @param reference_ct_col Column name in colData for reference cell type
+#' @param neighbor Cell type label for the neighbor cells
+#' @param neighbor_ct_col Column name in colData for neighbor cell type
+#' @param BPPARAM A BiocParallelParam object. Defaults to bpparam().
+#'
+#' @returns A data.frame with columns: BrNum, reference_barcode, neighbor_barcode, distance
+#' @export
+#'
+#' @examples
+#' library(BiocParallel)
+#'
+#' ## serial (for testing)
+# neighbor_df <- bpmap_nearest_cell_type_neighbor(spe,
+#                                                 donors = c("Br1039", "Br1556"),
+#                                                 reference = "Oligo.3",
+#                                                 reference_ct_col = "cell_type_anno",
+#                                                 neighbor = "Astro",
+#                                                 neighbor_ct_col = "cell_type_broad",
+#                                                 BPPARAM = BiocParallel::SerialParam())
+#'
+#' ## parallel across donors
+#' neighbor_df <- bpmap_nearest_cell_type_neighbor(spe,
+#'                                                 donors = c("Br1039", "Br1556", "Br1706", "Br2582"),
+#'                                                 reference = "Oligo.3",
+#'                                                 reference_ct_col = "cell_type_anno",
+#'                                                 neighbor = "Astro",
+#'                                                 neighbor_ct_col = "cell_type_broad",
+#'                                                 BPPARAM = BiocParallel::MulticoreParam(workers = 4, progressbar = TRUE))
+#'
+bpmap_nearest_cell_type_neighbor <- function(spe,
+                                             donors = NULL,
+                                             reference = "Oligo.3",
+                                             reference_ct_col = "cell_type_anno",
+                                             neighbor = "Astro",
+                                             neighbor_ct_col = "cell_type_broad",
+                                             BPPARAM = bpparam()) {
+    
+    if (is.null(donors)) donors <- unique(spe$BrNum)
+    message(Sys.time(), sprintf(" - Running across %i donors: %s", length(donors)))
+    
+    results <- BiocParallel::bplapply(
+        donors,
+        FUN = map_nearest_cell_type_neighbor,
+        spe = spe,
+        reference = reference,
+        reference_ct_col = reference_ct_col,
+        neighbor = neighbor,
+        neighbor_ct_col = neighbor_ct_col,
+        BPPARAM = BPPARAM
+    )
+    
+    dplyr::bind_rows(results)
+}
