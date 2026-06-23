@@ -24,4 +24,20 @@ spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding",
 # filter to singlet cells
 spe <- spe[,spe$spot_class == "singlet"]
 
+table(spe$cell_type_anno == "Oligo.3")
+
+## load functions 
+source(here("code", "21_Xenium", "nearest_cell_type_neighbor.R"))
+
+#### Get Oligo.3 nearest Astro Neighbors ####
+
+neighbor_df <- bpmap_nearest_cell_type_neighbor(spe,
+                                                reference = "Oligo.3",
+                                                reference_ct_col = "cell_type_anno",
+                                                neighbor = "Astro",
+                                                neighbor_ct_col = "cell_type_broad",
+                                                BPPARAM = BiocParallel::MulticoreParam(workers = 4, progressbar = TRUE))
+
+
+
 
