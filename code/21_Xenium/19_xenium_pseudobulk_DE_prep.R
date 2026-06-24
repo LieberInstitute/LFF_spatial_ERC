@@ -107,7 +107,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe_03 <- spe[,neighbor_df_details$reference_barcode]
     message("filter to Oligo.3, ncells: ", ncol(spe_03))
     
-    spe_03$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe$SpX_simple)
+    spe_03$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe_03$SpX_simple)
     table(spe_03$Oligo.3_Astro_SpX)
     
     
