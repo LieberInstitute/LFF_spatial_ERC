@@ -19,7 +19,7 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
-opt$datatype <- "Xenium_Oligo.3_Astro"
+# opt$datatype <- "Xenium_Oligo.3_Astro"
 
 if(opt$datatype == "Xenium_cell_type"){
     pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno.RDS")
