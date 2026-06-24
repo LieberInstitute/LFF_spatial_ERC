@@ -54,7 +54,7 @@ nearest_cell_type_neighbor <- function(spe,
 }
 
 
-#' Find the nearest neighbors for all refrences from a sample
+#' Find the nearest neighbors for all references from a sample
 #'
 #' @param spe 
 #' @param donor 
