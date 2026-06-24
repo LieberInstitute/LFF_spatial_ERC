@@ -1,0 +1,410 @@
+**** Job starts ****
+Wed Jun 24 09:13:37 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 33502533
+Job name: 19_xenium_pseudobulk_DE_prep_cell_type_SpX
+Node name: compute-168
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+qs2 0.2.1
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:Biobase’:
+
+    combine
+
+The following objects are masked from ‘package:GenomicRanges’:
+
+    intersect, setdiff, union
+
+The following object is masked from ‘package:Seqinfo’:
+
+    intersect
+
+The following objects are masked from ‘package:IRanges’:
+
+    collapse, desc, intersect, setdiff, slice, union
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, intersect, rename, setdiff, setequal, union
+
+The following objects are masked from ‘package:BiocGenerics’:
+
+    combine, intersect, setdiff, setequal, union
+
+The following object is masked from ‘package:generics’:
+
+    explain
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: scuttle
+Loading required package: ggplot2
+$cluster
+[1] "cell_type_anno_SpX"
+
+attr(,"class")
+[1] "getopt"
+2026-06-24 09:13:48.681579 - load data from: spe_xenium_bansky.qs2
+            
+              Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
+  Vasc~SpX3  50546     0     0     0     0     0     0     0     0
+  L1a~SpX6       0 29369     0     0     0     0     0     0     0
+  L1b~SpX7       0     0 37807     0     0     0     0     0     0
+  L2.3~SpX4      0     0     0 38282     0     0     0     0     0
+  Inhib~SpX5     0     0     0     0 26918     0     0     0     0
+  L5~SpX1        0     0     0     0     0 85468     0     0     0
+  L6~SpX9        0     0     0     0     0     0 45822     0     0
+  WMtz~SpX8      0     0     0     0     0     0     0 64747     0
+  WM~SpX2        0     0     0     0     0     0     0     0 68224
+filter to singlets ncells: 302279
+cell type x SpX combindations: 335
+check input: 
+
+           reject           singlet   doublet_certain doublet_uncertain 
+                0            302279                 0                 0 
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           12853            14382              708             6660 
+         Astro.5            Macro          Micro.1          Micro.2 
+           29342             1922              140             8653 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+            1238              115            11100               25 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+            7460               12             1726             8040 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+            9934             9335            52555            29094 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+            2059            27136            20007             5076 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+           11459             4907             3307             3752 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+            1331              294             1398             1424 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+             764             2577              721             2734 
+       Inhib.Sst        Inhib.Vip 
+            1853             6186 
+2026-06-24 09:14:24.381836 - pseudobulk cell_type_anno_SpX
+2026-06-24 09:14:24.538717 make pseudobulk object
+2026-06-24 09:14:57.241516 dropping 1580 pseudo-bulked samples that are below 'min_ncells'.
+2026-06-24 09:14:57.288039 normalize expression
+2026-06-24 09:14:58.17568 - Done pseudobulk
+nrow: 366, ncol: 2652
+     
+      Astro Macro Micro Oligo OPC Vasc Excit Inhib
+  E2+   238    10   162   246 162  148   156   187
+  E4+   242    14   149   245 165  156   167   205
+     
+      Astro.1_Inhib Astro.1_L1a Astro.1_L1b Astro.1_L2.3 Astro.1_L5 Astro.1_L6
+  E2+             8           6           8            8          8          8
+  E4+             8           6           8            8          8          6
+     
+      Astro.1_Vasc Astro.1_WM Astro.1_WMtz Astro.2_Inhib Astro.2_L1a
+  E2+            3          5            8             8           8
+  E4+            2          4            8             8           8
+     
+      Astro.2_L1b Astro.2_L2.3 Astro.2_L5 Astro.2_L6 Astro.2_Vasc Astro.2_WM
+  E2+           8            8          8          8            5          8
+  E4+           8            8          8          8            7          7
+     
+      Astro.2_WMtz Astro.3_L1a Astro.3_L1b Astro.3_L5 Astro.3_L6 Astro.3_WM
+  E2+            8           3           0          0          3          3
+  E4+            8           1           1          2          2          2
+     
+      Astro.3_WMtz Astro.4_L1a Astro.4_L1b Astro.4_L6 Astro.4_Vasc Astro.4_WM
+  E2+            1           8           1          0            7          7
+  E4+            4           8           3          2            7          8
+     
+      Astro.4_WMtz Astro.5_Inhib Astro.5_L1a Astro.5_L1b Astro.5_L2.3
+  E2+            3             8           8           8            8
+  E4+            2             8           8           8            8
+     
+      Astro.5_L5 Astro.5_L6 Astro.5_Vasc Astro.5_WM Astro.5_WMtz
+  E2+          8          8            7          8            8
+  E4+          8          8            8          8            8
+     
+      Excit.L2_5.1_Inhib Excit.L2_5.1_L1b Excit.L2_5.1_L2.3 Excit.L2_5.1_L5
+  E2+                  4                3                 8               8
+  E4+                  5                6                 8               8
+     
+      Excit.L2_5.1_L6 Excit.L2_5.1_Vasc Excit.L2_5.1_WM Excit.L2_5.1_WMtz
+  E2+               5                 0               0                 4
+  E4+               7                 1               3                 8
+     
+      Excit.L2_5.2_Inhib Excit.L2_5.2_L1b Excit.L2_5.2_L2.3 Excit.L2_5.2_L5
+  E2+                  1                3                 3               7
+  E4+                  0                2                 2               6
+     
+      Excit.L2_5.2_Vasc Excit.L2_5.2_WMtz Excit.L2_Inhib Excit.L2_L1b
+  E2+                 0                 5              4            6
+  E4+                 2                 6              7            6
+     
+      Excit.L2_L2.3 Excit.L2_L5 Excit.L2_L6 Excit.L2_Vasc Excit.L2_WMtz
+  E2+             8           8           3             1             4
+  E4+             8           8           3             4             7
+     
+      Excit.L5_6_NP_L5 Excit.L5_6_NP_L6 Excit.L5.1_Inhib Excit.L5.1_L1b
+  E2+                2                1                1              2
+  E4+                1                0                0              0
+     
+      Excit.L5.1_L2.3 Excit.L5.1_L5 Excit.L5.1_L6 Excit.L5.1_WMtz
+  E2+               4             8             6               3
+  E4+               2             8             8               4
+     
+      Excit.L5.2_Inhib Excit.L5.2_L1b Excit.L5.2_L2.3 Excit.L5.2_L5
+  E2+                5              2               6             7
+  E4+                5              2               5             6
+     
+      Excit.L6_CT_L5 Excit.L6_CT_L6 Excit.L6_CT_WM Excit.L6b_L2.3 Excit.L6b_L5
+  E2+              4              8              0              1            1
+  E4+              0              7              1              0            1
+     
+      Excit.L6b_L6 Excit.L6b_WM Excit.L6b_WMtz Inhib.Chandelier_Inhib
+  E2+            8            1              1                      2
+  E4+            6            2              2                      4
+     
+      Inhib.Chandelier_L2.3 Inhib.Chandelier_L5 Inhib.Lamp5_Lhx6_Inhib
+  E2+                     1                   6                      8
+  E4+                     5                   7                      8
+     
+      Inhib.Lamp5_Lhx6_L1a Inhib.Lamp5_Lhx6_L1b Inhib.Lamp5_Lhx6_L2.3
+  E2+                    6                    8                     6
+  E4+                    5                    7                     7
+     
+      Inhib.Lamp5_Lhx6_L5 Inhib.Lamp5_Lhx6_L6 Inhib.Lamp5_Lhx6_Vasc
+  E2+                   8                   5                     0
+  E4+                   8                   6                     1
+     
+      Inhib.Lamp5_Lhx6_WM Inhib.Lamp5_Lhx6_WMtz Inhib.Pax6_Inhib Inhib.Pax6_L1b
+  E2+                   3                     6                5              3
+  E4+                   3                     7                6              5
+     
+      Inhib.Pax6_L2.3 Inhib.Pax6_L5 Inhib.Pax6_WMtz Inhib.Pvalb_Inhib
+  E2+               0             1               1                 8
+  E4+               1             2               0                 7
+     
+      Inhib.Pvalb_L1b Inhib.Pvalb_L2.3 Inhib.Pvalb_L5 Inhib.Pvalb_L6
+  E2+               3                8              8              8
+  E4+               3                5              8              6
+     
+      Inhib.Pvalb_WMtz Inhib.Sst_Inhib Inhib.Sst_L1b Inhib.Sst_L2.3
+  E2+                7               5             3              5
+  E4+                7               4             2              8
+     
+      Inhib.Sst_L5 Inhib.Sst_L6 Inhib.Sst_WMtz Inhib.Vip_Inhib Inhib.Vip_L1a
+  E2+            8            4              6               8             4
+  E4+            8            4              6               8             7
+     
+      Inhib.Vip_L1b Inhib.Vip_L2.3 Inhib.Vip_L5 Inhib.Vip_L6 Inhib.Vip_Vasc
+  E2+             7              8            8            4              0
+  E4+             8              8            8            4              2
+     
+      Inhib.Vip_WM Inhib.Vip_WMtz Macro_L1a Macro_L1b Macro_Vasc Macro_WMtz
+  E2+            0              6         1         1          7          1
+  E4+            2              8         3         0          8          3
+     
+      Micro.1_WM Micro.2_Inhib Micro.2_L1a Micro.2_L1b Micro.2_L2.3 Micro.2_L5
+  E2+          3             7           8           8            6          8
+  E4+          0             8           8           8            8          8
+     
+      Micro.2_L6 Micro.2_Vasc Micro.2_WM Micro.2_WMtz Micro.3_L1a Micro.3_L1b
+  E2+          8            7          8            8           5           2
+  E4+          7            8          8            8           2           1
+     
+      Micro.3_Vasc Micro.3_WM Micro.3_WMtz Micro.4_WM Micro.5_Inhib Micro.5_L1a
+  E2+            3          5            3          2             8           8
+  E4+            0          3            2          0             8           8
+     
+      Micro.5_L1b Micro.5_L2.3 Micro.5_L5 Micro.5_L6 Micro.5_Vasc Micro.5_WM
+  E2+           8            8          8          8            7          8
+  E4+           8            8          8          7            8          7
+     
+      Micro.5_WMtz Oligo.1_Inhib Oligo.1_L1a Oligo.1_L1b Oligo.1_L5 Oligo.1_L6
+  E2+            8             1           8           3          7          8
+  E4+            8             4           8           5          8          6
+     
+      Oligo.1_Vasc Oligo.1_WM Oligo.1_WMtz Oligo.2_Inhib Oligo.2_L1a
+  E2+            2          8            8             1           8
+  E4+            2          8            8             0           8
+     
+      Oligo.2_L1b Oligo.2_L5 Oligo.2_L6 Oligo.2_Vasc Oligo.2_WM Oligo.2_WMtz
+  E2+           2          5          5            2          8            8
+  E4+           1          6          5            1          8            7
+     
+      Oligo.3_Inhib Oligo.3_L1a Oligo.3_L1b Oligo.3_L2.3 Oligo.3_L5 Oligo.3_L6
+  E2+             8           8           8            8          8          8
+  E4+             8           8           8            8          8          8
+     
+      Oligo.3_Vasc Oligo.3_WM Oligo.3_WMtz Oligo.4_Inhib Oligo.4_L1a
+  E2+            7          8            8             7           8
+  E4+            8          8            8             8           8
+     
+      Oligo.4_L1b Oligo.4_L2.3 Oligo.4_L5 Oligo.4_L6 Oligo.4_Vasc Oligo.4_WM
+  E2+           8            4          8          8            7          8
+  E4+           8            4          8          7            8          8
+     
+      Oligo.4_WMtz Oligo.5_L1a Oligo.5_L5 Oligo.5_L6 Oligo.5_WM Oligo.5_WMtz
+  E2+            8           1          6          5          6            7
+  E4+            8           0          6          3          6            6
+     
+      OPC.2_Inhib OPC.2_L1a OPC.2_L1b OPC.2_L2.3 OPC.2_L5 OPC.2_L6 OPC.2_Vasc
+  E2+           7         7         8          6        8        8          3
+  E4+           8         8         8          8        8        6          5
+     
+      OPC.2_WM OPC.2_WMtz OPC.4_Inhib OPC.4_L1a OPC.4_L1b OPC.4_L2.3 OPC.4_L5
+  E2+        8          8           4         5         5          1        5
+  E4+        7          8           3         5         7          2        7
+     
+      OPC.4_L6 OPC.4_WM OPC.4_WMtz OPC.5_Inhib OPC.5_L1a OPC.5_L1b OPC.5_L2.3
+  E2+        4        8          5           8         6         8          8
+  E4+        3        5          5           8         6         8          8
+     
+      OPC.5_L5 OPC.5_L6 OPC.5_Vasc OPC.5_WM OPC.5_WMtz Vasc.Endo_Inhib
+  E2+        8        8          2        6          8               8
+  E4+        8        7          2        7          8               8
+     
+      Vasc.Endo_L1a Vasc.Endo_L1b Vasc.Endo_L2.3 Vasc.Endo_L5 Vasc.Endo_L6
+  E2+             8             8              7            8            8
+  E4+             8             8              8            8            7
+     
+      Vasc.Endo_Vasc Vasc.Endo_WM Vasc.Endo_WMtz Vasc.PC_Inhib Vasc.PC_L1a
+  E2+              8            8              8             8           7
+  E4+              8            8              8             8           7
+     
+      Vasc.PC_L1b Vasc.PC_L2.3 Vasc.PC_L5 Vasc.PC_L6 Vasc.PC_Vasc Vasc.PC_WM
+  E2+           8            5          8          8            8          7
+  E4+           8            8          8          7            8          7
+     
+      Vasc.PC_WMtz Vasc.VLMC_L1a Vasc.VLMC_Vasc Vasc.VLMC_WM Vasc.VLMC_WMtz
+  E2+            8             1              7            1              1
+  E4+            8             4              8            0              4
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by APOE_carrier and registration_variable.
+ℹ Output is grouped by APOE_carrier.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(APOE_carrier, registration_variable))` for
+  per-operation grouping (`?dplyr::dplyr_by`) instead.
+Too few samples in: Astro.3_L1a, Astro.3_L1b, Astro.3_L5, Astro.3_WMtz, Astro.4_L1b, Astro.4_L6, Excit.L2_5.1_Vasc, Excit.L2_5.1_WM, Excit.L2_5.2_Inhib, Excit.L2_5.2_Vasc, Excit.L2_Vasc, Excit.L5_6_NP_L5, Excit.L5_6_NP_L6, Excit.L5.1_Inhib, Excit.L5.1_L1b, Excit.L6_CT_L5, Excit.L6_CT_WM, Excit.L6b_L2.3, Excit.L6b_L5, Excit.L6b_WM, Excit.L6b_WMtz, Inhib.Chandelier_L2.3, Inhib.Lamp5_Lhx6_Vasc, Inhib.Pax6_L2.3, Inhib.Pax6_L5, Inhib.Pax6_WMtz, Inhib.Vip_Vasc, Inhib.Vip_WM, Macro_L1a, Macro_L1b, Macro_WMtz, Micro.1_WM, Micro.3_L1b, Micro.3_Vasc, Micro.4_WM, Oligo.1_Inhib, Oligo.2_Inhib, Oligo.2_L1b, Oligo.2_Vasc, Oligo.5_L1a, OPC.4_L2.3, Vasc.VLMC_L1a, Vasc.VLMC_WM, Vasc.VLMC_WMtz
+2026-06-24 09:14:58.80742 - Save
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by SpX and cell_type_anno.
+ℹ Output is grouped by SpX.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(SpX, cell_type_anno))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Saving 7 x 7 in image
+Warning message:
+Removed 730 rows containing non-finite outside the scale range
+(`stat_boxplot()`). 
+**** Job ends ****
+Wed Jun 24 09:15:11 AM EDT 2026
