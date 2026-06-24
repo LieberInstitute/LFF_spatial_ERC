@@ -1,10 +1,10 @@
 **** Job starts ****
-Mon Jun 15 10:45:24 AM EDT 2026
+Wed Jun 24 09:13:27 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32886804
+Job id: 33502532
 Job name: 19_xenium_pseudobulk_DE_prep
-Node name: compute-127
+Node name: compute-168
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -153,6 +153,84 @@ $cluster
 
 attr(,"class")
 [1] "getopt"
-2026-06-15 10:45:48.881388 - load data from: spe_xenium_bansky.qs2
-/var/spool/slurm/d/job32886804/slurm_script: line 30: 3775930 Killed                  Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno
-slurmstepd: error: Detected 1 oom-kill event(s) in StepId=32886804.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.
+2026-06-24 09:13:40.402098 - load data from: spe_xenium_bansky.qs2
+            
+              Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
+  Vasc~SpX3  50546     0     0     0     0     0     0     0     0
+  L1a~SpX6       0 29369     0     0     0     0     0     0     0
+  L1b~SpX7       0     0 37807     0     0     0     0     0     0
+  L2.3~SpX4      0     0     0 38282     0     0     0     0     0
+  Inhib~SpX5     0     0     0     0 26918     0     0     0     0
+  L5~SpX1        0     0     0     0     0 85468     0     0     0
+  L6~SpX9        0     0     0     0     0     0 45822     0     0
+  WMtz~SpX8      0     0     0     0     0     0     0 64747     0
+  WM~SpX2        0     0     0     0     0     0     0     0 68224
+check input: 
+
+           reject           singlet   doublet_certain doublet_uncertain 
+             5462            302279            121612             17830 
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           15082            18048              941             8485 
+         Astro.5            Macro          Micro.1          Micro.2 
+           42241             6278              286            14691 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+            2372              344            18085              118 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+           11843               32             3799            11403 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+           16805            11905            62780            37828 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+            3569            36136            26970             8893 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+           21943            10057             6593             8208 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+            2341              982             5038             4970 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+            1444             5266             1706             5240 
+       Inhib.Sst        Inhib.Vip 
+            4646             9815 
+2026-06-24 09:14:20.620591 - pseudobulk cell_type_anno
+2026-06-24 09:14:20.890389 make pseudobulk object
+2026-06-24 09:14:31.750762 dropping 52 pseudo-bulked samples that are below 'min_ncells'.
+2026-06-24 09:14:31.947552 normalize expression
+2026-06-24 09:14:32.268549 - Done pseudobulk
+nrow: 366, ncol: 545
+     
+      Astro Macro Micro Oligo OPC Vasc Excit Inhib
+  E2+    40     8    35    40  25   24    57    48
+  E4+    39     8    27    40  27   24    55    48
+     
+      Astro.1 Astro.2 Astro.3 Astro.4 Astro.5 Macro Micro.1 Micro.2 Micro.3
+  E2+       8       8       8       8       8     8       5       8       8
+  E4+       8       8       7       8       8     8       1       8       7
+     
+      Micro.4 Micro.5 OPC.1 OPC.2 OPC.4 OPC.5 Oligo.1 Oligo.2 Oligo.3 Oligo.4
+  E2+       6       8     1     8     8     8       8       8       8       8
+  E4+       3       8     3     8     8     8       8       8       8       8
+     
+      Oligo.5 Vasc.Endo Vasc.PC Vasc.VLMC Excit.L2 Excit.L2_5.1 Excit.L2_5.2
+  E2+       8         8       8         8        8            8            7
+  E4+       8         8       8         8        8            8            7
+     
+      Excit.L5.1 Excit.L5.2 Excit.L5_6_NP Excit.L6_CT Excit.L6b
+  E2+          8          7             3           8         8
+  E4+          8          7             3           7         7
+     
+      Inhib.Chandelier Inhib.Lamp5_Lhx6 Inhib.Pax6 Inhib.Pvalb Inhib.Sst
+  E2+                8                8          8           8         8
+  E4+                8                8          8           8         8
+     
+      Inhib.Vip
+  E2+         8
+  E4+         8
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by APOE_carrier and registration_variable.
+ℹ Output is grouped by APOE_carrier.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(APOE_carrier, registration_variable))` for
+  per-operation grouping (`?dplyr::dplyr_by`) instead.
+Too few samples in: Micro.1, OPC.1
+2026-06-24 09:14:32.559768 - Save
+**** Job ends ****
+Wed Jun 24 09:14:32 AM EDT 2026
