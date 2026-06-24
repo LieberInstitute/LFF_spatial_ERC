@@ -200,14 +200,33 @@ sn_DEG_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE"
     select(cluster, gene_id, gene_name, starts_with("vlmf")) |>
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_sn_"), starts_with("vlmf_"))
 
-vlmf_data_tb_xenium <- vlmf_data_tb |>
-    rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
-    left_join(sn_DEG_data) |>
-    mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
-           signif_sn = vlmf_sn_adj.P.Val < 0.05,
-           signif_both = signif_xenium & signif_sn,
-           dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0),
-           validate = signif_both & dir_match)
+if(opt$datatype == "Xenium_cell_type_anno"){
+    
+    vlmf_data_tb_xenium <- vlmf_data_tb |>
+        rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
+        left_join(sn_DEG_data) |>
+        mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
+               signif_sn = vlmf_sn_adj.P.Val < 0.05,
+               signif_both = signif_xenium & signif_sn,
+               dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0),
+               validate = signif_both & dir_match)
+    
+} else if(opt$datatype == "Xenium_Oligo.3_Astro"){
+    
+    sn_DEG_data <- sn_DEG_data |>
+        filter(cluster == "Oligo.3") 
+    
+    vlmf_data_tb_xenium <- vlmf_data_tb |>
+        rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
+        left_join(sn_DEG_data|>
+                      select(-cluster)) |>
+        mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
+               signif_sn = vlmf_sn_adj.P.Val < 0.05,
+               signif_both = signif_xenium & signif_sn,
+               dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0),
+               validate = signif_both & dir_match)
+}
+
 
 ## save data
 saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
@@ -232,33 +251,43 @@ validation_summary |>
     filter(n_signif_sn > 0) |>
     print(n = 32)
 
+if(opt$datatype == "Xenium_cell_type_anno"){
+    
+    vlmf_data_tb_xenium |> 
+        filter(cluster == "Oligo.3", signif_both) |>
+        # filter(grepl("Astro", cluster), signif_both) |>
+        select(cluster, gene_id, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate)
+    
+    # cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
+    # <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
+    # 1 Oligo.3 ENSG000000… CALCRL            1.79             0.0238            -0.443              0.0152 FALSE     FALSE   
+    # 2 Oligo.3 ENSG000001… PTPRD            -0.493            0.0245            -0.224              0.0401 TRUE      TRUE    
+    # 3 Oligo.3 ENSG000001… CNDP1            -0.686            0.0466            -0.270              0.0466 TRUE      TRUE    
+    # 4 Oligo.3 ENSG000001… SLC17A7           1.47             0.0388             0.221              0.0669 TRUE      TRUE    
+    # 5 Oligo.3 ENSG000001… TESPA1            2.01             0.0171             0.349              0.0618 TRUE      TRUE    
+    # 6 Oligo.3 ENSG000001… STAT4             2.62             0.0330            -0.320              0.0244 FALSE     FALSE   
+    # 7 Oligo.3 ENSG000001… SLC24A2          -0.788            0.0224            -0.191              0.0692 TRUE      TRUE    
+    # 8 Oligo.3 ENSG000002… NPTXR             1.21             0.0178             0.364              0.0721 TRUE      TRUE    
+    # 9 Oligo.3 ENSG000001… ENC1              1.61             0.0238             0.211              0.0900 TRUE      TRUE  
+    
+    # cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
+    # <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
+    # 1 Astro.1 ENSG000002… NPTXR             0.751            0.0310             0.371              0.0149 TRUE      TRUE    
+    # 2 Astro.2 ENSG000001… LAMA2            -1.06             0.0364            -0.436              0.0261 TRUE      TRUE    
+    # 3 Astro.2 ENSG000001… FZD8              1.01             0.0261             0.337              0.0330 TRUE      TRUE    
+    # 4 Astro.2 ENSG000002… TRIL              0.724            0.0440             0.176              0.0772 TRUE      TRUE    
+    # 5 Astro.3 ENSG000001… MBP              -1.21             0.0393            -0.400              0.0561 TRUE      TRUE    
+    # 6 Astro.3 ENSG000001… SLC24A2          -1.29             0.0126            -0.561              0.0575 TRUE      TRUE
+    
+    
+} else {
+    vlmf_data_tb_xenium |> 
+        # filter(validate) |>
+        filter(gene_name == "OPALIN") |>
+        select(cluster, gene_id, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value, vlmf_xenium_t, dir_match,validate) |>
+        print(n = 20)
+}
 
-vlmf_data_tb_xenium |> 
-    filter(cluster == "Oligo.3", signif_both) |>
-    # filter(grepl("Astro", cluster), signif_both) |>
-    select(cluster, gene_id, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate)
-
-# cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
-# <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
-# 1 Oligo.3 ENSG000000… CALCRL            1.79             0.0238            -0.443              0.0152 FALSE     FALSE   
-# 2 Oligo.3 ENSG000001… PTPRD            -0.493            0.0245            -0.224              0.0401 TRUE      TRUE    
-# 3 Oligo.3 ENSG000001… CNDP1            -0.686            0.0466            -0.270              0.0466 TRUE      TRUE    
-# 4 Oligo.3 ENSG000001… SLC17A7           1.47             0.0388             0.221              0.0669 TRUE      TRUE    
-# 5 Oligo.3 ENSG000001… TESPA1            2.01             0.0171             0.349              0.0618 TRUE      TRUE    
-# 6 Oligo.3 ENSG000001… STAT4             2.62             0.0330            -0.320              0.0244 FALSE     FALSE   
-# 7 Oligo.3 ENSG000001… SLC24A2          -0.788            0.0224            -0.191              0.0692 TRUE      TRUE    
-# 8 Oligo.3 ENSG000002… NPTXR             1.21             0.0178             0.364              0.0721 TRUE      TRUE    
-# 9 Oligo.3 ENSG000001… ENC1              1.61             0.0238             0.211              0.0900 TRUE      TRUE  
-
-# cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
-# <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
-# 1 Astro.1 ENSG000002… NPTXR             0.751            0.0310             0.371              0.0149 TRUE      TRUE    
-# 2 Astro.2 ENSG000001… LAMA2            -1.06             0.0364            -0.436              0.0261 TRUE      TRUE    
-# 3 Astro.2 ENSG000001… FZD8              1.01             0.0261             0.337              0.0330 TRUE      TRUE    
-# 4 Astro.2 ENSG000002… TRIL              0.724            0.0440             0.176              0.0772 TRUE      TRUE    
-# 5 Astro.3 ENSG000001… MBP              -1.21             0.0393            -0.400              0.0561 TRUE      TRUE    
-# 6 Astro.3 ENSG000001… SLC24A2          -1.29             0.0126            -0.561              0.0575 TRUE      TRUE
-     
 # vlmf_data_tb_xenium |> select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_t) |> mutate(dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0)) |> print(n = 20)
 
 ## plot volcanos - just sn signif genes ## some bugs to work out...
@@ -288,24 +317,24 @@ sn_xenium_cor <- sn_xenium_all_pairs |>
     ) |>
     select(cluster_sn, cluster_xenium, n_genes, cor = estimate, p_value = p.value)|> 
     left_join(sn_xenium_all_pairs |>
-                  filter(vlmf_sn_P.Value < 0.1) |>
+                  filter(vlmf_sn_adj.P.Val < 0.05) |>
                   group_by(cluster_sn, cluster_xenium) |>
                   filter(n() >= 10) |> ## filter for atleast 10 genes after vlmf pval filter
                   summarise(
                       tidy(cor.test(vlmf_sn_t, vlmf_xenium_t, method="spearman")),
-                      n_genes_p01=n(),
+                      n_genes_FDR05=n(),
                       .groups="drop"
                   ) |>
-                  select(cluster_sn, cluster_xenium, n_genes_p01, cor_p01 = estimate, p_value_p01 = p.value)
+                  select(cluster_sn, cluster_xenium, n_genes_FDR05, cor_FDR05 = estimate, p_value_FDR05 = p.value)
     ) |>
-    mutate(cluster_match = cluster_sn == cluster_xenium,
+    mutate(cluster_match = as.character(cluster_sn) == as.character(cluster_xenium),
            FDR = p.adjust(p_value, method="BH"),
-           FDR_p01 = p.adjust(p_value_p01, method="BH"),
+           FDR_fdr05 = p.adjust(p_value_FDR05, method="BH"),
            )
 
-summary(sn_xenium_cor$n_genes_p01)
+summary(sn_xenium_cor$n_genes_FDR05)
 
-write_csv(sn_xenium_cor, file = here(data_dir, "xenium_v_sn_tstat_cor.csv"))
+write_csv(sn_xenium_cor, file = here(data_dir, sprintf("%s_v_sn_tstat_cor.csv", opt$datatype)))
 
 sn_xenium_cor |>
     filter(cluster_match) |>
@@ -323,7 +352,7 @@ sn_xenium_cor_v_genes <- sn_xenium_cor |>
     geom_point() +
     theme_bw()
 
-ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_v_genes.png"), width =8)
+ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_genes.png", opt$datatype)), width =8)
 
 ## summary with matching clusters
 
@@ -332,9 +361,9 @@ validation_summary_cor <- validation_summary |>
                   filter(cluster_match) |>
                   select(cluster = cluster_sn,
                          n_genes, cor, p_value, 
-                         n_genes_p01, cor_p01, p_value_p01))
+                         n_genes_FDR05, cor_FDR05, p_value_FDR05))
 
-write_csv(validation_summary_cor, file = here(data_dir, "xeniumf_DEG_validation_summary.csv"))
+write_csv(validation_summary_cor, file = here(data_dir, sprintf("%s_DEG_validation_summary.csv", opt$datatype)))
 
 
 sn_xenium_cor_heatmap <- sn_xenium_cor |>
@@ -350,7 +379,7 @@ sn_xenium_cor_heatmap <- sn_xenium_cor |>
     ) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(sn_xenium_cor_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_heatmap.png"), width =8)
+ggsave(sn_xenium_cor_heatmap, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_heatmap.png", opt$datatype)), width =8)
 
 sn_xenium_cor_sig_heatmap <- sn_xenium_cor |>
     mutate(sig=case_when(
@@ -372,11 +401,11 @@ sn_xenium_cor_sig_heatmap <- sn_xenium_cor |>
     ) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(sn_xenium_cor_sig_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_sig_heatmap.png"), width =8)
+ggsave(sn_xenium_cor_sig_heatmap, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_sig_heatmap.png", opt$datatype)), width =8)
 
-sn_xenium_cor_p01_heatmap <- sn_xenium_cor |>
+sn_xenium_cor_FDR05_heatmap <- sn_xenium_cor |>
     ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
-    geom_tile(aes(fill = cor_p01)) +
+    geom_tile(aes(fill = cor_FDR05)) +
     geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
     theme_bw() + 
     scale_fill_gradient2(
@@ -387,18 +416,18 @@ sn_xenium_cor_p01_heatmap <- sn_xenium_cor |>
     ) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(sn_xenium_cor_p01_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_p01_heatmap.png"), width =8)
+ggsave(sn_xenium_cor_FDR05_heatmap, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_FDR05_heatmap.png", opt$datatype)), width =8)
 
 
-sn_xenium_cor_p01_sig_heatmap <- sn_xenium_cor |>
+sn_xenium_cor_FDR05_sig_heatmap <- sn_xenium_cor |>
     mutate(sig=case_when(
-        FDR_p01 < 0.001 ~ "***",
-        FDR_p01 < 0.01  ~ "**",
-        FDR_p01 < 0.05  ~ "*",
+        FDR_fdr05 < 0.001 ~ "***",
+        FDR_fdr05 < 0.01  ~ "**",
+        FDR_fdr05 < 0.05  ~ "*",
         TRUE ~ ""
     )) |>
     ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
-    geom_tile(aes(fill = cor_p01)) +
+    geom_tile(aes(fill = cor_FDR05)) +
     geom_text(aes(label = sig), size = 2) +
     geom_text(aes(label = ifelse(cluster_match, "O", ""))) +
     theme_bw() + 
@@ -410,7 +439,7 @@ sn_xenium_cor_p01_sig_heatmap <- sn_xenium_cor |>
     ) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(sn_xenium_cor_p01_sig_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_p01_sig_heatmap.png"), width =8)
+ggsave(sn_xenium_cor_FDR05_sig_heatmap, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_FDR05_sig_heatmap.png", opt$datatype)), width =8)
 
 
 sn_xenium_cor_boxplot <- sn_xenium_cor |>
@@ -418,7 +447,7 @@ sn_xenium_cor_boxplot <- sn_xenium_cor |>
     geom_boxplot() +
     theme_bw()
 
-ggsave(sn_xenium_cor_boxplot, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_boxplot.png"))
+ggsave(sn_xenium_cor_boxplot, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_boxplot.png", opt$datatype)))
 
 
 ## Xenium vs. Xenium
@@ -446,55 +475,60 @@ xenium_xenium_cor_heatmap <- xenium_xenium_cor |>
     ) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(xenium_xenium_cor_heatmap, filename = here(plot_dir, "xenium_v_xenium_t_stat_cor_heatmap.png"), width =8)
+ggsave(xenium_xenium_cor_heatmap, filename = here(plot_dir, sprintf("%s_v_xenium_t_stat_cor_heatmap.png", opt$datatype)), width =8)
 
-# sn vs. sn
-sn_sn_cor <- sn_DEG_data |>
-    select(cluster, gene_id, vlmf_sn_t) |>
-    pivot_wider(names_from=cluster, values_from=vlmf_sn_t) |>
-    select(-gene_id) |>
-    cor(use="pairwise.complete.obs", method = "spearman") |>
-    reshape2::melt() |>
-    rename(cluster_sn1 = Var1, cluster_sn2 = Var2, cor = value) |>
-    mutate(cluster_sn1 = factor(cluster_sn1, levels = cluster_levels),
-           cluster_sn2 = factor(cluster_sn2, levels = cluster_levels),
-           cluster_match = cluster_sn1 == cluster_sn2)
-
-sn_sn_cor_heatmap <- sn_sn_cor |>
-    ggplot(aes(x = cluster_sn1, y = cluster_sn2)) +
-    geom_tile(aes(fill = cor)) +
-    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
-    theme_bw() + 
-    scale_fill_gradient2(
-        low = "#2166AC",
-        mid = "white",
-        high = "#D6604D",
-        midpoint = 0
-    ) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
-
-ggsave(sn_sn_cor_heatmap, filename = here(plot_dir, "sn_v_sn_t_stat_cor_heatmap.png"), width =8)
-
-
-diff_cor <- sn_xenium_cor |>
-    inner_join(sn_sn_cor |> 
-                  rename(cluster_sn = cluster_sn1, cluster_xenium = cluster_sn2, sn_sn_cor = cor)) |>
-    mutate(cor_diff = cor - sn_sn_cor)
+if(opt$datatype == "Xenium_cell_type_anno"){
     
-cor_diff_heatmap <- diff_cor |>
-    ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
-    geom_tile(aes(fill = cor_diff)) +
-    geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
-    theme_bw() + 
-    scale_fill_gradient2(
-        low = "#2166AC",
-        mid = "white",
-        high = "#D6604D",
-        midpoint = 0
-    ) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
-
-ggsave(cor_diff_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_diff_heatmap.png"), width =8)
+    # sn vs. sn
+    sn_sn_cor <- sn_DEG_data |>
+        select(cluster, gene_id, vlmf_sn_t) |>
+        pivot_wider(names_from=cluster, values_from=vlmf_sn_t) |>
+        select(-gene_id) |>
+        cor(use="pairwise.complete.obs", method = "spearman") |>
+        reshape2::melt() |>
+        rename(cluster_sn1 = Var1, cluster_sn2 = Var2, cor = value) |>
+        mutate(cluster_sn1 = factor(cluster_sn1, levels = cluster_levels),
+               cluster_sn2 = factor(cluster_sn2, levels = cluster_levels),
+               cluster_match = cluster_sn1 == cluster_sn2)
+    
+    sn_sn_cor_heatmap <- sn_sn_cor |>
+        ggplot(aes(x = cluster_sn1, y = cluster_sn2)) +
+        geom_tile(aes(fill = cor)) +
+        geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+        theme_bw() + 
+        scale_fill_gradient2(
+            low = "#2166AC",
+            mid = "white",
+            high = "#D6604D",
+            midpoint = 0
+        ) +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    
+    ggsave(sn_sn_cor_heatmap, filename = here(plot_dir, "sn_v_sn_t_stat_cor_heatmap.png"), width =8)
+    
+    
+    diff_cor <- sn_xenium_cor |>
+        inner_join(sn_sn_cor |> 
+                       rename(cluster_sn = cluster_sn1, cluster_xenium = cluster_sn2, sn_sn_cor = cor)) |>
+        mutate(cor_diff = cor - sn_sn_cor)
+    
+    cor_diff_heatmap <- diff_cor |>
+        ggplot(aes(x = cluster_sn, y = cluster_xenium)) +
+        geom_tile(aes(fill = cor_diff)) +
+        geom_text(aes(label = ifelse(cluster_match, "*", ""))) +
+        theme_bw() + 
+        scale_fill_gradient2(
+            low = "#2166AC",
+            mid = "white",
+            high = "#D6604D",
+            midpoint = 0
+        ) +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    
+    ggsave(cor_diff_heatmap, filename = here(plot_dir, "xenium_v_sn_t_stat_cor_diff_heatmap.png"), width =8)
+    
+    
+}
 
 
 #### compare t-stats scatter plots ####
@@ -536,26 +570,32 @@ comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = 
     # return(t_stat_scatter)
 }
 
-map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, model_name = "carrier"))
-map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, stat = "logFC", model_name = "carrier"))
+if(opt$datatype == "Xenium_cell_type_anno"){
+    
+    map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, model_name = "carrier"))
+    map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, stat = "logFC", model_name = "carrier"))
+} else {
+    vlmf_data_tb_xenium$cell_type_broad <- "Xenium_Oligo.3_Astro"
+    comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = "Xenium_Oligo.3_Astro", model_name = "carrier")
+}
 
 
-vlmf_data_tb |> filter(cluster == "Oligo.3") |> filter(vlmf_xenium =)
+# vlmf_data_tb |> filter(cluster == "Oligo.3") |> filter(vlmf_xenium =)
 
 #### compare stats cluster vs. cluster 
 carrier_data_wide_t <- vlmf_data_tb |>
-    select(gene_id, gene_id, cluster, vlmf_xenium_t) |>
+    select(gene_id, gene_id, cluster, vlmf_t) |>
     # count(cluster)
-    pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster")
+    pivot_wider(values_from = "vlmf_t", names_from = "cluster")
 
 ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t))
 
-# ggsave(ggpair_t_stats, filename = "sn_fine_t_stat_ggpairs.png", height = 15, width = 15)    
+ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_fine_t_stat_ggpairs.png", opt$datatype)), height = 10, width = 10)
 
 map(cell_type_broad_levels, function(ctb){
     message(ctb)
     ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = grep(ctb, colnames(carrier_data_wide_t)), size = 0.5, alpha = 0.5)
-    ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("xenium_t_stat_ggpairs-%s.png", ctb)))
+    ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_t_stat_ggpairs-%s.png",opt$datatype, ctb)))
     
 })
 
@@ -599,12 +639,12 @@ pi1_per_celltype <- vlmf_data_tb_xenium |>
 
 pi1_per_celltype |>
     left_join(validation_summary_cor) |> 
-    select(cluster, pi1, n_discovery, cor, cor_p01, n_signif_both_dir) |>
+    select(cluster, pi1, n_discovery, cor, cor_FDR05, n_signif_both_dir) |>
     mutate(
         replication_tier = case_when(
-            pi1 > 0.4  & cor_p01 > 0.3  ~ "Strong",
-            pi1 > 0.4  | cor_p01 > 0.3  ~ "Moderate/discordant",
-            pi1 > 0.1  | cor_p01 > 0.1  ~ "Weak",
+            pi1 > 0.4  & cor_FDR05 > 0.3  ~ "Strong",
+            pi1 > 0.4  | cor_FDR05 > 0.3  ~ "Moderate/discordant",
+            pi1 > 0.1  | cor_FDR05 > 0.1  ~ "Weak",
             is.na(pi1)                   ~ "Inconclusive",
             TRUE                         ~ "No replication"
         )
