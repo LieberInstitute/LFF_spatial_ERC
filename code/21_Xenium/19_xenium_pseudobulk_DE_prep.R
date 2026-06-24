@@ -97,7 +97,22 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
     spe <- cbind(spe_03, spe_doub)
     
-}
+} else if(opt$cluster == "Oligo.3_Astro_SpX"){
+    
+    #### Oligos with nearest neighbor classifications ####
+    
+    load(here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro", "Oligo3_Astro_neighbor_df.Rdata"), verbose = TRUE)
+    
+    ## filter to Oligo.3
+    spe_03 <- spe[,neighbor_df_details$reference_barcode]
+    message("filter to Oligo.3, ncells: ", ncol(spe_03))
+    
+    spe_03$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe$SpX_simple)
+    table(spe_03$Oligo.3_Astro_SpX)
+    
+    
+    
+} 
 
 message("check input: ")
 table(spe$spot_class)
@@ -237,6 +252,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
 
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep_cell_type_anno_SpX', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno_SpX")
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep_Oligo.3_Astro', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster Oligo.3_Astro")
+# slurmjobs::job_single('19_xenium_pseudobulk_DE_prep_Oligo.3_Astro_SpX', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster Oligo.3_Astro_SpX")
 
 ## Reproducibility information
 print("Reproducibility information:")
