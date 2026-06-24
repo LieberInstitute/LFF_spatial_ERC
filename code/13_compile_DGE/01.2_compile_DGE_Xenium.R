@@ -17,7 +17,7 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
-opt$datatype  <- "Xenium_cell_type_anno"
+# opt$datatype  <- "Xenium_Oligo.3_Astro"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -31,11 +31,21 @@ main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
 #### colors and factors ####
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
-cluster_colors <- cell_type_colors$anno
 
 if(opt$datatype == "Xenium_cell_type_anno"){
 
     cluster_levels <- names(cell_type_colors$anno) ## cell type levels
+    cluster_colors <- cell_type_colors$anno
+    
+} else if(opt$datatype == "Xenium_Oligo.3_Astro"){
+
+    cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high", "doublet_Oligo3_Astro")
+    
+    cluster_colors <- c("nnA_far_APOE_low" = "#87219a",
+                        "nnA_far_APOE_high" = "#487800",
+                        "nnA_near_APOE_low" = "#b0b3ff",
+                        "nnA_near_APOE_high" = "#01d9b4",
+                       "doublet_Oligo3_Astro" = "#ef2396")
 }
 
 cell_type_broad_levels <- names(cell_type_colors$broad)
@@ -79,11 +89,11 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     
 }
 
-vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(cluster) |> print(n = 35)
+vlmf_data_tb |> filter(vlmf_P.Value < 0.10) |> count(cluster) |> print(n = 35)
 
 vlmf_model_summary <- vlmf_data_tb |> 
                                    mutate(mod = "carrier") |>
-                                   group_by(cell_type_broad, cluster, mod) |>
+                                   group_by(cluster, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
                                              n_pval10 = sum(vlmf_P.Value < 0.10),
@@ -98,27 +108,33 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     geom_col() +
     geom_text(aes(label = n_pval10), vjust=-.5) +
     scale_fill_manual(values = cluster_colors) +
-    facet_grid(mod~cell_type_broad, scales = "free_x", space = "free") +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.10") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None")
+
+if(opt$datatype == "Xenium_cell_type_anno"){
+    vlmf_model_summary_bar <- vlmf_model_summary_bar + facet_grid(mod~cell_type_broad, scales = "free_x", space = "free")
+}
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 10)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_pval10, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
+    # pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
     pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
-    # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
     filter(mod == "carrier") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
     geom_text(aes(label = abs(n_genes))) +
-    facet_grid(mod~cell_type_broad, scales = "free_x", space = "free") +
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+if(opt$datatype == "Xenium_cell_type_anno"){
+    vlmf_model_summary_bar_reg <- vlmf_model_summary_bar_reg + facet_grid(mod~cell_type_broad, scales = "free_x", space = "free")
+}
 
 ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_reg.png", opt$datatype)), width = 10)
 
@@ -161,8 +177,13 @@ custom_volcano_ct <- function(data, mod_name){
     
 }
 
-## plot volcanos
-custom_volcano_ct(data = vlmf_data_tb, mod_name = paste0(opt$datatype, "-carrier"))
+if(opt$datatype == "Xenium_cell_type_anno"){
+    ## plot volcanos by cell type
+    custom_volcano_ct(data = vlmf_data_tb, mod_name = paste0(opt$datatype, "-carrier"))
+} else {
+    custom_volcano(data = vlmf_data_tb, model_name = paste0(opt$datatype, "-carrier")) 
+}
+
 
 #### Save vlmf data - add snRNA-seq results ####
 
