@@ -7,11 +7,17 @@ library("here")
 library("sessioninfo")
 library("ggrepel")
 library("GGally")
-# library("getopt")
+library("getopt")
 library("broom")
 
-opt <- list()
-opt$datatype  <- "Xenium"
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
+opt$datatype  <- "Xenium_cell_type_anno"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -26,16 +32,21 @@ main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 #### colors and factors ####
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 cluster_colors <- cell_type_colors$anno
-cluster_levels <- names(cell_type_colors$anno)
+
+if(opt$datatype == "Xenium_cell_type_anno"){
+
+    cluster_levels <- names(cell_type_colors$anno) ## cell type levels
+}
+
 cell_type_broad_levels <- names(cell_type_colors$broad)
 cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Other"]
 
 
 #### voomLmFit data ####
-vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", "vlmf_Xenium"),
+vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "06_Clusterwise_voomLmFit_Xenium", paste0("vlmf_", opt$datatype)),
                       full.names = TRUE, pattern = ".rds")
 
-names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_sn_fine_|.rds", "", basename(.x)))
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_%s_|.rds", opt$datatype), "", basename(.x)))
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -53,14 +64,20 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_P.Value = P.Value,
                   vlmf_adj.P.Val = adj.P.Val,
                   vlmf_B = B
-    )  |>
-    mutate(cell_type_broad = factor(jaffelab::ss(cluster,"\\."), cell_type_broad_levels),
-           cluster = factor(cluster, levels = cluster_levels)
     ) |>
+    mutate(cluster = factor(cluster, levels = cluster_levels))  |>
     as_tibble()
 
 levels(vlmf_data_tb$cluster)
-levels(vlmf_data_tb$cell_type_broad)
+
+if(opt$datatype == "Xenium_cell_type_anno"){
+    
+    vlmf_data_tb <- vlmf_data_tb |>
+        mutate(cell_type_broad = factor(gsub("\\..*", "", cluster), cell_type_broad_levels))
+    
+    levels(vlmf_data_tb$cell_type_broad)
+    
+}
 
 vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(cluster) |> print(n = 35)
 
@@ -69,7 +86,7 @@ vlmf_model_summary <- vlmf_data_tb |>
                                    group_by(cell_type_broad, cluster, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
-                                             n_pval05 = sum(vlmf_P.Value < 0.05),
+                                             n_pval10 = sum(vlmf_P.Value < 0.10),
                                              nUP = sum(vlmf_P.Value < 0.05 & vlmf_logFC > 0),
                                              nDown = sum(vlmf_P.Value < 0.05 & vlmf_logFC < 0))
 
@@ -77,20 +94,20 @@ vlmf_model_summary |> filter(n_FDR05 > 0)
 
 ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
-    ggplot(aes(x = cluster, y = n_pval05, fill = cluster)) +
+    ggplot(aes(x = cluster, y = n_pval10, fill = cluster)) +
     geom_col() +
-    geom_text(aes(label = n_pval05), vjust=-.5) +
+    geom_text(aes(label = n_pval10), vjust=-.5) +
     scale_fill_manual(values = cluster_colors) +
     facet_grid(mod~cell_type_broad, scales = "free_x", space = "free") +
     theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.05") +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.10") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None")
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 10)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
-    select(-n_pval05, -n_genes, -n_FDR05) |>
+    select(-n_pval10, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
     pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
@@ -110,7 +127,7 @@ write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_
 
 #### vlmf volcano plots ####
 
-custom_volcano <- function(data, Pval_cut = 0.05, model_name){
+custom_volcano <- function(data, Pval_cut = 0.10, model_name){
     
     # define colors
     signif_colors <- c("purple", "blue", "red")
@@ -138,23 +155,16 @@ custom_volcano <- function(data, Pval_cut = 0.05, model_name){
 
 custom_volcano_ct <- function(data, mod_name){
     
-    map(cell_type_broad_levels, ~data |> 
+    map(cell_type_broad_levels, ~try(data |> 
             filter(cell_type_broad == .x) |>
-            custom_volcano(, model_name = paste0(mod_name,"-", .x)) )
+            custom_volcano(, model_name = paste0(mod_name,"-", .x)) ))
     
 }
 
 ## plot volcanos
 custom_volcano_ct(data = vlmf_data_tb, mod_name = paste0(opt$datatype, "-carrier"))
 
-
-## filter to risk genes
-custom_volcano_ct(data = vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol) , mod_name = paste0(opt$datatype, "-carrier-risk"))
-
-walk(c("carrier"), ~custom_volcano_ct(data = vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol) |> filter(gene_name %in% AD_risk$symbol), 
-                                           mod_name = paste0(opt$datatype, "-", .x, "-risk")))
-
-#### Save vlmf data ####
+#### Save vlmf data - add snRNA-seq results ####
 
 # carrier_data <- vlmf_data_tb$carrier |>
 #     left_join(pseudobulkDGE_data_tb$carrier)|>
@@ -198,33 +208,45 @@ validation_summary <- vlmf_data_tb_xenium |>
               percent_valid = 100*sum(validate)/n_signif_sn)
 
 validation_summary |>
-    filter(n_signif_sn > 0)
+    filter(n_signif_sn > 0) |>
+    print(n = 32)
 
 
 vlmf_data_tb_xenium |> 
-    # filter(cluster == "Oligo.3", signif_both) |>
-    filter(grepl("Astro", cluster), signif_both) |>
+    filter(cluster == "Oligo.3", signif_both) |>
+    # filter(grepl("Astro", cluster), signif_both) |>
     select(cluster, gene_id, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate)
 
 # cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
 # <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
-# 1 Oligo.3 ENSG000001… SLC17A7           1.47             0.0388             0.234              0.0453 TRUE      TRUE    
-# 2 Oligo.3 ENSG000001… ENC1              1.61             0.0238             0.246              0.0530 TRUE      TRUE    
-# 3 Oligo.3 ENSG000002… NPTXR             1.21             0.0178             0.399              0.0497 TRUE      TRUE    
-# 4 Oligo.3 ENSG000001… TESPA1            2.01             0.0171             0.366              0.0492 TRUE      TRUE    
-# 5 Oligo.3 ENSG000001… CABLES1           2.19             0.0124             0.382              0.0515 TRUE      TRUE    
-# 6 Oligo.3 ENSG000000… CALCRL            1.79             0.0238            -0.325              0.0588 FALSE     FALSE   
-# 7 Oligo.3 ENSG000001… CNDP1            -0.686            0.0466            -0.249              0.0971 TRUE      TRUE    
+# 1 Oligo.3 ENSG000000… CALCRL            1.79             0.0238            -0.443              0.0152 FALSE     FALSE   
+# 2 Oligo.3 ENSG000001… PTPRD            -0.493            0.0245            -0.224              0.0401 TRUE      TRUE    
+# 3 Oligo.3 ENSG000001… CNDP1            -0.686            0.0466            -0.270              0.0466 TRUE      TRUE    
+# 4 Oligo.3 ENSG000001… SLC17A7           1.47             0.0388             0.221              0.0669 TRUE      TRUE    
+# 5 Oligo.3 ENSG000001… TESPA1            2.01             0.0171             0.349              0.0618 TRUE      TRUE    
+# 6 Oligo.3 ENSG000001… STAT4             2.62             0.0330            -0.320              0.0244 FALSE     FALSE   
+# 7 Oligo.3 ENSG000001… SLC24A2          -0.788            0.0224            -0.191              0.0692 TRUE      TRUE    
+# 8 Oligo.3 ENSG000002… NPTXR             1.21             0.0178             0.364              0.0721 TRUE      TRUE    
+# 9 Oligo.3 ENSG000001… ENC1              1.61             0.0238             0.211              0.0900 TRUE      TRUE  
 
 # cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
 # <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
-# 1 Astro.1 ENSG000002… NPTXR             0.751            0.0310             0.307              0.0536 TRUE      TRUE    
-# 2 Astro.2 ENSG000001… FZD8              1.01             0.0261             0.269              0.0603 TRUE      TRUE    
-# 3 Astro.2 ENSG000002… TRIL              0.724            0.0440             0.174              0.0964 TRUE      TRUE    
-# 4 Astro.2 ENSG000001… GPC6             -1.14             0.0412            -0.392              0.0997 TRUE      TRUE    
-# 5 Astro.3 ENSG000001… MBP              -1.21             0.0393            -0.380              0.0565 TRUE      TRUE 
+# 1 Astro.1 ENSG000002… NPTXR             0.751            0.0310             0.371              0.0149 TRUE      TRUE    
+# 2 Astro.2 ENSG000001… LAMA2            -1.06             0.0364            -0.436              0.0261 TRUE      TRUE    
+# 3 Astro.2 ENSG000001… FZD8              1.01             0.0261             0.337              0.0330 TRUE      TRUE    
+# 4 Astro.2 ENSG000002… TRIL              0.724            0.0440             0.176              0.0772 TRUE      TRUE    
+# 5 Astro.3 ENSG000001… MBP              -1.21             0.0393            -0.400              0.0561 TRUE      TRUE    
+# 6 Astro.3 ENSG000001… SLC24A2          -1.29             0.0126            -0.561              0.0575 TRUE      TRUE
      
 # vlmf_data_tb_xenium |> select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_t) |> mutate(dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0)) |> print(n = 20)
+
+## plot volcanos - just sn signif genes ## some bugs to work out...
+# custom_volcano_ct(data = vlmf_data_tb_xenium |> 
+#                       filter(signif_sn) |> 
+#                       rename(vlmf_P.Value = vlmf_xenium_P.Value,
+#                              vlmf_logFC = vlmf_xenium_logFC),
+#                   mod_name = paste0(opt$datatype, "-carrier_signif_sn"))
+
 
 #### Xenium vs. snRNA-seq correlation ####
 
@@ -584,7 +606,7 @@ pi1_per_celltype |>
 # 13 Astro.3      NA               32
 # 14 Oligo.1      NA               42
 
-# slurmjobs::job_single('01.2_compile_DGE_Xenium', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R")
+# slurmjobs::job_single('01.2_compile_DGE_Xenium_cell_type_anno', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R --datatype Xenium_cell_type_anno")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
