@@ -8,14 +8,13 @@ library("SpatialExperiment")
 library("tidyverse")
 library("here")
 library("sessioninfo")
-
+library("DeconvoBuddies")
 
 data_dir <- here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 plot_dir <- here("plots", "21_Xenium", "20_xenium_Oligo3_Astro")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
-
 
 #### Load data ####
 
@@ -48,14 +47,17 @@ pd <- colData(spe) |>
     as.data.frame() |>
     select(cell_id, cell_type_anno, cell_type_broad, SpX, BrNum, APOE_carrier)
 
-median_dist <- median(neighbor_df$distance)
+(median_dist <- median(neighbor_df$distance)) # median = 40.8
 
 neighbor_df$Astro_APOE <- logcounts(spe)["APOE", neighbor_df_details$neighbor_barcode]
 
 neighbor_df_details <- neighbor_df |>
-    left_join(pd |> rename(neighbor_barcode = cell_id, 
+    left_join(pd |> select(neighbor_barcode = cell_id, 
                            neighbor_cell_type = cell_type_anno, 
-                           neighbor_cell_type_broad = cell_type_broad))  |>
+                           neighbor_cell_type_broad = cell_type_broad,
+                           APOE_carrier)) |>
+    left_join(pd |> select(reference_barcode = cell_id, 
+                           reference_SpX = SpX))  |>
     mutate(dist_class = ifelse(distance < median_dist, "near", "far"))
 
 neighbor_APOE_cutoff <- neighbor_df_details |>
@@ -64,7 +66,6 @@ neighbor_APOE_cutoff <- neighbor_df_details |>
     group_by(neighbor_cell_type) |>
     summarise(median_APOE = median(Astro_APOE))
 
-
 ## annotate APOE expression
 neighbor_df_details <- neighbor_df_details |>
     left_join(neighbor_APOE_cutoff) |>
@@ -72,19 +73,22 @@ neighbor_df_details <- neighbor_df_details |>
 
 neighbor_df_details |> count(APOE_level, dist_class)
 
-neighbor_df_details |> count(BrNum, APOE_level, dist_class) |> filter(n < 10)
+neighbor_df_details |> count(BrNum, APOE_level, dist_class, reference_SpX) |> count(APOE_level, dist_class, reference_SpX, n < 10)
+
+neighbor_df_details |> 
+    count(BrNum, APOE_carrier, APOE_level, dist_class, reference_SpX) |> 
+    group_by(APOE_carrier, APOE_level, dist_class, reference_SpX) |>
+    summarise(n10 = sum(n > 10), 
+              min_cells = min(n), 
+              median_cells = median(n), 
+              max_cells = max(n))
 
 
 save(neighbor_df_details, file = here(data_dir, "Oligo3_Astro_neighbor_df.Rdata"))
 
 neighbor_df_details |>
-    count(BrNum, dist_class) |>
-    arrange(n)
-
-
-
-neighbor_df_details |> 
-    count(Astro_APOE < 1, dist_class)
+    count(BrNum, dist_class, APOE_level) |>
+    arrange(-n)
 
 #### Neighbor Identity ####
 
@@ -113,6 +117,32 @@ neighbor_boxplot <- neighbor_prop |>
     theme_bw()
 
 ggsave(neighbor_boxplot, filename = here(plot_dir, "Oligo3_nearest_astro_subtype_boxplot.png"))
+
+#### Neighbor Id vs. SpX ####
+
+neighbor_SpX_prop <- neighbor_df_details |>
+    count(BrNum, reference_SpX, neighbor_cell_type) |>
+    group_by(BrNum, reference_SpX) |>
+    mutate(prop = n/sum(n))
+
+
+neighbor_SpX_prop_tile <- neighbor_SpX_prop |>
+    ggplot(aes(x = neighbor_cell_type, y = reference_SpX, fill = prop)) +
+    geom_tile() +
+    scale_fill_gradientn(colors = c("black", viridisLite::plasma(100))) +
+    theme_bw() +
+    scale_y_discrete(limits=rev)
+
+ggsave(neighbor_SpX_prop_tile, filename = here(plot_dir, "Oligo3_nearest_astro_SpX_prop_tile.png"))
+
+neighbor_SpX_n_tile <- neighbor_SpX_prop |>
+    ggplot(aes(x = neighbor_cell_type, y = reference_SpX, fill = n)) +
+    geom_tile() +
+    scale_fill_gradientn(colors = c("black", viridisLite::plasma(100))) +
+    theme_bw() +
+    scale_y_discrete(limits=rev)
+
+ggsave(neighbor_SpX_n_tile, filename = here(plot_dir, "Oligo3_nearest_astro_SpX_n_tile.png"))
 
 #### Explore Oligo.3 - Astro distance ####
 
@@ -166,8 +196,6 @@ ggsave(distance_boxplot_donor, filename = here(plot_dir, "xenium_Oligo3_Astro_di
 
 
 #### Explore APOE expression ####
-
-library(DeconvoBuddies)
 
 astro_apoe_expres <- plot_gene_express(spe[,spe$cell_type_broad == "Astro"], 
                                        genes = "APOE",
@@ -245,4 +273,12 @@ APOE_v_Oligo_dist <- neighbor_df_details |>
 
 ggsave(APOE_v_Oligo_dist, filename = here(plot_dir, "xenium_Astro_APOE_v_Oligo_dist.png"))
 
+# slurmjobs::job_single('20_xenium_Oligo3_Astro', create_shell = TRUE, memory = '20G', command = "Rscript 20_xenium_Oligo3_Astro.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
