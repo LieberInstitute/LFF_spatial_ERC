@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=25G
-#SBATCH --job-name=06_Clusterwise_voomLmFit_Xenium_SpX
+#SBATCH --job-name=06_Clusterwise_voomLmFit_Xenium__cell_type_anno
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/06_Clusterwise_voomLmFit_Xenium_SpX.txt
-#SBATCH -e logs/06_Clusterwise_voomLmFit_Xenium_SpX.txt
+#SBATCH -o logs/06_Clusterwise_voomLmFit_Xenium_cell_type_anno.txt
+#SBATCH -e logs/06_Clusterwise_voomLmFit_Xenium_cell_type_anno.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 06_Clusterwise_voomLmFit_Xenium_SpX.R
+Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno
 
 echo "**** Job ends ****"
 date

@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers June 2026
-## Run voomLmFit on Xenium Oligo.3 by SPX
+## Run voomLmFit on Xenium data
 
 library("data.table")
 library("edgeR")
@@ -12,14 +12,30 @@ library("tidyverse")
 library("sessioninfo")
 library("qs2")
 
-opt <- list()
-opt$datatype <- "Xenium_SpX"
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
 
-pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS")
+opt$datatype <- "Xenium_Oligo.3_Astro"
+
+if(opt$datatype == "Xenium_cell_type"){
+    pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno.RDS")
+} else if(opt$datatype == "Xenium_cell_type_anno_SpX"){
+    pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS")
+}else if(opt$datatype == "Xenium_Oligo.3_Astro"){
+    pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS")
+} else {
+    stop("non-valid datatype")
+}
+
+batch = "chip"
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, pb_fn))
 
 #### Set up dirs ####
-data_dir <- here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", sprintf("vlmf_%s", opt$datatype))
+data_dir <- here("processed-data", "12_voomLmFit", "06_Clusterwise_voomLmFit_Xenium", sprintf("vlmf_%s", opt$datatype))
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the data ####
@@ -33,8 +49,6 @@ table(sce_pb$APOE_carrier_syn)
 
 clusters <- unique(sce_pb$registration_variable)
 names(clusters) <- clusters
-
-batch = "chip"
 
 message(Sys.time(), " - Loop voomlmFit by cluster")
 
@@ -80,18 +94,15 @@ lmf_summary <- map_dfr(clusters, possibly(function(clus){
     
     message("Done - Save data")
     saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_%s_%s.rds", opt$datatype, clus)))
-    return(tibble(cluster = clus ,pval05 = sum(v.swt.e.tt$P.Value < 0.05), FDR05 = sum(v.swt.e.tt$adj.P.Val < 0.05)))
+    return(tibble(cluster = clus ,pval01 = sum(v.swt.e.tt$P.Value < 0.1), FDR05 = sum(v.swt.e.tt$adj.P.Val < 0.05)))
 }, otherwise = NA)
 )
 
 write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_SpX', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium_SpX.R")
-
-# slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
-#                     create_shell = TRUE,
-#                     name = "01_Clusterwise_voomLmFit",
-#                     create_script = FALSE)
+# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_cell_type_anno', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno")
+# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_cell_type_anno_SpX', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno_SpX")
+# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_Oligo.3_Astro', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_Oligo.3_Astro")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
