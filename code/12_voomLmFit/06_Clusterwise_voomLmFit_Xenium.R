@@ -100,7 +100,7 @@ lmf_summary <- map_dfr(clusters, possibly(function(clus){
 
 write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
-# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium__cell_type_anno', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium__cell_type_anno")
+# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_cell_type_anno', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno")
 # slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_cell_type_anno_SpX', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno_SpX")
 # slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_Oligo.3_Astro', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_Oligo.3_Astro")
 
