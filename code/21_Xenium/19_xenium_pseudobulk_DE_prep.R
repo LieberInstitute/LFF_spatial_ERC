@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, May 2026
-## Run spatial registration on 
+## Pseudobulk xenium data in preparation for differential expression, run checks on numbers of donors
 
 #### Set Up ####
 
@@ -42,6 +42,8 @@ spe$APOE_syn <- gsub("/", ".", spe$APOE)
 spe$SpX_simple <- factor(gsub("~SpX[0-9]", "", spe$SpX), levels = c("Vasc", "L1a", "L1b", "L2.3", "Inhib", "L5", "L6", "WMtz", "WM"))
 table(spe$SpX, spe$SpX_simple)
 
+
+#### Input specific filtering & setup ####
 if(opt$cluster == "cell_type_anno_SpX"){
     
     ## filter to Singlets
@@ -52,18 +54,18 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
     message("cell type x SpX combindations: ", length(unique(spe$cell_type_anno_SpX)))
     
-} else if(opt$cluster == "doublet_Astro_Oligo.3"){
+} else if(opt$cluster == "Oligo.3_Astro"){ 
     
     ## filter to doublets
-    spe <- spe[,spe$spot_class == "doublet_certain"]
-    message("filter to doublet_certain, ncells: ", ncol(spe))
-    
+    spe_doub <- spe[,spe$spot_class == "doublet_certain"]
     ## filter to Astro-Oligo.3 doublets
     
-    spe <- spe[,grepl("Oligo.3|Astro", spe$first_type)]
-    spe <- spe[,grepl("Oligo.3|Astro", spe$second_type)]
+    spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$first_type)]
+    spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$second_type)]
+    message("filter to doublet_certain Oligo.3-astro, ncells: ", ncol(spe_doub))
     
-    pd_temp <- colData(spe) |>
+    
+    pd_doub <- colData(spe_doub) |>
         as.data.frame() |>
         mutate(first_type = as.character(first_type),
                second_type = as.character(second_type),
@@ -74,11 +76,27 @@ if(opt$cluster == "cell_type_anno_SpX"){
                )
     
     
-    spe$doublet_fine <- pd_temp$doublet_fine
-    spe$doublet <- pd_temp$doublet
-    spe$doublet_Astro_Oligo.3 <- pd_temp$doublet
+    # spe_doub$doublet_fine <- pd_temp$doublet_fine
+    # spe_doub$doublet <- pd_temp$doublet
+    # spe_doub$doublet_Astro_Oligo.3 <- pd_temp$doublet
     
-    table(spe$doublet)
+    spe_doub$Oligo.3_Astro <- "doublet_Oligo3_Astro"
+    
+    table(spe_doub$doublet)
+    
+    #### Oligos with nearest neighbor classifications ####
+    
+    load(here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro", "Oligo3_Astro_neighbor_df.Rdata"), verbose = TRUE)
+    
+    ## filter to Oligo.3
+    spe_03 <- spe[,neighbor_df_details$reference_barcode]
+    message("filter to Oligo.3, ncells: ", ncol(spe_03))
+    
+    spe_03$Oligo.3_Astro <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level)
+    table(spe_03$Oligo.3_Astro)
+    
+    spe <- cbind(spe_03, spe_doub)
+    
 }
 
 message("check input: ")
@@ -216,7 +234,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
 
 
 # slurmjobs::job_single('19_xenium_pseudobulk_DE_prep', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno")
-# slurmjobs::job_single('19_xenium_pseudobulk_DE_prep_cell_type_SpX', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster cell_type_anno_SpX")
+# slurmjobs::job_single('19_xenium_pseudobulk_DE_prep_Oligo.3_Astro', create_shell = TRUE, memory = '10G', command = "Rscript 19_xenium_pseudobulk_DE_prep.R --cluster Oligo.3_Astro")
 
 ## Reproducibility information
 print("Reproducibility information:")
