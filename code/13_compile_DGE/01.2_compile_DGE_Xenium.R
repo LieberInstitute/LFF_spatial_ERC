@@ -788,8 +788,8 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
 }
 
 
-
 # slurmjobs::job_single('01.2_compile_DGE_Xenium_cell_type_anno', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R --datatype Xenium_cell_type_anno")
+# slurmjobs::job_single('01.2_compile_DGE_Xenium_Oligo.3_Astro', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R --datatype Xenium_Oligo.3_Astro")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
