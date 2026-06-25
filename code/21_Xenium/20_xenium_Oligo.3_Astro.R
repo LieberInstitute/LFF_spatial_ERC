@@ -170,17 +170,20 @@ distance_density_subtype <- neighbor_df_details |>
 ggsave(distance_density_subtype, filename = here(plot_dir, "xenium_Oligo3_Astro_distance_density_subtype.png"))
 
 distance_density_SpX <- neighbor_df_details |>
-    ggplot(aes(x = distance, color = SpX)) +
+    ggplot(aes(x = distance, color = reference_SpX)) +
     geom_density() +
+    scale_color_manual(values = metadata(spe)$SpX_colors) +
+    geom_vline(xintercept = median_dist, color = "black", linetype = "dashed") +
     theme_bw()
 
 ggsave(distance_density_SpX, filename = here(plot_dir, "xenium_Oligo3_Astro_distance_density_SpX.png"))
 
 distance_boxplot_SpX <- neighbor_df_details |>
-    ggplot(aes(x = SpX, y = distance, fill = SpX)) +
+    ggplot(aes(x = reference_SpX, y = distance, fill = reference_SpX)) +
     geom_boxplot() +
     theme_bw() +
     scale_fill_manual(values = metadata(spe)$SpX_colors) +
+    geom_hline(yintercept = median_dist, color = "gray25", linetype = "dashed") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     theme(legend.position = "None")
 
@@ -189,7 +192,7 @@ ggsave(distance_boxplot_SpX, filename = here(plot_dir, "xenium_Oligo3_Astro_dist
 distance_boxplot_donor <- neighbor_df_details |>
     ggplot(aes(x = BrNum, y = distance)) +
     geom_boxplot() +
-    theme_bw() +
+    theme_bw() 
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ggsave(distance_boxplot_donor, filename = here(plot_dir, "xenium_Oligo3_Astro_distance_boxplot_donor.png"))
@@ -272,6 +275,9 @@ APOE_v_Oligo_dist <- neighbor_df_details |>
     theme_bw()
 
 ggsave(APOE_v_Oligo_dist, filename = here(plot_dir, "xenium_Astro_APOE_v_Oligo_dist.png"))
+
+
+
 
 # slurmjobs::job_single('20_xenium_Oligo3_Astro', create_shell = TRUE, memory = '20G', command = "Rscript 20_xenium_Oligo3_Astro.R")
 
