@@ -1,0 +1,334 @@
+**** Job starts ****
+Wed Jun 24 11:29:26 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 33504174
+Job name: 01.2_compile_DGE_Xenium_cell_type_anno
+Node name: compute-168
+Task id: 
+Unloading conda_R/4.5
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading objects:
+  cell_type_colors
+ [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
+ [5] "Astro.5"          "Excit.L2_5.1"     "Excit.L2_5.2"     "Excit.L2"        
+ [9] "Excit.L5_6_NP"    "Excit.L5.1"       "Excit.L5.2"       "Excit.L6_CT"     
+[13] "Excit.L6b"        "Inhib.Chandelier" "Inhib.Lamp5_Lhx6" "Inhib.Pax6"      
+[17] "Inhib.Pvalb"      "Inhib.Sst"        "Inhib.Vip"        "Macro"           
+[21] "Micro.2"          "Micro.3"          "Micro.4"          "Micro.5"         
+[25] "Oligo.1"          "Oligo.2"          "Oligo.3"          "Oligo.4"         
+[29] "Oligo.5"          "OPC.2"            "OPC.4"            "OPC.5"           
+[33] "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
+                    data_type cluster cell_type_anno contrast         gene_id
+LYVE1   Xenium_cell_type_anno Astro.1        Astro.1  carrier ENSG00000133800
+CNDP1   Xenium_cell_type_anno Astro.1        Astro.1  carrier ENSG00000150656
+SELENOP Xenium_cell_type_anno Astro.1        Astro.1  carrier ENSG00000250722
+TESPA1  Xenium_cell_type_anno Astro.1        Astro.1  carrier ENSG00000135426
+CLDN11  Xenium_cell_type_anno Astro.1        Astro.1  carrier ENSG00000013297
+CD2     Xenium_cell_type_anno Astro.1        Astro.1  carrier ENSG00000116824
+        gene_name            Type              gene_search subsets_negProbe
+LYVE1       LYVE1 Gene Expression   LYVE1; ENSG00000133800            FALSE
+CNDP1       CNDP1 Gene Expression   CNDP1; ENSG00000150656            FALSE
+SELENOP   SELENOP Gene Expression SELENOP; ENSG00000250722            FALSE
+TESPA1     TESPA1 Gene Expression  TESPA1; ENSG00000135426            FALSE
+CLDN11     CLDN11 Gene Expression  CLDN11; ENSG00000013297            FALSE
+CD2           CD2 Gene Expression     CD2; ENSG00000116824            FALSE
+        subsets_negCodeword subsets_unassigned subsets_any_neg subsets_GEX
+LYVE1                 FALSE              FALSE           FALSE        TRUE
+CNDP1                 FALSE              FALSE           FALSE        TRUE
+SELENOP               FALSE              FALSE           FALSE        TRUE
+TESPA1                FALSE              FALSE           FALSE        TRUE
+CLDN11                FALSE              FALSE           FALSE        TRUE
+CD2                   FALSE              FALSE           FALSE        TRUE
+             logFC   AveExpr         t      P.Value adj.P.Val          B
+LYVE1   -0.5971207  9.001731 -4.100412 0.0007476744 0.1938231 -0.4122687
+CNDP1   -0.8302499  7.666556 -3.795975 0.0014460033 0.1938231 -1.0488643
+SELENOP -0.4141378 10.680566 -3.565911 0.0023821663 0.1938231 -1.3646287
+TESPA1   0.7806102  8.954298  3.446104 0.0030883644 0.1938231 -1.5879518
+CLDN11  -0.6674831  6.902490 -3.422761 0.0032484317 0.1938231 -1.7447288
+CD2      1.1859397  3.167893  3.505690 0.0027143894 0.1938231 -2.0676939
+ [1] "Astro.1"          "Astro.2"          "Astro.3"          "Astro.4"         
+ [5] "Astro.5"          "Macro"            "Micro.1"          "Micro.2"         
+ [9] "Micro.3"          "Micro.4"          "Micro.5"          "OPC.1"           
+[13] "OPC.2"            "OPC.3"            "OPC.4"            "OPC.5"           
+[17] "Oligo.1"          "Oligo.2"          "Oligo.3"          "Oligo.4"         
+[21] "Oligo.5"          "Vasc.Endo"        "Vasc.PC"          "Vasc.VLMC"       
+[25] "Excit.L2"         "Excit.L2_5.1"     "Excit.L2_5.2"     "Excit.L5.1"      
+[29] "Excit.L5.2"       "Excit.L5_6_NP"    "Excit.L6_CT"      "Excit.L6b"       
+[33] "Inhib.Pax6"       "Inhib.Lamp5_Lhx6" "Inhib.Pvalb"      "Inhib.Vip"       
+[37] "Inhib.Chandelier" "Inhib.Sst"       
+[1] "Astro" "Macro" "Micro" "Oligo" "OPC"   "Vasc"  "Excit" "Inhib"
+# A tibble: 35 × 2
+   cluster              n
+   <fct>            <int>
+ 1 Astro.1             49
+ 2 Astro.2             43
+ 3 Astro.3             26
+ 4 Astro.4             17
+ 5 Astro.5             25
+ 6 Macro               15
+ 7 Micro.2             27
+ 8 Micro.3             29
+ 9 Micro.4             13
+10 Micro.5             37
+11 OPC.2               41
+12 OPC.4               24
+13 OPC.5               28
+14 Oligo.1             53
+15 Oligo.2             57
+16 Oligo.3             24
+17 Oligo.4             45
+18 Oligo.5             26
+19 Vasc.Endo           26
+20 Vasc.PC             15
+21 Vasc.VLMC           17
+22 Excit.L2            22
+23 Excit.L2_5.1        13
+24 Excit.L2_5.2        38
+25 Excit.L5.1          22
+26 Excit.L5.2          59
+27 Excit.L5_6_NP       47
+28 Excit.L6_CT         25
+29 Excit.L6b           12
+30 Inhib.Pax6          12
+31 Inhib.Lamp5_Lhx6    29
+32 Inhib.Pvalb         35
+33 Inhib.Vip           26
+34 Inhib.Chandelier    23
+35 Inhib.Sst           32
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cell_type_broad, cluster, and mod.
+ℹ Output is grouped by cell_type_broad and cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cell_type_broad, cluster, mod))` for per-operation
+  grouping (`?dplyr::dplyr_by`) instead.
+# A tibble: 4 × 8
+# Groups:   cell_type_broad, cluster [4]
+  cell_type_broad cluster      mod     n_genes n_FDR05 n_pval10   nUP nDown
+  <fct>           <fct>        <chr>     <int>   <int>    <int> <int> <int>
+1 Micro           Micro.4      carrier     225       3       32     7     6
+2 Oligo           Oligo.5      carrier     333       1       51    17     9
+3 Excit           Excit.L2_5.2 carrier     355       1       66    20    18
+4 Inhib           Inhib.Sst    carrier     345       1       63    18    14
+Saving 10 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Astro.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Macro.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Micro.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Oligo.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-OPC.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Vasc.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Excit.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Volcano_plot_Xenium_cell_type_anno-carrier-Inhib.png"
+
+Joining with `by = join_by(cluster, gene_id, gene_name)`
+# A tibble: 11 × 6
+   cluster    n_signif_xenium n_signif_sn n_signif_both n_validate percent_valid
+   <fct>                <int>       <int>         <int>      <int>         <dbl>
+ 1 Astro.1                 62           2             1          1          50  
+ 2 Astro.2                 43          14             3          3          21.4
+ 3 Astro.3                 36           8             2          2          25  
+ 4 Macro                   11           2             1          1          50  
+ 5 Oligo.3                 40          63             9          7          11.1
+ 6 Oligo.5                 32           4             0          0           0  
+ 7 Vasc.VLMC                8           1             0          0           0  
+ 8 Excit.L2_…              42           1             0          0           0  
+ 9 Excit.L2_…              53           1             1          1         100  
+10 Excit.L5.2              62           6             0          0           0  
+11 Inhib.Vip               45           5             1          1          20  
+# A tibble: 9 × 9
+  cluster gene_id    gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC
+  <fct>   <chr>      <chr>             <dbl>             <dbl>             <dbl>
+1 Oligo.3 ENSG00000… CALCRL            1.79             0.0238            -0.443
+2 Oligo.3 ENSG00000… PTPRD            -0.493            0.0245            -0.224
+3 Oligo.3 ENSG00000… CNDP1            -0.686            0.0466            -0.270
+4 Oligo.3 ENSG00000… SLC17A7           1.47             0.0388             0.221
+5 Oligo.3 ENSG00000… TESPA1            2.01             0.0171             0.349
+6 Oligo.3 ENSG00000… STAT4             2.62             0.0330            -0.320
+7 Oligo.3 ENSG00000… SLC24A2          -0.788            0.0224            -0.191
+8 Oligo.3 ENSG00000… NPTXR             1.21             0.0178             0.364
+9 Oligo.3 ENSG00000… ENC1              1.61             0.0238             0.211
+# ℹ 3 more variables: vlmf_xenium_P.Value <dbl>, dir_match <lgl>,
+#   validate <lgl>
+Joining with `by = join_by(gene_id, gene_name)`
+Joining with `by = join_by(cluster_sn, cluster_xenium)`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  11.00   29.00   44.00   51.22   65.00  178.00      35 
+# A tibble: 32 × 11
+   cluster_sn       cluster_xenium   n_genes     cor p_value n_genes_p01 cor_p01
+   <fct>            <fct>              <int>   <dbl>   <dbl>       <int>   <dbl>
+ 1 Oligo.4          Oligo.4              245 -0.104  1.04e-1          69  0.147 
+ 2 Excit.L5.2       Excit.L5.2           214 -0.0745 2.78e-1          43 -0.129 
+ 3 Excit.L5.1       Excit.L5.1           281 -0.0659 2.70e-1          51 -0.0117
+ 4 OPC.5            OPC.5                 69 -0.0657 5.91e-1          NA NA     
+ 5 Inhib.Chandelier Inhib.Chandelier     155  0.0260 7.48e-1          27  0.0537
+ 6 Excit.L6b        Excit.L6b            245  0.0711 2.68e-1          24  0.250 
+ 7 Excit.L6_CT      Excit.L6_CT          241  0.0760 2.40e-1          30  0.263 
+ 8 Micro.5          Micro.5               69  0.0799 5.13e-1          14  0.222 
+ 9 Inhib.Lamp5_Lhx6 Inhib.Lamp5_Lhx6     233  0.0816 2.14e-1          29  0.429 
+10 Inhib.Pvalb      Inhib.Pvalb          251  0.0943 1.36e-1          44  0.221 
+11 Micro.4          Micro.4              114  0.0998 2.90e-1          30  0.116 
+12 Inhib.Vip        Inhib.Vip            313  0.105  6.33e-2          82  0.442 
+13 Micro.2          Micro.2              209  0.119  8.56e-2          49  0.334 
+14 Astro.3          Astro.3              191  0.150  3.83e-2          51  0.0551
+15 Micro.3          Micro.3              139  0.162  5.72e-2          46  0.311 
+16 OPC.4            OPC.4                205  0.163  1.98e-2          37  0.236 
+17 Excit.L2         Excit.L2             302  0.187  1.11e-3          39  0.255 
+18 Vasc.Endo        Vasc.Endo            118  0.191  3.86e-2          44  0.297 
+19 Vasc.VLMC        Vasc.VLMC            145  0.197  1.74e-2          39  0.407 
+20 Excit.L2_5.1     Excit.L2_5.1         333  0.198  2.84e-4         105  0.367 
+21 Oligo.3          Oligo.3              271  0.199  1.01e-3         178  0.236 
+22 Astro.4          Astro.4              169  0.203  8.31e-3          26  0.232 
+23 Oligo.1          Oligo.1              243  0.220  5.82e-4          66  0.292 
+24 Astro.5          Astro.5               83  0.221  4.44e-2          19  0.614 
+25 Oligo.5          Oligo.5              230  0.238  2.74e-4         103  0.364 
+26 Excit.L2_5.2     Excit.L2_5.2         242  0.261  4.23e-5          67  0.477 
+27 Oligo.2          Oligo.2              219  0.262  9.22e-5          69  0.411 
+28 OPC.2            OPC.2                196  0.271  1.30e-4          29  0.633 
+29 Inhib.Sst        Inhib.Sst            213  0.332  8.55e-7          49  0.370 
+30 Astro.1          Astro.1              279  0.347  3.41e-9          78  0.227 
+31 Astro.2          Astro.2              188  0.360  4.74e-7          75  0.510 
+# ℹ 1 more row
+# ℹ 4 more variables: p_value_p01 <dbl>, cluster_match <lgl>, FDR <dbl>,
+#   FDR_p01 <dbl>
+# A tibble: 35 × 11
+# Groups:   cluster_sn [35]
+   cluster_sn       cluster_xenium   n_genes    cor  p_value n_genes_p01 cor_p01
+   <fct>            <fct>              <int>  <dbl>    <dbl>       <int>   <dbl>
+ 1 Macro            Macro                 79 0.383  5.41e- 4          27  0.404 
+ 2 Inhib.Sst        Inhib.Sst            213 0.332  8.55e- 7          49  0.370 
+ 3 OPC.2            OPC.2                196 0.271  1.30e- 4          29  0.633 
+ 4 Astro.4          Astro.4              169 0.203  8.31e- 3          26  0.232 
+ 5 Vasc.VLMC        Vasc.VLMC            145 0.197  1.74e- 2          39  0.407 
+ 6 Excit.L2_5.1     Micro.4              210 0.457  3.07e-12          71  0.603 
+ 7 Astro.2          Vasc.Endo            188 0.411  6.25e- 9          75  0.501 
+ 8 Astro.3          Vasc.Endo            223 0.410  2.61e-10          63  0.613 
+ 9 Micro.3          Micro.2              147 0.398  7.53e- 7          49  0.339 
+10 Excit.L5.1       Micro.4              176 0.385  1.74e- 7          27  0.529 
+11 Micro.4          OPC.2                136 0.376  7.44e- 6          38  0.416 
+12 Micro.1          OPC.2                185 0.368  3.22e- 7          51  0.492 
+13 Astro.5          Micro.3               77 0.367  1.09e- 3          15  0.786 
+14 Astro.1          Astro.3              222 0.356  6.37e- 8          59  0.230 
+15 Oligo.1          Oligo.5              235 0.355  2.66e- 8          60  0.468 
+16 Inhib.Vip        Micro.4              198 0.341  1.04e- 6          48  0.612 
+17 Oligo.5          Micro.3              207 0.333  1.10e- 6          90  0.452 
+18 Oligo.3          Micro.3              232 0.331  2.98e- 7         155  0.461 
+19 Oligo.4          Micro.3              213 0.319  2.20e- 6          63  0.557 
+20 OPC.5            Inhib.Lamp5_Lhx6      69 0.317  8.21e- 3          NA NA     
+21 Excit.L2_5.2     Micro.4              155 0.304  1.32e- 4          39  0.491 
+22 Micro.5          Oligo.5               66 0.299  1.51e- 2          14  0.534 
+23 Micro.2          Micro.3              186 0.298  3.99e- 5          44  0.597 
+24 Oligo.2          Oligo.5              218 0.285  2.10e- 5          70  0.373 
+25 OPC.1            Macro                205 0.284  3.97e- 5          45  0.616 
+26 Excit.L2         Micro.4              188 0.271  1.78e- 4          26  0.347 
+27 OPC.4            Vasc.Endo            208 0.252  2.44e- 4          37  0.377 
+28 OPC.3            OPC.2                248 0.249  7.95e- 5          43  0.514 
+29 Excit.L6_CT      Oligo.2              237 0.235  2.72e- 4          28  0.623 
+30 Vasc.Endo        Micro.4               78 0.197  8.39e- 2          26  0.0933
+31 Excit.L6b        Astro.3              190 0.170  1.92e- 2          19  0.330 
+32 Inhib.Chandelier Vasc.PC              159 0.148  6.21e- 2          29  0.288 
+33 Inhib.Lamp5_Lhx6 Micro.4              151 0.146  7.35e- 2          19  0.453 
+34 Inhib.Pvalb      Oligo.1              253 0.133  3.50e- 2          44  0.245 
+35 Excit.L5.2       Inhib.Vip            215 0.0630 3.57e- 1          43  0.0109
+# ℹ 4 more variables: p_value_p01 <dbl>, cluster_match <lgl>, FDR <dbl>,
+#   FDR_p01 <dbl>
+Saving 8 x 7 in image
+Joining with `by = join_by(cluster)`
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Saving 7 x 7 in image
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Joining with `by = join_by(cluster_sn, cluster_xenium, cluster_match)`
+Saving 8 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Astro.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Macro.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Micro.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Oligo.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_OPC.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Vasc.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Excit.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_t_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Inhib.png"
+
+There were 16 warnings (use warnings() to see them)
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Astro.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Macro.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Micro.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Oligo.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_OPC.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Vasc.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Excit.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_cell_type_anno/Xenium_cell_type_anno_logFC_stat_scatter_carrier_vlmf_sn-v-vlmf_xenium_Inhib.png"
+
+There were 16 warnings (use warnings() to see them)
+Error in check_filter(dots, error_call = .error_call) : 
+  argument "expr" is missing, with no default
+Calls: filter -> filter.data.frame -> filter_impl -> check_filter
+Execution halted
