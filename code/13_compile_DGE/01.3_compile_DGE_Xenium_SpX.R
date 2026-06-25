@@ -7,12 +7,18 @@ library("here")
 library("sessioninfo")
 library("ggrepel")
 library("GGally")
-# library("getopt")
+library("getopt")
 library("broom")
 library("ComplexHeatmap")
 
-opt <- list()
-opt$datatype  <- "Xenium_SpX"
+# Import command-line parameters
+scec <- matrix(
+    c("datatype", "d", "1", "character", "Data type"),
+    ncol = 5, byrow = TRUE
+)
+opt <- getopt(scec)
+
+# opt$datatype  <- "Xenium_Oligo.3_Astro_SpX"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -33,12 +39,24 @@ cluster_levels <- names(cell_type_colors$anno)
 cell_type_broad_levels <- names(cell_type_colors$broad)
 cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Other"]
 
+if(opt$datatype == "Xenium_Oligo.3_Astro"){
+    
+    cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high")
+    
+    cluster_colors <- c("nnA_far_APOE_low" = "#87219a",
+                        "nnA_far_APOE_high" = "#487800",
+                        "nnA_near_APOE_low" = "#b0b3ff",
+                        "nnA_near_APOE_high" = "#01d9b4"
+                        # "doublet_Oligo3_Astro" = "#ef2396"
+    )
+}
+
 
 #### voomLmFit data ####
-vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "01_Clusterwise_voomLmFit", "vlmf_Xenium_SpX"),
+vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "06_Clusterwise_voomLmFit_Xenium", paste0("vlmf_", opt$datatype)),
                       full.names = TRUE, pattern = ".rds")
 
-names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_Xenium_SpX_|.rds", "", basename(.x)))
+names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_%s_|.rds", opt$datatype), "", basename(.x)))
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
