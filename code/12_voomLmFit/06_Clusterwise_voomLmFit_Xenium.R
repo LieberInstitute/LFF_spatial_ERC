@@ -19,7 +19,7 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
-# opt$datatype <- "Xenium_Oligo.3_Astro"
+# opt$datatype <- "Xenium_Oligo.3_Astro_SpX"
 
 if(opt$datatype == "Xenium_cell_type_anno"){
     pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno.RDS")
@@ -27,6 +27,8 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS")
 }else if(opt$datatype == "Xenium_Oligo.3_Astro"){
     pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS")
+}else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
+    pb_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX.RDS")
 } else {
     stop("non-valid datatype")
 }
@@ -103,6 +105,7 @@ write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_FDR05_summary-%s.csv"
 # slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_cell_type_anno', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno")
 # slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_cell_type_anno_SpX', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_cell_type_anno_SpX")
 # slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_Oligo.3_Astro', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_Oligo.3_Astro")
+# slurmjobs::job_single('06_Clusterwise_voomLmFit_Xenium_Oligo.3_Astro_SpX', create_shell = TRUE, memory = '25G', command = "Rscript 06_Clusterwise_voomLmFit_Xenium.R --datatype Xenium_Oligo.3_Astro_SpX")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
