@@ -611,7 +611,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 }
 
 #### qvalue ####
-message(Sys.time() , "Check q values")
+message(Sys.time() , " - Check q values")
 
 ## p-value distibutions
 
@@ -624,61 +624,63 @@ xenium_p_val_ct_histo <- vlmf_data_tb |>
 ggsave(xenium_p_val_ct_histo, filename = here(plot_dir, sprintf("%s_p_val_histogram.png", opt$datatype)), width = 10, height = 10)
 
 
-sn_p_val_ct_histo <- sn_DEG_data |>
-    ggplot(aes(x = vlmf_sn_P.Value)) +
-    geom_histogram(binwidth = 0.05) +
-    facet_wrap(~cluster, ncol = 3) +
-    theme_bw()
-
-ggsave(sn_p_val_ct_histo, filename = here(plot_dir, "sn_fine_p_val_histogram.png"), width = 10, height = 10)
+if(opt$datatype == "Xenium_cell_type_anno"){
+    sn_p_val_ct_histo <- sn_DEG_data |>
+        ggplot(aes(x = vlmf_sn_P.Value)) +
+        geom_histogram(binwidth = 0.05) +
+        facet_wrap(~cluster, ncol = 3) +
+        theme_bw()
     
-
-library(qvalue)
-
-pi1_per_celltype <- vlmf_data_tb_xenium |>
-    filter(vlmf_sn_P.Value < 0.1) |>
-    group_by(cluster) |>
-    filter(n() >= 30) |>
-    summarise(
-        pi1 = tryCatch(
-            1 - pi0est(vlmf_xenium_P.Value, 
-                       method = "bootstrap")$pi0,  # bootstrap more robust than smoother
-            error = function(e) NA_real_
-        ),
-        n_discovery = n()
-    ) |>
-    arrange(desc(pi1))
-
-pi1_per_celltype |>
-    left_join(validation_summary_cor) |> 
-    select(cluster, pi1, n_discovery, cor, cor_FDR05, n_signif_both_dir) |>
-    mutate(
-        replication_tier = case_when(
-            pi1 > 0.4  & cor_FDR05 > 0.3  ~ "Strong",
-            pi1 > 0.4  | cor_FDR05 > 0.3  ~ "Moderate/discordant",
-            pi1 > 0.1  | cor_FDR05 > 0.1  ~ "Weak",
-            is.na(pi1)                   ~ "Inconclusive",
-            TRUE                         ~ "No replication"
+    ggsave(sn_p_val_ct_histo, filename = here(plot_dir, "sn_fine_p_val_histogram.png"), width = 10, height = 10)
+    
+    
+    library("qvalue")
+    
+    pi1_per_celltype <- vlmf_data_tb_xenium |>
+        filter(vlmf_sn_P.Value < 0.1) |>
+        group_by(cluster) |>
+        filter(n() >= 30) |>
+        summarise(
+            pi1 = tryCatch(
+                1 - pi0est(vlmf_xenium_P.Value, 
+                           method = "bootstrap")$pi0,  # bootstrap more robust than smoother
+                error = function(e) NA_real_
+            ),
+            n_discovery = n()
+        ) |>
+        arrange(desc(pi1))
+    
+    pi1_per_celltype |>
+        left_join(validation_summary_cor) |> 
+        select(cluster, pi1, n_discovery, cor, cor_FDR05, n_signif_both_dir) |>
+        mutate(
+            replication_tier = case_when(
+                pi1 > 0.4  & cor_FDR05 > 0.3  ~ "Strong",
+                pi1 > 0.4  | cor_FDR05 > 0.3  ~ "Moderate/discordant",
+                pi1 > 0.1  | cor_FDR05 > 0.1  ~ "Weak",
+                is.na(pi1)                   ~ "Inconclusive",
+                TRUE                         ~ "No replication"
+            )
         )
-    )
-
-# cluster          pi1 n_discovery
-# <fct>          <dbl>       <int>
-# 1 Excit.L2_5.2  0.655           42
-# 2 Astro.2       0.392           64
-# 3 Oligo.4       0.335           46
-# 4 Oligo.5       0.248           66
-# 5 Vasc.Endo     0.239           32
-# 6 Inhib.Vip     0.199           61
-# 7 Excit.L2_5.1  0.0760          65
-# 8 Oligo.2       0.0136          42
-# 9 Micro.2       0               31
-# 10 Oligo.3       0              159
-# 11 Excit.L5.1    0               30
-# 12 Astro.1      NA               62
-# 13 Astro.3      NA               32
-# 14 Oligo.1      NA               42
-
+    
+    # cluster          pi1 n_discovery
+    # <fct>          <dbl>       <int>
+    # 1 Excit.L2_5.2  0.655           42
+    # 2 Astro.2       0.392           64
+    # 3 Oligo.4       0.335           46
+    # 4 Oligo.5       0.248           66
+    # 5 Vasc.Endo     0.239           32
+    # 6 Inhib.Vip     0.199           61
+    # 7 Excit.L2_5.1  0.0760          65
+    # 8 Oligo.2       0.0136          42
+    # 9 Micro.2       0               31
+    # 10 Oligo.3       0              159
+    # 11 Excit.L5.1    0               30
+    # 12 Astro.1      NA               62
+    # 13 Astro.3      NA               32
+    # 14 Oligo.1      NA               42
+    
+}
 
 #### t-stat heatmaps ####
 message(Sys.time() , "t-stat heatmaps")
