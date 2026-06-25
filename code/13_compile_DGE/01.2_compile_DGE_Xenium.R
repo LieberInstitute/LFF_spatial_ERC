@@ -126,7 +126,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_pval10, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
     # pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
-    pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
+    pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
     filter(mod == "carrier") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
