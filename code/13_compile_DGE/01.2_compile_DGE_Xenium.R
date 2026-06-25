@@ -39,13 +39,14 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     
 } else if(opt$datatype == "Xenium_Oligo.3_Astro"){
 
-    cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high", "doublet_Oligo3_Astro")
+    cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high")
     
     cluster_colors <- c("nnA_far_APOE_low" = "#87219a",
                         "nnA_far_APOE_high" = "#487800",
                         "nnA_near_APOE_low" = "#b0b3ff",
-                        "nnA_near_APOE_high" = "#01d9b4",
-                       "doublet_Oligo3_Astro" = "#ef2396")
+                        "nnA_near_APOE_high" = "#01d9b4"
+                       # "doublet_Oligo3_Astro" = "#ef2396"
+                       )
 }
 
 cell_type_broad_levels <- names(cell_type_colors$broad)
@@ -57,6 +58,8 @@ vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "06_Clusterwise_voo
                       full.names = TRUE, pattern = ".rds")
 
 names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_%s_|.rds", opt$datatype), "", basename(.x)))
+
+if(opt$datatype == "") vlmf_fn[names(vlmf_fn) %in% cluster_levels] ## exclude doublet data
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -599,6 +602,7 @@ map(cell_type_broad_levels, function(ctb){
     
 })
 
+
 #### qvalue ####
 
 ## p-value distibutions
@@ -666,6 +670,124 @@ pi1_per_celltype |>
 # 12 Astro.1      NA               62
 # 13 Astro.3      NA               32
 # 14 Oligo.1      NA               42
+
+
+#### t-stat heatmaps ####
+
+if(opt$datatype == "Xenium_Oligo.3_Astro"){
+    
+    library("ComplexHeatmap")
+    
+    sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
+        filter(vlmf_sn_adj.P.Val < 0.05) |>
+        select(gene_name ,vlmf_sn_logFC, vlmf_sn_t, vlmf_sn_adj.P.Val) |>
+        unique() |>
+        arrange(vlmf_sn_t)
+    
+    t_stat_SpX_mat <- vlmf_data_tb_xenium |>
+                              filter(vlmf_sn_adj.P.Val < 0.05) |>
+                              select(gene_name, cluster, vlmf_xenium_t) |>
+                              pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster") |>
+                              column_to_rownames("gene_name") |>
+                              as.matrix()
+    
+    p_SpX_mat <- vlmf_data_tb_xenium |>
+                         filter(vlmf_sn_adj.P.Val < 0.05) |>
+                         select(gene_name, cluster, vlmf_xenium_P.Value) |>
+                         pivot_wider(values_from = "vlmf_xenium_P.Value", names_from = "cluster") |>
+                         column_to_rownames("gene_name") |>
+                         as.matrix()
+    
+    signif_SpX_mat <- vlmf_data_tb_xenium |>
+                              filter(vlmf_sn_adj.P.Val < 0.05) |>
+                              mutate(signif = case_when(signif_xenium & validate ~ "X",
+                                                        signif_xenium ~ "*",
+                                                        TRUE ~ "")) |>
+                              select(gene_name, cluster, signif) |>
+                              pivot_wider(values_from = "signif", names_from = "cluster") |>
+                              column_to_rownames("gene_name") |>
+                              as.matrix()
+    
+    sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
+        select(gene_name, vlmf_sn_t) |>
+        column_to_rownames("gene_name")
+    
+    
+    # row annotation by sn t-stat
+    sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
+                                          0, 
+                                          max(c(0.01, sn_DEG_data_test_df$vlmf_sn_t))), 
+                                        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']]))
+    
+    sn_t_row_ha <- rowAnnotation(
+        df = sn_DEG_data_test_df,
+        col = list(vlmf_sn_t = sn_t_col_fun)
+    )
+    
+    # col annotation by n validation
+    cluster_val <- validation_summary |>
+        ungroup() |>
+        mutate(n_opp = n_signif_both - n_validate) |>
+        select(cluster, n_validate, n_opp) |>
+        column_to_rownames("cluster")
+    
+    cluster_val <- cluster_val[cluster_levels,]
+    
+    ha_cluster_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(cluster_val)))
+    
+    # reorder tabs 
+    signif_SpX_ct <- signif_SpX_mat[rownames(sn_DEG_data_test_df),cluster_levels, drop = FALSE]
+    t_stat_SpX_ct <- t_stat_SpX_mat[rownames(sn_DEG_data_test_df),cluster_levels, drop = FALSE]
+    
+    signif_SpX_ct[is.na(signif_SpX_ct)] <- ""
+    
+    ## color scale for xenium stats
+    xenium_t_col_fun = circlize::colorRamp2(
+        c(min(c(-0.01,t_stat_SpX_ct), na.rm = TRUE), 
+          0, 
+          max(c(0.01, t_stat_SpX_ct), na.rm = TRUE)
+        ), 
+        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']])
+    )
+    
+    sn_reg <- ifelse(sn_DEG_data_test_df > 0, "upreg", "downreg")
+    
+    pdf(here(plot_dir, sprintf("%s_t_stat_heatmap.pdf", opt$datatype)), height = 3 + nrow(t_stat_SpX_ct)/5)
+    print(Heatmap(t_stat_SpX_ct, 
+                  name = "xenium\nt-stat",
+                  col = xenium_t_col_fun,
+                  cluster_rows = FALSE,
+                  cluster_columns = TRUE,
+                  right_annotation =  sn_t_row_ha,
+                  row_split = sn_reg,
+                  top_annotation = ha_cluster_val,
+                  # bottom_annotation = ha_SpX_cell,
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                      grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+                  },
+                  column_title = opt$datatype
+    ))    
+    
+    print(Heatmap(t_stat_SpX_ct, 
+                  name = "xenium\nt-stat",
+                  col = xenium_t_col_fun,
+                  cluster_rows = TRUE,
+                  cluster_columns = TRUE,
+                  right_annotation =  sn_t_row_ha,
+                  row_split = sn_reg,
+                  top_annotation = ha_cluster_val,
+                  # bottom_annotation = ha_SpX_cell,
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                      grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+                  },
+                  column_title = opt$datatype
+    ))
+    dev.off()
+   
+    
+}
+
+
 
 # slurmjobs::job_single('01.2_compile_DGE_Xenium_cell_type_anno', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R --datatype Xenium_cell_type_anno")
 
