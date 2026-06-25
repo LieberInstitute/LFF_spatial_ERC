@@ -28,6 +28,7 @@ opt <- getopt(scec)
 print(opt)
 
 # opt$cluster <- "cell_type_anno_SpX"
+# opt$cluster <- "Oligo.3_Astro_SpX"
 
 spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
 
@@ -104,11 +105,11 @@ if(opt$cluster == "cell_type_anno_SpX"){
     load(here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro", "Oligo3_Astro_neighbor_df.Rdata"), verbose = TRUE)
     
     ## filter to Oligo.3
-    spe_03 <- spe[,neighbor_df_details$reference_barcode]
+    spe <- spe[,neighbor_df_details$reference_barcode]
     message("filter to Oligo.3, ncells: ", ncol(spe_03))
     
-    spe_03$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe_03$SpX_simple)
-    table(spe_03$Oligo.3_Astro_SpX)
+    spe$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe_03$SpX_simple)
+    table(spe$Oligo.3_Astro_SpX)
     
     
     
@@ -119,6 +120,7 @@ table(spe$spot_class)
 
 table(spe$cell_type_anno)
 
+table(spe[[opt$cluster]])
 
 #### run pseudobulk - cell_type_anno ####
 message(Sys.time(), " - pseudobulk ", opt$cluster)
