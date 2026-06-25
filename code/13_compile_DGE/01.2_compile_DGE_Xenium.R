@@ -597,17 +597,18 @@ carrier_data_wide_t <- vlmf_data_tb |>
     # count(cluster)
     pivot_wider(values_from = "vlmf_t", names_from = "cluster")
 
-ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t))
+ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t), aes(size = 0.5, alpha = 0.5))
 
 ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_fine_t_stat_ggpairs.png", opt$datatype)), height = 10, width = 10)
 
-map(cell_type_broad_levels, function(ctb){
-    message(ctb)
-    ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = grep(ctb, colnames(carrier_data_wide_t)), size = 0.5, alpha = 0.5)
-    ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_t_stat_ggpairs-%s.png",opt$datatype, ctb)))
-    
-})
-
+if(opt$datatype == "Xenium_cell_type_anno"){
+    map(cell_type_broad_levels, function(ctb){
+        message(ctb)
+        ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = grep(ctb, colnames(carrier_data_wide_t)), aes(size = 0.5, alpha = 0.5))
+        ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_t_stat_ggpairs-%s.png",opt$datatype, ctb)))
+        
+    })
+}
 
 #### qvalue ####
 message(Sys.time() , "Check q values")
