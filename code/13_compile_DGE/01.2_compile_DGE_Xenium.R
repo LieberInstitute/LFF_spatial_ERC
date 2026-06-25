@@ -54,12 +54,14 @@ cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Othe
 
 
 #### voomLmFit data ####
+message(Sys.time() , "load VLMF data")
+
 vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "06_Clusterwise_voomLmFit_Xenium", paste0("vlmf_", opt$datatype)),
                       full.names = TRUE, pattern = ".rds")
 
 names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_%s_|.rds", opt$datatype), "", basename(.x)))
 
-if(opt$datatype == "") vlmf_fn[names(vlmf_fn) %in% cluster_levels] ## exclude doublet data
+if(opt$datatype == "Xenium_Oligo.3_Astro") vlmf_fn <- vlmf_fn[names(vlmf_fn) %in% cluster_levels] ## exclude doublet data
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -68,7 +70,6 @@ vlmf_data <- map(vlmf_fn, readRDS)
 
 names(vlmf_data)
 head(vlmf_data[[1]])
-
 
 vlmf_data_tb <- do.call("rbind", vlmf_data) |>
     dplyr::rename(vlmf_logFC = logFC,
@@ -145,6 +146,7 @@ ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_mo
 write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_%s.csv", opt$datatype)))
 
 #### vlmf volcano plots ####
+message(Sys.time() , "Volcano plots")
 
 custom_volcano <- function(data, Pval_cut = 0.10, model_name){
     
@@ -189,6 +191,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 
 
 #### Save vlmf data - add snRNA-seq results ####
+message(Sys.time() , "Add snRNA-seq stats, Save data")
 
 # carrier_data <- vlmf_data_tb$carrier |>
 #     left_join(pseudobulkDGE_data_tb$carrier)|>
@@ -240,6 +243,7 @@ saveRDS(vlmf_data_tb_xenium, file = here(data_dir, sprintf("DGE_results_carrier_
 write.csv(vlmf_data_tb_xenium, file = here(data_dir, sprintf("DGE_results_carrier_%s_wSN.csv", opt$datatype)), row.names = FALSE)
 
 #### Summarize validation experiments ####
+message(Sys.time() , "Summarize validation experiments")
 
 validation_summary <- vlmf_data_tb_xenium |> 
     filter(!is.na(vlmf_sn_P.Value)) |> 
@@ -302,6 +306,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 
 
 #### Xenium vs. snRNA-seq correlation ####
+message(Sys.time() , "Xenium vs. snRNA-seq correlation")
 
 sn_xenium_all_pairs <- vlmf_data_tb |>
     select(cluster, gene_id, gene_name, starts_with("vlmf")) |> 
@@ -535,6 +540,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 
 
 #### compare t-stats scatter plots ####
+message(Sys.time() , "t-stat scatter plots")
 
 comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = "vlmf_xenium", FDR_cut_mX = 0.05, pval_cut_mY = 0.1, model_name){
 
@@ -604,6 +610,7 @@ map(cell_type_broad_levels, function(ctb){
 
 
 #### qvalue ####
+message(Sys.time() , "Check q values")
 
 ## p-value distibutions
 
@@ -613,7 +620,7 @@ xenium_p_val_ct_histo <- vlmf_data_tb |>
     facet_wrap(~cluster, ncol = 3) +
     theme_bw()
 
-ggsave(xenium_p_val_ct_histo, filename = here(plot_dir, "xenium_p_val_histogram.png"), width = 10, height = 10)
+ggsave(xenium_p_val_ct_histo, filename = here(plot_dir, sprintf("%s_p_val_histogram.png", opt$datatype)), width = 10, height = 10)
 
 
 sn_p_val_ct_histo <- sn_DEG_data |>
@@ -673,6 +680,7 @@ pi1_per_celltype |>
 
 
 #### t-stat heatmaps ####
+message(Sys.time() , "t-stat heatmaps")
 
 if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
