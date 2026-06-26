@@ -90,6 +90,42 @@ neighbor_df_details |>
     count(BrNum, dist_class, APOE_level) |>
     arrange(-n)
 
+#### Summarize by SpX ####
+
+neighbor_detail_summary <- neighbor_df_details |>
+    mutate(Oligo.3_Astro = paste0("nnA_", dist_class, "_APOE_", APOE_level)) |>
+    group_by(Oligo.3_Astro, dist_class, APOE_level, reference_SpX) |>
+    summarize(n = n()) |>
+    group_by(reference_SpX) |>
+    mutate(SpX_prop = n/sum(n))|>
+    group_by(Oligo.3_Astro) |>
+    mutate(type_prop = n/sum(n))
+
+write.csv(neighbor_detail_summary, file = here(data_dir, "Oligo3_Astro_neighbor_SpX_summary.csv"))
+
+
+type_SpX_n_tile <- neighbor_detail_summary |>
+    ggplot(aes(x = Oligo.3_Astro, y = reference_SpX, fill = n)) +
+    geom_tile() +
+    scale_fill_gradientn(colors = c(viridisLite::plasma(100))) +
+    theme_bw() +
+    scale_y_discrete(limits=rev) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(type_SpX_n_tile, filename = here(plot_dir, "Oligo3_nearest_astro_type_SpX_n_tile.png"))
+
+type_SpX_prop_tile <- neighbor_detail_summary |>
+    ggplot(aes(x = Oligo.3_Astro, y = reference_SpX, fill = SpX_prop)) +
+    geom_tile() +
+    scale_fill_gradientn(colors = c(viridisLite::plasma(100))) + 
+    theme_bw() +
+    scale_y_discrete(limits=rev) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(type_SpX_prop_tile, filename = here(plot_dir, "Oligo3_nearest_astro_type_SpX_prop_tile.png"))
+
+
+
 #### Neighbor Identity ####
 
 all_astro_details <- pd |>
