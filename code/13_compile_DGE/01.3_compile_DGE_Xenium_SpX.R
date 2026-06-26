@@ -34,12 +34,15 @@ load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), ver
 load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
 SpX_levels <- names(SpX_colors)
 
-cluster_colors <- cell_type_colors$anno
-cluster_levels <- names(cell_type_colors$anno)
 cell_type_broad_levels <- names(cell_type_colors$broad)
 cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Other"]
 
-if(opt$datatype == "Xenium_Oligo.3_Astro"){
+if(opt$datatype == "Xenium_cell_type_anno_SpX"){
+    
+    cluster_colors <- cell_type_colors$anno
+    cluster_levels <- names(cell_type_colors$anno)
+    
+} else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
     
     cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high")
     
@@ -66,7 +69,6 @@ vlmf_data <- map(vlmf_fn, readRDS)
 names(vlmf_data)
 head(vlmf_data[[1]])
 
-
 vlmf_data_tb <- do.call("rbind", vlmf_data) |>
     dplyr::rename(vlmf_logFC = logFC,
                   vlmf_AveExpr = AveExpr,
@@ -74,56 +76,59 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_P.Value = P.Value,
                   vlmf_adj.P.Val = adj.P.Val,
                   vlmf_B = B )  |>
-    mutate(SpX = factor(SpX, names(SpX_colors)),
-           cell_type_anno = droplevels(factor(cell_type_anno, cluster_levels))) |>
+    mutate(cluster_SpX = cluster,
+           cluster = factor(gsub("_[^_]+$", "", cluster), cluster_levels),
+           SpX = factor(SpX, names(SpX_colors)),
+           cell_type_anno = droplevels(factor(cell_type_anno, names(cell_type_colors$anno)))) |>
     as_tibble() 
 
 unique(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$SpX)
-cluster_levels <- levels(vlmf_data_tb$cell_type_anno)
 
-vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) |> print(n = 35)
+vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) 
+vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(cluster_SpX) |> arrange(-n) |> print(n = 35)
 
 vlmf_data_tb |> count(SpX)
 
 vlmf_model_summary <- vlmf_data_tb |> 
                                    mutate(mod = "carrier") |>
-                                   group_by(SpX, cell_type_anno, mod) |>
+                                   group_by(SpX, cluster, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
-                                             n_pval05 = sum(vlmf_P.Value < 0.05),
+                                             n_pval10 = sum(vlmf_P.Value < 0.05),
                                              nUP = sum(vlmf_P.Value < 0.05 & vlmf_logFC > 0),
                                              nDown = sum(vlmf_P.Value < 0.05 & vlmf_logFC < 0))
 
 vlmf_model_summary |> filter(n_FDR05 > 0)
+vlmf_model_summary |> arrange(-n_pval10)
 vlmf_model_summary |> filter(cell_type_anno == "Oligo.3")
 
 ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
-    ggplot(aes(x = SpX, y = n_pval05, fill = SpX)) +
+    ggplot(aes(x = SpX, y = n_pval10, fill = SpX)) +
     geom_col() +
-    geom_text(aes(label = n_pval05), vjust=-.5) +
+    geom_text(aes(label = n_pval10), vjust=-.5) +
     scale_fill_manual(values = SpX_colors) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cluster) +
     theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.05") +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.10") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = "None")
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 12)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
-    select(-n_pval05, -n_genes, -n_FDR05) |>
+    select(-n_pval10, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
-    pivot_longer(!c(cell_type_anno, SpX, mod), names_to = "reg", values_to = "n_genes") |>
+    pivot_longer(!c(cluster, SpX, mod), names_to = "reg", values_to = "n_genes") |>
     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
     filter(mod == "carrier") |>
     ggplot(aes(x = SpX, y = n_genes, fill = reg)) +
     geom_col() +
     geom_text(aes(label = abs(n_genes))) +
-    facet_wrap(~cell_type_anno) +
+    facet_wrap(~cluster) +
     theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.10") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_reg.png", opt$datatype)), width = 10)
@@ -133,7 +138,7 @@ write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_
 
 #### vlmf volcano plots ####
 
-custom_volcano <- function(data, Pval_cut = 0.05, model_name){
+custom_volcano <- function(data, Pval_cut = 0.10, model_name){
     
     # define colors
     signif_colors <- c("purple", "blue", "red")
@@ -163,9 +168,9 @@ custom_volcano <- function(data, Pval_cut = 0.05, model_name){
 
 custom_volcano_ct_fine <- function(data, mod_name = "carrier"){
     
-    map(levels(vlmf_data_tb$cell_type_anno), 
+    map(cluster_levels, 
         ~data |> 
-            filter(cell_type_anno == .x) |>
+            filter(cluster == .x) |>
             custom_volcano(, model_name = paste0(mod_name,"-", .x)) )
     
 }
@@ -183,18 +188,38 @@ sn_DEG_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE"
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_sn_"), starts_with("vlmf_")) 
 
 sn_DEG_data |> count(vlmf_sn_adj.P.Val < 0.05, gene_name %in% vlmf_data_tb$gene_name)
-sn_DEG_data |> count(gene_name %in% vlmf_data_tb$gene_name)
+# sn_DEG_data |> count(gene_name %in% vlmf_data_tb$gene_name)
 
-vlmf_data_tb_xenium <- vlmf_data_tb |>
-    rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
-    inner_join(sn_DEG_data) |>
-    mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
-           signif_sn = vlmf_sn_adj.P.Val < 0.05,
-           signif_both = signif_xenium & signif_sn,
-           dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0),
-           validate = signif_both & dir_match)
+if(opt$datatype == "Xenium_cell_type_anno"){
+    
+    vlmf_data_tb_xenium <- vlmf_data_tb |>
+        rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
+        inner_join(sn_DEG_data) |>
+        mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
+               signif_sn = vlmf_sn_adj.P.Val < 0.05,
+               signif_both = signif_xenium & signif_sn,
+               dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0),
+               validate = signif_both & dir_match)
+    
+    
+} else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
+    
+    sn_DEG_data <- sn_DEG_data |>
+        filter(cell_type_anno == "Oligo.3") 
+    
+    vlmf_data_tb_xenium <- vlmf_data_tb |>
+        rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
+        inner_join(sn_DEG_data) |>
+        mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
+               signif_sn = vlmf_sn_adj.P.Val < 0.05,
+               signif_both = signif_xenium & signif_sn,
+               dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0),
+               validate = signif_both & dir_match)
+}
 
-vlmf_data_tb_xenium |> count(cell_type_anno)
+
+
+vlmf_data_tb_xenium |> count(cluster_SpX)
 
 ## save data
 saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
@@ -208,7 +233,7 @@ write.csv(vlmf_data_tb_xenium, file = here(data_dir, sprintf("DGE_results_carrie
 
 validation_summary <- vlmf_data_tb_xenium |> 
     filter(!is.na(vlmf_sn_P.Value)) |> 
-    group_by(cell_type_anno, SpX) |>
+    group_by(cluster, SpX) |>
     summarise(n_signif_xenium = sum(signif_xenium),
               n_signif_sn = sum(signif_sn),
               n_signif_both = sum(signif_both),
@@ -218,13 +243,15 @@ validation_summary <- vlmf_data_tb_xenium |>
 validation_summary |>
     filter(n_signif_sn > 0)
 
+validation_summary |> arrange(-n_validate)
+
 validation_summary |>
     filter(cell_type_anno == "Oligo.3")
 
 vlmf_data_tb_xenium |>
     filter(validate) |> 
-    select(cell_type_anno, SpX, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_t) |> 
-    arrange(cell_type_anno, SpX) |>
+    select(cluster, SpX, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_t) |> 
+    arrange(cluster, SpX) |>
     print(n = 79)
 
 vlmf_data_tb_xenium |> 
@@ -235,10 +262,10 @@ vlmf_data_tb_xenium |>
 
 
 vlmf_data_tb_xenium |> 
-    filter(gene_name == "IGFBP5") |>
-    # filter(SpX == "L1~SpX7", signif_both) |>
+    # filter(gene_name == "IGFBP5") |>
+    filter(SpX == "L1b~SpX7", signif_both) |>
     # filter(SpX == "L6~SpX9", signif_both) |>
-    select(SpX, gene_id, gene_name, vlmf_sn_t, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_t, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate) |>
+    select(cluster_SpX, gene_name, vlmf_sn_t, vlmf_sn_adj.P.Val, vlmf_xenium_t, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate) |>
     arrange(-vlmf_xenium_logFC)
 
 # cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
@@ -271,17 +298,17 @@ vlmf_data_tb_xenium |>
 
 validation_spX_barplot <- validation_summary |>
     filter(n_validate > 0) |>
-    mutate(cell_type_anno = droplevels(cell_type_anno)) |>
+    mutate(cluster = droplevels(cluster)) |>
     ggplot(aes(x = SpX, y = n_validate, fill = SpX)) +
     geom_col() +
     geom_text(aes(label = n_validate)) +
     scale_fill_manual(values = SpX_colors) +
-    facet_wrap(~cell_type_anno, ncol = 1, strip.position="right") +
+    facet_wrap(~cluster, ncol = 1, strip.position="right") +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
           legend.position = "None") 
 
-ggsave(validation_spX_barplot, filename = here(plot_dir, "validation_SpX_barplot.png"), height = 8)
+ggsave(validation_spX_barplot, filename = here(plot_dir, sprintf("%s_validation_SpX_barplot.png", opt$datatype)), height = 8)
     
 #### Xenium vs. snRNA-seq correlation ####
 
@@ -293,7 +320,7 @@ ggsave(validation_spX_barplot, filename = here(plot_dir, "validation_SpX_barplot
 
 
 sn_xenium_cor <- vlmf_data_tb_xenium |>
-    mutate(cluster_xenium = SpX, cluster_sn = cell_type_anno) |>
+    mutate(cluster_xenium = cluster_SpX, cluster_sn = cell_type_anno) |>
     group_by(cluster_sn, cluster_xenium) |>
     filter(n() >= 10) |> 
     summarise(
@@ -303,7 +330,7 @@ sn_xenium_cor <- vlmf_data_tb_xenium |>
     ) |>
     select(cluster_sn, cluster_xenium, n_genes, cor = estimate, p_value = p.value)|> 
     left_join(vlmf_data_tb_xenium |>
-                  mutate(cluster_xenium = SpX, cluster_sn = cell_type_anno) |>
+                  mutate(cluster_xenium = cluster_SpX, cluster_sn = cell_type_anno) |>
                   filter(vlmf_sn_adj.P.Val < 0.05) |>
                   group_by(cluster_sn, cluster_xenium) |>
                   filter(n() >= 10) |> ## filter for atleast 10 genes after vlmf pval filter
@@ -318,28 +345,46 @@ sn_xenium_cor <- vlmf_data_tb_xenium |>
            FDR_fdr05 = p.adjust(p_value_fdr05, method="BH"),
            )
 
-sn_xenium_cor |> filter(cluster_sn == "Oligo.3")
+# sn_xenium_cor |> filter(cluster_sn == "Oligo.3")
+sn_xenium_cor |> arrange(-cor_fdr05)
 
 summary(sn_xenium_cor$n_genes_fdr05)
+summary(sn_xenium_cor$cor_fdr05)
 
-write_csv(sn_xenium_cor, file = here(data_dir, "xenium_SpX_v_sn_tstat_cor.csv"))
+write_csv(sn_xenium_cor, file = here(data_dir, sprintf("%s_SpX_v_sn_tstat_cor.csv", opt$datatype)))
 
 sn_xenium_cor_v_genes <- sn_xenium_cor |>
-    ggplot(aes(x = n_genes, y = cor)) +
+    ggplot(aes(x = n_genes, y = cor, color = cluster_xenium)) +
     geom_point() +
-    geom_text_repel(aes(label = cluster_xenium))+
+    # geom_text_repel(aes(label = cluster_xenium))+
     theme_bw()
 
-ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, "xenium_O3_SpX_v_sn_t_stat_cor_v_genes.png"), width =8)
+ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_genes.png", opt$datatype)), width =8)
 
-sn_xenium_cor_v_SpX <- sn_xenium_cor |>
-    ggplot(aes(x = cluster_xenium, y = cluster_sn)) +
-    geom_point(aes(size = -log10(p_value), color = cor)) +
-    scale_colour_gradient2() +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
-
-ggsave(sn_xenium_cor_v_SpX, filename = here(plot_dir, "xenium_SpX_v_sn_t_stat_cor_v_SpX.png"), width =8)
+if(opt$datatype == "Xenium_cell_type_anno"){
+    
+    sn_xenium_cor_v_SpX <- sn_xenium_cor |>
+        ggplot(aes(x = cluster_xenium, y = cluster_sn)) +
+        geom_point(aes(size = -log10(p_value), color = cor)) +
+        scale_colour_gradient2() +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
+    
+    ggsave(sn_xenium_cor_v_SpX, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_SpX.png", opt$datatype)), width =8)
+    
+} else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
+    
+    sn_xenium_cor_v_SpX <- sn_xenium_cor |>
+        separate(cluster_xenium, into = c("cluster_xenium", "SpX"), sep = "(?=[^_]*$)", extra = "merge") |>
+        ggplot(aes(x = cluster_xenium, y = SpX)) +
+        geom_point(aes(size = -log10(p_value), color = cor)) +
+        scale_colour_gradient2() +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
+    
+    ggsave(sn_xenium_cor_v_SpX, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_SpX.png", opt$datatype)), width =8)
+    
+}
 
 ## summary with matching clusters
 
