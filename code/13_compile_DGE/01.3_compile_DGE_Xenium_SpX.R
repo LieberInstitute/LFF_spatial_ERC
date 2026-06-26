@@ -852,6 +852,78 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         
     })
     
+    
+    #### MEGA tstat heatmap Xenium_Oligo.3_Astro_SpX ####
+    
+    t_stat_SpX_mat_ALL <- vlmf_data_tb_xenium |>
+                              filter(vlmf_sn_adj.P.Val < 0.05) |>
+                              select(gene_name, cluster_SpX, vlmf_xenium_t) |>
+                              pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster_SpX") |>
+                              column_to_rownames("gene_name") |>
+                              as.matrix()
+    
+    sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
+        filter(gene_name %in% rownames(t_stat_SpX_mat_ALL)) |>
+        select(gene_name, vlmf_sn_t) |>
+        column_to_rownames("gene_name")
+
+    # row annotation by sn t-stat
+    sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
+                                          0, 
+                                          max(c(0.01, sn_DEG_data_test_df$vlmf_sn_t))), 
+                                        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']]))
+    
+    sn_t_row_ha <- rowAnnotation(
+        df = sn_DEG_data_test_df,
+        col = list(vlmf_sn_t = sn_t_col_fun)
+    )
+    
+    # col annotation n_cells
+    spx_cell_prop_ct <- O3_nnA_prop |>
+        mutate(cluster_SpX = paste0(Oligo.3_Astro, "_", gsub("~SpX.*", "", reference_SpX))) |>
+        select(cluster_SpX, SpX = reference_SpX, Oligo.3_Astro, n_cell = n) |>
+        left_join(spx_APOE, by = join_by(SpX)) |> ## Add APOE expression
+        filter(cluster_SpX %in% colnames(t_stat_SpX_mat_ALL)) |>
+        column_to_rownames("cluster_SpX") |>
+        arrange(SpX)
+    
+    # spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
+    
+    col_fun_n_cell = circlize::colorRamp2(c(0, max(spx_cell_prop_ct$n_cell)), c("white", "red"))
+    col_fun_APOE = circlize::colorRamp2(c(min(spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
+    
+    ha_SpX_cell <- HeatmapAnnotation(df = spx_cell_prop_ct,
+                                     col = list(n_cell = col_fun_n_cell,
+                                                APOE_mean = col_fun_APOE,
+                                                SpX = SpX_colors,
+                                                Oligo.3_Astro = cluster_colors))
+    
+    all(rownames(spx_cell_prop_ct) %in% colnames(t_stat_SpX_mat_ALL))
+
+    signif_SpX_ct_ALL <- signif_SpX_mat_ALL[rownames(sn_DEG_data_test_df),rownames(spx_cell_prop_ct), drop = FALSE]
+    t_stat_SpX_mat_ALL <- t_stat_SpX_mat_ALL[rownames(sn_DEG_data_test_df),rownames(spx_cell_prop_ct), drop = FALSE]
+    
+    sn_reg <- ifelse(sn_DEG_data_test_df > 0, "upreg", "downreg")
+    
+    pdf(here(plot_dir, sprintf("%s_t_stat_heatmap-ALL.pdf", opt$datatype, ct)), width = 10, height = 3 + nrow(t_stat_SpX_ct)/5)
+    
+    print(Heatmap(t_stat_SpX_mat_ALL, 
+                  name = "xenium\nt-stat",
+                  col = xenium_t_col_fun,
+                  cluster_rows = FALSE,
+                  cluster_columns = FALSE,
+                  row_split = sn_reg,
+                  right_annotation =  sn_t_row_ha,
+                  # top_annotation = ha_SpX_val,
+                  bottom_annotation = ha_SpX_cell,
+                  # cell_fun = function(j, i, x, y, width, height, fill) {
+                  #     grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+                  # },
+                  column_title = "ALL Xenium_Oligo.3_Astro_SpX"
+    )) 
+    
+    dev.off()
+    
 }
 
 
