@@ -82,7 +82,7 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
            cell_type_anno = droplevels(factor(cell_type_anno, names(cell_type_colors$anno)))) |>
     as_tibble() 
 
-unique(vlmf_data_tb$cluster)
+levels(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$SpX)
 
 vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) 
@@ -101,7 +101,7 @@ vlmf_model_summary <- vlmf_data_tb |>
 
 vlmf_model_summary |> filter(n_FDR05 > 0)
 vlmf_model_summary |> arrange(-n_pval10)
-vlmf_model_summary |> filter(cell_type_anno == "Oligo.3")
+# vlmf_model_summary |> filter(cluster == "Oligo.3")
 
 ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
@@ -246,7 +246,7 @@ validation_summary |>
 validation_summary |> arrange(-n_validate)
 
 validation_summary |>
-    filter(cell_type_anno == "Oligo.3")
+    filter(cluster == "Oligo.3")
 
 vlmf_data_tb_xenium |>
     filter(validate) |> 
@@ -706,9 +706,9 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     
 } else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
     
-    #### tstat heatmap Xenium_cell_type_anno ####
+    #### tstat heatmap Xenium_Oligo.3_Astro_SpX ####
     
-    ## select sn FDR < 0.05 genes we want to plot
+    ## select sn FDR < 0.05 genes we want to plot - same for each type
     sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
         filter(vlmf_sn_adj.P.Val < 0.05) |>
         select(cell_type_anno, gene_name ,vlmf_sn_logFC, vlmf_sn_t, vlmf_sn_adj.P.Val) |>
@@ -716,6 +716,8 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         arrange(cell_type_anno, vlmf_sn_t)
     
     sn_DEG_data_FDR05 |> count(cell_type_anno)
+    
+    names(cluster_levels) <- cluster_levels
     
     ## t-stat matrix
     t_stat_SpX_mat <- map(cluster_levels, 
@@ -726,8 +728,6 @@ if(opt$datatype == "Xenium_cell_type_anno"){
                               column_to_rownames("gene_name") |>
                               as.matrix())
     
-    names(t_stat_SpX_mat) <- cluster_levels
-    
     ## pval/signif matrix
     p_SpX_mat <- map(cluster_levels, 
                      ~vlmf_data_tb_xenium |>
@@ -737,14 +737,12 @@ if(opt$datatype == "Xenium_cell_type_anno"){
                          column_to_rownames("gene_name") |>
                          as.matrix())
     
-    names(p_SpX_mat) <- cluster_levels
-    
     SpX_signif_sum <- map(p_SpX_mat, ~colSums(.x < 0.1, na.rm = TRUE))
     
     
     signif_SpX_mat <- map(cluster_levels, 
                           ~vlmf_data_tb_xenium |>
-                              filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
+                              filter(cluster == .x, vlmf_sn_adj.P.Val < 0.05) |>
                               mutate(signif = case_when(signif_xenium & validate ~ "X",
                                                         signif_xenium ~ "*",
                                                         TRUE ~ "")) |>
@@ -753,26 +751,24 @@ if(opt$datatype == "Xenium_cell_type_anno"){
                               column_to_rownames("gene_name") |>
                               as.matrix())
     
-    names(signif_SpX_mat) <- cluster_levels
-    
-    
     map(t_stat_SpX_mat, dim)
     
     
     ## cell type vs. SpX & APOE annotation data
-    spx_cell_prop <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_SpX_prop_long.csv"), row.names = 1)
+    O3_nnA_prop <- read.csv(here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro", "Oligo3_Astro_neighbor_SpX_summary.csv"), row.names = 1)
     
     spx_APOE <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_SpX_APOE_mean_logcount.csv"), row.names = 1) |>
-        rownames_to_column("SpX") |> arrange(-APOE_mean)
+        rownames_to_column("SpX") |> 
+        arrange(-APOE_mean)
     
     APOE_order <- spx_APOE$SpX
     
     
     ## plot for each cell type
-    map(names(signif_SpX_mat), function(ct){
+    map(cluster_levels, function(ct){
         
         sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
-            filter(cell_type_anno == ct) |>
+            filter(gene_name %in% rownames(t_stat_SpX_mat[[ct]])) |>
             select(gene_name, vlmf_sn_t) |>
             column_to_rownames("gene_name")
         
@@ -792,7 +788,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         
         # col annotation by n validation
         SpX_val <- validation_summary |>
-            filter(cell_type_anno == ct) |>
+            filter(cluster == ct) |>
             ungroup() |>
             mutate(n_opp = n_signif_both - n_validate) |>
             select(SpX, n_validate, n_opp) |>
@@ -803,9 +799,9 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         ha_SpX_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(SpX_val)))
         
         # col annotation n_cells
-        spx_cell_prop_ct <- spx_cell_prop |>
-            filter(cell_type_anno == ct) |>
-            select(SpX, n_cell) |>
+        spx_cell_prop_ct <- O3_nnA_prop |>
+            filter(Oligo.3_Astro == ct) |>
+            select(SpX = reference_SpX, n_cell = n) |>
             left_join(spx_APOE, by = join_by(SpX)) |> ## Add APOE expression
             column_to_rownames("SpX")
         
@@ -833,12 +829,16 @@ if(opt$datatype == "Xenium_cell_type_anno"){
             colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']])
         )
         
-        pdf(here(plot_dir, sprintf("xenium_SpX_t_stat_heatmap-%s.pdf", ct)), height = 3 + nrow(t_stat_SpX_ct)/5)
+        sn_reg <- ifelse(sn_DEG_data_test_df > 0, "upreg", "downreg")
+        
+        pdf(here(plot_dir, sprintf("%s_t_stat_heatmap-%s.pdf", opt$datatype, ct)), height = 3 + nrow(t_stat_SpX_ct)/5)
+        
         print(Heatmap(t_stat_SpX_ct, 
                       name = "xenium\nt-stat",
                       col = xenium_t_col_fun,
                       cluster_rows = FALSE,
                       cluster_columns = FALSE,
+                      row_split = sn_reg,
                       right_annotation =  sn_t_row_ha,
                       top_annotation = ha_SpX_val,
                       bottom_annotation = ha_SpX_cell,
@@ -846,7 +846,8 @@ if(opt$datatype == "Xenium_cell_type_anno"){
                           grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
                       },
                       column_title = ct
-        ))
+        )) 
+        
         dev.off()
         
     })
