@@ -124,6 +124,16 @@ type_SpX_prop_tile <- neighbor_detail_summary |>
 
 ggsave(type_SpX_prop_tile, filename = here(plot_dir, "Oligo3_nearest_astro_type_SpX_prop_tile.png"))
 
+type_SpX_prop_tile2 <- neighbor_detail_summary |>
+    ggplot(aes(x = Oligo.3_Astro, y = reference_SpX, fill = type_prop)) +
+    geom_tile() +
+    scale_fill_gradientn(colors = c(viridisLite::plasma(100))) + 
+    theme_bw() +
+    scale_y_discrete(limits=rev) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(type_SpX_prop_tile2, filename = here(plot_dir, "Oligo3_nearest_astro_type_SpX_prop_tile2.png"))
+
 
 
 #### Neighbor Identity ####
