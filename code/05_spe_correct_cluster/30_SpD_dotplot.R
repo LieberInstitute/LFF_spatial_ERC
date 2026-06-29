@@ -125,4 +125,11 @@ marker_stats_top <- marker_stats |>
 
 marker_stats_top |> count(SpD)
 
+# slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
 
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
