@@ -1,0 +1,430 @@
+**** Job starts ****
+Mon Jun 29 09:01:14 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 33629515
+Job name: 30_SpD_dotplot
+Node name: compute-177
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: h5mread
+Loading required package: rhdf5
+
+Attaching package: ‘h5mread’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks Matrix::expand(), S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ tidyr::pack()         masks Matrix::pack()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ purrr::simplify()     masks DelayedArray::simplify()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ tidyr::unpack()       masks Matrix::unpack()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+2026-06-29 09:01:27.843036 - Load HDF5 SPE
+Loading required namespace: SpatialExperiment
+class: SpatialExperiment 
+dim: 30494 122202 
+metadata(1): SpD_colors
+assays(2): counts logcounts
+rownames(30494): ENSG00000243485 ENSG00000238009 ... ENSG00000278817
+  ENSG00000277196
+rowData names(6): source type ... gene_name gene_type
+colnames(122202): AAACAACGAATAGTTC-1_Br5212 AAACAAGTATCTCCCA-1_Br5212
+  ... TTGTTTGTATTACACG-1_Br6263 TTGTTTGTGTAAATTC-1_Br6263
+colData names(78): sample_id in_tissue ... Annotation SpD
+reducedDimNames(11): 10x_pca 10x_tsne ... TSNE.HARMONY PCA_SVG
+mainExpName: NULL
+altExpNames(0):
+spatialCoords names(2) : pxl_col_in_fullres pxl_row_in_fullres
+imgData names(4): sample_id image_id data scaleFactor
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+  APOE_carrier_anc_colors
+Loading objects:
+  SpD_colors
+
+female   male 
+     4      9 
+null device 
+          1 
+Rows: 31 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): gene_name, Layer, studies
+dbl (1): n_studies
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+            GM         Layer1         Layer2         Layer3         Layer4 
+             1              4              4              2              3 
+        Layer5        Layer5a        Layer5b         Layer6 Para-subiculum 
+             2              1              2              5              1 
+          Vasc             WM 
+             1              3 
+null device 
+          1 
+null device 
+          1 
+[1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+Loading objects:
+  marker_stats
+# A tibble: 8 × 2
+  SpD               n
+  <fct>         <int>
+1 Vasc~Sp09D08      5
+2 L1~Sp09D05        5
+3 L2.3~Sp09D01      5
+4 LD~Sp09D02        5
+5 Inhib~Sp09D09     5
+6 L5~Sp09D03        5
+7 L6~Sp09D04        5
+8 WM~Sp09D06        5
+[1] "Reproducibility information:"
+[1] "2026-06-29 09:04:20 EDT"
+   user  system elapsed 
+154.078   3.114 185.116 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-06-29
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                * 1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ ape                    5.8-1    2024-12-16 [1] CRAN (R 4.5.0)
+ aplot                  0.2.9    2025-09-12 [1] CRAN (R 4.5.0)
+ beachmat               2.26.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ beeswarm               0.4.0    2021-06-01 [2] CRAN (R 4.5.0)
+ Biobase              * 2.70.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocNeighbors          2.4.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel           1.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocSingular           1.26.1   2025-11-17 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2    2026-05-19 [1] CRAN (R 4.5.0)
+ cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1  2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.0)
+ cowplot                1.2.0    2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
+ data.table             1.18.2.1 2026-01-27 [1] CRAN (R 4.5.0)
+ DelayedArray         * 0.36.1   2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ deldir                 2.0-4    2024-02-28 [2] CRAN (R 4.5.0)
+ dichromat              2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39   2025-11-19 [1] CRAN (R 4.5.0)
+ dotCall64              1.2      2024-10-04 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1    2026-04-03 [1] CRAN (R 4.5.0)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ fastDummies            1.7.5    2025-01-20 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0    2024-05-15 [2] CRAN (R 4.5.0)
+ fitdistrplus           1.2-6    2026-01-24 [1] CRAN (R 4.5.0)
+ fontBitstreamVera      0.1.1    2017-02-01 [1] CRAN (R 4.5.0)
+ fontLiberation         0.1.0    2016-10-15 [1] CRAN (R 4.5.0)
+ fontquiver             0.2.1    2017-02-01 [1] CRAN (R 4.5.0)
+ forcats              * 1.0.1    2025-09-25 [1] CRAN (R 4.5.0)
+ fs                     2.1.0    2026-04-18 [1] CRAN (R 4.5.0)
+ future                 1.70.0   2026-03-14 [1] CRAN (R 4.5.0)
+ future.apply           1.20.2   2026-02-20 [1] CRAN (R 4.5.0)
+ gdtools                0.5.1    2026-05-25 [1] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1   2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ ggbeeswarm             0.7.3    2025-11-29 [1] CRAN (R 4.5.0)
+ ggfun                  0.2.0    2025-07-15 [1] CRAN (R 4.5.0)
+ ggiraph                0.9.6    2026-02-21 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3    2026-04-22 [1] CRAN (R 4.5.0)
+ ggplotify              0.1.3    2025-09-20 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.8    2026-03-17 [1] CRAN (R 4.5.0)
+ ggridges               0.5.7    2025-08-27 [1] CRAN (R 4.5.0)
+ ggsci                  3.2.0    2024-06-18 [2] CRAN (R 4.5.0)
+ ggtree                 4.0.5    2026-03-17 [1] Bioconductor 3.22 (R 4.5.0)
+ globals                0.19.1   2026-03-13 [1] CRAN (R 4.5.0)
+ glue                   1.8.1    2026-04-17 [1] CRAN (R 4.5.0)
+ goftest                1.2-3    2021-10-07 [2] CRAN (R 4.5.0)
+ gridExtra              2.3      2017-09-09 [2] CRAN (R 4.5.0)
+ gridGraphics           0.5-1    2020-12-13 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ h5mread              * 1.0.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ HDF5Array            * 1.36.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ here                 * 1.0.2    2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4    2025-10-17 [1] CRAN (R 4.5.0)
+ htmltools              0.5.9    2025-12-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4    2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv                 1.6.17   2026-03-18 [1] CRAN (R 4.5.0)
+ httr                   1.4.8    2026-02-13 [1] CRAN (R 4.5.0)
+ ica                    1.0-3    2022-07-08 [2] CRAN (R 4.5.0)
+ igraph                 2.2.2    2026-02-12 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ irlba                  2.3.7    2026-01-30 [1] CRAN (R 4.5.0)
+ jsonlite               2.0.0    2025-03-27 [2] CRAN (R 4.5.0)
+ KernSmooth             2.23-26  2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3    2023-08-29 [2] CRAN (R 4.5.0)
+ later                  1.4.5    2026-01-08 [1] CRAN (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.3    2026-04-04 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.5    2026-01-08 [1] CRAN (R 4.5.0)
+ listenv                0.10.1   2026-03-10 [1] CRAN (R 4.5.0)
+ lmtest                 0.9-40   2022-03-21 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.5    2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5    2026-04-04 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65   2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix               * 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ mime                   0.13     2025-03-17 [2] CRAN (R 4.5.0)
+ miniUI                 0.1.2    2025-04-17 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168  2025-03-31 [3] CRAN (R 4.5.0)
+ otel                   0.2.0    2025-08-29 [1] CRAN (R 4.5.0)
+ parallelly             1.47.0   2026-04-17 [1] CRAN (R 4.5.0)
+ patchwork              1.3.2    2025-08-25 [1] CRAN (R 4.5.0)
+ pbapply                1.7-4    2025-07-20 [1] CRAN (R 4.5.0)
+ pillar                 1.11.1   2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ plotly                 4.12.0   2026-01-24 [1] CRAN (R 4.5.0)
+ plyr                   1.8.9    2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-9    2026-03-15 [1] CRAN (R 4.5.0)
+ polyclip               1.10-7   2024-07-23 [2] CRAN (R 4.5.0)
+ progressr              0.19.0   2026-03-31 [1] CRAN (R 4.5.0)
+ promises               1.5.0    2025-11-01 [1] CRAN (R 4.5.0)
+ purrr                * 1.2.1    2026-01-09 [1] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RANN                   2.6.2    2024-08-25 [2] CRAN (R 4.5.0)
+ rappdirs               0.3.4    2026-01-17 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1    2026-01-10 [1] CRAN (R 4.5.0)
+ RcppAnnoy              0.0.23   2026-01-12 [1] CRAN (R 4.5.0)
+ RcppHNSW               0.6.0    2024-02-04 [2] CRAN (R 4.5.0)
+ readr                * 2.2.0    2026-02-19 [1] CRAN (R 4.5.0)
+ reshape2               1.4.5    2025-11-12 [1] CRAN (R 4.5.0)
+ reticulate             1.45.0   2026-02-13 [1] CRAN (R 4.5.0)
+ rhdf5                * 2.52.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rhdf5filters           1.20.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Rhdf5lib               1.30.0   2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0    2026-04-06 [1] CRAN (R 4.5.0)
+ ROCR                   1.0-12   2026-01-23 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1    2025-08-26 [1] CRAN (R 4.5.0)
+ RSpectra               0.16-2   2024-07-18 [2] CRAN (R 4.5.0)
+ rsvd                   1.0.5    2021-04-16 [2] CRAN (R 4.5.0)
+ Rtsne                  0.17     2023-12-07 [2] CRAN (R 4.5.0)
+ S4Arrays             * 1.10.1   2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1   2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2    2026-04-22 [1] CRAN (R 4.5.0)
+ ScaledMatrix           1.18.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ scater                 1.38.1   2026-03-20 [1] Bioconductor 3.22 (R 4.5.0)
+ scattermore            1.2      2023-06-12 [2] CRAN (R 4.5.0)
+ scDotPlot            * 1.4.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ sctransform            0.4.3    2026-01-10 [1] CRAN (R 4.5.0)
+ scuttle                1.20.0   2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ Seqinfo              * 1.0.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4    2026-06-04 [1] CRAN (R 4.5.0)
+ Seurat                 5.5.0    2026-04-22 [1] CRAN (R 4.5.0)
+ SeuratObject           5.4.0    2026-04-11 [1] CRAN (R 4.5.0)
+ shiny                  1.13.0   2026-02-20 [1] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sp                     2.2-1    2026-02-13 [1] CRAN (R 4.5.0)
+ spam                   2.11-4   2026-05-29 [1] CRAN (R 4.5.0)
+ SparseArray          * 1.10.10  2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment      1.20.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ spatstat.data          3.1-9    2025-10-18 [1] CRAN (R 4.5.0)
+ spatstat.explore       3.8-1    2026-05-24 [1] CRAN (R 4.5.0)
+ spatstat.geom          3.8-1    2026-05-23 [1] CRAN (R 4.5.0)
+ spatstat.random        3.5-0    2026-05-24 [1] CRAN (R 4.5.0)
+ spatstat.sparse        3.2-0    2026-05-21 [1] CRAN (R 4.5.0)
+ spatstat.univar        3.2-0    2026-05-18 [1] CRAN (R 4.5.0)
+ spatstat.utils         3.2-3    2026-05-10 [1] CRAN (R 4.5.0)
+ stringi                1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0    2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ survival               3.8-3    2024-12-17 [3] CRAN (R 4.5.0)
+ systemfonts            1.3.2    2026-03-05 [1] CRAN (R 4.5.0)
+ tensor                 1.5.1    2025-06-17 [1] CRAN (R 4.5.0)
+ tibble               * 3.3.1    2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2    2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidytree               0.4.7    2026-01-08 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0    2026-01-29 [1] CRAN (R 4.5.0)
+ treeio                 1.34.0   2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6    2025-06-08 [1] CRAN (R 4.5.0)
+ uwot                   0.2.4    2025-11-10 [1] CRAN (R 4.5.0)
+ vctrs                  0.7.3    2026-04-11 [1] CRAN (R 4.5.0)
+ vipor                  0.4.7    2023-12-18 [2] CRAN (R 4.5.0)
+ viridis                0.6.5    2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3    2026-02-04 [1] CRAN (R 4.5.0)
+ vroom                  1.7.1    2026-03-31 [1] CRAN (R 4.5.0)
+ withr                  3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
+ xtable                 1.8-8    2026-02-22 [1] CRAN (R 4.5.0)
+ XVector                0.50.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ yulab.utils            0.2.4    2026-02-02 [1] CRAN (R 4.5.0)
+ zoo                    1.8-15   2025-12-15 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Mon Jun 29 09:04:21 AM EDT 2026
