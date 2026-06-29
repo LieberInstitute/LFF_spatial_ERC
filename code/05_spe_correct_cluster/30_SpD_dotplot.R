@@ -125,6 +125,25 @@ marker_stats_top <- marker_stats |>
 
 marker_stats_top |> count(SpD)
 
+rowData(spe)$SpD_Marker <- NULL
+rowData(spe)$SpD_Marker <- marker_stats_top$SpD[match(rownames(spe), marker_stats_top$gene)] 
+table(rowData(spe)$SpD_Marker)
+
+pdf(here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 7)
+spe |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "SpD",
+              groupAnno = "SpD",
+              featureAnno = "SpD_Marker",
+              scale = TRUE,
+              annoColors = list("SpD" = SpD_colors,
+                                "SpD_Marker" = SpD_colors),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+
 # slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
 
 #### Reproducibility information ####
