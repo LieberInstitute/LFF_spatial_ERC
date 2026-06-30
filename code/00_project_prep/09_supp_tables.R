@@ -20,7 +20,24 @@ supp_tables$TableS01 <- read.csv(here("processed-data", "00_project_prep", "05_p
 
 #### Table S2 SRT sample information ####
 
-supp_tables$TableS02 <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "ERC_Visium_summary_sample.csv"), row.names = 1)
+xenium_TableS02 <- read.csv(here("processed-data", "21_Xenium", "08_xenium_QC_normalize", "ERC_Xenium_QC_summary.csv"), row.names = 1) |>
+    select(sample_id = BrNum, 
+           Xenium_Run = Run, 
+           Xenium_chip = chip, 
+           Xenium_n_cells = nCells_Final, 
+           Xenium_median_sum = median_sum, 
+           Xenium_median_detected = median_detected, 
+           Xenium_median_cell_area = median_cell_area)
+
+supp_tables$TableS02 <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "ERC_Visium_summary_sample.csv"), row.names = 1) |>
+    dplyr::rename(Visium_round = round,
+                  Visium_n_spots = n_spots,
+                  Visium_median_sum_umi = median_sum_umi,
+                  Visium_median_sum_gene = median_sum_gene,
+                  Visium_median_expr_chrM_ratio = median_expr_chrM_ratio) |>
+    mutate(Xenium_sample = sample_id %in% xenium_TableS02$sample_id) |>
+    left_join(xenium_TableS02)
+
 
 ## visium info
 read.csv(here("processed-data", "02_build_spe", "sample_info.csv"))
@@ -221,6 +238,12 @@ supp_tables$TableS15 <- do.call("rbind", list(external_data_Blanchard, external_
 
 head(supp_tables$TableS15)
 supp_tables$TableS15 |> dplyr::count(gene_set, DEG_data)
+
+#### Table S16 Xenium Probes #### 
+## TODO fix table numbers
+
+supp_tables$TableS16 <- read_xlsx(here("processed-data", "21_Xenium", "02_xenium_compile_custom", "ERC_Xenium_select_custom_probes.xlsx"))
+
 
 #### Table S16 Cell to cell communication results summary. ####
 
