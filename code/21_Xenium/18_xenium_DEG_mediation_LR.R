@@ -21,10 +21,16 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 mediator_outcome_eval <- read_csv(here("processed-data", "21_Xenium", "06_xenium_ALL_probe_eval", "ECR_mediator_outcome_xenium_eval.csv"))
 
+mediator_outcome_eval |> dplyr::count(med_cl)
+# med_cl      n
+# <chr>   <int>
+# 1 Astro.1     5
+# 2 Astro.2    35
+# 3 Astro.3    18
+
 ## cell type level Xenium DEGs
 
 xenium_DEG <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno_wSN.Rds"))
-
 
 mediator_DEG <- xenium_DEG |>
     inner_join(mediator_outcome_eval |> 
