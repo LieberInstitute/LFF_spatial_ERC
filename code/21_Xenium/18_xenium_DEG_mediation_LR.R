@@ -19,27 +19,88 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### DEGs - Astro Mediation Genes ####
 
-xenium_DEG <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium", "DGE_results_carrier_Xenium_wSN.Rds"))
+mediator_outcome_eval <- read_csv(here("processed-data", "21_Xenium", "06_xenium_ALL_probe_eval", "ECR_mediator_outcome_xenium_eval.csv"))
 
-# list.files(here("processed-data","22_Mediation","out-erc_astro"))
+## cell type level Xenium DEGs
 
-mediation_summary <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediation_vs_baseline_summary.tsv.gz"))
+xenium_DEG <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno_wSN.Rds"))
 
-mediator_tab <- mediation_summary |> 
-    filter(mediated_n > 0) |> 
-    select(mediation_run, mediated_n) |> 
-    separate(mediation_run, into = c("cell_type", "ensemblID", "gene_name"), sep = "\\|") |>
-    mutate(in_base = gene_name %in% xenium_DEG$gene_name)
 
-head(mediator_tab)
+mediator_DEG <- xenium_DEG |>
+    inner_join(mediator_outcome_eval |> 
+                   select(cluster = med_cl, gene_name = mediator, pair)) |>
+    select(cluster, gene_name, vlmf_xenium_logFC, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_xenium_adj.P.Val, validate, pair) |>
+    unique()
 
-mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediator_outcome_fdr_impact.tsv.gz")) |>
-    mutate(mediator_in_DEG = mediator %in% xenium_DEG$gene_name,
-           outcome_in_DEG = outcome %in% xenium_DEG$gene_name,
-           pair = paste0(mediator, "|", outcome))
+mediator_DEG |> filter(validate) |> select(-pair) |> unique()
 
-mediator_outcome |> filter(mediator_in_DEG, outcome_in_DEG)
+# cluster gene_name vlmf_xenium_logFC vlmf_xenium_t vlmf_xenium_P.Value vlmf_xenium_adj.P.Val validate
+# <chr>   <chr>                 <dbl>         <dbl>               <dbl>                 <dbl> <lgl>   
+# 1 Astro.1 NPTXR                 0.371          2.71              0.0149                 0.259 TRUE    
+# 2 Astro.2 FZD8                  0.337          2.33              0.0330                 0.408 TRUE 
 
+
+outcome_DEG <- xenium_DEG |>
+    inner_join(mediator_outcome_eval |> 
+                   select(gene_name = outcome, pair) |>
+                   mutate(cluster = "Oligo.3") ) |>
+    select(cluster, gene_name, vlmf_xenium_logFC, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_xenium_adj.P.Val, validate, pair)
+
+outcome_DEG |> filter(validate) |> select(-pair) |> unique()
+
+# cluster gene_name vlmf_xenium_logFC vlmf_xenium_t vlmf_xenium_P.Value vlmf_xenium_adj.P.Val validate
+# <chr>   <chr>                 <dbl>         <dbl>               <dbl>                 <dbl> <lgl>   
+# 1 Oligo.3 SLC17A7               0.221          1.96              0.0669                 0.672 TRUE    
+# 2 Oligo.3 TESPA1                0.349          2.00              0.0618                 0.672 TRUE    
+# 3 Oligo.3 NPTXR                 0.364          1.92              0.0721                 0.672 TRUE    
+# 4 Oligo.3 ENC1                  0.211          1.80              0.0900                 0.726 TRUE  
+
+
+
+
+mediator_outcome_DEG <- mediator_DEG |>
+    select(-gene_name) |>
+    dplyr::rename(validate_mediator = validate) |>
+    rename_with(~str_replace(.x, "xenium", "mediator")) |>
+    separate(pair, into = c("mediator", "outcome"), sep = "\\|", remove = FALSE) |> 
+    dplyr::rename(cluster_validate = cluster) |>
+    left_join(outcome_DEG |>
+                  dplyr::rename(outcome = gene_name, 
+                                cluster_outcome = cluster,
+                                validate_outcome = validate) |>
+                  rename_with(~str_replace(.x, "xenium", "outcome"))
+              )
+
+mediator_outcome_DEG |> dplyr::count(validate_mediator, validate_outcome)
+# validate_mediator validate_outcome     n
+# <lgl>             <lgl>            <int>
+# 1 FALSE             FALSE               39
+# 2 FALSE             TRUE                 4
+# 3 TRUE              FALSE               11
+# 4 TRUE              TRUE                 4
+
+mediator_outcome_DEG |> dplyr::count(cluster_validate, validate_mediator, validate_outcome)
+
+# cluster_validate validate_mediator validate_outcome     n
+# <chr>            <lgl>             <lgl>            <int>
+# 1 Astro.1          FALSE             TRUE                 1
+# 2 Astro.1          TRUE              FALSE                1
+# 3 Astro.1          TRUE              TRUE                 3 *
+# 4 Astro.2          FALSE             FALSE               21
+# 5 Astro.2          FALSE             TRUE                 3
+# 6 Astro.2          TRUE              FALSE               10
+# 7 Astro.2          TRUE              TRUE                 1 *
+# 8 Astro.3          FALSE             FALSE               18
+
+mediator_outcome_DEG |> 
+    filter(validate_mediator | validate_outcome) |> 
+    select(pair, cluster_validate, validate_mediator, validate_outcome) |>
+    arrange(validate_mediator, validate_outcome)
+    
+
+write.csv(mediator_outcome_DEG, file = here(data_dir, "Xenium_mediator_outcome_DEG_results.csv"), row.names = FALSE)
+    
+ 
 comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = "vlmf_xenium", FDR_cut_mX = 0.05, pval_cut_mY = 0.1, model_name){
     
     ## define vars
