@@ -182,12 +182,11 @@ QC_cutoff_summary_global <- map2_dfr(
 # 2 detected_gex  7.000000  237.0000
 # 3    cell_area  2.935156  401.7552
 
-## add additonal stats to QC summary
+## add additional stats to QC summary
 QC_summary <- sample_nCells_preQC |> 
     left_join(as.data.frame(colData(spe)) |>
                   group_by(BrNum) |>
                   summarize(
-                      nCells = n(),
                       CellsRetained = sum(!global_outliers),
                       Outliers = sum(global_outliers),
                       PercentRemoved  = Outliers/(CellsRetained + Outliers)*100,
@@ -195,16 +194,15 @@ QC_summary <- sample_nCells_preQC |>
                       sum_gex_low  = sum(sum_gex_low),
                       detected_gex_low = sum(detected_gex_low),
                       cell_area_outlier  = sum(cell_area_outlier)
-                  ) ) |>
-    left_join(QC_cutoff_summary |> select(BrNum, sum_gex_min, detected_gex_min, cell_area_min, cell_area_max))
+                  )
+              ) |>
+    left_join(QC_cutoff_summary |> 
+                  select(BrNum, sum_gex_min, detected_gex_min, cell_area_min, cell_area_max)
+              )
 
 
 summary(QC_summary$sum_gex_min)
 summary(QC_summary$detected_gex_min)
-
-write.csv(QC_summary, file = here(data_dir, "ERC_Xenium_QC_summary.csv"))
-
-
 
 #### QC plots ####
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
@@ -350,12 +348,32 @@ vis_grid_clus(
 
 ## drop off tissue spots
 spe <- spe[,!spe$off_tissue]
+pd <- as.data.frame(colData(spe))
+
+QC_summary2 <-  QC_summary |>
+    rename(nCells_postQC = CellsRetained) |>
+    select(-nCells) |>
+    left_join(pd |>
+                  group_by(BrNum) |>
+                  summarize(
+                      nCells_Final = n(), ## after dropping off tissue 
+                      median_sum = median(sum_gex),
+                      median_detected = median(detected_gex),
+                      median_cell_area = median(cell_area),
+                  )) |>
+    mutate(nCells_offTissue = nCells_postQC - nCells_Final)
+
+summary(QC_summary2$nCells_Final)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 20439   23240   28288   27949   30226   47155 
+
+write.csv(QC_summary2, file = here(data_dir, "ERC_Xenium_QC_summary.csv"))
 
 #### Normalize ####
 ## adapted from https://github.com/LieberInstitute/xenium_NAC/blob/54a6bd78ef1127d0e41f037bd6a080579dad9020/code/04_normalization/01_area_based_norm.R
 ## Goal: Calculate size factors based on nucleus and cell area
 
-pd <- as.data.frame(colData(spe))
+
 
 #Based on Atta et al. 2024, generate non-count based scaling factors
 #Calculate both cell area and nucleus area values
