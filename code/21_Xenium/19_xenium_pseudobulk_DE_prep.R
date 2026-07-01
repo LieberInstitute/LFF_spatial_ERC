@@ -44,7 +44,6 @@ spe$APOE_syn <- gsub("/", ".", spe$APOE)
 spe$SpX_simple <- factor(gsub("~SpX[0-9]", "", spe$SpX), levels = c("Vasc", "L1a", "L1b", "L2.3", "Inhib", "L5", "L6", "WMtz", "WM"))
 table(spe$SpX, spe$SpX_simple)
 
-
 #### Input specific filtering & setup ####
 if(opt$cluster == "cell_type_anno_SpX"){
     
@@ -58,34 +57,6 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
 } else if(opt$cluster == "Oligo.3_Astro"){ 
     
-    # ## filter to doublets - exclude doublet signal is too complicated
-    # spe_doub <- spe[,spe$spot_class == "doublet_certain"]
-    # ## filter to Astro-Oligo.3 doublets
-    # 
-    # spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$first_type)]
-    # spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$second_type)]
-    # message("filter to doublet_certain Oligo.3-astro, ncells: ", ncol(spe_doub))
-    # 
-    # 
-    # pd_doub <- colData(spe_doub) |>
-    #     as.data.frame() |>
-    #     mutate(first_type = as.character(first_type),
-    #            second_type = as.character(second_type),
-    #            doublet_fine = paste(pmin(first_type, second_type), 
-    #                          pmax(first_type, second_type), 
-    #                          sep="_"),
-    #            doublet = gsub("Astro\\.[1-5]", "Astro", doublet_fine)
-    #            )
-    # 
-    # 
-    # # spe_doub$doublet_fine <- pd_temp$doublet_fine
-    # # spe_doub$doublet <- pd_temp$doublet
-    # # spe_doub$doublet_Astro_Oligo.3 <- pd_temp$doublet
-    # 
-    # spe_doub$Oligo.3_Astro <- "doublet_Oligo3_Astro"
-    # 
-    # table(spe_doub$doublet)
-    
     #### Oligos with nearest neighbor classifications ####
     
     load(here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro", "Oligo3_Astro_neighbor_df.Rdata"), verbose = TRUE)
@@ -96,8 +67,56 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
     spe_03$Oligo.3_Astro <- paste0("APOE_", neighbor_df_details$APOE_level, "_nnA_", neighbor_df_details$dist_class)
     table(spe_03$Oligo.3_Astro)
+    table(spe_03$spot_class)
     
-    spe <- cbind(spe_03, spe_doub)
+    spe_03$Oligo.3_Astro_test <- "APOE_neighbor"
+    
+    ## Distance Near/Far
+    spe_03_dist <- spe[,neighbor_df_details$reference_barcode]
+    
+    spe_03_dist$Oligo.3_Astro <- paste0("nnA_", neighbor_df_details$dist_class)
+    table(spe_03_dist$Oligo.3_Astro)
+    
+    spe_03_dist$sample_id <- paste0(spe_03_dist$sample_id, "_dist")
+    spe_03_dist$Oligo.3_Astro_test <- "dist"
+    colnames(spe_03_dist) <- paste(colnames(spe_03_dist), "_", spe_03_dist$Oligo.3_Astro_test)
+    
+    ## APOE High/Low
+    spe_03_apoe <- spe[,neighbor_df_details$reference_barcode]
+    
+    spe_03_apoe$Oligo.3_Astro <- paste0("APOE_", neighbor_df_details$APOE_level)
+    table(spe_03_apoe$Oligo.3_Astro)
+    
+    spe_03_apoe$sample_id <- paste0(spe_03_apoe$sample_id, "_APOE")
+    spe_03_apoe$Oligo.3_Astro_test <- "APOE"
+    colnames(spe_03_apoe) <- paste(colnames(spe_03_apoe), "_", spe_03_apoe$Oligo.3_Astro_test)
+    
+    
+    ## Neighbor
+    spe_03_neighbor <- spe[,neighbor_df_details$reference_barcode]
+    
+    spe_03_neighbor$Oligo.3_Astro <- paste0("nn_", neighbor_df_details$neighbor_cell_type)
+    table(spe_03_neighbor$Oligo.3_Astro)
+    
+    spe_03_neighbor$sample_id <- paste0(spe_03_neighbor$sample_id, "_neighbor")
+    spe_03_neighbor$Oligo.3_Astro_test <- "neighbor"
+    colnames(spe_03_neighbor) <- paste(colnames(spe_03_neighbor), "_", spe_03_neighbor$Oligo.3_Astro_test)
+    
+    
+    ## Neighbor High/Low
+    spe_03_neighbor_apoe <- spe[,neighbor_df_details$reference_barcode]
+    
+    spe_03_neighbor_apoe$Oligo.3_Astro <- paste0("APOE_", neighbor_df_details$APOE_level, "_nnA_", neighbor_df_details$neighbor_cell_type)
+    table(spe_03_neighbor_apoe$Oligo.3_Astro)
+    
+    spe_03_neighbor_apoe$sample_id <- paste0(spe_03_neighbor_apoe$sample_id, "_neighbor_APOE")
+    spe_03_neighbor_apoe$Oligo.3_Astro_test <- "neighbor_APOE"
+    colnames(spe_03_neighbor_apoe) <- paste(colnames(spe_03_neighbor_apoe), "_", spe_03_neighbor_apoe$Oligo.3_Astro_test)
+    
+    spe <- do.call("cbind", list(spe_03, spe_03_dist, spe_03_apoe, spe_03_neighbor, spe_03_neighbor_apoe))
+    
+    table(spe$Oligo.3_Astro_test)
+    table(spe$Oligo.3_Astro, spe$Oligo.3_Astro_test)
     
 } else if(opt$cluster == "Oligo.3_Astro_SpX"){
     
