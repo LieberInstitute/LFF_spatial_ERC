@@ -177,24 +177,25 @@ LR_pair_df |> filter(LR_pair %in% mediator_outcome_eval$pair) ## no overlapping 
 
 LR_pair_df |> filter(ligand_complex %in% mediator_outcome_eval$mediator) # no overlap
 
-LR_pair_df |> 
+(mediator_LR_overlap <- LR_pair_df |> 
     filter(receptor_complex %in% mediator_outcome_eval$outcome) |>
-    left_join(mediator_outcome_eval |> select(receptor_complex = outcome, mediator_pair = pair))
+    left_join(mediator_outcome_eval |> 
+                  select(receptor_complex = outcome, mediator_pair = pair, mediator),
+              relationship = "many-to-many"))
 
-# ligand_complex receptor_complex LR_pair      mediator_pair
-# <chr>          <chr>            <chr>        <chr>        
-# 1 NXPH2          NRXN1            NXPH2|NRXN1  FZD8|NRXN1   
-# 2 NXPH2          NRXN1            NXPH2|NRXN1  NETO1|NRXN1  
-# 3 NXPH2          NRXN1            NXPH2|NRXN1  SV2B|NRXN1   
-# 4 NXPH2          NRXN1            NXPH2|NRXN1  CHRM3|NRXN1  
+# ligand_complex receptor_complex LR_pair      mediator_pair mediator
+# <chr>          <chr>            <chr>        <chr>         <chr>   
+# 1 NXPH2          NRXN1            NXPH2|NRXN1  FZD8|NRXN1    FZD8    
+# 2 NXPH2          NRXN1            NXPH2|NRXN1  NETO1|NRXN1   NETO1   
+# 3 NXPH2          NRXN1            NXPH2|NRXN1  SV2B|NRXN1    SV2B    
+# 4 NXPH2          NRXN1            NXPH2|NRXN1  CHRM3|NRXN1   CHRM3   
+# 5 NLGN1          NRXN1            NLGN1|NRXN1  FZD8|NRXN1    FZD8    
+# 6 NLGN1          NRXN1            NLGN1|NRXN1  NETO1|NRXN1   NETO1   
+# 7 NLGN1          NRXN1            NLGN1|NRXN1  SV2B|NRXN1    SV2B    
+# 8 NLGN1          NRXN1            NLGN1|NRXN1  CHRM3|NRXN1   CHRM3   
 
-# 5 NLGN1          NRXN1            NLGN1|NRXN1  FZD8|NRXN1   
-# 6 NLGN1          NRXN1            NLGN1|NRXN1  NETO1|NRXN1  
-# 7 NLGN1          NRXN1            NLGN1|NRXN1  SV2B|NRXN1   
-# 8 NLGN1          NRXN1            NLGN1|NRXN1  CHRM3|NRXN1  
-
-# 9 NRG3           ERBB3            NRG3|ERBB3   SV2B|ERBB3   
-# 10 S100A4         ERBB3            S100A4|ERBB3 SV2B|ERBB3  
+# 9 NRG3           ERBB3            NRG3|ERBB3   SV2B|ERBB3    SV2B    
+# 10 S100A4         ERBB3            S100A4|ERBB3 SV2B|ERBB3    SV2B 
 
 
 xenium_DEG <- xenium_DEG |>
@@ -223,7 +224,7 @@ xenium_DEG |>
 
 xenium_DEG |> 
     filter(cluster == "Oligo.3", receptor,
-           gene_name %in% c("APP", "TREM2")) |>
+           gene_name %in% c("APP", "TREM2", "FZD8")) |>
     select(gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, outcome)
 
 # gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate outcome
@@ -258,6 +259,22 @@ xenium_DEG |>
 # 10 Astro.2 SPON1            -1.16               0.263              0.836     -0.0996    -0.768   FALSE     FALSE         FALSE
 
 
+xenium_DEG |> 
+    filter(
+        grepl("Astro", cluster),
+           gene_name %in% mediator_LR_overlap$mediator,
+           validate) |>
+    arrange(gene_name, vlmf_xenium_P.Value) |>
+    select(cluster, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, mediator)
+
+# cluster gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate mediator
+# <fct>   <chr>             <dbl>               <dbl>             <dbl>         <dbl>     <dbl> <lgl>     <lgl>         <lgl>    <lgl>   
+#1 Astro.2 FZD8               2.33              0.0330            0.0261          1.01      4.63 TRUE      TRUE          TRUE     TRUE   
+
+mediator_LR_overlap |> filter(mediator == "CHRM3")
+mediator_LR_overlap |> filter(mediator == "FZD8")
+
+mediator_outcome_eval |> filter(mediator == "FZD8")
 
 #### Check mediation genes in LR ####
 
