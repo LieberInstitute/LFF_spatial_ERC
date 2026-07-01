@@ -170,6 +170,8 @@ head(mediator_outcome)
 LR_pair_df = read_csv(here('processed-data', '24_xenium_liana', '04_global_score_heatmap', 'unique_ligand_receptor_pairs.csv'), show_col_types = FALSE) |>
     mutate(LR_pair = paste0(ligand_complex, "|", receptor_complex))
 
+global_interactions_summary <- read.csv(here('processed-data', '24_xenium_liana', '04_global_score_heatmap','global_interactions_summary.csv'))
+
 LR_pair_df |> filter("APOE" == ligand_complex)
 LR_pair_df |> filter("APP" == receptor_complex)
 
@@ -224,7 +226,7 @@ xenium_DEG |>
 
 xenium_DEG |> 
     filter(cluster == "Oligo.3", receptor,
-           gene_name %in% c("APP", "TREM2", "FZD8")) |>
+           gene_name %in% c("APP", "TREM2", "FZD8", "TACR1")) |>
     select(gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, outcome)
 
 # gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate outcome
@@ -263,7 +265,7 @@ xenium_DEG |>
     filter(
         grepl("Astro", cluster),
            gene_name %in% mediator_LR_overlap$mediator,
-           validate) |>
+        signif_xenium) |>
     arrange(gene_name, vlmf_xenium_P.Value) |>
     select(cluster, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, mediator)
 
@@ -274,7 +276,11 @@ xenium_DEG |>
 mediator_LR_overlap |> filter(mediator == "CHRM3")
 mediator_LR_overlap |> filter(mediator == "FZD8")
 
-mediator_outcome_eval |> filter(mediator == "FZD8")
+
+xenium_DEG |> 
+    filter(cluster == "Oligo.3", 
+           gene_name %in% (mediator_outcome_eval |> filter(mediator == "FZD8") |> pull(outcome)))|>
+    select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_adj.P.Val, vlmf_sn_t, signif_sn, signif_xenium, validate, receptor)
 
 #### Check mediation genes in LR ####
 
