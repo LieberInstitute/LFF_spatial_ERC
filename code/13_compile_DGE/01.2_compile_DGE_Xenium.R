@@ -41,12 +41,46 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 
     cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high")
     
-    cluster_colors <- c("nnA_far_APOE_low" = "#87219a",
-                        "nnA_far_APOE_high" = "#487800",
-                        "nnA_near_APOE_low" = "#b0b3ff",
-                        "nnA_near_APOE_high" = "#01d9b4"
-                       # "doublet_Oligo3_Astro" = "#ef2396"
-                       )
+    # cluster_colors <- c("nnA_far_APOE_low" = "#87219a",
+    #                     "nnA_far_APOE_high" = "#487800",
+    #                     "nnA_near_APOE_low" = "#b0b3ff",
+    #                     "nnA_near_APOE_high" = "#01d9b4"
+    #                    # "doublet_Oligo3_Astro" = "#ef2396"
+    #                    )
+    
+    cluster_colors <- c(
+            # APOE_high — warm oranges/ambers
+            "APOE_high"             = "#B86A00",
+            "APOE_high_nnA_Astro.1" = "#1A6B1A",
+            "APOE_high_nnA_Astro.2" = "#28A428",
+            "APOE_high_nnA_Astro.3" = "#6B6B00",
+            "APOE_high_nnA_Astro.4" = "#7ACC7A",
+            "APOE_high_nnA_Astro.5" = "#3DA85D",
+            "APOE_high_nnA_far"     = "#D4820A",
+            "APOE_high_nnA_near"    = "#F0A830",
+            
+            # APOE_low — cool blues
+            "APOE_low"              = "#1A5276",
+            "APOE_low_nnA_Astro.1"  = "#228B22",
+            "APOE_low_nnA_Astro.2"  = "#32CD32",
+            "APOE_low_nnA_Astro.3"  = "#808000",
+            "APOE_low_nnA_Astro.4"  = "#98FF98",
+            "APOE_low_nnA_Astro.5"  = "#50C878",
+            "APOE_low_nnA_far"      = "#2E86C1",
+            "APOE_low_nnA_near"     = "#5DADE2",
+            
+            # nn_Astro — muted greens (no APOE context)
+            "nn_Astro.1"            = "#4A7C4A",
+            "nn_Astro.2"            = "#6AAF6A",
+            "nn_Astro.3"            = "#8B8B40",
+            "nn_Astro.4"            = "#A8D8A8",
+            "nn_Astro.5"            = "#6BAF85",
+            
+            # nnA spatial — purples (no APOE split, no Astro subtype)
+            "nnA_far"               = "#7B3F7B",
+            "nnA_near"              = "#9B59B6"
+    )
+    cluster_levels <- names(cluster_colors)
 }
 
 cell_type_broad_levels <- names(cell_type_colors$broad)
@@ -61,7 +95,7 @@ vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "06_Clusterwise_voo
 
 names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_%s_|.rds", opt$datatype), "", basename(.x)))
 
-if(opt$datatype == "Xenium_Oligo.3_Astro") vlmf_fn <- vlmf_fn[names(vlmf_fn) %in% cluster_levels] ## exclude doublet data
+if(opt$datatype == "Xenium_Oligo.3_Astro") vlmf_fn <- vlmf_fn[names(vlmf_fn) %in% names(cluster_colors)] ## exclude doublet data
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -80,8 +114,10 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_B = B
     ) |>
     mutate(cluster = factor(cluster, levels = cluster_levels))  |>
+    # mutate(cluster = factor(cluster))  |>
     as_tibble()
 
+unique(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$cluster)
 
 if(opt$datatype == "Xenium_cell_type_anno"){
@@ -258,6 +294,8 @@ validation_summary |>
     filter(n_signif_sn > 0) |>
     print(n = 32)
 
+validation_summary |> arrange(-n_validate)
+
 if(opt$datatype == "Xenium_cell_type_anno"){
     
     vlmf_data_tb_xenium |> 
@@ -289,8 +327,8 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     
 } else {
     vlmf_data_tb_xenium |> 
-        # filter(validate) |>
-        filter(gene_name == "OPALIN") |>
+        filter(validate) |>
+        # filter(gene_name == "OPALIN") |>
         select(cluster, gene_id, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value, vlmf_xenium_t, dir_match,validate) |>
         print(n = 20)
 }
@@ -354,6 +392,11 @@ sn_xenium_cor |>
     slice_max(cor)|> 
     arrange(-cluster_match, -cor) |> 
     print(n = 35) 
+
+sn_xenium_cor |>
+    arrange(-cor_FDR05) |>
+    select(cluster_sn, cluster_xenium, cor, cor_FDR05) |>
+    print(n = 23)
 
 sn_xenium_cor_v_genes <- sn_xenium_cor |>
     ggplot(aes(x = n_genes, y = cor, color = cluster_match)) +
@@ -574,7 +617,7 @@ comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = 
         theme_bw()
 
     plot_fn = sprintf("%s_%s_stat_scatter_%s_%s-v-%s_%s.png", opt$datatype, stat, model_name, mX, mY, ctb)
-    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 10, width = 10)
+    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = 12, width = 12)
 
     # return(t_stat_scatter)
 }
