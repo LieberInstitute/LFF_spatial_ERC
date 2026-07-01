@@ -28,6 +28,7 @@ opt <- getopt(scec)
 print(opt)
 
 # opt$cluster <- "cell_type_anno_SpX"
+# opt$cluster <- "Oligo.3_Astro"
 # opt$cluster <- "Oligo.3_Astro_SpX"
 
 spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
@@ -57,33 +58,33 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
 } else if(opt$cluster == "Oligo.3_Astro"){ 
     
-    ## filter to doublets
-    spe_doub <- spe[,spe$spot_class == "doublet_certain"]
-    ## filter to Astro-Oligo.3 doublets
-    
-    spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$first_type)]
-    spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$second_type)]
-    message("filter to doublet_certain Oligo.3-astro, ncells: ", ncol(spe_doub))
-    
-    
-    pd_doub <- colData(spe_doub) |>
-        as.data.frame() |>
-        mutate(first_type = as.character(first_type),
-               second_type = as.character(second_type),
-               doublet_fine = paste(pmin(first_type, second_type), 
-                             pmax(first_type, second_type), 
-                             sep="_"),
-               doublet = gsub("Astro\\.[1-5]", "Astro", doublet_fine)
-               )
-    
-    
-    # spe_doub$doublet_fine <- pd_temp$doublet_fine
-    # spe_doub$doublet <- pd_temp$doublet
-    # spe_doub$doublet_Astro_Oligo.3 <- pd_temp$doublet
-    
-    spe_doub$Oligo.3_Astro <- "doublet_Oligo3_Astro"
-    
-    table(spe_doub$doublet)
+    # ## filter to doublets - exclude doublet signal is too complicated
+    # spe_doub <- spe[,spe$spot_class == "doublet_certain"]
+    # ## filter to Astro-Oligo.3 doublets
+    # 
+    # spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$first_type)]
+    # spe_doub <- spe_doub[,grepl("Oligo.3|Astro", spe_doub$second_type)]
+    # message("filter to doublet_certain Oligo.3-astro, ncells: ", ncol(spe_doub))
+    # 
+    # 
+    # pd_doub <- colData(spe_doub) |>
+    #     as.data.frame() |>
+    #     mutate(first_type = as.character(first_type),
+    #            second_type = as.character(second_type),
+    #            doublet_fine = paste(pmin(first_type, second_type), 
+    #                          pmax(first_type, second_type), 
+    #                          sep="_"),
+    #            doublet = gsub("Astro\\.[1-5]", "Astro", doublet_fine)
+    #            )
+    # 
+    # 
+    # # spe_doub$doublet_fine <- pd_temp$doublet_fine
+    # # spe_doub$doublet <- pd_temp$doublet
+    # # spe_doub$doublet_Astro_Oligo.3 <- pd_temp$doublet
+    # 
+    # spe_doub$Oligo.3_Astro <- "doublet_Oligo3_Astro"
+    # 
+    # table(spe_doub$doublet)
     
     #### Oligos with nearest neighbor classifications ####
     
@@ -93,14 +94,14 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe_03 <- spe[,neighbor_df_details$reference_barcode]
     message("filter to Oligo.3, ncells: ", ncol(spe_03))
     
-    spe_03$Oligo.3_Astro <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level)
+    spe_03$Oligo.3_Astro <- paste0("APOE_", neighbor_df_details$APOE_level, "_nnA_", neighbor_df_details$dist_class)
     table(spe_03$Oligo.3_Astro)
     
     spe <- cbind(spe_03, spe_doub)
     
 } else if(opt$cluster == "Oligo.3_Astro_SpX"){
     
-    #### Oligos with nearest neighbor classifications ####
+    #### Oligos with nearest neighbor classifications + SpX ####
     
     load(here("processed-data", "21_Xenium", "20_xenium_Oligo3_Astro", "Oligo3_Astro_neighbor_df.Rdata"), verbose = TRUE)
     
