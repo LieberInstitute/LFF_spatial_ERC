@@ -165,3 +165,127 @@ xenium_DEG_out |>
 
 head(mediator_outcome)
 
+#### Liana LR Data ####
+
+LR_pair_df = read_csv(here('processed-data', '24_xenium_liana', '04_global_score_heatmap', 'unique_ligand_receptor_pairs.csv'), show_col_types = FALSE) |>
+    mutate(LR_pair = paste0(ligand_complex, "|", receptor_complex))
+
+global_interactions_summary <- read.csv(here('processed-data', '24_xenium_liana', '04_global_score_heatmap','global_interactions_summary.csv'))
+
+LR_pair_df |> filter("APOE" == ligand_complex)
+LR_pair_df |> filter("APP" == receptor_complex)
+
+LR_pair_df |> filter(LR_pair %in% mediator_outcome_eval$pair) ## no overlapping pairs
+
+LR_pair_df |> filter(ligand_complex %in% mediator_outcome_eval$mediator) # no overlap
+
+(mediator_LR_overlap <- LR_pair_df |> 
+    filter(receptor_complex %in% mediator_outcome_eval$outcome) |>
+    left_join(mediator_outcome_eval |> 
+                  select(receptor_complex = outcome, mediator_pair = pair, mediator),
+              relationship = "many-to-many"))
+
+# ligand_complex receptor_complex LR_pair      mediator_pair mediator
+# <chr>          <chr>            <chr>        <chr>         <chr>   
+# 1 NXPH2          NRXN1            NXPH2|NRXN1  FZD8|NRXN1    FZD8    
+# 2 NXPH2          NRXN1            NXPH2|NRXN1  NETO1|NRXN1   NETO1   
+# 3 NXPH2          NRXN1            NXPH2|NRXN1  SV2B|NRXN1    SV2B    
+# 4 NXPH2          NRXN1            NXPH2|NRXN1  CHRM3|NRXN1   CHRM3   
+# 5 NLGN1          NRXN1            NLGN1|NRXN1  FZD8|NRXN1    FZD8    
+# 6 NLGN1          NRXN1            NLGN1|NRXN1  NETO1|NRXN1   NETO1   
+# 7 NLGN1          NRXN1            NLGN1|NRXN1  SV2B|NRXN1    SV2B    
+# 8 NLGN1          NRXN1            NLGN1|NRXN1  CHRM3|NRXN1   CHRM3   
+
+# 9 NRG3           ERBB3            NRG3|ERBB3   SV2B|ERBB3    SV2B    
+# 10 S100A4         ERBB3            S100A4|ERBB3 SV2B|ERBB3    SV2B 
+
+
+xenium_DEG <- xenium_DEG |>
+    mutate(ligand = gene_name %in% LR_pair_df$ligand_complex,
+           receptor = gene_name %in% LR_pair_df$receptor_complex,
+           mediator = gene_name %in% mediator_outcome_eval$mediator,
+           outcome = gene_name %in% mediator_outcome_eval$outcome)
+
+xenium_DEG |> dplyr::count(ligand, receptor)
+
+xenium_DEG |> 
+    filter(cluster == "Oligo.3", receptor) |>
+    arrange(vlmf_xenium_P.Value) |>
+    filter(signif_sn | signif_xenium) |>
+    select(gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, outcome)
+
+# gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate
+# <chr>             <dbl>               <dbl>             <dbl>         <dbl>     <dbl> <lgl>     <lgl>         <lgl>   
+# 1 NLGN1           -2.54                0.0210            0.0739        -0.538     -2.74 FALSE     TRUE          FALSE   
+# 2 CAV1            -2.29                0.0350            0.385         -0.572     -1.38 FALSE     TRUE          FALSE   
+# 3 PTPRD           -2.22                0.0401            0.0245        -0.493     -3.77 TRUE      TRUE          TRUE    **
+# 4 ERBB3           -0.749               0.464             0.0429        -0.601     -3.20 TRUE      FALSE         FALSE   
+# 5 NRXN3           -0.521               0.609             0.0191        -0.684     -4.06 TRUE      FALSE         FALSE   
+# 6 NRXN1           -0.422               0.678             0.0398         1.15       3.27 TRUE      FALSE         FALSE   
+# 7 TLR2             0.0164              0.987             0.0394         1.56       3.28 TRUE      FALSE         FALSE 
+
+xenium_DEG |> 
+    filter(cluster == "Oligo.3", receptor,
+           gene_name %in% c("APP", "TREM2", "FZD8", "TACR1")) |>
+    select(gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, outcome)
+
+# gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate outcome
+# <chr>             <dbl>               <dbl>             <dbl>         <dbl>     <dbl> <lgl>     <lgl>         <lgl>    <lgl>  
+# 1 APP               1.18                0.254             0.106        -0.289     -2.45 FALSE     FALSE         FALSE    FALSE  
+# 2 TREM2            -0.116               0.909            NA            NA         NA    NA        FALSE         FALSE    FALSE 
+
+xenium_DEG |> 
+    filter(grepl("Astro", cluster), ligand) |>
+    arrange(gene_name, vlmf_xenium_P.Value) |>
+    filter(signif_sn | signif_xenium) |>
+    select(cluster, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, mediator)
+
+xenium_DEG |> 
+    filter(grepl("Astro", cluster),
+           gene_name %in% c("APOE", "SPON1")) |>
+    arrange(gene_name, vlmf_xenium_P.Value) |>
+    select(cluster, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, mediator)
+
+# cluster gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate
+# <fct>   <chr>             <dbl>               <dbl>             <dbl>         <dbl>     <dbl> <lgl>     <lgl>         <lgl>   
+# 1 Astro.2 APOE              0.898              0.382              0.630      0.330      1.43    FALSE     FALSE         FALSE   
+# 2 Astro.1 APOE              0.550              0.589              0.970     -0.0412    -0.202   FALSE     FALSE         FALSE   
+# 3 Astro.5 APOE              0.549              0.590              0.646      0.411      1.50    FALSE     FALSE         FALSE   
+# 4 Astro.3 APOE              0.461              0.650              0.834      0.195      0.917   FALSE     FALSE         FALSE   
+# 5 Astro.4 APOE             -0.104              0.918              0.664     -0.491     -1.97    FALSE     FALSE         FALSE 
+
+# 6 Astro.3 SPON1            -2.76               0.0134             0.924     -0.0660    -0.499   FALSE     TRUE          FALSE   
+# 7 Astro.4 SPON1            -2.62               0.0177             0.646     -0.615     -2.04    FALSE     TRUE          FALSE   # SPON1 nominaly downregulated in Astrocytes
+# 8 Astro.1 SPON1            -2.01               0.0606             0.999      0.000320   0.00310 FALSE     TRUE          FALSE   
+# 9 Astro.5 SPON1            -1.36               0.191              0.958      0.0420     0.252   FALSE     FALSE         FALSE   
+# 10 Astro.2 SPON1            -1.16               0.263              0.836     -0.0996    -0.768   FALSE     FALSE         FALSE
+
+
+xenium_DEG |> 
+    filter(
+        grepl("Astro", cluster),
+           gene_name %in% mediator_LR_overlap$mediator,
+        signif_xenium) |>
+    arrange(gene_name, vlmf_xenium_P.Value) |>
+    select(cluster, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_adj.P.Val, vlmf_sn_logFC, vlmf_sn_t, signif_sn, signif_xenium, validate, mediator)
+
+# cluster gene_name vlmf_xenium_t vlmf_xenium_P.Value vlmf_sn_adj.P.Val vlmf_sn_logFC vlmf_sn_t signif_sn signif_xenium validate mediator
+# <fct>   <chr>             <dbl>               <dbl>             <dbl>         <dbl>     <dbl> <lgl>     <lgl>         <lgl>    <lgl>   
+#1 Astro.2 FZD8               2.33              0.0330            0.0261          1.01      4.63 TRUE      TRUE          TRUE     TRUE   
+
+mediator_LR_overlap |> filter(mediator == "CHRM3")
+mediator_LR_overlap |> filter(mediator == "FZD8")
+
+
+xenium_DEG |> 
+    filter(cluster == "Oligo.3", 
+           gene_name %in% (mediator_outcome_eval |> filter(mediator == "FZD8") |> pull(outcome)))|>
+    select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_adj.P.Val, vlmf_sn_t, signif_sn, signif_xenium, validate, receptor)
+
+#### Check mediation genes in LR ####
+
+
+mediator_outcome_DEG |>
+    filter(mediator %in% pr)
+
+
