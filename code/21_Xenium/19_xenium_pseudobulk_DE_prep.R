@@ -146,7 +146,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
                              Oligo.3_Astro_test = "neighbor_APOE") |>
                       count(Oligo.3_Astro_test, Oligo.3_Astro,APOE_level, neighbor_cell_type))
     
-    write.csv(Oligo.3_Astro_summary, file = here(data_dir, "Oligo.3_Astro_summary"))
+    write.csv(Oligo.3_Astro_summary, file = here(data_dir, "Oligo.3_Astro_summary.csv"))
     
     
     #### Combine data
