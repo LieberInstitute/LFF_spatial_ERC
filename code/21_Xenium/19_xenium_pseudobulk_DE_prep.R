@@ -253,14 +253,6 @@ saveRDS(spe_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS"
 
 # spe_pseudo <- readRDS(here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
 
-if(opt$cluster == "Oligo.3_Astro"){
-    
-    pd <- colData(spe_pseudo) |>
-        as.data.frame() |>
-        group_by(Oligo.3_Astro) 
-    
-}
-
 #### Explore number of cells + donors ####
 
 if(opt$cluster == "cell_type_anno_SpX"){
