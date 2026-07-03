@@ -9,6 +9,7 @@ library("ggrepel")
 library("GGally")
 library("getopt")
 library("broom")
+library("ComplexHeatmap")
 
 # Import command-line parameters
 scec <- matrix(
@@ -27,7 +28,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 load(here("processed-data", "project_colors.Rdata"))
 AD_risk <- read.csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) 
-main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
+# main_mods <- c("carrier", "apoe", "e4e4", "carrier_i", "apoe_i", "e4e4_i")
 
 #### colors and factors ####
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
@@ -39,7 +40,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     
 } else if(opt$datatype == "Xenium_Oligo.3_Astro"){
 
-    cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high")
+    # cluster_levels <- c("nnA_far_APOE_low", "nnA_far_APOE_high", "nnA_near_APOE_low", "nnA_near_APOE_high")
     
     # cluster_colors <- c("nnA_far_APOE_low" = "#87219a",
     #                     "nnA_far_APOE_high" = "#487800",
@@ -51,23 +52,27 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     cluster_colors <- c(
             # APOE_high — warm oranges/ambers
             "APOE_high"             = "#B86A00",
+            "APOE_high_nnA_far"     = "#D4820A",
+            "APOE_high_nnA_near"    = "#F0A830",
+            
             "APOE_high_nnA_Astro.1" = "#1A6B1A",
             "APOE_high_nnA_Astro.2" = "#28A428",
             "APOE_high_nnA_Astro.3" = "#6B6B00",
             "APOE_high_nnA_Astro.4" = "#7ACC7A",
             "APOE_high_nnA_Astro.5" = "#3DA85D",
-            "APOE_high_nnA_far"     = "#D4820A",
-            "APOE_high_nnA_near"    = "#F0A830",
+
             
             # APOE_low — cool blues
             "APOE_low"              = "#1A5276",
+            "APOE_low_nnA_far"      = "#2E86C1",
+            "APOE_low_nnA_near"     = "#5DADE2",
+            
             "APOE_low_nnA_Astro.1"  = "#228B22",
             "APOE_low_nnA_Astro.2"  = "#32CD32",
             "APOE_low_nnA_Astro.3"  = "#808000",
             "APOE_low_nnA_Astro.4"  = "#98FF98",
             "APOE_low_nnA_Astro.5"  = "#50C878",
-            "APOE_low_nnA_far"      = "#2E86C1",
-            "APOE_low_nnA_near"     = "#5DADE2",
+            
             
             # nn_Astro — muted greens (no APOE context)
             "nn_Astro.1"            = "#4A7C4A",
@@ -114,7 +119,6 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_B = B
     ) |>
     mutate(cluster = factor(cluster, levels = cluster_levels))  |>
-    # mutate(cluster = factor(cluster))  |>
     as_tibble()
 
 unique(vlmf_data_tb$cluster)
@@ -130,6 +134,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 }
 
 vlmf_data_tb |> filter(vlmf_P.Value < 0.10) |> count(cluster) |> print(n = 35)
+vlmf_data_tb |> arrange(vlmf_adj.P.Val) 
 
 vlmf_model_summary <- vlmf_data_tb |> 
                                    mutate(mod = "carrier") |>
@@ -730,8 +735,6 @@ message(Sys.time() , "t-stat heatmaps")
 
 if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
-    library("ComplexHeatmap")
-    
     sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
         filter(vlmf_sn_adj.P.Val < 0.05) |>
         select(gene_name ,vlmf_sn_logFC, vlmf_sn_t, vlmf_sn_adj.P.Val) |>
@@ -762,12 +765,17 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
                               column_to_rownames("gene_name") |>
                               as.matrix()
     
+    
+    # row annotation by sn t-stat mediation & LR genes
+    mediator_outcome_eval <- read_csv(here("processed-data", "21_Xenium", "06_xenium_ALL_probe_eval", "ECR_mediator_outcome_xenium_eval.csv"))
+    LR_pair_df = read_csv(here('processed-data', '24_xenium_liana', '04_global_score_heatmap', 'unique_ligand_receptor_pairs.csv'), show_col_types = FALSE)
+    
     sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
         select(gene_name, vlmf_sn_t) |>
+        mutate(med_oucome = gene_name %in% mediator_outcome_eval$outcome,
+               LR_receptor = gene_name %in% LR_pair_df$receptor_complex) |>
         column_to_rownames("gene_name")
     
-    
-    # row annotation by sn t-stat
     sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
                                           0, 
                                           max(c(0.01, sn_DEG_data_test_df$vlmf_sn_t))), 
@@ -775,7 +783,9 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
     sn_t_row_ha <- rowAnnotation(
         df = sn_DEG_data_test_df,
-        col = list(vlmf_sn_t = sn_t_col_fun)
+        col = list(vlmf_sn_t = sn_t_col_fun,
+                   med_oucome = c(`TRUE` = "darkgreen", `FALSE` = "white"),
+                   LR_receptor = c(`TRUE` = "darkblue", `FALSE` = "white"))
     )
     
     # col annotation by n validation
@@ -788,6 +798,26 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
     cluster_val <- cluster_val[cluster_levels,]
     
     ha_cluster_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(cluster_val)))
+    
+    ## col annotation by Oligo.3 astro test 
+    Oligo.3_Astro_summary <- read.csv(here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "Oligo.3_Astro_summary.csv"), row.names = 1) |>
+        mutate(Oligo.3_Astro = gsub("_nn_", "_nnA_", Oligo.3_Astro)) |> ## fix label error
+        select(-n, - Oligo.3_Astro_test) |>
+        column_to_rownames("Oligo.3_Astro")
+    
+    Oligo.3_Astro_summary <- Oligo.3_Astro_summary[cluster_levels, ]
+    
+    astro_colors <- cell_type_colors$anno[grepl("Astro", names(cell_type_colors$anno))]
+    
+    ha_cluster_test = HeatmapAnnotation(df = Oligo.3_Astro_summary,
+                                        col = list(
+                                            dist_class = c(near = "#3B6064",
+                                                           far = "#C9E4CA"),
+                                            APOE_level = c(high = "#F89441",
+                                                           low = "#7E03A8"),
+                                            neighbor_cell_type = astro_colors
+                                        ))
+    
     
     # reorder tabs 
     signif_SpX_ct <- signif_SpX_mat[rownames(sn_DEG_data_test_df),cluster_levels, drop = FALSE]
@@ -804,9 +834,9 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
         colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']])
     )
     
-    sn_reg <- ifelse(sn_DEG_data_test_df > 0, "upreg", "downreg")
+    sn_reg <- ifelse(sn_DEG_data_test_df$vlmf_sn_t > 0, "upreg", "downreg")
     
-    pdf(here(plot_dir, sprintf("%s_t_stat_heatmap.pdf", opt$datatype)), height = 3 + nrow(t_stat_SpX_ct)/5)
+    pdf(here(plot_dir, sprintf("%s_t_stat_heatmap.pdf", opt$datatype)), height = 3 + nrow(t_stat_SpX_ct)/5, width = 9)
     print(Heatmap(t_stat_SpX_ct, 
                   name = "xenium\nt-stat",
                   col = xenium_t_col_fun,
@@ -815,7 +845,7 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
                   right_annotation =  sn_t_row_ha,
                   row_split = sn_reg,
                   top_annotation = ha_cluster_val,
-                  # bottom_annotation = ha_SpX_cell,
+                  bottom_annotation = ha_cluster_test,
                   cell_fun = function(j, i, x, y, width, height, fill) {
                       grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
                   },
@@ -830,12 +860,47 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
                   right_annotation =  sn_t_row_ha,
                   row_split = sn_reg,
                   top_annotation = ha_cluster_val,
-                  # bottom_annotation = ha_SpX_cell,
+                  bottom_annotation = ha_cluster_test,
                   cell_fun = function(j, i, x, y, width, height, fill) {
                       grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
                   },
                   column_title = opt$datatype
     ))
+    dev.off() 
+    
+    pdf(here(plot_dir, sprintf("%s_t_stat_heatmap_test.pdf", opt$datatype)), height = 3 + nrow(t_stat_SpX_ct)/5, width = 9)
+    print(Heatmap(t_stat_SpX_ct, 
+                  name = "xenium\nt-stat",
+                  col = xenium_t_col_fun,
+                  cluster_rows = TRUE,
+                  cluster_columns = TRUE,
+                  right_annotation =  sn_t_row_ha,
+                  row_split = sn_reg,
+                  column_split = 2,
+                  top_annotation = ha_cluster_val,
+                  bottom_annotation = ha_cluster_test,
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                      grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+                  },
+                  column_title = opt$datatype
+    ))
+   
+    print(Heatmap(t_stat_SpX_ct, 
+                  name = "xenium\nt-stat",
+                  col = xenium_t_col_fun,
+                  cluster_rows = TRUE,
+                  cluster_columns = TRUE,
+                  right_annotation =  sn_t_row_ha,
+                  # row_split = sn_reg,
+                  column_split = 4,
+                  top_annotation = ha_cluster_val,
+                  bottom_annotation = ha_cluster_test,
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                      grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+                  },
+                  column_title = opt$datatype
+    ))
+    
     dev.off()
    
     

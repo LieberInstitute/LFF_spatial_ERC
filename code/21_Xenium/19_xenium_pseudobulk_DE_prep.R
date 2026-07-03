@@ -69,7 +69,13 @@ if(opt$cluster == "cell_type_anno_SpX"){
     table(spe_03$Oligo.3_Astro)
     table(spe_03$spot_class)
     
-    spe_03$Oligo.3_Astro_test <- "APOE_neighbor"
+    spe_03$Oligo.3_Astro_test <- "APOE_dist"
+    
+    ## summary table
+    Oligo.3_Astro_summary <- neighbor_df_details |> 
+        mutate(Oligo.3_Astro = paste0("APOE_", APOE_level, "_nnA_", dist_class),
+               Oligo.3_Astro_test = "APOE_dist") |>
+        count(Oligo.3_Astro_test, Oligo.3_Astro, dist_class, APOE_level)
     
     ## Distance Near/Far
     spe_03_dist <- spe[,neighbor_df_details$reference_barcode]
@@ -81,6 +87,13 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe_03_dist$Oligo.3_Astro_test <- "dist"
     colnames(spe_03_dist) <- paste(colnames(spe_03_dist), "_", spe_03_dist$Oligo.3_Astro_test)
     
+    ## summary table
+    Oligo.3_Astro_summary <- Oligo.3_Astro_summary |>
+        bind_rows(neighbor_df_details |> 
+        mutate(Oligo.3_Astro = paste0("nnA_", dist_class),
+               Oligo.3_Astro_test = "dist") |>
+        count(Oligo.3_Astro_test, Oligo.3_Astro, dist_class))
+    
     ## APOE High/Low
     spe_03_apoe <- spe[,neighbor_df_details$reference_barcode]
     
@@ -91,6 +104,12 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe_03_apoe$Oligo.3_Astro_test <- "APOE"
     colnames(spe_03_apoe) <- paste(colnames(spe_03_apoe), "_", spe_03_apoe$Oligo.3_Astro_test)
     
+    ## summary table
+    Oligo.3_Astro_summary <- Oligo.3_Astro_summary |>
+        bind_rows(neighbor_df_details |> 
+                      mutate(Oligo.3_Astro = paste0("APOE_", APOE_level),
+                             Oligo.3_Astro_test = "APOE") |>
+                      count(Oligo.3_Astro_test, Oligo.3_Astro, APOE_level))
     
     ## Neighbor
     spe_03_neighbor <- spe[,neighbor_df_details$reference_barcode]
@@ -101,6 +120,13 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe_03_neighbor$sample_id <- paste0(spe_03_neighbor$sample_id, "_neighbor")
     spe_03_neighbor$Oligo.3_Astro_test <- "neighbor"
     colnames(spe_03_neighbor) <- paste(colnames(spe_03_neighbor), "_", spe_03_neighbor$Oligo.3_Astro_test)
+    
+    ## summary table
+    Oligo.3_Astro_summary <- Oligo.3_Astro_summary |>
+        bind_rows(neighbor_df_details |> 
+                      mutate(Oligo.3_Astro = paste0("nn_", neighbor_cell_type),
+                             Oligo.3_Astro_test = "neighbor") |>
+                      count(Oligo.3_Astro_test, Oligo.3_Astro, neighbor_cell_type))
     
     
     ## Neighbor High/Low
@@ -113,10 +139,23 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe_03_neighbor_apoe$Oligo.3_Astro_test <- "neighbor_APOE"
     colnames(spe_03_neighbor_apoe) <- paste(colnames(spe_03_neighbor_apoe), "_", spe_03_neighbor_apoe$Oligo.3_Astro_test)
     
+    ## summary table
+    Oligo.3_Astro_summary <- Oligo.3_Astro_summary |>
+        bind_rows(neighbor_df_details |> 
+                      mutate(Oligo.3_Astro = paste0("APOE_", APOE_level, "_nn_", neighbor_cell_type),
+                             Oligo.3_Astro_test = "neighbor_APOE") |>
+                      count(Oligo.3_Astro_test, Oligo.3_Astro,APOE_level, neighbor_cell_type))
+    
+    write.csv(Oligo.3_Astro_summary, file = here(data_dir, "Oligo.3_Astro_summary.csv"))
+    
+    
+    #### Combine data
     spe <- do.call("cbind", list(spe_03, spe_03_dist, spe_03_apoe, spe_03_neighbor, spe_03_neighbor_apoe))
     
     table(spe$Oligo.3_Astro_test)
     table(spe$Oligo.3_Astro, spe$Oligo.3_Astro_test)
+    
+    
     
 } else if(opt$cluster == "Oligo.3_Astro_SpX"){
     
@@ -212,6 +251,7 @@ colData(spe_pseudo) <- colData(spe_pseudo)[, names(all_na)[!all_na]]
 message(Sys.time(), " - Save")
 saveRDS(spe_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
 
+# spe_pseudo <- readRDS(here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
 
 #### Explore number of cells + donors ####
 
