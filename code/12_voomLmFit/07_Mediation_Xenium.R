@@ -67,7 +67,7 @@ if (is.null(opt$outcome_cluster))  opt$outcome_cluster  <- "Oligo.3"
 if (is.null(opt$mediatorfdr) || is.na(opt$mediatorfdr)) opt$mediatorfdr <- 0.05
 
 out_clus <- opt$outcome_cluster
-FDRthr <- opt$mediatorfdr
+Pvalthr <- opt$mediatorfdr
 
 
 ## pb_fn selection -- kept identical to 06_Clusterwise_voomLmFit_Xenium.R
@@ -92,8 +92,12 @@ message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, pb_f
 #### Set up dirs (matches 06_Clusterwise_voomLmFit_Xenium.R's DE_data_dir) ####
 DE_data_dir <- here("processed-data", "12_voomLmFit", "06_Clusterwise_voomLmFit_Xenium", sprintf("vlmf_%s", opt$datatype))
 
-mediation_dir <- here("processed-data", "22_Mediation", sprintf("vlmf_%s_mediation", opt$datatype))
-if (!dir.exists(mediation_dir)) dir.create(mediation_dir, recursive = TRUE)
+## TODO fix output and location of this file
+# mediation_dir <- here("processed-data", "22_Mediation", sprintf("vlmf_%s_mediation", opt$datatype))
+# if (!dir.exists(mediation_dir)) dir.create(mediation_dir, recursive = TRUE)
+
+# mediation_dir <- here("processed-data", "22_Mediation", sprintf("vlmf_%s_mediation", opt$datatype))
+# if (!dir.exists(mediation_dir)) dir.create(mediation_dir, recursive = TRUE)
 
 #### Load the pseudobulk data ####
 sce_pb <- readRDS(pb_fn)
@@ -226,7 +230,13 @@ fit_mediation_de <- function(dge_sub, baseline_formula_str, batch_col, med_vec) 
     list(tt = tt, ttM = ttM)
 }
 
-# fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch, med_vec = med_vec_test)
+fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch,
+                                          med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.1", gene_id = "PLPPR4"))
+
+                                                                                            ## gene_nameP.Value   t
+# tt_baseline |> filter(gene_name == "TESPA1") |> select(gene_name, P.Value, t)               ## TESPA1     0.0618  1.99  # validates in baseline
+# fit_mediation_de_test$tt |> filter(gene_name == "TESPA1") |> select(gene_name, P.Value, t)  ## TESPA1     0.0961  1.77  # controlling for "FZD8" lessens effect but still signif
+# fit_mediation_de_test$ttM |> filter(gene_name == "TESPA1") |> select(gene_name, P.Value, t) ## TESPA1      0.918  0.11  # not associated with "FZD8" expression
 
 ## Step 3b classification: attenuated-and-M-associated = "mediated"
 
@@ -240,26 +250,59 @@ classify_mediation <- function(tt_baseline, tt_mediation, ttM_mediation, Pvalthr
     mediated <- intersect(lost, med_sig)
 
     tibble(
-        baseline_n = length(base_sig), carrier_n = length(carrier_sig), med_n = length(med_sig),
-        lost_n = length(lost), gained_n = length(gained), mediated_n = length(mediated),
+        baseline_n = length(base_sig), 
+        carrier_n = length(carrier_sig), 
+        med_n = length(med_sig),
+        lost_n = length(lost), 
+        gained_n = length(gained), 
+        mediated_n = length(mediated),
         pass_both = mediated_n > 0,
         mediated_genes = list(mediated)
     )
 }
 
-test_classify_mediation <- classify_mediation(tt_baseline = baseline_tt_out, 
+test_classify_mediation <- classify_mediation(tt_baseline = baseline_tt_out,
                                                tt_mediation = fit_mediation_de_test$tt,
                                                ttM_mediation = fit_mediation_de_test$ttM)
 
+
+mediation_validation_details <- function(med_cluster, 
+                                         gene_name, 
+                                         tt_baseline, 
+                                         tt_mediation, 
+                                         ttM_mediation,
+                                         Pvalthr = 0.10){
+    
+    mediation_eval |>
+        filter(med_cl == med_cluster, mediator == gene_name) |>
+        select(med_cl:t_med)|>
+        rename_with(~paste0(.x, "_SN"), fdr:t_med) |>
+        left_join(tt_baseline |> select(outcome = gene_name, P.Value_base = P.Value, t_base = t), by = join_by(outcome)) |>
+        left_join(tt_mediation |> select(outcome = gene_name, P.Value_carrier = P.Value, t_carrier = t), by = join_by(outcome)) |>
+        left_join(ttM_mediation |> select(outcome = gene_name, P.Value_med = P.Value, t_med = t), by = join_by(outcome)) |>
+        mutate(base_sig = P.Value_base < Pvalthr,
+               base_dir = sign(t_SN) == sign(t_base),
+               base_valid = base_sig & base_dir,
+               carrier_sig = P.Value_carrier < Pvalthr,
+               carrier_dir = sign(t_carrier) == sign(t_base),
+               med_sig = P.Value_med < Pvalthr,
+               mediated = !carrier_sig & med_sig)
+    
+}
+
+baseline_tt_out |> filter(gene_name %in% 
+                              (mediation_eval |> filter(med_cl == "Astro.1", mediator == "PLPPR4") |> pull(outcome))
+                          ) 
+
 ## Loop over candidate mediator genes, fit mediation model, classify
 
-message(Sys.time(), sprintf(" - Running mediation model for %d candidate mediators (FDRthr=%.4f)", nrow(med_degs), FDRthr))
+message(Sys.time(), sprintf(" - Running mediation model for %d candidate mediators (Pvalthr=%.4f)", nrow(med_degs), Pvalthr))
 
 mediation_results <- pmap(
     list(med_degs$med_cl, med_degs$mediator),
     possibly(function(med_cluster, gene_name) {
 
-        med_vec_full <- get_mediator_vector(sce_pb, med_cluster, gene_id)
+        med_vec_full <- get_mediator_vector(sce_pb, med_cluster, gene_name)
         if (is.null(med_vec_full)) return(NULL)
 
         out_brnum <- dge_base_filtered$samples$BrNum
@@ -272,21 +315,25 @@ mediation_results <- pmap(
 
         fit <- fit_mediation_de(dge_sub, baseline_formula_str, batch, med_vec)
 
-        run_label <- sprintf("%s|%s|%s", med_cluster, gene_id, gene_name)
-        saveRDS(fit, file = here(mediation_dir, sprintf("mediation_%s_%s_%s.rds",
-                                                         gsub("\\.", "", med_cluster), gene_id, gene_name)))
+        run_label <- sprintf("%s|%s", med_cluster, gene_name)
+        # saveRDS(fit, file = here(mediation_dir, sprintf("mediation_%s_%s_%s.rds",
+        #                                                  gsub("\\.", "", med_cluster), gene_id, gene_name)))
 
-        summary_row <- classify_mediation(baseline_tt_out, fit$tt, fit$ttM, FDRthr = FDRthr)
-        summary_row |> mutate(run = run_label, med_cluster = med_cluster, gene_id = gene_id,
-                               gene_name = gene_name, n_donors = length(common_donors), .before = 1)
+        summary_row <- mediation_validation_details(med_cluster, gene_name, baseline_tt_out, fit$tt, fit$ttM, Pvalthr = Pvalthr)
+        # summary_row |> mutate(run = run_label, med_cluster = med_cluster,
+        #                        gene_name = gene_name, n_donors = length(common_donors), .before = 1)
+        
+        return(summary_row)
     }, otherwise = NULL)
 )
 
 mediation_summary <- bind_rows(mediation_results)
+
 write.csv(mediation_summary |> select(-mediated_genes),
           file = here(mediation_dir, sprintf("mediation_summary-%s_%s.csv", opt$datatype, out_clus)),
           row.names = FALSE)
-saveRDS(mediation_summary, file = here(mediation_dir, sprintf("mediation_summary-%s_%s.rds", opt$datatype, out_clus)))
+
+# saveRDS(mediation_summary, file = here(mediation_dir, sprintf("mediation_summary-%s_%s.rds", opt$datatype, out_clus)))
 
 message(Sys.time(), sprintf(" - Mediation validation complete: %d/%d mediators tested, %d with pass_both=TRUE",
                              nrow(mediation_summary), nrow(med_degs), sum(mediation_summary$pass_both, na.rm = TRUE)))
