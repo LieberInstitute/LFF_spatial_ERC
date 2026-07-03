@@ -1,17 +1,17 @@
 #!/bin/env Rscript
 
-## Louise Huuki-Myers & Bernie Mulvey, June 2025
+## authors: Louise Huuki-Myers & Bernie Mulvey, June 2025
 ## adapting for mediation screening by Geo Pertea, January 2026
 ##
-## We should implement 3 mediation screening scenarios for the carrier status -> Oligo 3. gene expression regression:
+## implements 3 mediation screening scenarios for the carrier status -> Oligo 3. gene expression regression:
 ## what changes is the gene expression data used in each scenario:
-# 1. APOE-associated LC domain DEGs (NM+/- and NM intensity DEGs) (orange design)
-# 2. APOE-associated DEGs from the LC astrocyte spatial domain analysis (blue design)
-# 3. APOE-associated ERC Astrocyte DEGs (green design)
+## 1. APOE-associated LC domain DEGs (NM+/- and NM intensity DEGs) (orange design)
+## 2. APOE-associated DEGs from the LC astrocyte spatial domain analysis (blue design)
+## 3. APOE-associated ERC Astrocyte DEGs (green design)
 
 library("getopt")
 
-# Define usage message function
+## define usage message function
 show_usage <- function() {
     cat("Usage: Rscript 01_mediation_screening.R [OPTIONS]\n")
     cat("\nOptions:\n")
@@ -33,7 +33,7 @@ show_usage <- function() {
     invisible(NULL)
 }
 
-# Import command-line parameters
+## parse command-line parameters and keep the CLI surface stable across mediation options
 medopt <- matrix(
     c("mediation", "m", "1", "character", "Mediation type: erc_astro, lc_astro, lc_nm, lc_nm_int",
       "fdrthr",    "f", "1", "double",    "Outcome FDR threshold override",
@@ -43,13 +43,13 @@ medopt <- matrix(
 )
 opt <- tryCatch(getopt(medopt), error = function(e) list())
 
-# Check for help flag first
+## check for help flag before loading the heavier analysis libraries
 if (!is.null(opt$help) && opt$help) {
     show_usage()
     quit(status = 0)
 }
 
-# Load remaining libraries with suppressed startup messages
+## load remaining libraries with suppressed startup messages
 suppressPackageStartupMessages({
     library("data.table")
     library("edgeR")
@@ -66,7 +66,7 @@ suppressPackageStartupMessages({
 drop_donors_global <- c("Br1289")
 drop_donors_lc <- character(0)
 
-# Set default and validate mediation type
+## set default and validate mediation type
 if (is.null(opt$mediation) || is.na(opt$mediation)) opt$mediation <- "lc_astro"
 
 if (!(opt$mediation %in% c("erc_astro", "lc_astro", "lc_nm", "lc_nm_int"))) {
@@ -82,6 +82,7 @@ parse_fdr_input <- function(x, label) {
     val
 }
 
+## keep default FDR thresholds explicit because mediator families use different screening stringency.
 fdr_defaults <- list(
     erc_astro = list(FDRthr = 0.05, medSelFDR = 0.05),
     lc_astro = list(FDRthr = 0.1, medSelFDR = 0.1),
@@ -99,11 +100,12 @@ FDRthr <- if (!is.na(cli_FDRthr)) cli_FDRthr else if (!is.na(env_FDRthr)) env_FD
 medSelFDR <- if (!is.na(cli_medSelFDR)) cli_medSelFDR else if (!is.na(env_medSelFDR)) env_medSelFDR else fdr_def$medSelFDR
 message(Sys.time(), sprintf(" - thresholds: FDRthr=%.4f medSelFDR=%.4f (mediation=%s)", FDRthr, medSelFDR, opt$mediation))
 
-## null-coalescing helper function:
+## keep optional cache fields and parsed settings readable when values are absent.
 `%|%` <- function(x, y) {
     if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
 }
-## tracking sessions/cache invalidation with file fingerprints and object hashes
+
+## build lightweight fingerprints so cached model outputs only reuse matching inputs.
 md5_string <- function(x) {
     tf <- tempfile()
     writeLines(x, con = tf, useBytes = TRUE)
@@ -154,6 +156,7 @@ make_donor_key <- function(brnums) {
     list(donors = donors, donor_str = donor_str, donor_key = donor_key)
 }
 
+## define the outcome model once, then append med_vec for the joint mediator model.
 baseline_formula_str <- "0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio"
 mediation_formula_str <- paste(baseline_formula_str, "+ med_vec")
 baseline_formula <- as.formula(paste("~", baseline_formula_str))
@@ -163,6 +166,7 @@ mediation_formula <- as.formula(paste("~", mediation_formula_str))
 ## (only relevant for LC Astro or other scenarios that have variable donor sets)
 forceSingleBaseline <- TRUE
 
+## build limma design matrices from sample metadata and the optional mediator expression vector.
 build_design <- function(sample_df, formula_obj, batch_col, med_vec = NULL) {
     sample_df <- as.data.frame(sample_df)
     if ("APOE_syn" %in% names(sample_df)) sample_df$APOE_syn <- droplevels(factor(sample_df$APOE_syn))
@@ -178,6 +182,7 @@ build_design <- function(sample_df, formula_obj, batch_col, med_vec = NULL) {
     list(design = des, sample_df = sample_df)
 }
 
+## persist small text sidecars used to validate cached model outputs.
 write_run_info <- function(file, info) {
     if (is.null(names(info)) || any(names(info) == "")) {
         stop("write_run_info requires a named list.")
@@ -190,6 +195,7 @@ write_run_info <- function(file, info) {
     writeLines(lines, con = file)
 }
 
+## read cache sidecars into typed fields so older runs can still be checked.
 read_run_info <- function(file) {
     if (!file.exists(file)) return(NULL)
     lines <- readLines(file, warn = FALSE)
@@ -208,6 +214,7 @@ read_run_info <- function(file) {
     out
 }
 
+## require every relevant cache key to match before reusing model outputs.
 cache_matches <- function(cached, expected) {
     if (is.null(cached)) return(FALSE)
     for (nm in names(expected)) {
@@ -219,7 +226,7 @@ cache_matches <- function(cached, expected) {
 }
 
 write_fdr_table <- function(dt, file) {
-    ## Never emit empty files; remove stale file when no rows.
+    ## never emit empty files; remove stale file when no rows.
     if (nrow(dt) < 1) {
         if (file.exists(file)) unlink(file)
         return(FALSE)
@@ -228,6 +235,7 @@ write_fdr_table <- function(dt, file) {
     TRUE
 }
 
+## write per-run gene lists only when there is content to report.
 write_nonempty_lines <- function(lines, file) {
     lines <- as.character(lines)
     lines <- lines[!is.na(lines) & nzchar(lines)]
@@ -239,11 +247,12 @@ write_nonempty_lines <- function(lines, file) {
     TRUE
 }
 
-#workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
-#if (is.na(workers) || workers < 1) workers <- 1
+## workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
+## if (is.na(workers) || workers < 1) workers <- 1
 workers <- as.integer(Sys.getenv("MEDIATION_WORKERS", "10"))
 if (is.na(workers) || workers < 1) workers <- 10L
 
+## parse optional smoke-test row selection without changing the analysis code path.
 parse_int_csv <- function(x) {
     x <- trimws(as.character(x %|% ""))
     if (!nzchar(x)) return(integer(0))
@@ -259,14 +268,15 @@ parse_int_csv <- function(x) {
 }
 
 test_rows <- parse_int_csv(Sys.getenv("MEDIATION_TEST_ROWS", ""))
-#test_rows <- c(1,10,20) ## alternative manual test rows
+## test_rows <- c(1,10,20) ## alternative manual test rows
 if (length(test_rows) > 0) {
         message("Mediation test rows provided: ", paste(test_rows, collapse = ", "))
 }
 
 message(Sys.time(), sprintf(" - Mediation type = %s (workers = %i)", opt$mediation, workers))
 
-#### Paths ####
+#### paths ####
+## anchor paths at the repository root and collect input files for run hashing.
 here::i_am('.git/HEAD')
 ddir <- here("processed-data")
 mdir <- here("processed-data", "22_Mediation")
@@ -284,12 +294,12 @@ baseline_dir <- file.path(out_dir, "baseline")
 dir.create(baseline_dir, recursive = TRUE, showWarnings = FALSE)
 run_input_files <- c(pb_fn)
 
-#### Load X->Y pseudo bulk data ####
+#### load X->Y pseudo bulk data ####
 sce_pb <- readRDS(pb_fn)
 ## always drop Br1289
 sce_pb <- sce_pb[, !as.character(sce_pb$BrNum) %in% drop_donors_global]
 
-#### Outcome cluster setup (same for every scenario) ####
+#### outcome cluster setup (same for every scenario) ####
 ## we can use dge_base colData() for all donor metadata
 
 out_clus <- "Oligo.3"
@@ -298,11 +308,12 @@ sce_base <- sce_pb[, sce_pb$registration_variable == out_clus]
 donor_meta <- as.data.frame(colData(sce_base))
 
 
+## each mediator loader below must populate the same med_degs and med_expr contract.
 med_degs <- NULL ## placeholder for the selected mediator DEGs, gene metadata
 med_expr <- NULL ## placeholder for the mediator gene expression data (logcounts)
-## these should be loaded depending on mediation type
 
-if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DEGs
+if (opt$mediation == "erc_astro") { ## "green" design 3: mediator = ERC astrocyte DEGs
+  ## green design: ERC astrocyte carrier DEGs are stored with the ERC pseudobulk DGE results.
   degs_fn <- file.path(ddir, "13_compile_DGE/01_compile_DGE/sn_fine", "DGE_results_carrier_sn_fine.Rds")
   run_input_files <- c(run_input_files, degs_fn)
   pdge <- readRDS(degs_fn)
@@ -317,13 +328,13 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
   ## prepare mediator expression matrix (med_gene_id x BrNum) from sce_pb logcounts
   med_brnums_all <- unique(as.character(colData(sce_pb)$BrNum))
   ## > head(erc_deg_summary)
-  #    V1     cell_type_broad  cluster   model   n_genes   nDEGs_FDR05   nUP   nDown
-  #   <int>       <char>       <char>   <char>     <int>      <int>     <int>  <int>
-  #1:  1         Astro        Astro.1   carrier   16867         7         5     2
-  #2:  2         Astro        Astro.2   carrier    9994        58        10    48
-  #3:  3         Astro        Astro.3   carrier   11282        23         5    18
+  ##    V1     cell_type_broad  cluster   model   n_genes   nDEGs_FDR05   nUP   nDown
+  ##   <int>       <char>       <char>   <char>     <int>      <int>     <int>  <int>
+  ## 1:  1         Astro        Astro.1   carrier   16867         7         5     2
+  ## 2:  2         Astro        Astro.2   carrier    9994        58        10    48
+  ## 3:  3         Astro        Astro.3   carrier   11282        23         5    18
 
-  ## Note: for Astro.1 cluster, only 29 out of 30 donors had enough expression data
+  ## note: for Astro.1 cluster, only 29 out of 30 donors had enough expression data.
   med_expr <- matrix(NA_real_, nrow = nrow(med_degs), ncol = length(med_brnums_all))
   rownames(med_expr) <- med_degs$med_gene_id
   colnames(med_expr) <- med_brnums_all
@@ -353,8 +364,9 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
       med_expr <- med_expr[med_degs$med_gene_id, , drop = FALSE]
       message(Sys.time(), sprintf(" - test test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
   }
-} else if (opt$mediation == "lc_astro") { ## "blue" design 2: Mediator = LC Astro DEGs from LC spatial domains
-    ## Load LC Astro DEGs (FDR < 0.05)
+} else if (opt$mediation == "lc_astro") { ## "blue" design 2: mediator = LC astrocyte DEGs from LC spatial domains
+    ## blue design: LC astrocyte mediators come from LC APOE DGE plus donor-level counts.
+    ## load LC Astro DEGs using the selected mediator FDR threshold.
     f_lca_dge <- file.path(mdir, "LC_Astro_E4vE2_DGEout_Bernie.rds")
     if (!file.exists(f_lca_dge)) {
         stop(sprintf("LC Astro DEG file not found: %s", f_lca_dge))
@@ -365,24 +377,24 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
     if (nrow(med_degs) < 1) {
         stop(sprintf("No LC Astro DEGs with FDR < %.4f found.", medSelFDR))
     }
-    ## Standardize column names and add required fields
+    ## standardize column names and add required fields.
     med_degs[, cluster := "LCAstro"]
     med_degs[, med_gene_id := paste0("LCAstro|", gene_id)]
     setorder(med_degs, gene_id)
 
-    ## Load LC Astro pseudobulk counts (DGEList)
+    ## load LC Astro pseudobulk counts (DGEList).
     f_lca_pbcounts <- file.path(mdir, "lc_astro_pseudobulk_counts_by_donor.rds")
     if (!file.exists(f_lca_pbcounts)) {
         stop(sprintf("LC Astro pseudobulk counts file not found: %s", f_lca_pbcounts))
     }
     run_input_files <- c(run_input_files, f_lca_pbcounts)
     dgl_lca <- readRDS(f_lca_pbcounts)
-    ## Determine overlapping donors between LC Astro and ERC Oligo.3 outcome
-    ## after leave-one-out testing, let's drop BR5529 from dgl_lca
-    #drop_donors_lc <- c("Br5529")
+    ## determine overlapping donors between LC Astro and ERC Oligo.3 outcome.
+    ## after leave-one-out testing, drop Br5529 from dgl_lca.
+    ## drop_donors_lc <- c("Br5529")
     drop_donors_lc <- c("Br5529", "Br6423") ## drop Br6423 too, which has very low coverage in LC Astro and is an outlier in PCA
     dgl_lca <- dgl_lca[, !colnames(dgl_lca) %in% drop_donors_lc]
-    #dgl_lca <- dgl_lca[, !colnames(dgl_lca) %in% c("Br5529", "Br6423")]
+    ## dgl_lca <- dgl_lca[, !colnames(dgl_lca) %in% c("Br5529", "Br6423")]
     lca_brnums <- colnames(dgl_lca)
     erc_brnums <- as.character(donor_meta$BrNum)
     common_donors <- intersect(lca_brnums, erc_brnums)
@@ -391,14 +403,14 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
     }
     message(Sys.time(), sprintf(" - LC-ERC overlapping donors: %d", length(common_donors)))
 
-    ## Subset LC counts to overlapping donors and filter by expression
+    ## subset LC counts to overlapping donors and filter by expression.
     dgl_lca <- dgl_lca[, common_donors]
-    ## Build design matrix for filtering using subsetted donor_meta
+    ## build design matrix for filtering using subsetted donor_meta.
     lca_donor_meta <- donor_meta[donor_meta$BrNum %in% common_donors, ]
     lca_donor_meta <- lca_donor_meta[match(common_donors, lca_donor_meta$BrNum), ]
     lca_design <- model.matrix(baseline_formula, data = lca_donor_meta)
 
-    ## Filter and normalize LC counts
+    ## filter and normalize LC counts.
     dgl_lca <- edgeR::calcNormFactors(dgl_lca)
     keep_lca <- edgeR::filterByExpr(dgl_lca, design = lca_design)
     dgl_lca <- dgl_lca[keep_lca, , keep.lib.sizes = FALSE]
@@ -407,7 +419,7 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
     ## compute log-CPM - will be used for the mediation vector
     lca_logcpm <- edgeR::cpm(dgl_lca, log = TRUE)
 
-    ## Check for missing DEGs in filtered counts
+    ## check for missing DEGs in filtered counts.
     gene_ids <- as.character(med_degs$gene_id)
     missing_ids <- setdiff(gene_ids, rownames(lca_logcpm))
     if (length(missing_ids) > 0) {
@@ -420,10 +432,10 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
         stop("No LC Astro DEGs remaining after filtering.")
     }
 
-    ## Build med_expr matrix (med_gene_id x BrNum)
+    ## build med_expr matrix (med_gene_id x BrNum).
     med_expr <- lca_logcpm[gene_ids, , drop = FALSE]
     rownames(med_expr) <- med_degs$med_gene_id
-    ## Apply test_rows if specified
+    ## apply test_rows if specified.
     if (length(test_rows) > 0) {
         if (any(test_rows < 1 | test_rows > nrow(med_degs))) {
             stop(sprintf("test_rows has out-of-range indices. Valid range: 1..%d", nrow(med_degs)))
@@ -434,6 +446,7 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
              sprintf(" - test enabled: using med_degs rows %s", paste(test_rows, collapse = ",")))
     }
 } else if (opt$mediation %in% c("lc_nm", "lc_nm_int")) { ## "orange" design, with NM data
+    ## orange design: LC NM mediators use precomputed NM-associated tables and expression matrices.
     orange_files <- switch(
         opt$mediation,
         lc_nm = list(
@@ -460,7 +473,7 @@ if (opt$mediation == "erc_astro") { ## "green" design 3: Mediator = ERC Astro DE
         med_expr <- as.matrix(med_expr)
     }
 
-    ## Baron & Kenny Step 2 enforcement: keep only NM mediators that are also LC APOE DEGs.
+    ## enforce Baron and Kenny Step 2 by keeping NM mediators that are also LC APOE DEGs.
     lc_step2 <- as.data.table(readRDS(f_lc_step2))
     if (!all(c("gene_id", "adj.P.Val") %in% names(lc_step2))) {
         stop(sprintf("Step 2 table missing required columns in file: %s", f_lc_step2))
@@ -533,7 +546,8 @@ if (!all(c("cluster", "gene_id", "gene_name", "med_gene_id") %in% names(med_degs
     stop("med_degs is missing required columns: cluster, gene_id, gene_name, med_gene_id.")
 }
 
-## Canonical mediator ordering and stable iteration ids for file naming.
+## to add another mediator dataset, add a new option that produces this same med_degs/med_expr contract.
+## canonical mediator ordering and stable iteration ids make file naming reproducible.
 setorder(med_degs, cluster, gene_id, gene_name)
 med_degs[, med_gene_id := paste0(cluster, "|", gene_id)]
 if (anyDuplicated(med_degs$med_gene_id)) {
@@ -551,10 +565,10 @@ med_expr <- med_expr[, sort(colnames(med_expr)), drop = FALSE]
 message(Sys.time(), sprintf(" - Mediators selected for %s: %i", opt$mediation, nrow(med_degs)))
 message(Sys.time(), sprintf(" - Mediator donor columns: %i", ncol(med_expr)))
 
-## subset dge_base to the column names in med_expr -- the actual donors to keep
+## after mediator loading, restrict the outcome object to donors with mediator data.
 dge_base <- sce_base[, sce_base$BrNum %in% colnames(med_expr)]
 
-## Filter low expression genes once (baseline design)
+## filter low expression outcome genes once with the baseline design.
 fn_dge_base <- file.path(out_dir, "dge_base.qs2")
 dge_base <- edgeR::calcNormFactors(dge_base)
 dge_base_filter_design <- model.matrix(baseline_formula, data = as.data.frame(dge_base$samples))
@@ -565,6 +579,7 @@ outcome_donor_info <- make_donor_key(as.character(dge_base$samples$BrNum))
 outcome_gene_hash <- md5_string(paste(rownames(dge_base), collapse = "\n"))
 med_degs_hash <- hash_dt(med_degs, c("iter", "cluster", "gene_id", "gene_name", "med_gene_id", "run"))
 med_expr_hash <- hash_matrix(med_expr)
+## include inputs, thresholds, donor sets, and object hashes in the run signature.
 run_signature_lines <- c(
     sprintf("mediation=%s", opt$mediation),
     sprintf("FDRthr=%s", formatC(FDRthr, digits = 8, format = "fg")),
@@ -610,7 +625,7 @@ data.table::fwrite(
     sep = "\t"
 )
 
-## outcome gene mapping for per-run list outputs
+## map outcome gene IDs to symbols for human-readable loss/gain/mediated lists.
 get_out_gene_map <- function(dge_obj) {
     gene_name_vec <- NULL
     if (inherits(dge_obj, "DGEList")) {
@@ -633,7 +648,7 @@ get_out_gene_map <- function(dge_obj) {
 }
 out_gene_map <- get_out_gene_map(dge_base)
 
-## precompute per-mediator donor plans from med_expr (before running models)
+## precompute per-mediator donor plans from med_expr before running models.
 out_brnum_all <- as.character(dge_base$samples$BrNum)
 mediator_plan_dt <- med_degs[, {
     if (!(med_gene_id %in% rownames(med_expr))) {
@@ -661,6 +676,7 @@ if (nrow(mediator_plan_run) < 1) {
     stop("No eligible mediators remain after donor-overlap pre-check.")
 }
 
+## fit the total-effect model Y ~ X + covariates for each planned donor set.
 run_baseline <- function(donor_key, donors, donor_str) {
     out_file <- file.path(baseline_dir, sprintf("baseline_%s.tab.gz", donor_key))
     sufdr <- stringr::str_split_1(as.character(FDRthr), "\\.")[[2]]
@@ -728,6 +744,7 @@ run_baseline <- function(donor_key, donors, donor_str) {
         sample.weights = TRUE
     )
 
+    ## define the weighted APOE carrier contrast used for the ERC outcome model.
     cont <- makeContrasts(
         carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
         levels = des
@@ -768,7 +785,7 @@ run_baseline <- function(donor_key, donors, donor_str) {
     )
 }
 
-## compute baseline(s) before run_one parallel phase
+## compute baseline(s) before the per-mediator parallel phase.
 bpparam <- BiocParallel::MulticoreParam(workers = workers)
 donor_sets <- unique(mediator_plan_run[, .(donor_key, donor_str, donors)], by = "donor_key")
 donor_sets[, n_donors := lengths(donors)]
@@ -821,6 +838,7 @@ data.table::fwrite(
     sep = "\t"
 )
 
+## classify attenuation by comparing post-mediator APOE DEGs with baseline APOE DEGs.
 summarize_vs_baseline <- function(tt, ttM, run_label, donor_key) {
     carrier_sig <- tt[adj.P.Val < FDRthr, outcome_gene_id]
     med_sig <- ttM[adj.P.Val < FDRthr, outcome_gene_id]
@@ -871,11 +889,12 @@ summarize_vs_baseline <- function(tt, ttM, run_label, donor_key) {
     )
 }
 
+## fit one joint model Y ~ X + M + covariates and write both APOE and mediator coefficient tables.
 run_one <- function(i) {
     plan_row <- mediator_plan_run[i]
     iter_id <- as.integer(plan_row$iter[[1]])
 
-    ## Use a non-column symbol on RHS to avoid data.table scoping collisions.
+    ## use a non-column symbol on RHS to avoid data.table scoping collisions.
     med_row <- med_degs[iter == iter_id]
     if (nrow(med_row) != 1) {
         stop(sprintf("Could not resolve exactly one mediator row for iter %d (found %d).", iter_id, nrow(med_row)))
@@ -950,6 +969,7 @@ run_one <- function(i) {
         collapse = "\n"
     ))
 
+    ## reuse a cached mediator fit only when the run signature and mediator vector match.
     if (file.exists(out_file) && file.exists(out_Mfile) && file.exists(run_info_file)) {
         cached <- read_run_info(run_info_file)
         expected_cache <- list(
@@ -1004,6 +1024,7 @@ run_one <- function(i) {
         sample.weights = TRUE
     )
 
+    ## extract carrier and mediator coefficients from the same fitted joint model.
     cont <- makeContrasts(
         carrier = "-0.5*(APOE_E2.E2 + APOE_E2.E3) + 0.5*(APOE_E3.E4 + APOE_E4.E4)",
         med_vec = med_vec,
@@ -1078,6 +1099,7 @@ run_results <- BiocParallel::bplapply(seq_len(nrow(mediator_plan_run)), run_one,
 run_results <- Filter(Negate(is.null), run_results)
 message(Sys.time(), sprintf(" - Runs completed (%i files)", length(run_results)))
 
+## combine per-mediator results into run indexes and summary tables.
 run_info_dt <- data.table::rbindlist(run_results, fill = TRUE)
 setorder(run_info_dt, iter)
 if (nrow(run_info_dt) < 1) {
@@ -1157,7 +1179,7 @@ history_dt <- if (file.exists(history_file)) {
 }
 data.table::fwrite(history_dt, file = history_file, sep = "\t")
 message(Sys.time(), sprintf(" - Run metadata recorded in %s", history_file))
-#### Reproducibility information ####
+#### reproducibility information ####
 print("Reproducibility information:")
 Sys.time()
 proc.time()
