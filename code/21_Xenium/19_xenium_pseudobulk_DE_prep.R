@@ -148,11 +148,32 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
     write.csv(Oligo.3_Astro_summary, file = here(data_dir, "Oligo.3_Astro_summary.csv"))
     
+    ## check Astrocyte neighbors
+    neighbor_only_df_details <- neighbor_df_details |>
+        select(neighbor_barcode, neighbor_cell_type, APOE_level) |>
+        unique()
+    
+    spe_astro <- spe[,neighbor_only_df_details$neighbor_barcode]
+    message("filter to Oligo.3, ncells: ", ncol(spe_astro))
+    
+    spe_astro$Oligo.3_Astro <- paste0(spe_astro$cell_type_anno, "_APOE_", neighbor_only_df_details$APOE_level)
+    table(spe_astro$Oligo.3_Astro)
+    table(spe_astro$spot_class)
+    spe_astro$Oligo.3_Astro_test <- "Astro_type"
+    colnames(spe_astro) <- paste(colnames(spe_astro), "_", spe_astro$Oligo.3_Astro_test)
+    
+    # ## summary table
+    # Oligo.3_Astro_summary <- Oligo.3_Astro_summary |>
+    #     bind_rows(neighbor_only_df_details |> 
+    #                   mutate(Oligo.3_Astro = paste0("nnA_", dist_class),
+    #                          Oligo.3_Astro_test = "dist") |>
+    #                   count(Oligo.3_Astro_test, Oligo.3_Astro, dist_class))
     
     #### Combine data
     spe <- do.call("cbind", list(spe_03, spe_03_dist, spe_03_apoe, spe_03_neighbor, spe_03_neighbor_apoe))
     
     table(spe$Oligo.3_Astro_test)
+    table(spe$Oligo.3_Astro_test, spe$cell_type_anno)
     table(spe$Oligo.3_Astro, spe$Oligo.3_Astro_test)
     
     
