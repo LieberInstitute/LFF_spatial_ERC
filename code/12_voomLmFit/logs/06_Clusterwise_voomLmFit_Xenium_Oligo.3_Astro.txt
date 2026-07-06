@@ -1,11 +1,12 @@
 **** Job starts ****
-Wed Jul  1 01:01:29 PM EDT 2026
+Mon Jul  6 01:20:35 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33799492
+Job id: 33926698
 Job name: 06_Clusterwise_voomLmFit_Xenium_Oligo.3_Astro
-Node name: compute-169
+Node name: compute-154
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -160,9 +161,9 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::year()     masks data.table::year()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-07-01 13:01:36.332727 - Datatype = Xenium_Oligo.3_Astro, loading '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/19_xenium_pseudobulk_DE_prep/spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS'
+2026-07-06 13:20:42.677168 - Datatype = Xenium_Oligo.3_Astro, loading '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/19_xenium_pseudobulk_DE_prep/spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS'
 Loading required namespace: SpatialExperiment
-[1] 366 356
+[1] 366 495
 
             APOE_high APOE_high_nnA_Astro.1 APOE_high_nnA_Astro.2 
                    16                    16                    16 
@@ -174,158 +175,224 @@ APOE_high_nnA_Astro.3 APOE_high_nnA_Astro.4 APOE_high_nnA_Astro.5
                    16                    16                    12 
  APOE_low_nnA_Astro.4  APOE_low_nnA_Astro.5      APOE_low_nnA_far 
                    16                    16                    16 
-    APOE_low_nnA_near            nn_Astro.1            nn_Astro.2 
+    APOE_low_nnA_near     Astro.1_APOE_high      Astro.1_APOE_low 
+                   16                    16                    15 
+    Astro.2_APOE_high      Astro.2_APOE_low     Astro.3_APOE_high 
+                   16                    16                     8 
+     Astro.3_APOE_low     Astro.4_APOE_high      Astro.4_APOE_low 
+                    7                    14                    15 
+    Astro.5_APOE_high      Astro.5_APOE_low            nn_Astro.1 
                    16                    16                    16 
-           nn_Astro.3            nn_Astro.4            nn_Astro.5 
-                   14                    16                    16 
-              nnA_far              nnA_near 
-                   16                    16 
+           nn_Astro.2            nn_Astro.3            nn_Astro.4 
+                   16                    14                    16 
+           nn_Astro.5               nnA_far              nnA_near 
+                   16                    16                    16 
 
  E2  E4 
-180 176 
-2026-07-01 13:01:36.711804 - Loop voomlmFit by cluster
-2026-07-01 13:01:37.427899 - voomLmFit - cluster: APOE_high, block= 'chip', ncol: 16, ngene: 363
+252 243 
+2026-07-06 13:20:43.092573 - Loop voomlmFit by cluster
+2026-07-06 13:20:43.993852 - voomLmFit - cluster: APOE_high, block= 'chip', ncol: 16, ngene: 363
 First sample weights (min/max) 0.5362327/2.0273271
 First intra-block correlation  0.004701988
 Final sample weights (min/max) 0.5379124/2.0193675
 Final intra-block correlation  0.004723885
 Done - Save data
-2026-07-01 13:01:38.184282 - voomLmFit - cluster: APOE_high_nnA_Astro.1, block= 'chip', ncol: 16, ngene: 262
+2026-07-06 13:20:44.862841 - voomLmFit - cluster: APOE_high_nnA_Astro.1, block= 'chip', ncol: 16, ngene: 262
 First sample weights (min/max) 0.5892053/1.4803142
 First intra-block correlation  0.03714725
 Final sample weights (min/max) 0.5854167/1.4817711
 Final intra-block correlation  0.03751956
 Done - Save data
-2026-07-01 13:01:38.766017 - voomLmFit - cluster: APOE_high_nnA_Astro.2, block= 'chip', ncol: 16, ngene: 313
+2026-07-06 13:20:45.598496 - voomLmFit - cluster: APOE_high_nnA_Astro.2, block= 'chip', ncol: 16, ngene: 313
 First sample weights (min/max) 0.6440442/1.8052871
 First intra-block correlation  0.002542641
 Final sample weights (min/max) 0.6447571/1.8009604
 Final intra-block correlation  0.002243907
 Done - Save data
-2026-07-01 13:01:39.394727 - voomLmFit - cluster: APOE_high_nnA_Astro.3, block= 'chip', ncol: 12, ngene: 93
+2026-07-06 13:20:46.427477 - voomLmFit - cluster: APOE_high_nnA_Astro.3, block= 'chip', ncol: 12, ngene: 93
 First sample weights (min/max) 0.5971283/1.5460958
 First intra-block correlation  -0.02719536
 Final sample weights (min/max) 0.5993444/1.5505469
 Final intra-block correlation  -0.02704525
 Done - Save data
-2026-07-01 13:01:39.716125 - voomLmFit - cluster: APOE_high_nnA_Astro.4, block= 'chip', ncol: 14, ngene: 176
+2026-07-06 13:20:46.787175 - voomLmFit - cluster: APOE_high_nnA_Astro.4, block= 'chip', ncol: 14, ngene: 176
 First sample weights (min/max) 0.5904105/1.4741978
 First intra-block correlation  0.02592075
 Final sample weights (min/max) 0.5782366/1.4784824
 Final intra-block correlation  0.02519332
 Done - Save data
-2026-07-01 13:01:40.164647 - voomLmFit - cluster: APOE_high_nnA_Astro.5, block= 'chip', ncol: 16, ngene: 356
+2026-07-06 13:20:47.310198 - voomLmFit - cluster: APOE_high_nnA_Astro.5, block= 'chip', ncol: 16, ngene: 356
 First sample weights (min/max) 0.5096181/1.7724343
 First intra-block correlation  0.0381661
 Final sample weights (min/max) 0.5115952/1.7725469
 Final intra-block correlation  0.03802218
 Done - Save data
-2026-07-01 13:01:40.863807 - voomLmFit - cluster: APOE_high_nnA_far, block= 'chip', ncol: 16, ngene: 348
+2026-07-06 13:20:48.101352 - voomLmFit - cluster: APOE_high_nnA_far, block= 'chip', ncol: 16, ngene: 348
 First sample weights (min/max) 0.5422099/1.8047668
 First intra-block correlation  0.005115692
 Final sample weights (min/max) 0.5431051/1.7839916
 Final intra-block correlation  0.005217708
 Done - Save data
-2026-07-01 13:01:41.579835 - voomLmFit - cluster: APOE_high_nnA_near, block= 'chip', ncol: 16, ngene: 351
+2026-07-06 13:20:49.037709 - voomLmFit - cluster: APOE_high_nnA_near, block= 'chip', ncol: 16, ngene: 351
 First sample weights (min/max) 0.5348303/2.0257633
 First intra-block correlation  -0.01121541
 Final sample weights (min/max) 0.5577693/2.0081444
 Final intra-block correlation  -0.01108108
 Done - Save data
-2026-07-01 13:01:42.271737 - voomLmFit - cluster: APOE_low, block= 'chip', ncol: 16, ngene: 364
+2026-07-06 13:20:49.924148 - voomLmFit - cluster: APOE_low, block= 'chip', ncol: 16, ngene: 364
 First sample weights (min/max) 0.3900548/1.9571191
 First intra-block correlation  0.00939894
 Final sample weights (min/max) 0.3917816/1.9620104
 Final intra-block correlation  0.009091324
 Done - Save data
-2026-07-01 13:01:42.971591 - voomLmFit - cluster: APOE_low_nnA_Astro.1, block= 'chip', ncol: 16, ngene: 256
+2026-07-06 13:20:50.725104 - voomLmFit - cluster: APOE_low_nnA_Astro.1, block= 'chip', ncol: 16, ngene: 256
 First sample weights (min/max) 0.4801671/1.4008032
 First intra-block correlation  0.01370878
 Final sample weights (min/max) 0.4756441/1.3828623
 Final intra-block correlation  0.01467352
 Done - Save data
-2026-07-01 13:01:43.526899 - voomLmFit - cluster: APOE_low_nnA_Astro.2, block= 'chip', ncol: 16, ngene: 309
+2026-07-06 13:20:51.404206 - voomLmFit - cluster: APOE_low_nnA_Astro.2, block= 'chip', ncol: 16, ngene: 309
 First sample weights (min/max) 0.4720013/1.5534160
 First intra-block correlation  0.001300497
 Final sample weights (min/max) 0.4691031/1.5439642
 Final intra-block correlation  0.0008306933
 Done - Save data
-2026-07-01 13:01:44.145067 - voomLmFit - cluster: APOE_low_nnA_Astro.3, block= 'chip', ncol: 12, ngene: 113
+2026-07-06 13:20:52.156575 - voomLmFit - cluster: APOE_low_nnA_Astro.3, block= 'chip', ncol: 12, ngene: 113
 First sample weights (min/max) 0.7342219/1.8632447
 First intra-block correlation  -0.01132408
 Final sample weights (min/max) 0.7331651/1.8594428
 Final intra-block correlation  -0.0114111
 Done - Save data
-2026-07-01 13:01:44.517562 - voomLmFit - cluster: APOE_low_nnA_Astro.4, block= 'chip', ncol: 16, ngene: 192
+2026-07-06 13:20:52.611054 - voomLmFit - cluster: APOE_low_nnA_Astro.4, block= 'chip', ncol: 16, ngene: 192
 First sample weights (min/max) 0.5594246/1.9058925
 First intra-block correlation  0.013592
 Final sample weights (min/max) 0.5565796/1.8954582
 Final intra-block correlation  0.01445259
 Done - Save data
-2026-07-01 13:01:44.967335 - voomLmFit - cluster: APOE_low_nnA_Astro.5, block= 'chip', ncol: 16, ngene: 355
+2026-07-06 13:20:53.676304 - voomLmFit - cluster: APOE_low_nnA_Astro.5, block= 'chip', ncol: 16, ngene: 355
 First sample weights (min/max) 0.4227826/1.8820426
 First intra-block correlation  0.0133446
 Final sample weights (min/max) 0.4215573/1.8779393
 Final intra-block correlation  0.01300668
 Done - Save data
-2026-07-01 13:01:45.678118 - voomLmFit - cluster: APOE_low_nnA_far, block= 'chip', ncol: 16, ngene: 352
+2026-07-06 13:20:54.491409 - voomLmFit - cluster: APOE_low_nnA_far, block= 'chip', ncol: 16, ngene: 352
 First sample weights (min/max) 0.3910117/1.8117233
 First intra-block correlation  0.003162437
 Final sample weights (min/max) 0.3915636/1.7984120
 Final intra-block correlation  0.003210467
 Done - Save data
-2026-07-01 13:01:46.415104 - voomLmFit - cluster: APOE_low_nnA_near, block= 'chip', ncol: 16, ngene: 357
+2026-07-06 13:20:55.33453 - voomLmFit - cluster: APOE_low_nnA_near, block= 'chip', ncol: 16, ngene: 357
 First sample weights (min/max) 0.4281867/1.8044953
 First intra-block correlation  0.00911018
 Final sample weights (min/max) 0.4293353/1.8026163
 Final intra-block correlation  0.008872545
 Done - Save data
-2026-07-01 13:01:47.129814 - voomLmFit - cluster: nn_Astro.1, block= 'chip', ncol: 16, ngene: 307
+2026-07-06 13:20:56.218302 - voomLmFit - cluster: Astro.1_APOE_high, block= 'chip', ncol: 16, ngene: 231
+First sample weights (min/max) 0.5969324/1.4624453
+First intra-block correlation  0.02160619
+Final sample weights (min/max) 0.5952505/1.4594567
+Final intra-block correlation  0.02219319
+Done - Save data
+2026-07-06 13:20:56.875519 - voomLmFit - cluster: Astro.1_APOE_low, block= 'chip', ncol: 15, ngene: 215
+First sample weights (min/max) 0.5591293/1.8899260
+First intra-block correlation  0.01146952
+Final sample weights (min/max) 0.5565569/1.8933559
+Final intra-block correlation  0.01166232
+Done - Save data
+2026-07-06 13:20:57.461964 - voomLmFit - cluster: Astro.2_APOE_high, block= 'chip', ncol: 16, ngene: 277
+First sample weights (min/max) 0.600424/1.517872
+First intra-block correlation  0.04424754
+Final sample weights (min/max) 0.6140687/1.5042641
+Final intra-block correlation  0.04460904
+Done - Save data
+2026-07-06 13:20:58.199655 - voomLmFit - cluster: Astro.2_APOE_low, block= 'chip', ncol: 16, ngene: 293
+First sample weights (min/max) 0.4426507/1.8049012
+First intra-block correlation  -0.01510624
+Final sample weights (min/max) 0.4427653/1.7785834
+Final intra-block correlation  -0.01524776
+Done - Save data
+2026-07-06 13:20:58.91264 - voomLmFit - cluster: Astro.3_APOE_high, block= 'chip', ncol: 8, ngene: 133
+First sample weights (min/max) 0.7555091/1.3901655
+First intra-block correlation  -0.09971985
+Final sample weights (min/max) 0.7607983/1.3905621
+Final intra-block correlation  -0.09781887
+Done - Save data
+2026-07-06 13:20:59.383093 - voomLmFit - cluster: Astro.3_APOE_low, block= 'chip', ncol: 7, ngene: 134
+First sample weights (min/max) 0.7915326/1.2815550
+First intra-block correlation  0.07600625
+Final sample weights (min/max) 0.7908276/1.2867606
+Final intra-block correlation  0.06214605
+Done - Save data
+2026-07-06 13:20:59.883537 - voomLmFit - cluster: Astro.4_APOE_high, block= 'chip', ncol: 14, ngene: 172
+First sample weights (min/max) 0.4864006/1.4977119
+First intra-block correlation  -0.007764432
+Final sample weights (min/max) 0.479669/1.507508
+Final intra-block correlation  -0.008465084
+Done - Save data
+2026-07-06 13:21:00.422419 - voomLmFit - cluster: Astro.4_APOE_low, block= 'chip', ncol: 15, ngene: 189
+First sample weights (min/max) 0.5016058/1.8013817
+First intra-block correlation  -0.04216074
+Final sample weights (min/max) 0.4943509/1.7875841
+Final intra-block correlation  -0.04274585
+Done - Save data
+2026-07-06 13:21:00.945149 - voomLmFit - cluster: Astro.5_APOE_high, block= 'chip', ncol: 16, ngene: 322
+First sample weights (min/max) 0.4686592/1.6934473
+First intra-block correlation  0.01328259
+Final sample weights (min/max) 0.4869618/1.6591236
+Final intra-block correlation  0.01323724
+Done - Save data
+2026-07-06 13:21:01.676017 - voomLmFit - cluster: Astro.5_APOE_low, block= 'chip', ncol: 16, ngene: 325
+First sample weights (min/max) 0.5599397/1.4538137
+First intra-block correlation  -0.01594959
+Final sample weights (min/max) 0.5611506/1.4380651
+Final intra-block correlation  -0.01602893
+Done - Save data
+2026-07-06 13:21:02.45558 - voomLmFit - cluster: nn_Astro.1, block= 'chip', ncol: 16, ngene: 307
 First sample weights (min/max) 0.456164/1.530836
 First intra-block correlation  0.05483451
 Final sample weights (min/max) 0.4537535/1.5264669
 Final intra-block correlation  0.05537631
 Done - Save data
-2026-07-01 13:01:47.772781 - voomLmFit - cluster: nn_Astro.2, block= 'chip', ncol: 16, ngene: 340
+2026-07-06 13:21:03.781472 - voomLmFit - cluster: nn_Astro.2, block= 'chip', ncol: 16, ngene: 340
 First sample weights (min/max) 0.5226565/1.4437361
 First intra-block correlation  0.009243682
 Final sample weights (min/max) 0.5261238/1.4393317
 Final intra-block correlation  0.009089
 Done - Save data
-2026-07-01 13:01:48.426733 - voomLmFit - cluster: nn_Astro.3, block= 'chip', ncol: 14, ngene: 169
+2026-07-06 13:21:04.555742 - voomLmFit - cluster: nn_Astro.3, block= 'chip', ncol: 14, ngene: 169
 First sample weights (min/max) 0.7770193/1.5095514
 First intra-block correlation  -0.03014584
 Final sample weights (min/max) 0.7733792/1.5121386
 Final intra-block correlation  -0.02970305
 Done - Save data
-2026-07-01 13:01:48.863359 - voomLmFit - cluster: nn_Astro.4, block= 'chip', ncol: 16, ngene: 254
+2026-07-06 13:21:05.072974 - voomLmFit - cluster: nn_Astro.4, block= 'chip', ncol: 16, ngene: 254
 First sample weights (min/max) 0.4630348/1.8275332
 First intra-block correlation  0.04610816
 Final sample weights (min/max) 0.4629724/1.8333858
 Final intra-block correlation  0.04657617
 Done - Save data
-2026-07-01 13:01:49.417585 - voomLmFit - cluster: nn_Astro.5, block= 'chip', ncol: 16, ngene: 361
+2026-07-06 13:21:05.696321 - voomLmFit - cluster: nn_Astro.5, block= 'chip', ncol: 16, ngene: 361
 First sample weights (min/max) 0.458003/1.986044
 First intra-block correlation  0.03390717
 Final sample weights (min/max) 0.4596083/1.9736580
 Final intra-block correlation  0.03361238
 Done - Save data
-2026-07-01 13:01:50.114199 - voomLmFit - cluster: nnA_far, block= 'chip', ncol: 16, ngene: 364
+2026-07-06 13:21:06.651687 - voomLmFit - cluster: nnA_far, block= 'chip', ncol: 16, ngene: 364
 First sample weights (min/max) 0.390406/1.974133
 First intra-block correlation  0.001517727
 Final sample weights (min/max) 0.3940774/1.9525255
 Final intra-block correlation  0.001485964
 Done - Save data
-2026-07-01 13:01:50.81458 - voomLmFit - cluster: nnA_near, block= 'chip', ncol: 16, ngene: 363
+2026-07-06 13:21:07.516877 - voomLmFit - cluster: nnA_near, block= 'chip', ncol: 16, ngene: 363
 First sample weights (min/max) 0.4661945/2.3584674
 First intra-block correlation  0.007322069
 Final sample weights (min/max) 0.4696932/2.3590594
 Final intra-block correlation  0.007226192
 Done - Save data
 [1] "Reproducibility information:"
-[1] "2026-07-01 13:01:51 EDT"
+[1] "2026-07-06 13:21:08 EDT"
    user  system elapsed 
- 19.703   0.463  21.207 
+ 29.710   0.657  32.263 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -336,7 +403,7 @@ Done - Save data
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-07-01
+ date     2026-07-06
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -415,4 +482,4 @@ Done - Save data
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jul  1 01:01:51 PM EDT 2026
+Mon Jul  6 01:21:08 PM EDT 2026
