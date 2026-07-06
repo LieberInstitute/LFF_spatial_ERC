@@ -16,23 +16,6 @@
 ## topTable output for the outcome cluster directly from DE_data_dir. It then
 ## re-derives just the filtered DGEList for that one cluster and fits the
 ## mediation model (Steps 3a/3b) against a table of candidate mediators.
-##
-## *** SpX NOTE ***
-## "Xenium_Oligo.3_Astro_SpX" looks like the BANKSY spatial-domain-crossed
-## version of the pseudobulk object (relevant to the planned Astro.2
-## domain-stratification test, e.g. WM.tz-resident Astro.2 vs FZD8-NRXN1
-## mediation). If you use --datatype ..._SpX, sce_pb$registration_variable
-## will likely include domain-crossed cluster labels (e.g. something like
-## "Astro.2|WM.tz") that WON'T match the plain "Astro.2" cluster names in
-## med_degs from the snRNA-seq screen. get_mediator_vector() below matches
-## on exact registration_variable strings -- if you go the SpX route you
-## will need to either (a) adjust med_degs$cluster to the domain-crossed
-## label scheme, or (b) match by pattern (e.g. grepl(paste0("^", med_cluster))
-## against registration_variable) and aggregate/select the domain(s) of
-## interest explicitly. I haven't guessed at the exact label format since
-## I can't see the object -- check `table(sce_pb$registration_variable)`
-## for the _SpX object before wiring this up.
-##
 
 #### Set up ####
 
