@@ -154,7 +154,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
         unique()
     
     spe_astro <- spe[,neighbor_only_df_details$neighbor_barcode]
-    message("filter to Oligo.3, ncells: ", ncol(spe_astro))
+    message("filter to Astro neighbors, ncells: ", ncol(spe_astro))
     
     spe_astro$Oligo.3_Astro <- paste0(spe_astro$cell_type_anno, "_APOE_", neighbor_only_df_details$APOE_level)
     table(spe_astro$Oligo.3_Astro)
@@ -170,7 +170,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
     #                   count(Oligo.3_Astro_test, Oligo.3_Astro, dist_class))
     
     #### Combine data
-    spe <- do.call("cbind", list(spe_03, spe_03_dist, spe_03_apoe, spe_03_neighbor, spe_03_neighbor_apoe))
+    spe <- do.call("cbind", list(spe_03, spe_03_dist, spe_03_apoe, spe_03_neighbor, spe_03_neighbor_apoe, spe_astro))
     
     table(spe$Oligo.3_Astro_test)
     table(spe$Oligo.3_Astro_test, spe$cell_type_anno)
