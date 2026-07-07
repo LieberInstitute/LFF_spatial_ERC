@@ -3,11 +3,15 @@
 #' Adapted from `plot_DEG_express()` for the Baron & Kenny mediation
 #' workflow. Where `plot_DEG_express()` shows one cleaned expression panel
 #' per outcome gene (covariates regressed out), this function shows TWO
-#' panels side by side for each outcome gene:
-#'   - "Unadjusted": outcome gene expression with the usual nuisance
+#' panels side by side for each outcome gene (or THREE, if
+#' `plot_mediator_panel = TRUE`):
+#'   - (optional) "mediator" panel: the mediator gene itself, in its own
+#'     cluster, plotted with `plot_DEG_express()` -- this is the Step 2
+#'     (X->M) view (e.g. NPTXR in Astro.1).
+#'   - "unadjusted": outcome gene expression with the usual nuisance
 #'     covariates (Sex/Age/Anc_Afr/etc, per `mod`/`cleanY_P`) regressed out
 #'     -- this is the Step 1 (X->Y) view, identical to `plot_DEG_express()`.
-#'   - "Adjusted for {mediator}": the same, but with the mediator gene's
+#'   - "adjusted for {mediator}": the same, but with the mediator gene's
 #'     expression ALSO regressed out as an additional covariate -- this is
 #'     the Step 3b (X->Y | M) view. If the carrier-vs-outcome relationship
 #'     visibly flattens between the two panels, that's the attenuation
@@ -63,10 +67,27 @@
 #' @param min_donors An `integer(1)`, minimum number of donors shared
 #' between `sce` and `sce_mediator` required to proceed (default 10,
 #' matching the mediation fitting loop's own donor-count floor).
+#' @param plot_mediator_panel A `logical(1)`. If `TRUE`, prepend a first
+#' panel showing the mediator gene itself (via `plot_DEG_express()`) in
+#' its own cluster, e.g. NPTXR in Astro.1 -- the Step 2 (X->M) view.
+#' Requires `mediator_stats`.
+#' @param mediator_stats A `data.frame()` in the standard
+#' `plot_DEG_express()` stats shape (columns `cluster`, plus whatever
+#' `mediator_pval_col`/`mediator_fc_col`/`gene_col` point to) -- the
+#' mediator's own carrier-DE result within `med_clus`. Only used when
+#' `plot_mediator_panel = TRUE`.
+#' @param mediator_pval_col,mediator_fc_col Column names in
+#' `mediator_stats` for the mediator panel's p-value/logFC annotation,
+#' passed straight through to `plot_DEG_express()`.
+#' @param mediator_mod,mediator_cleanY_P Optional `formula`/`matrix` and
+#' `integer(1)` used to clean the mediator's own expression for its
+#' panel. Default to `mod`/`cleanY_P` (i.e. assume the same design) if
+#' left `NULL` -- override if the mediator's cluster needs a different
+#' model.
 #'
-#' @return A `patchwork` object: two `ggplot2` panels (unadjusted,
-#' adjusted-for-mediator) side by side, one facet per outcome gene within
-#' each panel.
+#' @return A `patchwork` object: two (or three, with the mediator panel)
+#' `ggplot2` panels side by side, one facet per outcome gene within each
+#' outcome panel.
 #' @export
 #'
 #' @examples
@@ -107,7 +128,13 @@ plot_DEG_mediated_express <- function(sce,
                                        color_pal = NULL,
                                        plot_points = FALSE,
                                        ncol = 2,
-                                       min_donors = 10) {
+                                       min_donors = 10,
+                                       plot_mediator_panel = FALSE,
+                                       mediator_stats = NULL,
+                                       mediator_pval_col = "vlmf_adj.P.Val",
+                                       mediator_fc_col = "vlmf_logFC",
+                                       mediator_mod = NULL,
+                                       mediator_cleanY_P = NULL) {
 
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(med_cluster_col %in% colnames(colData(sce_mediator)))
@@ -200,12 +227,13 @@ plot_DEG_mediated_express <- function(sce,
         assay_name = "cleanY",
         category = category_col,
         color_pal = color_pal,
-        title = sprintf("%s (unadjusted)", clus),
+        title = clus,
         plot_points = plot_points,
         ncol = ncol,
         plot_type = "boxplot",
         free_y = TRUE
     ) +
+        ggplot2::labs(subtitle = "unadjusted") +
         ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_unadj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
@@ -217,16 +245,42 @@ plot_DEG_mediated_express <- function(sce,
         assay_name = "cleanY_adjM",
         category = category_col,
         color_pal = color_pal,
-        title = sprintf("%s (adjusted for %s | %s)", clus, mediator, med_clus),
+        title = clus,
         plot_points = plot_points,
         ncol = ncol,
         plot_type = "boxplot",
         free_y = TRUE
     ) +
+        ggplot2::labs(subtitle = sprintf("adjusted for %s | %s", mediator, med_clus)) +
         ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_adj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
         )
+
+    if (isTRUE(plot_mediator_panel)) {
+        if (is.null(mediator_stats)) {
+            stop("plot_mediator_panel=TRUE requires mediator_stats (a plot_DEG_express()-style DE table for the mediator's own cluster).")
+        }
+        p_med <- plot_DEG_express(
+            sce = sce_mediator,
+            stats = mediator_stats,
+            clus = med_clus,
+            gene = mediator,
+            pval_col = mediator_pval_col,
+            fc_col = mediator_fc_col,
+            gene_col = gene_col,
+            cluster_col = med_cluster_col,
+            category_col = category_col,
+            mod = if (is.null(mediator_mod)) mod else mediator_mod,
+            cleanY_P = if (is.null(mediator_cleanY_P)) cleanY_P else mediator_cleanY_P,
+            color_pal = color_pal,
+            plot_points = plot_points,
+            ncol = ncol
+        ) +
+            ggplot2::labs(subtitle = sprintf("mediator: %s", med_clus))
+
+        return(p_med + p_unadj + p_adj)
+    }
 
     p_unadj + p_adj
 }
