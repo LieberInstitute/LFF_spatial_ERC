@@ -36,21 +36,21 @@ library("qs2")
 mopt <- matrix(
     c("datatype",   "d", "1", "character", "Data type (must match 06_Clusterwise_voomLmFit_Xenium.R run)",
       "outcome",     "o", "1", "character", "Outcome cluster (default: Oligo.3)",
-      "outcome",     "o", "1", "character", "Outcome cluster (default: Oligo.3)",
-      "mediatorfdr", "m", "1", "double",    "FDR threshold for calling a gene mediated (default: 0.05)"),
+      "mediatorPval", "m", "1", "double",    "P-value threshold for calling a gene mediated (default: 0.10 for validation)"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(mopt)
 
 ## example
-## opt$datatype = "cell_type_anno"
+## opt$datatype = "Xenium_Oligo.3_Astro"
+## opt$outcome_cluster = "APOE_high_nnA_Astro.2"
 
 if (is.null(opt$datatype)) opt$datatype <- "Xenium_cell_type_anno"
 if (is.null(opt$outcome_cluster))  opt$outcome_cluster  <- "Oligo.3"
-if (is.null(opt$mediatorfdr) || is.na(opt$mediatorfdr)) opt$mediatorfdr <- 0.05
+if (is.null(opt$mediatorPval) || is.na(opt$mediatorPval)) opt$mediatorPval <- 0.10
 
 out_clus <- opt$outcome_cluster
-Pvalthr <- opt$mediatorfdr
+Pvalthr <- opt$mediatorPval
 
 
 ## pb_fn selection -- kept identical to 06_Clusterwise_voomLmFit_Xenium.R
@@ -75,12 +75,9 @@ message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, pb_f
 #### Set up dirs (matches 06_Clusterwise_voomLmFit_Xenium.R's DE_data_dir) ####
 DE_data_dir <- here("processed-data", "12_voomLmFit", "06_Clusterwise_voomLmFit_Xenium", sprintf("vlmf_%s", opt$datatype))
 
-## TODO fix output and location of this file
-# mediation_dir <- here("processed-data", "22_Mediation", sprintf("vlmf_%s_mediation", opt$datatype))
-# if (!dir.exists(mediation_dir)) dir.create(mediation_dir, recursive = TRUE)
+data_dir <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", sprintf("vlmf_%s_mediation", opt$datatype))
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-# mediation_dir <- here("processed-data", "22_Mediation", sprintf("vlmf_%s_mediation", opt$datatype))
-# if (!dir.exists(mediation_dir)) dir.create(mediation_dir, recursive = TRUE)
 
 #### Load the pseudobulk data ####
 sce_pb <- readRDS(pb_fn)
@@ -173,6 +170,8 @@ if (nrow(med_degs) < 1) stop("No candidate mediator genes from the snRNA-seq scr
 get_mediator_vector <- function(sce_pb, med_cluster, gene_id) {
     
     stopifnot(gene_id %in% rownames(sce_pb))
+    stopifnot(med_cluster %in% sce_pb$registration_variable)
+    
     clus_sce <- sce_pb[gene_id, sce_pb$registration_variable == med_cluster]
     brnum <- as.character(colData(clus_sce)$BrNum)
     
@@ -184,6 +183,7 @@ get_mediator_vector <- function(sce_pb, med_cluster, gene_id) {
 }
 
 # med_vec_test <- get_mediator_vector(sce_pb, med_cluster = "Astro.2", gene_id = "FZD8")
+med_vec_test <- get_mediator_vector(sce_pb, med_cluster = "Astro.2_APOE_high", gene_id = "FZD8")
 
 mediation_eval |> filter(mediator == "FZD8")
 
@@ -213,8 +213,11 @@ fit_mediation_de <- function(dge_sub, baseline_formula_str, batch_col, med_vec) 
     list(tt = tt, ttM = ttM)
 }
 
+# fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch,
+#                                           med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.1", gene_id = "PLPPR4"))
+
 fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch,
-                                          med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.1", gene_id = "PLPPR4"))
+                                          med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.2_APOE_high", gene_id = "FZD8"))
 
                                                                                             ## gene_nameP.Value   t
 # tt_baseline |> filter(gene_name == "TESPA1") |> select(gene_name, P.Value, t)               ## TESPA1     0.0618  1.99  # validates in baseline
@@ -277,6 +280,14 @@ baseline_tt_out |> filter(gene_name %in%
                               (mediation_eval |> filter(med_cl == "Astro.1", mediator == "PLPPR4") |> pull(outcome))
                           ) 
 
+mediation_validation_details_test <- mediation_validation_details(med_cluster = "Astro.2",
+                                                                  gene_name = "FZD8",
+                                                                  tt_baseline = baseline_tt_out,
+                                                                  tt_mediation = fit_mediation_de_test$tt,
+                                                                  ttM_mediation = fit_mediation_de_test$ttM)
+
+mediation_validation_details_test |> filter(mediated)
+
 ## Loop over candidate mediator genes, fit mediation model, classify
 
 message(Sys.time(), sprintf(" - Running mediation model for %d candidate mediators (Pvalthr=%.4f)", nrow(med_degs), Pvalthr))
@@ -299,7 +310,7 @@ mediation_results <- pmap(
         fit <- fit_mediation_de(dge_sub, baseline_formula_str, batch, med_vec)
 
         run_label <- sprintf("%s|%s", med_cluster, gene_name)
-        # saveRDS(fit, file = here(mediation_dir, sprintf("mediation_%s_%s_%s.rds",
+        # saveRDS(fit, file = here(data_dir, sprintf("mediation_%s_%s_%s.rds",
         #                                                  gsub("\\.", "", med_cluster), gene_id, gene_name)))
 
         summary_row <- mediation_validation_details(med_cluster, gene_name, baseline_tt_out, fit$tt, fit$ttM, Pvalthr = Pvalthr)
@@ -313,10 +324,10 @@ mediation_results <- pmap(
 mediation_summary <- bind_rows(mediation_results)
 
 write.csv(mediation_summary |> select(-mediated_genes),
-          file = here(mediation_dir, sprintf("mediation_summary-%s_%s.csv", opt$datatype, out_clus)),
+          file = here(data_dir, sprintf("mediation_summary-%s_%s.csv", opt$datatype, out_clus)),
           row.names = FALSE)
 
-# saveRDS(mediation_summary, file = here(mediation_dir, sprintf("mediation_summary-%s_%s.rds", opt$datatype, out_clus)))
+# saveRDS(mediation_summary, file = here(data_dir, sprintf("mediation_summary-%s_%s.rds", opt$datatype, out_clus)))
 
 message(Sys.time(), sprintf(" - Mediation validation complete: %d/%d mediators tested, %d with pass_both=TRUE",
                              nrow(mediation_summary), nrow(med_degs), sum(mediation_summary$pass_both, na.rm = TRUE)))

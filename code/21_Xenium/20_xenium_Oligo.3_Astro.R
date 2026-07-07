@@ -49,7 +49,7 @@ pd <- colData(spe) |>
 
 (median_dist <- median(neighbor_df$distance)) # median = 40.8
 
-neighbor_df$Astro_APOE <- logcounts(spe)["APOE", neighbor_df_details$neighbor_barcode]
+neighbor_df$Astro_APOE <- logcounts(spe)["APOE", neighbor_df$neighbor_barcode]
 
 neighbor_df_details <- neighbor_df |>
     left_join(pd |> select(neighbor_barcode = cell_id, 
@@ -64,11 +64,14 @@ neighbor_APOE_cutoff <- neighbor_df_details |>
     select(neighbor_barcode, neighbor_cell_type, Astro_APOE) |>
     unique() |> ## rm repeats
     group_by(neighbor_cell_type) |>
-    summarise(median_APOE = median(Astro_APOE))
+    summarise(median_APOE = median(Astro_APOE),
+              n = n())
+
+write_csv(neighbor_APOE_cutoff, file = here(data_dir, "neighbor_Astro_APOE_cutoff.csv"))
 
 ## annotate APOE expression
 neighbor_df_details <- neighbor_df_details |>
-    left_join(neighbor_APOE_cutoff) |>
+    left_join(neighbor_APOE_cutoff |> select(-n)) |>
     mutate(APOE_level = ifelse(Astro_APOE < median_APOE, "low", "high"))
 
 neighbor_df_details |> count(APOE_level, dist_class)

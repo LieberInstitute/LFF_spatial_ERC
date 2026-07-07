@@ -83,7 +83,21 @@ if(opt$datatype == "Xenium_cell_type_anno"){
             
             # nnA spatial — purples (no APOE split, no Astro subtype)
             "nnA_far"               = "#7B3F7B",
-            "nnA_near"              = "#9B59B6"
+            "nnA_near"              = "#9B59B6",
+            
+            
+            ## Astro neighbors 
+            "Astro.1_APOE_high" = "#1A6B1A",
+            "Astro.1_APOE_low"  = "#228B22",
+            "Astro.2_APOE_high" = "#28A428",
+            "Astro.2_APOE_low"  = "#32CD32",
+            "Astro.3_APOE_high" = "#6B6B00",
+            "Astro.3_APOE_low"  = "#808000",
+            "Astro.4_APOE_high" = "#7ACC7A",
+            "Astro.4_APOE_low"  = "#98FF98",
+            "Astro.5_APOE_high" = "#3DA85D",
+            "Astro.5_APOE_low"  = "#50C878"
+            
     )
     cluster_levels <- names(cluster_colors)
 }
@@ -100,7 +114,7 @@ vlmf_fn <- list.files(here("processed-data", "12_voomLmFit", "06_Clusterwise_voo
 
 names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub(sprintf("voomLmFit_%s_|.rds", opt$datatype), "", basename(.x)))
 
-if(opt$datatype == "Xenium_Oligo.3_Astro") vlmf_fn <- vlmf_fn[names(vlmf_fn) %in% names(cluster_colors)] ## exclude doublet data
+if(opt$datatype == "Xenium_Oligo.3_Astro") vlmf_fn <- vlmf_fn[names(vlmf_fn) %in% cluster_levels] ## exclude doublet data
 
 ## read data
 vlmf_data <- map(vlmf_fn, readRDS)
@@ -118,27 +132,32 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_adj.P.Val = adj.P.Val,
                   vlmf_B = B
     ) |>
-    mutate(cluster = factor(cluster, levels = cluster_levels))  |>
+    mutate(cluster = factor(cluster, levels = cluster_levels),
+           cell_type_anno = droplevels(cell_type_anno),
+           cell_type_broad = droplevels(factor(gsub("\\..*", "", cell_type_anno), cell_type_broad_levels)))  |>
     as_tibble()
 
 unique(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$cluster)
+cell_type_broad_levels <- levels(vlmf_data_tb$cell_type_broad)
 
-if(opt$datatype == "Xenium_cell_type_anno"){
-    
-    vlmf_data_tb <- vlmf_data_tb |>
-        mutate(cell_type_broad = factor(gsub("\\..*", "", cluster), cell_type_broad_levels))
-    
-    levels(vlmf_data_tb$cell_type_broad)
-    
-}
+unique(vlmf_data_tb$cell_type_anno)
 
-vlmf_data_tb |> filter(vlmf_P.Value < 0.10) |> count(cluster) |> print(n = 35)
+# if(opt$datatype == "Xenium_cell_type_anno"){
+#     
+#     vlmf_data_tb <- vlmf_data_tb |>
+#         mutate(cell_type_broad = droplevels(factor(gsub("\\..*", "", cell_type_anno), cell_type_broad_levels)))
+#     
+#     levels(vlmf_data_tb$cell_type_broad)
+#     
+# }
+
+vlmf_data_tb |> filter(vlmf_P.Value < 0.10) |> count(cell_type_broad, cluster) |> print(n = 35)
 vlmf_data_tb |> arrange(vlmf_adj.P.Val) 
 
 vlmf_model_summary <- vlmf_data_tb |> 
                                    mutate(mod = "carrier") |>
-                                   group_by(cluster, mod) |>
+                                   group_by(cell_type_broad, cluster, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
                                              n_pval10 = sum(vlmf_P.Value < 0.10),
@@ -156,19 +175,16 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
     theme_bw() +
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.10") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
-          legend.position = "None")
-
-if(opt$datatype == "Xenium_cell_type_anno"){
-    vlmf_model_summary_bar <- vlmf_model_summary_bar + facet_grid(mod~cell_type_broad, scales = "free_x", space = "free")
-}
+          legend.position = "None") + 
+    facet_grid(mod~cell_type_broad, scales = "free_x", space = "free")
 
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)), height = 12, width = 10)
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_pval10, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
-    # pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
-    pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
+    pivot_longer(!c(cell_type_broad, cluster, mod), names_to = "reg", values_to = "n_genes") |>
+    # pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
     filter(mod == "carrier") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
@@ -177,7 +193,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-if(opt$datatype == "Xenium_cell_type_anno"){
+if(opt$datatype %in%  c("Xenium_cell_type_anno", "Xenium_Oligo.3_Astro")){
     vlmf_model_summary_bar_reg <- vlmf_model_summary_bar_reg + facet_grid(mod~cell_type_broad, scales = "free_x", space = "free")
 }
 
@@ -217,13 +233,13 @@ custom_volcano <- function(data, Pval_cut = 0.10, model_name){
 
 custom_volcano_ct <- function(data, mod_name){
     
-    map(cell_type_broad_levels, ~try(data |> 
+    map(levels(data$cell_type_broad), ~try(data |> 
             filter(cell_type_broad == .x) |>
             custom_volcano(, model_name = paste0(mod_name,"-", .x)) ))
     
 }
 
-if(opt$datatype == "Xenium_cell_type_anno"){
+if(opt$datatype %in%  c("Xenium_cell_type_anno", "Xenium_Oligo.3_Astro")){
     ## plot volcanos by cell type
     custom_volcano_ct(data = vlmf_data_tb, mod_name = paste0(opt$datatype, "-carrier"))
 } else {
@@ -261,12 +277,12 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 } else if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
     sn_DEG_data <- sn_DEG_data |>
-        filter(cluster == "Oligo.3") 
+        filter(cluster == "Oligo.3" | grepl('Astro', cluster)) 
     
     vlmf_data_tb_xenium <- vlmf_data_tb |>
         rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
         left_join(sn_DEG_data|>
-                      select(-cluster)) |>
+                      rename(cell_type_anno = cluster)) |>
         mutate(signif_xenium = vlmf_xenium_P.Value < 0.1, 
                signif_sn = vlmf_sn_adj.P.Val < 0.05,
                signif_both = signif_xenium & signif_sn,
@@ -297,7 +313,7 @@ validation_summary <- vlmf_data_tb_xenium |>
 
 validation_summary |>
     filter(n_signif_sn > 0) |>
-    print(n = 32)
+    print(n = 33)
 
 validation_summary |> arrange(-n_validate)
 
@@ -330,6 +346,12 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     # 6 Astro.3 ENSG000001… SLC24A2          -1.29             0.0126            -0.561              0.0575 TRUE      TRUE
     
     
+    vlmf_data_tb_xenium |> 
+        filter(grepl("Astro", cell_type_anno), signif_both) |>
+        # filter(grepl("Astro", cluster), signif_both) |>
+        select(cluster, gene_name, vlmf_sn_logFC, vlmf_sn_adj.P.Val, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate)
+    
+    
 } else {
     vlmf_data_tb_xenium |> 
         filter(validate) |>
@@ -352,33 +374,33 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 message(Sys.time() , "Xenium vs. snRNA-seq correlation")
 
 sn_xenium_all_pairs <- vlmf_data_tb |>
-    select(cluster, gene_id, gene_name, starts_with("vlmf")) |> 
+    select(cell_type_anno, cluster, gene_id, gene_name, starts_with("vlmf")) |> 
     rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_")) |>
     rename(cluster_xenium = cluster) |>
     inner_join(sn_DEG_data |> rename(cluster_sn = cluster), relationship = "many-to-many")
 
 
 sn_xenium_cor <- sn_xenium_all_pairs |>
-    group_by(cluster_sn, cluster_xenium) |>
+    group_by(cell_type_anno, cluster_sn, cluster_xenium) |>
     filter(n() >= 10) |> 
     summarise(
         tidy(cor.test(vlmf_sn_t, vlmf_xenium_t, method="spearman")),
         n_genes=n(),
         .groups="drop"
     ) |>
-    select(cluster_sn, cluster_xenium, n_genes, cor = estimate, p_value = p.value)|> 
+    select(cell_type_anno, cluster_sn, cluster_xenium, n_genes, cor = estimate, p_value = p.value)|> 
     left_join(sn_xenium_all_pairs |>
                   filter(vlmf_sn_adj.P.Val < 0.05) |>
-                  group_by(cluster_sn, cluster_xenium) |>
+                  group_by(cell_type_anno, cluster_sn, cluster_xenium) |>
                   filter(n() >= 10) |> ## filter for atleast 10 genes after vlmf pval filter
                   summarise(
                       tidy(cor.test(vlmf_sn_t, vlmf_xenium_t, method="spearman")),
                       n_genes_FDR05=n(),
                       .groups="drop"
                   ) |>
-                  select(cluster_sn, cluster_xenium, n_genes_FDR05, cor_FDR05 = estimate, p_value_FDR05 = p.value)
+                  select(cell_type_anno, cluster_sn, cluster_xenium, n_genes_FDR05, cor_FDR05 = estimate, p_value_FDR05 = p.value)
     ) |>
-    mutate(cluster_match = as.character(cluster_sn) == as.character(cluster_xenium),
+    mutate(cluster_match = as.character(cluster_sn) == as.character(cell_type_anno),
            FDR = p.adjust(p_value, method="BH"),
            FDR_fdr05 = p.adjust(p_value_FDR05, method="BH"),
            )
@@ -415,7 +437,7 @@ ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_
 validation_summary_cor <- validation_summary |>
     left_join(sn_xenium_cor |> 
                   filter(cluster_match) |>
-                  select(cluster = cluster_sn,
+                  select(cluster = cluster_xenium,
                          n_genes, cor, p_value, 
                          n_genes_FDR05, cor_FDR05, p_value_FDR05))
 
@@ -629,8 +651,10 @@ comapre_stats_scatter <- function(dge_tb, ctb, stat = "t", mX = "vlmf_sn", mY = 
 
 if(opt$datatype == "Xenium_cell_type_anno"){
     
-    map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, model_name = "carrier"))
-    map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, stat = "logFC", model_name = "carrier"))
+    map(levels(vlmf_data_tb_xenium$cell_type_broad), ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, model_name = "carrier"))
+    
+    # map(cell_type_broad_levels, ~comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = .x, stat = "logFC", model_name = "carrier"))
+    
 } else {
     vlmf_data_tb_xenium$cell_type_broad <- "Xenium_Oligo.3_Astro"
     comapre_stats_scatter(dge_tb = vlmf_data_tb_xenium, ctb = "Xenium_Oligo.3_Astro", model_name = "carrier")
@@ -640,22 +664,26 @@ if(opt$datatype == "Xenium_cell_type_anno"){
 # vlmf_data_tb |> filter(cluster == "Oligo.3") |> filter(vlmf_xenium =)
 
 #### compare stats cluster vs. cluster 
+
 carrier_data_wide_t <- vlmf_data_tb |>
     select(gene_id, gene_id, cluster, vlmf_t) |>
     # count(cluster)
     pivot_wider(values_from = "vlmf_t", names_from = "cluster")
 
-ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t), aes(size = 0.5, alpha = 0.5))
-
-ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_fine_t_stat_ggpairs.png", opt$datatype)), height = 10, width = 10)
-
-if(opt$datatype == "Xenium_cell_type_anno"){
+if(opt$datatype %in% c("Xenium_cell_type_anno", "Xenium_Oligo.3_Astro")){
     map(cell_type_broad_levels, function(ctb){
         message(ctb)
         ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = grep(ctb, colnames(carrier_data_wide_t)), aes(size = 0.5, alpha = 0.5))
         ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_t_stat_ggpairs-%s.png",opt$datatype, ctb)))
         
     })
+} else{
+    
+    ggpair_t_stats <- ggpairs(carrier_data_wide_t, columns = 2:ncol(carrier_data_wide_t), aes(size = 0.5, alpha = 0.5))
+    
+    ggsave(ggpair_t_stats, filename = here(plot_dir, sprintf("%s_fine_t_stat_ggpairs.png", opt$datatype)), height = 10, width = 10)
+    
+    
 }
 
 #### qvalue ####
@@ -735,28 +763,29 @@ message(Sys.time() , "t-stat heatmaps")
 
 if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
+    ## Oligo.3 plot
     sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
-        filter(vlmf_sn_adj.P.Val < 0.05) |>
+        filter(cell_type_anno == "Oligo.3", vlmf_sn_adj.P.Val < 0.05) |>
         select(gene_name ,vlmf_sn_logFC, vlmf_sn_t, vlmf_sn_adj.P.Val) |>
         unique() |>
         arrange(vlmf_sn_t)
     
     t_stat_SpX_mat <- vlmf_data_tb_xenium |>
-                              filter(vlmf_sn_adj.P.Val < 0.05) |>
+                              filter(cell_type_anno == "Oligo.3", vlmf_sn_adj.P.Val < 0.05) |>
                               select(gene_name, cluster, vlmf_xenium_t) |>
                               pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster") |>
                               column_to_rownames("gene_name") |>
                               as.matrix()
     
     p_SpX_mat <- vlmf_data_tb_xenium |>
-                         filter(vlmf_sn_adj.P.Val < 0.05) |>
+                         filter(cell_type_anno == "Oligo.3", vlmf_sn_adj.P.Val < 0.05) |>
                          select(gene_name, cluster, vlmf_xenium_P.Value) |>
                          pivot_wider(values_from = "vlmf_xenium_P.Value", names_from = "cluster") |>
                          column_to_rownames("gene_name") |>
                          as.matrix()
     
     signif_SpX_mat <- vlmf_data_tb_xenium |>
-                              filter(vlmf_sn_adj.P.Val < 0.05) |>
+                              filter(cell_type_anno == "Oligo.3", vlmf_sn_adj.P.Val < 0.05) |>
                               mutate(signif = case_when(signif_xenium & validate ~ "X",
                                                         signif_xenium ~ "*",
                                                         TRUE ~ "")) |>
@@ -768,12 +797,20 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
     # row annotation by sn t-stat mediation & LR genes
     mediator_outcome_eval <- read_csv(here("processed-data", "21_Xenium", "06_xenium_ALL_probe_eval", "ECR_mediator_outcome_xenium_eval.csv"))
+    med_outcome_summary <- mediator_outcome_eval |>
+        select(gene_name = outcome, med_Astro = med_cl) |>
+        unique() |>
+        group_by(gene_name) |>
+        summarise(n_med = n(),
+                  med_Astro = paste0(unique(med_Astro), collapse = ", ")) |>
+        mutate(med_Astro = ifelse(n_med > 1, "Multi", med_Astro))
+    
     LR_pair_df = read_csv(here('processed-data', '24_xenium_liana', '04_global_score_heatmap', 'unique_ligand_receptor_pairs.csv'), show_col_types = FALSE)
     
     sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
         select(gene_name, vlmf_sn_t) |>
-        mutate(med_oucome = gene_name %in% mediator_outcome_eval$outcome,
-               LR_receptor = gene_name %in% LR_pair_df$receptor_complex) |>
+        left_join(med_outcome_summary |> select(-n_med)) |>
+        mutate(LR_receptor = gene_name %in% LR_pair_df$receptor_complex) |>
         column_to_rownames("gene_name")
     
     sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
@@ -781,21 +818,26 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
                                           max(c(0.01, sn_DEG_data_test_df$vlmf_sn_t))), 
                                         colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']]))
     
+    astro_colors <- cell_type_colors$anno[grepl("Astro", names(cell_type_colors$anno))]
+    
     sn_t_row_ha <- rowAnnotation(
         df = sn_DEG_data_test_df,
         col = list(vlmf_sn_t = sn_t_col_fun,
-                   med_oucome = c(`TRUE` = "darkgreen", `FALSE` = "white"),
+                   med_Astro = c(`Multi` = "darkgreen", astro_colors),
                    LR_receptor = c(`TRUE` = "darkblue", `FALSE` = "white"))
     )
     
     # col annotation by n validation
     cluster_val <- validation_summary |>
+        filter(!grepl("^Astro", cluster)) |>
         ungroup() |>
-        mutate(n_opp = n_signif_both - n_validate) |>
+        mutate(n_opp = n_signif_both - n_validate,
+               cluster = as.character(cluster)) |>
         select(cluster, n_validate, n_opp) |>
         column_to_rownames("cluster")
     
-    cluster_val <- cluster_val[cluster_levels,]
+    oligo_cluster_levels <- cluster_levels[!grepl("^Astro", cluster_levels)]
+    cluster_val <- cluster_val[oligo_cluster_levels,]
     
     ha_cluster_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(cluster_val)))
     
@@ -805,9 +847,9 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
         select(-n, - Oligo.3_Astro_test) |>
         column_to_rownames("Oligo.3_Astro")
     
-    Oligo.3_Astro_summary <- Oligo.3_Astro_summary[cluster_levels, ]
-    
-    astro_colors <- cell_type_colors$anno[grepl("Astro", names(cell_type_colors$anno))]
+   
+    Oligo.3_Astro_summary <- Oligo.3_Astro_summary[oligo_cluster_levels, ]
+
     
     ha_cluster_test = HeatmapAnnotation(df = Oligo.3_Astro_summary,
                                         col = list(
@@ -820,8 +862,8 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
     
     
     # reorder tabs 
-    signif_SpX_ct <- signif_SpX_mat[rownames(sn_DEG_data_test_df),cluster_levels, drop = FALSE]
-    t_stat_SpX_ct <- t_stat_SpX_mat[rownames(sn_DEG_data_test_df),cluster_levels, drop = FALSE]
+    signif_SpX_ct <- signif_SpX_mat[rownames(sn_DEG_data_test_df),oligo_cluster_levels, drop = FALSE]
+    t_stat_SpX_ct <- t_stat_SpX_mat[rownames(sn_DEG_data_test_df),oligo_cluster_levels, drop = FALSE]
     
     signif_SpX_ct[is.na(signif_SpX_ct)] <- ""
     
@@ -904,6 +946,128 @@ if(opt$datatype == "Xenium_Oligo.3_Astro"){
     dev.off()
    
     
+    ## Astro neighbor plot
+    sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
+        filter(grepl("Astro", cell_type_anno), vlmf_sn_adj.P.Val < 0.05) |>
+        select(cell_type_anno, gene_name, vlmf_sn_logFC, vlmf_sn_t, vlmf_sn_adj.P.Val) |>
+        unique() |>
+        arrange(vlmf_sn_t)
+    
+    sn_DEG_data_FDR05 |> count(gene_name) ## all unique
+    
+    t_stat_SpX_mat <- vlmf_data_tb_xenium |>
+        filter(grepl("Astro", cell_type_anno), vlmf_sn_adj.P.Val < 0.05) |>
+        select(gene_name, cluster, vlmf_xenium_t) |>
+        pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster") |>
+        column_to_rownames("gene_name") |>
+        as.matrix()
+    
+    p_SpX_mat <- vlmf_data_tb_xenium |>
+        filter(cell_type_anno == "Oligo.3", vlmf_sn_adj.P.Val < 0.05) |>
+        select(gene_name, cluster, vlmf_xenium_P.Value) |>
+        pivot_wider(values_from = "vlmf_xenium_P.Value", names_from = "cluster") |>
+        column_to_rownames("gene_name") |>
+        as.matrix()
+    
+    signif_SpX_mat <- vlmf_data_tb_xenium |>
+        filter(grepl("Astro", cell_type_anno), vlmf_sn_adj.P.Val < 0.05) |>
+        mutate(signif = case_when(signif_xenium & validate ~ "X",
+                                  signif_xenium ~ "*",
+                                  TRUE ~ "")) |>
+        select(gene_name, cluster, signif) |>
+        pivot_wider(values_from = "signif", names_from = "cluster") |>
+        column_to_rownames("gene_name") |>
+        as.matrix()
+    
+    # row annotation by sn t-stat mediation & LR genes
+    sn_DEG_data_test_df <- sn_DEG_data_FDR05 |>  ## TODO fix order
+        select(gene_name, vlmf_sn_t) |>
+        mutate(LR_Ligand = gene_name %in% LR_pair_df$ligand_complex) |>
+        mutate(Mediator = gene_name %in% mediator_outcome_eval$mediator) |>
+        column_to_rownames("gene_name") 
+    
+    sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
+                                          0, 
+                                          max(c(0.01, sn_DEG_data_test_df$vlmf_sn_t))), 
+                                        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']]))
+    
+    astro_colors <- cell_type_colors$anno[grepl("Astro", names(cell_type_colors$anno))]
+    
+    sn_t_row_ha <- rowAnnotation(
+        df = sn_DEG_data_test_df,
+        col = list(vlmf_sn_t = sn_t_col_fun,
+                   med_Astro = c(`Mediator` = "darkgreen", `FALSE` = "white"),
+                   LR_receptor = c(`TRUE` = "darkblue", `FALSE` = "white"))
+    )
+    
+    # col annotation by n validation
+    cluster_val <- validation_summary |>
+        filter(grepl("^Astro", cluster)) |>
+        ungroup() |>
+        mutate(n_opp = n_signif_both - n_validate,
+               cluster = as.character(cluster)) |>
+        select(cluster, n_validate, n_opp) |>
+        column_to_rownames("cluster")
+    
+    astro_cluster_levels <- cluster_levels[grepl("^Astro", cluster_levels)]
+    astro_cluster_levels <- astro_cluster_levels[astro_cluster_levels %in% colnames(signif_SpX_mat)]
+    
+    cluster_val <- cluster_val[astro_cluster_levels,]
+    
+    ha_cluster_val = HeatmapAnnotation(n_validated = anno_barplot(as.matrix(cluster_val)))
+    
+    ## col annotation by Astro 3 types
+    Astro_anno <- tibble(astro = astro_cluster_levels) |>
+        separate(astro, into = c('cell_type', 'dist_class'), sep = "_APOE_", remove = FALSE) |>
+        column_to_rownames("astro")
+ 
+    Astro_anno <- Astro_anno[astro_cluster_levels, ]
+    
+    
+    ha_cluster_test = HeatmapAnnotation(df = Astro_anno,
+                                        col = list(
+                                            APOE_level = c(high = "#F89441",
+                                                           low = "#7E03A8"),
+                                            cell_type = astro_colors
+                                        ))
+    
+    
+    setequal(rownames(sn_DEG_data_test_df), rownames(signif_SpX_mat))
+    setdiff(astro_cluster_levels,colnames(signif_SpX_mat))
+    
+    # reorder tabs 
+    signif_SpX_ct <- signif_SpX_mat[rownames(sn_DEG_data_test_df),astro_cluster_levels, drop = FALSE]
+    t_stat_SpX_ct <- t_stat_SpX_mat[rownames(sn_DEG_data_test_df),astro_cluster_levels, drop = FALSE]
+    
+    signif_SpX_ct[is.na(signif_SpX_ct)] <- ""
+    
+    ## color scale for xenium stats
+    xenium_t_col_fun = circlize::colorRamp2(
+        c(min(c(-0.01,t_stat_SpX_ct), na.rm = TRUE), 
+          0, 
+          max(c(0.01, t_stat_SpX_ct), na.rm = TRUE)
+        ), 
+        colors = c(APOE_carrier_colors_dark[['E2+']], "white", APOE_carrier_colors_dark[['E4+']])
+    )
+    
+    sn_reg <- ifelse(sn_DEG_data_test_df$vlmf_sn_t > 0, "upreg", "downreg")
+    
+    pdf(here(plot_dir, sprintf("%s_ASTRO_t_stat_heatmap.pdf", opt$datatype)), height = 3 + nrow(t_stat_SpX_ct)/5, width = 9)
+    print(Heatmap(t_stat_SpX_ct, 
+                  name = "xenium\nt-stat",
+                  col = xenium_t_col_fun,
+                  cluster_rows = FALSE,
+                  cluster_columns = FALSE,
+                  right_annotation =  sn_t_row_ha,
+                  row_split = sn_reg,
+                  top_annotation = ha_cluster_val,
+                  bottom_annotation = ha_cluster_test,
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                      grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+                  },
+                  column_title = opt$datatype
+    ))    
+    dev.off()
 }
 
 
