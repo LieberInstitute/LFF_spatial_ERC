@@ -21,6 +21,20 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 plot_dir <- here("plots", "22_Mediation", "04_Mediation_Xenium_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+#### load mediation data ####
+mediation_summary_fn <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")
+mediation_summary <- read_csv(mediation_summary_fn)
+
+message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(mediation_summary)))
+
+mediated_hits <- mediation_summary |> filter(Xen_mediated)
+message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
+
+if (nrow(mediated_hits) < 1) stop("No mediated=TRUE rows found in mediation_summary -- nothing to plot.")
+
+mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator)
+
+mediated_hits |> select(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator, outcome, Xen_valid)
 
 #### Test ####
 
@@ -29,27 +43,13 @@ sce_pb_test$APOE_carrier_syn <- gsub("\\+", "", sce_pb_test$APOE_carrier)
 
 Pvalthr <- 0.10
 
-## TEST DATA ONLY
-mediation_validation_details_test <- tribble(
-    ~med_cl,   ~mediator, ~outcome,   ~fdr_SN,      ~logFC_SN,    ~t_SN,        ~fdr_med_SN,  ~logFC_med_SN, ~t_med_SN,    ~P.Value_base, ~t_base, ~P.Value_carrier, ~t_carrier, ~P.Value_med, ~t_med,
-    "Astro.1", "NPTXR",   "ENC1",     0.0237872721, 1.6097504634, 3.8146795364, 0.1239374317, 0.7402303449,  2.3967737652, 0.02,          3.6,     0.35,             1.0,        0.03,         2.4,
-    "Astro.1", "NPTXR",   "GAD1",     0.0245218129, 1.7475474272, 3.7624557316, 0.0987551505, 0.9511133197,  2.6142188980, 0.015,         3.9,     0.02,             3.4,        0.6,          0.4,
-    "Astro.1", "NPTXR",   "SLC17A7",  0.0388135146, 1.4690011806, 3.2966838422, 0.3352254727, 0.4870199198,  1.5008013206, 0.04,          3.1,     0.20,             1.4,        0.7,          0.3
-) |>
-    mutate(
-        base_sig    = P.Value_base < Pvalthr,
-        base_dir    = sign(t_SN) == sign(t_base),
-        base_valid  = base_sig & base_dir,
-        carrier_sig = P.Value_carrier < Pvalthr,
-        carrier_dir = sign(t_carrier) == sign(t_base),
-        med_sig     = P.Value_med < Pvalthr,
-        mediated    = !carrier_sig & med_sig
-    )
+## mediator stats 
+# de_stats <- readRDS(here("processed-data", "13_compile_DGE",))
 
 med_plot_test <- plot_DEG_mediated_express(
     sce = sce_pb_test,
     sce_mediator = sce_pb_test,
-    stats = mediation_validation_details_test,
+    stats = mediation_summary,
     clus = "Oligo.3",
     med_clus = "Astro.1",
     mediator = "NPTXR",
@@ -65,18 +65,6 @@ med_plot_test <- plot_DEG_mediated_express(
 
 ggsave(med_plot_test, filename = here(plot_dir, "med_plot_test.png"))
 
-#### load mediation data ####
-mediation_summary_fn <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")
-mediation_summary <- read.csv(mediation_summary_fn)
-
-message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(mediation_summary)))
-
-mediated_hits <- mediation_summary |> filter(mediated)
-message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
-
-if (nrow(mediated_hits) < 1) stop("No mediated=TRUE rows found in mediation_summary -- nothing to plot.")
-
-mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator)
 
 
 ## pb_fn resolution + caching -- same lookup as 03_Mediation_Xenium_pairs.R.
