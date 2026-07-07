@@ -165,7 +165,7 @@ mediation_validation_details <- function(mediation_eval, med_cluster, gene_name,
     mediation_eval |>
         filter(med_cl == med_cluster, mediator == gene_name) |>
         select(med_cl:t_med) |>
-        rename_with(~paste0(.x, "_SN_outcome"), fdr:t_med) |>
+        rename_with(~paste0(.x, "_SN"), fdr:t_med) |>
         left_join(tt_baseline   |> select(outcome = gene_name, P.Value_Xen = P.Value,    t_Xen = t),    by = join_by(outcome)) |>
         left_join(tt_mediation  |> select(outcome = gene_name, P.Value_Xen_carrier = P.Value, t_Xen_carrier = t), by = join_by(outcome)) |>
         left_join(ttM_mediation |> select(outcome = gene_name, P.Value_Xen_med = P.Value,     t_Xen_med = t),     by = join_by(outcome)) |>
