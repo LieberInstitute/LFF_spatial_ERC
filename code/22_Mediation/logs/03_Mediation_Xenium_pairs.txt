@@ -1,0 +1,401 @@
+**** Job starts ****
+Tue Jul  7 02:24:08 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 33945489
+Job name: 03_Mediation_Xenium_pairs
+Node name: compute-106
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+Loading required package: limma
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:limma’:
+
+    plotMA
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:data.table’:
+
+    first, second
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:data.table’:
+
+    shift
+
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘SingleCellExperiment’
+
+The following objects are masked from ‘package:edgeR’:
+
+    cpm, tpm
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::between()      masks data.table::between()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first(), data.table::first()
+✖ lubridate::hour()     masks data.table::hour()
+✖ lubridate::isoweek()  masks data.table::isoweek()
+✖ lubridate::isoyear()  masks data.table::isoyear()
+✖ dplyr::lag()          masks stats::lag()
+✖ dplyr::last()         masks data.table::last()
+✖ lubridate::mday()     masks data.table::mday()
+✖ lubridate::minute()   masks data.table::minute()
+✖ lubridate::month()    masks data.table::month()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ lubridate::quarter()  masks data.table::quarter()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second(), data.table::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ purrr::transpose()    masks data.table::transpose()
+✖ lubridate::wday()     masks data.table::wday()
+✖ lubridate::week()     masks data.table::week()
+✖ lubridate::yday()     masks data.table::yday()
+✖ lubridate::year()     masks data.table::year()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+qs2 0.2.1
+2026-07-07 14:24:20.358721 - 12 scenarios to run from pairs table
+2026-07-07 14:24:20.418142 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.1
+2026-07-07 14:24:20.418612 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno.RDS
+Loading required namespace: SpatialExperiment
+  - 2 candidate mediator genes for med_cl=Astro.1
+First sample weights (min/max) 0.4513297/2.4211593
+First intra-block correlation  -0.003594942
+Final sample weights (min/max) 0.4525676/2.4286855
+Final intra-block correlation  -0.003723948
+First sample weights (min/max) 0.3534305/1.7124940
+First intra-block correlation  0.04419321
+Final sample weights (min/max) 0.3547008/1.7119081
+Final intra-block correlation  0.04412806
+2026-07-07 14:24:25.983131 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.2
+  - 5 candidate mediator genes for med_cl=Astro.2
+First sample weights (min/max) 0.3794145/2.5369050
+First intra-block correlation  0.00636557
+Final sample weights (min/max) 0.3813128/2.5237648
+Final intra-block correlation  0.006017066
+First sample weights (min/max) 0.5333906/2.3166290
+First intra-block correlation  -0.001158202
+Final sample weights (min/max) 0.5325637/2.3192875
+Final intra-block correlation  -0.001341161
+First sample weights (min/max) 0.3860382/2.2230858
+First intra-block correlation  -0.03070031
+Final sample weights (min/max) 0.3875353/2.2126431
+Final intra-block correlation  -0.03075847
+First sample weights (min/max) 0.4469279/2.4089317
+First intra-block correlation  0.001431899
+Final sample weights (min/max) 0.4477431/2.4074992
+Final intra-block correlation  0.00158988
+First sample weights (min/max) 0.3836988/2.4413361
+First intra-block correlation  -0.008748616
+Final sample weights (min/max) 0.3861068/2.4453689
+Final intra-block correlation  -0.009913322
+2026-07-07 14:24:35.175191 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.3
+  - 2 candidate mediator genes for med_cl=Astro.3
+2026-07-07 14:24:35.330608 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.1 med_cl_test=Astro.1
+2026-07-07 14:24:35.331023 - loading pseudobulk: spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS
+  - 2 candidate mediator genes for med_cl=Astro.1
+First sample weights (min/max) 0.497509/1.507905
+First intra-block correlation  0.04905001
+Final sample weights (min/max) 0.4933548/1.5054862
+Final intra-block correlation  0.04935286
+First sample weights (min/max) 0.4587707/1.4830546
+First intra-block correlation  0.06142542
+Final sample weights (min/max) 0.4557119/1.4888317
+Final intra-block correlation  0.06171242
+2026-07-07 14:24:38.905871 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.2 med_cl_test=Astro.2
+  - 5 candidate mediator genes for med_cl=Astro.2
+First sample weights (min/max) 0.4745154/1.7015086
+First intra-block correlation  -0.009035591
+Final sample weights (min/max) 0.4788908/1.7137159
+Final intra-block correlation  -0.008467604
+First sample weights (min/max) 0.608939/1.413380
+First intra-block correlation  0.01549693
+Final sample weights (min/max) 0.6070409/1.4131861
+Final intra-block correlation  0.01576064
+First sample weights (min/max) 0.5345604/1.4289098
+First intra-block correlation  -0.02535773
+Final sample weights (min/max) 0.5381683/1.4265422
+Final intra-block correlation  -0.02578664
+First sample weights (min/max) 0.6575616/1.4282010
+First intra-block correlation  0.005282641
+Final sample weights (min/max) 0.6595906/1.4249923
+Final intra-block correlation  0.005123718
+First sample weights (min/max) 0.5270606/1.4783550
+First intra-block correlation  -0.005708019
+Final sample weights (min/max) 0.5313788/1.4768194
+Final intra-block correlation  -0.005187883
+2026-07-07 14:24:47.813085 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.3 med_cl_test=Astro.3
+  - 2 candidate mediator genes for med_cl=Astro.3
+First sample weights (min/max) 0.7662424/1.3645889
+First intra-block correlation  -0.0758027
+Final sample weights (min/max) 0.7649135/1.3626704
+Final intra-block correlation  -0.07627622
+First sample weights (min/max) 0.6010054/1.4878372
+First intra-block correlation  -0.0481749
+Final sample weights (min/max) 0.596747/1.479441
+Final intra-block correlation  -0.04738991
+2026-07-07 14:24:50.127685 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.1 med_cl_test=Astro.1_APOE_high
+  - 2 candidate mediator genes for med_cl=Astro.1
+First sample weights (min/max) 0.5827095/1.4202403
+First intra-block correlation  0.04866086
+Final sample weights (min/max) 0.5846245/1.4207825
+Final intra-block correlation  0.04846098
+First sample weights (min/max) 0.6165079/1.4026448
+First intra-block correlation  0.03344804
+Final sample weights (min/max) 0.6059156/1.3907477
+Final intra-block correlation  0.03369999
+2026-07-07 14:24:53.889358 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.2 med_cl_test=Astro.2_APOE_high
+  - 5 candidate mediator genes for med_cl=Astro.2
+First sample weights (min/max) 0.6425242/1.8249984
+First intra-block correlation  0.00827279
+Final sample weights (min/max) 0.6418993/1.8218011
+Final intra-block correlation  0.00692848
+First sample weights (min/max) 0.6455287/1.6415867
+First intra-block correlation  0.007564636
+Final sample weights (min/max) 0.6398211/1.6403593
+Final intra-block correlation  0.007037716
+First sample weights (min/max) 0.6232299/1.4763321
+First intra-block correlation  -0.005282659
+Final sample weights (min/max) 0.6237152/1.4762727
+Final intra-block correlation  -0.005670651
+First sample weights (min/max) 0.6256213/1.7597416
+First intra-block correlation  0.03818132
+Final sample weights (min/max) 0.6203286/1.7602614
+Final intra-block correlation  0.03714298
+First sample weights (min/max) 0.6557845/1.6627179
+First intra-block correlation  -0.03243745
+Final sample weights (min/max) 0.6641725/1.6582126
+Final intra-block correlation  -0.03210637
+2026-07-07 14:25:01.976119 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.3 med_cl_test=Astro.3_APOE_high
+  - 2 candidate mediator genes for med_cl=Astro.3
+  - Astro.3_APOE_high|CHRM3: only 8 donors overlap -- skipping
+  - Astro.3_APOE_high|IL6ST: only 8 donors overlap -- skipping
+2026-07-07 14:25:02.434371 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.1 med_cl_test=Astro.1_APOE_low
+  - 2 candidate mediator genes for med_cl=Astro.1
+2026-07-07 14:25:02.943739 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.2 med_cl_test=Astro.2_APOE_low
+  - 5 candidate mediator genes for med_cl=Astro.2
+First sample weights (min/max) 0.437978/1.550737
+First intra-block correlation  0.024352
+Final sample weights (min/max) 0.4277172/1.5415036
+Final intra-block correlation  0.02394453
+First sample weights (min/max) 0.3747407/1.4840036
+First intra-block correlation  -0.003469459
+Final sample weights (min/max) 0.3693716/1.4769648
+Final intra-block correlation  -0.003850495
+First sample weights (min/max) 0.4878061/1.3596017
+First intra-block correlation  -0.07620177
+Final sample weights (min/max) 0.4849303/1.3512541
+Final intra-block correlation  -0.07714602
+First sample weights (min/max) 0.61678/1.43328
+First intra-block correlation  0.0029237
+Final sample weights (min/max) 0.6180844/1.4301075
+Final intra-block correlation  0.00346036
+First sample weights (min/max) 0.4710925/1.5446415
+First intra-block correlation  -0.04649652
+Final sample weights (min/max) 0.4689159/1.5453150
+Final intra-block correlation  -0.04712891
+2026-07-07 14:25:10.876822 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.3 med_cl_test=Astro.3_APOE_low
+  - 2 candidate mediator genes for med_cl=Astro.3
+  - Astro.3_APOE_low|CHRM3: only 7 donors overlap -- skipping
+  - Astro.3_APOE_low|IL6ST: only 7 donors overlap -- skipping
+2026-07-07 14:25:11.343107 - Mediation validation complete: 173 scenario x pair rows, 0 with mediated=TRUE
+[1] "Reproducibility information:"
+[1] "2026-07-07 14:25:11 EDT"
+   user  system elapsed 
+ 57.977   1.718  61.881 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-07-07
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ Biobase              * 2.70.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ cli                    3.6.6    2026-04-09 [1] CRAN (R 4.5.0)
+ data.table           * 1.18.2.1 2026-01-27 [1] CRAN (R 4.5.0)
+ DelayedArray           0.36.1   2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1  2022-05-02 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1    2026-04-03 [1] CRAN (R 4.5.0)
+ edgeR                * 4.8.2    2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.1    2025-09-25 [1] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1   2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1   2026-04-27 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3    2026-04-22 [1] CRAN (R 4.5.0)
+ glue                   1.8.1    2026-04-17 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2    2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4    2025-10-17 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ lattice                0.22-7   2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.5    2026-01-08 [1] CRAN (R 4.5.0)
+ limma                * 3.66.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ locfit                 1.5-9.12 2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.5    2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5    2026-04-04 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3    2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ pillar                 1.11.1   2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ purrr                * 1.2.1    2026-01-09 [1] CRAN (R 4.5.0)
+ qs2                  * 0.2.1    2026-05-04 [1] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1    2026-01-10 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2 2026-03-05 [1] CRAN (R 4.5.0)
+ readr                * 2.2.0    2026-02-19 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0    2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1    2025-08-26 [1] CRAN (R 4.5.0)
+ S4Arrays               1.10.1   2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1   2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2    2026-04-22 [1] CRAN (R 4.5.0)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4    2026-06-04 [1] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10  2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment      1.20.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ statmod                1.5.2    2026-05-17 [1] CRAN (R 4.5.0)
+ stringfish             0.19.0   2026-04-21 [1] CRAN (R 4.5.0)
+ stringi                1.8.7    2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0    2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ tibble               * 3.3.1    2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2    2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0    2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ vctrs                  0.7.3    2026-04-11 [1] CRAN (R 4.5.0)
+ withr                  3.0.2    2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.50.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Tue Jul  7 02:25:11 PM EDT 2026
