@@ -49,9 +49,7 @@ pb_lookup <- tribble(
     "Xenium_cell_type_anno",                     file.path(pb_dir, "spe_xenium_pseudo_DGE-cell_type_anno.RDS"),
     "Xenium_cell_type_anno_SpX",                 file.path(pb_dir, "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS"),
     "Xenium_Oligo.3_Astro",                      file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS"),
-    "spe_xenium_pseudo_DGE-Oligo.3_Astro",       file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS"),
-    "Xenium_Oligo.3_Astro_SpX",                  file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX.RDS"),
-    "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX",   file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX.RDS")
+    "Xenium_Oligo.3_Astro_SpX",                  file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX.RDS")
 )
 
 get_pb_fn <- function(datatype_key) {
@@ -167,18 +165,18 @@ mediation_validation_details <- function(mediation_eval, med_cluster, gene_name,
     mediation_eval |>
         filter(med_cl == med_cluster, mediator == gene_name) |>
         select(med_cl:t_med) |>
-        rename_with(~paste0(.x, "_SN"), fdr:t_med) |>
-        left_join(tt_baseline   |> select(outcome = gene_name, P.Value_base = P.Value,    t_base = t),    by = join_by(outcome)) |>
-        left_join(tt_mediation  |> select(outcome = gene_name, P.Value_carrier = P.Value, t_carrier = t), by = join_by(outcome)) |>
-        left_join(ttM_mediation |> select(outcome = gene_name, P.Value_med = P.Value,     t_med = t),     by = join_by(outcome)) |>
+        rename_with(~paste0(.x, "_SN_outcome"), fdr:t_med) |>
+        left_join(tt_baseline   |> select(outcome = gene_name, P.Value_Xen = P.Value,    t_Xen = t),    by = join_by(outcome)) |>
+        left_join(tt_mediation  |> select(outcome = gene_name, P.Value_Xen_carrier = P.Value, t_Xen_carrier = t), by = join_by(outcome)) |>
+        left_join(ttM_mediation |> select(outcome = gene_name, P.Value_Xen_med = P.Value,     t_Xen_med = t),     by = join_by(outcome)) |>
         mutate(
-            base_sig    = P.Value_base < Pvalthr,
-            base_dir    = sign(t_SN) == sign(t_base),
-            base_valid  = base_sig & base_dir,
-            carrier_sig = P.Value_carrier < Pvalthr,
-            carrier_dir = sign(t_carrier) == sign(t_base),
-            med_sig     = P.Value_med < Pvalthr,
-            mediated    = !carrier_sig & med_sig
+            Xen_sig    = P.Value_Xen < Pvalthr,
+            Xen_dir    = sign(t_SN) == sign(t_Xen),
+            Xen_valid  = Xen_sig & Xen_dir,
+            Xen_carrier_sig = P.Value_Xen_carrier < Pvalthr,
+            Xen_carrier_dir = sign(t_Xen_carrier) == sign(t_Xen),
+            Xen_med_sig     = P.Value_Xen_med < Pvalthr,
+            Xen_mediated    = !Xen_carrier_sig & Xen_med_sig
         )
 }
 
