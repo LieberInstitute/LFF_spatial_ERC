@@ -1,3 +1,6 @@
+#   Project the MOFA model trained on snRNA-seq data to the Xenium pseudobulk
+#   data and compare Factor 3 scores by shared donors (donor-level score)
+
 library(SpatialExperiment)
 library(MOFAcellulaR)
 library(MOFA2)
@@ -19,8 +22,12 @@ sn_factor_path = here(
 out_dir = here(
     "processed-data", "14_MOFA", "06_xenium_sample_scores"
 )
+plot_dir = here(
+    "plots", "14_MOFA", "06_xenium_sample_scores"
+)
 
 dir.create(out_dir, showWarnings = FALSE)
+dir.create(plot_dir, showWarnings = FALSE)
 
 spe = readRDS(spe_path)
 model = load_model(model_path)
@@ -56,7 +63,36 @@ sn_df = read_csv(sn_factor_path, show_col_types = FALSE) |>
     select(sample, value) |>
     dplyr::rename(donor = sample, sn_factor_score = value)
 
-projected_df |>
+comparison_df = projected_df |>
     select(donor, Factor3) |>
     dplyr::rename(xen_factor_score = Factor3) |>
-    inner_join(sn_df, by = 'donor') |>
+    inner_join(sn_df, by = 'donor')
+
+# Calculate correlation between xenium and sn Factor3 scores
+cor_value = cor(
+    comparison_df$xen_factor_score, comparison_df$sn_factor_score,
+    use = "complete.obs"
+)
+
+# Create scatter plot with correlation annotation
+p = ggplot(
+        comparison_df, aes(x = xen_factor_score, y = sn_factor_score)
+    ) +
+    geom_point(size = 3, alpha = 0.7) +
+    geom_smooth(method = "lm", se = TRUE, alpha = 0.2, color = "steelblue") +
+    annotate(
+        "text",
+        x = Inf,
+        y = -Inf,
+        label = paste0("r = ", round(cor_value, 2)),
+        hjust = 1.1,
+        vjust = -0.5,
+        size = 5,
+        fontface = "bold"
+    ) +
+    labs(x = "Xenium Factor3 Score", y = "sn Factor3 Score") +
+    theme_bw(base_size = 15)
+
+ggsave(file.path(plot_dir, "xenium_vs_sn_Factor3_scatter.pdf"), p)
+
+session_info()
