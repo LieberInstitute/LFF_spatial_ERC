@@ -44,6 +44,7 @@ opt <- getopt(mopt)
 ## example
 ## opt$datatype = "Xenium_Oligo.3_Astro"
 ## opt$outcome_cluster = "APOE_high_nnA_Astro.2"
+## opt$outcome_cluster = "nn_Astro.1"
 
 if (is.null(opt$datatype)) opt$datatype <- "Xenium_cell_type_anno"
 if (is.null(opt$outcome_cluster))  opt$outcome_cluster  <- "Oligo.3"
@@ -69,6 +70,12 @@ if (opt$datatype == "Xenium_cell_type_anno") {
     stop("non-valid datatype")
 }
 
+if(opt$outcome %in% c("nn_Astro.1", "nn_Astro.2", "nn_Astro.3")){
+    pd_mediator_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno.RDS")
+} else if(grepl("APOE_high_nnA_Astro|APOE_low_nnA_Astro", opt$outcome)){
+    pd_mediator_fn <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS")
+}
+
 batch <- "chip"
 message(Sys.time(), sprintf(" - Datatype = %s, loading '%s'", opt$datatype, pb_fn))
 
@@ -81,9 +88,11 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load the pseudobulk data ####
 sce_pb <- readRDS(pb_fn)
+sce_mediator_pb <- readRDS(pd_mediator_fn)
 
 dim(sce_pb)
 table(sce_pb$registration_variable)
+unique(sce_pb$registration_variable)
 
 sce_pb$APOE_carrier_syn <- gsub("\\+", "", sce_pb$APOE_carrier)
 table(sce_pb$APOE_carrier_syn)
@@ -167,7 +176,7 @@ if (nrow(med_degs) < 1) stop("No candidate mediator genes from the snRNA-seq scr
 ## and mediator clusters, this is a straight subset of sce_pb -- no
 ## separate/larger object needs to be loaded.
 
-get_mediator_vector <- function(sce_pb, med_cluster, gene_id) {
+get_mediator_vector <- function(sce_pb = sce_mediator_pb, med_cluster, gene_id) {
     
     stopifnot(gene_id %in% rownames(sce_pb))
     stopifnot(med_cluster %in% sce_pb$registration_variable)
@@ -183,9 +192,10 @@ get_mediator_vector <- function(sce_pb, med_cluster, gene_id) {
 }
 
 # med_vec_test <- get_mediator_vector(sce_pb, med_cluster = "Astro.2", gene_id = "FZD8")
-med_vec_test <- get_mediator_vector(sce_pb, med_cluster = "Astro.2_APOE_high", gene_id = "FZD8")
+# med_vec_test <- get_mediator_vector(sce_pb, med_cluster = "Astro.2_APOE_high", gene_id = "FZD8")
+med_vec_test <- get_mediator_vector(med_cluster = "Astro.1", gene_id = "NPTXR")
 
-mediation_eval |> filter(mediator == "FZD8")
+# mediation_eval |> filter(mediator == "FZD8")
 
 #### Core mediation fit ####
 ## same voomLmFit -> eBayes -> topTable pipeline as
@@ -216,8 +226,11 @@ fit_mediation_de <- function(dge_sub, baseline_formula_str, batch_col, med_vec) 
 # fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch,
 #                                           med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.1", gene_id = "PLPPR4"))
 
+# fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch,
+#                                           med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.2_APOE_high", gene_id = "FZD8"))
+
 fit_mediation_de_test <- fit_mediation_de(dge_base_filtered, baseline_formula_str, batch_col = batch,
-                                          med_vec = get_mediator_vector(sce_pb, med_cluster = "Astro.2_APOE_high", gene_id = "FZD8"))
+                                          med_vec = get_mediator_vector(med_cluster = "Astro.1", gene_id = "NPTXR"))
 
                                                                                             ## gene_nameP.Value   t
 # tt_baseline |> filter(gene_name == "TESPA1") |> select(gene_name, P.Value, t)               ## TESPA1     0.0618  1.99  # validates in baseline
@@ -280,8 +293,8 @@ baseline_tt_out |> filter(gene_name %in%
                               (mediation_eval |> filter(med_cl == "Astro.1", mediator == "PLPPR4") |> pull(outcome))
                           ) 
 
-mediation_validation_details_test <- mediation_validation_details(med_cluster = "Astro.2",
-                                                                  gene_name = "FZD8",
+mediation_validation_details_test <- mediation_validation_details(med_cluster = "Astro.1",
+                                                                  gene_name = "NPTXR",
                                                                   tt_baseline = baseline_tt_out,
                                                                   tt_mediation = fit_mediation_de_test$tt,
                                                                   ttM_mediation = fit_mediation_de_test$ttM)
@@ -295,13 +308,14 @@ message(Sys.time(), sprintf(" - Running mediation model for %d candidate mediato
 mediation_results <- pmap(
     list(med_degs$med_cl, med_degs$mediator),
     possibly(function(med_cluster, gene_name) {
-
-        med_vec_full <- get_mediator_vector(sce_pb, med_cluster, gene_name)
-        if (is.null(med_vec_full)) return(NULL)
+        
+        message(Sys.time(), " - med cl:", med_cluster, " gene: ", gene_name)
+        med_vec_full <- get_mediator_vector(sce_pb = sce_mediator_pb, med_cluster, gene_name)
+        stopifnot(!is.null(med_vec_full))
 
         out_brnum <- dge_base_filtered$samples$BrNum
         common_donors <- intersect(out_brnum, names(med_vec_full))
-        if (length(common_donors) < 10) return(NULL)
+        stopifnot(length(common_donors) >= 10)
 
         dge_sub <- dge_base_filtered[, out_brnum %in% common_donors]
         dge_sub <- dge_sub[, match(common_donors, out_brnum)]
@@ -322,6 +336,8 @@ mediation_results <- pmap(
 )
 
 mediation_summary <- bind_rows(mediation_results)
+
+mediation_summary |> filter(mediated)
 
 write.csv(mediation_summary |> select(-mediated_genes),
           file = here(data_dir, sprintf("mediation_summary-%s_%s.csv", opt$datatype, out_clus)),
