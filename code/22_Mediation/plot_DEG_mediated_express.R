@@ -156,9 +156,9 @@ plot_DEG_mediated_express <- function(sce,
     sig_stars <- function(p) dplyr::case_when(p < 0.001 ~ "***", p < 0.01 ~ "**", p < 0.05 ~ "*", TRUE ~ "")
 
     stats_filter <- stats |>
-        dplyr::filter(mediator == mediator_gene, 
+        dplyr::filter(mediator == mediator_gene,
                       .data[[outcome_col]] %in% gene,
-                      med_cl_test == med_cl,
+                      med_cl_test == med_clus,
                       outcome_cl == clus) |>
         dplyr::mutate(
             Var1 = .data[[outcome_col]],
