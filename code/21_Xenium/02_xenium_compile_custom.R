@@ -590,7 +590,7 @@ mediator_outcome |> dplyr::count(med_cl, mediator)
 mediator_outcome |> filter(mediator == "FZD8")
 
 mediation_fdr_scatter <- mediator_outcome |> 
-    ggplot(aes(x = fdr, fdr_med, color = outcome_in_base)) +
+    ggplot(aes(x = fdr_base, fdr_med, color = outcome_in_base)) +
     geom_point() +
     geom_text_repel(aes(label = outcome), size = 1.5) +
     facet_wrap(~mediator) +
@@ -599,7 +599,7 @@ mediation_fdr_scatter <- mediator_outcome |>
 ggsave(mediation_fdr_scatter, filename = here(plot_dir, "mediation_fdr_scatter.png"), height = 8, width = 10)
 
 mediation_logFC_scatter <- mediator_outcome |> 
-    ggplot(aes(x = logFC, logFC_med, color = outcome_in_base)) +
+    ggplot(aes(x = logFC_base, logFC_med, color = outcome_in_base)) +
     geom_point() +
     geom_text_repel(aes(label = outcome), size = 1.5) +
     facet_wrap(~mediator) +
@@ -975,5 +975,4 @@ ALL_probes_summary2 <- ALL_probes_long |>
 ALL_probes_summary2 |> filter(grepl("Base", goals)) |> arrange(-n_goal)
 
 writexl::write_xlsx(ALL_probes_summary2, path = here(data_dir, "ERC_Xenium_ALL_probes_summary.xlsx"))
-
 
