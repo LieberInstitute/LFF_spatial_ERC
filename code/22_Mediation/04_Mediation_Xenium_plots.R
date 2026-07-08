@@ -21,13 +21,13 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 plot_dir <- here("plots", "22_Mediation", "04_Mediation_Xenium_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-#### load mediation data ####
+#### load xenium mediation data ####
 mediation_summary_fn <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")
 mediation_summary <- read_csv(mediation_summary_fn)
 
 message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(mediation_summary)))
 
-mediated_hits <- mediation_summary |> filter(Xen_mediated)
+mediated_hits <- mediation_summary |> filter(Xen_valid, !Xen_carrier_sig)
 message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
 
 if (nrow(mediated_hits) < 1) stop("No mediated=TRUE rows found in mediation_summary -- nothing to plot.")
@@ -44,7 +44,7 @@ sce_pb_test$APOE_carrier_syn <- gsub("\\+", "", sce_pb_test$APOE_carrier)
 Pvalthr <- 0.10
 
 ## mediator stats 
-# de_stats <- readRDS(here("processed-data", "13_compile_DGE",))
+mediated_hits_test <- mediated_hits |> filter(med_cl_test == "Astro.1")
 
 med_plot_test <- plot_DEG_mediated_express(
     sce = sce_pb_test,
@@ -53,7 +53,7 @@ med_plot_test <- plot_DEG_mediated_express(
     clus = "Oligo.3",
     med_clus = "Astro.1",
     mediator_gene = "NPTXR",
-    gene = "ENC1",
+    gene = "GAD1",
     gene_col = "gene_name",
     cluster_col = "registration_variable",
     med_cluster_col = "registration_variable",
@@ -64,6 +64,34 @@ med_plot_test <- plot_DEG_mediated_express(
 )
 
 ggsave(med_plot_test, filename = here(plot_dir, "med_plot_test.png"))
+
+# de_stats <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine", "DGE_results_carrier_sn_fine.Rds"))
+de_stats <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno.Rds"))
+
+med_plot_test2 <- plot_DEG_mediated_express(
+    sce = sce_pb_test,
+    sce_mediator = sce_pb_test,
+    stats = mediation_summary,
+    clus = "Oligo.3",
+    med_clus = "Astro.1",
+    mediator_gene = "NPTXR",
+    gene = "GAD1",
+    gene_col = "gene_name",
+    cluster_col = "registration_variable",
+    med_cluster_col = "registration_variable",
+    category_col = "APOE_carrier",
+    mod = ~APOE_carrier_syn + Age + Anc_Afr,
+    cleanY_P = 2,
+    color_pal = APOE_carrier_colors,
+    plot_mediator_panel = TRUE,
+    mediator_stats = de_stats,
+    mediator_pval_col = "vlmf_P.Value",
+    mediator_fc_col = "vlmf_logFC",
+    mediator_mod = ~APOE_carrier_syn + Age + Anc_Afr,
+    mediator_cleanY_P = 2
+)
+
+ggsave(med_plot_test2, filename = here(plot_dir, "med_plot_test2.png"))
 
 
 
@@ -119,8 +147,11 @@ pwalk(plot_groups, function(mediator_datatype, outcome_datatype, outcome_cl, med
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
 
     genes_this_group <- mediated_hits |>
-        filter(mediator_datatype == !!mediator_datatype, outcome_datatype == !!outcome_datatype,
-               outcome_cl == !!outcome_cl, med_cl_test == !!med_cl_test, mediator == !!mediator) |>
+        filter(mediator_datatype == !!mediator_datatype, 
+               outcome_datatype == !!outcome_datatype,
+               outcome_cl == !!outcome_cl, 
+               med_cl_test == !!med_cl_test, 
+               mediator == !!mediator) |>
         pull(outcome)
 
     p <- tryCatch(
@@ -130,7 +161,7 @@ pwalk(plot_groups, function(mediator_datatype, outcome_datatype, outcome_cl, med
             stats = mediated_hits,
             clus = outcome_cl,
             med_clus = med_cl_test,
-            mediator = mediator,
+            mediator_gene = mediator,
             gene = genes_this_group,
             gene_col = "gene_name",
             cluster_col = "registration_variable",
