@@ -164,19 +164,19 @@ plot_DEG_express_top <- function(sce,
 #' )
 #' 
 plot_DEG_express <- function(sce,
-                                    stats,
-                                    clus = "Astro",
-                                    gene = "NPTXR",
-                                    pval_col = "vlmf_adj.P.Val",
-                                    fc_col = "vlmf_logFC",
-                                    gene_col = "gene_name",
-                                    cluster_col = "registration_variable",
-                                    category_col = "APOE_carrier",
-                                    mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
-                                    cleanY_P = 4,
-                                    color_pal = NULL,
-                                    plot_points = FALSE,
-                                    ncol = 2) {
+                             stats,
+                             clus = "Astro",
+                             gene = "NPTXR",
+                             pval_col = "vlmf_adj.P.Val",
+                             fc_col = "vlmf_logFC",
+                             gene_col = "gene_name",
+                             cluster_col = "registration_variable",
+                             category_col = "APOE_carrier",
+                             mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+                             cleanY_P = 4,
+                             color_pal = NULL,
+                             plot_points = FALSE,
+                             ncol = 2) {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(clus %in% sce[[cluster_col]])
@@ -283,23 +283,23 @@ plot_DEG_express <- function(sce,
 #' )
 #' 
 plot_DEG_express_contrast <- function(sce,
-                                    stats,
-                                    clus = "Astro",
-                                    gene = NULL,
-                                    n_genes = NULL,
-                                    pval_col = "vlmf_adj.P.Val",
-                                    fc_col = "vlmf_logFC",
-                                    gene_col = "gene_name",
-                                    cluster_col = "registration_variable",
-                                    category_col = "carrier_Anc",
-                                    contrast_1 = "carrier_AA",
-                                    contrast_2 = "carrier_EA",
-                                    mod = ~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio,
-                                    cleanY_P = 4,
-                                    color_pal = NULL,
-                                    plot_points = FALSE,
-                                    ncol = 2,
-                                    title = "") {
+                                      stats,
+                                      clus = "Astro",
+                                      gene = NULL,
+                                      n_genes = NULL,
+                                      pval_col = "vlmf_adj.P.Val",
+                                      fc_col = "vlmf_logFC",
+                                      gene_col = "gene_name",
+                                      cluster_col = "registration_variable",
+                                      category_col = "carrier_Anc",
+                                      contrast_1 = "carrier_AA",
+                                      contrast_2 = "carrier_EA",
+                                      mod = ~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio,
+                                      cleanY_P = 4,
+                                      color_pal = NULL,
+                                      plot_points = FALSE,
+                                      ncol = 2,
+                                      title = "") {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(clus %in% sce[[cluster_col]])
@@ -328,23 +328,23 @@ plot_DEG_express_contrast <- function(sce,
         dplyr::rename(dplyr::all_of(lookup)) |>
         dplyr::select(cluster, contrast, gene_col, pval_col, fc_col) 
     
-        stats_filter <- stats |>
-            dplyr::filter(
-                cluster == clus,
-                gene_col %in% gene
-            ) |>
-            arrange(pval_col) |>
-            mutate(
-                rank_col = row_number(),
-                Var1 = gene_col,
-                signif = case_when(pval_col < 0.001 ~"***",
-                                   pval_col < 0.01 ~"**",
-                                   pval_col < 0.05 ~"*",
-                                   TRUE ~ "",
-                ),
-                anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
-            )
-        
+    stats_filter <- stats |>
+        dplyr::filter(
+            cluster == clus,
+            gene_col %in% gene
+        ) |>
+        arrange(pval_col) |>
+        mutate(
+            rank_col = row_number(),
+            Var1 = gene_col,
+            signif = case_when(pval_col < 0.001 ~"***",
+                               pval_col < 0.01 ~"**",
+                               pval_col < 0.05 ~"*",
+                               TRUE ~ "",
+            ),
+            anno_str = sprintf("%s\nFDR=%.2e%s\nlogFC=%.2f", contrast, pval_col, signif, fc_col)
+        )
+    
     
     if (!any(stats_filter$gene_col %in% rownames(sce))) {
         warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
@@ -415,21 +415,21 @@ plot_DEG_express_contrast <- function(sce,
 #')
 
 plot_DEG_express_contrast_top <- function(sce,
-                                 stats,
-                                 clus = "Astro",
-                                 n_genes = 5,
-                                 pval_col = "vlmf_adj.P.Val",
-                                 fc_col = "vlmf_logFC",
-                                 gene_col = "gene_name",
-                                 cluster_col = "registration_variable",
-                                 category_col = "carrier_Anc",
-                                 contrast_1 = "carrier_AA",
-                                 contrast_2 = "carrier_EA",
-                                 mod = ~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio,
-                                 cleanY_P = 4,
-                                 color_pal = NULL,
-                                 plot_points = FALSE,
-                                 ncol = 2) {
+                                          stats,
+                                          clus = "Astro",
+                                          n_genes = 5,
+                                          pval_col = "vlmf_adj.P.Val",
+                                          fc_col = "vlmf_logFC",
+                                          gene_col = "gene_name",
+                                          cluster_col = "registration_variable",
+                                          category_col = "carrier_Anc",
+                                          contrast_1 = "carrier_AA",
+                                          contrast_2 = "carrier_EA",
+                                          mod = ~0+carrier_Anc + Sex + Age + pseudo_expr_chrM_ratio,
+                                          cleanY_P = 4,
+                                          color_pal = NULL,
+                                          plot_points = FALSE,
+                                          ncol = 2) {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(clus %in% sce[[cluster_col]])
@@ -487,125 +487,125 @@ plot_DEG_express_contrast_top <- function(sce,
 #' ggsave(test, filename = here(plot_dir, "test.png"))
 
 plot_DEG_express_interaction <- function(sce,
-                                      stats,
-                                      clus = "Excit.L2_5.2",
-                                      gene = c("SELENOW", "RPL29"),
-                                      n_genes = NULL,
-                                      pval_col = "vlmf_adj.P.Val",
-                                      fc_col = "vlmf_logFC",
-                                      gene_col = "gene_name",
-                                      cluster_col = "registration_variable",
-                                      category_col = "APOE_carrier",
-                                      interaction = "Age",
-                                      mod = ~0+ APOE_carrier + Age + Sex + pseudo_expr_chrM_ratio,
-                                      cleanY_P = 3,
-                                      color_pal = APOE_carrier_colors,
-                                      plot_points = FALSE,
-                                      ncol = 2,
-                                      title = "") {
-  
-  stopifnot(cluster_col %in% colnames(colData(sce)))
-  stopifnot(clus %in% sce[[cluster_col]])
-  stopifnot(clus %in% stats$cluster)
-  
-  # RCMD fix
-  rank_int <- Symbol <- anno_str <- NULL
-  
-  plot_title <- paste(clus, title)
-  # message(title)
-  
-  # max_digits <- nchar(n_genes)
-  
-  stopifnot(pval_col %in% colnames(stats))
-  stopifnot(gene_col %in% colnames(stats))
-  
-  ## filter to cluster
-  
-  lookup <- c(
-    pval_col = pval_col,
-    fc_col = fc_col,
-    gene_col = gene_col
-  )
-  
-  stats <- stats |>
-    dplyr::rename(dplyr::all_of(lookup)) |>
-    dplyr::select(cluster, gene_col, pval_col, fc_col) 
-  
-  stats_filter <- stats |>
-    dplyr::filter(
-      cluster == clus,
-      gene_col %in% gene
-    ) |>
-    arrange(pval_col) |>
-    mutate(
-      rank_col = row_number(),
-      Var1 = gene_col,
-      signif = case_when(pval_col < 0.001 ~"***",
-                         pval_col < 0.01 ~"**",
-                         pval_col < 0.05 ~"*",
-                         TRUE ~ "",
-      ),
-      anno_str = sprintf("%s*%s\nFDR=%.2e%s\nlogFC=%.2f", category_col, interaction, pval_col, signif, fc_col)
-    )
-  
-  
-  if (!any(stats_filter$gene_col %in% rownames(sce))) {
-    warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
-  }
-  
-  # return(stats_filter)
-  
-  #### clean Y ####
-  cluster_index <- sce[[cluster_col]] == clus
-  sce <- sce[,cluster_index]
-  
-  if(is.matrix(mod)) {
-    my_mod <- mod[cluster_index,]
-  } else if(class(mod) == "formula"){
-    my_mod <- model.matrix(mod, colData(sce))
-  }
-  
-  assays(sce)$cleanY <- jaffelab::cleaningY(logcounts(sce),
-                                            mod = my_mod,
-                                            P = cleanY_P)
-  
-  covars <- colnames(my_mod)[(cleanY_P+1):ncol(my_mod)]
-  
-  ## filter data
-  rownames(sce) <- rowData(sce)[[gene_col]]
-  
-  # sce <- sce[stats_filter$gene_col, ]
-  
-  category_df <- as.data.frame(colData(sce))[, c("BrNum", category_col, interaction), drop = FALSE]
-  expression_long <- reshape2::melt(as.matrix(SummarizedExperiment::assays(sce)[["cleanY"]][unique(stats_filter$gene_col), , drop = FALSE]))
-  
-  category <- category_df[expression_long$Var2, ]
-  expression_long <- cbind(expression_long, category)
-  
-  pe <- ggplot(data = expression_long, 
-               aes(x = !!sym(interaction), 
-                   y = value)
-               ) +
-    geom_point(aes(color = !!sym(category_col))) +
-    geom_smooth(aes(color = !!sym(category_col)), method = "lm") +
-    ggrepel::geom_text_repel(aes(label = BrNum, color = !!sym(category_col)), size = 1.5) +
-    facet_wrap(~Var1) + 
-    ggplot2::geom_label(
-      data = stats_filter,
-      ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
-      alpha = 0.5,
-      vjust = "inward",
-      hjust = "inward",
-      size = 2.5,
-      color = "black"
-    ) +
-    labs(title = plot_title, y = "logcounts - Covariates") +
-    scale_color_manual(values = color_pal) +
-    theme_bw() +
-    theme(strip.text.x = ggplot2::element_text(face = "italic"),
-          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+                                         stats,
+                                         clus = "Excit.L2_5.2",
+                                         gene = c("SELENOW", "RPL29"),
+                                         n_genes = NULL,
+                                         pval_col = "vlmf_adj.P.Val",
+                                         fc_col = "vlmf_logFC",
+                                         gene_col = "gene_name",
+                                         cluster_col = "registration_variable",
+                                         category_col = "APOE_carrier",
+                                         interaction = "Age",
+                                         mod = ~0+ APOE_carrier + Age + Sex + pseudo_expr_chrM_ratio,
+                                         cleanY_P = 3,
+                                         color_pal = APOE_carrier_colors,
+                                         plot_points = FALSE,
+                                         ncol = 2,
+                                         title = "") {
     
-  return(pe)
+    stopifnot(cluster_col %in% colnames(colData(sce)))
+    stopifnot(clus %in% sce[[cluster_col]])
+    stopifnot(clus %in% stats$cluster)
+    
+    # RCMD fix
+    rank_int <- Symbol <- anno_str <- NULL
+    
+    plot_title <- paste(clus, title)
+    # message(title)
+    
+    # max_digits <- nchar(n_genes)
+    
+    stopifnot(pval_col %in% colnames(stats))
+    stopifnot(gene_col %in% colnames(stats))
+    
+    ## filter to cluster
+    
+    lookup <- c(
+        pval_col = pval_col,
+        fc_col = fc_col,
+        gene_col = gene_col
+    )
+    
+    stats <- stats |>
+        dplyr::rename(dplyr::all_of(lookup)) |>
+        dplyr::select(cluster, gene_col, pval_col, fc_col) 
+    
+    stats_filter <- stats |>
+        dplyr::filter(
+            cluster == clus,
+            gene_col %in% gene
+        ) |>
+        arrange(pval_col) |>
+        mutate(
+            rank_col = row_number(),
+            Var1 = gene_col,
+            signif = case_when(pval_col < 0.001 ~"***",
+                               pval_col < 0.01 ~"**",
+                               pval_col < 0.05 ~"*",
+                               TRUE ~ "",
+            ),
+            anno_str = sprintf("%s*%s\nFDR=%.2e%s\nlogFC=%.2f", category_col, interaction, pval_col, signif, fc_col)
+        )
+    
+    
+    if (!any(stats_filter$gene_col %in% rownames(sce))) {
+        warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
+    }
+    
+    # return(stats_filter)
+    
+    #### clean Y ####
+    cluster_index <- sce[[cluster_col]] == clus
+    sce <- sce[,cluster_index]
+    
+    if(is.matrix(mod)) {
+        my_mod <- mod[cluster_index,]
+    } else if(class(mod) == "formula"){
+        my_mod <- model.matrix(mod, colData(sce))
+    }
+    
+    assays(sce)$cleanY <- jaffelab::cleaningY(logcounts(sce),
+                                              mod = my_mod,
+                                              P = cleanY_P)
+    
+    covars <- colnames(my_mod)[(cleanY_P+1):ncol(my_mod)]
+    
+    ## filter data
+    rownames(sce) <- rowData(sce)[[gene_col]]
+    
+    # sce <- sce[stats_filter$gene_col, ]
+    
+    category_df <- as.data.frame(colData(sce))[, c("BrNum", category_col, interaction), drop = FALSE]
+    expression_long <- reshape2::melt(as.matrix(SummarizedExperiment::assays(sce)[["cleanY"]][unique(stats_filter$gene_col), , drop = FALSE]))
+    
+    category <- category_df[expression_long$Var2, ]
+    expression_long <- cbind(expression_long, category)
+    
+    pe <- ggplot(data = expression_long, 
+                 aes(x = !!sym(interaction), 
+                     y = value)
+    ) +
+        geom_point(aes(color = !!sym(category_col))) +
+        geom_smooth(aes(color = !!sym(category_col)), method = "lm") +
+        ggrepel::geom_text_repel(aes(label = BrNum, color = !!sym(category_col)), size = 1.5) +
+        facet_wrap(~Var1) + 
+        ggplot2::geom_label(
+            data = stats_filter,
+            ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
+            alpha = 0.5,
+            vjust = "inward",
+            hjust = "inward",
+            size = 2.5,
+            color = "black"
+        ) +
+        labs(title = plot_title, y = "logcounts - Covariates") +
+        scale_color_manual(values = color_pal) +
+        theme_bw() +
+        theme(strip.text.x = ggplot2::element_text(face = "italic"),
+              axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+    
+    return(pe)
 }
 
 
