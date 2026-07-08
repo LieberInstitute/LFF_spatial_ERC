@@ -28,9 +28,10 @@
 #' pseudobulk file, e.g. the `Xenium_Oligo.3_Astro` scenarios).
 #' @param stats A `data.frame()` with mediation validation results -- one
 #' row per outcome gene for the given `mediator`/`med_clus`, matching the
-#' shape of `mediation_validation_details()`'s output (columns `outcome`,
-#' `mediator`, `P.Value_base`, `t_base`, `P.Value_carrier`, `t_carrier`,
-#' `P.Value_med`, `t_med`, `mediated`).
+#' shape of `mediation_validation_details()`'s output / the
+#' `mediation_summary-all_scenarios_*.csv` files (columns `outcome`,
+#' `mediator`, `P.Value_Xen`, `t_Xen`, `P.Value_Xen_carrier`,
+#' `t_Xen_carrier`, `P.Value_Xen_med`, `t_Xen_med`, `Xen_mediated`).
 #' @param clus A `character(1)` outcome cluster (matches `cluster_col` in
 #' `colData(sce)`).
 #' @param med_clus A `character(1)` mediator cluster (matches
@@ -158,11 +159,11 @@ plot_DEG_mediated_express <- function(sce,
         dplyr::filter(.data[[mediator_col]] == mediator, .data[[outcome_col]] %in% gene) |>
         dplyr::mutate(
             Var1 = .data[[outcome_col]],
-            anno_str_unadj = sprintf("Base: P=%.2e%s\nt=%.2f", P.Value_base, sig_stars(P.Value_base), t_base),
+            anno_str_unadj = sprintf("Base: P=%.2e%s\nt=%.2f", P.Value_Xen, sig_stars(P.Value_Xen), t_Xen),
             anno_str_adj   = sprintf("Adj for %s: P=%.2e%s\nt=%.2f\nM~Y: P=%.2e%s%s",
-                                      mediator, P.Value_carrier, sig_stars(P.Value_carrier), t_carrier,
-                                      P.Value_med, sig_stars(P.Value_med),
-                                      ifelse(isTRUE(mediated), "\n** MEDIATED **", ""))
+                                      mediator, P.Value_Xen_carrier, sig_stars(P.Value_Xen_carrier), t_Xen_carrier,
+                                      P.Value_Xen_med, sig_stars(P.Value_Xen_med),
+                                      ifelse(isTRUE(Xen_mediated), "\n** MEDIATED **", ""))
         )
 
     if (nrow(stats_filter) == 0) {
