@@ -132,7 +132,7 @@ pwalk(mediator_outcome_select2, function(med_cl, mediator, outcome) {
         plot_DEG_mediated_express(
             sce = sce_pb,
             sce_mediator = sce_pb,
-            stats = mediation_pairs_stats,
+            stats = mediator_outcome_select,
             clus = outcome_cl,
             med_clus = med_cl,
             mediator_gene = mediator,
