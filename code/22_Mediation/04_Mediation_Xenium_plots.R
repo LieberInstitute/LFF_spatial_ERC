@@ -52,7 +52,7 @@ med_plot_test <- plot_DEG_mediated_express(
     stats = mediation_summary,
     clus = "Oligo.3",
     med_clus = "Astro.1",
-    mediator = "NPTXR",
+    mediator_gene = "NPTXR",
     gene = "ENC1",
     gene_col = "gene_name",
     cluster_col = "registration_variable",
