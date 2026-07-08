@@ -346,18 +346,22 @@ resolve_mediator_row <- function(mg, md) {
     rs[nrow(rs)]
 }
 
-resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label) {
+resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label, coef = c("carrier", "med_vec")) {
+    coef <- match.arg(coef)
+    file_col <- if (coef == "med_vec") "out_Mfile" else "out_file"
+    file_suffix <- if (coef == "med_vec") ".M.tab.gz" else ".tab.gz"
     mf <- character(0)
     if (!is.null(dt_mi) && nrow(dt_mi) > 0 &&
-        all(c("iter", "med_gene_id", "out_file") %in% names(dt_mi))) {
+        all(c("iter", "med_gene_id", file_col) %in% names(dt_mi))) {
         idx <- dt_mi[iter == it & med_gene_id == mgid]
-        if (nrow(idx) > 0) mf <- idx$out_file[1]
+        if (nrow(idx) > 0) mf <- idx[[file_col]][1]
     }
     if (length(mf) < 1 || !file.exists(mf)) {
-        mf <- file.path(pd$pth$out, sprintf("%03d_%s.tab.gz", it, file_label))
+        mf <- file.path(pd$pth$out, sprintf("%03d_%s%s", it, file_label, file_suffix))
     }
     if (!file.exists(mf)) {
-        cands <- list.files(pd$pth$out, pattern = sprintf("_%s\\.tab\\.gz$", file_label), full.names = TRUE)
+        pattern <- sprintf("_%s%s$", file_label, gsub("\\.", "\\\\.", file_suffix))
+        cands <- list.files(pd$pth$out, pattern = pattern, full.names = TRUE)
         if (length(cands) > 1) {
             finfo <- file.info(cands)
             cands <- cands[order(finfo$mtime, decreasing = TRUE)]
@@ -365,7 +369,7 @@ resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label) {
         mf <- cands[1]
     }
     if (is.na(mf) || !nzchar(mf) || !file.exists(mf)) {
-        stop("Mediation results file not found for mediator run label: ", file_label)
+        stop("Mediation ", coef, " results file not found for mediator run label: ", file_label)
     }
     mf
 }
@@ -1439,12 +1443,15 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
             med_cl = character(0),
             mediator = character(0),
             outcome = character(0),
-            fdr = numeric(0),
-            logFC = numeric(0),
-            t = numeric(0),
-            fdr_med = numeric(0),
-            logFC_med = numeric(0),
-            t_med = numeric(0)
+            fdr_base = numeric(0),
+            logFC_base = numeric(0),
+            t_base = numeric(0),
+            fdr_apoe_med = numeric(0),
+            logFC_apoe_med = numeric(0),
+            t_apoe_med = numeric(0),
+            fdr_med_vec = numeric(0),
+            logFC_med_vec = numeric(0),
+            t_med_vec = numeric(0)
         ))
     }
     if (is.null(pd) || !is.list(pd)) {
@@ -1502,11 +1509,17 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
 
         out_ids <- as.character(gmap$gene_id[match(outcomes, as.character(gmap$gene_name))])
 
-        med_map <- data.table::data.table(
+        apoe_med_map <- data.table::data.table(
             outcome_gene_id = character(0),
-            fdr_med = numeric(0),
-            logFC_med = numeric(0),
-            t_med = numeric(0)
+            fdr_apoe_med = numeric(0),
+            logFC_apoe_med = numeric(0),
+            t_apoe_med = numeric(0)
+        )
+        med_vec_map <- data.table::data.table(
+            outcome_gene_id = character(0),
+            fdr_med_vec = numeric(0),
+            logFC_med_vec = numeric(0),
+            t_med_vec = numeric(0)
         )
         med_key <- sprintf("%s:%s", med_cl, mediator)
         mr <- tryCatch(
@@ -1523,39 +1536,49 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
                 as.character(mr$gene_name[[1]])
             )
             f_lb <- gsub("\\|", "_", run_lb)
-            mf <- tryCatch(
-                resolve_mediator_results_file(
-                    pd = pd,
-                    dt_mi = dt_mi,
-                    it = as.integer(mr$iter[[1]]),
-                    mgid = as.character(mr$med_gene_id[[1]]),
-                    file_label = f_lb
-                ),
-                error = function(e) {
-                    warning(sprintf("Could not find Step-3 file for %s: %s", med_key, conditionMessage(e)))
-                    NA_character_
-                }
-            )
-            if (!is.na(mf) && nzchar(mf) && file.exists(mf)) {
-                dt_mr <- .cached_fread(mf)
-                if (all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_mr))) {
-                    med_fc_col <- first_present_col(dt_mr, c("logFC", "vlmf_logFC"))
-                    med_t_col <- first_present_col(dt_mr, c("t", "vlmf_t"))
-                    med_map <- dt_mr[
-                        !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
-                        {
-                            ii <- which(!is.na(adj.P.Val))
-                            best_i <- if (length(ii) > 0L) ii[which.min(adj.P.Val[ii])] else NA_integer_
-                            .(
-                                fdr_med = min_or_na(adj.P.Val),
-                                logFC_med = if (is.na(med_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_fc_col)[best_i]),
-                                t_med = if (is.na(med_t_col) || is.na(best_i)) NA_real_ else as.numeric(get(med_t_col)[best_i])
-                            )
-                        },
-                        by = .(outcome_gene_id = as.character(outcome_gene_id))
-                    ]
-                } else {
-                    warning(sprintf("Step-3 results file missing required columns: %s", mf))
+            for (coef in c("carrier", "med_vec")) {
+                mf <- tryCatch(
+                    resolve_mediator_results_file(
+                        pd = pd,
+                        dt_mi = dt_mi,
+                        it = as.integer(mr$iter[[1]]),
+                        mgid = as.character(mr$med_gene_id[[1]]),
+                        file_label = f_lb,
+                        coef = coef
+                    ),
+                    error = function(e) {
+                        warning(sprintf("Could not find %s Step-3 file for %s: %s", coef, med_key, conditionMessage(e)))
+                        NA_character_
+                    }
+                )
+                if (!is.na(mf) && nzchar(mf) && file.exists(mf)) {
+                    dt_mr <- .cached_fread(mf)
+                    if (all(c("outcome_gene_id", "adj.P.Val") %in% names(dt_mr))) {
+                        stat_fc_col <- first_present_col(dt_mr, c("logFC", "vlmf_logFC"))
+                        stat_t_col <- first_present_col(dt_mr, c("t", "vlmf_t"))
+                        stat_map <- dt_mr[
+                            !is.na(outcome_gene_id) & nzchar(as.character(outcome_gene_id)),
+                            {
+                                ii <- which(!is.na(adj.P.Val))
+                                best_i <- if (length(ii) > 0L) ii[which.min(adj.P.Val[ii])] else NA_integer_
+                                .(
+                                    fdr = min_or_na(adj.P.Val),
+                                    logFC = if (is.na(stat_fc_col) || is.na(best_i)) NA_real_ else as.numeric(get(stat_fc_col)[best_i]),
+                                    t = if (is.na(stat_t_col) || is.na(best_i)) NA_real_ else as.numeric(get(stat_t_col)[best_i])
+                                )
+                            },
+                            by = .(outcome_gene_id = as.character(outcome_gene_id))
+                        ]
+                        if (coef == "med_vec") {
+                            data.table::setnames(stat_map, c("fdr", "logFC", "t"), c("fdr_med_vec", "logFC_med_vec", "t_med_vec"))
+                            med_vec_map <- stat_map
+                        } else {
+                            data.table::setnames(stat_map, c("fdr", "logFC", "t"), c("fdr_apoe_med", "logFC_apoe_med", "t_apoe_med"))
+                            apoe_med_map <- stat_map
+                        }
+                    } else {
+                        warning(sprintf("%s Step-3 results file missing required columns: %s", coef, mf))
+                    }
                 }
             }
         }
@@ -1563,25 +1586,36 @@ build_erc_mediator_impact_dt <- function(diag_dt, pd) {
         fdr_base <- base_map$fdr[match(out_ids, base_map$outcome_gene_id)]
         logFC_base <- base_map$logFC[match(out_ids, base_map$outcome_gene_id)]
         t_base <- base_map$t[match(out_ids, base_map$outcome_gene_id)]
-        fdr_med <- med_map$fdr_med[match(out_ids, med_map$outcome_gene_id)]
-        logFC_med <- med_map$logFC_med[match(out_ids, med_map$outcome_gene_id)]
-        t_med <- med_map$t_med[match(out_ids, med_map$outcome_gene_id)]
+        fdr_apoe_med <- apoe_med_map$fdr_apoe_med[match(out_ids, apoe_med_map$outcome_gene_id)]
+        logFC_apoe_med <- apoe_med_map$logFC_apoe_med[match(out_ids, apoe_med_map$outcome_gene_id)]
+        t_apoe_med <- apoe_med_map$t_apoe_med[match(out_ids, apoe_med_map$outcome_gene_id)]
+        fdr_med_vec <- med_vec_map$fdr_med_vec[match(out_ids, med_vec_map$outcome_gene_id)]
+        logFC_med_vec <- med_vec_map$logFC_med_vec[match(out_ids, med_vec_map$outcome_gene_id)]
+        t_med_vec <- med_vec_map$t_med_vec[match(out_ids, med_vec_map$outcome_gene_id)]
 
         data.table::data.table(
             med_cl = med_cl,
             mediator = mediator,
             outcome = outcomes,
-            fdr = as.numeric(fdr_base),
-            logFC = as.numeric(logFC_base),
-            t = as.numeric(t_base),
-            fdr_med = as.numeric(fdr_med),
-            logFC_med = as.numeric(logFC_med),
-            t_med = as.numeric(t_med)
+            fdr_base = as.numeric(fdr_base),
+            logFC_base = as.numeric(logFC_base),
+            t_base = as.numeric(t_base),
+            fdr_apoe_med = as.numeric(fdr_apoe_med),
+            logFC_apoe_med = as.numeric(logFC_apoe_med),
+            t_apoe_med = as.numeric(t_apoe_med),
+            fdr_med_vec = as.numeric(fdr_med_vec),
+            logFC_med_vec = as.numeric(logFC_med_vec),
+            t_med_vec = as.numeric(t_med_vec)
         )
     })
 
     impact_dt <- data.table::rbindlist(impact_rows, fill = TRUE)
-    data.table::setcolorder(impact_dt, c("med_cl", "mediator", "outcome", "fdr", "logFC", "t", "fdr_med", "logFC_med", "t_med"))
+    data.table::setcolorder(impact_dt, c(
+        "med_cl", "mediator", "outcome",
+        "fdr_base", "logFC_base", "t_base",
+        "fdr_apoe_med", "logFC_apoe_med", "t_apoe_med",
+        "fdr_med_vec", "logFC_med_vec", "t_med_vec"
+    ))
     data.table::setorderv(impact_dt, c("med_cl", "mediator", "outcome"), order = c(1L, 1L, 1L))
     impact_dt
 }

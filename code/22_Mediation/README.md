@@ -1,3 +1,10 @@
+## Repository boundaries
+
+Never commit and push code outside `/Users/gpertea/work/R/LFF_spatial_ERC/code/22_Mediation`
+directly from this project context. For any code change outside this folder,
+make a separate branch and give the user instructions and comments so they can
+start the pull request themselves.
+
 ## LC <-> ERC mediation-screening framework (APOE risk mechanisms)
 
 We discussed a practical "mediation analysis" workflow to connect APOE genotype (E4 vs E2 carrier status) to ERC Oligo.3 expression phenotypes (DGE outcome), through potential mediation/attenuation from Locus Coeruleus (LC) gene expression (LC spatial domain neuromelanin NM-linked signals, and LC astrocytes domain).
