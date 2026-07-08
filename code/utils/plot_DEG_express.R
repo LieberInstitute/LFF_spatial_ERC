@@ -265,7 +265,7 @@ plot_DEG_express <- function(sce,
             size = 2.5
         )
     
-    if(cluster_title) pe <- spe + labs(title = clus)
+    if(cluster_title) pe <- pe + labs(title = clus)
     
     
     return(pe)
