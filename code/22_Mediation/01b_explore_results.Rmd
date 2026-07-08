@@ -346,7 +346,7 @@ build_mediator_impact_dt <- function(diag_dt, pd) {
         return(data.table::data.table(
             med_cl = character(0), mediator = character(0), outcome = character(0),
             fdr_base = numeric(0), logFC_base = numeric(0), t_base = numeric(0),
-            fdr_apoe_med = numeric(0), logFC_apoe_med = numeric(0), t_apoe_med = numeric(0),
+            fdr_med = numeric(0), logFC_med = numeric(0), t_med = numeric(0),
             fdr_med_vec = numeric(0), logFC_med_vec = numeric(0), t_med_vec = numeric(0)
         ))
     }
@@ -396,9 +396,9 @@ build_mediator_impact_dt <- function(diag_dt, pd) {
 
         out_ids <- as.character(gmap$gene_id[match(outcomes, as.character(gmap$gene_name))])
 
-        apoe_med_map <- data.table::data.table(
-            outcome_gene_id = character(0), fdr_apoe_med = numeric(0),
-            logFC_apoe_med = numeric(0), t_apoe_med = numeric(0)
+        med_map <- data.table::data.table(
+            outcome_gene_id = character(0), fdr_med = numeric(0),
+            logFC_med = numeric(0), t_med = numeric(0)
         )
         med_vec_map <- data.table::data.table(
             outcome_gene_id = character(0), fdr_med_vec = numeric(0),
@@ -443,8 +443,8 @@ build_mediator_impact_dt <- function(diag_dt, pd) {
                             data.table::setnames(stat_map, c("fdr", "logFC", "t"), c("fdr_med_vec", "logFC_med_vec", "t_med_vec"))
                             med_vec_map <- stat_map
                         } else {
-                            data.table::setnames(stat_map, c("fdr", "logFC", "t"), c("fdr_apoe_med", "logFC_apoe_med", "t_apoe_med"))
-                            apoe_med_map <- stat_map
+                            data.table::setnames(stat_map, c("fdr", "logFC", "t"), c("fdr_med", "logFC_med", "t_med"))
+                            med_map <- stat_map
                         }
                     }
                 }
@@ -458,9 +458,9 @@ build_mediator_impact_dt <- function(diag_dt, pd) {
             fdr_base = as.numeric(base_map$fdr[match(out_ids, base_map$outcome_gene_id)]),
             logFC_base = as.numeric(base_map$logFC[match(out_ids, base_map$outcome_gene_id)]),
             t_base = as.numeric(base_map$t[match(out_ids, base_map$outcome_gene_id)]),
-            fdr_apoe_med = as.numeric(apoe_med_map$fdr_apoe_med[match(out_ids, apoe_med_map$outcome_gene_id)]),
-            logFC_apoe_med = as.numeric(apoe_med_map$logFC_apoe_med[match(out_ids, apoe_med_map$outcome_gene_id)]),
-            t_apoe_med = as.numeric(apoe_med_map$t_apoe_med[match(out_ids, apoe_med_map$outcome_gene_id)]),
+            fdr_med = as.numeric(med_map$fdr_med[match(out_ids, med_map$outcome_gene_id)]),
+            logFC_med = as.numeric(med_map$logFC_med[match(out_ids, med_map$outcome_gene_id)]),
+            t_med = as.numeric(med_map$t_med[match(out_ids, med_map$outcome_gene_id)]),
             fdr_med_vec = as.numeric(med_vec_map$fdr_med_vec[match(out_ids, med_vec_map$outcome_gene_id)]),
             logFC_med_vec = as.numeric(med_vec_map$logFC_med_vec[match(out_ids, med_vec_map$outcome_gene_id)]),
             t_med_vec = as.numeric(med_vec_map$t_med_vec[match(out_ids, med_vec_map$outcome_gene_id)])
@@ -470,7 +470,7 @@ build_mediator_impact_dt <- function(diag_dt, pd) {
     data.table::setcolorder(impact_dt, c(
         "med_cl", "mediator", "outcome",
         "fdr_base", "logFC_base", "t_base",
-        "fdr_apoe_med", "logFC_apoe_med", "t_apoe_med",
+        "fdr_med", "logFC_med", "t_med",
         "fdr_med_vec", "logFC_med_vec", "t_med_vec"
     ))
     if (nrow(impact_dt) > 0L) {

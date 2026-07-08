@@ -164,14 +164,14 @@ mediation_validation_details <- function(mediation_eval, med_cluster, gene_name,
                                           tt_baseline, tt_mediation, ttM_mediation, Pvalthr = 0.10) {
     mediation_eval |>
         filter(med_cl == med_cluster, mediator == gene_name) |>
-        select(med_cl:t_med) |>
-        rename_with(~paste0(.x, "_SN"), fdr:t_med) |>
+        select(med_cl, mediator, outcome, fdr_base:t_med_vec) |>
+        rename_with(~paste0(.x, "_SN"), fdr_base:t_med_vec) |>
         left_join(tt_baseline   |> select(outcome = gene_name, P.Value_Xen = P.Value,    t_Xen = t),    by = join_by(outcome)) |>
         left_join(tt_mediation  |> select(outcome = gene_name, P.Value_Xen_carrier = P.Value, t_Xen_carrier = t), by = join_by(outcome)) |>
         left_join(ttM_mediation |> select(outcome = gene_name, P.Value_Xen_med = P.Value,     t_Xen_med = t),     by = join_by(outcome)) |>
         mutate(
             Xen_sig    = P.Value_Xen < Pvalthr,
-            Xen_dir    = sign(t_SN) == sign(t_Xen),
+            Xen_dir    = sign(t_base_SN) == sign(t_Xen),
             Xen_valid  = Xen_sig & Xen_dir,
             Xen_carrier_sig = P.Value_Xen_carrier < Pvalthr,
             Xen_carrier_dir = sign(t_Xen_carrier) == sign(t_Xen),
