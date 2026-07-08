@@ -176,7 +176,8 @@ plot_DEG_express <- function(sce,
                              cleanY_P = 4,
                              color_pal = NULL,
                              plot_points = FALSE,
-                             ncol = 2) {
+                             ncol = 2, 
+                             cluster_title = TRUE) {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(clus %in% sce[[cluster_col]])
@@ -263,6 +264,8 @@ plot_DEG_express <- function(sce,
             hjust = "inward", 
             size = 2.5
         )
+    
+    if(cluster_title) pe <- spe + labs(title = clus)
     
     
     return(pe)
