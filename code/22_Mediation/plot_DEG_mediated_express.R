@@ -172,9 +172,6 @@ plot_DEG_mediated_express <- function(sce,
     if (nrow(stats_filter) == 0) {
         stop(sprintf("No rows in stats for mediator '%s' matching requested outcome gene(s).", mediator_gene))
     }
-        # else if (nrow(stats_filter) >1){
-        print(stats_filter)
-    # }
 
     ## ------------------------------------------------------------------
     ## subset both objects to their respective clusters, then to the
@@ -284,7 +281,7 @@ plot_DEG_mediated_express <- function(sce,
             plot_points = plot_points,
             ncol = ncol
         ) +
-            ggplot2::labs(subtitle = sprintf("mediator: %s", med_clus))
+            ggplot2::labs(title = med_clus, subtitle = sprintf("mediator"))
 
         return(p_med + p_unadj + p_adj)
     }
