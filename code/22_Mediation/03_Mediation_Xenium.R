@@ -274,13 +274,13 @@ mediation_validation_details <- function(med_cluster,
     
     mediation_eval |>
         filter(med_cl == med_cluster, mediator == gene_name) |>
-        select(med_cl:t_med)|>
-        rename_with(~paste0(.x, "_SN"), fdr:t_med) |>
+        select(med_cl, mediator, outcome, fdr_base:t_med_vec) |>
+        rename_with(~paste0(.x, "_SN"), fdr_base:t_med_vec) |>
         left_join(tt_baseline |> select(outcome = gene_name, P.Value_base = P.Value, t_base = t), by = join_by(outcome)) |>
         left_join(tt_mediation |> select(outcome = gene_name, P.Value_carrier = P.Value, t_carrier = t), by = join_by(outcome)) |>
         left_join(ttM_mediation |> select(outcome = gene_name, P.Value_med = P.Value, t_med = t), by = join_by(outcome)) |>
         mutate(base_sig = P.Value_base < Pvalthr,
-               base_dir = sign(t_SN) == sign(t_base),
+               base_dir = sign(t_base_SN) == sign(t_base),
                base_valid = base_sig & base_dir,
                carrier_sig = P.Value_carrier < Pvalthr,
                carrier_dir = sign(t_carrier) == sign(t_base),

@@ -1,7 +1,7 @@
 ## Louise Huuki-Myers, July 2026
 ## Compile and re-format mediation data - plot top pairs
 
-#### Set up ####
+## set up
 library("tidyverse")
 library("here")
 library("sessioninfo")
@@ -21,12 +21,11 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "22_Mediation", "02_Mediation_sn_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-#### Load mediation data ####
 
+#### Load mediation data ####
 mediator_outcome <- read.delim(here("processed-data", "22_Mediation", "out-erc_astro", "mediator_outcome_fdr_impact.tsv.gz")) |>
     as_tibble() |>
     mutate(pair = paste0(mediator, "|", outcome))
-
 
 xenium_mediation <- read_csv(here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")) |>
     filter(Xen_valid, !Xen_carrier_sig)  |>
