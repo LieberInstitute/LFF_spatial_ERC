@@ -38,7 +38,7 @@
 #' `med_cluster_col` in `colData(sce_mediator)`). This is the cluster
 #' label actually used to pull mediator expression, e.g. `med_cl_test`
 #' in the APOE-stratified scenarios.
-#' @param mediator A `character(1)` mediator gene name (must be in
+#' @param mediator_gene A `character(1)` mediator gene name (must be in
 #' `rownames(sce_mediator)` after `gene_col` is applied, and must match
 #' `stats$mediator`).
 #' @param gene A `character()` vector of outcome gene(s) to plot (subset
@@ -47,7 +47,7 @@
 #' `stats` identifying the outcome gene and mediator gene respectively.
 #' @param gene_col The `character(1)` name of the `rowData()` column
 #' (same on both `sce` and `sce_mediator`) giving the gene symbol used to
-#' match against `gene`/`mediator`.
+#' match against `gene`/`mediator_gene`.
 #' @param cluster_col,med_cluster_col The `character(1)` `colData()`
 #' column names identifying cluster membership on `sce`/`sce_mediator`
 #' respectively.
@@ -100,7 +100,7 @@
 #'     stats = mediation_validation_details_test,
 #'     clus = "Oligo.3",
 #'     med_clus = "Astro.1",
-#'     mediator = "NPTXR",
+#'     mediator_gene = "NPTXR",
 #'     gene = c("ENC1", "GAD1", "SLC17A7"),
 #'     gene_col = "gene_name",
 #'     cluster_col = "registration_variable",
@@ -116,7 +116,7 @@ plot_DEG_mediated_express <- function(sce,
                                        stats,
                                        clus,
                                        med_clus,
-                                       mediator,
+                                       mediator_gene,
                                        gene,
                                        outcome_col = "outcome",
                                        mediator_col = "mediator",
@@ -144,7 +144,7 @@ plot_DEG_mediated_express <- function(sce,
     stopifnot(outcome_col %in% colnames(stats))
     stopifnot(mediator_col %in% colnames(stats))
     stopifnot(all(gene %in% stats[[outcome_col]]))
-    stopifnot(mediator %in% stats[[mediator_col]])
+    stopifnot(mediator_gene %in% stats[[mediator_col]])
 
     # RCMD fix
     rank_int <- Symbol <- anno_str <- Var1 <- NULL
@@ -156,19 +156,25 @@ plot_DEG_mediated_express <- function(sce,
     sig_stars <- function(p) dplyr::case_when(p < 0.001 ~ "***", p < 0.01 ~ "**", p < 0.05 ~ "*", TRUE ~ "")
 
     stats_filter <- stats |>
-        dplyr::filter(.data[[mediator_col]] == mediator, .data[[outcome_col]] %in% gene) |>
+        dplyr::filter(mediator == mediator_gene, 
+                      .data[[outcome_col]] %in% gene,
+                      med_cl_test == med_cl,
+                      outcome_cl == clus) |>
         dplyr::mutate(
             Var1 = .data[[outcome_col]],
             anno_str_unadj = sprintf("Base: P=%.2e%s\nt=%.2f", P.Value_Xen, sig_stars(P.Value_Xen), t_Xen),
             anno_str_adj   = sprintf("Adj for %s: P=%.2e%s\nt=%.2f\nM~Y: P=%.2e%s%s",
-                                      mediator, P.Value_Xen_carrier, sig_stars(P.Value_Xen_carrier), t_Xen_carrier,
+                                      mediator_gene, P.Value_Xen_carrier, sig_stars(P.Value_Xen_carrier), t_Xen_carrier,
                                       P.Value_Xen_med, sig_stars(P.Value_Xen_med),
                                       ifelse(isTRUE(Xen_mediated), "\n** MEDIATED **", ""))
         )
 
     if (nrow(stats_filter) == 0) {
-        stop(sprintf("No rows in stats for mediator '%s' matching requested outcome gene(s).", mediator))
+        stop(sprintf("No rows in stats for mediator '%s' matching requested outcome gene(s).", mediator_gene))
     }
+        # else if (nrow(stats_filter) >1){
+        print(stats_filter)
+    # }
 
     ## ------------------------------------------------------------------
     ## subset both objects to their respective clusters, then to the
@@ -187,8 +193,8 @@ plot_DEG_mediated_express <- function(sce,
     sce_med <- sce_med[, match(common_brnum, as.character(sce_med$BrNum))]
 
     rownames(sce_med) <- rowData(sce_med)[[gene_col]]
-    stopifnot(mediator %in% rownames(sce_med))
-    med_vec <- as.numeric(assay(sce_med[mediator, ], "logcounts"))
+    stopifnot(mediator_gene %in% rownames(sce_med))
+    med_vec <- as.numeric(assay(sce_med[mediator_gene, ], "logcounts"))
 
     ## ------------------------------------------------------------------
     ## panel 1: unadjusted cleanY (same convention as plot_DEG_express)
@@ -252,7 +258,7 @@ plot_DEG_mediated_express <- function(sce,
         plot_type = "boxplot",
         free_y = TRUE
     ) +
-        ggplot2::labs(subtitle = sprintf("adjusted for %s | %s", mediator, med_clus)) +
+        ggplot2::labs(subtitle = sprintf("adjusted for %s | %s", mediator_gene, med_clus)) +
         ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_adj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
@@ -266,7 +272,7 @@ plot_DEG_mediated_express <- function(sce,
             sce = sce_mediator,
             stats = mediator_stats,
             clus = med_clus,
-            gene = mediator,
+            gene = mediator_gene,
             pval_col = mediator_pval_col,
             fc_col = mediator_fc_col,
             gene_col = gene_col,
