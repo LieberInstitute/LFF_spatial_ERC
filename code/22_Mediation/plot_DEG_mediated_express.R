@@ -28,10 +28,9 @@
 #' pseudobulk file, e.g. the `Xenium_Oligo.3_Astro` scenarios).
 #' @param stats A `data.frame()` with mediation validation results -- one
 #' row per outcome gene for the given `mediator`/`med_clus`, matching the
-#' shape of `mediation_validation_details()`'s output / the
-#' `mediation_summary-all_scenarios_*.csv` files (columns `outcome`,
-#' `mediator`, `P.Value_Xen`, `t_Xen`, `P.Value_Xen_carrier`,
-#' `t_Xen_carrier`, `P.Value_Xen_med`, `t_Xen_med`, `Xen_mediated`).
+#' shape of `mediation_validation_details()`'s output (columns `outcome`,
+#' `mediator`, `P.Value_base`, `t_base`, `P.Value_med`,
+#' `t_med`, `P.Value_med_vec`, `t_med_vec`, `mediated`).
 #' @param clus A `character(1)` outcome cluster (matches `cluster_col` in
 #' `colData(sce)`).
 #' @param med_clus A `character(1)` mediator cluster (matches
@@ -103,14 +102,20 @@
 #' panel. Default to `mod`/`cleanY_P` (i.e. assume the same design) if
 #' left `NULL` -- override if the mediator's cluster needs a different
 #' model.
-#' @param anno_stat_suffix A `character(1)` identifying which stat
-#' columns to read from `stats` for annotation, e.g. `"Xen"` (default)
-#' for Xenium validation columns (`P.Value_Xen`, `P.Value_Xen_carrier`,
-#' `P.Value_Xen_med`, `Xen_mediated`) or `"SN"` for discovery-side
-#' columns (`fdr_SN`, `fdr_SN_carrier`, `fdr_SN_med`, `SN_mediated`).
-#' @param signif_stat A `character(1)`, the p-value-like column prefix to
-#' look for (paired with `anno_stat_suffix`), e.g. `"P.Value"` or
-#' `"fdr"`.
+#' @param base_suffix,med_suffix,med_vec_suffix `character(1)` suffixes
+#' identifying which stat columns to read from `stats` for each of the
+#' three annotation pieces, each combined with `signif_stat` as
+#' `{signif_stat}_{suffix}`/`t_{suffix}`. Defaults (`"base"`, `"med"`,
+#' `"med_vec"`) match `mediation_validation_details()`'s output:
+#' `P.Value_base`/`t_base` (Step 1), `P.Value_med`/`t_med` (Step 3b,
+#' carrier effect adjusted for the mediator), `P.Value_med_vec`/
+#' `t_med_vec` (Step 3a, the mediator's own association). Unlike a shared
+#' suffix, these three are independent -- override any subset for a
+#' differently-named stats table without needing the others to match.
+#' @param mediated_col A `character(1)` column name in `stats` for the
+#' mediated-flag annotation (`"** MEDIATED **"`). Default `"mediated"`.
+#' @param signif_stat A `character(1)`, the p-value-like column prefix
+#' combined with each suffix above, e.g. `"P.Value"` or `"fdr"`.
 #' @param signif_label A `character(1)` display label for the annotation
 #' text (e.g. `"P"` vs `"fdr"`). Defaults to `"P"` when
 #' `signif_stat == "P.Value"`, otherwise to `signif_stat` itself.
@@ -120,12 +125,11 @@
 #' to match a relaxed validation threshold.
 #'
 #' Each of the three annotation pieces (Step 1 base, Step 3b
-#' carrier-adjusted, Step 3a mediator-association) is only added if its
-#' corresponding columns (`{signif_stat}_{anno_stat_suffix}[_carrier|_med]`,
-#' `t_{anno_stat_suffix}[_carrier|_med]`) are present in `stats` -- e.g.
-#' if Step 3b hasn't been computed yet, omit the `*_carrier` columns and
-#' that piece of the annotation is silently skipped (with a `message()`)
-#' rather than erroring.
+#' med-adjusted, Step 3a med_vec-association) is only added if its
+#' corresponding columns are present in `stats` -- e.g. if Step 3b hasn't
+#' been computed yet, omit the `*_med` columns and that piece of the
+#' annotation is silently skipped (with a `message()`) rather than
+#' erroring.
 #'
 #' @return A `patchwork` object: two (or three, with the mediator panel)
 #' `ggplot2` panels side by side, one facet per outcome gene within each
@@ -179,7 +183,10 @@ plot_DEG_mediated_express <- function(sce,
                                        mediator_mod = NULL,
                                        mediator_cleanY_P = NULL,
                                        mediator_t_col = "vlmf_t",
-                                       anno_stat_suffix = "Xen",
+                                       base_suffix = "base",
+                                       med_suffix = "med",
+                                       med_vec_suffix = "med_vec",
+                                       mediated_col = "mediated",
                                        signif_stat = "P.Value",
                                        signif_label = NULL,
                                        signif_thr = 0.05) {
@@ -197,34 +204,42 @@ plot_DEG_mediated_express <- function(sce,
     rank_int <- Symbol <- anno_str <- Var1 <- NULL
 
     ## ------------------------------------------------------------------
-    ## Column-name pattern for annotation stats. Built from
-    ## anno_stat_suffix/signif_stat so the same function works whether
-    ## `stats` uses the Xenium validation naming (P.Value_Xen,
-    ## P.Value_Xen_carrier, P.Value_Xen_med, Xen_mediated) or a
-    ## discovery-side naming (fdr_SN, fdr_SN_carrier, fdr_SN_med,
-    ## SN_mediated) -- pass anno_stat_suffix="SN", signif_stat="fdr" for
-    ## the latter.
+    ## Column-name pattern for annotation stats. Three INDEPENDENT
+    ## suffixes -- base_suffix/med_suffix/med_vec_suffix -- each combined
+    ## with signif_stat to build a {signif_stat}_{suffix}/t_{suffix} pair,
+    ## matching mediation_validation_details()'s output naming:
+    ##   base_suffix="base"       -> P.Value_base, t_base       (Step 1)
+    ##   med_suffix="med"         -> P.Value_med, t_med          (Step 3b,
+    ##                                carrier effect adjusted for M)
+    ##   med_vec_suffix="med_vec" -> P.Value_med_vec, t_med_vec  (Step 3a,
+    ##                                the med_vec coefficient itself)
+    ## mediated_col defaults to the literal column "mediated" (no prefix).
+    ##
+    ## Unlike the old single-shared-suffix design, these three are
+    ## independent -- e.g. for discovery-side stats with a different
+    ## naming scheme, override any subset (say signif_stat="fdr",
+    ## med_vec_suffix="med_vec_SN") without needing the others to share a
+    ## common prefix.
     ##
     ## signif_label controls the display text ("P=" vs "fdr="); if NULL,
     ## defaults to "P" when signif_stat=="P.Value", otherwise to
     ## signif_stat itself.
     ##
-    ## Each of the three annotation pieces (base/Step1, carrier/Step3b,
-    ## mediator/Step3a) is included ONLY if its columns are actually
+    ## Each of the three annotation pieces (base/Step1, med/Step3b,
+    ## med_vec/Step3a) is included ONLY if its columns are actually
     ## present in `stats` -- e.g. if you haven't computed Step 3b yet,
-    ## just omit *_carrier columns and that piece is silently dropped
+    ## just omit the *_med columns and that piece is silently dropped
     ## rather than erroring.
     ## ------------------------------------------------------------------
     if (is.null(signif_label)) signif_label <- if (identical(signif_stat, "P.Value")) "P" else signif_stat
 
-    stat_cols <- function(suffix_part) {
-        list(pval = paste0(signif_stat, "_", anno_stat_suffix, suffix_part),
-             t    = paste0("t_", anno_stat_suffix, suffix_part))
+    stat_cols <- function(suffix) {
+        list(pval = paste0(signif_stat, "_", suffix),
+             t    = paste0("t_", suffix))
     }
-    base_cols    <- stat_cols("")
-    carrier_cols <- stat_cols("_carrier")
-    med_cols     <- stat_cols("_med")
-    mediated_col <- paste0(anno_stat_suffix, "_mediated")
+    base_cols    <- stat_cols(base_suffix)
+    med_cols     <- stat_cols(med_suffix)
+    med_vec_cols <- stat_cols(med_vec_suffix)
 
     sig_stars <- function(p) dplyr::case_when(p < 0.001 ~ "***", p < 0.01 ~ "**", p < signif_thr ~ "*", TRUE ~ "")
 
@@ -251,21 +266,21 @@ plot_DEG_mediated_express <- function(sce,
         message(sprintf("Note: %s/%s not found in stats -- skipping base annotation.", base_cols$pval, base_cols$t))
     }
 
-    ## carrier/Step 3b, mediator/Step 3a, and the mediated flag -- each
+    ## med/Step 3b, med_vec/Step 3a, and the mediated flag -- each
     ## dropped independently if its columns aren't present
-    carrier_piece <- if (has_cols(carrier_cols)) {
-        p_ <- stats_filter[[carrier_cols$pval]]; t_ <- stats_filter[[carrier_cols$t]]
+    med_piece <- if (has_cols(med_cols)) {
+        p_ <- stats_filter[[med_cols$pval]]; t_ <- stats_filter[[med_cols$t]]
         sprintf("Adj for %s: %s=%.2e%s\nt=%.2f", mediator_gene, signif_label, p_, sig_stars(p_), t_)
     } else {
-        message(sprintf("Note: %s/%s not found in stats -- skipping carrier-adjusted annotation.", carrier_cols$pval, carrier_cols$t))
+        message(sprintf("Note: %s/%s not found in stats -- skipping carrier-adjusted (med) annotation.", med_cols$pval, med_cols$t))
         rep(NA_character_, n)
     }
 
-    med_piece <- if (has_cols(med_cols)) {
-        p_ <- stats_filter[[med_cols$pval]]; t_ <- stats_filter[[med_cols$t]]
+    med_vec_piece <- if (has_cols(med_vec_cols)) {
+        p_ <- stats_filter[[med_vec_cols$pval]]; t_ <- stats_filter[[med_vec_cols$t]]
         sprintf("M~Y: %s=%.2e%s\nt=%.2f", signif_label, p_, sig_stars(p_), t_)
     } else {
-        message(sprintf("Note: %s/%s not found in stats -- skipping mediator-association annotation.", med_cols$pval, med_cols$t))
+        message(sprintf("Note: %s/%s not found in stats -- skipping mediator-association (med_vec) annotation.", med_vec_cols$pval, med_vec_cols$t))
         rep(NA_character_, n)
     }
 
@@ -277,7 +292,7 @@ plot_DEG_mediated_express <- function(sce,
     }
 
     stats_filter$anno_str_adj <- vapply(seq_len(n), function(i) {
-        parts <- c(carrier_piece[i], med_piece[i], mediated_piece[i])
+        parts <- c(med_piece[i], med_vec_piece[i], mediated_piece[i])
         paste(parts[!is.na(parts)], collapse = "\n")
     }, character(1))
 
