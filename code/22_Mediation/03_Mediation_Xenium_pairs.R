@@ -256,3 +256,28 @@ Sys.time()
 proc.time()
 options(width = 120)
 session_info()
+
+
+## set up SpX pairs 
+
+sce_pb <- readRDS(get_pb_fn("Xenium_cell_type_anno_SpX"))
+
+SpX_astro <- colData(sce_pb) |>
+    as.data.frame() |>
+    filter(cell_type_anno %in% c("Astro.1", "Astro.2", "Astro.3")) |>
+    select(med_cl_test = registration_variable, SpX_simple, med_cl = cell_type_anno) |>
+    unique() 
+
+SpX_mediation_pairs <- colData(sce_pb) |>
+    as.data.frame() |>
+    filter(cell_type_anno == "Oligo.3") |>
+    select(outcome_cl = registration_variable, SpX_simple) |>
+    unique() |> 
+    left_join(SpX_astro) |>
+    mutate(mediator_datatype = "Xenium_cell_type_anno_SpX",
+           outcome_datatype = "Xenium_cell_type_anno_SpX") |>
+    select(med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test)
+
+pairs_tbl <- pairs_tbl |>bind_rows(SpX_mediation_pairs)
+
+write_csv(pairs_tbl, file = here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Oligo3_Astro_mediator_outcome_pairs.csv"))
