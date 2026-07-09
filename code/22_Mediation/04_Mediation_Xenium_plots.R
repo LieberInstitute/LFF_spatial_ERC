@@ -15,6 +15,7 @@ library("patchwork")
 
 source(here("code", "utils", "plot_DEG_express.R"))
 source(here("code", "22_Mediation", "plot_DEG_mediated_express.R"))
+source(here("code", "22_Mediation", "xenium_datatype_lookup.R"))
 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
@@ -97,35 +98,10 @@ ggsave(med_plot_test2, filename = here(plot_dir, "med_plot_test2.png"))
 
 
 
-## pb_fn resolution + caching -- same lookup as 03_Mediation_Xenium_pairs.R.
-## Kept in sync manually for now; consider moving this into a shared
-## utils/pb_lookup.R sourced by both scripts so the two can't drift apart.
-
-pb_dir <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep")
-pb_lookup <- tribble(
-    ~datatype_key,                               ~pb_fn,
-    "Xenium_cell_type_anno",                     file.path(pb_dir, "spe_xenium_pseudo_DGE-cell_type_anno.RDS"),
-    "Xenium_cell_type_anno_SpX",                 file.path(pb_dir, "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS"),
-    "Xenium_Oligo.3_Astro",                      file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS"),
-    "Xenium_Oligo.3_Astro_SpX",                  file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX.RDS")
-)
-
-get_pb_fn <- function(datatype_key) {
-    hit <- pb_lookup$pb_fn[pb_lookup$datatype_key == datatype_key]
-    if (length(hit) != 1) stop(sprintf("Unrecognized datatype key '%s' -- add it to pb_lookup.", datatype_key))
-    hit
-}
-
-.pb_cache <- new.env()
-load_pb_cached <- function(fn) {
-    if (!exists(fn, envir = .pb_cache, inherits = FALSE)) {
-        message(Sys.time(), " - loading pseudobulk: ", basename(fn))
-        sce <- readRDS(fn)
-        sce$APOE_carrier_syn <- gsub("\\+", "", sce$APOE_carrier)
-        assign(fn, sce, envir = .pb_cache)
-    }
-    get(fn, envir = .pb_cache, inherits = FALSE)
-}
+## pb_lookup / get_pb_fn / load_pb_cached and DE_lookup / get_DE_fn /
+## load_DE_cached now live in xenium_datatype_lookup.R (sourced above),
+## shared with 03_Mediation_Xenium_pairs.R so the two scripts can't drift
+## apart on which file a given datatype key points to.
 
 #### model for cleaning outcome expression -- matches 06_Clusterwise_voomLmFit_Xenium.R ####
 mediation_mod <- ~APOE_carrier_syn + Age + Anc_Afr
@@ -144,6 +120,7 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
     
     sce_out <- load_pb_cached(get_pb_fn(outcome_datatype))
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
+    mediator_stats <- load_DE_cached(get_DE_fn(mediator_datatype))
     
     p <- tryCatch(
         plot_DEG_mediated_express(
@@ -162,7 +139,7 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
             color_pal = APOE_carrier_colors,
             plot_points = TRUE,
             plot_mediator_panel = TRUE,
-            mediator_stats = DE_data,
+            mediator_stats = mediator_stats,
             mediator_stats_cluster_col = "cluster",
             anno_stat_suffix = "Xen",
             signif_stat = "P.Value",
