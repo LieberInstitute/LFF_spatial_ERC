@@ -116,11 +116,22 @@ pdf(here(plot_dir, "mediation_boxplots_Xenium_pairs.pdf"), width = 10, height = 
 
 pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
     
-    message(Sys.time(), sprintf(" - plotting mediator=%s (%s) -> %s", mediator, med_cl_test, outcome))
+    ## test 
+    med_cl = "Astro.2"
+    med_cl_test = "Astro.2_APOE_high"
+    mediator_datatype = "Xenium_Oligo.3_Astro"
+    outcome_datatype = "Xenium_Oligo.3_Astro"
+    mediator = "SV2B"
+    outcome = "ERBB3"
+    outcome_cl = "APOE_high_nnA_Astro.2"
+    
+    message(Sys.time(), sprintf(" - plotting mediator=%s (%s) -> %s (%s)", mediator, med_cl_test, outcome, outcome_cl))
     
     sce_out <- load_pb_cached(get_pb_fn(outcome_datatype))
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
     mediator_stats <- load_DE_cached(get_DE_fn(mediator_datatype))
+    
+    med_cl_test %in% mediator_stats$cluster
     
     p <- tryCatch(
         plot_DEG_mediated_express(
