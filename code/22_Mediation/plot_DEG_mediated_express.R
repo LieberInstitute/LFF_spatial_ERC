@@ -86,8 +86,12 @@
 #' mediator's own carrier-DE result within `med_clus`. Only used when
 #' `plot_mediator_panel = TRUE`.
 #' @param mediator_pval_col,mediator_fc_col Column names in
-#' `mediator_stats` for the mediator panel's p-value/logFC annotation,
-#' passed straight through to `plot_DEG_express()`.
+#' `mediator_stats` for the mediator panel's p-value/logFC annotation.
+#' Note `plot_DEG_express()` is called with `stat_anno = FALSE` here --
+#' its own built-in label is suppressed in favor of this function's own
+#' `signif_stat`/`signif_label`-driven overlay (built from
+#' `mediator_pval_col`/`mediator_t_col`), so the two don't stack and
+#' overlap.
 #' @param mediator_t_col A `character(1)` column name in `mediator_stats`
 #' for the mediator panel's own t-statistic, used (together with
 #' `mediator_pval_col`) to build a `signif_stat`/`signif_label`-driven
@@ -377,13 +381,14 @@ plot_DEG_mediated_express <- function(sce,
             pval_col = mediator_pval_col,
             fc_col = mediator_fc_col,
             gene_col = gene_col,
-            cluster_col = mediator_stats_cluster_col,
+            cluster_col = med_cluster_col,
             category_col = category_col,
             mod = if (is.null(mediator_mod)) mod else mediator_mod,
             cleanY_P = if (is.null(mediator_cleanY_P)) cleanY_P else mediator_cleanY_P,
             color_pal = color_pal,
             plot_points = plot_points,
-            ncol = ncol
+            ncol = ncol,
+            stat_anno = FALSE
         ) +
             ggplot2::labs(title = med_clus, subtitle = sprintf("mediator"))
 
