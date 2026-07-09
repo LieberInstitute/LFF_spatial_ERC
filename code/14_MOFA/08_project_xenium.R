@@ -22,10 +22,12 @@ model_path = here(
     "processed-data", "14_MOFA", "01_MOFA", "sn_fine", "model.hdf5"
 )
 out_dir = here("processed-data", "14_MOFA", "08_project_xenium")
+plot_dir = here("plots", "14_MOFA", "08_project_xenium")
 
 this_task_id = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 
 dir.create(out_dir, showWarnings = FALSE)
+dir.create(plot_dir, showWarnings = FALSE)
 
 ################################################################################
 #   Load, filter, and pseudobulk data according to the array task
@@ -63,6 +65,36 @@ spe_pb = registration_pseudobulk(
     spe, var_registration = "cell_type_anno", var_sample_id = "sample_id"
 )
 rownames(spe_pb) = rowData(spe_pb)$gene_id
+
+################################################################################
+#   QC: cells per cell type x sample after pseudobulk filtering
+################################################################################
+
+cell_counts = as.data.frame(colData(spe_pb)) |>
+    select(cell_type_anno, sample_id, ncells) |>
+    complete(
+        cell_type_anno = unique(spe$cell_type_anno),
+        sample_id = unique(spe$sample_id),
+        fill = list(ncells = 0)
+    )
+
+p = ggplot(
+        cell_counts,
+        aes(x = sample_id, y = cell_type_anno, fill = log10(ncells + 1))
+    ) +
+    geom_tile() +
+    scale_fill_viridis_c(name = "log10(ncells + 1)") +
+    labs(
+        title = sprintf(
+            "Domain: %s, Astro group: %s", task_df$domain, task_df$astro_group
+        ),
+        x = "Sample ID",
+        y = "Cell type"
+    ) +
+    theme_bw(base_size = 15) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggsave(file.path(plot_dir, sprintf('ncells_heatmap_task%d.png', this_task_id)))
 
 ################################################################################
 #   Project MOFA factors to pseudobulked Xenium data
