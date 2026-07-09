@@ -36,27 +36,11 @@ batch <- "chip"
 baseline_formula_str <- "APOE_carrier_syn + Age + Anc_Afr" ## must match 06_Clusterwise_voomLmFit_Xenium.R exactly
 
 #### Define functions ####
-## pb_fn resolution -- covers BOTH the short datatype codes used by
-## 06_Clusterwise_voomLmFit_Xenium.R's --datatype option AND the raw file
-## basenames that show up in the pairs CSV's mediator_datatype column
-## (e.g. "spe_xenium_pseudo_DGE-Oligo.3_Astro" is the same file as the
-## datatype code "Xenium_Oligo.3_Astro" -- worth standardizing the pairs
-## CSV to one convention, but both resolve correctly here either way).
 
-pb_dir <- here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep")
-pb_lookup <- tribble(
-    ~datatype_key,                               ~pb_fn,
-    "Xenium_cell_type_anno",                     file.path(pb_dir, "spe_xenium_pseudo_DGE-cell_type_anno.RDS"),
-    "Xenium_cell_type_anno_SpX",                 file.path(pb_dir, "spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS"),
-    "Xenium_Oligo.3_Astro",                      file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS"),
-    "Xenium_Oligo.3_Astro_SpX",                  file.path(pb_dir, "spe_xenium_pseudo_DGE-Oligo.3_Astro_SpX.RDS")
-)
-
-get_pb_fn <- function(datatype_key) {
-    hit <- pb_lookup$pb_fn[pb_lookup$datatype_key == datatype_key]
-    if (length(hit) != 1) stop(sprintf("Unrecognized datatype key '%s' -- add it to pb_lookup.", datatype_key))
-    hit
-}
+source(here("code", "22_Mediation", "xenium_datatype_lookup.R"))
+## provides: pb_lookup / get_pb_fn() / load_pb_cached()
+##           DE_lookup / get_DE_fn() / load_DE_cached()  (not used in this
+##           script, but shared here since both scripts source the same file)
 
 ## DE_data_dir (where 06_Clusterwise_voomLmFit_Xenium.R saved baseline
 ## topTables) is always keyed by the CLEAN datatype code, never the raw
@@ -73,17 +57,7 @@ if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 ## Cached loaders -- pb objects are large and several scenario rows share
 ## the same underlying file (e.g. rows 1-3 of the pairs CSV all point to
 ## the same mediator AND outcome pb file), so load each file only once.
-
-.pb_cache <- new.env()
-load_pb_cached <- function(fn) {
-    if (!exists(fn, envir = .pb_cache, inherits = FALSE)) {
-        message(Sys.time(), " - loading pseudobulk: ", basename(fn))
-        sce <- readRDS(fn)
-        sce$APOE_carrier_syn <- gsub("\\+", "", sce$APOE_carrier)
-        assign(fn, sce, envir = .pb_cache)
-    }
-    get(fn, envir = .pb_cache, inherits = FALSE)
-}
+## (load_pb_cached() itself now comes from xenium_datatype_lookup.R above)
 
 .dge_cache <- new.env()
 get_filtered_dge <- function(sce_pb, clus, formula_str) {
@@ -160,23 +134,30 @@ fit_mediation_de <- function(dge_sub, baseline_formula_str, batch_col, med_vec) 
 ## pair -- restricted to the specific outcome genes that pair was
 ## significant for in the snRNA-seq screen (mediation_eval), with
 ## directional concordance against the discovery t-statistic.
+##
+## Column naming:
+##   base    = baseline (Step 1, X->Y, no mediator in the model)
+##   med     = carrier effect from the model fit WITH med_vec (Step 3b,
+##             X->Y | M)
+##   med_vec = the med_vec coefficient itself from that same fit
+##             (Step 3a, M->Y | X)
 mediation_validation_details <- function(mediation_eval, med_cluster, gene_name,
                                           tt_baseline, tt_mediation, ttM_mediation, Pvalthr = 0.10) {
     mediation_eval |>
         filter(med_cl == med_cluster, mediator == gene_name) |>
         select(med_cl, mediator, outcome, fdr_base:t_med_vec) |>
         rename_with(~paste0(.x, "_SN"), fdr_base:t_med_vec) |>
-        left_join(tt_baseline   |> select(outcome = gene_name, P.Value_Xen = P.Value,    t_Xen = t),    by = join_by(outcome)) |>
-        left_join(tt_mediation  |> select(outcome = gene_name, P.Value_Xen_carrier = P.Value, t_Xen_carrier = t), by = join_by(outcome)) |>
-        left_join(ttM_mediation |> select(outcome = gene_name, P.Value_Xen_med = P.Value,     t_Xen_med = t),     by = join_by(outcome)) |>
+        left_join(tt_baseline   |> select(outcome = gene_name, P.Value_base = P.Value,    t_base = t),    by = join_by(outcome)) |>
+        left_join(tt_mediation  |> select(outcome = gene_name, P.Value_med = P.Value, t_med = t), by = join_by(outcome)) |>
+        left_join(ttM_mediation |> select(outcome = gene_name, P.Value_med_vec = P.Value,     t_med_vec = t),     by = join_by(outcome)) |>
         mutate(
-            Xen_sig    = P.Value_Xen < Pvalthr,
-            Xen_dir    = sign(t_base_SN) == sign(t_Xen),
-            Xen_valid  = Xen_sig & Xen_dir,
-            Xen_carrier_sig = P.Value_Xen_carrier < Pvalthr,
-            Xen_carrier_dir = sign(t_Xen_carrier) == sign(t_Xen),
-            Xen_med_sig     = P.Value_Xen_med < Pvalthr,
-            Xen_mediated    = !Xen_carrier_sig & Xen_med_sig
+            base_sig    = P.Value_base < Pvalthr,
+            base_dir    = sign(t_base_SN) == sign(t_base),
+            base_valid  = base_sig & base_dir,
+            med_sig     = P.Value_med < Pvalthr,
+            med_dir     = sign(t_med) == sign(t_base),
+            med_vec_sig = P.Value_med_vec < Pvalthr,
+            mediated    = !med_sig & med_vec_sig
         )
 }
 
