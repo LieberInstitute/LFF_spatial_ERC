@@ -163,6 +163,11 @@ plot_DEG_express_top <- function(sce,
 #'     gene_col = "gene_name"
 #' )
 #' 
+#' @param stat_anno A `logical(1)` (default `TRUE`). If `FALSE`, skip this
+#' function's own built-in `geom_label()` annotation
+#' ("FDR=...\\nlogFC=..."). Set to `FALSE` when a caller (e.g.
+#' `plot_DEG_mediated_express()`) is adding its own annotation on top, to
+#' avoid two overlapping labels.
 plot_DEG_express <- function(sce,
                              stats,
                              clus = "Astro",
@@ -177,7 +182,8 @@ plot_DEG_express <- function(sce,
                              color_pal = NULL,
                              plot_points = FALSE,
                              ncol = 2, 
-                             cluster_title = TRUE) {
+                             cluster_title = TRUE,
+                             stat_anno = TRUE) {
     
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(clus %in% sce[[cluster_col]])
@@ -221,11 +227,9 @@ plot_DEG_express <- function(sce,
             anno_str = sprintf("FDR=%.2e%s\nlogFC=%.2f", pval_col, signif, fc_col)
         )
     
-    # return(stats_filter)
-    
-    # if (!any(stats_filter$gene_col %in% rownames(sce))) {
-    #     warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
-    # }
+    if (!any(stats_filter$gene_col %in% rownames(sce))) {
+        warning("genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats")
+    }
     
     #### clean Y ####
     cluster_index <- sce[[cluster_col]] == clus
@@ -256,14 +260,18 @@ plot_DEG_express <- function(sce,
         ncol = ncol,
         plot_type = "boxplot",
         free_y = TRUE
-    ) +
-        ggplot2::geom_label(
-            data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
-            alpha = 0.5,
-            vjust = "inward", 
-            hjust = "inward", 
-            size = 2.5
-        )
+    )
+
+    if (isTRUE(stat_anno)) {
+        pe <- pe +
+            ggplot2::geom_label(
+                data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str),
+                alpha = 0.5,
+                vjust = "inward", 
+                hjust = "inward", 
+                size = 2.5
+            )
+    }
     
     if(cluster_title) pe <- pe + labs(title = clus)
     
