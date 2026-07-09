@@ -42,8 +42,6 @@ write_csv(mediated_hits, file = here("processed-data", "22_Mediation", "03_Media
 sce_pb_test <- readRDS(here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", "spe_xenium_pseudo_DGE-cell_type_anno.RDS"))
 sce_pb_test$APOE_carrier_syn <- gsub("\\+", "", sce_pb_test$APOE_carrier)
 
-Pvalthr <- 0.10
-
 ## mediator stats 
 mediated_hits_test <- mediated_hits |> filter(med_cl_test == "Astro.1")
 
@@ -63,7 +61,8 @@ med_plot_test <- plot_DEG_mediated_express(
     cleanY_P = 2,
     color_pal = APOE_carrier_colors,
     anno_stat_suffix = "Xen",
-    signif_stat = "P.Value"
+    signif_stat = "P.Value",
+    signif_thr = 0.10
 )
 
 ggsave(med_plot_test, filename = here(plot_dir, "med_plot_test.png"))
@@ -91,7 +90,8 @@ med_plot_test2 <- plot_DEG_mediated_express(
     mediator_mod = ~APOE_carrier_syn + Age + Anc_Afr,
     mediator_cleanY_P = 2,
     anno_stat_suffix = "Xen",
-    signif_stat = "P.Value"
+    signif_stat = "P.Value",
+    signif_thr = 0.10
 )
 
 ggsave(med_plot_test2, filename = here(plot_dir, "med_plot_test2.png"))
@@ -116,22 +116,30 @@ pdf(here(plot_dir, "mediation_boxplots_Xenium_pairs.pdf"), width = 10, height = 
 
 pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
     
-    ## test 
-    med_cl = "Astro.2"
-    med_cl_test = "Astro.2_APOE_high"
-    mediator_datatype = "Xenium_Oligo.3_Astro"
-    outcome_datatype = "Xenium_Oligo.3_Astro"
-    mediator = "SV2B"
-    outcome = "ERBB3"
-    outcome_cl = "APOE_high_nnA_Astro.2"
-    
+    # ## test 
+    # med_cl = "Astro.2"
+    # med_cl_test = "Astro.2"
+    # mediator_datatype = "Xenium_cell_type_anno"
+    # outcome_datatype = "Xenium_cell_type_anno"
+    # 
+    # # med_cl_test = "Astro.2_APOE_high"
+    # # mediator_datatype = "Xenium_Oligo.3_Astro"
+    # # outcome_datatype = "Xenium_Oligo.3_Astro"
+    # 
+    # mediator = "SV2B"
+    # outcome = "ENC1"
+    # outcome_cl = "APOE_high_nnA_Astro.2"
+    # outcome_cl = "Oligo.3"
+    # 
     message(Sys.time(), sprintf(" - plotting mediator=%s (%s) -> %s (%s)", mediator, med_cl_test, outcome, outcome_cl))
-    
+    # 
     sce_out <- load_pb_cached(get_pb_fn(outcome_datatype))
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
     mediator_stats <- load_DE_cached(get_DE_fn(mediator_datatype))
-    
+
     med_cl_test %in% mediator_stats$cluster
+    
+    outcome_cl %in% sce_out[["registration_variable"]]
     
     p <- tryCatch(
         plot_DEG_mediated_express(
@@ -145,8 +153,8 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
             gene_col = "gene_name",
             cluster_col = "registration_variable",
             med_cluster_col = "registration_variable",
-            mod = ~APOE_carrier_syn + Age + Anc_Afr,
-            cleanY_P = 4,
+            mod = mediation_mod,
+            cleanY_P = mediation_cleanY_P,
             color_pal = APOE_carrier_colors,
             plot_points = TRUE,
             plot_mediator_panel = TRUE,
