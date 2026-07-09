@@ -30,11 +30,11 @@ message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(m
 mediated_hits <- mediation_summary |> filter(Xen_valid, !Xen_carrier_sig)
 message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
 
-if (nrow(mediated_hits) < 1) stop("No mediated=TRUE rows found in mediation_summary -- nothing to plot.")
-
 mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator)
 
 mediated_hits |> select(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator, outcome, Xen_valid)
+
+write_csv(mediated_hits, file = here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
 
 #### Test ####
 
@@ -60,13 +60,15 @@ med_plot_test <- plot_DEG_mediated_express(
     category_col = "APOE_carrier",
     mod = ~APOE_carrier_syn + Age + Anc_Afr,
     cleanY_P = 2,
-    color_pal = APOE_carrier_colors
+    color_pal = APOE_carrier_colors,
+    anno_stat_suffix = "Xen",
+    signif_stat = "P.Value"
 )
 
 ggsave(med_plot_test, filename = here(plot_dir, "med_plot_test.png"))
 
-# de_stats <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine", "DGE_results_carrier_sn_fine.Rds"))
-de_stats <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno.Rds"))
+# DE_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine", "DGE_results_carrier_sn_fine.Rds"))
+DE_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno.Rds"))
 
 med_plot_test2 <- plot_DEG_mediated_express(
     sce = sce_pb_test,
@@ -76,19 +78,19 @@ med_plot_test2 <- plot_DEG_mediated_express(
     med_clus = "Astro.1",
     mediator_gene = "NPTXR",
     gene = "GAD1",
-    gene_col = "gene_name",
-    cluster_col = "registration_variable",
-    med_cluster_col = "registration_variable",
-    category_col = "APOE_carrier",
     mod = ~APOE_carrier_syn + Age + Anc_Afr,
     cleanY_P = 2,
     color_pal = APOE_carrier_colors,
+    plot_points = TRUE,
     plot_mediator_panel = TRUE,
-    mediator_stats = de_stats,
+    mediator_stats = DE_data,
+    mediator_stats_cluster_col = "cluster",
     mediator_pval_col = "vlmf_P.Value",
     mediator_fc_col = "vlmf_logFC",
     mediator_mod = ~APOE_carrier_syn + Age + Anc_Afr,
-    mediator_cleanY_P = 2
+    mediator_cleanY_P = 2,
+    anno_stat_suffix = "Xen",
+    signif_stat = "P.Value"
 )
 
 ggsave(med_plot_test2, filename = here(plot_dir, "med_plot_test2.png"))
@@ -128,6 +130,61 @@ load_pb_cached <- function(fn) {
 #### model for cleaning outcome expression -- matches 06_Clusterwise_voomLmFit_Xenium.R ####
 mediation_mod <- ~APOE_carrier_syn + Age + Anc_Afr
 mediation_cleanY_P <- 2  ## keeps (Intercept) + APOE_carrier_E4, regresses out Age + Anc_Afr
+
+
+#### Loop over each (med_cl, mediator) group and plot ####
+
+mediated_hits_select <- mediated_hits |> select(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl)
+
+pdf(here(plot_dir, "mediation_boxplots_Xenium_pairs.pdf"), width = 10, height = 4)
+
+pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
+    
+    message(Sys.time(), sprintf(" - plotting mediator=%s (%s) -> %s", mediator, med_cl_test, outcome))
+    
+    sce_out <- load_pb_cached(get_pb_fn(outcome_datatype))
+    sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
+    
+    p <- tryCatch(
+        plot_DEG_mediated_express(
+            sce = sce_out,
+            sce_mediator = sce_med,
+            stats = mediated_hits,
+            clus = outcome_cl,
+            med_clus = med_cl_test,
+            mediator_gene = mediator,
+            gene = outcome,
+            gene_col = "gene_name",
+            cluster_col = "registration_variable",
+            med_cluster_col = "registration_variable",
+            mod = ~APOE_carrier_syn + Age + Anc_Afr,
+            cleanY_P = 4,
+            color_pal = APOE_carrier_colors,
+            plot_points = TRUE,
+            plot_mediator_panel = TRUE,
+            mediator_stats = DE_data,
+            mediator_stats_cluster_col = "cluster",
+            anno_stat_suffix = "Xen",
+            signif_stat = "P.Value",
+            signif_thr = 0.10
+        ),
+        error = function(e) {
+            warning(sprintf("Failed to plot mediator=%s med_cl_test=%s: %s", mediator, med_cl_test, conditionMessage(e)))
+            NULL
+        }
+    )
+    
+    if (!is.null(p)) {
+        print(p + patchwork::plot_annotation(title = sprintf("%s (%s) -> %s", mediator, med_cl, outcome_cl)))
+        ggsave(p, filename = here(plot_dir, sprintf(
+            "mediation_Xen_%s_%s_%s_%s.png", gsub("\\.", "", med_cl), mediator, gsub("\\.", "", outcome_cl), outcome
+        )), height = 4, width = 8)
+    }
+})
+
+dev.off()
+
+
 
 #### Loop over each (scenario, mediator) group and plot all its mediated outcome genes together ####
 

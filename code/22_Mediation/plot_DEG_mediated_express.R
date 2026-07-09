@@ -51,6 +51,14 @@
 #' @param cluster_col,med_cluster_col The `character(1)` `colData()`
 #' column names identifying cluster membership on `sce`/`sce_mediator`
 #' respectively.
+#' @param mediator_stats_cluster_col The `character(1)` column name in
+#' `mediator_stats` (NOT `sce_mediator`) identifying cluster membership --
+#' this is deliberately a separate parameter from `med_cluster_col`,
+#' since `mediator_stats` (typically a compiled DE results table like
+#' `DGE_results_carrier_*.Rds`) commonly uses a different column naming
+#' convention (e.g. `"cluster"`) than the pseudobulk object's `colData()`
+#' (e.g. `"registration_variable"` for Xenium). Only used when
+#' `plot_mediator_panel = TRUE`.
 #' @param category_col The `character(1)` `colData()` column to color/
 #' group boxplots by (e.g. `"APOE_carrier"`).
 #' @param mod A `formula` or design `matrix` used to clean the OUTCOME
@@ -163,6 +171,7 @@ plot_DEG_mediated_express <- function(sce,
                                        mediator_stats = NULL,
                                        mediator_pval_col = "vlmf_adj.P.Val",
                                        mediator_fc_col = "vlmf_logFC",
+                                       mediator_stats_cluster_col = "cluster",
                                        mediator_mod = NULL,
                                        mediator_cleanY_P = NULL,
                                        mediator_t_col = "vlmf_t",
@@ -368,7 +377,7 @@ plot_DEG_mediated_express <- function(sce,
             pval_col = mediator_pval_col,
             fc_col = mediator_fc_col,
             gene_col = gene_col,
-            cluster_col = med_cluster_col,
+            cluster_col = mediator_stats_cluster_col,
             category_col = category_col,
             mod = if (is.null(mediator_mod)) mod else mediator_mod,
             cleanY_P = if (is.null(mediator_cleanY_P)) cleanY_P else mediator_cleanY_P,
@@ -384,7 +393,7 @@ plot_DEG_mediated_express <- function(sce,
         ## "P=" vs "fdr=" display convention applies consistently across
         ## all three panels.
         med_stat_row <- mediator_stats |>
-            dplyr::filter(.data[[med_cluster_col]] == med_clus, .data[[gene_col]] == mediator_gene)
+            dplyr::filter(.data[[mediator_stats_cluster_col]] == med_clus, .data[[gene_col]] == mediator_gene)
 
         if (nrow(med_stat_row) >= 1 && all(c(mediator_pval_col, mediator_t_col) %in% names(med_stat_row))) {
             p_ <- med_stat_row[[mediator_pval_col]][1]
