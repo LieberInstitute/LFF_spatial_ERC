@@ -80,6 +80,12 @@
 #' @param mediator_pval_col,mediator_fc_col Column names in
 #' `mediator_stats` for the mediator panel's p-value/logFC annotation,
 #' passed straight through to `plot_DEG_express()`.
+#' @param mediator_t_col A `character(1)` column name in `mediator_stats`
+#' for the mediator panel's own t-statistic, used (together with
+#' `mediator_pval_col`) to build a `signif_stat`/`signif_label`-driven
+#' annotation overlaid on the mediator panel -- so all three panels use
+#' the same "P=" vs "fdr=" display convention, rather than relying on
+#' `plot_DEG_express()`'s own internal (fixed) label text.
 #' @param mediator_mod,mediator_cleanY_P Optional `formula`/`matrix` and
 #' `integer(1)` used to clean the mediator's own expression for its
 #' panel. Default to `mod`/`cleanY_P` (i.e. assume the same design) if
@@ -96,6 +102,10 @@
 #' @param signif_label A `character(1)` display label for the annotation
 #' text (e.g. `"P"` vs `"fdr"`). Defaults to `"P"` when
 #' `signif_stat == "P.Value"`, otherwise to `signif_stat` itself.
+#' @param signif_thr A `numeric(1)`, the p-value cutoff for a single
+#' significance star (`"*"`) in the annotation text -- `"**"`/`"***"`
+#' stay fixed at `< 0.01`/`< 0.001`. Default `0.05`; set to e.g. `0.10`
+#' to match a relaxed validation threshold.
 #'
 #' Each of the three annotation pieces (Step 1 base, Step 3b
 #' carrier-adjusted, Step 3a mediator-association) is only added if its
@@ -155,9 +165,11 @@ plot_DEG_mediated_express <- function(sce,
                                        mediator_fc_col = "vlmf_logFC",
                                        mediator_mod = NULL,
                                        mediator_cleanY_P = NULL,
+                                       mediator_t_col = "vlmf_t",
                                        anno_stat_suffix = "Xen",
                                        signif_stat = "P.Value",
-                                       signif_label = NULL) {
+                                       signif_label = NULL,
+                                       signif_thr = 0.05) {
 
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(med_cluster_col %in% colnames(colData(sce_mediator)))
@@ -201,7 +213,7 @@ plot_DEG_mediated_express <- function(sce,
     med_cols     <- stat_cols("_med")
     mediated_col <- paste0(anno_stat_suffix, "_mediated")
 
-    sig_stars <- function(p) dplyr::case_when(p < 0.001 ~ "***", p < 0.01 ~ "**", p < 0.05 ~ "*", TRUE ~ "")
+    sig_stars <- function(p) dplyr::case_when(p < 0.001 ~ "***", p < 0.01 ~ "**", p < signif_thr ~ "*", TRUE ~ "")
 
     stats_filter <- stats |>
         dplyr::filter(mediator == mediator_gene,
@@ -365,6 +377,33 @@ plot_DEG_mediated_express <- function(sce,
             ncol = ncol
         ) +
             ggplot2::labs(title = med_clus, subtitle = sprintf("mediator"))
+
+        ## Overlay our own signif_stat/signif_label-driven annotation on
+        ## top of plot_DEG_express()'s own (which uses its own fixed
+        ## label text) -- pulls directly from mediator_stats so the same
+        ## "P=" vs "fdr=" display convention applies consistently across
+        ## all three panels.
+        med_stat_row <- mediator_stats |>
+            dplyr::filter(.data[[med_cluster_col]] == med_clus, .data[[gene_col]] == mediator_gene)
+
+        if (nrow(med_stat_row) >= 1 && all(c(mediator_pval_col, mediator_t_col) %in% names(med_stat_row))) {
+            p_ <- med_stat_row[[mediator_pval_col]][1]
+            t_ <- if (mediator_t_col %in% names(med_stat_row)) med_stat_row[[mediator_t_col]][1] else NA_real_
+            med_anno <- if (!is.na(t_)) {
+                sprintf("%s=%.2e%s\nt=%.2f", signif_label, p_, sig_stars(p_), t_)
+            } else {
+                sprintf("%s=%.2e%s", signif_label, p_, sig_stars(p_))
+            }
+            p_med <- p_med +
+                ggplot2::geom_label(
+                    data = data.frame(x = -Inf, y = -Inf, label = med_anno),
+                    ggplot2::aes(x = x, y = y, label = label),
+                    alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5, inherit.aes = FALSE
+                )
+        } else {
+            message(sprintf("Note: %s/%s not found in mediator_stats for %s in %s -- skipping mediator panel annotation.",
+                             mediator_pval_col, mediator_t_col, mediator_gene, med_clus))
+        }
 
         return(p_med + p_unadj + p_adj)
     }
