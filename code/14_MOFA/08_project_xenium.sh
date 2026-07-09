@@ -6,7 +6,7 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o logs/08_project_xenium_%a.txt
 #SBATCH -e logs/08_project_xenium_%a.txt
-#SBATCH --array=1-8%12
+#SBATCH --array=9-12%4
 #SBATCH --exclude=compute-094
 
 set -e
