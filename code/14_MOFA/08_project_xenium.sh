@@ -1,12 +1,13 @@
 #!/bin/bash
 #SBATCH -p katun
-#SBATCH --mem=10G
+#SBATCH --mem=15G
 #SBATCH --job-name=08_project_xenium
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o logs/08_project_xenium_%a.txt
 #SBATCH -e logs/08_project_xenium_%a.txt
-#SBATCH --array=1-12%5
+#SBATCH --array=1-8%12
+#SBATCH --exclude=compute-094
 
 set -e
 

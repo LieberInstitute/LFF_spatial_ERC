@@ -51,7 +51,7 @@ task_df = read_csv(task_path, show_col_types = FALSE) |>
 if (task_df$astro_group != 'all') {
     spe = spe[
         ,
-        (spe$astro_group == task_df$astro_group) &
+        ((spe$astro_group == task_df$astro_group) & !is.na(spe$astro_group)) |
         (spe$cell_type_anno != 'Oligo.3')
     ]
 }
@@ -86,7 +86,7 @@ p = ggplot(
     scale_fill_viridis_c(name = "log10(ncells + 1)") +
     labs(
         title = sprintf(
-            "Domain: %s, Astro group: %s", task_df$domain, task_df$astro_group
+            "Domain: %s, Astro: %s", task_df$domain, task_df$astro_group
         ),
         x = "Sample ID",
         y = "Cell type"
