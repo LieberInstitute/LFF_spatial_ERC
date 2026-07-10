@@ -145,8 +145,8 @@ mediation_validation_details <- function(mediation_eval, med_cluster, gene_name,
                                           tt_baseline, tt_mediation, ttM_mediation, Pvalthr = 0.10) {
     mediation_eval |>
         filter(med_cl == med_cluster, mediator == gene_name) |>
-        select(med_cl, mediator, outcome, fdr_base:t_med_vec) |>
-        rename_with(~paste0(.x, "_SN"), fdr_base:t_med_vec) |>
+        select(med_cl, mediator, outcome, fdr_base:t_med) |>
+        rename_with(~paste0(.x, "_SN"), fdr_base:t_med) |>
         left_join(tt_baseline   |> select(outcome = gene_name, P.Value_base = P.Value,    t_base = t),    by = join_by(outcome)) |>
         left_join(tt_mediation  |> select(outcome = gene_name, P.Value_med = P.Value, t_med = t), by = join_by(outcome)) |>
         left_join(ttM_mediation |> select(outcome = gene_name, P.Value_med_vec = P.Value,     t_med_vec = t),     by = join_by(outcome)) |>
@@ -168,14 +168,15 @@ mediation_validation_details <- function(mediation_eval, med_cluster, gene_name,
 ##    with discovery direction (inner loop, per scenario's med_cl)
 
 pairs_tbl <- read.csv(here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Oligo3_Astro_mediator_outcome_pairs.csv"))
-mediation_eval <- read.csv(here("processed-data", "21_Xenium", "06_xenium_ALL_probe_eval", "ECR_mediator_outcome_xenium_eval.csv"))
+mediation_eval <- read.csv(here("processed-data", "21_Xenium", "06_xenium_ALL_probe_eval", "ECR_mediator_outcome_xenium_eval.csv")) |>
+    rename(fdr_base = fdr, logFC_base = logFC, t_base = t)
 
 message(Sys.time(), sprintf(" - %d scenarios to run from pairs table", nrow(pairs_tbl)))
 
 
 ## Outer loop: one scenario (row of pairs_tbl) at a time
 
-all_scenario_results <- pmap(pairs_tbl, function(med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test) {
+all_scenario_results <- pmap(pairs_tbl[31:32,], function(med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test) {
 
     message(Sys.time(), sprintf(" - SCENARIO: med_cl=%s mediator_datatype=%s outcome_datatype=%s outcome_cl=%s med_cl_test=%s",
                                  med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test))
