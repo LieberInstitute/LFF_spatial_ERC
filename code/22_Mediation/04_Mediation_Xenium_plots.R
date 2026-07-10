@@ -150,7 +150,7 @@ mediated_hits_select <- mediated_hits |> select(med_cl, med_cl_test, mediator_da
 
 pdf(here(plot_dir, "mediation_boxplots_Xenium_pairs.pdf"), width = 10, height = 4)
 
-pwalk(mediated_hits_select[16:17,], function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
+pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
     
     # ## test 
     # med_cl = "Astro.2"
