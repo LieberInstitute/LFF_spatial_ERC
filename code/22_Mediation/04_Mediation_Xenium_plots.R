@@ -26,12 +26,50 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 mediation_summary_fn <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")
 mediation_summary <- read_csv(mediation_summary_fn)
 
+
+## add mediator stats
+mediator_DE_stats <- mediation_summary |>
+    distinct(mediator_datatype, med_cl_test, mediator) |>
+    pmap_dfr(function(mediator_datatype, med_cl_test, mediator) {
+        DE_data <- load_DE_cached(get_DE_fn(mediator_datatype))
+        DE_data |>
+            filter(cluster == med_cl_test, gene_name == mediator) |>
+            transmute(
+                mediator_datatype, med_cl_test, mediator,
+                mediatorDE_logFC = vlmf_logFC,
+                mediatorDE_P.Value = vlmf_P.Value,
+                mediatorDE_adj.P.Val = vlmf_adj.P.Val,
+                mediatorDE_t = vlmf_t
+            )
+    })
+mediator_DE_stats |> filter(mediatorDE_P.Value < 0.1)
+mediator_DE_stats |> filter(mediator == "SV2B")
+
+mediation_summary <- mediation_summary |> left_join(mediator_DE_stats)
+
 message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(mediation_summary)))
 
-mediated_hits <- mediation_summary |> filter(Xen_valid, !Xen_carrier_sig)
+mediation_summary |> filter(base_valid, mediated)
+
+mediated_hits <- mediation_summary |> filter(base_valid, !med_sig)
 message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
 
 mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator)
+
+mediation_summary |> 
+    filter(base_valid, mediated) |> 
+    select( med_cl_test, mediator, outcome_cl, outcome, base_valid, mediated)
+
+mediation_summary |> 
+    filter(base_valid, mediated) |> 
+    select( med_cl_test, mediator, outcome_cl, outcome, base_valid, mediated, mediatorDE_P.Value) |>
+    mutate(mediatorDE = ifelse(mediatorDE_P.Value < 0.1, "*",""))
+
+mediation_summary |> 
+    filter(base_valid, !med_sig,  !mediated) |> 
+    select( med_cl_test, mediator, outcome_cl, outcome, base_valid, med_sig, med_vec_sig, mediatorDE_P.Value) |>
+    arrange(mediator, outcome) |>
+    mutate(mediatorDE = ifelse(mediatorDE_P.Value < 0.1, "*",""))
 
 mediated_hits |> select(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator, outcome, Xen_valid)
 
@@ -60,7 +98,6 @@ med_plot_test <- plot_DEG_mediated_express(
     mod = ~APOE_carrier_syn + Age + Anc_Afr,
     cleanY_P = 2,
     color_pal = APOE_carrier_colors,
-    anno_stat_suffix = "Xen",
     signif_stat = "P.Value",
     signif_thr = 0.10
 )
@@ -89,7 +126,6 @@ med_plot_test2 <- plot_DEG_mediated_express(
     mediator_fc_col = "vlmf_logFC",
     mediator_mod = ~APOE_carrier_syn + Age + Anc_Afr,
     mediator_cleanY_P = 2,
-    anno_stat_suffix = "Xen",
     signif_stat = "P.Value",
     signif_thr = 0.10
 )
@@ -114,7 +150,7 @@ mediated_hits_select <- mediated_hits |> select(med_cl, med_cl_test, mediator_da
 
 pdf(here(plot_dir, "mediation_boxplots_Xenium_pairs.pdf"), width = 10, height = 4)
 
-pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
+pwalk(mediated_hits_select[16:17,], function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
     
     # ## test 
     # med_cl = "Astro.2"
@@ -160,7 +196,6 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
             plot_mediator_panel = TRUE,
             mediator_stats = mediator_stats,
             mediator_stats_cluster_col = "cluster",
-            anno_stat_suffix = "Xen",
             signif_stat = "P.Value",
             signif_thr = 0.10
         ),
