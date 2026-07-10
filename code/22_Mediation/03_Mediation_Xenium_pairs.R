@@ -176,7 +176,7 @@ message(Sys.time(), sprintf(" - %d scenarios to run from pairs table", nrow(pair
 
 ## Outer loop: one scenario (row of pairs_tbl) at a time
 
-all_scenario_results <- pmap(pairs_tbl[31:32,], function(med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test) {
+all_scenario_results <- pmap(pairs_tbl, function(med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test) {
 
     message(Sys.time(), sprintf(" - SCENARIO: med_cl=%s mediator_datatype=%s outcome_datatype=%s outcome_cl=%s med_cl_test=%s",
                                  med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test))
