@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Jun 25 06:59:58 AM EDT 2026
+Thu Jul  9 01:01:01 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33578073
+Job id: 34009398
 Job name: 01.2_compile_DGE_Xenium_Oligo.3_Astro
-Node name: compute-168
+Node name: compute-122
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -29,119 +28,6 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Registered S3 method overwritten by 'GGally':
   method from   
   +.gg   ggplot2
-Loading objects:
-  cell_type_colors
-2026-06-25 07:00:01.153276load VLMF data
-[1] "nnA_far_APOE_high"  "nnA_far_APOE_low"   "nnA_near_APOE_high"
-[4] "nnA_near_APOE_low" 
-                     data_type           cluster cell_type_anno contrast
-SST       Xenium_Oligo.3_Astro nnA_far_APOE_high        Oligo.3  carrier
-SEMA6D    Xenium_Oligo.3_Astro nnA_far_APOE_high        Oligo.3  carrier
-OST4      Xenium_Oligo.3_Astro nnA_far_APOE_high        Oligo.3  carrier
-BCAN      Xenium_Oligo.3_Astro nnA_far_APOE_high        Oligo.3  carrier
-LINC00486 Xenium_Oligo.3_Astro nnA_far_APOE_high        Oligo.3  carrier
-ABCA8     Xenium_Oligo.3_Astro nnA_far_APOE_high        Oligo.3  carrier
-                  gene_id gene_name            Type                gene_search
-SST       ENSG00000157005       SST Gene Expression       SST; ENSG00000157005
-SEMA6D    ENSG00000137872    SEMA6D Gene Expression    SEMA6D; ENSG00000137872
-OST4      ENSG00000228474      OST4 Gene Expression      OST4; ENSG00000228474
-BCAN      ENSG00000132692      BCAN Gene Expression      BCAN; ENSG00000132692
-LINC00486 ENSG00000230876 LINC00486 Gene Expression LINC00486; ENSG00000230876
-ABCA8     ENSG00000141338     ABCA8 Gene Expression     ABCA8; ENSG00000141338
-          subsets_negProbe subsets_negCodeword subsets_unassigned
-SST                  FALSE               FALSE              FALSE
-SEMA6D               FALSE               FALSE              FALSE
-OST4                 FALSE               FALSE              FALSE
-BCAN                 FALSE               FALSE              FALSE
-LINC00486            FALSE               FALSE              FALSE
-ABCA8                FALSE               FALSE              FALSE
-          subsets_any_neg subsets_GEX      logFC   AveExpr         t
-SST                 FALSE        TRUE  0.8685455  9.039401  3.809120
-SEMA6D              FALSE        TRUE -0.3862227  9.503581 -2.815192
-OST4                FALSE        TRUE -0.3528658  9.238749 -2.717394
-BCAN                FALSE        TRUE  0.2867133 10.176901  2.401809
-LINC00486           FALSE        TRUE -0.3204121  8.440724 -2.601306
-ABCA8               FALSE        TRUE -0.3305030 10.116654 -2.337252
-              P.Value adj.P.Val         B
-SST       0.001183571 0.4118826 -2.557183
-SEMA6D    0.011046282 0.8984668 -3.289458
-OST4      0.013660368 0.8984668 -3.412516
-BCAN      0.026696284 0.8984668 -3.604306
-LINC00486 0.017529591 0.8984668 -3.632088
-ABCA8     0.030515384 0.8984668 -3.673269
-[1] "nnA_far_APOE_low"   "nnA_far_APOE_high"  "nnA_near_APOE_low" 
-[4] "nnA_near_APOE_high"
-# A tibble: 4 × 2
-  cluster                n
-  <fct>              <int>
-1 nnA_far_APOE_low      36
-2 nnA_far_APOE_high     30
-3 nnA_near_APOE_low     49
-4 nnA_near_APOE_high    56
-`summarise()` has regrouped the output.
-ℹ Summaries were computed grouped by cluster and mod.
-ℹ Output is grouped by cluster.
-ℹ Use `summarise(.groups = "drop_last")` to silence this message.
-ℹ Use `summarise(.by = c(cluster, mod))` for per-operation grouping
-  (`?dplyr::dplyr_by`) instead.
-# A tibble: 0 × 7
-# Groups:   cluster [0]
-# ℹ 7 variables: cluster <fct>, mod <chr>, n_genes <int>, n_FDR05 <int>,
-#   n_pval10 <int>, nUP <int>, nDown <int>
-Saving 10 x 7 in image
-2026-06-25 07:00:02.72993Volcano plots
-2026-06-25 07:00:05.997527Add snRNA-seq stats, Save data
-Joining with `by = join_by(gene_id, gene_name)`
-2026-06-25 07:00:07.032374Summarize validation experiments
-# A tibble: 4 × 6
-  cluster     n_signif_xenium n_signif_sn n_signif_both n_validate percent_valid
-  <fct>                 <int>       <int>         <int>      <int>         <dbl>
-1 nnA_far_AP…              28          61             6          4          6.56
-2 nnA_far_AP…              27          60             3          3          5   
-3 nnA_near_A…              37          61             7          6          9.84
-4 nnA_near_A…              45          61            10          9         14.8 
-# A tibble: 4 × 10
-  cluster    gene_id gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC
-  <fct>      <chr>   <chr>             <dbl>             <dbl>             <dbl>
-1 nnA_far_A… ENSG00… OPALIN           -0.653            0.0350           -0.204 
-2 nnA_far_A… ENSG00… OPALIN           -0.653            0.0350           -0.142 
-3 nnA_near_… ENSG00… OPALIN           -0.653            0.0350           -0.188 
-4 nnA_near_… ENSG00… OPALIN           -0.653            0.0350           -0.0732
-# ℹ 4 more variables: vlmf_xenium_P.Value <dbl>, vlmf_xenium_t <dbl>,
-#   dir_match <lgl>, validate <lgl>
-2026-06-25 07:00:07.073421Xenium vs. snRNA-seq correlation
-Joining with `by = join_by(gene_id, gene_name)`
-Joining with `by = join_by(cluster_sn, cluster_xenium)`
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  60.00   60.75   61.00   60.75   61.00   61.00 
-# A tibble: 0 × 11
-# ℹ 11 variables: cluster_sn <fct>, cluster_xenium <fct>, n_genes <int>,
-#   cor <dbl>, p_value <dbl>, n_genes_FDR05 <int>, cor_FDR05 <dbl>,
-#   p_value_FDR05 <dbl>, cluster_match <lgl>, FDR <dbl>, FDR_fdr05 <dbl>
-# A tibble: 1 × 11
-# Groups:   cluster_sn [1]
-  cluster_sn cluster_xenium     n_genes   cor   p_value n_genes_FDR05 cor_FDR05
-  <fct>      <fct>                <int> <dbl>     <dbl>         <int>     <dbl>
-1 Oligo.3    nnA_near_APOE_high     264 0.259 0.0000224            61     0.448
-# ℹ 4 more variables: p_value_FDR05 <dbl>, cluster_match <lgl>, FDR <dbl>,
-#   FDR_fdr05 <dbl>
-Saving 8 x 7 in image
-Joining with `by = join_by(cluster)`
-Saving 8 x 7 in image
-Saving 8 x 7 in image
-Saving 8 x 7 in image
-Saving 8 x 7 in image
-Saving 7 x 7 in image
-Saving 8 x 7 in image
-2026-06-25 07:00:09.838067t-stat scatter plots
-Warning messages:
-1: Removed 352 rows containing missing values or values outside the scale range
-(`geom_point()`). 
-2: Removed 352 rows containing missing values or values outside the scale range
-(`geom_text_repel()`). 
-There were 17 warnings (use warnings() to see them)
-2026-06-25 07:00:16.737753 - Check q values
-2026-06-25 07:00:17.329905t-stat heatmaps
 Loading required package: grid
 ========================================
 ComplexHeatmap version 2.26.1
@@ -162,108 +48,345 @@ This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 
-null device 
-          1 
-[1] "Reproducibility information:"
-[1] "2026-06-25 07:00:21 EDT"
-   user  system elapsed 
- 21.047   0.430  22.171 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.5.0 Patched (2025-05-21 r88220)
- os       Rocky Linux 9.4 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2026-06-25
- pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
- quarto   NA
+Loading objects:
+  cell_type_colors
+2026-07-09 13:01:07.09179load VLMF data
+ [1] "APOE_high_nnA_Astro.1" "APOE_high_nnA_Astro.2" "APOE_high_nnA_Astro.3"
+ [4] "APOE_high_nnA_Astro.4" "APOE_high_nnA_Astro.5" "APOE_high_nnA_far"    
+ [7] "APOE_high_nnA_near"    "APOE_high"             "APOE_low_nnA_Astro.1" 
+[10] "APOE_low_nnA_Astro.2"  "APOE_low_nnA_Astro.3"  "APOE_low_nnA_Astro.4" 
+[13] "APOE_low_nnA_Astro.5"  "APOE_low_nnA_far"      "APOE_low_nnA_near"    
+[16] "APOE_low"              "Astro.1_APOE_high"     "Astro.1_APOE_low"     
+[19] "Astro.2_APOE_high"     "Astro.2_APOE_low"      "Astro.3_APOE_high"    
+[22] "Astro.3_APOE_low"      "Astro.4_APOE_high"     "Astro.4_APOE_low"     
+[25] "Astro.5_APOE_high"     "Astro.5_APOE_low"      "nn_Astro.1"           
+[28] "nn_Astro.2"            "nn_Astro.3"            "nn_Astro.4"           
+[31] "nn_Astro.5"            "nnA_far"               "nnA_near"             
+                   data_type               cluster cell_type_anno contrast
+BCAN    Xenium_Oligo.3_Astro APOE_high_nnA_Astro.1        Oligo.3  carrier
+HS3ST2  Xenium_Oligo.3_Astro APOE_high_nnA_Astro.1        Oligo.3  carrier
+APOE    Xenium_Oligo.3_Astro APOE_high_nnA_Astro.1        Oligo.3  carrier
+SLC24A2 Xenium_Oligo.3_Astro APOE_high_nnA_Astro.1        Oligo.3  carrier
+CNTNAP2 Xenium_Oligo.3_Astro APOE_high_nnA_Astro.1        Oligo.3  carrier
+IKZF1   Xenium_Oligo.3_Astro APOE_high_nnA_Astro.1        Oligo.3  carrier
+                gene_id gene_name            Type              gene_search
+BCAN    ENSG00000132692      BCAN Gene Expression    BCAN; ENSG00000132692
+HS3ST2  ENSG00000122254    HS3ST2 Gene Expression  HS3ST2; ENSG00000122254
+APOE    ENSG00000130203      APOE Gene Expression    APOE; ENSG00000130203
+SLC24A2 ENSG00000155886   SLC24A2 Gene Expression SLC24A2; ENSG00000155886
+CNTNAP2 ENSG00000174469   CNTNAP2 Gene Expression CNTNAP2; ENSG00000174469
+IKZF1   ENSG00000185811     IKZF1 Gene Expression   IKZF1; ENSG00000185811
+        subsets_negProbe subsets_negCodeword subsets_unassigned subsets_any_neg
+BCAN               FALSE               FALSE              FALSE           FALSE
+HS3ST2             FALSE               FALSE              FALSE           FALSE
+APOE               FALSE               FALSE              FALSE           FALSE
+SLC24A2            FALSE               FALSE              FALSE           FALSE
+CNTNAP2            FALSE               FALSE              FALSE           FALSE
+IKZF1              FALSE               FALSE              FALSE           FALSE
+        subsets_GEX      logFC   AveExpr         t     P.Value adj.P.Val
+BCAN           TRUE  0.4967015 10.229178  3.702672 0.001542324 0.4040888
+HS3ST2         TRUE -0.7919258  8.150922 -2.857736 0.010175046 0.8176692
+APOE           TRUE  0.3298131 11.810246  2.152410 0.044634952 0.8176692
+SLC24A2        TRUE -0.3208195 10.067853 -2.233362 0.037940844 0.8176692
+CNTNAP2        TRUE -0.3082368  9.556676 -2.308192 0.032586592 0.8176692
+IKZF1          TRUE  0.6857134  8.113113  2.688309 0.014678781 0.8176692
+                B
+BCAN    -2.506381
+HS3ST2  -3.769851
+APOE    -3.780066
+SLC24A2 -3.828640
+CNTNAP2 -3.845500
+IKZF1   -3.896771
+ [1] APOE_high_nnA_Astro.1 APOE_high_nnA_Astro.2 APOE_high_nnA_Astro.3
+ [4] APOE_high_nnA_Astro.4 APOE_high_nnA_Astro.5 APOE_high_nnA_far    
+ [7] APOE_high_nnA_near    APOE_high             APOE_low_nnA_Astro.1 
+[10] APOE_low_nnA_Astro.2  APOE_low_nnA_Astro.3  APOE_low_nnA_Astro.4 
+[13] APOE_low_nnA_Astro.5  APOE_low_nnA_far      APOE_low_nnA_near    
+[16] APOE_low              Astro.1_APOE_high     Astro.1_APOE_low     
+[19] Astro.2_APOE_high     Astro.2_APOE_low      Astro.3_APOE_high    
+[22] Astro.3_APOE_low      Astro.4_APOE_high     Astro.4_APOE_low     
+[25] Astro.5_APOE_high     Astro.5_APOE_low      nn_Astro.1           
+[28] nn_Astro.2            nn_Astro.3            nn_Astro.4           
+[31] nn_Astro.5            nnA_far               nnA_near             
+33 Levels: APOE_high APOE_high_nnA_far ... Astro.5_APOE_low
+ [1] "APOE_high"             "APOE_high_nnA_far"     "APOE_high_nnA_near"   
+ [4] "APOE_high_nnA_Astro.1" "APOE_high_nnA_Astro.2" "APOE_high_nnA_Astro.3"
+ [7] "APOE_high_nnA_Astro.4" "APOE_high_nnA_Astro.5" "APOE_low"             
+[10] "APOE_low_nnA_far"      "APOE_low_nnA_near"     "APOE_low_nnA_Astro.1" 
+[13] "APOE_low_nnA_Astro.2"  "APOE_low_nnA_Astro.3"  "APOE_low_nnA_Astro.4" 
+[16] "APOE_low_nnA_Astro.5"  "nn_Astro.1"            "nn_Astro.2"           
+[19] "nn_Astro.3"            "nn_Astro.4"            "nn_Astro.5"           
+[22] "nnA_far"               "nnA_near"              "Astro.1_APOE_high"    
+[25] "Astro.1_APOE_low"      "Astro.2_APOE_high"     "Astro.2_APOE_low"     
+[28] "Astro.3_APOE_high"     "Astro.3_APOE_low"      "Astro.4_APOE_high"    
+[31] "Astro.4_APOE_low"      "Astro.5_APOE_high"     "Astro.5_APOE_low"     
+[1] Oligo.3 Astro.1 Astro.2 Astro.3 Astro.4 Astro.5
+Levels: Astro.1 Astro.2 Astro.3 Astro.4 Astro.5 Oligo.3
+# A tibble: 33 × 3
+   cell_type_broad cluster                   n
+   <fct>           <fct>                 <int>
+ 1 Astro           Astro.1_APOE_high        40
+ 2 Astro           Astro.1_APOE_low         41
+ 3 Astro           Astro.2_APOE_high        43
+ 4 Astro           Astro.2_APOE_low         47
+ 5 Astro           Astro.3_APOE_high        16
+ 6 Astro           Astro.3_APOE_low         22
+ 7 Astro           Astro.4_APOE_high        33
+ 8 Astro           Astro.4_APOE_low         28
+ 9 Astro           Astro.5_APOE_high        54
+10 Astro           Astro.5_APOE_low         34
+11 Oligo           APOE_high                50
+12 Oligo           APOE_high_nnA_far        30
+13 Oligo           APOE_high_nnA_near       56
+14 Oligo           APOE_high_nnA_Astro.1    29
+15 Oligo           APOE_high_nnA_Astro.2    47
+16 Oligo           APOE_high_nnA_Astro.3    11
+17 Oligo           APOE_high_nnA_Astro.4    33
+18 Oligo           APOE_high_nnA_Astro.5    45
+19 Oligo           APOE_low                 48
+20 Oligo           APOE_low_nnA_far         36
+21 Oligo           APOE_low_nnA_near        49
+22 Oligo           APOE_low_nnA_Astro.1     29
+23 Oligo           APOE_low_nnA_Astro.2     22
+24 Oligo           APOE_low_nnA_Astro.3     14
+25 Oligo           APOE_low_nnA_Astro.4     18
+26 Oligo           APOE_low_nnA_Astro.5     40
+27 Oligo           nn_Astro.1               43
+28 Oligo           nn_Astro.2               36
+29 Oligo           nn_Astro.3               17
+30 Oligo           nn_Astro.4               44
+31 Oligo           nn_Astro.5               56
+32 Oligo           nnA_far                  33
+33 Oligo           nnA_near                 54
+# A tibble: 9,009 × 20
+   data_type cluster cell_type_anno contrast gene_id gene_name Type  gene_search
+   <chr>     <fct>   <fct>          <chr>    <chr>   <chr>     <chr> <chr>      
+ 1 Xenium_O… Astro.… Astro.3        carrier  ENSG00… FOS       Gene… FOS; ENSG0…
+ 2 Xenium_O… Astro.… Astro.3        carrier  ENSG00… MT-CYB    Gene… MT-CYB; EN…
+ 3 Xenium_O… Astro.… Astro.1        carrier  ENSG00… NR4A2     Gene… NR4A2; ENS…
+ 4 Xenium_O… Astro.… Astro.1        carrier  ENSG00… CX3CR1    Gene… CX3CR1; EN…
+ 5 Xenium_O… Astro.… Astro.5        carrier  ENSG00… LYVE1     Gene… LYVE1; ENS…
+ 6 Xenium_O… Astro.… Astro.1        carrier  ENSG00… PDGFRA    Gene… PDGFRA; EN…
+ 7 Xenium_O… Astro.… Astro.1        carrier  ENSG00… PTPRD     Gene… PTPRD; ENS…
+ 8 Xenium_O… Astro.… Astro.3        carrier  ENSG00… NR4A2     Gene… NR4A2; ENS…
+ 9 Xenium_O… Astro.… Astro.4        carrier  ENSG00… SLC17A7   Gene… SLC17A7; E…
+10 Xenium_O… Astro.… Astro.4        carrier  ENSG00… KLF2      Gene… KLF2; ENSG…
+# ℹ 8,999 more rows
+# ℹ 12 more variables: subsets_negProbe <lgl>, subsets_negCodeword <lgl>,
+#   subsets_unassigned <lgl>, subsets_any_neg <lgl>, subsets_GEX <lgl>,
+#   vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>, vlmf_P.Value <dbl>,
+#   vlmf_adj.P.Val <dbl>, vlmf_B <dbl>, cell_type_broad <fct>
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cell_type_broad, cluster, and mod.
+ℹ Output is grouped by cell_type_broad and cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cell_type_broad, cluster, mod))` for per-operation
+  grouping (`?dplyr::dplyr_by`) instead.
+# A tibble: 1 × 8
+# Groups:   cell_type_broad, cluster [1]
+  cell_type_broad cluster          mod     n_genes n_FDR05 n_pval10   nUP nDown
+  <fct>           <fct>            <chr>     <int>   <int>    <int> <int> <int>
+1 Astro           Astro.3_APOE_low carrier     134       1       22     4     6
+Saving 10 x 7 in image
+2026-07-09 13:01:09.383666Volcano plots
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_Oligo.3_Astro/Volcano_plot_Xenium_Oligo.3_Astro-carrier-Astro.png"
 
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package        * version date (UTC) lib source
- backports        1.5.1   2026-04-03 [1] CRAN (R 4.5.0)
- BiocGenerics     0.56.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
- bit              4.6.0   2025-03-06 [2] CRAN (R 4.5.0)
- bit64            4.8.2   2026-05-19 [1] CRAN (R 4.5.0)
- broom          * 1.0.13  2026-05-14 [1] CRAN (R 4.5.0)
- Cairo            1.7-0   2025-10-29 [1] CRAN (R 4.5.0)
- circlize         0.4.18  2026-04-04 [1] CRAN (R 4.5.0)
- cli              3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
- clue             0.3-68  2026-03-26 [1] CRAN (R 4.5.0)
- cluster          2.1.8.1 2025-03-12 [3] CRAN (R 4.5.0)
- codetools        0.2-20  2024-03-31 [3] CRAN (R 4.5.0)
- colorspace       2.1-2   2025-09-22 [1] CRAN (R 4.5.0)
- ComplexHeatmap * 2.26.1  2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
- crayon           1.5.3   2024-06-20 [2] CRAN (R 4.5.0)
- dichromat        2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
- digest           0.6.39  2025-11-19 [1] CRAN (R 4.5.0)
- doParallel       1.0.17  2022-02-07 [2] CRAN (R 4.5.0)
- dplyr          * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
- farver           2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
- forcats        * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
- foreach          1.5.2   2022-02-02 [2] CRAN (R 4.5.0)
- generics         0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
- getopt         * 1.21.1  2026-04-27 [1] CRAN (R 4.5.0)
- GetoptLong       1.1.1   2026-04-08 [1] CRAN (R 4.5.0)
- GGally         * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
- ggplot2        * 4.0.3   2026-04-22 [1] CRAN (R 4.5.0)
- ggrepel        * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
- ggstats          0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
- GlobalOptions    0.1.4   2026-04-08 [1] CRAN (R 4.5.0)
- glue             1.8.1   2026-04-17 [1] CRAN (R 4.5.0)
- gtable           0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
- here           * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
- hms              1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
- IRanges          2.44.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
- iterators        1.0.14  2022-02-05 [2] CRAN (R 4.5.0)
- labeling         0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
- lifecycle        1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
- lubridate      * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
- magick           2.9.1   2026-02-28 [1] CRAN (R 4.5.0)
- magrittr         2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
- matrixStats      1.5.0   2025-01-07 [2] CRAN (R 4.5.0)
- pillar           1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
- pkgconfig        2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
- plyr             1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
- png              0.1-9   2026-03-15 [1] CRAN (R 4.5.0)
- purrr          * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
- R6               2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
- ragg             1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
- RColorBrewer     1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp             1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
- readr          * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
- reshape2         1.4.5   2025-11-12 [1] CRAN (R 4.5.0)
- rjson            0.2.23  2024-09-16 [2] CRAN (R 4.5.0)
- rlang            1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
- rprojroot        2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
- S4Vectors        0.48.1  2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
- S7               0.2.2   2026-04-22 [1] CRAN (R 4.5.0)
- scales           1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
- sessioninfo    * 1.2.4   2026-06-04 [1] CRAN (R 4.5.0)
- shape            1.4.6.1 2024-02-23 [2] CRAN (R 4.5.0)
- stringi          1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
- stringr        * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
- systemfonts      1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
- textshaping      1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
- tibble         * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
- tidyr          * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
- tidyselect       1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
- tidyverse      * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
- timechange       0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
- tzdb             0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
- utf8             1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
- vctrs            0.7.3   2026-04-11 [1] CRAN (R 4.5.0)
- vroom            1.7.1   2026-03-31 [1] CRAN (R 4.5.0)
- withr            3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/13_compile_DGE/01_compile_DGE/Xenium_Oligo.3_Astro/Volcano_plot_Xenium_Oligo.3_Astro-carrier-Oligo.png"
 
- [1] /users/lhuuki/R/4.5
- [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
- * ── Packages attached to the search path.
-
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Thu Jun 25 07:00:22 AM EDT 2026
+2026-07-09 13:01:22.140964Add snRNA-seq stats, Save data
+Joining with `by = join_by(cell_type_anno, gene_id, gene_name)`
+2026-07-09 13:01:24.353265Summarize validation experiments
+# A tibble: 29 × 6
+   cluster    n_signif_xenium n_signif_sn n_signif_both n_validate percent_valid
+   <fct>                <int>       <int>         <int>      <int>         <dbl>
+ 1 APOE_high               42          62             7          5          8.06
+ 2 APOE_high…              27          60             3          3          5   
+ 3 APOE_high…              45          61            10          9         14.8 
+ 4 APOE_high…              24          54             6          3          5.56
+ 5 APOE_high…              40          58             9          8         13.8 
+ 6 APOE_high…              11          30             5          4         13.3 
+ 7 APOE_high…              30          40             4          1          2.5 
+ 8 APOE_high…              37          61            10         10         16.4 
+ 9 APOE_low                37          63             8          5          7.94
+10 APOE_low_…              28          61             6          4          6.56
+11 APOE_low_…              37          61             7          6          9.84
+12 APOE_low_…              24          52             6          5          9.62
+13 APOE_low_…              21          59             4          4          6.78
+14 APOE_low_…              13          32             5          4         12.5 
+15 APOE_low_…              16          47             2          2          4.26
+16 APOE_low_…              30          60             7          7         11.7 
+17 nn_Astro.1              34          57             8          4          7.02
+18 nn_Astro.2              31          60             5          4          6.67
+19 nn_Astro.3              17          43             6          4          9.30
+20 nn_Astro.4              37          52             4          2          3.85
+21 nn_Astro.5              45          61            10          9         14.8 
+22 nnA_far                 27          63             3          3          4.76
+23 nnA_near                39          62            10          8         12.9 
+24 Astro.1_A…              37           2             1          1         50   
+25 Astro.1_A…              39           2             1          1         50   
+26 Astro.2_A…              34          11             3          3         27.3 
+27 Astro.2_A…              34          14             1          1          7.14
+28 Astro.3_A…              16           4             1          0          0   
+29 Astro.3_A…              21           4             1          1         25   
+# A tibble: 33 × 6
+   cluster    n_signif_xenium n_signif_sn n_signif_both n_validate percent_valid
+   <fct>                <int>       <int>         <int>      <int>         <dbl>
+ 1 APOE_high…              37          61            10         10         16.4 
+ 2 APOE_high…              45          61            10          9         14.8 
+ 3 nn_Astro.5              45          61            10          9         14.8 
+ 4 APOE_high…              40          58             9          8         13.8 
+ 5 nnA_near                39          62            10          8         12.9 
+ 6 APOE_low_…              30          60             7          7         11.7 
+ 7 APOE_low_…              37          61             7          6          9.84
+ 8 APOE_high               42          62             7          5          8.06
+ 9 APOE_low                37          63             8          5          7.94
+10 APOE_low_…              24          52             6          5          9.62
+# ℹ 23 more rows
+# A tibble: 121 × 10
+   cluster   gene_id gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC
+   <fct>     <chr>   <chr>             <dbl>             <dbl>             <dbl>
+ 1 APOE_hig… ENSG00… SLC24A2          -0.788           0.0224             -0.321
+ 2 APOE_hig… ENSG00… IKZF1             2.75            0.0137              0.686
+ 3 APOE_hig… ENSG00… NRXN3            -0.684           0.0191             -0.231
+ 4 APOE_hig… ENSG00… CNDP1            -0.686           0.0466             -0.462
+ 5 APOE_hig… ENSG00… SOX10            -0.639           0.0258             -0.198
+ 6 APOE_hig… ENSG00… TESPA1            2.01            0.0171              0.441
+ 7 APOE_hig… ENSG00… ERBB3            -0.601           0.0429             -0.276
+ 8 APOE_hig… ENSG00… PTPRD            -0.493           0.0245             -0.294
+ 9 APOE_hig… ENSG00… LPAR1            -0.779           0.0313             -0.256
+10 APOE_hig… ENSG00… ENC1              1.61            0.0238              0.214
+11 APOE_hig… ENSG00… NPTXR             1.21            0.0178              0.359
+12 APOE_hig… ENSG00… OPALIN           -0.653           0.0350             -0.505
+13 APOE_hig… ENSG00… CNDP1            -0.686           0.0466             -0.432
+14 APOE_hig… ENSG00… LPAR1            -0.779           0.0313             -0.459
+15 APOE_hig… ENSG00… GAD1              1.75            0.0245              0.867
+16 APOE_hig… ENSG00… GPM6A             1.68            0.00317             0.335
+17 APOE_hig… ENSG00… TESPA1            2.01            0.0171              0.422
+18 APOE_hig… ENSG00… FOS               2.77            0.00170             0.841
+19 APOE_hig… ENSG00… CNDP1            -0.686           0.0466             -0.311
+20 APOE_hig… ENSG00… SNTA1             0.834           0.0330              0.253
+# ℹ 101 more rows
+# ℹ 4 more variables: vlmf_xenium_P.Value <dbl>, vlmf_xenium_t <dbl>,
+#   dir_match <lgl>, validate <lgl>
+2026-07-09 13:01:24.432849Xenium vs. snRNA-seq correlation
+Joining with `by = join_by(gene_id, gene_name)`
+Joining with `by = join_by(cell_type_anno, cluster_sn, cluster_xenium)`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  10.00   13.00   34.00   35.34   59.00   63.00     139 
+# A tibble: 33 × 12
+   cell_type_anno cluster_sn cluster_xenium        n_genes     cor     p_value
+   <fct>          <fct>      <fct>                   <int>   <dbl>       <dbl>
+ 1 Oligo.3        Oligo.3    APOE_high_nnA_Astro.4     150 -0.0176 0.830      
+ 2 Oligo.3        Oligo.3    APOE_high_nnA_Astro.3      90  0.0372 0.728      
+ 3 Oligo.3        Oligo.3    APOE_low_nnA_Astro.3      106  0.0481 0.624      
+ 4 Oligo.3        Oligo.3    nn_Astro.4                209  0.0717 0.302      
+ 5 Oligo.3        Oligo.3    APOE_low_nnA_Astro.2      248  0.0735 0.249      
+ 6 Oligo.3        Oligo.3    nn_Astro.3                154  0.0764 0.346      
+ 7 Oligo.3        Oligo.3    APOE_low_nnA_Astro.4      162  0.0773 0.328      
+ 8 Oligo.3        Oligo.3    APOE_low_nnA_far          264  0.0826 0.181      
+ 9 Oligo.3        Oligo.3    APOE_high_nnA_Astro.1     223  0.0934 0.164      
+10 Astro.3        Astro.3    Astro.3_APOE_high         124  0.107  0.236      
+11 Astro.5        Astro.5    Astro.5_APOE_high          83  0.123  0.266      
+12 Oligo.3        Oligo.3    APOE_low_nnA_Astro.5      265  0.126  0.0409     
+13 Oligo.3        Oligo.3    APOE_low                  270  0.128  0.0354     
+14 Oligo.3        Oligo.3    nn_Astro.1                249  0.128  0.0431     
+15 Oligo.3        Oligo.3    APOE_low_nnA_near         266  0.160  0.00888    
+16 Oligo.3        Oligo.3    nnA_far                   270  0.166  0.00621    
+17 Oligo.3        Oligo.3    APOE_low_nnA_Astro.1      216  0.185  0.00645    
+18 Astro.5        Astro.5    Astro.5_APOE_low           82  0.186  0.0941     
+19 Astro.2        Astro.2    Astro.2_APOE_high         181  0.190  0.0105     
+20 Oligo.3        Oligo.3    APOE_high_nnA_far         262  0.194  0.00167    
+21 Astro.4        Astro.4    Astro.4_APOE_high         129  0.206  0.0195     
+22 Oligo.3        Oligo.3    APOE_high_nnA_Astro.5     266  0.206  0.000736   
+23 Oligo.3        Oligo.3    nn_Astro.5                268  0.214  0.000442   
+24 Oligo.3        Oligo.3    nnA_near                  269  0.218  0.000334   
+25 Oligo.3        Oligo.3    nn_Astro.2                261  0.235  0.000133   
+26 Astro.3        Astro.3    Astro.3_APOE_low          128  0.237  0.00714    
+27 Oligo.3        Oligo.3    APOE_high                 269  0.247  0.0000457  
+28 Astro.2        Astro.2    Astro.2_APOE_low          185  0.249  0.000668   
+29 Astro.4        Astro.4    Astro.4_APOE_low          131  0.257  0.00310    
+30 Oligo.3        Oligo.3    APOE_high_nnA_near        264  0.259  0.0000224  
+31 Oligo.3        Oligo.3    APOE_high_nnA_Astro.2     248  0.329  0.000000132
+# ℹ 2 more rows
+# ℹ 6 more variables: n_genes_FDR05 <int>, cor_FDR05 <dbl>,
+#   p_value_FDR05 <dbl>, cluster_match <lgl>, FDR <dbl>, FDR_fdr05 <dbl>
+# A tibble: 6 × 12
+# Groups:   cluster_sn [6]
+  cell_type_anno cluster_sn cluster_xenium   n_genes   cor p_value n_genes_FDR05
+  <fct>          <fct>      <fct>              <int> <dbl>   <dbl>         <int>
+1 Astro.1        Astro.1    Astro.1_APOE_low     205 0.404 2.63e-9            NA
+2 Oligo.3        Oligo.3    APOE_high_nnA_A…     248 0.329 1.32e-7            58
+3 Astro.4        Astro.4    Astro.4_APOE_low     131 0.257 3.10e-3            NA
+4 Oligo.3        Astro.5    APOE_low_nnA_ne…      82 0.410 1.50e-4            NA
+5 Oligo.3        Astro.2    APOE_low_nnA_ne…     186 0.367 3.24e-7            14
+6 Oligo.3        Astro.3    nn_Astro.5           223 0.345 1.47e-7            NA
+# ℹ 5 more variables: cor_FDR05 <dbl>, p_value_FDR05 <dbl>,
+#   cluster_match <lgl>, FDR <dbl>, FDR_fdr05 <dbl>
+# A tibble: 198 × 4
+   cluster_sn cluster_xenium           cor cor_FDR05
+   <fct>      <fct>                  <dbl>     <dbl>
+ 1 Astro.2    APOE_low_nnA_Astro.5  0.358      0.753
+ 2 Astro.2    Astro.1_APOE_low      0.238      0.661
+ 3 Astro.2    APOE_low              0.363      0.657
+ 4 Astro.2    Astro.5_APOE_low      0.267      0.643
+ 5 Astro.2    nnA_near              0.344      0.609
+ 6 Astro.2    APOE_low_nnA_Astro.2  0.227      0.604
+ 7 Astro.2    APOE_low_nnA_near     0.367      0.596
+ 8 Astro.2    Astro.4_APOE_high     0.170      0.552
+ 9 Astro.2    APOE_high_nnA_near    0.251      0.543
+10 Astro.2    APOE_high             0.230      0.538
+11 Astro.2    nn_Astro.5            0.330      0.538
+12 Astro.2    nnA_far               0.272      0.525
+13 Oligo.3    APOE_high_nnA_Astro.2 0.329      0.523
+14 Astro.2    nn_Astro.1            0.190      0.5  
+15 Astro.2    APOE_high_nnA_far     0.195      0.495
+16 Oligo.3    nn_Astro.5            0.214      0.480
+17 Oligo.3    APOE_high_nnA_near    0.259      0.448
+18 Oligo.3    nn_Astro.2            0.235      0.447
+19 Oligo.3    APOE_low_nnA_Astro.5  0.126      0.438
+20 Astro.2    APOE_high_nnA_Astro.1 0.0966     0.429
+21 Astro.2    APOE_high_nnA_Astro.5 0.314      0.429
+22 Oligo.3    nnA_near              0.218      0.427
+23 Oligo.3    APOE_low_nnA_Astro.1  0.185      0.415
+# ℹ 175 more rows
+Saving 8 x 7 in image
+Joining with `by = join_by(cluster)`
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Saving 8 x 7 in image
+Saving 7 x 7 in image
+Saving 8 x 7 in image
+2026-07-09 13:01:28.841057t-stat scatter plots
+Warning messages:
+1: Removed 2294 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 2294 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
+Astro
+Saving 7 x 7 in image
+Oligo
+Error in `map()`:
+ℹ In index: 2.
+Caused by error in `data.frame()`:
+! arguments imply differing number of rows: 0, 1
+Backtrace:
+     ▆
+  1. ├─purrr::map(...)
+  2. │ └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
+  3. │   ├─purrr:::with_indexed_errors(...)
+  4. │   │ └─base::withCallingHandlers(...)
+  5. │   ├─purrr:::call_with_cleanup(...)
+  6. │   └─global .f(.x[[i]], ...)
+  7. │     └─GGally::ggpairs(...)
+  8. │       └─GGally:::plot_types(data, columns, columns, allowDiag = TRUE)
+  9. │         └─base::data.frame(...)
+ 10. │           └─base::stop(...)
+ 11. └─base::.handleSimpleError(...)
+ 12.   └─purrr (local) h(simpleError(msg, call))
+ 13.     └─cli::cli_abort(...)
+ 14.       └─rlang::abort(...)
+There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted
