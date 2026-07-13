@@ -51,38 +51,59 @@ mediator_outcome <- read.delim(here("processed-data", "22_Mediation", "out-erc_a
 #### Build flat mediation groups: one list per (med_cl, mediator), named like "Astro.3_IL6ST" ####
 
 mediated_groups <- mediator_outcome |>
-    mutate(group = paste0(med_cl, "_", mediator)) |>
+    mutate(
+        direction = ifelse(logFC > 0, "up", "down"),
+        group = paste0(med_cl, "_", mediator, "_", direction)
+    ) |>
     {\(df) split(df$outcome, df$group)}()
 
 length(mediated_groups)
 map_int(mediated_groups, length)
 
-## convert each group's outcome gene SYMBOLs to ENTREZID -- do the lookup
-## once across all unique genes, then subset per group, rather than
-## calling bitr() once per group
-symbol_entrez <- bitr(unique(unlist(mediated_groups)), fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+# "NPTXR" %in% mediated_groups$Astro.1_NPTXR
+# "FZD8" %in% mediated_groups$Astro.2_FZD8
 
-## check for genes that failed to map or mapped ambiguously (1:many)
-n_unmapped <- length(unique(unlist(mediated_groups))) - n_distinct(symbol_entrez$SYMBOL)
-message(sprintf("%d/%d unique outcome gene symbols failed to map to ENTREZID",
-                n_unmapped, length(unique(unlist(mediated_groups)))))
+## Xenium-validated groups: one per (med_cl_test, mediator), containing
+## the outcome genes from mediation_xenium_hits for that pair. Not split by direction
+
+mediation_xenium_hits <- read_csv(here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
+
+xenium_groups <- mediation_xenium_hits |>
+    mutate(group = paste0(med_cl_test, "_", mediator, "_Xen")) |>
+    {\(df) split(df$outcome, df$group)}()
+
+length(xenium_groups)
+map_int(xenium_groups, length)
+
+## combine, then add the single "Astro_mediators" group
+all_groups <- c(mediated_groups, xenium_groups)
+all_groups[["Astro_mediators"]] <- unique(mediator_outcome$mediator)
+
+length(all_groups)
+map_int(all_groups, length)
+
+
+## all unique genes (now spanning discovery outcomes, Xenium-validated
+## outcomes, AND mediator genes), then subset per group
+symbol_entrez <- bitr(unique(unlist(all_groups)), fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+
+n_unmapped <- length(unique(unlist(all_groups))) - n_distinct(symbol_entrez$SYMBOL)
+message(sprintf("%d/%d unique gene symbols failed to map to ENTREZID",
+                n_unmapped, length(unique(unlist(all_groups)))))
 symbol_entrez |> count(SYMBOL) |> count(n)  ## check for 1:many mappings
 
-mediated_groups_entrez <- map(mediated_groups, function(genes) {
+all_groups_entrez <- map(all_groups, function(genes) {
     symbol_entrez |> filter(SYMBOL %in% genes) |> pull(ENTREZID) |> unique()
 })
 
-## drop any groups where every outcome gene failed to map
-n_dropped <- sum(map_int(mediated_groups_entrez, length) == 0)
+n_dropped <- sum(map_int(all_groups_entrez, length) == 0)
 if (n_dropped > 0) {
     message(sprintf("Dropping %d/%d groups with 0 mapped ENTREZID genes: %s",
-                    n_dropped, length(mediated_groups_entrez),
-                    paste(names(mediated_groups_entrez)[map_int(mediated_groups_entrez, length) == 0], collapse = ", ")))
+                    n_dropped, length(all_groups_entrez),
+                    paste(names(all_groups_entrez)[map_int(all_groups_entrez, length) == 0], collapse = ", ")))
 }
-mediated_groups_entrez <- mediated_groups_entrez[map_int(mediated_groups_entrez, length) > 0]
+all_groups_entrez <- all_groups_entrez[map_int(all_groups_entrez, length) > 0]
 
-length(mediated_groups_entrez)
-map_int(mediated_groups_entrez, length)
 
 #### Run GO ####
 ## Using compareCluster()'s named-list interface directly -- this is why
@@ -93,7 +114,7 @@ ont_list <- c("CC", "BP", "MF")
 names(ont_list) <- ont_list
 
 go_result <- map(ont_list, ~compareCluster(
-    mediated_groups_entrez,
+    all_groups_entrez,
     fun = "enrichGO",
     OrgDb = org.Hs.eg.db,
     universe = universe_entrez,
@@ -108,6 +129,9 @@ saveRDS(go_result, file = here(data_dir, "GO_result_mediation.rds"))
 ## convert to table
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(Cluster, ONTOLOGY)
+
+
+compare_clus |> mutate(Xen_validate = grepl())
 
 saveRDS(compare_clus, file = here(data_dir, "GO_compare_clus_mediation.rds"))
 write.csv(compare_clus, file = here(data_dir, "GO_results_mediation.csv"), row.names = FALSE)
@@ -130,6 +154,18 @@ walk2(go_result, names(go_result), function(gr, ont) {
     print(
         dotplot(gr, x = "Cluster", showCategory = 3, label_format = 60) +
             ggtitle(paste("GO Enrichment (mediation groups, 2+ genes):", ont)) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+})
+dev.off()
+
+pdf(file = here(plot_dir, "GO_dotplot_mediation_5plus.pdf"), width = 10, height = 10)
+walk2(go_result, names(go_result), function(gr, ont) {
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(Count >= 5)
+    if (nrow(gr@compareClusterResult) == 0) return(NULL)
+    print(
+        dotplot(gr, x = "Cluster", showCategory = 3, label_format = 60) +
+            ggtitle(paste("GO Enrichment (mediation groups, 5+ genes):", ont)) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
     )
 })
@@ -178,6 +214,74 @@ walk2(reducedTerms_list2, names(reducedTerms_list2), function(rt, clus_name) {
     map2(rt, names(rt), ~try(treemapPlot(.x, title = paste(clus_name, .y))))
 })
 dev.off()
+
+
+#### GO term heat map ####
+
+compare_clus |> filter(grepl("ENC1", geneID))
+
+mediation_xenium_hits
+
+
+compare_clus_long <- compare_clus |>
+    as_tibble() |>
+    select(Cluster, ID, Description, geneID, ONTOLOGY, Count) |>
+    separate_longer_delim(geneID, delim = "/") |>
+    extract(Cluster, into = c("med_cl", "mediator", "reg"),
+            regex = "^(.*)_([^_]+)_([^_]+)$",
+            remove = FALSE) |>
+    rename(outcome = geneID)
+
+compare_clus_long |>
+    # filter(mediator == "L6")
+    count(med_cl, mediator, reg)
+
+
+compare_clus_long_xen_hits <- mediation_xenium_hits |>
+    select(med_cl_test, med_cl, mediator, outcome_cl, outcome, mediated) |>
+    inner_join(compare_clus_long, relationship = "many-to-many")
+
+
+compare_clus_long_xen_hits |> count(outcome)
+
+top_valid_terms <- compare_clus |>
+    filter(!grepl("Xen", Cluster) & ID %in% compare_clus_long_xen_hits$ID) |>
+    ungroup() |>
+    group_by(ID, Description, ONTOLOGY) |>
+    summarize(p.adjust = min(p.adjust),
+              n = n()) |>
+    ungroup() |>
+    group_by(ONTOLOGY) |>
+    slice_min(p.adjust, n = 5)
+
+compare_clus_long_xen_hits_summary <- compare_clus_long_xen_hits |> group_by(Cluster, med_cl,outcome_cl, ONTOLOGY, ID, Description) |> mutate(n_valid = n(), genes = paste0(unique(outcome), collapse = "/"))
+compare_clus_long_xen_hits_summary |> arrange(-n_valid)
+
+
+compare_clus_long_xen_hits_top <- compare_clus_long_xen_hits |>
+    filter(ID %in% top_valid_terms$ID) 
+
+
+## start with tile plot
+compare_clus_long_xen_hits_top |>
+    filter(Description == "synapse", outcome == "NPTXR")
+
+# mutate(mediator = sprintf("%s(%s)", mediator, med_cl),
+#        outcome = sprintf("%s(%s)", outcome, outcome_cl),
+#        valid = sprintf("%s -> %s", med_cl_test, outcome_cl)) |>
+
+compare_clus_long_xen_hits_top|>
+    filter(ONTOLOGY == "CC") |>
+    ggplot(aes(x = outcome, y = Description, color = mediator, shape = outcome_cl,
+               group = outcome_cl)) +
+    geom_tile(fill = "white", color = "grey") +
+    geom_point(position = position_dodge(width = 0.6), size = 2.5) +
+    # geom_point(position = position_dodge2(width = 0.6, preserve = "single"), size = 2.5)+
+    # facet_wrap(~ONTOLOGY, ncol = 1, scales = "free_y") +
+    facet_wrap(~mediator, ncol = 1, scales = "free_y") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+
 
 ## Reproducibility information
 print("Reproducibility information:")
