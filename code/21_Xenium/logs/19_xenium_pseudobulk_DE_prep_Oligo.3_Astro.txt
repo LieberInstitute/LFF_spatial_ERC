@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Jul  1 12:20:54 PM EDT 2026
+Mon Jul  6 01:16:01 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33799235
+Job id: 33926109
 Job name: 19_xenium_pseudobulk_DE_prep_Oligo.3_Astro
-Node name: compute-178
+Node name: compute-147
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -153,7 +153,7 @@ $cluster
 
 attr(,"class")
 [1] "getopt"
-2026-07-01 12:21:08.881968 - load data from: spe_xenium_bansky.qs2
+2026-07-06 13:16:14.960947 - load data from: spe_xenium_bansky.qs2
             
               Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
   Vasc~SpX3  50546     0     0     0     0     0     0     0     0
@@ -168,40 +168,52 @@ attr(,"class")
 Loading objects:
   neighbor_df_details
 filter to Oligo.3, ncells: 52555
+filter to Astro neighbors, ncells: 24966
+'sample_id's are duplicated across 'SpatialExperiment' objects to cbind; appending sample indices.
                        
-                         APOE APOE_neighbor  dist neighbor neighbor_APOE
-  APOE_high             27779             0     0        0             0
-  APOE_high_nnA_Astro.1     0             0     0        0          3872
-  APOE_high_nnA_Astro.2     0             0     0        0          5646
-  APOE_high_nnA_Astro.3     0             0     0        0           477
-  APOE_high_nnA_Astro.4     0             0     0        0          3926
-  APOE_high_nnA_Astro.5     0             0     0        0         13858
-  APOE_high_nnA_far         0         14244     0        0             0
-  APOE_high_nnA_near        0         13535     0        0             0
-  APOE_low              24776             0     0        0             0
-  APOE_low_nnA_Astro.1      0             0     0        0          3560
-  APOE_low_nnA_Astro.2      0             0     0        0          5206
-  APOE_low_nnA_Astro.3      0             0     0        0           432
-  APOE_low_nnA_Astro.4      0             0     0        0          3288
-  APOE_low_nnA_Astro.5      0             0     0        0         12290
-  APOE_low_nnA_far          0         12056     0        0             0
-  APOE_low_nnA_near         0         12720     0        0             0
-  nn_Astro.1                0             0     0     7432             0
-  nn_Astro.2                0             0     0    10852             0
-  nn_Astro.3                0             0     0      909             0
-  nn_Astro.4                0             0     0     7214             0
-  nn_Astro.5                0             0     0    26148             0
-  nnA_far                   0             0 26300        0             0
-  nnA_near                  0             0 26255        0             0
+                         APOE APOE_dist Astro_type  dist neighbor neighbor_APOE
+  APOE_high             27779         0          0     0        0             0
+  APOE_high_nnA_Astro.1     0         0          0     0        0          3872
+  APOE_high_nnA_Astro.2     0         0          0     0        0          5646
+  APOE_high_nnA_Astro.3     0         0          0     0        0           477
+  APOE_high_nnA_Astro.4     0         0          0     0        0          3926
+  APOE_high_nnA_Astro.5     0         0          0     0        0         13858
+  APOE_high_nnA_far         0     14244          0     0        0             0
+  APOE_high_nnA_near        0     13535          0     0        0             0
+  APOE_low              24776         0          0     0        0             0
+  APOE_low_nnA_Astro.1      0         0          0     0        0          3560
+  APOE_low_nnA_Astro.2      0         0          0     0        0          5206
+  APOE_low_nnA_Astro.3      0         0          0     0        0           432
+  APOE_low_nnA_Astro.4      0         0          0     0        0          3288
+  APOE_low_nnA_Astro.5      0         0          0     0        0         12290
+  APOE_low_nnA_far          0     12056          0     0        0             0
+  APOE_low_nnA_near         0     12720          0     0        0             0
+  Astro.1_APOE_high         0         0       2101     0        0             0
+  Astro.1_APOE_low          0         0       2100     0        0             0
+  Astro.2_APOE_high         0         0       2691     0        0             0
+  Astro.2_APOE_low          0         0       2690     0        0             0
+  Astro.3_APOE_high         0         0        190     0        0             0
+  Astro.3_APOE_low          0         0        190     0        0             0
+  Astro.4_APOE_high         0         0       1326     0        0             0
+  Astro.4_APOE_low          0         0       1326     0        0             0
+  Astro.5_APOE_high         0         0       6176     0        0             0
+  Astro.5_APOE_low          0         0       6176     0        0             0
+  nn_Astro.1                0         0          0     0     7432             0
+  nn_Astro.2                0         0          0     0    10852             0
+  nn_Astro.3                0         0          0     0      909             0
+  nn_Astro.4                0         0          0     0     7214             0
+  nn_Astro.5                0         0          0     0    26148             0
+  nnA_far                   0         0          0 26300        0             0
+  nnA_near                  0         0          0 26255        0             0
 check input: 
 
            reject           singlet   doublet_certain doublet_uncertain 
-                0            262775                 0                 0 
+                0            287741                 0                 0 
 
          Astro.1          Astro.2          Astro.3          Astro.4 
-               0                0                0                0 
+            4201             5381              380             2652 
          Astro.5            Macro          Micro.1          Micro.2 
-               0                0                0                0 
+           12352                0                0                0 
          Micro.3          Micro.4          Micro.5            OPC.1 
                0                0                0                0 
            OPC.2            OPC.3            OPC.4            OPC.5 
@@ -229,22 +241,28 @@ APOE_high_nnA_Astro.3 APOE_high_nnA_Astro.4 APOE_high_nnA_Astro.5
                  3560                  5206                   432 
  APOE_low_nnA_Astro.4  APOE_low_nnA_Astro.5      APOE_low_nnA_far 
                  3288                 12290                 12056 
-    APOE_low_nnA_near            nn_Astro.1            nn_Astro.2 
-                12720                  7432                 10852 
-           nn_Astro.3            nn_Astro.4            nn_Astro.5 
-                  909                  7214                 26148 
-              nnA_far              nnA_near 
-                26300                 26255 
-2026-07-01 12:22:05.99377 - pseudobulk Oligo.3_Astro
-2026-07-01 12:22:06.320318 make pseudobulk object
-2026-07-01 12:22:33.08183 dropping 8 pseudo-bulked samples that are below 'min_ncells'.
-2026-07-01 12:22:33.133247 normalize expression
-2026-07-01 12:22:33.448982 - Done pseudobulk
-nrow: 366, ncol: 356
+    APOE_low_nnA_near     Astro.1_APOE_high      Astro.1_APOE_low 
+                12720                  2101                  2100 
+    Astro.2_APOE_high      Astro.2_APOE_low     Astro.3_APOE_high 
+                 2691                  2690                   190 
+     Astro.3_APOE_low     Astro.4_APOE_high      Astro.4_APOE_low 
+                  190                  1326                  1326 
+    Astro.5_APOE_high      Astro.5_APOE_low            nn_Astro.1 
+                 6176                  6176                  7432 
+           nn_Astro.2            nn_Astro.3            nn_Astro.4 
+                10852                   909                  7214 
+           nn_Astro.5               nnA_far              nnA_near 
+                26148                 26300                 26255 
+2026-07-06 13:17:22.814825 - pseudobulk Oligo.3_Astro
+2026-07-06 13:17:23.117477 make pseudobulk object
+2026-07-06 13:17:52.541234 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
+2026-07-06 13:17:52.593866 normalize expression
+2026-07-06 13:17:52.943593 - Done pseudobulk
+nrow: 366, ncol: 495
      
       Astro Macro Micro Oligo OPC Vasc Excit Inhib
-  E2+     0     0     0   180   0    0     0     0
-  E4+     0     0     0   176   0    0     0     0
+  E2+    72     0     0   180   0    0     0     0
+  E4+    67     0     0   176   0    0     0     0
      
       APOE_high APOE_high_nnA_Astro.1 APOE_high_nnA_Astro.2
   E2+         8                     8                     8
@@ -262,13 +280,25 @@ nrow: 366, ncol: 356
   E2+                    8                    7                    8
   E4+                    8                    5                    8
      
-      APOE_low_nnA_Astro.5 APOE_low_nnA_far APOE_low_nnA_near nn_Astro.1
-  E2+                    8                8                 8          8
-  E4+                    8                8                 8          8
+      APOE_low_nnA_Astro.5 APOE_low_nnA_far APOE_low_nnA_near Astro.1_APOE_high
+  E2+                    8                8                 8                 8
+  E4+                    8                8                 8                 8
      
-      nn_Astro.2 nn_Astro.3 nn_Astro.4 nn_Astro.5 nnA_far nnA_near
-  E2+          8          7          8          8       8        8
-  E4+          8          7          8          8       8        8
+      Astro.1_APOE_low Astro.2_APOE_high Astro.2_APOE_low Astro.3_APOE_high
+  E2+                8                 8                8                 4
+  E4+                7                 8                8                 4
+     
+      Astro.3_APOE_low Astro.4_APOE_high Astro.4_APOE_low Astro.5_APOE_high
+  E2+                4                 8                8                 8
+  E4+                3                 6                7                 8
+     
+      Astro.5_APOE_low nn_Astro.1 nn_Astro.2 nn_Astro.3 nn_Astro.4 nn_Astro.5
+  E2+                8          8          8          7          8          8
+  E4+                8          8          8          7          8          8
+     
+      nnA_far nnA_near
+  E2+       8        8
+  E4+       8        8
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by APOE_carrier and registration_variable.
 ℹ Output is grouped by APOE_carrier.
@@ -276,11 +306,11 @@ nrow: 366, ncol: 356
 ℹ Use `summarise(.by = c(APOE_carrier, registration_variable))` for
   per-operation grouping (`?dplyr::dplyr_by`) instead.
 Too few samples in: 
-2026-07-01 12:22:33.826849 - Save
+2026-07-06 13:17:53.321555 - Save
 [1] "Reproducibility information:"
-[1] "2026-07-01 12:22:34 EDT"
+[1] "2026-07-06 13:17:53 EDT"
    user  system elapsed 
- 50.613   7.229  98.397 
+ 51.058   8.232 111.127 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -291,7 +321,7 @@ Too few samples in:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-07-01
+ date     2026-07-06
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -450,4 +480,4 @@ Too few samples in:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jul  1 12:22:34 PM EDT 2026
+Mon Jul  6 01:17:54 PM EDT 2026
