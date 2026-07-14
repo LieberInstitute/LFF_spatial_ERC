@@ -1,5 +1,5 @@
 ## Louise Huuki-Myers, July 2026
-## plot scdotplots + snakey plots for medation genes 
+## plot scdotplots, snakey, and upset plots for mediation genes 
 
 
 #### Set up ####
@@ -9,6 +9,7 @@ library("here")
 library("ggalluvial")
 library("scDotPlot")
 library("SingleCellExperiment")
+library("UpSetR")
 
 plot_dir <- here("plots", "22_Mediation", "05_Mediation_general_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -20,7 +21,25 @@ mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_ast
 
 mediator_outcome |> count(mediator)
 
+#### Upset plots ####
 
+mediated_groups <- mediator_outcome |>
+    mutate(
+        group = paste0(med_cl, "_", mediator)
+    ) |>
+    {\(df) split(df$outcome, df$group)}()
+
+
+pdf(here(plot_dir, "Mediation_gene_set_upset.pdf"))
+upset(fromList(mediated_groups), 
+      order.by = "freq", 
+      sets = names(mediated_groups), 
+      keep.order = TRUE
+)
+dev.off()
+
+
+#### Snakey plots ####
 mediator_snakey_all <- mediator_outcome |>
     ggplot(aes(x = mediator, next_node = outcome, next_x = outcome)) +
     geom_sankey()
