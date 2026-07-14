@@ -14,29 +14,86 @@ library("UpSetR")
 plot_dir <- here("plots", "22_Mediation", "05_Mediation_general_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
+
+astro_colors <- cell_type_colors$anno[grep("Astro", names(cell_type_colors$anno))]
+
 #### Load Data ####
 mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_astro","mediator_outcome_fdr_impact.tsv.gz")) |>
     mutate(pair = paste0(mediator, "|", outcome))
 
 
-mediator_outcome |> count(mediator)
+mediator_outcome |> dplyr::count(mediator)
+
+
+mediator_outcome |> 
+    dplyr::count(med_cl, mediator) |>
+    arrange(-n)
+
+# med_cl mediator   n
+# 1 Astro.3    CHRM3 205
+# 2 Astro.2     SV2B 199
+# 3 Astro.2     FZD8 125
+# 4 Astro.2    NETO1  61
+# 5 Astro.1    NPTXR  22
+# 6 Astro.3    IL6ST   4
+# 7 Astro.1   PLPPR4   1
+# 8 Astro.2    ABCA8   1
+# 9 Astro.2     ST18   1
+
+outcome_summary <- mediator_outcome |> 
+    group_by(med_cl, outcome) |>
+    summarise(n_med = n(),
+              mediators = paste0(mediator, collapse = "|"))
+
+
+outcome_summary |> filter(mediators == "CHRM3") |> dplyr::count(med_cl)
+outcome_summary |> dplyr::count(mediators) ## 14 sets
+    
 
 #### Upset plots ####
+# 
+# mediated_groups <- mediator_outcome |>
+#     mutate(
+#         group = paste0(med_cl, "_", mediator)
+#     ) |>
+#     {\(df) split(df$outcome, df$group)}()
+# 
+# 
+# pdf(here(plot_dir, "Mediation_gene_set_upset.pdf"))
+# upset(fromList(mediated_groups), 
+#       order.by = "freq", 
+#       sets = names(mediated_groups), 
+#       keep.order = TRUE
+# )
+# dev.off()
 
-mediated_groups <- mediator_outcome |>
+library(ComplexUpset)
+
+mediator_outcome_wide <- mediator_outcome |> 
+    mutate(mediator = paste0(med_cl, "_", mediator)) |>
+    select(mediator, outcome) |>
+    mutate(mediated = TRUE) |>
+    pivot_wider(names_from = "mediator", values_from = "mediated") |>
     mutate(
-        group = paste0(med_cl, "_", mediator)
-    ) |>
-    {\(df) split(df$outcome, df$group)}()
+        across(everything(), ~replace_na(.x, FALSE))
+    )
 
+mediator_outcome_wide |> filter(outcome == "SOX5")
+mediator_outcome_wide |> filter(outcome %in% calcium_module) |> select(2:10)|> rowSums()
 
-pdf(here(plot_dir, "Mediation_gene_set_upset.pdf"))
-upset(fromList(mediated_groups), 
-      order.by = "freq", 
-      sets = names(mediated_groups), 
-      keep.order = TRUE
-)
-dev.off()
+mediator_outcome_wide |> filter(Astro.2_ABCA8)
+
+set_colors <- map(all_mediator_cl, ~upset_query(set=c(.x), fill=astro_colors[[jaffelab::ss(.x, "_")]]))
+
+mediation_upsets <- ComplexUpset::upset(data = mediator_outcome_wide, 
+                                        intersect = all_mediator_cl,
+                                        name = "mediator",
+                                        width_ratio=0.2,
+                                        queries=set_colors) 
+
+ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.pdf"), height = 4, width = 5)
+ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.png"), height = 4, width = 6.5)
 
 
 #### Snakey plots ####
