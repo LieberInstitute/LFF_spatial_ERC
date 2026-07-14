@@ -36,7 +36,7 @@ factor_weights |>
     write_csv(out_path)
 
 #   For the specific factor of interest, show just the top few views by R^2
-highlighted_views = factor_weights |>
+highlighted_views_df = factor_weights |>
     as.data.frame() |>
     rownames_to_column('factor_num') |>
     as_tibble() |>
@@ -47,7 +47,9 @@ highlighted_views = factor_weights |>
     ) |>
     filter(factor_num == specific_factor) |>
     arrange(desc(r2)) |>
-    slice_head(n = num_views) |>
+    slice_head(n = num_views) 
+
+highlighted_views <- highlighted_views_df|>
     pull(view)
 
 stopifnot(all(highlighted_views %in% colnames(factor_weights)))
@@ -66,6 +68,25 @@ column_ha = HeatmapAnnotation(
     border = TRUE,
     col = list(R2 = col_fun_r2)
 )
+
+##
+load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+
+names(SpD_colors) = sub('~', '_', names(SpD_colors))
+view_colors = c(cell_type_colors$anno, SpD_colors)[highlighted_views]
+
+highlighted_views_col_plot <- highlighted_views_df |>
+    mutate(view = factor(view, levels = highlighted_views)) |>
+    ggplot(aes(x = view, y = r2, fill = view)) +
+    geom_col() +
+    scale_fill_manual(values = view_colors) +
+    theme_bw() +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    labs(y = "Factor 3 r2")
+
+ggsave(highlighted_views_col_plot, filename = here("plots", "14_MOFA", "03_reduced_main_heatmap", "factor3_highlighted_views_col_plot.pdf"), height = 2.5, width = 3)
 
 ################################################################################
 #   Main heatmap body

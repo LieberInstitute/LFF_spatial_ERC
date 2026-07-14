@@ -60,7 +60,7 @@ write_csv(projected_df, file.path(out_dir, "xenium_factor_scores.csv"))
 
 sn_df = read_csv(sn_factor_path, show_col_types = FALSE) |>
     filter(Factor == 'Factor3') |>
-    select(sample, value) |>
+    select(sample, APOE_carrier, taupathy, value) |>
     dplyr::rename(donor = sample, sn_factor_score = value)
 
 comparison_df = projected_df |>
@@ -75,6 +75,9 @@ cor_value = cor(
 )
 
 # Create scatter plot with correlation annotation
+
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
 p = ggplot(
         comparison_df, aes(x = xen_factor_score, y = sn_factor_score)
     ) +
@@ -94,5 +97,27 @@ p = ggplot(
     theme_bw(base_size = 15)
 
 ggsave(file.path(plot_dir, "xenium_vs_sn_Factor3_scatter.pdf"), p)
+
+## add APOE + tau details
+p_details = ggplot(
+        comparison_df, aes(x = xen_factor_score, y = sn_factor_score)
+    ) +
+    geom_point(aes(color = APOE_carrier, shape = taupathy), size = 3, alpha = 0.7) +
+    geom_smooth(method = "lm", se = TRUE, alpha = 0.2, color = "steelblue") +
+    annotate(
+        "text",
+        x = Inf,
+        y = -Inf,
+        label = paste0("r = ", round(cor_value, 2)),
+        hjust = 1.1,
+        vjust = -0.5,
+        size = 5,
+        fontface = "bold"
+    ) +
+    scale_color_manual(values = APOE_carrier_colors_dark) +
+    labs(x = "Xenium Factor3 Score", y = "sn Factor3 Score") +
+    theme_bw(base_size = 15)
+
+ggsave(file.path(plot_dir, "xenium_vs_sn_Factor3_scatter_details.pdf"), p_details)
 
 session_info()
