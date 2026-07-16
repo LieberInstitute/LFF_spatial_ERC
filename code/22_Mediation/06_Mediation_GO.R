@@ -51,9 +51,7 @@ mediator_outcome <- read.delim(here("processed-data", "22_Mediation", "out-erc_a
 #### Build flat mediation groups: one list per (med_cl, mediator), named like "Astro.3_IL6ST" ####
 
 mediated_groups <- mediator_outcome |>
-    mutate(
-        direction = ifelse(logFC > 0, "up", "down"),
-        group = paste0(med_cl, "_", mediator, "_", direction)
+    mutate(group = paste0(med_cl, "_", mediator)
     ) |>
     {\(df) split(df$outcome, df$group)}()
 
@@ -66,22 +64,23 @@ map_int(mediated_groups, length)
 ## Xenium-validated groups: one per (med_cl_test, mediator), containing
 ## the outcome genes from mediation_xenium_hits for that pair. Not split by direction
 
-mediation_xenium_hits <- read_csv(here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
+# mediation_xenium_hits <- read_csv(here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
+# 
+# xenium_groups <- mediation_xenium_hits |>
+#     mutate(group = paste0(med_cl_test, "_", mediator, "_Xen")) |>
+#     {\(df) split(df$outcome, df$group)}()
+# 
+# length(xenium_groups)
+# map_int(xenium_groups, length)
+# 
+# ## combine, then add the single "Astro_mediators" group
+# all_groups <- c(mediated_groups, xenium_groups)
+# all_groups[["Astro_mediators"]] <- unique(mediator_outcome$mediator)
+# 
+# length(all_groups)
+# map_int(all_groups, length)
 
-xenium_groups <- mediation_xenium_hits |>
-    mutate(group = paste0(med_cl_test, "_", mediator, "_Xen")) |>
-    {\(df) split(df$outcome, df$group)}()
-
-length(xenium_groups)
-map_int(xenium_groups, length)
-
-## combine, then add the single "Astro_mediators" group
-all_groups <- c(mediated_groups, xenium_groups)
-all_groups[["Astro_mediators"]] <- unique(mediator_outcome$mediator)
-
-length(all_groups)
-map_int(all_groups, length)
-
+all_groups <- mediated_groups
 
 ## all unique genes (now spanning discovery outcomes, Xenium-validated
 ## outcomes, AND mediator genes), then subset per group
@@ -130,9 +129,6 @@ saveRDS(go_result, file = here(data_dir, "GO_result_mediation.rds"))
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
 compare_clus |> count(Cluster, ONTOLOGY)
 
-
-compare_clus |> mutate(Xen_validate = grepl())
-
 saveRDS(compare_clus, file = here(data_dir, "GO_compare_clus_mediation.rds"))
 write.csv(compare_clus, file = here(data_dir, "GO_results_mediation.csv"), row.names = FALSE)
 
@@ -153,6 +149,18 @@ walk2(go_result, names(go_result), function(gr, ont) {
     if (nrow(gr@compareClusterResult) == 0) return(NULL)
     print(
         dotplot(gr, x = "Cluster", showCategory = 3, label_format = 60) +
+            ggtitle(paste("GO Enrichment (mediation groups, 2+ genes):", ont)) +
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
+    )
+})
+dev.off()
+
+pdf(file = here(plot_dir, "GO_dotplot_mediation_2plus_small.pdf"), width = 5, height = 5)
+walk2(go_result, names(go_result), function(gr, ont) {
+    gr@compareClusterResult <- gr@compareClusterResult |> filter(Count >= 2)
+    if (nrow(gr@compareClusterResult) == 0) return(NULL)
+    print(
+        dotplot(gr, x = "Cluster", showCategory = 2, label_format = 60) +
             ggtitle(paste("GO Enrichment (mediation groups, 2+ genes):", ont)) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
     )
