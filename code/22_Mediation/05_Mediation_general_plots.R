@@ -145,6 +145,33 @@ mediation_xenium_tested_snakey <- mediation_xenium_deg |>
 
 ggsave(mediation_xenium_tested_snakey, filename = here(plot_dir, "mediation_xenium_tested_snakey.png"), width = 9, height = 5)
 
+mediation_xenium_hits <- read_csv(here("processed-data",  "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
+
+
+mediation_xenium_hits_snakey <- mediation_xenium_hits |>
+    group_by(med_cl, mediator, outcome) |>
+    summarize(n = n(),
+              mediatorDE_P.Value_min = min(mediatorDE_P.Value),
+              mediatorDE_P.Value_max = max(mediatorDE_P.Value),
+              mediated = any(mediated)) |>
+    mutate(
+        outcome = ifelse(mediated, paste0(outcome, "*"), outcome),
+           mediator = ifelse(mediatorDE_P.Value_min < 0.1, paste0(mediator, "*"), mediator)) |>
+    ggplot(aes(axis1=mediator, 
+               axis2=outcome,
+               fill=mediator
+    )) +
+    geom_alluvium() +
+    geom_stratum(width=1/2) +
+    geom_text(stat="stratum", aes(label=after_stat(stratum)), size=4) +
+    scale_x_discrete(limits=c("Mediator", "Outcome"), expand=c(0.1, 0.1)) +
+    theme_void() +
+    labs(fill="Meditor", alpha="Validation status") +
+    facet_wrap(~med_cl, nrow =1)  +
+    theme(legend.position = "None")
+
+ggsave(mediation_xenium_hits_snakey, filename = here(plot_dir, "mediation_xenium_hits_snakey.png"), width = 5, height = 4)
+
 
 #### ScDotPlots ####
 
