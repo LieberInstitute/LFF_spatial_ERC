@@ -70,13 +70,6 @@ key_genes <- read_csv(here(data_dir, "key_genes_context.csv"))
 ## to build the panel for a different context
 analysis_context <- "Oligo.3"
 
-## which Xenium dataset applies to this context - add an entry as more
-## contexts get their own dedicated stratified dataset (e.g. an SpD context
-## would map to "Xenium_SpX" instead)
-context_xenium_type <- c("Oligo.3" = "Xenium_Oligo.3_Astro")
-xenium_data_type <- context_xenium_type[[analysis_context]]
-stopifnot("no Xenium data type defined for this context" = !is.na(xenium_data_type))
-
 key_genes_context <- key_genes |>
     filter(cell_type == analysis_context)
 
@@ -84,29 +77,57 @@ gene_levels <- key_genes_context$gene
 
 #### Filter to key genes, discovery-gated Xenium validation ####
 
-## sn_fine hits specifically in this context define "discovered"
+## a single column to identify "which cell type does this row's test belong
+## to" regardless of data_type - Xenium_cell_type_anno has no cell_type_anno
+## column of its own (cluster IS the cell type there), while Xenium_SpX and
+## Xenium_Oligo.3_Astro carry a genuine cell_type_anno distinct from their
+## (compound, stratified) cluster names
+DE_data <- DE_data |>
+    mutate(cell_type_match = coalesce(cell_type_anno, as.character(cluster)))
+
+## sn_fine hits specifically in this context define "discovered" - strictly
+## restricted to the analysis_context cluster, not any other sn_fine cluster
 discovery_hits <- DE_data |>
     filter(data_type == "sn_fine", cluster == analysis_context,
            gene_name %in% gene_levels, vlmf_adj.P.Val < 0.05) |>
     distinct(gene_name)
 
-## discovery rows: sn_fine matched to this context's cluster directly; Visium
-## kept at whatever SpD it was significant in (SpDs aren't named the same as
-## cell types, so there's no cluster name to match on here)
+## discovery rows: sn_fine filtered down to just this context's cluster;
+## Visium kept at whatever SpD it was significant in (SpDs aren't named the
+## same as cell types, so there's no cluster name to match on there)
 discovery_key <- DE_data |> 
-    filter(data_type %in% c("sn_fine", "Visium"), gene_name %in% gene_levels, vlmf_adj.P.Val < 0.05) |>
+    filter(
+        (data_type == "sn_fine" & cluster == analysis_context) | data_type == "Visium",
+        gene_name %in% gene_levels, vlmf_adj.P.Val < 0.05
+    ) |>
     mutate(context = paste0(data_type, "|", cluster), context_type = "discovery")
 
-## Xenium validation: only this context's dedicated data type, gated to
-## discovered genes, collapsed to the single best (lowest p) sub-context
-xenium_key <- DE_data |>
-    filter(data_type == xenium_data_type, vlmf_P.Value < 0.1, gene_name %in% discovery_hits$gene_name) |>
-    group_by(gene_name) |>
-    slice_min(vlmf_P.Value, n = 1, with_ties = FALSE) |>
-    ungroup() |>
-    mutate(context = paste0(data_type, "|", cluster), context_type = "xenium_best")
+## Xenium_cell_type_anno is already one row per gene x cell type ("pooled") -
+## restrict to this context's cell type + discovered genes + nominal cutoff
+xenium_pooled <- DE_data |>
+    filter(data_type == "Xenium_cell_type_anno", cell_type_match == analysis_context,
+           gene_name %in% discovery_hits$gene_name, vlmf_P.Value < 0.1) |>
+    mutate(context = paste0(data_type, "|", cluster), context_type = "xenium_pooled")
 
-DE_data_key <- bind_rows(discovery_key, xenium_key) |>
+## Xenium_Oligo.3_Astro and Xenium_SpX are stratified into many sub-contexts
+## within this cell type (astrocyte proximity, spatial domain) - restrict to
+## this context's cell type + discovered genes, then collapse to the single
+## best (lowest p) context per gene per data type
+best_stratified_context <- function(dt) {
+    DE_data |>
+        filter(data_type == dt, cell_type_match == analysis_context,
+               gene_name %in% discovery_hits$gene_name, vlmf_P.Value < 0.1) |>
+        group_by(gene_name) |>
+        # slice_min(vlmf_P.Value, n = 1, with_ties = FALSE) |>
+        ungroup() |>
+        mutate(context = paste0(data_type, "|", cluster), context_type = "xenium_best")
+}
+
+xenium_best <- c("Xenium_Oligo.3_Astro", "Xenium_SpX") |>
+    map(best_stratified_context) |>
+    list_rbind()
+
+DE_data_key <- bind_rows(discovery_key, xenium_pooled, xenium_best) |>
     mutate(gene_name = factor(gene_name, levels = gene_levels))
 
 message(n_distinct(DE_data_key$context), " contexts across ", n_distinct(DE_data_key$gene_name), " genes in the ", analysis_context, " context")
@@ -121,8 +142,10 @@ p_de <- DE_data_key |>
     scale_fill_gradient2(low = APOE_carrier_colors[["E2+"]], 
                          high = APOE_carrier_colors[["E4+"]], 
                          midpoint = 0) +
+    theme_bw() +
     theme(legend.position = "bottom",
           axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 6))
+    
 
 p_de
 
@@ -141,7 +164,11 @@ gene_id_lookup <- DE_data |> distinct(gene_id, gene_name)
 mofa_weights <- get_weights(mofa_model, factors = "Factor3", as.data.frame = TRUE) |>
     as_tibble() |>
     rename(gene_id = feature, view = view, weight = value) |>
-    left_join(gene_id_lookup, by = "gene_id")
+    mutate(gene_id = gsub(".*_", "", gene_id)) |>
+    left_join(gene_id_lookup, by = "gene_id") |>
+    group_by(view) |>
+    mutate(rank = rank(weight),
+           abs_rank = rank(abs(weight)))
 
 ## every gene uses the same view now - this run's analysis_context - so no
 ## per-gene view lookup is needed anymore. NB analysis_context is only ever a
@@ -160,7 +187,7 @@ p_mofa <- mofa_key |>
                          high = APOE_carrier_colors[["E4+"]], 
                          midpoint = 0) +
     theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 6))
+          axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 p_mofa
 
