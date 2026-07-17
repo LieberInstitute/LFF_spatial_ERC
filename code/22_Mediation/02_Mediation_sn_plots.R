@@ -27,13 +27,18 @@ mediator_outcome <- read.delim(here("processed-data", "22_Mediation", "out-erc_a
     as_tibble() |>
     mutate(pair = paste0(mediator, "|", outcome))
 
+mediator_outcome |> filter(grepl("SOX", outcome))
+
+sox_pairs <- mediator_outcome |> filter(grepl("SOX", outcome)) |> pull(pair)
+
 xenium_mediation <- read_csv(here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")) |>
-    filter(Xen_valid, !Xen_carrier_sig)  |>
+    filter(base_sig, !med_sig)  |>
     mutate(pair = paste0(mediator, "|", outcome)) 
 
 mediation_pairs <- list(
     c1 = c("ABCA8|MBP", "IL6ST|THBS1", "IL6ST|STAT4", "FZD8|IGFBP5"),
     c2 = c("CHRM3|ERMN", "NETO1|MGST1", "NETO1|NRG3", "SV2B|ERBB3", "SV2B|MAG"),
+    sox = sox_pairs,
     xen = xenium_mediation |>
         pull(pair) |>
         unique()
@@ -42,15 +47,10 @@ mediation_pairs <- list(
 
 mediator_outcome_select <- mediator_outcome |>
     mutate(
-        outcome_cl  = outcome_cl,
+        outcome_cl  = "Oligo.3",
         med_cl_test = med_cl,
-        fdr_SN = fdr,        
-        t_SN = t,
-        fdr_SN_carrier = fdr_med, 
-        t_SN_carrier = t_med,
-        base_sig    = fdr_SN < 0.05,
-        carrier_sig = fdr_SN_carrier < 0.05,
-        SN_mediated = !carrier_sig
+        base_sig    = fdr_base < 0.05,
+        med_sig = fdr_med < 0.05
     ) |>
     filter(pair %in% unlist(mediation_pairs))
 
@@ -99,7 +99,7 @@ ggsave(MBP_DEG_plot, filename = here(plot_dir, "test_Oligo.3_MBP_DEG_plot.png"))
 med_plot_test <- plot_DEG_mediated_express(
     sce = sce_pb,
     sce_mediator = sce_pb,
-    stats = mediation_pairs_stats,
+    stats = mediator_outcome_select,
     clus = "Oligo.3",
     med_clus = "Astro.2",
     mediator_gene = "ABCA8",
@@ -111,7 +111,6 @@ med_plot_test <- plot_DEG_mediated_express(
     plot_points = TRUE,
     plot_mediator_panel = TRUE,
     mediator_stats = DE_data,
-    anno_stat_suffix = "SN",
     signif_stat = "fdr"
 )
 
@@ -119,7 +118,7 @@ ggsave(med_plot_test, filename = here(plot_dir, "Mediation_plot_test_MBP_ABCA8.p
 
 #### Loop over each (med_cl, mediator) group and plot ####
 
-mediator_outcome_select2 <- mediator_outcome_select |> select(med_cl, mediator, outcome)
+mediator_outcome_select2 <- mediator_outcome_select |> select(med_cl, mediator, outcome) |> filter(mediator == "FZD8")
 
 pdf(here(plot_dir, "mediation_boxplots_sn_pairs.pdf"), width = 10, height = 4)
 
@@ -142,7 +141,6 @@ pwalk(mediator_outcome_select2, function(med_cl, mediator, outcome) {
             plot_points = TRUE,
             plot_mediator_panel = TRUE,
             mediator_stats = DE_data,
-            anno_stat_suffix = "SN",
             signif_stat = "fdr"
         ),
         error = function(e) {
@@ -155,13 +153,13 @@ pwalk(mediator_outcome_select2, function(med_cl, mediator, outcome) {
         print(p + patchwork::plot_annotation(title = sprintf("%s (%s) -> %s", mediator, med_cl, outcome_cl)))
         ggsave(p, filename = here(plot_dir, sprintf(
             "mediation_sn_%s_%s_Oligo3_%s.png", gsub("\\.", "", med_cl), mediator, outcome
-        )), height = 4, width = 8)
+        )), height = 4, width = 7)
     }
 })
 
 dev.off()
 
-message(Sys.time(), sprintf(" - Done: %d groups plotted covering %d pairs", nrow(plot_groups), nrow(mediation_pairs_stats)))
+message(Sys.time(), sprintf(" - Done: plotted %d mediator/outcome pairs", nrow(mediator_outcome_select2)))
 
 #### Reproducibility information ####
 print("Reproducibility information:")
