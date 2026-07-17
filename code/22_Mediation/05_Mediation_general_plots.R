@@ -10,6 +10,7 @@ library("ggalluvial")
 library("scDotPlot")
 library("SingleCellExperiment")
 library("UpSetR")
+library("ComplexUpset")
 
 plot_dir <- here("plots", "22_Mediation", "05_Mediation_general_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -24,7 +25,6 @@ mediator_outcome <- read.delim(here("processed-data","22_Mediation","out-erc_ast
 
 
 mediator_outcome |> dplyr::count(mediator)
-
 
 mediator_outcome |> 
     dplyr::count(med_cl, mediator) |>
@@ -44,32 +44,22 @@ mediator_outcome |>
 outcome_summary <- mediator_outcome |> 
     group_by(med_cl, outcome) |>
     summarise(n_med = n(),
-              mediators = paste0(mediator, collapse = "|"))
+              mediators = paste0(mediator, collapse = ", "))
 
 
 outcome_summary |> filter(mediators == "CHRM3") |> dplyr::count(med_cl)
 outcome_summary |> dplyr::count(mediators) ## 14 sets
+
+outcome_summary |> filter(mediators == "FZD8, NETO1, SV2B") |> pull(outcome)
+outcome_summary |> filter(grepl("SOX", outcome))
+# med_cl  outcome n_med mediators        
+# <chr>   <chr>   <int> <chr>            
+# 1 Astro.1 SOX6        1 NPTXR            
+# 2 Astro.2 SOX5        3 FZD8, NETO1, SV2B
+# 3 Astro.3 SOX5        1 CHRM3  
     
 
 #### Upset plots ####
-# 
-# mediated_groups <- mediator_outcome |>
-#     mutate(
-#         group = paste0(med_cl, "_", mediator)
-#     ) |>
-#     {\(df) split(df$outcome, df$group)}()
-# 
-# 
-# pdf(here(plot_dir, "Mediation_gene_set_upset.pdf"))
-# upset(fromList(mediated_groups), 
-#       order.by = "freq", 
-#       sets = names(mediated_groups), 
-#       keep.order = TRUE
-# )
-# dev.off()
-
-library(ComplexUpset)
-
 mediator_outcome_wide <- mediator_outcome |> 
     mutate(mediator = paste0(med_cl, "_", mediator)) |>
     select(mediator, outcome) |>
@@ -79,46 +69,33 @@ mediator_outcome_wide <- mediator_outcome |>
         across(everything(), ~replace_na(.x, FALSE))
     )
 
+all_mediator_cl <- mediator_outcome |> 
+    mutate(mediator = paste0(med_cl, "_", mediator)) |>
+    distinct(mediator) |>
+    pull(mediator)
+
 mediator_outcome_wide |> filter(outcome == "SOX5")
-mediator_outcome_wide |> filter(outcome %in% calcium_module) |> select(2:10)|> rowSums()
 
 mediator_outcome_wide |> filter(Astro.2_ABCA8)
 
-set_colors <- map(all_mediator_cl, ~upset_query(set=c(.x), fill=astro_colors[[jaffelab::ss(.x, "_")]]))
+astro_set_colors <- map(all_mediator_cl, ~upset_query(set=c(.x), fill=astro_colors[[jaffelab::ss(.x, "_")]]))
+
+sox_queries <- list(upset_query(intersect = c("Astro.3_CHRM3", "Astro.2_FZD8", "Astro.2_NETO1", "Astro.2_SV2B"), fill="red"),
+                    upset_query(intersect = c("Astro.1_NPTXR"), fill="darkred"))
+
+my_queries <- c(astro_set_colors, sox_queries)
 
 mediation_upsets <- ComplexUpset::upset(data = mediator_outcome_wide, 
                                         intersect = all_mediator_cl,
                                         name = "mediator",
-                                        width_ratio=0.2,
-                                        queries=set_colors) 
+                                        queries=my_queries,
+                                        width_ratio=0.2) 
 
-ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.pdf"), height = 4, width = 5)
+ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.pdf"), height = 5, width = 6)
 ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.png"), height = 4, width = 6.5)
 
 
 #### Snakey plots ####
-mediator_snakey_all <- mediator_outcome |>
-    ggplot(aes(x = mediator, next_node = outcome, next_x = outcome)) +
-    geom_sankey()
-
-
-# library("ggsankey")
-# 
-# mediation_xenium_deg_node <- mediation_xenium_deg |>
-#     mutate(mediator_validate = ifelse(validate_mediator, "PASS", "FAIL"),
-#            outcome_validate = ifelse(validate_outcome, "PASS", "FAIL")) |>
-#     make_long(mediator, mediator_validate, outcome, outcome_validate)
-# 
-# 
-# mediator_snakey_all <- mediation_xenium_deg_node |>
-#     ggplot(aes(x = x, 
-#                next_x = next_x, 
-#                node = node, 
-#                next_node = next_node,
-#                fill = factor(node),
-#                label = node)) +
-#     geom_sankey() +
-#     geom_sankey_label()
 
 mediation_xenium_deg <- read_csv(here("processed-data",  "21_Xenium", "18_xenium_DEG_mediation_LR","Xenium_mediator_outcome_DEG_results.csv"))
 
@@ -167,10 +144,10 @@ mediation_xenium_hits_snakey <- mediation_xenium_hits |>
     scale_x_discrete(limits=c("Mediator", "Outcome"), expand=c(0.1, 0.1)) +
     theme_void() +
     labs(fill="Meditor", alpha="Validation status") +
-    facet_wrap(~med_cl, nrow =1)  +
+    # facet_wrap(~med_cl, ncol =1)  +
     theme(legend.position = "None")
 
-ggsave(mediation_xenium_hits_snakey, filename = here(plot_dir, "mediation_xenium_hits_snakey.png"), width = 5, height = 4)
+ggsave(mediation_xenium_hits_snakey, filename = here(plot_dir, "mediation_xenium_hits_snakey.png"), width = 3, height = 4)
 
 
 #### ScDotPlots ####
