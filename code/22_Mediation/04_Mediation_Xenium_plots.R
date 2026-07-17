@@ -71,7 +71,7 @@ mediation_summary |>
     arrange(mediator, outcome) |>
     mutate(mediatorDE = ifelse(mediatorDE_P.Value < 0.1, "*",""))
 
-mediated_hits |> select(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator, outcome, Xen_valid)
+mediated_hits |> select(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator, outcome, base_valid)
 
 write_csv(mediated_hits, file = here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
 

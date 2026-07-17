@@ -49,10 +49,6 @@ mediator_outcome_select <- mediator_outcome |>
     mutate(
         outcome_cl  = "Oligo.3",
         med_cl_test = med_cl,
-        fdr_base    = fdr,
-        t_base      = t,
-        fdr_med = fdr_med,
-        t_med   = t_med,
         base_sig    = fdr_base < 0.05,
         med_sig = fdr_med < 0.05
     ) |>
