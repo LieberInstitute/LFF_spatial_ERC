@@ -58,6 +58,7 @@ outcome_summary |> filter(grepl("SOX", outcome))
 # 2 Astro.2 SOX5        3 FZD8, NETO1, SV2B
 # 3 Astro.3 SOX5        1 CHRM3  
     
+outcome_summary |> filter(outcome == "CABLES1")
 
 #### Upset plots ####
 mediator_outcome_wide <- mediator_outcome |> 
@@ -80,8 +81,9 @@ mediator_outcome_wide |> filter(Astro.2_ABCA8)
 
 astro_set_colors <- map(all_mediator_cl, ~upset_query(set=c(.x), fill=astro_colors[[jaffelab::ss(.x, "_")]]))
 
-sox_queries <- list(upset_query(intersect = c("Astro.3_CHRM3", "Astro.2_FZD8", "Astro.2_NETO1", "Astro.2_SV2B"), fill="red"),
-                    upset_query(intersect = c("Astro.1_NPTXR"), fill="darkred"))
+sox_queries <- list(upset_query(intersect = c("Astro.3_CHRM3", "Astro.2_FZD8", "Astro.2_NETO1", "Astro.2_SV2B"), fill="red"), #SOX5
+                    upset_query(intersect = c("Astro.3_CHRM3", "Astro.2_FZD8", "Astro.2_SV2B"), fill="darkred"), #CABLES1
+                    upset_query(intersect = c("Astro.1_NPTXR"), fill="seagreen")) #SOX6
 
 my_queries <- c(astro_set_colors, sox_queries)
 
@@ -92,7 +94,7 @@ mediation_upsets <- ComplexUpset::upset(data = mediator_outcome_wide,
                                         width_ratio=0.2) 
 
 ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.pdf"), height = 5, width = 6)
-ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.png"), height = 4, width = 6.5)
+ggsave(mediation_upsets,filename =  here(plot_dir, "Mediation_gene_set_upset.png"), height = 5, width = 6)
 
 
 #### Snakey plots ####
@@ -122,7 +124,8 @@ mediation_xenium_tested_snakey <- mediation_xenium_deg |>
 
 ggsave(mediation_xenium_tested_snakey, filename = here(plot_dir, "mediation_xenium_tested_snakey.png"), width = 9, height = 5)
 
-mediation_xenium_hits <- read_csv(here("processed-data",  "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv"))
+mediation_xenium_hits <- read_csv(here("processed-data",  "22_Mediation", "03_Mediation_Xenium", "Xenium_mediation_hits.csv")) |> 
+    mutate(pair = paste0(mediator, "|", outcome))
 
 
 mediation_xenium_hits_snakey <- mediation_xenium_hits |>
@@ -317,4 +320,45 @@ sce|>
     )
 
 dev.off()
+
+### medation hits 
+
+xenium_hit_gene_tb <- mediation_xenium_hits  |>
+    distinct(pair, mediator, outcome) |>
+    pivot_longer(!pair, names_to = "role", values_to = "gene") |>
+    group_by(gene) |>
+    summarise(role = ifelse(n()==2, "both", role)) |>
+    add_row(gene = c("SOX5", "SOX6"), role = "outcome")
+
+rowData(sce)$MedRole <- NULL
+rowData(sce)$MedRole <- xenium_hit_gene_tb$role[match(rownames(sce), xenium_hit_gene_tb$gene)] 
+table(rowData(sce)$MedRole)
+
+
+pdf(here(plot_dir, sprintf("sn_cell_type_broad_dotplot_mediator_hit_Xen.pdf")), height = 4.5, width = 4.5)
+
+sce|>
+    scDotPlot(features = xenium_hit_gene_tb$gene,
+              group = "cell_type_broad",
+              groupAnno = "cell_type_broad",
+              scale = TRUE,
+              featureAnno = "MedRole",
+              annoColors = list("cell_type_broad" = cell_type_colors$broad),
+              clusterRows = TRUE,
+              groupLegends = FALSE
+    )
+
+sce|>
+    scDotPlot(features = xenium_hit_gene_tb$gene,
+              group = "cell_type_broad",
+              groupAnno = "cell_type_broad",
+              scale = FALSE,
+              featureAnno = "MedRole",
+              annoColors = list("cell_type_broad" = cell_type_colors$broad),
+              clusterRows = TRUE,
+              groupLegends = FALSE
+    )
+
+dev.off()
+
 
