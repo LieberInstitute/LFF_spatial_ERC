@@ -167,8 +167,8 @@ mofa_weights <- get_weights(mofa_model, factors = "Factor3", as.data.frame = TRU
     mutate(gene_id = gsub(".*_", "", gene_id)) |>
     left_join(gene_id_lookup, by = "gene_id") |>
     group_by(view) |>
-    mutate(rank = rank(weight),
-           abs_rank = rank(abs(weight)))
+    mutate(rank = rank(-weight),
+           abs_rank = rank(-abs(weight)))
 
 ## every gene uses the same view now - this run's analysis_context - so no
 ## per-gene view lookup is needed anymore. NB analysis_context is only ever a
