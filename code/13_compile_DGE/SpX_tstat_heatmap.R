@@ -60,37 +60,93 @@ SpX_tstat_heatmap <- function(data,
         pval_matrix <- t(pval_matrix)
     }
 
-    ## optional row/col annotation of visium t-stat, mapped via Sp_lookup
-    ## NOTE: assumes SpX labels follow "<SpX_simple>_SpX<n>" (e.g. "L2.3_SpX3") so the
-    ## simple region prefix can be recovered with gsub - adjust the regex below if your
-    ## actual SpX naming differs
+    SpX_names <- if(flip) colnames(t_matrix) else rownames(t_matrix)
+    cell_types <- if(flip) rownames(t_matrix) else colnames(t_matrix)
+
+    ## sn (discovery-side) t-stat annotation, one value per cell_type_anno, with a pch
+    ## marker where vlmf_sn_adj.P.Val<0.05 - vlmf_sn_t/vlmf_sn_adj.P.Val are repeated
+    ## across SpX rows for a given cell_type_anno/gene so distinct() collapses to one
+    ## value per cell type
+    sn_t_vec <- gene_data|>distinct(cell_type_anno,vlmf_sn_t)|>deframe()
+    sn_t_vec <- sn_t_vec[cell_types]
+
+    sn_padj_vec <- gene_data|>distinct(cell_type_anno,vlmf_sn_adj.P.Val)|>deframe()
+    sn_padj_vec <- sn_padj_vec[cell_types]
+
+    sn_max <- max(abs(sn_t_vec),na.rm=TRUE)
+
+    sn_col <- circlize::colorRamp2(
+        breaks=c(-1*sn_max,0,sn_max),
+        colors=c(APOE_carrier_colors[["E2+"]],"white",APOE_carrier_colors[["E4+"]])
+    )
+
+    sn_pch <- ifelse(sn_padj_vec<0.05,8,NA)
+
+    if(flip){
+        sn_anno <- rowAnnotation(
+            sn_t=anno_simple(sn_t_vec,col=sn_col,pch=sn_pch,pt_gp=gpar(col="black"))
+        )
+        row_anno <- if(is.null(row_anno)) sn_anno else c(row_anno,sn_anno)
+    } else {
+        sn_anno <- columnAnnotation(
+            sn_t=anno_simple(sn_t_vec,col=sn_col,pch=sn_pch,pt_gp=gpar(col="black"))
+        )
+        col_anno <- if(is.null(col_anno)) sn_anno else c(col_anno,sn_anno)
+    }
+
+    ## visium (discovery-side) t-stat annotation, one value per SpX, mapped through
+    ## Sp_lookup (SpX_simple -> SpD_simple -> visium cluster). SpX_simple now comes
+    ## straight from the combined data frame - no more parsing SpX by regex.
+    ## NOTE: assumes DE_data_visium has columns gene_name, cluster, vlmf_t,
+    ## vlmf_adj.P.Val - adjust the column names below if yours differ
     if(!is.null(visium_data)){
 
-        SpX_to_SpD <- lookup|>dplyr::select(SpX_simple,SpD_simple)|>deframe()
+        SpX_to_simple <- gene_data|>distinct(SpX,SpX_simple)|>deframe()
+        simple_to_SpD <- lookup|>dplyr::select(SpX_simple,SpD_simple)|>deframe()
+        SpD_for_rows <- simple_to_SpD[SpX_to_simple[SpX_names]]
 
-        visium_t <- visium_data|>
+        ## visium cluster is a compound string e.g. "Inhib~Sp09D09" - strip the
+        ## "~Sp..." suffix to get the simple label that matches Sp_lookup$SpD_simple
+        visium_gene <- visium_data|>
             filter(gene_name==gene)|>
-            dplyr::select(cluster,vlmf_t)|>
-            deframe()
+            mutate(SpD_simple=gsub("~Sp.*$","",cluster))
 
-        SpX_names <- if(flip) colnames(t_matrix) else rownames(t_matrix)
-        SpX_simple <- gsub("_SpX[0-9]+$","",SpX_names)
-        SpD_simple <- SpX_to_SpD[SpX_simple]
-        visium_t_vec <- visium_t[SpD_simple]
+        visium_t <- visium_gene|>dplyr::select(SpD_simple,vlmf_t)|>deframe()
+        visium_t_vec <- visium_t[SpD_for_rows]
         names(visium_t_vec) <- SpX_names
 
-        bar_col <- ifelse(visium_t_vec>0,APOE_carrier_colors[["E4+"]],APOE_carrier_colors[["E2+"]])
+        ## bail out cleanly if this gene has no usable visium match, rather than
+        ## letting an all-NA vector (max -> -Inf) corrupt colorRamp2's breaks
+        if(all(is.na(visium_t_vec))){
 
-        if(flip){
-            visium_anno <- columnAnnotation(
-                visium_t=anno_barplot(visium_t_vec,gp=gpar(fill=bar_col),baseline=0)
-            )
-            col_anno <- if(is.null(col_anno)) visium_anno else c(col_anno,visium_anno)
+            warning(sprintf("no matching visium data for gene '%s' - skipping visium annotation",gene))
+
         } else {
-            visium_anno <- rowAnnotation(
-                visium_t=anno_barplot(visium_t_vec,gp=gpar(fill=bar_col),baseline=0)
+
+            visium_padj <- visium_gene|>dplyr::select(SpD_simple,vlmf_adj.P.Val)|>deframe()
+            visium_padj_vec <- visium_padj[SpD_for_rows]
+            names(visium_padj_vec) <- SpX_names
+
+            visium_max <- max(abs(visium_t_vec),na.rm=TRUE)
+
+            visium_col <- circlize::colorRamp2(
+                breaks=c(-1*visium_max,0,visium_max),
+                colors=c(APOE_carrier_colors[["E2+"]],"white",APOE_carrier_colors[["E4+"]])
             )
-            row_anno <- if(is.null(row_anno)) visium_anno else c(row_anno,visium_anno)
+
+            visium_pch <- ifelse(visium_padj_vec<0.05,8,NA)
+
+            if(flip){
+                visium_anno <- columnAnnotation(
+                    visium_t=anno_simple(visium_t_vec,col=visium_col,pch=visium_pch,pt_gp=gpar(col="black"))
+                )
+                col_anno <- if(is.null(col_anno)) visium_anno else c(col_anno,visium_anno)
+            } else {
+                visium_anno <- rowAnnotation(
+                    visium_t=anno_simple(visium_t_vec,col=visium_col,pch=visium_pch,pt_gp=gpar(col="black"))
+                )
+                row_anno <- if(is.null(row_anno)) visium_anno else c(row_anno,visium_anno)
+            }
         }
     }
 
