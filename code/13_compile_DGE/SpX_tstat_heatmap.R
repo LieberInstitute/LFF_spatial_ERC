@@ -1,0 +1,117 @@
+SpX_tstat_heatmap <- function(data,
+                              gene,
+                              title=gene,
+                              h=6,
+                              w=8,
+                              cluster_col=FALSE,
+                              cluster_row=FALSE,
+                              datatype,
+                              flip=FALSE,
+                              save=TRUE,
+                              order_celltypes=TRUE,
+                              row_anno=NULL,
+                              col_anno=NULL,
+                              visium_data=NULL,
+                              lookup=Sp_lookup){
+
+    gene_data <- data|>filter(gene_name==gene)
+
+    t_matrix <- gene_data|>
+        dplyr::select(SpX,cell_type_anno,vlmf_xenium_t)|>
+        pivot_wider(names_from=cell_type_anno,values_from=vlmf_xenium_t)|>
+        column_to_rownames("SpX")|>
+        as.matrix()
+
+    pval_matrix <- gene_data|>
+        mutate(signif=case_when(vlmf_xenium_P.Value<0.1~"X",TRUE~"")
+        )|>
+        dplyr::select(SpX,cell_type_anno,signif)|>
+        pivot_wider(names_from=cell_type_anno,values_from=signif)|>
+        column_to_rownames("SpX")|>
+        as.matrix()
+
+    pval_matrix[is.na(pval_matrix)] <- ""
+
+    ## reorder rows (SpX) & cols (cell_type_anno)
+    if(exists("SpX_levels")&&all(rownames(t_matrix)%in%SpX_levels)){
+        row_order <- SpX_levels[SpX_levels%in%rownames(t_matrix)]
+    } else {
+        row_order <- order(rownames(t_matrix))
+    }
+
+    if(order_celltypes){
+        col_order <- order(colMeans(t_matrix,na.rm=TRUE))
+    } else {
+        col_order <- colnames(t_matrix)
+    }
+
+    t_matrix <- t_matrix[row_order,col_order]
+    pval_matrix <- pval_matrix[row_order,col_order]
+
+    max_abs <- max(abs(t_matrix),na.rm=TRUE)
+
+    my.col <- circlize::colorRamp2(
+        breaks=c(-1*max_abs,0,max_abs),
+        colors=c(APOE_carrier_colors[["E2+"]],"white",APOE_carrier_colors[["E4+"]])
+    )
+
+    if(flip){
+        t_matrix <- t(t_matrix)
+        pval_matrix <- t(pval_matrix)
+    }
+
+    ## optional row/col annotation of visium t-stat, mapped via Sp_lookup
+    ## NOTE: assumes SpX labels follow "<SpX_simple>_SpX<n>" (e.g. "L2.3_SpX3") so the
+    ## simple region prefix can be recovered with gsub - adjust the regex below if your
+    ## actual SpX naming differs
+    if(!is.null(visium_data)){
+
+        SpX_to_SpD <- lookup|>dplyr::select(SpX_simple,SpD_simple)|>deframe()
+
+        visium_t <- visium_data|>
+            filter(gene_name==gene)|>
+            dplyr::select(cluster,vlmf_t)|>
+            deframe()
+
+        SpX_names <- if(flip) colnames(t_matrix) else rownames(t_matrix)
+        SpX_simple <- gsub("_SpX[0-9]+$","",SpX_names)
+        SpD_simple <- SpX_to_SpD[SpX_simple]
+        visium_t_vec <- visium_t[SpD_simple]
+        names(visium_t_vec) <- SpX_names
+
+        bar_col <- ifelse(visium_t_vec>0,APOE_carrier_colors[["E4+"]],APOE_carrier_colors[["E2+"]])
+
+        if(flip){
+            visium_anno <- columnAnnotation(
+                visium_t=anno_barplot(visium_t_vec,gp=gpar(fill=bar_col),baseline=0)
+            )
+            col_anno <- if(is.null(col_anno)) visium_anno else c(col_anno,visium_anno)
+        } else {
+            visium_anno <- rowAnnotation(
+                visium_t=anno_barplot(visium_t_vec,gp=gpar(fill=bar_col),baseline=0)
+            )
+            row_anno <- if(is.null(row_anno)) visium_anno else c(row_anno,visium_anno)
+        }
+    }
+
+    t_heatmap <- Heatmap(t_matrix,
+                        col=my.col,
+                        name="t-statistic",
+                        column_title=title,
+                        cluster_rows=cluster_row,
+                        cluster_columns=cluster_col,
+                        right_annotation=row_anno,
+                        bottom_annotation=col_anno,
+                        cell_fun=function(j,i,x,y,width,height,fill){
+                            grid.text(pval_matrix[i,j],x,y,gp=gpar(fontsize=10))
+                        })
+
+    if(save){
+        pdf(here(plot_dir,sprintf("Xenium_%s_tstat_heatmap_%s.pdf",datatype,gene)),height=h,width=w)
+        print(t_heatmap)
+        dev.off()
+    } else {
+        print(t_heatmap)
+    }
+
+}
