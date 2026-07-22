@@ -10,12 +10,17 @@ logFC_Heatmap <- function(data,
                           save = TRUE, 
                           order_genes = TRUE,
                           row_anno = NULL,
-                          col_anno = NULL){
+                          col_anno = NULL,
+                          fill_stat = "vlmf_logFC"){
+    
+    if(!fill_stat %in% names(data)){
+        stop(sprintf("fill_stat '%s' not a column in data", fill_stat))
+    }
     
     logFC_matrix <- data |>
         filter(gene_name %in% gene_list) |>
-        dplyr::select(cluster, gene_name, vlmf_logFC) |>
-        pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
+        dplyr::select(cluster, gene_name, all_of(fill_stat)) |>
+        pivot_wider(names_from = gene_name, values_from = all_of(fill_stat)) |>
         column_to_rownames("cluster") |>
         as.matrix()
     
@@ -69,9 +74,16 @@ logFC_Heatmap <- function(data,
     
     # return(logFC_matrix)
     
+    stat_label <- switch(fill_stat,
+                          "vlmf_logFC" = "log2(FC)",
+                          "vlmf_t" = "t-statistic",
+                          fill_stat)
+    
+    stat_suffix <- gsub("^vlmf_", "", fill_stat)
+    
     log_fc_heatmap <- Heatmap(logFC_matrix,
                               col = my.col,
-                              name = "log(FC)",
+                              name = stat_label,
                               cluster_rows = FALSE,
                               cluster_columns = cluster_col,
                               right_annotation = row_anno,
@@ -81,7 +93,7 @@ logFC_Heatmap <- function(data,
                               })
     
     if(save){
-        pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = h, width = w)
+        pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
         print(log_fc_heatmap)
         dev.off()
     } else {
@@ -104,15 +116,20 @@ logFC_Heatmap_contrast <- function(data_contrast,
                                    save = TRUE, 
                                    order_genes = TRUE,
                                    row_anno = NULL,
-                                   col_anno = NULL){
+                                   col_anno = NULL,
+                                   fill_stat = "vlmf_logFC"){
+    
+    if(!fill_stat %in% names(data_contrast)){
+        stop(sprintf("fill_stat '%s' not a column in data_contrast", fill_stat))
+    }
     
     dge_data_filter <- data_contrast |>
         filter(gene_name %in% gene_list) |>
         mutate(cluster_contrast = paste0(cluster, gsub("carrier","", contrast))) 
     
     logFC_matrix <- dge_data_filter|>
-        dplyr::select(cluster_contrast, gene_name, vlmf_logFC) |>
-        pivot_wider(names_from = gene_name, values_from = vlmf_logFC) |>
+        dplyr::select(cluster_contrast, gene_name, all_of(fill_stat)) |>
+        pivot_wider(names_from = gene_name, values_from = all_of(fill_stat)) |>
         column_to_rownames("cluster_contrast") |>
         as.matrix()
     
@@ -156,17 +173,30 @@ logFC_Heatmap_contrast <- function(data_contrast,
         colors = c(APOE_carrier_colors[["E2+"]], "white", APOE_carrier_colors[["E4+"]])
     )
 
-    pdf(here(plot_dir, sprintf("DGE_%s_logFC_heatmap_%s.pdf", datatype, title)), height = h, width = w)
-    print(Heatmap(logFC_matrix,
-                  col = my.col,
-                  name = "log(FC)",
-                  cluster_rows = cluster_row,
-                  cluster_columns = cluster_col,
-                  right_annotation = row_anno,
-                  bottom_annotation = col_anno,
-                  cell_fun = function(j, i, x, y, width, height, fill) {
-                      grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
-                  }))
-    dev.off()
+    stat_label <- switch(fill_stat,
+                          "vlmf_logFC" = "log2(FC)",
+                          "vlmf_t" = "t-statistic",
+                          fill_stat)
+    
+    stat_suffix <- gsub("^vlmf_", "", fill_stat)
+
+    log_fc_heatmap <- Heatmap(logFC_matrix,
+                              col = my.col,
+                              name = stat_label,
+                              cluster_rows = cluster_row,
+                              cluster_columns = cluster_col,
+                              right_annotation = row_anno,
+                              bottom_annotation = col_anno,
+                              cell_fun = function(j, i, x, y, width, height, fill) {
+                                  grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+                              })
+    
+    if(save){
+        pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
+        print(log_fc_heatmap)
+        dev.off()
+    } else {
+        print(log_fc_heatmap)
+    }
     
 }
