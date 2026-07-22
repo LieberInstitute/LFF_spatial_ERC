@@ -297,7 +297,7 @@ combined_t_heatmap(de_data_types)
 ## `_wSN` files already carry a `validate` column (direction-concordant +
 ## meets the nominal validation threshold vs. discovery) - use that directly
 ## rather than re-deriving significance from a raw p-value/FDR column.
-validation_data_types <- c("Xenium_cell_type_anno", "Xenium_SpX", "Xenium_Oligo.3_Astro")
+validation_data_types <- c("Xenium_cell_type_anno", "Xenium_cell_type_anno_SpX", "Xenium_Oligo.3_Astro")
 
 load_DE_valid_data <- function(datatype){
     DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", datatype, sprintf("DGE_results_carrier_%s_wSN.Rds", datatype))
@@ -374,13 +374,15 @@ if(length(valid_clusters) == 0){
 
 #### Xenium SpX validation heatmap ####
 ## Will have to provide custom annotations for Xenium SpX
-dt = "Xenium_SpX"
+dt = "Xenium_cell_type_anno_SpX"
 
 # lookup <- load_cluster_lookup(dt)
 # cluster_colors <- lookup$cluster_colors  # logFC_Heatmap() auto-builds a row/col color annotation from this
 # cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the global env
 
-dt_data <- DE_valid_data |> filter(data_type == dt)
+dt_data <- DE_valid_data |> 
+    filter(data_type == dt) |> 
+    mutate(cluster = cluster_SpX) 
 
 dt_data |> 
     filter(gene_name == "CABLES1", cell_type_anno == "Oligo.3") |>
@@ -395,7 +397,7 @@ dt_data |>
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
 
-dt_xenium_spx_anno <- dt_data |> 
+dt_xenium_spx_anno <- dt_data |>
     distinct(cluster, cell_type_anno, SpX) |>
     column_to_rownames("cluster")
 
@@ -457,11 +459,6 @@ if(length(valid_clusters) == 0){
 }
 
 
-combined_t_heatmap(validation_data_types,
-                   de_data = DE_valid_data,
-                   sig_filter = function(df) filter(df, validate),
-                   signif_label = function(df) mutate(df, signif = ifelse(validate, "*", "")),
-                   title = "anchor_genes_validated_clusters")
 
 
 #### Session info ####
