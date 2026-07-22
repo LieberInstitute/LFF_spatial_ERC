@@ -151,56 +151,6 @@ p_de
 
 ggsave(p_de, filename = here(plot_dir, sprintf("%s_contexts_heatmap.pdf", analysis_context)), width = 8, height = 4)
 
-#### MOFA Factor3 gene weights for this context ####
-
-## same model-loading convention as 03_reduced_main_heatmap.R
-mofa_model_path <- here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "model.hdf5")
-mofa_model <- load_model(mofa_model_path)
-
-## get_weights() keys features by gene_id, not gene_name - reuse the mapping
-## already sitting in DE_data instead of loading a separate lookup table
-gene_id_lookup <- DE_data |> distinct(gene_id, gene_name)
-
-mofa_weights <- get_weights(mofa_model, factors = "Factor3", as.data.frame = TRUE) |>
-    as_tibble() |>
-    rename(gene_id = feature, view = view, weight = value) |>
-    mutate(gene_id = gsub(".*_", "", gene_id)) |>
-    left_join(gene_id_lookup, by = "gene_id") |>
-    group_by(view) |>
-    mutate(rank = rank(-weight),
-           abs_rank = rank(-abs(weight)))
-
-## every gene uses the same view now - this run's analysis_context - so no
-## per-gene view lookup is needed anymore. NB analysis_context is only ever a
-## plain cell-type view name here (e.g. "Oligo.3"); an SpD context would need
-## the same '~' -> '_' swap used for SpD_colors in 03_reduced_main_heatmap.R
-mofa_key <- tibble(gene_name = gene_levels, view = analysis_context) |>
-    left_join(mofa_weights, by = c("gene_name", "view")) |>
-    mutate(context = "MOFA | Factor.3", gene_name = factor(gene_name, levels = gene_levels))
-
-message(sum(is.na(mofa_key$weight)), " genes missing a Factor3 weight in the ", analysis_context, " view")
-
-p_mofa <- mofa_key |>
-    ggplot(aes(x = context, y = gene_name, fill = weight)) +
-    geom_tile() +
-    scale_fill_gradient2(low = APOE_carrier_colors[["E2+"]], 
-                         high = APOE_carrier_colors[["E4+"]], 
-                         midpoint = 0) +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
-p_mofa
-
-#### combine ####
-
-## width per panel scaled roughly by number of columns, so the single MOFA
-## column doesn't get stretched as wide as the multi-context DE panels - note
-## the two fill scales aren't identical (t-stat vs weight, different ranges)
-## so guides="collect" would merge legends incorrectly - left as two separate
-## bottom legends on purpose
-p_de + p_mofa + plot_layout(widths = c(n_distinct(DE_data_key$context), 1))
-
-ggsave(here(plot_dir, sprintf("%s_heatmap_with_MOFA.pdf", analysis_context)), width = 10, height = 4)
 
 #### Session info ####
 
