@@ -18,7 +18,7 @@ scec <- matrix(
 )
 opt <- getopt(scec)
 
-# opt$datatype  <- "Xenium_Oligo.3_Astro_SpX"
+# opt$datatype  <- "Xenium_cell_type_anno_SpX"
 
 data_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -39,8 +39,21 @@ cell_type_broad_levels <- cell_type_broad_levels[cell_type_broad_levels != "Othe
 
 if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
-    cluster_colors <- cell_type_colors$anno
     cluster_levels <- names(cell_type_colors$anno)
+    
+    load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
+    SpX_levels <- names(SpX_colors)
+    
+    SpX_levels_simple <- gsub("~.*", "", SpX_levels)
+    
+    SpX_colors_simple <- SpX_colors
+    names(SpX_colors_simple) <- SpX_levels_simple
+
+        
+    cell_type_anno_SpX_level_tb <- expand_grid(cell_type_anno = cell_type_levels, SpX_simple = SpX_levels_simple) |>
+        mutate(cell_type_anno_SpX = paste0(cell_type_anno, '_', SpX_simple))
+    
+    cluster_spx_levels <- cell_type_anno_SpX_level_tb$cell_type_anno_SpX
     
 } else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
     
@@ -69,6 +82,9 @@ vlmf_data <- map(vlmf_fn, readRDS)
 names(vlmf_data)
 head(vlmf_data[[1]])
 
+# all(names(vlmf_data) %in% cluster_spx_levels)
+# cluster_spx_levels <- cluster_levels[cluster_spx_levels %in% names(vlmf_data)]
+
 vlmf_data_tb <- do.call("rbind", vlmf_data) |>
     dplyr::rename(vlmf_logFC = logFC,
                   vlmf_AveExpr = AveExpr,
@@ -77,12 +93,12 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_adj.P.Val = adj.P.Val,
                   vlmf_B = B )  |>
     mutate(cluster_SpX = cluster,
-           cluster = factor(gsub("_[^_]+$", "", cluster), cluster_levels),
+           cluster = droplevels(factor(gsub("_[^_]+$", "", cluster), cluster_levels)),
            SpX = factor(SpX, names(SpX_colors)),
            cell_type_anno = droplevels(factor(cell_type_anno, names(cell_type_colors$anno)))) |>
     as_tibble() 
 
-levels(vlmf_data_tb$cluster)
+cluster_levels <- levels(vlmf_data_tb$cluster)
 levels(vlmf_data_tb$SpX)
 
 vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) 
@@ -171,7 +187,7 @@ custom_volcano_ct_fine <- function(data, mod_name = "carrier"){
     map(cluster_levels, 
         ~data |> 
             filter(cluster == .x) |>
-            custom_volcano(, model_name = paste0(mod_name,"-", .x)) )
+            custom_volcano(model_name = paste0(mod_name,"-", .x)) )
     
 }
 
@@ -179,8 +195,6 @@ custom_volcano_ct_fine <- function(data, mod_name = "carrier"){
 ## plot volcanos
 custom_volcano_ct_fine(vlmf_data_tb)
 
-# ## filter to risk genes
-# custom_volcano(data = vlmf_data_tb |> filter(gene_name %in% AD_risk$symbol), model_name = paste0(opt$datatype, "-carrier-risk"))
 
 #### Save vlmf data & Add sn results ####
 sn_DEG_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "sn_fine", "DGE_results_carrier_sn_fine.Rds")) |>
@@ -190,7 +204,7 @@ sn_DEG_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE"
 sn_DEG_data |> count(vlmf_sn_adj.P.Val < 0.05, gene_name %in% vlmf_data_tb$gene_name)
 # sn_DEG_data |> count(gene_name %in% vlmf_data_tb$gene_name)
 
-if(opt$datatype == "Xenium_cell_type_anno"){
+if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     vlmf_data_tb_xenium <- vlmf_data_tb |>
         rename_with(~ str_replace(.x, "vlmf_", "vlmf_xenium_"), starts_with("vlmf_"))|> 
@@ -258,14 +272,15 @@ vlmf_data_tb_xenium |>
     filter(validate) |> 
     group_by(gene_name) |>
     count() |> 
-    arrange(-n)
+    arrange(-n) 
 
 
 vlmf_data_tb_xenium |> 
     # filter(gene_name == "IGFBP5") |>
+    filter(gene_name == "CABLES1", validate) |>
     # filter(SpX == "L1b~SpX7", signif_both) |>
     # filter(SpX == "L6~SpX9", signif_both) |>
-    filter(SpX == "WMtz~SpX8", signif_both) |>
+    # filter(SpX == "WMtz~SpX8", signif_both) |>
     select(cluster_SpX, gene_name, vlmf_sn_t, vlmf_sn_adj.P.Val, vlmf_xenium_t, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate) |>
     arrange(-vlmf_xenium_logFC)
 
@@ -362,7 +377,7 @@ sn_xenium_cor_v_genes <- sn_xenium_cor |>
 
 ggsave(sn_xenium_cor_v_genes, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_genes.png", opt$datatype)), width =8)
 
-if(opt$datatype == "Xenium_cell_type_anno"){
+if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     sn_xenium_cor_v_SpX <- sn_xenium_cor |>
         ggplot(aes(x = cluster_xenium, y = cluster_sn)) +
@@ -560,7 +575,7 @@ map(levels(vlmf_data_tb_xenium$cell_type_anno), ~try(compare_stats_scatter(dge_t
 
 #### tstat heatmap Xenium_cell_type_anno ####
 
-if(opt$datatype == "Xenium_cell_type_anno"){
+if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     ## select sn FDR < 0.05 genes we want to plot
     sn_DEG_data_FDR05 <- vlmf_data_tb_xenium |> 
@@ -645,7 +660,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         
         # col annotation by n validation
         SpX_val <- validation_summary |>
-            filter(cell_type_anno == ct) |>
+            filter(cluster == ct) |>
             ungroup() |>
             mutate(n_opp = n_signif_both - n_validate) |>
             select(SpX, n_validate, n_opp) |>
@@ -665,7 +680,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
         
         col_fun_n_cell = circlize::colorRamp2(c(0, max(spx_cell_prop_ct$n_cell)), c("white", "red"))
-        col_fun_APOE = circlize::colorRamp2(c(min(spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
+        col_fun_APOE = circlize::colorRamp2(c(min(1, spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
         
         ha_SpX_cell <- HeatmapAnnotation(df = spx_cell_prop_ct,
                                          col = list(n_cell = col_fun_n_cell,
@@ -687,7 +702,8 @@ if(opt$datatype == "Xenium_cell_type_anno"){
         )
         
         pdf(here(plot_dir, sprintf("xenium_SpX_t_stat_heatmap-%s.pdf", ct)), height = 3 + nrow(t_stat_SpX_ct)/5)
-        print(Heatmap(t_stat_SpX_ct, 
+        print(
+            Heatmap(t_stat_SpX_ct, 
                       name = "xenium\nt-stat",
                       col = xenium_t_col_fun,
                       cluster_rows = FALSE,
@@ -698,8 +714,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
                       cell_fun = function(j, i, x, y, width, height, fill) {
                           grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
                       },
-                      column_title = ct
-        ))
+                      column_title = ct))
         dev.off()
         
     })
