@@ -63,6 +63,18 @@ count(DE_data, data_type)
 
 # DE_data |> filter(gene_name == "PLP1") |> arrange(vlmf_adj.P.Val)  # quick sanity check
 
+DE_data_counts <- DE_data |> 
+    filter(vlmf_adj.P.Val < 0.05) |>
+    group_by(gene_name) |>
+    summarise(n = n(),
+              n_dt = length(unique(data_type)),
+              clusters = paste(unique(cluster), collapse = ",")
+              ) 
+
+DE_data_counts |>
+    count(n_dt)
+
+DE_data_counts |> filter(n_dt > 1) |> arrange(-n) |> print(n = 20)
 
 #### Anchor gene panel ####
 
@@ -161,6 +173,103 @@ for(dt in de_data_types){
 ## grid.grabExpr around each Heatmap draw call) once Xenium validation is
 ## added as a 4th resolution
 
+
+#### Combined heatmap across all resolutions ####
+
+## one condensed heatmap spanning all of de_data_types at once instead of 3
+## separate PDFs - columns are clusters, restricted per-datatype to those
+## with >=1 significant anchor gene hit (same filter as the "sig_clusters"
+## panels above), split into blocks by data_type via column_split. Always the
+## t-statistic here (not adaptable to logFC like logFC_Heatmap() - this is a
+## fixed combined summary view). Written as a function so it's a one-line
+## re-run once Xenium is added as a 4th resolution: just extend de_data_types.
+combined_t_heatmap <- function(data_types, gene_list = anchor_genes, title = "anchor_genes_sig_clusters", h = 5, w_per_col = 0.5){
+    
+    ## per-datatype: figure out which clusters clear the sig threshold, and
+    ## their project-standard display order, before ever building the matrix -
+    ## this is what lets col_order/col_split line up exactly by construction
+    pieces <- map(data_types, function(dt){
+        lookup <- load_cluster_lookup(dt)
+        dt_data <- DE_data |> filter(data_type == dt)
+        
+        sig_clusters <- dt_data |>
+            filter(gene_name %in% gene_list, vlmf_adj.P.Val < 0.05) |>
+            distinct(cluster) |>
+            pull(cluster)
+        
+        cluster_order <- lookup$cluster_levels[lookup$cluster_levels %in% sig_clusters]
+        
+        list(
+            data = dt_data |>
+                filter(cluster %in% sig_clusters, gene_name %in% gene_list) |>
+                mutate(cluster_id = paste0(dt, ": ", cluster)),
+            col_order = paste0(dt, ": ", cluster_order),
+            n_clusters = length(cluster_order)
+        )
+    })
+    
+    combined_data <- pieces |> map("data") |> list_rbind()
+    col_order <- pieces |> map("col_order") |> unlist(use.names = FALSE)
+    col_split <- factor(rep(data_types, times = map_int(pieces, "n_clusters")), levels = data_types)
+    
+    gene_order <- gene_list[gene_list %in% combined_data$gene_name]
+    
+    t_matrix <- combined_data |>
+        dplyr::select(gene_name, cluster_id, vlmf_t) |>
+        pivot_wider(names_from = cluster_id, values_from = vlmf_t) |>
+        column_to_rownames("gene_name") |>
+        as.matrix()
+    t_matrix <- t_matrix[gene_order, col_order]
+    
+    pval_matrix <- combined_data |>
+        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
+                                  vlmf_adj.P.Val < 0.01 ~ "**",
+                                  vlmf_adj.P.Val < 0.05 ~ "*",
+                                  TRUE ~ "")
+        ) |>
+        dplyr::select(gene_name, cluster_id, signif) |>
+        pivot_wider(names_from = cluster_id, values_from = signif) |>
+        column_to_rownames("gene_name") |>
+        as.matrix()
+    pval_matrix[is.na(pval_matrix)] <- ""
+    pval_matrix <- pval_matrix[gene_order, col_order]
+    
+    max_abs <- max(abs(t_matrix), na.rm = TRUE)
+    my.col <- circlize::colorRamp2(
+        breaks = c(-1*max_abs, 0, max_abs),
+        colors = c(APOE_carrier_colors[["E2+"]], "white", APOE_carrier_colors[["E4+"]])
+    )
+    
+    ht <- Heatmap(t_matrix,
+                  col = my.col,
+                  name = "t-statistic",
+                  cluster_rows = FALSE,
+                  cluster_columns = FALSE,
+                  column_split = col_split,        # divides the heatmap into one block per data_type
+                  heatmap_legend_param = list(direction = "horizontal"),
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                      grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+                  })
+    
+    pdf(here(plot_dir, sprintf("DGE_combined_t_heatmap_%s.pdf", title)),
+        height = h, width = ncol(t_matrix) * w_per_col + 2)
+    draw(ht, heatmap_legend_side = "top")
+    dev.off()
+    
+    invisible(ht)
+}
+
+combined_t_heatmap(de_data_types)
+
+#### Validation data ####
+
+validation_data_types <- c("Xenium_cell_type_anno", "Xenium_SpX", "Xenium_Oligo.3_Astro")
+
+DE_valid_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno_wSN.Rds"))
+
+DE_valid_data |>
+    filter(gene_name %in% anchor_genes,
+           validate)
 
 #### Session info ####
 
