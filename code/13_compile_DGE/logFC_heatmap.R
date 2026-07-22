@@ -12,10 +12,21 @@ logFC_Heatmap <- function(data,
                           row_anno = NULL,
                           col_anno = NULL,
                           fill_stat = "vlmf_logFC",
-                          legend_side = "right"){
+                          legend_side = "right",
+                          signif_stat = "vlmf_adj.P.Val",
+                          signif_cut = 0.05,
+                          valid_anno = NULL){
     
     if(!fill_stat %in% names(data)){
         stop(sprintf("fill_stat '%s' not a column in data", fill_stat))
+    }
+    
+    if(is.null(valid_anno)){
+        if(!signif_stat %in% names(data)){
+            stop(sprintf("signif_stat '%s' not a column in data", signif_stat))
+        }
+    } else if(!valid_anno %in% names(data)){
+        stop(sprintf("valid_anno '%s' not a column in data", valid_anno))
     }
     
     logFC_matrix <- data |>
@@ -25,17 +36,29 @@ logFC_Heatmap <- function(data,
         column_to_rownames("cluster") |>
         as.matrix()
     
-    pval_matrix <- data |>
-        filter(gene_name %in% gene_list) |>
-        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
-                                  vlmf_adj.P.Val < 0.01 ~ "**",
-                                  vlmf_adj.P.Val < 0.05 ~ "*",
-                                  TRUE ~ "")
-        ) |>
-        dplyr::select(cluster, gene_name, signif) |>
-        pivot_wider(names_from = gene_name, values_from = signif) |>
-        column_to_rownames("cluster") |>
-        as.matrix()
+    if(!is.null(valid_anno)){
+        ## validation mode overrides the significance annotation entirely -
+        ## an "X" wherever this boolean column is TRUE, blank elsewhere
+        pval_matrix <- data |>
+            filter(gene_name %in% gene_list) |>
+            mutate(signif = ifelse(.data[[valid_anno]], "X", "")) |>
+            dplyr::select(cluster, gene_name, signif) |>
+            pivot_wider(names_from = gene_name, values_from = signif) |>
+            column_to_rownames("cluster") |>
+            as.matrix()
+    } else {
+        pval_matrix <- data |>
+            filter(gene_name %in% gene_list) |>
+            mutate(signif = case_when(.data[[signif_stat]] < 0.001 ~ "***",
+                                      .data[[signif_stat]] < 0.01 ~ "**",
+                                      .data[[signif_stat]] < signif_cut ~ "*",
+                                      TRUE ~ "")
+            ) |>
+            dplyr::select(cluster, gene_name, signif) |>
+            pivot_wider(names_from = gene_name, values_from = signif) |>
+            column_to_rownames("cluster") |>
+            as.matrix()
+    }
     
     pval_matrix[is.na(pval_matrix)] <- ""
     
@@ -105,6 +128,30 @@ logFC_Heatmap <- function(data,
     
     legend_direction <- if(legend_side %in% c("top", "bottom")) "horizontal" else "vertical"
     
+    ## legend explaining the cell_fun text annotations - either the */**/***
+    ## significance tiers, or what "X" means when valid_anno overrides them.
+    ## type="grid" + graphics lets each swatch literally draw the same
+    ## character used in the heatmap cells, rather than a color/point proxy.
+    if(!is.null(valid_anno)){
+        sig_legend <- Legend(
+            title = "Validation",
+            labels = valid_anno,
+            type = "grid",
+            graphics = list(function(x, y, w, h) grid.text("X", x, y, gp = gpar(fontsize = 10)))
+        )
+    } else {
+        sig_legend <- Legend(
+            title = "Significance",
+            labels = c(paste0("p < ", signif_cut), "p < 0.01", "p < 0.001"),
+            type = "grid",
+            graphics = list(
+                function(x, y, w, h) grid.text("*", x, y, gp = gpar(fontsize = 10)),
+                function(x, y, w, h) grid.text("**", x, y, gp = gpar(fontsize = 10)),
+                function(x, y, w, h) grid.text("***", x, y, gp = gpar(fontsize = 10))
+            )
+        )
+    }
+    
     log_fc_heatmap <- Heatmap(logFC_matrix,
                               col = my.col,
                               name = stat_label,
@@ -119,10 +166,10 @@ logFC_Heatmap <- function(data,
     
     if(save){
         pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
         dev.off()
     } else {
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
     }
     
     
@@ -143,10 +190,21 @@ logFC_Heatmap_contrast <- function(data_contrast,
                                    row_anno = NULL,
                                    col_anno = NULL,
                                    fill_stat = "vlmf_logFC",
-                                   legend_side = "right"){
+                                   legend_side = "right",
+                                   signif_stat = "vlmf_adj.P.Val",
+                                   signif_cut = 0.05,
+                                   valid_anno = NULL){
     
     if(!fill_stat %in% names(data_contrast)){
         stop(sprintf("fill_stat '%s' not a column in data_contrast", fill_stat))
+    }
+    
+    if(is.null(valid_anno)){
+        if(!signif_stat %in% names(data_contrast)){
+            stop(sprintf("signif_stat '%s' not a column in data_contrast", signif_stat))
+        }
+    } else if(!valid_anno %in% names(data_contrast)){
+        stop(sprintf("valid_anno '%s' not a column in data_contrast", valid_anno))
     }
     
     dge_data_filter <- data_contrast |>
@@ -164,16 +222,25 @@ logFC_Heatmap_contrast <- function(data_contrast,
         column_to_rownames("cluster_contrast") |>
         as.matrix()
     
-    pval_matrix <- dge_data_filter |>
-        mutate(signif = case_when(vlmf_adj.P.Val < 0.001 ~ "***",
-                                  vlmf_adj.P.Val < 0.01 ~ "**",
-                                  vlmf_adj.P.Val < 0.05 ~ "*",
-                                  TRUE ~ "")
-        ) |>
-        dplyr::select(cluster_contrast, gene_name, signif) |>
-        pivot_wider(names_from = gene_name, values_from = signif) |>
-        column_to_rownames("cluster_contrast") |>
-        as.matrix()
+    if(!is.null(valid_anno)){
+        pval_matrix <- dge_data_filter |>
+            mutate(signif = ifelse(.data[[valid_anno]], "X", "")) |>
+            dplyr::select(cluster_contrast, gene_name, signif) |>
+            pivot_wider(names_from = gene_name, values_from = signif) |>
+            column_to_rownames("cluster_contrast") |>
+            as.matrix()
+    } else {
+        pval_matrix <- dge_data_filter |>
+            mutate(signif = case_when(.data[[signif_stat]] < 0.001 ~ "***",
+                                      .data[[signif_stat]] < 0.01 ~ "**",
+                                      .data[[signif_stat]] < signif_cut ~ "*",
+                                      TRUE ~ "")
+            ) |>
+            dplyr::select(cluster_contrast, gene_name, signif) |>
+            pivot_wider(names_from = gene_name, values_from = signif) |>
+            column_to_rownames("cluster_contrast") |>
+            as.matrix()
+    }
     
     pval_matrix[is.na(pval_matrix)] <- ""
     
@@ -228,6 +295,28 @@ logFC_Heatmap_contrast <- function(data_contrast,
         }
     }
 
+    ## legend explaining the cell_fun text annotations - same convention as
+    ## logFC_Heatmap()
+    if(!is.null(valid_anno)){
+        sig_legend <- Legend(
+            title = "Validation",
+            labels = valid_anno,
+            type = "grid",
+            graphics = list(function(x, y, w, h) grid.text("X", x, y, gp = gpar(fontsize = 10)))
+        )
+    } else {
+        sig_legend <- Legend(
+            title = "Significance",
+            labels = c(paste0("p < ", signif_cut), "p < 0.01", "p < 0.001"),
+            type = "grid",
+            graphics = list(
+                function(x, y, w, h) grid.text("*", x, y, gp = gpar(fontsize = 10)),
+                function(x, y, w, h) grid.text("**", x, y, gp = gpar(fontsize = 10)),
+                function(x, y, w, h) grid.text("***", x, y, gp = gpar(fontsize = 10))
+            )
+        )
+    }
+
     log_fc_heatmap <- Heatmap(logFC_matrix,
                               col = my.col,
                               name = stat_label,
@@ -242,10 +331,10 @@ logFC_Heatmap_contrast <- function(data_contrast,
     
     if(save){
         pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
         dev.off()
     } else {
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
     }
     
 }
