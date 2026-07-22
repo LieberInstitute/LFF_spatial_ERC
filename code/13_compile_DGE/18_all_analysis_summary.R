@@ -96,12 +96,13 @@ load_cluster_lookup <- function(datatype){
         load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
         list(cluster_colors = SpD_colors, cluster_levels = names(SpD_colors))
     } else if(datatype == "Xenium_cell_type_anno"){
-        # same underlying fine cell-type annotation scheme as sn_fine, just
-        # measured via Xenium instead of snRNA-seq - reusing $anno on that basis
         load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
         list(cluster_colors = cell_type_colors$anno, cluster_levels = names(cell_type_colors$anno))
     } else if(datatype == "Xenium_SpX"){
-        stop("TODO: no cluster_colors/cluster_levels source defined yet for Xenium_SpX")
+        
+        load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+        list(cluster_colors = cell_type_colors$anno, cluster_levels = names(cell_type_colors$anno))
+        
     } else if(datatype == "Xenium_Oligo.3_Astro"){
         stop("TODO: no cluster_colors/cluster_levels source defined yet for Xenium_Oligo.3_Astro")
     } else {
@@ -138,7 +139,7 @@ for(dt in de_data_types){
         order_genes = FALSE,  # keep the fixed thematic gene order above, not a data-driven one
         save = TRUE,
         h = 5, 
-        w = length(unique(dt_data$cluster))*0.8          # TODO: sn_fine especially may need a taller h once you see subcluster count
+        w = length(unique(dt_data$cluster))*0.5 + 2 
     )
     
     ## filtered version - only clusters with >=1 anchor gene at adj.P.Val < 0.05
@@ -303,11 +304,11 @@ load_DE_valid_data <- function(datatype){
     readRDS(DE_data_fn)
 }
 
-## TODO: only confirmed for Xenium_cell_type_anno so far - confirm Xenium_SpX
-## and Xenium_Oligo.3_Astro follow the same "..._wSN.Rds" naming convention
 DE_valid_data <- validation_data_types |>
     map(load_DE_valid_data) |>
     list_rbind()
+
+all(anchor_genes %in% DE_valid_data$gene_name)
 
 message(nrow(DE_valid_data), " rows across ", n_distinct(DE_valid_data$data_type), " validation data types")
 count(DE_valid_data, data_type)
@@ -321,52 +322,128 @@ DE_valid_data |>
     print(n = 30)
 
 
-for(dt in validation_data_types){
-    
-    lookup <- load_cluster_lookup(dt)
-    cluster_colors <- lookup$cluster_colors  # logFC_Heatmap() auto-builds a row/col color annotation from this
-    cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the global env
-    
-    dt_data <- DE_valid_data |> filter(data_type == dt)
-    
-    ## full version - every cluster in this resolution
+DE_valid_data |> filter(data_type == "Xenium_SpX") |> distinct(cluster)
+
+dt = "Xenium_cell_type_anno"
+lookup <- load_cluster_lookup(dt)
+cluster_colors <- lookup$cluster_colors  # logFC_Heatmap() auto-builds a row/col color annotation from this
+cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the global env
+
+dt_data <- DE_valid_data |> filter(data_type == dt)
+
+## full version - every cluster in this resolution
+logFC_Heatmap(
+    data = dt_data,
+    gene_list = anchor_genes,
+    title = "anchor_genes",
+    datatype = dt,
+    fill_stat = "vlmf_xenium_t",
+    flip = TRUE,
+    order_genes = FALSE,  # keep the fixed thematic gene order above, not a data-driven one
+    save = TRUE,
+    h = 5, 
+    w = (length(unique(dt_data$cluster))*0.3) + 2,
+    valid_anno = "validate"
+)
+
+## filtered version - only clusters validation
+valid_clusters <- dt_data |>
+    filter(gene_name %in% anchor_genes, validate) |>
+    distinct(cluster) |>
+    pull(cluster)
+
+if(length(valid_clusters) == 0){
+    message(dt, ": no validation clusters - skipping filtered heatmap")
+} else {
     logFC_Heatmap(
-        data = dt_data,
+        data = dt_data |> filter(cluster %in% sig_clusters),
         gene_list = anchor_genes,
-        title = "anchor_genes",
+        title = "anchor_genes_sig_clusters",
         datatype = dt,
         fill_stat = "vlmf_xenium_t",
         flip = TRUE,
-        order_genes = FALSE,  # keep the fixed thematic gene order above, not a data-driven one
+        order_genes = FALSE,
         save = TRUE,
         h = 5, 
-        w = length(unique(dt_data$cluster))*0.8 
+        w = length(sig_clusters) *0.9 ,
+        valid_anno = "validate"
     )
-    
-    ## filtered version - only clusters with >=1 anchor gene at adj.P.Val < 0.05
-    sig_clusters <- dt_data |>
-        filter(gene_name %in% anchor_genes, vlmf_adj.P.Val < 0.05) |>
-        distinct(cluster) |>
-        pull(cluster)
-    
-    if(length(sig_clusters) == 0){
-        message(dt, ": no clusters with a significant anchor gene hit (adj.P.Val < 0.05) - skipping filtered heatmap")
-    } else {
-        logFC_Heatmap(
-            data = dt_data |> filter(cluster %in% sig_clusters),
-            gene_list = anchor_genes,
-            title = "anchor_genes_sig_clusters",
-            datatype = dt,
-            fill_stat = "vlmf_t",
-            flip = TRUE,
-            order_genes = FALSE,
-            save = TRUE,
-            h = 5, 
-            w = length(sig_clusters) *0.9 ,
-            legend_side = "top"
-        )
-    }
 }
+
+#### Xenium SpX validation heatmap ####
+## Will have to provide custom annotations for Xenium SpX
+dt = "Xenium_SpX"
+
+# lookup <- load_cluster_lookup(dt)
+# cluster_colors <- lookup$cluster_colors  # logFC_Heatmap() auto-builds a row/col color annotation from this
+# cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the global env
+
+dt_data <- DE_valid_data |> filter(data_type == dt)
+
+load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
+
+dt_xenium_spx_anno <- dt_data |> 
+    distinct(cluster, cell_type_anno, SpX) |>
+    column_to_rownames("cluster")
+
+ha_xenium_spx <- HeatmapAnnotation(df = dt_xenium_spx_anno,
+                                   col = list(cell_type_anno = cell_type_colors$anno,
+                                              SpX = SpX_colors))
+
+# mutate(SpX_simple =str_remove(SpX, "~.*"))
+
+## full version - every cluster in this resolution
+logFC_Heatmap(
+    data = dt_data,
+    gene_list = anchor_genes,
+    title = "anchor_genes",
+    datatype = dt,
+    fill_stat = "vlmf_xenium_t",
+    flip = TRUE,
+    col_anno = ha_xenium_spx, 
+    order_genes = FALSE,  # keep the fixed thematic gene order above, not a data-driven one
+    save = TRUE,
+    h = 5, 
+    w = (length(unique(dt_data$cluster))*0.3) + 2,
+    valid_anno = "validate"
+)
+
+## filtered version - only clusters validation
+valid_clusters <- dt_data |>
+    filter(gene_name %in% anchor_genes, validate) |>
+    distinct(cluster) |>
+    pull(cluster)
+
+if(length(valid_clusters) == 0){
+    message(dt, ": no validation clusters - skipping filtered heatmap")
+} else {
+    
+    dt_xenium_spx_anno <- dt_data |> 
+        filter(cluster %in% valid_clusters) |>
+        distinct(cluster, cell_type_anno, SpX) |>
+        column_to_rownames("cluster")
+    
+    ha_xenium_spx <- HeatmapAnnotation(df = dt_xenium_spx_anno,
+                                       col = list(cell_type_anno = cell_type_colors$anno[unique(dt_xenium_spx_anno$cell_type_anno)],
+                                                  SpX = SpX_colors[unique(dt_xenium_spx_anno$SpX)]))
+    
+    logFC_Heatmap(
+        data = dt_data |> filter(cluster %in% valid_clusters),
+        gene_list = anchor_genes,
+        title = "anchor_genes_sig_clusters",
+        datatype = dt,
+        col_anno = ha_xenium_spx, 
+        fill_stat = "vlmf_xenium_t",
+        flip = TRUE,
+        order_genes = FALSE,
+        save = TRUE,
+        h = 5, 
+        w = length(valid_clusters) *0.9 ,
+        valid_anno = "validate"
+    )
+}
+
 
 combined_t_heatmap(validation_data_types,
                    de_data = DE_valid_data,
