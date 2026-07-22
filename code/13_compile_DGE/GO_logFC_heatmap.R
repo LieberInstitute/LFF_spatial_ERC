@@ -43,10 +43,14 @@ get_go_genes <- function(go_terms){
 # go_genes |> count(geneID) |> arrange(-n)
 # go_genes |> count(Description) |> arrange(-n)
 
-get_go_DE_stats <- function(go_term, contrast = FALSE){
+get_go_DE_stats <- function(go_term, contrast = FALSE, fill_stat = "vlmf_logFC"){
     
     if(!go_term %in% compare_clus$Description){
         stop(sprintf("GO term '%s' not in compare_clus", go_term))
+    }
+    
+    if(!fill_stat %in% names(DE_data)){
+        stop(sprintf("fill_stat '%s' not a column in DE_data", fill_stat))
     }
     
     go_gene <- compare_clus |>
@@ -58,7 +62,7 @@ get_go_DE_stats <- function(go_term, contrast = FALSE){
     
     if(contrast){
         go_term_de <- go_gene |>
-            left_join(DE_data |> select(cluster, contrast, gene_name, vlmf_logFC, vlmf_adj.P.Val),
+            left_join(DE_data |> select(cluster, contrast, gene_name, all_of(fill_stat), vlmf_adj.P.Val),
                       by = "gene_name",
                       relationship = "many-to-many") |>
             mutate(cluster = paste0(cluster, gsub("carrier","", contrast))) |>
@@ -73,7 +77,7 @@ get_go_DE_stats <- function(go_term, contrast = FALSE){
         
     } else {
         go_term_de <- go_gene |>
-            left_join(DE_data |> select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val),
+            left_join(DE_data |> select(cluster, gene_name, all_of(fill_stat), vlmf_adj.P.Val),
                       by = "gene_name",
                       relationship = "many-to-many") |>
             group_by(cluster, gene_name) |>
@@ -91,8 +95,8 @@ get_go_DE_stats <- function(go_term, contrast = FALSE){
     
     log_fc_matrix <- go_term_de |> 
         ungroup() |>
-        select(gene_name, cluster, vlmf_logFC) |>
-        pivot_wider(names_from = "cluster", values_from = "vlmf_logFC", 
+        select(gene_name, cluster, all_of(fill_stat)) |>
+        pivot_wider(names_from = "cluster", values_from = all_of(fill_stat), 
                     names_expand = TRUE) |>
         column_to_rownames("gene_name")
     
@@ -113,7 +117,8 @@ get_go_DE_stats <- function(go_term, contrast = FALSE){
     
     return(list(log_fc = log_fc_matrix, 
                 signif = signif_matrix,
-                go_gene = go_gene))
+                go_gene = go_gene,
+                fill_stat = fill_stat))
     
 }
 
@@ -126,10 +131,12 @@ get_go_DE_stats <- function(go_term, contrast = FALSE){
 # get_go_DE_stats("dendrite terminus")
 
 
-get_go_DE_stats_multi <- function(go_list, contrast = FALSE){
+get_go_DE_stats_multi <- function(go_list, contrast = FALSE, fill_stat = "vlmf_logFC"){
     
-    go_stats_m <- map(go_list, ~get_go_DE_stats(.x, contrast = contrast))
+    go_stats_m <- map(go_list, ~get_go_DE_stats(.x, contrast = contrast, fill_stat = fill_stat))
     # map(go_stats_m, ~ncol(.x$log_fc))
+    # drop fill_stat before transposing/rbinding - it's a repeated scalar, not a stackable matrix
+    go_stats_m <- map(go_stats_m, ~.x[c("log_fc", "signif", "go_gene")])
     go_stats_m <- map(list_transpose(go_stats_m, simplify = FALSE), ~do.call("rbind",.x))
     
     go_stats_m$go_gene <-  go_stats_m$go_gene |> 
@@ -139,6 +146,7 @@ get_go_DE_stats_multi <- function(go_list, contrast = FALSE){
     
     go_stats_m$log_fc <- go_stats_m$log_fc[go_stats_m$go_gene$gene_name,]
     go_stats_m$signif <- go_stats_m$signif[go_stats_m$go_gene$gene_name,]
+    go_stats_m$fill_stat <- fill_stat
     
     return(go_stats_m)
 }
@@ -146,9 +154,13 @@ get_go_DE_stats_multi <- function(go_list, contrast = FALSE){
 # go_stats_multi <- get_go_DE_stats_multi(go_list = c("myelin assembly", "protein autoprocessing", "dendrite terminus"))
 # go_stats_multi <- get_go_DE_stats_multi(go_list = c("protein autoprocessing", "myelination"))
 
-GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
+GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE, fill_stat = NULL){
     
-    logFC <- as.matrix(go_stats$log_fc)
+    # fall back to whatever get_go_DE_stats/_multi stashed, then to logFC for old cached objects
+    if(is.null(fill_stat)) fill_stat <- go_stats$fill_stat
+    if(is.null(fill_stat)) fill_stat <- "vlmf_logFC"
+    
+    fill_mat <- as.matrix(go_stats$log_fc)
     signif <- as.matrix(go_stats$signif)
     
     # multi_line <- any(grepl("+", go_stats$go_gene$Description))
@@ -162,19 +174,23 @@ GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
         # dplyr::mutate(Description_n = Description) |>
         column_to_rownames("gene_name")
     
-    anno_table <- anno_table[rownames(logFC),]
+    anno_table <- anno_table[rownames(fill_mat),]
     
-    max_abs <- max(abs(logFC), na.rm = TRUE)
+    max_abs <- max(abs(fill_mat), na.rm = TRUE)
     
     my.col <- circlize::colorRamp2(
         breaks = c(-1*max_abs,0,max_abs),
         colors = c(APOE_carrier_colors[["E2+"]], "white", APOE_carrier_colors[["E4+"]])
     )
     
+    stat_label <- switch(fill_stat,
+                          "vlmf_logFC" = "log2(FC)",
+                          "vlmf_t" = "t-statistic",
+                          fill_stat)
     
-    Heatmap(as.matrix(logFC),
+    Heatmap(fill_mat,
             col = my.col,
-            name = "log(FC)",
+            name = stat_label,
             cluster_rows = cluster_rows,
             cluster_columns = FALSE,
             row_split = anno_table$Description,
@@ -186,7 +202,7 @@ GO_logfc_Heatmap <- function(go_stats, title = NULL, cluster_rows = TRUE){
     
 }
 
-parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term), height = 10, width = 10, contrast = FALSE){
+parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_term), height = 10, width = 10, contrast = FALSE, fill_stat = "vlmf_logFC"){
     
     top_terms <- map(search_term, ~get_go_genes(go_lookup(.x))|>
                          count(Description) |>
@@ -198,16 +214,18 @@ parent_term_heatmap <- function(search_term, pdf_suffix = gsub(" ", "_", search_
     # duplicated(top_terms)
     
     # debug
-    # get_go_DE_stats_multi(top_terms[[1]], contrast = TRUE)
+    # get_go_DE_stats_multi(top_terms[[1]], contrast = TRUE, fill_stat = fill_stat)
     
-    top_terms_stats <- map(top_terms, ~get_go_DE_stats_multi(.x, contrast = contrast))
+    top_terms_stats <- map(top_terms, ~get_go_DE_stats_multi(.x, contrast = contrast, fill_stat = fill_stat))
     
     # print(GO_logfc_Heatmap(top_terms_stats[[1]]))
     
+    stat_suffix <- gsub("^vlmf_", "", fill_stat)
+    
     if(contrast){
-        filename = sprintf("GO_logFC_heatmap_%s_%s-%s.pdf", opt$datatype, opt$contrast, pdf_suffix)
+        filename = sprintf("GO_%s_heatmap_%s_%s-%s.pdf", stat_suffix, opt$datatype, opt$contrast, pdf_suffix)
     } else {
-        filename = sprintf("GO_logFC_heatmap_%s-%s.pdf", opt$datatype, pdf_suffix)
+        filename = sprintf("GO_%s_heatmap_%s-%s.pdf", stat_suffix, opt$datatype, pdf_suffix)
     }
     
     pdf(here(plot_dir, filename), height = height, width = width)
