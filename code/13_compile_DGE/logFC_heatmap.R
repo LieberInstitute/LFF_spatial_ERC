@@ -11,7 +11,8 @@ logFC_Heatmap <- function(data,
                           order_genes = TRUE,
                           row_anno = NULL,
                           col_anno = NULL,
-                          fill_stat = "vlmf_logFC"){
+                          fill_stat = "vlmf_logFC",
+                          legend_side = "right"){
     
     if(!fill_stat %in% names(data)){
         stop(sprintf("fill_stat '%s' not a column in data", fill_stat))
@@ -102,6 +103,8 @@ logFC_Heatmap <- function(data,
     
     stat_suffix <- gsub("^vlmf_", "", fill_stat)
     
+    legend_direction <- if(legend_side %in% c("top", "bottom")) "horizontal" else "vertical"
+    
     log_fc_heatmap <- Heatmap(logFC_matrix,
                               col = my.col,
                               name = stat_label,
@@ -109,16 +112,17 @@ logFC_Heatmap <- function(data,
                               cluster_columns = cluster_col,
                               right_annotation = row_anno,
                               bottom_annotation = col_anno,
+                              heatmap_legend_param = list(direction = legend_direction),
                               cell_fun = function(j, i, x, y, width, height, fill) {
                                   grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
                               })
     
     if(save){
         pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
-        print(log_fc_heatmap)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
         dev.off()
     } else {
-        print(log_fc_heatmap)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
     }
     
     
@@ -138,7 +142,8 @@ logFC_Heatmap_contrast <- function(data_contrast,
                                    order_genes = TRUE,
                                    row_anno = NULL,
                                    col_anno = NULL,
-                                   fill_stat = "vlmf_logFC"){
+                                   fill_stat = "vlmf_logFC",
+                                   legend_side = "right"){
     
     if(!fill_stat %in% names(data_contrast)){
         stop(sprintf("fill_stat '%s' not a column in data_contrast", fill_stat))
@@ -230,16 +235,17 @@ logFC_Heatmap_contrast <- function(data_contrast,
                               cluster_columns = cluster_col,
                               right_annotation = row_anno,
                               bottom_annotation = col_anno,
+                              heatmap_legend_param = list(direction = if(legend_side %in% c("top", "bottom")) "horizontal" else "vertical"),
                               cell_fun = function(j, i, x, y, width, height, fill) {
                                   grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
                               })
     
     if(save){
         pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
-        print(log_fc_heatmap)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
         dev.off()
     } else {
-        print(log_fc_heatmap)
+        draw(log_fc_heatmap, heatmap_legend_side = legend_side)
     }
     
 }
