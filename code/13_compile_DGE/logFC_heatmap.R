@@ -74,6 +74,27 @@ logFC_Heatmap <- function(data,
     
     # return(logFC_matrix)
     
+    ## auto-build a cluster-identity color strip from `cluster_colors` (a named
+    ## vector keyed by cluster name, expected in the calling env - same
+    ## convention as cluster_levels) unless the caller already supplied their
+    ## own row_anno/col_anno. Side depends on flip: clusters are rows normally,
+    ## columns once flipped.
+    if(exists("cluster_colors")){
+        cluster_ids <- if(flip) colnames(logFC_matrix) else rownames(logFC_matrix)
+        missing_ids <- setdiff(cluster_ids, names(cluster_colors))
+        if(length(missing_ids) > 0){
+            message("no cluster_colors entry for: ", paste(missing_ids, collapse = ", "), " - skipping cluster color annotation")
+        } else if(flip && is.null(col_anno)){
+            col_anno <- HeatmapAnnotation(cluster = cluster_ids,
+                                          col = list(cluster = cluster_colors),
+                                          show_legend = FALSE)
+        } else if(!flip && is.null(row_anno)){
+            row_anno <- rowAnnotation(cluster = cluster_ids,
+                                      col = list(cluster = cluster_colors),
+                                      show_legend = FALSE)
+        }
+    }
+    
     stat_label <- switch(fill_stat,
                           "vlmf_logFC" = "log2(FC)",
                           "vlmf_t" = "t-statistic",
@@ -127,6 +148,11 @@ logFC_Heatmap_contrast <- function(data_contrast,
         filter(gene_name %in% gene_list) |>
         mutate(cluster_contrast = paste0(cluster, gsub("carrier","", contrast))) 
     
+    ## cluster_contrast (e.g. "Oligo.3E4vsE2") is what ends up as the row name -
+    ## keep this lookup so cluster_colors (keyed by plain cluster name) can
+    ## still be resolved per row further down
+    cluster_lookup <- dge_data_filter |> distinct(cluster_contrast, cluster)
+    
     logFC_matrix <- dge_data_filter|>
         dplyr::select(cluster_contrast, gene_name, all_of(fill_stat)) |>
         pivot_wider(names_from = gene_name, values_from = all_of(fill_stat)) |>
@@ -179,6 +205,23 @@ logFC_Heatmap_contrast <- function(data_contrast,
                           fill_stat)
     
     stat_suffix <- gsub("^vlmf_", "", fill_stat)
+
+    ## auto-build a cluster-identity color strip from `cluster_colors` (same
+    ## convention as logFC_Heatmap()) unless the caller already supplied
+    ## row_anno. Rows here are cluster_contrast (e.g. "Oligo.3E4vsE2"), so
+    ## resolve back to plain cluster via cluster_lookup before coloring - note
+    ## flip isn't applied anywhere in this function, so this stays row-side.
+    if(exists("cluster_colors") && is.null(row_anno)){
+        row_ids <- rownames(logFC_matrix)
+        base_cluster <- cluster_lookup$cluster[match(row_ids, cluster_lookup$cluster_contrast)]
+        if(anyNA(base_cluster) || any(!base_cluster %in% names(cluster_colors))){
+            message("no cluster_colors entry for one or more clusters - skipping cluster color annotation")
+        } else {
+            row_anno <- rowAnnotation(cluster = base_cluster,
+                                      col = list(cluster = cluster_colors),
+                                      show_legend = FALSE)
+        }
+    }
 
     log_fc_heatmap <- Heatmap(logFC_matrix,
                               col = my.col,
