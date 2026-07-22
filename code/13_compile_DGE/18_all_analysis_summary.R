@@ -75,7 +75,9 @@ anchor_genes <- c(
     "NPTXR",                                  # cross-cell-type signal (Astro/Oligo/Excit) at broad resolution
     "MAL", "KLK6",                            # spatial-domain anchors (WM.uf~Sp9D7 / Vasc~Sp9D8); MAL recurs at fine resolution too
     "PLP1", "MAG", "MBP", "SOX10", "OPALIN",  # Oligo.3 myelination/differentiation program, downregulated
-    "FOS", "TLR2", "STAT1", "STAT4"           # Oligo.3 inflammatory/interferon program, upregulated
+    "FOS", "TLR2", "STAT1", "STAT4",           # Oligo.3 inflammatory/interferon program, upregulated
+    "CPNE4", ## L6 multi-cell enviroment gene
+    "FZD8", "CABLES1" #Mediation genes
 )
 
 
@@ -356,7 +358,7 @@ if(length(valid_clusters) == 0){
     message(dt, ": no validation clusters - skipping filtered heatmap")
 } else {
     logFC_Heatmap(
-        data = dt_data |> filter(cluster %in% sig_clusters),
+        data = dt_data |> filter(cluster %in% valid_clusters), ## use sig_clusters to include Inhib.Vip
         gene_list = anchor_genes,
         title = "anchor_genes_sig_clusters",
         datatype = dt,
@@ -379,6 +381,16 @@ dt = "Xenium_SpX"
 # cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the global env
 
 dt_data <- DE_valid_data |> filter(data_type == dt)
+
+dt_data |> 
+    filter(gene_name == "CABLES1", cell_type_anno == "Oligo.3") |>
+    select(gene_name, cluster, cell_type_anno, SpX, vlmf_xenium_P.Value, vlmf_xenium_t, validate)
+
+# gene_name cluster       cell_type_anno SpX        vlmf_xenium_P.Value vlmf_xenium_t validate
+# 6 CABLES1   Oligo.3_L6    Oligo.3        L6~SpX9                 0.228          1.25  FALSE   ????
+# 7 CABLES1   Oligo.3_Vasc  Oligo.3        Vasc~SpX3               0.340         -0.977 FALSE   
+# 8 CABLES1   Oligo.3_WM    Oligo.3        WM~SpX2                 0.0512         2.07  TRUE    
+# 9 CABLES1   Oligo.3_WMtz  Oligo.3        WMtz~SpX8               0.0931         1.77  TRUE
 
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
