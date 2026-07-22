@@ -140,9 +140,14 @@ logFC_Heatmap <- function(data,
             graphics = list(function(x, y, w, h) grid.text("X", x, y, gp = gpar(fontsize = 10)))
         )
     } else {
+        
+        p_sym <- ifelse(grepl("adj", signif_stat), "FDR", "p")
+            
         sig_legend <- Legend(
-            title = "Significance",
-            labels = c(paste0("p < ", signif_cut), "p < 0.01", "p < 0.001"),
+            title = "Signif",
+            labels = c(sprintf("%s < %.2f", p_sym, signif_cut), 
+                       sprintf("%s < %.2f", p_sym, 0.01),
+                       sprintf("%s < %.3f", p_sym, 0.001)),
             type = "grid",
             graphics = list(
                 function(x, y, w, h) grid.text("*", x, y, gp = gpar(fontsize = 10)),
