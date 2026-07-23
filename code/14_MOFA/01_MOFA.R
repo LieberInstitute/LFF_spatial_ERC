@@ -317,9 +317,9 @@ weights_boxplot <- weights_boxplot + ggplot2::geom_label(
 
 
 carrier_tau_colors <- c(`E2+ t-` = "#398A84",
-                        `E2+ t+` = "#60BEB8",
+                        `E2+ t+` = "#7FBFBB",
                         `E4+ t-` = "#D46B43",
-                        `E4+ t+` = "#DD8A69")
+                        `E4+ t+` = "#DF9E85")
 
 F3_carrier_tau_boxplot <- factor_df |>
     filter(Factor == "Factor3") |>
@@ -337,6 +337,20 @@ ggsave(F3_carrier_tau_boxplot, filename = here(plot_dir, "factor3_weights_boxplo
 
 ggsave(F3_carrier_tau_boxplot, filename = here(plot_dir, "factor3_weights_boxplot_carrier_tau_boxplot_small.png"), height = 4, width = 3)
 
+## Factor 3 vs. Age
+
+F3_age_scatter <-factor_df |>
+    mutate(carrier_tau = paste(APOE_carrier, taupathy)) |>
+    filter(Factor == "Factor3") |>
+    ggplot(aes(x = Age, y = value, color = carrier_tau, shape = Sex)) +
+    scale_color_manual(values = carrier_tau_colors) +
+    geom_point() +
+    theme_bw()  +
+    labs(x="Age", y = "Factor3 Weight")
+
+ggsave(F3_age_scatter, filename = here(plot_dir, "factor3_weights_age_scatter.png"), height = 4, width = 6)
+ggsave(F3_age_scatter + facet_grid(Ancestry~APOE_carrier) , filename = here(plot_dir, "factor3_weights_age_scatter_facet.png"), height = 4, width = 6)
+ggsave(F3_age_scatter + facet_grid(Sex~APOE_carrier) , filename = here(plot_dir, "factor3_weights_age_scatter_facet_sex.png"), height = 4, width = 6)
 
 
 #   Convert to wide format
