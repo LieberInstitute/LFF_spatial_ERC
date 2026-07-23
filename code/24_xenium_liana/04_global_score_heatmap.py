@@ -22,75 +22,6 @@ os.makedirs(plot_dir, exist_ok=True)
 os.makedirs(out_summary_path.parent, exist_ok=True)
 
 #################################################################################
-#   Functions
-#################################################################################
-
-def save_faceted_heatmap(df, fill_col, fill_name, title, out_path):
-    p = (
-        p9.ggplot(df, p9.aes(x='target', y='source', fill=fill_col))
-        + p9.geom_tile()
-        + p9.scale_fill_gradientn(
-            colors=['lightgray', '#440154', '#31688e', '#35b779', '#fde725'],
-            values=[0, 1e-6, 0.33, 0.66, 1],
-            name=fill_name
-        )
-        + p9.labs(
-            x='Target',
-            y='Source',
-            title=title
-        )
-        + p9.facet_wrap('~APOE_carrier')
-        + p9.theme_bw()
-        + p9.theme(
-            axis_text_x=p9.element_text(rotation=90, ha='center'),
-            figure_size=(16, 8)
-        )
-    )
-
-    p.save(filename=str(out_path), verbose=False)
-
-
-def save_difference_heatmap(df, title, out_path):
-    carrier_a, carrier_b = carrier_groups
-
-    diff_df = (
-        df
-        .pivot(index=['source', 'target'], columns='APOE_carrier', values='lr_mean')
-        .reset_index()
-        .merge(full_grid_diff, on=['source', 'target'], how='right')
-        .fillna(0)
-    )
-    diff_col = f'{carrier_b}_minus_{carrier_a}'
-    diff_df[diff_col] = diff_df[carrier_b] - diff_df[carrier_a]
-    max_abs_diff = diff_df[diff_col].abs().max()
-    max_abs_diff = max_abs_diff if max_abs_diff > 0 else 1
-
-    p = (
-        p9.ggplot(diff_df, p9.aes(x='target', y='source', fill=diff_col))
-        + p9.geom_tile()
-        + p9.scale_fill_gradient2(
-            low='#3b4cc0',
-            mid='white',
-            high='#b40426',
-            midpoint=0,
-            limits=(-max_abs_diff, max_abs_diff),
-            name=f'{carrier_b} -\n{carrier_a}'
-        )
-        + p9.labs(
-            x='Target',
-            y='Source',
-            title=title
-        )
-        + p9.theme_bw()
-        + p9.theme(
-            axis_text_x=p9.element_text(rotation=90, ha='center'),
-            figure_size=(10, 8)
-        )
-    )
-
-    p.save(filename=str(out_path), verbose=False)
-
-#################################################################################
 #   Gather global scores for all samples
 #################################################################################
 
@@ -178,7 +109,7 @@ avg_lr = (
 avg_lr.to_csv(out_summary_path, index=False)
 
 cell_types = sorted(global_interactions['source'].unique())
-carrier_groups = sorted(global_interactions['APOE_carrier'].dropna().unique())
+carrier_groups = ['E2+', 'E4+']
 full_grid = pd.MultiIndex.from_product(
     [cell_types, cell_types, carrier_groups],
     names=['source', 'target', 'APOE_carrier']
@@ -187,6 +118,77 @@ full_grid_diff = pd.MultiIndex.from_product(
     [cell_types, cell_types],
     names=['source', 'target']
 ).to_frame(index=False)
+
+#################################################################################
+#   Functions
+#################################################################################
+
+def save_faceted_heatmap(df, fill_col, fill_name, title, out_path):
+    p = (
+        p9.ggplot(df, p9.aes(x='target', y='source', fill=fill_col))
+        + p9.geom_tile()
+        + p9.scale_fill_gradientn(
+            colors=['lightgray', '#440154', '#31688e', '#35b779', '#fde725'],
+            values=[0, 1e-6, 0.33, 0.66, 1],
+            name=fill_name
+        )
+        + p9.labs(
+            x='Target',
+            y='Source',
+            title=title
+        )
+        + p9.facet_wrap('~APOE_carrier')
+        + p9.theme_bw()
+        + p9.theme(
+            axis_text_x=p9.element_text(rotation=90, ha='center'),
+            figure_size=(16, 8)
+        )
+    )
+
+    p.save(filename=str(out_path), verbose=False)
+
+
+def save_difference_heatmap(df, title, out_path):
+    carrier_a, carrier_b = carrier_groups
+
+    diff_df = (
+        df
+        .pivot(index=['source', 'target'], columns='APOE_carrier', values='lr_mean')
+        .reset_index()
+        .merge(full_grid_diff, on=['source', 'target'], how='right')
+        .fillna(0)
+    )
+    diff_col = f'symmetric_pct_diff_{carrier_b}_vs_{carrier_a}'
+    denominator = (diff_df[carrier_b] + diff_df[carrier_a]).replace(0, pd.NA)
+    diff_df[diff_col] = 200 * (diff_df[carrier_b] - diff_df[carrier_a]) / denominator
+    diff_df[diff_col] = diff_df[diff_col].fillna(0)
+    max_abs_diff = diff_df[diff_col].abs().max()
+    max_abs_diff = max_abs_diff if max_abs_diff > 0 else 1
+
+    p = (
+        p9.ggplot(diff_df, p9.aes(x='target', y='source', fill=diff_col))
+        + p9.geom_tile()
+        + p9.scale_fill_gradient2(
+            low='#3b4cc0',
+            mid='white',
+            high='#b40426',
+            midpoint=0,
+            limits=(-max_abs_diff, max_abs_diff),
+            name=f'Sym. % diff\n{carrier_b} vs {carrier_a}'
+        )
+        + p9.labs(
+            x='Target',
+            y='Source',
+            title=title
+        )
+        + p9.theme_bw()
+        + p9.theme(
+            axis_text_x=p9.element_text(rotation=90, ha='center'),
+            figure_size=(10, 8)
+        )
+    )
+
+    p.save(filename=str(out_path), verbose=False)
 
 #################################################################################
 #   Global communication heatmaps
@@ -212,7 +214,10 @@ save_faceted_heatmap(
 
 save_difference_heatmap(
     heatmap_df,
-    title=f'Difference in summed mean lr_mean\n({carrier_groups[1]} - {carrier_groups[0]})',
+    title=(
+        f'Symmetric percent difference in summed mean lr_mean\n'
+        f'({carrier_groups[1]} vs {carrier_groups[0]})'
+    ),
     out_path=plot_dir / f'source_target_heatmap_sig{n_samples_sig}_APOE_difference.pdf'
 )
 
@@ -241,7 +246,10 @@ save_faceted_heatmap(
 
 save_difference_heatmap(
     spon1_app_df,
-    title=f'SPON1→APP mean lr_mean difference\n({carrier_groups[1]} - {carrier_groups[0]})',
+    title=(
+        f'SPON1→APP mean lr_mean symmetric percent difference\n'
+        f'({carrier_groups[1]} vs {carrier_groups[0]})'
+    ),
     out_path=plot_dir / f'spon1_app_heatmap_sig{n_samples_sig}_APOE_difference.pdf'
 )
 
