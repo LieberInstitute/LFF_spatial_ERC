@@ -7,7 +7,12 @@ score_path = here(
     'processed-data', '24_xenium_liana', '04_global_score_heatmap',
     'global_interactions_summary.csv'
 )
+unfiltered_path = here(
+    'processed-data', '24_xenium_liana', '04_global_score_heatmap',
+    'global_interactions_unfiltered.csv'
+)
 plot_dir = here('plots', '24_xenium_liana', '05_top_scatter')
+n_samples_sig = 3
 
 dir.create(plot_dir, showWarnings = FALSE)
 
@@ -20,19 +25,63 @@ score_df |>
     mutate(
         source = sub('\\..*', '', source), target = sub('\\..*', '', target)
     ) |>
-    distinct(source, target) |>
+    distinct(source, target, APOE_carrier) |>
     print(n = Inf)
 
-astro_oligo = score_df |>
-    filter(grepl('^Astro', source), target == 'Oligo.3') |>
-    mutate(lr_pair = paste0(ligand_complex, '->', receptor_complex))
+oligo_df = score_df |>
+    filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
+    group_by(APOE_carrier, ligand_complex, receptor_complex) |>
+    slice_max(lr_mean, with_ties = FALSE, n = 1) |>
+    group_by(APOE_carrier) |>
+    slice_max(lr_mean, with_ties = FALSE, n = 10) |>
+    mutate(
+        lr_pair = paste0(ligand_complex, '->', receptor_complex),
+        cell_types = paste(source, '->', target)
+    )
 
-p = ggplot(astro_oligo, aes(x = lr_mean, y = lr_specificity, color = source)) +
+p = ggplot(oligo_df, aes(x = lr_mean, y = lr_specificity, color = cell_types)) +
     geom_point() +
-    geom_text_repel(aes(label = lr_pair), size = 4) +
+    facet_wrap(~APOE_carrier) +
+    geom_text_repel(aes(label = lr_pair), size = 5) +
     theme_bw(base_size = 20) +
     labs(x = 'Mean LR Score', y = 'LR Specificity', color = 'Source Cell Type')
-pdf(file.path(plot_dir, 'astro_oligo3_top_scatter.pdf'), width = 9)
+pdf(file.path(plot_dir, 'oligo3_top_scatter_individual.pdf'), width = 12, height = 5)
+print(p)
+dev.off()
+
+p = read_csv(unfiltered_path, show_col_types = FALSE) |>
+    group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
+    summarize(
+        is_sig = sum(pval < 0.05) >= n_samples_sig,
+        lr_mean = mean(lr_mean), # not necessarily among significant samples
+    ) |>
+    ungroup() |>
+    pivot_wider(names_from = APOE_carrier, values_from = c(is_sig, lr_mean)) |>
+    mutate(
+        lr_mean_diff = 200 * (`lr_mean_E4+` - `lr_mean_E2+`) / (`lr_mean_E4+` + `lr_mean_E2+`),
+        higher_in = ifelse(lr_mean_diff > 0, 'Higher in E4+', 'Higher in E2+'),
+        lr_mean_diff = abs(lr_mean_diff)
+    ) |>
+    filter(ifelse(higher_in == 'Higher in E4+', `is_sig_E4+`, `is_sig_E2+`)) |>
+    group_by(higher_in, ligand_complex, receptor_complex) |>
+    mutate(lr_specificity = lr_mean_diff / max(lr_mean_diff)) |>
+    ungroup() |>
+    filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
+    group_by(higher_in, ligand_complex, receptor_complex) |>
+    slice_max(lr_mean, with_ties = FALSE, n = 1) |>
+    group_by(higher_in) |>
+    slice_max(lr_mean, with_ties = FALSE, n = 10) |>
+    mutate(
+        lr_pair = paste0(ligand_complex, '->', receptor_complex),
+        cell_types = paste(source, '->', target)
+    ) |>
+    ggplot(oligo_df, aes(x = lr_mean, y = lr_specificity, color = cell_types)) +
+        geom_point() +
+        facet_wrap(~higher_in) +
+        geom_text_repel(aes(label = lr_pair), size = 5) +
+        theme_bw(base_size = 20) +
+        labs(x = 'Mean LR Score', y = 'LR Specificity', color = 'Source Cell Type')
+pdf(file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'), width = 12, height = 5)
 print(p)
 dev.off()
 
