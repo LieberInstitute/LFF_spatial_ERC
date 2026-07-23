@@ -42,6 +42,7 @@ mediator_DE_stats <- mediation_summary |>
                 mediatorDE_t = vlmf_t
             )
     })
+
 mediator_DE_stats |> filter(mediatorDE_P.Value < 0.1)
 mediator_DE_stats |> filter(mediator == "SV2B")
 
@@ -152,19 +153,21 @@ pdf(here(plot_dir, "mediation_boxplots_Xenium_pairs.pdf"), width = 10, height = 
 
 pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, outcome_datatype, mediator, outcome, outcome_cl) {
     
-    # ## test 
+    
+    # ## test
+    # 14 Astro.2 Astro.2_L6        Xenium_cell_type_anno_SpX Xenium_cell_type_anno_SpX FZD8     CABLES1 Oligo.3_L6
     # med_cl = "Astro.2"
-    # med_cl_test = "Astro.2"
-    # mediator_datatype = "Xenium_cell_type_anno"
-    # outcome_datatype = "Xenium_cell_type_anno"
+    # med_cl_test = "Astro.2_L6"
+    # mediator_datatype = "Xenium_cell_type_anno_SpX"
+    # outcome_datatype = "Xenium_cell_type_anno_SpX"
     # 
     # # med_cl_test = "Astro.2_APOE_high"
     # # mediator_datatype = "Xenium_Oligo.3_Astro"
     # # outcome_datatype = "Xenium_Oligo.3_Astro"
     # 
-    # mediator = "SV2B"
-    # outcome = "ENC1"
-    # outcome_cl = "APOE_high_nnA_Astro.2"
+    # mediator = "FZD8"
+    # outcome = "CABLES1"
+    # outcome_cl = "Oligo.3_L6"
     # outcome_cl = "Oligo.3"
     # 
     message(Sys.time(), sprintf(" - plotting mediator=%s (%s) -> %s (%s)", mediator, med_cl_test, outcome, outcome_cl))
@@ -172,10 +175,11 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
     sce_out <- load_pb_cached(get_pb_fn(outcome_datatype))
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
     mediator_stats <- load_DE_cached(get_DE_fn(mediator_datatype))
-
-    med_cl_test %in% mediator_stats$cluster
     
-    outcome_cl %in% sce_out[["registration_variable"]]
+    if(mediator_datatype == "Xenium_cell_type_anno_SpX") mediator_stats <- mediator_stats |> mutate(cluster = cluster_SpX)
+
+    # med_cl_test %in% mediator_stats$cluster
+    # outcome_cl %in% sce_out[["registration_variable"]]
     
     p <- tryCatch(
         plot_DEG_mediated_express(
@@ -209,7 +213,7 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
         print(p + patchwork::plot_annotation(title = sprintf("%s (%s) -> %s", mediator, med_cl, outcome_cl)))
         ggsave(p, filename = here(plot_dir, sprintf(
             "mediation_Xen_%s_%s_%s_%s.png", gsub("\\.", "", med_cl), mediator, gsub("\\.", "", outcome_cl), outcome
-        )), height = 4, width = 7)
+        )), height = 3.5, width = 7)
     }
 })
 

@@ -48,7 +48,7 @@ DE_dir <- here("processed-data", "13_compile_DGE", "01_compile_DGE")
 DE_lookup <- tribble(
     ~datatype_key,                 ~DE_fn,
     "Xenium_cell_type_anno",       file.path(DE_dir, "Xenium_cell_type_anno", "DGE_results_carrier_Xenium_cell_type_anno.Rds"),
-    "Xenium_cell_type_anno_SpX",   file.path(DE_dir, "Xenium_SpX", "DGE_results_carrier_Xenium_cell_type_anno_SpX.Rds"),
+    "Xenium_cell_type_anno_SpX",   file.path(DE_dir, "Xenium_cell_type_anno_SpX", "DGE_results_carrier_Xenium_cell_type_anno_SpX.Rds"),
     "Xenium_Oligo.3_Astro",        file.path(DE_dir, "Xenium_Oligo.3_Astro", "DGE_results_carrier_Xenium_Oligo.3_Astro.Rds"),
     "Xenium_Oligo.3_Astro_SpX",    file.path(DE_dir, "Xenium_Oligo.3_Astro_SpX", "DGE_results_carrier_Xenium_Oligo.3_Astro_SpX.Rds")
 )
