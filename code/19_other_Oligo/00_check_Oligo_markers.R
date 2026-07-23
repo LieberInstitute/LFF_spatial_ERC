@@ -197,13 +197,27 @@ plot_marker_express_List(sce,
 
 violin_OPLAIN_RASGRF1_genes <- plot_gene_express(sce, 
                                       category = "cell_type_anno",
-                                      genes = c("OPALIN", "RBFOX1", "RASGRF1"),
+                                      genes = c("PDGFRA", "RBFOX1","LINGO2", "OPALIN",  "RASGRF1"),
+                                      color_pal = Oligo_OPC_colors,
+                                      free_y = TRUE,
+                                      ncol = 5
+)
+
+ggsave(violin_OPLAIN_RASGRF1_genes, filename = here(plot_dir, "Violin_Oligo_OPLAIN_RASGRF1.png"), width = 8, height = 4)
+
+rownames(sce)[grep("SOX", rownames(sce))]
+
+sox_genes <- c("SOX2", "SOX9", "SOX5", "SOX6", "SOX10", "SOX8", "SOX17", "SOX2-OT")
+
+violin_SOX_genes <- plot_gene_express(sce, 
+                                      category = "cell_type_anno",
+                                      genes = sox_genes,
                                       color_pal = Oligo_OPC_colors,
                                       free_y = TRUE,
                                       ncol = 3
 )
 
-ggsave(violin_OPLAIN_RASGRF1_genes, filename = here(plot_dir, "Violin_Oligo_OPLAIN_RASGRF1.png"), width = 8, height = 4)
+ggsave(violin_SOX_genes, filename = here(plot_dir, "Violin_Oligo_SOX.png"), width = 8, height = 9)
 
 
 map(c("GPR17","RBFOX1", "LINGO2","PDGFRA", "MEG3","OLIG2"), function(gene_single){
@@ -284,6 +298,19 @@ dev.off()
 pdf(here(plot_dir, "Oligo_dotplot_key_markers.pdf"))
 sce[,sce$cell_type_broad == "Oligo"] |>
     scDotPlot(features = erc_oligo_key_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              # featureAnno = "cop_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+dev.off()
+
+
+pdf(here(plot_dir, "Oligo_dotplot_SOX_genes.pdf"), height = 4, width = 4)
+sce[,sce$cell_type_broad == "Oligo"] |>
+    scDotPlot(features = sox_genes,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               # featureAnno = "cop_marker",
