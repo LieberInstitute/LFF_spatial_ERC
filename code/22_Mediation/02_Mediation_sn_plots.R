@@ -153,7 +153,7 @@ pwalk(mediator_outcome_select2, function(med_cl, mediator, outcome) {
         print(p + patchwork::plot_annotation(title = sprintf("%s (%s) -> %s", mediator, med_cl, outcome_cl)))
         ggsave(p, filename = here(plot_dir, sprintf(
             "mediation_sn_%s_%s_Oligo3_%s.png", gsub("\\.", "", med_cl), mediator, outcome
-        )), height = 4, width = 7)
+        )), height = 3.5, width = 7)
     }
 })
 
