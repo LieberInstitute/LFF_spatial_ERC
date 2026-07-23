@@ -22,6 +22,12 @@
 #' Only donors present in both objects are plotted, so both panels show
 #' the exact same sample set.
 #'
+#' The unadjusted and adjusted outcome panels share matched y-axis limits
+#' per gene (computed across both, with padding) -- so any visual
+#' flattening of the carrier-vs-outcome relationship reflects genuine
+#' attenuation, not an artifact of each panel independently rescaling to
+#' its own (possibly narrower) data range.
+#'
 #' @param sce [SingleCellExperiment] outcome pseudobulk object.
 #' @param sce_mediator [SingleCellExperiment] mediator pseudobulk object
 #' (can be the same object as `sce` if mediator and outcome share a
@@ -156,6 +162,10 @@
 #' )
 #' @family expression plotting functions
 #' @importFrom ggplot2 ggplot geom_label labs
+#' @importFrom ggh4x facetted_pos_scales
+#'
+#' Requires the `ggh4x` package (for matched per-gene y-axis limits
+#' between the unadjusted and adjusted panels -- see Details).
 plot_DEG_mediated_express <- function(sce,
                                        sce_mediator,
                                        stats,
@@ -346,6 +356,30 @@ plot_DEG_mediated_express <- function(sce,
     sce_out <- sce_out[unique(stats_filter[[outcome_col]]), ]
 
     ## ------------------------------------------------------------------
+    ## Matched y-axis limits per gene, computed across BOTH cleanY and
+    ## cleanY_adjM combined, so the unadjusted/adjusted panels are
+    ## directly visually comparable -- otherwise each panel's free_y
+    ## independently rescales to its own data, and an attenuated effect
+    ## can look misleadingly similar-sized just because the axis shrank
+    ## along with it.
+    ##
+    ## Uses ggh4x::facetted_pos_scales() with one scale per gene, built in
+    ## rownames(sce_out) order. This relies on plot_gene_express() faceting
+    ## genes in that same order (true if it facets via a melted matrix,
+    ## since row order becomes factor level order) -- if your installed
+    ## plot_gene_express() ever re-sorts genes (e.g. alphabetically) this
+    ## positional matching would misalign; spot-check one multi-gene plot
+    ## after this change to confirm the axes line up with the right genes.
+    ## ------------------------------------------------------------------
+    y_pad <- 0.05  ## fraction of range added as padding on each side
+    y_scales <- lapply(rownames(sce_out), function(g) {
+        vals <- c(assays(sce_out)$cleanY[g, ], assays(sce_out)$cleanY_adjM[g, ])
+        rng <- range(vals, na.rm = TRUE)
+        pad <- diff(rng) * y_pad
+        ggplot2::scale_y_continuous(limits = c(rng[1] - pad, rng[2] + pad))
+    })
+
+    ## ------------------------------------------------------------------
     ## build the two panels and combine with patchwork
     ## ------------------------------------------------------------------
     p_unadj <- plot_gene_express(
@@ -364,7 +398,8 @@ plot_DEG_mediated_express <- function(sce,
         ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_unadj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
-        )
+        ) +
+        ggh4x::facetted_pos_scales(y = y_scales)
 
     p_adj <- plot_gene_express(
         sce = sce_out,
@@ -382,7 +417,8 @@ plot_DEG_mediated_express <- function(sce,
         ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_adj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
-        )
+        ) +
+        ggh4x::facetted_pos_scales(y = y_scales)
 
     if (isTRUE(plot_mediator_panel)) {
         if (is.null(mediator_stats)) {
