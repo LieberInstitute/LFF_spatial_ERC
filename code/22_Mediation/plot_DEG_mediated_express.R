@@ -396,7 +396,7 @@ plot_DEG_mediated_express <- function(sce,
     ) +
         ggplot2::labs(subtitle = "unadjusted") +
         ggplot2::geom_label(
-            data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_unadj),
+            data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str_unadj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
         ) +
         ggh4x::facetted_pos_scales(y = y_scales)
@@ -415,7 +415,7 @@ plot_DEG_mediated_express <- function(sce,
     ) +
         ggplot2::labs(subtitle = sprintf("adjusted for %s | %s", mediator_gene, med_clus)) +
         ggplot2::geom_label(
-            data = stats_filter, ggplot2::aes(x = -Inf, y = -Inf, label = anno_str_adj),
+            data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str_adj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
         ) +
         ggh4x::facetted_pos_scales(y = y_scales)
