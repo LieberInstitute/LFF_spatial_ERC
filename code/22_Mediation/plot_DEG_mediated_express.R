@@ -461,7 +461,7 @@ plot_DEG_mediated_express <- function(sce,
             }
             p_med <- p_med +
                 ggplot2::geom_label(
-                    data = data.frame(x = -Inf, y = -Inf, label = med_anno),
+                    data = data.frame(x = -Inf, y = Inf, label = med_anno),
                     ggplot2::aes(x = x, y = y, label = label),
                     alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5, inherit.aes = FALSE
                 )
