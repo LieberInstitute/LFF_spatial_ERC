@@ -316,6 +316,63 @@ walk2(go_result, names(go_result),
 dev.off()
 
 
+#### MOFA vs DE overlap enrichment (reviewer response 2.18) ####
+## Goal: quantify how much of Factor3's signal overlaps with vs. is
+## independent of standard DE, to support the "added value of MOFA" response.
+##
+## Problem: MOFA weights are continuous with no natural significance cutoff,
+## so any single top-N "MOFA gene set" is arbitrary so use  A cutoff-free test: 
+## does DE significance associate with |weight| as a continuous variable? 
+
+## note: views with zero (or all) DE-significant genes have only one level
+## of DE_sig, for which a two-sample Wilcoxon test is undefined -- rather
+## than pre-filtering those views out, return NA 
+
+wilcox_by_cluster <- dge_data |>
+    filter(cluster %in% my_views) |>
+    mutate(DE_sig = vlmf_adj.P.Val < 0.05,
+           abs_weight = abs(Factor3)) |>
+    filter(!is.na(abs_weight), !is.na(DE_sig)) |>
+    group_by(cluster) |>
+    summarise(
+        n_sig = sum(DE_sig),
+        n_nonsig = sum(!DE_sig),
+        median_weight_sig = median(abs_weight[DE_sig]),
+        median_weight_nonsig = median(abs_weight[!DE_sig]),
+        wilcox_p = ifelse (n_sig == 0 || n_nonsig == 0, NA, wilcox.test(abs_weight ~ DE_sig)$p.value),
+        .groups = "drop"
+    ) |>
+    mutate(p.adj = p.adjust(wilcox_p, method = "BH"))
+
+wilcox_by_cluster
+
+write_csv(wilcox_by_cluster, here(data_dir, sprintf("MOFA_DE_wilcox_%s.csv", opt$datatype)))
+
+## plot: |weight| by DE significance, restricted to views where the test
+## was actually defined 
+valid_views <- wilcox_by_cluster |> filter(!is.na(wilcox_p)) |> pull(cluster)
+
+weight_by_DEsig_plot <- dge_data |>
+    filter(cluster %in% valid_views) |>
+    mutate(DE_sig = ifelse(vlmf_adj.P.Val < 0.05, "DE-signif", "not signif"),
+           abs_weight = abs(Factor3)) |>
+    filter(!is.na(abs_weight), !is.na(DE_sig)) |>
+    ggplot(aes(x = DE_sig, y = abs_weight, fill = DE_sig)) +
+    geom_violin(trim = FALSE, alpha = 0.5) +
+    geom_boxplot(width = 0.15, outlier.size = 0.3, alpha = 0.8) +
+    ggpubr::stat_compare_means(method = "wilcox.test", label = "p.format", label.y.npc = "top") +
+    facet_wrap(~cluster, nrow = 1) +
+    scale_fill_manual(values = c("DE-signif" = "skyblue", "not signif" = "grey60")) +
+    theme_bw() +
+    labs(x = NULL, y = "|Factor3 weight|",
+         title = "MOFA Factor3 weight magnitude by DE significance:") +
+    theme(legend.position = "none")
+
+ggsave(weight_by_DEsig_plot,
+       filename = here(plot_dir, sprintf("MOFA_factor3_weight_by_DEsig_%s.png", opt$datatype)),
+       width = 2 * length(valid_views), height = 5)
+
+
 #### Reproducibility information ####
 print("Reproducibility information:")
 Sys.time()
