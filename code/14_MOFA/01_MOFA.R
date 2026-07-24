@@ -215,6 +215,8 @@ factor_df |>
 
 write_csv(factor_df, file = here(data_dir, sprintf("MOFA_factor_df-%s.csv", opt$datatype)))
 
+# factor_df <- read_csv(file = here(data_dir, sprintf("MOFA_factor_df-%s.csv", opt$datatype)))
+
 #   Test association of APOE genotype with each factor
 
 test_vars <- c('APOE_carrier', 'Ancestry', "taupathy", "Sex", "Age","Braak","CERAD")
@@ -237,6 +239,8 @@ assoc_tb <- do.call("bind_rows", assoc_list) |>
 assoc_tb |> group_by(term) |> arrange(adj_pvalue) |> slice(1)
 
 write_csv(assoc_tb, file = here(data_dir, sprintf("MOFA_factor_associations_df-%s.csv", opt$datatype)))
+
+# assoc_tb <- read_csv(file = here(data_dir, sprintf("MOFA_factor_associations_df-%s.csv", opt$datatype)))
 
 #   Show unadjusted p-value for consistency with other plots ??
 # assoc_list[['APOE']]$adj_pvalue = assoc_list[['APOE']]$p.value
@@ -339,9 +343,11 @@ ggsave(F3_carrier_tau_boxplot, filename = here(plot_dir, "factor3_weights_boxplo
 
 ## Factor 3 vs. Age
 
-F3_age_scatter <-factor_df |>
-    mutate(carrier_tau = paste(APOE_carrier, taupathy)) |>
+F3_df <- factor_df |>
     filter(Factor == "Factor3") |>
+    mutate(carrier_tau = paste(APOE_carrier, taupathy))
+
+F3_age_scatter <- F3_df  |>
     ggplot(aes(x = Age, y = value, color = carrier_tau, shape = Sex)) +
     scale_color_manual(values = carrier_tau_colors) +
     geom_point() +
@@ -351,7 +357,77 @@ F3_age_scatter <-factor_df |>
 ggsave(F3_age_scatter, filename = here(plot_dir, "factor3_weights_age_scatter.png"), height = 4, width = 6)
 ggsave(F3_age_scatter + facet_grid(Ancestry~APOE_carrier) , filename = here(plot_dir, "factor3_weights_age_scatter_facet.png"), height = 4, width = 6)
 ggsave(F3_age_scatter + facet_grid(Sex~APOE_carrier) , filename = here(plot_dir, "factor3_weights_age_scatter_facet_sex.png"), height = 4, width = 6)
+ggsave(F3_age_scatter + ggrepel::geom_text_repel(aes(label = sample)), filename = here(plot_dir, "factor3_weights_age_scatter_text.pdf"), height = 4, width = 6)
 
+
+F3_cor_stats <- F3_df |>
+    group_by(APOE_carrier) |>
+    summarise(broom::tidy(cor.test(Age, value)), .groups = "drop") |>
+    dplyr::select(APOE_carrier, estimate, p.value)
+
+F3_age_scatter_fit <- F3_df |>
+    ggplot(aes(x = Age, y = value, color = APOE_carrier, shape = taupathy)) +
+    geom_point() +
+    geom_smooth(method = "lm", aes(group = APOE_carrier, fill = APOE_carrier))+
+    ggpubr::stat_cor(
+        aes(group = APOE_carrier, color = APOE_carrier),
+        method = "pearson",
+        label.x.npc = "left",
+        show.legend = FALSE
+    ) +
+    ggpubr::stat_regline_equation(
+        aes(group = APOE_carrier, color = APOE_carrier),
+        label.x.npc = "left",
+        label.y.npc = 0.85,  
+        show.legend = FALSE
+    ) +
+    scale_color_manual(values = APOE_carrier_colors) +
+    scale_fill_manual(values = APOE_carrier_colors) +
+    theme_bw()  +
+    labs(x="Age", y = "Factor3 Weight")
+
+ggsave(F3_age_scatter_fit, filename = here(plot_dir, "factor3_weights_age_scatter_fit.png"), height = 5, width = 6)
+
+
+####  Age x taupathy interaction
+F3_taupathy_cor <- F3_df |>
+    group_by(taupathy) |>
+    summarise(broom::tidy(cor.test(Age, value)), .groups = "drop") |>
+    dplyr::select(taupathy, estimate, p.value)
+
+F3_taupathy_interaction <- lm(value ~ Age * taupathy, data = F3_df)
+broom::tidy(F3_taupathy_interaction)
+
+# term           estimate std.error statistic p.value
+# <chr>             <dbl>     <dbl>     <dbl>   <dbl>
+# 1 (Intercept)     0.296     0.374       0.792   0.436
+# 2 Age            -0.00360   0.00733    -0.492   0.627
+# 3 taupathyt+      0.183     0.831       0.220   0.827
+# 4 Age:taupathyt+ -0.00966   0.0149     -0.650   0.521
+
+F3_age_scatter_fit_tau <- factor_df |>
+    filter(Factor == "Factor3") |>
+    ggplot(aes(x = Age, y = value, color = taupathy, shape = APOE_carrier)) +
+    geom_point() +
+    geom_smooth(method = "lm", aes(group = taupathy, fill = taupathy))+
+    ggpubr::stat_cor(
+        aes(group = taupathy),
+        method = "pearson",
+        label.x.npc = "left",
+        show.legend = FALSE
+    )  +
+    ggpubr::stat_regline_equation(
+        aes(group = taupathy, color = taupathy),
+        label.x.npc = "left",
+        label.y.npc = 0.85,  
+        show.legend = FALSE
+    ) +
+    scale_color_manual(values = tau_colors) +
+    scale_fill_manual(values = tau_colors) +
+    theme_bw()  +
+    labs(x="Age", y = "Factor3 Weight")
+
+ggsave(F3_age_scatter_fit_tau, filename = here(plot_dir, "factor3_weights_age_scatter_fit_tau.png"), height = 5, width = 6)
 
 #   Convert to wide format
 factor_df = factor_df |>
