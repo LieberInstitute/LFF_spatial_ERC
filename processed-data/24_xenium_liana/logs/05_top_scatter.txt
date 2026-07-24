@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Jun  4 04:50:23 PM EDT 2026
+Fri Jul 24 10:21:01 AM EDT 2026
 **** JHPCE info ****
 User: neagles
-Job id: 32431504
+Job id: 34368578
 Job name: 05_top_scatter
-Node name: compute-169
+Node name: compute-176
 Task id: 
 Unloading conda_R/4.5
 Loading conda_R/4.5
@@ -27,26 +27,57 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 Cell types involved in APOE interactions:
-# A tibble: 17 × 2
-   source target
-   <chr>  <chr> 
- 1 Astro  Micro 
- 2 Astro  Astro 
- 3 Astro  Macro 
- 4 Excit  Micro 
- 5 Excit  Excit 
- 6 Inhib  Micro 
- 7 Macro  Macro 
- 8 Macro  Micro 
- 9 Macro  Vasc  
-10 Micro  Micro 
-11 Micro  Macro 
-12 OPC    Micro 
-13 Oligo  Micro 
-14 Oligo  Macro 
-15 Vasc   Macro 
-16 Vasc   Micro 
-17 Vasc   Vasc  
+# A tibble: 30 × 3
+   source target APOE_carrier
+   <chr>  <chr>  <chr>       
+ 1 Astro  Micro  E2+         
+ 2 Astro  Micro  E4+         
+ 3 Astro  Astro  E4+         
+ 4 Astro  Macro  E2+         
+ 5 Astro  Macro  E4+         
+ 6 Excit  Micro  E2+         
+ 7 Excit  Micro  E4+         
+ 8 Excit  Excit  E4+         
+ 9 Inhib  Micro  E2+         
+10 Inhib  Micro  E4+         
+11 Macro  Macro  E2+         
+12 Macro  Macro  E4+         
+13 Macro  Micro  E2+         
+14 Macro  Micro  E4+         
+15 Macro  Vasc   E4+         
+16 Micro  Micro  E2+         
+17 Micro  Micro  E4+         
+18 Micro  Macro  E2+         
+19 Micro  Macro  E4+         
+20 OPC    Micro  E4+         
+21 OPC    Micro  E2+         
+22 Oligo  Micro  E2+         
+23 Oligo  Micro  E4+         
+24 Oligo  Macro  E4+         
+25 Vasc   Macro  E2+         
+26 Vasc   Macro  E4+         
+27 Vasc   Micro  E2+         
+28 Vasc   Micro  E4+         
+29 Vasc   Vasc   E4+         
+30 Vasc   Vasc   E2+         
+null device 
+          1 
+`summarise()` has grouped output by 'source', 'target', 'ligand_complex',
+'receptor_complex'. You can override using the `.groups` argument.
+null device 
+          1 
+`summarise()` has grouped output by 'source', 'target', 'ligand_complex',
+'receptor_complex'. You can override using the `.groups` argument.
+`geom_smooth()` using formula = 'y ~ x'
+Warning messages:
+1: In scale_x_log10() : log-10 transformation introduced infinite values.
+2: In scale_y_log10() : log-10 transformation introduced infinite values.
+3: In scale_x_log10() : log-10 transformation introduced infinite values.
+4: In scale_y_log10() : log-10 transformation introduced infinite values.
+5: Removed 248 rows containing non-finite outside the scale range
+(`stat_smooth()`). 
+6: Removed 37 rows containing missing values or values outside the scale range
+(`geom_point()`). 
 null device 
           1 
 null device 
@@ -63,9 +94,9 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-06-04
+ date     2026-07-24
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
- quarto   1.9.38 @ /users/neagles/.positron-server/bin/d5f94f072b1083b8237930739cb6525c6e12e1da/quarto/bin/quarto
+ quarto   1.9.38 @ /users/neagles/.positron-server/bin/d3cdd608df5afa3378c24c9a9c81b01fe1433a87/quarto/bin/quarto
 
 ─ Packages ───────────────────────────────────────────────────────────────────
  package      * version date (UTC) lib source
@@ -85,9 +116,13 @@ null device
  here         * 1.0.1   2020-12-13 [1] CRAN (R 4.5.0)
  hms            1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
  labeling       0.4.3   2023-08-29 [1] CRAN (R 4.5.0)
+ lattice        0.22-7  2025-04-02 [3] CRAN (R 4.5.0)
  lifecycle      1.0.4   2023-11-07 [1] CRAN (R 4.5.0)
  lubridate    * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
  magrittr       2.0.3   2022-03-30 [1] CRAN (R 4.5.0)
+ Matrix         1.7-3   2025-03-11 [3] CRAN (R 4.5.0)
+ mgcv           1.9-3   2025-04-04 [3] CRAN (R 4.5.0)
+ nlme           3.1-168 2025-03-31 [3] CRAN (R 4.5.0)
  pillar         1.11.0  2025-07-04 [1] CRAN (R 4.5.0)
  pkgconfig      2.0.3   2019-09-22 [1] CRAN (R 4.5.0)
  purrr        * 1.1.0   2025-07-10 [1] CRAN (R 4.5.0)
@@ -119,4 +154,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jun  4 04:50:27 PM EDT 2026
+Fri Jul 24 10:21:11 AM EDT 2026
