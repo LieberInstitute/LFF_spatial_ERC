@@ -7,6 +7,7 @@ library("here")
 library("sessioninfo")
 library("ggrepel")
 library("getopt")
+library("patchwork")
 
 # Import command-line parameters
 scec <- matrix(
@@ -76,7 +77,7 @@ custom_volcano <- function(data,
     names(signif_colors) <- c("both", paste("FDR<", FDR_cut) , "abs(logFC)>1" )
     
     volcano <- data |>
-        filter(cluster == clus) |>
+        filter(cluster %in% clus) |>
         mutate(DE_class = case_when(!!sym(fdr_col) < FDR_cut & abs(vlmf_logFC) > 1  ~ "both",
                                     !!sym(fdr_col) < FDR_cut ~ paste("FDR<", FDR_cut),
                                     abs(!!sym(lfc_col)) > 1 ~ "abs(logFC)>1",
@@ -109,11 +110,45 @@ walk(unique(dge_data$cluster), ~custom_volcano(dge_data, clus = .x))
 
 
 if(dataset == "sn_fine"){
+    
+    ## Oligo.3 no text
     vol_o3 <- custom_volcano(dge_data, clus = "Oligo.3", save = FALSE, text = FALSE) +
         geom_point(size = 1)
+    
     ggsave(vol_o3, 
            filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_simple.png", datatype, "carrier", "Oligo.3")), 
+           height = 4, width = 4)    
+    
+    ## Oligo.3 with text
+    vol_o3_text <- custom_volcano(dge_data, clus = "Oligo.3", save = FALSE) +
+        geom_point(size = 1) +
+        theme(legend.position = "bottom")
+    
+    ggsave(vol_o3_text, 
+           filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_simple_text.png", datatype, "carrier", "Oligo.3")), 
            height = 4, width = 4)
+    
+    ## Astro.3 with text
+    vol_A3_text <- custom_volcano(dge_data, clus = "Astro.3", save = FALSE) +
+        geom_point(size = 1) +
+        theme(legend.position = "bottom")
+    
+    ggsave(vol_A3_text, 
+           filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_simple_text.png", datatype, "carrier", "Astro.3")), 
+           height = 4, width = 4)
+    
+    
+     ## Astro.3 with text
+    vol_O3_A3_text <- custom_volcano(dge_data, clus = c("Oligo.3", "Astro.3"), save = FALSE) +
+        geom_point(size = 1) +
+        facet_wrap(~cluster, ncol = 1) +
+        labs(title = NULL) 
+        # theme(text = element_text(size = 15))
+    
+    ggsave(vol_O3_A3_text, 
+           filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_simple_text.png", datatype, "carrier", "Oligo.3_Astro.3")), 
+           height = 7, width = 4.5)
+    
 }
 
 
