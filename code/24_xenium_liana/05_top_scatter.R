@@ -17,6 +17,7 @@ n_samples_sig = 3
 dir.create(plot_dir, showWarnings = FALSE)
 
 score_df = read_csv(score_path, show_col_types = FALSE)
+unfiltered_df = read_csv(unfiltered_path, show_col_types = FALSE)
 
 #   APOE is involved in a bunch of interactions, but not between Oligo and Astro
 message('Cell types involved in APOE interactions:')
@@ -27,6 +28,14 @@ score_df |>
     ) |>
     distinct(source, target, APOE_carrier) |>
     print(n = Inf)
+
+################################################################################
+#   Top interactions involving Oligo.3, by APOE carrier
+################################################################################
+
+#-------------------------------------------------------------------------------
+#   Top interactions in E2+ and top in E4+
+#-------------------------------------------------------------------------------
 
 oligo_df = score_df |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
@@ -49,7 +58,11 @@ pdf(file.path(plot_dir, 'oligo3_top_scatter_individual.pdf'), width = 12, height
 print(p)
 dev.off()
 
-p = read_csv(unfiltered_path, show_col_types = FALSE) |>
+#-------------------------------------------------------------------------------
+#   Top interactions higher in E2+ and higher in E4+
+#-------------------------------------------------------------------------------
+
+p = unfiltered_df |>
     group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
     summarize(
         is_sig = sum(pval < 0.05) >= n_samples_sig,
@@ -88,7 +101,11 @@ pdf(file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'), width = 12, height
 print(p)
 dev.off()
 
-p = read_csv(unfiltered_path, show_col_types = FALSE) |>
+################################################################################
+#   All pairs involving Oligo.3, comparing E2+ and E4+ (scatter plot)
+################################################################################
+
+p = unfiltered_df |>
     group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
     summarize(lr_mean = mean(lr_mean)) |>
     ungroup() |>
@@ -105,6 +122,35 @@ p = read_csv(unfiltered_path, show_col_types = FALSE) |>
 pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'))
 print(p)
 dev.off()
+
+################################################################################
+#   All pairs comparing absolute and relative differences by carrier
+################################################################################
+
+p = unfiltered_df |>
+    group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
+    summarize(lr_mean = mean(lr_mean)) |>
+    ungroup() |>
+    pivot_wider(names_from = APOE_carrier, values_from = lr_mean) |>
+    mutate(
+        avg_lr_mean = (`E2+` + `E4+`) / 2,
+        lr_mean_diff = 200 * abs(`E4+` - `E2+`) / (`E4+` + `E2+`)
+    ) |>
+    ggplot(aes(x = avg_lr_mean, y = lr_mean_diff)) +
+        geom_point(alpha = 0.3) +
+        geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+        geom_smooth(method = 'lm', color = 'blue', se = FALSE) +
+        theme_bw(base_size = 15) +
+        labs(x = 'Mean LR Score (Average)', y = 'LR Score Difference (%)') +
+        scale_x_log10() +
+        scale_y_log10()
+pdf(file.path(plot_dir, 'relative_and_absolute_diffs_all_pairs.pdf'))
+print(p)
+dev.off()
+
+################################################################################
+#   Some ad-hoc requested plots
+################################################################################
 
 spon1_app_value = oligo_df |>
     filter(
