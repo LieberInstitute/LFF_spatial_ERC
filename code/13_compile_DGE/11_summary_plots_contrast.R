@@ -171,6 +171,28 @@ if(datatype == "sn_fine"){
     
 }
 
+dge_summary_bar_simple <- dge_count |>
+    filter(n_FDR05 > 0) |> 
+    mutate(cluster = droplevels(cluster))  |>
+    group_by(cluster, contrast)|>
+    summarise(n_FDR05 = sum(n_FDR05)) |>
+    ggplot(aes(x = n_FDR05, y = cluster, fill = cluster)) +
+    geom_col() +
+    # geom_text(aes(label = ifelse(cluster == "Oligo.3", "", n_FDR05)), hjust=-0.07) +
+    geom_text(aes(label = n_FDR05), hjust=-0.07) +
+    facet_wrap(~contrast, ncol = 2) +
+    # scale_x_continuous(
+    #     limits=c(0, 310),
+    #     # expand=expansion(mult=c(0, 0.15)),
+    #     oob=scales::squish
+    # ) +
+    scale_fill_manual(values = cell_type_colors$anno) +
+    theme_bw() +
+    labs(y = sprintf("%s\nn DE genes (FDR < 0.05)", datatype)) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = "None")
+
+ggsave(dge_summary_bar_simple, filename = here(plot_dir, sprintf("DGE_%s_%s_summary_bar_simple.png", contrast, datatype)), height = 5, width = 4)
 
 dge_summary_bar_reg <- dge_count |>
     select(-n_FDR05) |>
