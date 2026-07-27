@@ -123,6 +123,26 @@ ggsave(DEG_count_data_type_bar, filename = here(plot_dir, "DEG_count_data_type_b
 
 ggsave(DEG_count_data_type_bar, filename = here(plot_dir, "DEG_count_data_type_bar_small.png"), height = 3, width = 6)
 
+library(ggbreak)
+
+DEG_count_data_type_bar_vertical <- DEG_count |> 
+    ggplot(aes(y = cluster, x = n, fill = cluster)) +
+    geom_col() +
+    geom_text(aes(label = ifelse(cluster == "Oligo.3", "", n)), hjust=-0.07) +
+    facet_wrap(~data_type, scales = "free_y", space = "free_y", nrow = 1) +
+    scale_fill_manual(values = c(SpD_colors, cell_type_colors$broad, cell_type_colors$anno)) +
+    scale_x_continuous(
+        limits=c(0, 305),
+        # expand=expansion(mult=c(0, 0.15)),
+        oob=scales::squish
+    ) +
+    labs(x = "n DEGs") +
+    theme_bw()+
+    theme(legend.position = "None")
+
+ggsave(DEG_count_data_type_bar_vertical, filename = here(plot_dir, "DEG_count_data_type_bar_vertical.png"), width = 4, height =  5.5)
+
+
 
 #### contrast data ####
 

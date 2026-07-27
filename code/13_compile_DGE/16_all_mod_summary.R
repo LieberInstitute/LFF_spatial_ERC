@@ -14,6 +14,7 @@ if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 plot_dir <- here("plots", "13_compile_DGE", "16_all_mod_summary")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
+load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 
 #### Get DGE summary of n_gene + nFDR05 ####
 
@@ -146,9 +147,9 @@ donor_boxplot <- n_donor_all |>
     scale_color_manual(values = c(ancestry_colors, All = "black")) +
     scale_y_discrete(limits = rev) +
     labs(x = "number of donors") +
-    theme(legend.position = "left")
+    theme(legend.position = "top")
 
-ggsave(donor_boxplot, filename = here(plot_dir, "n_donor_boxplot.png"), height = 5, width = 4)
+ggsave(donor_boxplot, filename = here(plot_dir, "n_donor_boxplot.png"), height = 4, width = 3)
 
 sum_FDR05_tbl <- summary_tbl_all |> 
     mutate(model = ifelse(model == "carrier_anc", 
@@ -172,7 +173,13 @@ model_FDR05_tileplot <- sum_FDR05_tbl |>
           legend.text = element_text(angle = 45, hjust = 1),
           axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave(model_FDR05_tileplot, filename = here(plot_dir, "model_FDR05_tileplot.png"), height = 5, width = 6)
+ggsave(model_FDR05_tileplot, filename = here(plot_dir, "model_FDR05_tileplot.png"), height = 4, width = 4)
+
+## combined boxplot & tile plots
+
+
+ggsave(donor_boxplot + model_FDR05_tileplot, filename = here(plot_dir, "model_boxplot_FDR05_tileplot.png"), height = 4, width = 9)
+
 
 summary_tbl_all |> 
     ggplot(aes(x = n_gene, y = n_FDR05, color = model)) +
