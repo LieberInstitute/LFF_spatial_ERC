@@ -134,7 +134,7 @@ p = unfiltered_df |>
     pivot_wider(names_from = APOE_carrier, values_from = lr_mean) |>
     mutate(
         avg_lr_mean = (`E2+` + `E4+`) / 2,
-        lr_mean_diff = 200 * abs(`E4+` - `E2+`) / (`E4+` + `E2+`)
+        lr_mean_diff = 200 * (`E4+` - `E2+`) / (`E4+` + `E2+`)
     ) |>
     ggplot(aes(x = avg_lr_mean, y = lr_mean_diff)) +
         geom_point(alpha = 0.3) +
