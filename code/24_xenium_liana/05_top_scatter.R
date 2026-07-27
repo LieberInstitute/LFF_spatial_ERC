@@ -68,24 +68,45 @@ p = read_csv(unfiltered_path, show_col_types = FALSE) |>
     ungroup() |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
     group_by(higher_in, ligand_complex, receptor_complex) |>
-    slice_max(lr_mean, with_ties = FALSE, n = 1) |>
+    slice_max(lr_mean_diff, with_ties = FALSE, n = 1) |>
     group_by(higher_in) |>
-    slice_max(lr_mean, with_ties = FALSE, n = 10) |>
+    slice_max(lr_mean_diff, with_ties = FALSE, n = 10) |>
     mutate(
         lr_pair = paste0(ligand_complex, '->', receptor_complex),
         cell_types = paste(source, '->', target)
     ) |>
-    ggplot(oligo_df, aes(x = lr_mean, y = lr_specificity, color = cell_types)) +
+    ggplot(aes(x = lr_mean_diff, y = lr_specificity, color = cell_types)) +
         geom_point() +
         facet_wrap(~higher_in) +
         geom_text_repel(aes(label = lr_pair), size = 5) +
         theme_bw(base_size = 20) +
-        labs(x = 'Mean LR Score', y = 'LR Specificity', color = 'Source Cell Type')
+        labs(
+            x = '% Diff in LR Score', y = 'LR Specificity',
+            color = 'Source Cell Type'
+        )
 pdf(file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'), width = 12, height = 5)
 print(p)
 dev.off()
 
-spon1_app_value = astro_oligo |>
+p = read_csv(unfiltered_path, show_col_types = FALSE) |>
+    group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
+    summarize(lr_mean = mean(lr_mean)) |>
+    ungroup() |>
+    filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
+    pivot_wider(names_from = APOE_carrier, values_from = lr_mean) |>
+    ggplot(aes(x = `E2+`, y = `E4+`)) +
+        geom_point(alpha = 0.3) +
+        geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+        geom_smooth(method = 'lm', color = 'blue', se = FALSE) +
+        theme_bw(base_size = 15) +
+        labs(x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)') +
+        scale_x_log10() +
+        scale_y_log10()
+pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'))
+print(p)
+dev.off()
+
+spon1_app_value = oligo_df |>
     filter(
         source == 'Astro.5', ligand_complex == 'SPON1',
         receptor_complex == 'APP'

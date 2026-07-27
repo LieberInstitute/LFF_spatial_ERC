@@ -12,6 +12,10 @@ out_summary_path = here(
     'processed-data', '24_xenium_liana', '04_global_score_heatmap',
     'global_interactions_summary.csv'
 )
+out_unfiltered_path = here(
+    'processed-data', '24_xenium_liana', '04_global_score_heatmap',
+    'global_interactions_unfiltered.csv'
+)
 out_unique_path = here(
     'processed-data', '24_xenium_liana', '04_global_score_heatmap',
     'unique_ligand_receptor_pairs.csv'
@@ -35,6 +39,7 @@ for path in sorted(data_dir.glob('lrdata_*.h5ad')):
     dfs.append(df)
 
 global_interactions = pd.concat(dfs, ignore_index=True)
+global_interactions.to_csv(out_unfiltered_path, index=False)
 
 #   Note that there are only 36 LR pairs being assessed
 unique_combos = (
