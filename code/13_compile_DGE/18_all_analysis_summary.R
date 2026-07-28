@@ -333,10 +333,13 @@ cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the g
 
 dt_data <- DE_valid_data |> filter(data_type == dt)
 
+## match the clusterd order from discovery dataset
+anchor_genes2 <- c("NPTXR", "CPNE4", "CABLES1", "FZD8", "FOS", "STAT4", "TLR2", "STAT1", "SOX10", "MBP", "MAL", "MAG", "KLK6", "OPALIN", "PLP1")
+
 ## full version - every cluster in this resolution
 logFC_Heatmap(
     data = dt_data,
-    gene_list = anchor_genes,
+    gene_list = anchor_genes2,
     title = "anchor_genes",
     datatype = dt,
     fill_stat = "vlmf_xenium_t",
@@ -350,7 +353,7 @@ logFC_Heatmap(
 
 ## filtered version - only clusters validation
 valid_clusters <- dt_data |>
-    filter(gene_name %in% anchor_genes, validate) |>
+    filter(gene_name %in% anchor_genes2, validate) |>
     distinct(cluster) |>
     pull(cluster)
 
@@ -359,7 +362,7 @@ if(length(valid_clusters) == 0){
 } else {
     logFC_Heatmap(
         data = dt_data |> filter(cluster %in% valid_clusters), ## use sig_clusters to include Inhib.Vip
-        gene_list = anchor_genes,
+        gene_list = anchor_genes2,
         title = "anchor_genes_sig_clusters",
         datatype = dt,
         fill_stat = "vlmf_xenium_t",
