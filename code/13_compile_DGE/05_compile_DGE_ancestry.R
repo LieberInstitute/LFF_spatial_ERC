@@ -242,7 +242,7 @@ compare_stats_scatter <- function(dge_tb, stat = "t", mX, mY, FDR_cut_mX = 0.2, 
 
 
 
-compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype, text = TRUE, save = TRUE){
+compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype, text = TRUE, save = TRUE, my_text_size = 1.5){
 
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -296,10 +296,10 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
         stat_scatter <- stat_scatter 
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_noText.png", datatype, stat)
     } else if(risk){
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 1.5)
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = my_text_size)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = 1.5)
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = ifelse(DE_class != "None", gene_name, "")), size = my_text_size)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s.png", datatype, stat)
     }
 
@@ -312,7 +312,7 @@ compare_contrast_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.0
     
 }
 
-compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype){
+compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05, risk = FALSE, datatype = opt$datatype, my_text_size = 1.5){
     
     ## load carrier data 
     carrier_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))) |>
@@ -353,7 +353,8 @@ compare_carrier_stats <- function(dge_tb, stat = "t", m = "vlmf", FDR_cut = 0.05
                                           mY = "ancestry", 
                                           FDR_cut_mX = FDR_cut, 
                                           FDR_cut_mY = FDR_cut, 
-                                          model_name = datatype) +
+                                          model_name = datatype,
+                                          my_text_size = my_text_size) +
         facet_grid(cluster~contrast) +
         geom_label(
             data = cor, ggplot2::aes(x = -Inf, y = Inf, label = anno),
@@ -406,6 +407,13 @@ if(opt$datatype == "sn_fine"){
         geom_point(size = 1)
     
     ggsave(scater_o3_noText, filename = here(plot_dir, "ancestry_sn_fine_Oligo.3_stat_scatter_t_noText.png"))
+    
+    scater_o3_small <- vlmf_data_tb |>
+        filter(cluster == "Oligo.3") |>
+        compare_contrast_stats(datatype = paste0(opt$datatype, "_Oligo.3"), text = TRUE, save = FALSE, my_text_size = 3) +
+        geom_point(size = 1)
+    
+    ggsave(scater_o3_small, filename = here(plot_dir, "ancestry_sn_fine_Oligo.3_stat_scatter_t_small.png"), height = 7, width = 6)
 
     
 } else {
