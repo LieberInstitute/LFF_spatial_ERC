@@ -230,7 +230,10 @@ ComplexHeatmap::Heatmap(cell_v_SpX_prop,
   column_split = gsub("\\..*", "", colnames(cell_v_SpX_prop)),
   cluster_rows = FALSE,
   left_annotation = SpX_row_ha,
-  bottom_annotation = cell_type_col_ha
+  bottom_annotation = cell_type_col_ha,
+  cell_fun = function(j, i, x, y, width, height, fill) {
+      grid::grid.text(sig_mat[i, j], x, y, gp = grid::gpar(fontsize = 10))
+  }
 )
 
 ## Ro/e enrichment, with by-donor significance stars
@@ -245,7 +248,8 @@ RoE_ht <- ComplexHeatmap::Heatmap(log2_RoE_mat,
     grid::grid.text(sig_mat[i, j], x, y, gp = grid::gpar(fontsize = 10))
   }
 )
-ComplexHeatmap::draw(RoE_ht, annotation_legend_list = list(sig_legend))
+# ComplexHeatmap::draw(RoE_ht, annotation_legend_list = list(sig_legend))
+ComplexHeatmap::draw(RoE_ht)
 
 dev.off()
 
