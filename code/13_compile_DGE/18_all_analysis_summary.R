@@ -413,7 +413,7 @@ ha_xenium_spx <- HeatmapAnnotation(df = dt_xenium_spx_anno,
 ## full version - every cluster in this resolution
 logFC_Heatmap(
     data = dt_data,
-    gene_list = anchor_genes,
+    gene_list = anchor_genes2,
     title = "anchor_genes",
     datatype = dt,
     fill_stat = "vlmf_xenium_t",
@@ -428,7 +428,7 @@ logFC_Heatmap(
 
 ## filtered version - only clusters validation
 valid_clusters <- dt_data |>
-    filter(gene_name %in% anchor_genes, validate) |>
+    filter(gene_name %in% anchor_genes2, validate) |>
     distinct(cluster) |>
     pull(cluster)
 
@@ -447,7 +447,7 @@ if(length(valid_clusters) == 0){
     
     logFC_Heatmap(
         data = dt_data |> filter(cluster %in% valid_clusters),
-        gene_list = anchor_genes,
+        gene_list = anchor_genes2,
         title = "anchor_genes_sig_clusters",
         datatype = dt,
         col_anno = ha_xenium_spx, 
