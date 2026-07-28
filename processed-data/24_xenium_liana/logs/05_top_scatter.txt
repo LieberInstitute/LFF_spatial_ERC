@@ -1,8 +1,8 @@
 **** Job starts ****
-Fri Jul 24 10:21:01 AM EDT 2026
+Tue Jul 28 09:34:45 AM EDT 2026
 **** JHPCE info ****
 User: neagles
-Job id: 34368578
+Job id: 34491007
 Job name: 05_top_scatter
 Node name: compute-176
 Task id: 
@@ -62,8 +62,12 @@ Cell types involved in APOE interactions:
 30 Vasc   Vasc   E2+         
 null device 
           1 
+null device 
+          1 
 `summarise()` has grouped output by 'source', 'target', 'ligand_complex',
 'receptor_complex'. You can override using the `.groups` argument.
+null device 
+          1 
 null device 
           1 
 `summarise()` has grouped output by 'source', 'target', 'ligand_complex',
@@ -77,6 +81,14 @@ Warning messages:
 5: Removed 248 rows containing non-finite outside the scale range
 (`stat_smooth()`). 
 6: Removed 37 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+null device 
+          1 
+`summarise()` has grouped output by 'source', 'target', 'ligand_complex',
+'receptor_complex'. You can override using the `.groups` argument.
+Warning messages:
+1: In scale_x_log10() : log-10 transformation introduced infinite values.
+2: Removed 1520 rows containing missing values or values outside the scale range
 (`geom_point()`). 
 null device 
           1 
@@ -94,7 +106,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-07-24
+ date     2026-07-28
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   1.9.38 @ /users/neagles/.positron-server/bin/d3cdd608df5afa3378c24c9a9c81b01fe1433a87/quarto/bin/quarto
 
@@ -154,4 +166,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Jul 24 10:21:11 AM EDT 2026
+Tue Jul 28 09:34:56 AM EDT 2026
