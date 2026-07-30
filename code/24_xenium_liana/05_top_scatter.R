@@ -43,24 +43,72 @@ individual_scatter = function(score_df, plot_path) {
     dev.off()
 }
 
-comparison_scatter = function(score_df, plot_path) {
-    p = score_df |>
+comparison_scatter = function(
+    score_df, plot_path, color_var = cell_types, color_label = 'Source Cell Type',
+    color_values = NULL
+) {
+    top_df = score_df |>
         group_by(higher_in) |>
         slice_max(lr_mean_diff, with_ties = FALSE, n = 10) |>
         mutate(
             lr_pair = paste0(ligand_complex, '->', receptor_complex),
             cell_types = paste(source, '->', target)
-        ) |>
-        ggplot(aes(x = lr_mean_diff, y = lr_specificity, color = cell_types)) +
-            geom_point() +
-            facet_wrap(~higher_in) +
-            geom_text_repel(aes(label = lr_pair), size = 5) +
-            theme_bw(base_size = 20) +
-            labs(
-                x = '% Diff in LR Score', y = 'LR Specificity',
-                color = 'Source Cell Type'
-            )
+        )
+
+    p = ggplot(
+        top_df,
+        aes(x = lr_mean_diff, y = lr_specificity, color = {{ color_var }})
+    ) +
+        geom_point() +
+        facet_wrap(~higher_in) +
+        geom_text_repel(aes(label = lr_pair), size = 5) +
+        theme_bw(base_size = 20) +
+        labs(
+            x = '% Diff in LR Score', y = 'LR Specificity', color = color_label
+        )
+
+    if (!is.null(color_values)) {
+        p = p + scale_color_manual(values = color_values)
+    }
+
     pdf(plot_path, width = 12, height = 5)
+    print(p)
+    dev.off()
+}
+
+comparison_scatter_manuscript = function(
+    score_df, plot_path, color_var = cell_types, color_label = 'Other Cell Type',
+    color_values = NULL
+) {
+    top_df = score_df |>
+        group_by(higher_in) |>
+        slice_max(lr_mean_diff, with_ties = FALSE, n = 10) |>
+        mutate(
+            lr_pair = paste0(ligand_complex, '->', receptor_complex),
+            cell_types = paste(source, '->', target),
+            other_cell_type = ifelse(source == 'Oligo.3', target, source),
+            facet = ifelse(
+                source == 'Oligo.3', 'Oligo.3 as Source', 'Oligo.3 as Target'
+            )
+        )
+
+    p = ggplot(
+        top_df,
+        aes(x = lr_mean_diff, y = lr_specificity, color = {{ color_var }})
+    ) +
+        geom_point() +
+        facet_grid(facet ~ higher_in) +
+        geom_text_repel(aes(label = lr_pair), size = 5) +
+        theme_bw(base_size = 25) +
+        labs(
+            x = '% Diff in LR Score', y = 'LR Specificity', color = color_label
+        )
+
+    if (!is.null(color_values)) {
+        p = p + scale_color_manual(values = color_values)
+    }
+
+    pdf(plot_path, width = 12, height = 8)
     print(p)
     dev.off()
 }
@@ -134,7 +182,13 @@ processed_df |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
     group_by(higher_in, ligand_complex, receptor_complex) |>
     slice_max(lr_mean_diff, with_ties = FALSE, n = 1) |>
-    comparison_scatter(file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'))
+    ungroup() |>
+    comparison_scatter_manuscript(
+        file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'),
+        color_var = other_cell_type,
+        color_label = 'Other Cell Type',
+        color_values = cell_type_colors$anno
+    )
 
 #   Astro -> Oligo.3
 processed_df |>
