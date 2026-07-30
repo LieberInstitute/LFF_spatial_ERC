@@ -12,6 +12,9 @@ unfiltered_path = here(
     'global_interactions_unfiltered.csv'
 )
 plot_dir = here('plots', '24_xenium_liana', '05_top_scatter')
+colors_path = here(
+    'processed-data', '00_project_prep', 'cell_type_colors.V2.Rdata'
+)
 n_samples_sig = 3
 
 dir.create(plot_dir, showWarnings = FALSE)
@@ -68,6 +71,8 @@ comparison_scatter = function(score_df, plot_path) {
 
 score_df = read_csv(score_path, show_col_types = FALSE)
 unfiltered_df = read_csv(unfiltered_path, show_col_types = FALSE)
+
+load(colors_path)
 
 #   APOE is involved in a bunch of interactions, but not between Oligo and Astro
 message('Cell types involved in APOE interactions:')
@@ -148,15 +153,26 @@ p = unfiltered_df |>
     ungroup() |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
     pivot_wider(names_from = APOE_carrier, values_from = lr_mean) |>
-    ggplot(aes(x = `E2+`, y = `E4+`)) +
+    mutate(
+        facet = ifelse(
+            source == 'Oligo.3', 'Oligo.3 as Source', 'Oligo.3 as Target'
+        ),
+        other_cell_type = ifelse(source == 'Oligo.3', target, source)
+    ) |>
+    ggplot(aes(x = `E2+`, y = `E4+`, color = other_cell_type)) +
         geom_point(alpha = 0.3) +
         geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
-        geom_smooth(method = 'lm', color = 'blue', se = FALSE) +
-        theme_bw(base_size = 15) +
-        labs(x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)') +
+        facet_wrap(~facet) +
+        scale_color_manual(values = cell_type_colors$anno) +
+        theme_bw(base_size = 18) +
+        guides(color = guide_legend(override.aes = list(alpha = 1))) +
+        labs(
+            x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
+            color = 'Other Cell Type'
+        ) +
         scale_x_log10() +
         scale_y_log10()
-pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'))
+pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'), width = 11, height = 6)
 print(p)
 dev.off()
 
