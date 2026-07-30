@@ -21,6 +21,15 @@ out_unique_path = here(
     'unique_ligand_receptor_pairs.csv'
 )
 n_samples_sig = 3
+cell_type_levels = [
+    'Astro.1', 'Astro.2', 'Astro.3', 'Astro.4', 'Astro.5', 'Macro', 'Micro.1',
+    'Micro.2', 'Micro.3', 'Micro.4', 'Micro.5', 'OPC.1', 'OPC.2', 'OPC.3',
+    'OPC.4', 'OPC.5', 'Oligo.1', 'Oligo.2', 'Oligo.3', 'Oligo.4', 'Oligo.5',
+    'Vasc.Endo', 'Vasc.PC', 'Vasc.VLMC', 'Excit.L2', 'Excit.L2_5.1',
+    'Excit.L2_5.2', 'Excit.L5.1', 'Excit.L5.2', 'Excit.L5_6_NP', 'Excit.L6_CT',
+    'Excit.L6b', 'Inhib.Pax6', 'Inhib.Lamp5_Lhx6', 'Inhib.Pvalb', 'Inhib.Vip',
+    'Inhib.Chandelier', 'Inhib.Sst'
+]
 
 os.makedirs(plot_dir, exist_ok=True)
 os.makedirs(out_summary_path.parent, exist_ok=True)
@@ -113,7 +122,7 @@ avg_lr = (
 
 avg_lr.to_csv(out_summary_path, index=False)
 
-cell_types = sorted(global_interactions['source'].unique())
+cell_types = cell_type_levels
 carrier_groups = ['E2+', 'E4+']
 full_grid = pd.MultiIndex.from_product(
     [cell_types, cell_types, carrier_groups],
@@ -128,7 +137,15 @@ full_grid_diff = pd.MultiIndex.from_product(
 #   Functions
 #################################################################################
 
+def apply_cell_type_order(df):
+    df = df.copy()
+    df['source'] = pd.Categorical(df['source'], categories=cell_type_levels, ordered=True)
+    df['target'] = pd.Categorical(df['target'], categories=cell_type_levels, ordered=True)
+    return df
+
+
 def save_faceted_heatmap(df, fill_col, fill_name, title, out_path):
+    df = apply_cell_type_order(df)
     p = (
         p9.ggplot(df, p9.aes(x='target', y='source', fill=fill_col))
         + p9.geom_tile()
@@ -156,6 +173,7 @@ def save_faceted_heatmap(df, fill_col, fill_name, title, out_path):
 def save_difference_heatmap(df, title, out_path):
     carrier_a, carrier_b = carrier_groups
 
+    df = apply_cell_type_order(df)
     diff_df = (
         df
         .pivot(index=['source', 'target'], columns='APOE_carrier', values='lr_mean')
@@ -163,16 +181,24 @@ def save_difference_heatmap(df, title, out_path):
         .merge(full_grid_diff, on=['source', 'target'], how='right')
         .fillna(0)
     )
+    diff_df = apply_cell_type_order(diff_df)
     diff_col = f'symmetric_pct_diff_{carrier_b}_vs_{carrier_a}'
     denominator = (diff_df[carrier_b] + diff_df[carrier_a]).replace(0, pd.NA)
     diff_df[diff_col] = 200 * (diff_df[carrier_b] - diff_df[carrier_a]) / denominator
     diff_df[diff_col] = diff_df[diff_col].fillna(0)
+    diff_df['sparse_extreme'] = diff_df[diff_col].isin([-200, 200])
+    diff_df['sparse_label'] = diff_df['sparse_extreme'].map({True: '*', False: ''})
     max_abs_diff = diff_df[diff_col].abs().max()
     max_abs_diff = max_abs_diff if max_abs_diff > 0 else 1
 
     p = (
         p9.ggplot(diff_df, p9.aes(x='target', y='source', fill=diff_col))
         + p9.geom_tile()
+        + p9.geom_text(
+            p9.aes(label='sparse_label'),
+            size=8,
+            color='black'
+        )
         + p9.scale_fill_gradient2(
             low='#3b4cc0',
             mid='white',
