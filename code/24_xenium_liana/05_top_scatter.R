@@ -156,20 +156,15 @@ p = unfiltered_df |>
     mutate(
         facet = ifelse(
             source == 'Oligo.3', 'Oligo.3 as Source', 'Oligo.3 as Target'
-        ),
-        other_cell_type = ifelse(source == 'Oligo.3', target, source)
+        )
     ) |>
-    ggplot(aes(x = `E2+`, y = `E4+`, color = other_cell_type)) +
+    ggplot(aes(x = `E2+`, y = `E4+`)) +
         geom_point(alpha = 0.3) +
         geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
         facet_wrap(~facet) +
-        scale_color_manual(values = cell_type_colors$anno) +
         theme_bw(base_size = 18) +
         guides(color = guide_legend(override.aes = list(alpha = 1))) +
-        labs(
-            x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
-            color = 'Other Cell Type'
-        ) +
+        labs(x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)') +
         scale_x_log10() +
         scale_y_log10()
 pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'), width = 11, height = 6)
