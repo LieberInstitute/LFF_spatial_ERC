@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Jul 23 04:26:56 PM EDT 2026
+Thu Jul 30 11:09:56 AM EDT 2026
 **** JHPCE info ****
 User: neagles
-Job id: 34361599
+Job id: 34544001
 Job name: 04_global_score_heatmap
-Node name: compute-099
+Node name: compute-168
 Task id: 
 Loading LIBD SLURM module for liana_plus/1.7.1
 
@@ -14,8 +14,8 @@ Currently Loaded Modules:
 
  
 
-/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/24_xenium_liana/04_global_score_heatmap.py:169: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
-/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/24_xenium_liana/04_global_score_heatmap.py:169: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/24_xenium_liana/04_global_score_heatmap.py:188: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/code/24_xenium_liana/04_global_score_heatmap.py:188: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
 /jhpce/shared/libd/core/liana_plus/1.7.1/liana_env/lib/python3.12/site-packages/session_info/main.py:213: FutureWarning: `__version__` is deprecated, use `importlib.metadata.version('anndata')` instead.
 Only 36 unique ligand-receptor pairs being assessed, ignoring cell type.
 "APOE" is present as a ligand in 1 unique interaction(s).
@@ -29,6 +29,6 @@ session_info        v1.0.1
 Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:50:00) [GCC 14.3.0]
 Linux-5.14.0-427.13.1.el9_4.x86_64-x86_64-with-glibc2.34
 -----
-Session information updated at 2026-07-23 16:27
+Session information updated at 2026-07-30 11:10
 **** Job ends ****
-Thu Jul 23 04:27:40 PM EDT 2026
+Thu Jul 30 11:10:33 AM EDT 2026

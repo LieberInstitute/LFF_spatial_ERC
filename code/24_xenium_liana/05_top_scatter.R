@@ -12,6 +12,9 @@ unfiltered_path = here(
     'global_interactions_unfiltered.csv'
 )
 plot_dir = here('plots', '24_xenium_liana', '05_top_scatter')
+colors_path = here(
+    'processed-data', '00_project_prep', 'cell_type_colors.V2.Rdata'
+)
 n_samples_sig = 3
 
 dir.create(plot_dir, showWarnings = FALSE)
@@ -40,24 +43,72 @@ individual_scatter = function(score_df, plot_path) {
     dev.off()
 }
 
-comparison_scatter = function(score_df, plot_path) {
-    p = score_df |>
+comparison_scatter = function(
+    score_df, plot_path, color_var = cell_types, color_label = 'Source Cell Type',
+    color_values = NULL
+) {
+    top_df = score_df |>
         group_by(higher_in) |>
         slice_max(lr_mean_diff, with_ties = FALSE, n = 10) |>
         mutate(
             lr_pair = paste0(ligand_complex, '->', receptor_complex),
             cell_types = paste(source, '->', target)
-        ) |>
-        ggplot(aes(x = lr_mean_diff, y = lr_specificity, color = cell_types)) +
-            geom_point() +
-            facet_wrap(~higher_in) +
-            geom_text_repel(aes(label = lr_pair), size = 5) +
-            theme_bw(base_size = 20) +
-            labs(
-                x = '% Diff in LR Score', y = 'LR Specificity',
-                color = 'Source Cell Type'
-            )
+        )
+
+    p = ggplot(
+        top_df,
+        aes(x = lr_mean_diff, y = lr_specificity, color = {{ color_var }})
+    ) +
+        geom_point() +
+        facet_wrap(~higher_in) +
+        geom_text_repel(aes(label = lr_pair), size = 5) +
+        theme_bw(base_size = 20) +
+        labs(
+            x = '% Diff in LR Score', y = 'LR Specificity', color = color_label
+        )
+
+    if (!is.null(color_values)) {
+        p = p + scale_color_manual(values = color_values)
+    }
+
     pdf(plot_path, width = 12, height = 5)
+    print(p)
+    dev.off()
+}
+
+comparison_scatter_manuscript = function(
+    score_df, plot_path, color_var = cell_types, color_label = 'Other Cell Type',
+    color_values = NULL
+) {
+    top_df = score_df |>
+        group_by(higher_in) |>
+        slice_max(lr_mean_diff, with_ties = FALSE, n = 10) |>
+        mutate(
+            lr_pair = paste0(ligand_complex, '->', receptor_complex),
+            cell_types = paste(source, '->', target),
+            other_cell_type = ifelse(source == 'Oligo.3', target, source),
+            facet = ifelse(
+                source == 'Oligo.3', 'Oligo.3 as Source', 'Oligo.3 as Target'
+            )
+        )
+
+    p = ggplot(
+        top_df,
+        aes(x = lr_mean_diff, y = lr_specificity, color = {{ color_var }})
+    ) +
+        geom_point() +
+        facet_grid(facet ~ higher_in) +
+        geom_text_repel(aes(label = lr_pair), size = 5) +
+        theme_bw(base_size = 25) +
+        labs(
+            x = '% Diff in LR Score', y = 'LR Specificity', color = color_label
+        )
+
+    if (!is.null(color_values)) {
+        p = p + scale_color_manual(values = color_values)
+    }
+
+    pdf(plot_path, width = 12, height = 8)
     print(p)
     dev.off()
 }
@@ -68,6 +119,8 @@ comparison_scatter = function(score_df, plot_path) {
 
 score_df = read_csv(score_path, show_col_types = FALSE)
 unfiltered_df = read_csv(unfiltered_path, show_col_types = FALSE)
+
+load(colors_path)
 
 #   APOE is involved in a bunch of interactions, but not between Oligo and Astro
 message('Cell types involved in APOE interactions:')
@@ -129,7 +182,13 @@ processed_df |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
     group_by(higher_in, ligand_complex, receptor_complex) |>
     slice_max(lr_mean_diff, with_ties = FALSE, n = 1) |>
-    comparison_scatter(file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'))
+    ungroup() |>
+    comparison_scatter_manuscript(
+        file.path(plot_dir, 'oligo3_top_scatter_difference.pdf'),
+        color_var = other_cell_type,
+        color_label = 'Other Cell Type',
+        color_values = cell_type_colors$anno
+    )
 
 #   Astro -> Oligo.3
 processed_df |>
@@ -148,15 +207,21 @@ p = unfiltered_df |>
     ungroup() |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
     pivot_wider(names_from = APOE_carrier, values_from = lr_mean) |>
+    mutate(
+        facet = ifelse(
+            source == 'Oligo.3', 'Oligo.3 as Source', 'Oligo.3 as Target'
+        )
+    ) |>
     ggplot(aes(x = `E2+`, y = `E4+`)) +
         geom_point(alpha = 0.3) +
         geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
-        geom_smooth(method = 'lm', color = 'blue', se = FALSE) +
-        theme_bw(base_size = 15) +
+        facet_wrap(~facet) +
+        theme_bw(base_size = 18) +
+        guides(color = guide_legend(override.aes = list(alpha = 1))) +
         labs(x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)') +
         scale_x_log10() +
         scale_y_log10()
-pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'))
+pdf(file.path(plot_dir, 'oligo3_all_pairs.pdf'), width = 11, height = 6)
 print(p)
 dev.off()
 
