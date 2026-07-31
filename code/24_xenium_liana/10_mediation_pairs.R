@@ -211,7 +211,7 @@ p = ggplot(
         size = 6
     ) +
     geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
-    theme_bw(base_size = 18) +
+    theme_bw(base_size = 20) +
     guides(color = 'none') +
     labs(
         x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
