@@ -11,6 +11,9 @@ score_comp_path = here(
     'processed-data', '24_xenium_liana', '05_top_scatter',
     'pair_level_comparison.csv'
 )
+colors_path = here(
+    'processed-data', '00_project_prep', 'cell_type_colors.V2.Rdata'
+)
 plot_dir = here('plots', '24_xenium_liana', '10_mediation_pairs')
 n_samples_sig = 4
 
@@ -83,6 +86,7 @@ score_global_df = read_csv(score_global_path, show_col_types = FALSE) |>
     ungroup()
 
 score_comp_df = read_csv(score_comp_path, show_col_types = FALSE)
+load(colors_path)
 
 ################################################################################
 #   Astros as receiver; FZD8 as receptor
@@ -108,18 +112,42 @@ score_global_df |>
 #   E4+ vs E2+ comparison
 #-------------------------------------------------------------------------------
 
-score_comp_df |>
+plot_df = score_comp_df |>
     filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
-    ggplot(aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`)) +
-        geom_point() +
-        geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
-        theme_bw(base_size = 20) +
-        labs(
-            x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)'
-        ) +
-        scale_x_log10() +
-        scale_y_log10()
-    pair_scatter(file.path(plot_dir, 'astro_FZD8_scatter_difference.pdf'))
+    mutate(cell_types = paste(source, '->', target))
+
+p = ggplot(plot_df, aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`)) +
+    geom_point(color = 'grey70') +
+    geom_point(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(color = source),
+        size = 3
+    ) +
+    geom_text_repel(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(label = cell_types, color = source),
+        size = 6
+    ) +
+    geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+    theme_bw(base_size = 18) +
+    guides(color = 'none') +
+    labs(x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)') +
+    scale_color_manual(values = cell_type_colors$anno) +
+    scale_x_log10() +
+    scale_y_log10()
+pdf(file.path(plot_dir, 'astro_FZD8_scatter_difference.pdf'))
+print(p)
+dev.off()
+
+message(
+    sprintf(
+        'Astro FZD8 plot only has one pair: %s->FZD8',
+        unique(plot_df$ligand_complex)
+    )
+)
+
 ################################################################################
 #   Oligo.3 as receiver; ERBB3 as receptor
 ################################################################################
