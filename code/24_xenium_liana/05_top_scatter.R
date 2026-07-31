@@ -70,7 +70,7 @@ comparison_scatter_manuscript = function(
     ) +
         geom_point() +
         facet_grid(facet ~ higher_in) +
-        geom_text_repel(aes(label = lr_pair), size = 5) +
+        geom_text_repel(aes(label = lr_pair), size = 7) +
         theme_bw(base_size = 25) +
         labs(
             x = '% Diff in LR Score', y = 'LR Specificity', color = color_label

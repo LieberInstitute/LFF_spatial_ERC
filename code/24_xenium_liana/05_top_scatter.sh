@@ -6,6 +6,7 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o ../../processed-data/24_xenium_liana/logs/05_top_scatter.txt
 #SBATCH -e ../../processed-data/24_xenium_liana/logs/05_top_scatter.txt
+#SBATCH --exclude=compute-169
 
 set -e
 
