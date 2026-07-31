@@ -152,14 +152,61 @@ message(
 #   Oligo.3 as receiver; ERBB3 as receptor
 ################################################################################
 
-score_df |>
+#-------------------------------------------------------------------------------
+#   Global scores across all samples
+#-------------------------------------------------------------------------------
+
+score_global_df |>
     #   Only two ligands for these criteria
     filter('Oligo.3' == target, receptor_complex == 'ERBB3') |>
     pair_scatter(file.path(plot_dir, 'oligo3_ERBB3_scatter.pdf'))
 
-score_df |>
+score_global_df |>
     filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
     slice_max(lr_mean, with_ties = FALSE, n = 1) |>
-    pair_density(score_df, file.path(plot_dir, 'oligo3_ERBB3_distribution.pdf'))
+    pair_density(
+        score_global_df, file.path(plot_dir, 'oligo3_ERBB3_distribution.pdf')
+    )
+
+#-------------------------------------------------------------------------------
+#   E4+ vs E2+ comparison
+#-------------------------------------------------------------------------------
+
+plot_df = score_comp_df |>
+    filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
+    mutate(
+        cell_types = paste(source, '->', target),
+        lr_pair = paste0(ligand_complex, '->', receptor_complex)
+    )
+
+p = ggplot(
+        plot_df, aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`, shape = lr_pair)
+    ) +
+    geom_point(color = 'grey70') +
+    geom_point(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(color = source),
+        size = 3
+    ) +
+    geom_text_repel(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(label = cell_types, color = source),
+        size = 6
+    ) +
+    geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+    theme_bw(base_size = 18) +
+    guides(color = 'none') +
+    labs(
+        x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
+        shape = 'L->R'
+    ) +
+    scale_color_manual(values = cell_type_colors$anno) +
+    scale_x_log10() +
+    scale_y_log10()
+pdf(file.path(plot_dir, 'oligo3_ERBB3_scatter_difference.pdf'), width = 10)
+print(p)
+dev.off()
 
 session_info()
