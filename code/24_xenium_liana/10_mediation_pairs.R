@@ -3,9 +3,16 @@ library(tidyverse)
 library(sessioninfo)
 library(ggrepel)
 
-score_path = here(
+score_global_path = here(
     'processed-data', '24_xenium_liana', '04_global_score_heatmap',
     'global_interactions_unfiltered.csv'
+)
+score_comp_path = here(
+    'processed-data', '24_xenium_liana', '05_top_scatter',
+    'pair_level_comparison.csv'
+)
+colors_path = here(
+    'processed-data', '00_project_prep', 'cell_type_colors.V2.Rdata'
 )
 plot_dir = here('plots', '24_xenium_liana', '10_mediation_pairs')
 n_samples_sig = 4
@@ -15,24 +22,6 @@ dir.create(plot_dir, showWarnings = FALSE)
 ################################################################################
 #   Functions
 ################################################################################
-
-pair_scatter = function(score_df, plot_path) {
-    p = score_df |>
-        arrange(desc(lr_mean)) |>
-        slice_head(n = 10) |>
-        mutate(
-            lr_pair = paste0(ligand_complex, '->', receptor_complex),
-            cell_types = paste(source, '->', target)
-        ) |>
-        ggplot(aes(x = lr_mean, y = lr_specificity, color = cell_types)) +
-            geom_point() +
-            geom_text_repel(aes(label = lr_pair), size = 5) +
-            theme_bw(base_size = 20) +
-            labs(x = 'Mean LR Score', y = 'LR Specificity', color = 'Cell Types')
-    pdf(plot_path, width = 9)
-    print(p)
-    dev.off()
-}
 
 pair_density = function(pair_df, score_df, plot_path) {
     pair_df = pair_df |>
@@ -69,7 +58,7 @@ pair_density = function(pair_df, score_df, plot_path) {
 #   Process significant pairs
 ################################################################################
 
-score_df = read_csv(score_path, show_col_types = FALSE) |>
+score_global_df = read_csv(score_global_path, show_col_types = FALSE) |>
     filter(pval < 0.05) |>
     group_by(source, target, ligand_complex, receptor_complex) |>
     filter(length(unique(sample_id)) >= n_samples_sig) |>
@@ -78,32 +67,161 @@ score_df = read_csv(score_path, show_col_types = FALSE) |>
     mutate(lr_specificity = lr_mean / max(lr_mean)) |>
     ungroup()
 
+score_comp_df = read_csv(score_comp_path, show_col_types = FALSE)
+load(colors_path)
+
 ################################################################################
 #   Astros as receiver; FZD8 as receptor
 ################################################################################
 
-score_df |>
+#-------------------------------------------------------------------------------
+#   Global scores across all samples
+#-------------------------------------------------------------------------------
+
+p = score_global_df |>
     #   The only ligand in any cell-type pair is IGFBP4
     filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
-    pair_scatter(file.path(plot_dir, 'astro_FZD8_scatter.pdf'))
+    slice_max(lr_mean, n = 5, with_ties = FALSE) |>
+    arrange(desc(lr_mean)) |>
+    mutate(
+        cell_types = paste(source, '->', target),
+        cell_types = factor(cell_types, levels = cell_types)
+    ) |>
+    ggplot(aes(x = cell_types, y = lr_mean, fill = source)) +
+        geom_col() +
+        theme_bw(base_size = 20) +
+        guides(fill = 'none') +
+        labs(x = 'Source -> Target', y = 'Mean LR Score') +
+        scale_fill_manual(values = cell_type_colors$anno) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+pdf(file.path(plot_dir, 'astro_FZD8_bar.pdf'), width = 5)
+print(p)
+dev.off()
 
-score_df |>
+score_global_df |>
     filter(target == 'Astro.2', receptor_complex == 'FZD8') |>
     slice_max(lr_mean, with_ties = FALSE, n = 1) |>
-    pair_density(score_df, file.path(plot_dir, 'astro2_FZD8_distribution.pdf'))
+    pair_density(
+        score_global_df, file.path(plot_dir, 'astro2_FZD8_distribution.pdf')
+    )
+
+#-------------------------------------------------------------------------------
+#   E4+ vs E2+ comparison
+#-------------------------------------------------------------------------------
+
+plot_df = score_comp_df |>
+    filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
+    mutate(cell_types = paste(source, '->', target))
+
+p = ggplot(plot_df, aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`)) +
+    geom_point(color = 'grey70') +
+    geom_point(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(color = source),
+        size = 3
+    ) +
+    geom_text_repel(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(label = cell_types, color = source),
+        size = 6
+    ) +
+    geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+    theme_bw(base_size = 18) +
+    guides(color = 'none') +
+    labs(x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)') +
+    scale_color_manual(values = cell_type_colors$anno) +
+    scale_x_log10() +
+    scale_y_log10()
+pdf(file.path(plot_dir, 'astro_FZD8_scatter_difference.pdf'))
+print(p)
+dev.off()
+
+message(
+    sprintf(
+        'Astro FZD8 plot only has one pair: %s->FZD8',
+        unique(plot_df$ligand_complex)
+    )
+)
 
 ################################################################################
 #   Oligo.3 as receiver; ERBB3 as receptor
 ################################################################################
 
-score_df |>
+#-------------------------------------------------------------------------------
+#   Global scores across all samples
+#-------------------------------------------------------------------------------
+
+p = score_global_df |>
     #   Only two ligands for these criteria
     filter('Oligo.3' == target, receptor_complex == 'ERBB3') |>
-    pair_scatter(file.path(plot_dir, 'oligo3_ERBB3_scatter.pdf'))
+    mutate(lr_pair = paste0(ligand_complex, '->', receptor_complex)) |>
+    group_by(lr_pair) |>
+    slice_max(lr_mean, n = 5, with_ties = FALSE) |>
+    arrange(desc(lr_mean), .by_group = TRUE) |>
+    mutate(source_plot = paste(source, lr_pair, sep = '___')) |>
+    ungroup() |>
+    mutate(source_plot = factor(source_plot, levels = unique(source_plot))) |>
+    ggplot(aes(x = source_plot, y = lr_mean, fill = source)) +
+        geom_col() +
+        facet_wrap(~lr_pair, scales = 'free_x') +
+        theme_bw(base_size = 20) +
+        guides(fill = 'none') +
+        labs(x = 'Source Cell Type', y = 'Mean LR Score') +
+        scale_fill_manual(values = cell_type_colors$anno) +
+        scale_x_discrete(labels = function(x) sub('___.*', '', x)) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+pdf(file.path(plot_dir, 'oligo3_ERBB3_bar.pdf'))
+print(p)
+dev.off()
 
-score_df |>
+score_global_df |>
     filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
     slice_max(lr_mean, with_ties = FALSE, n = 1) |>
-    pair_density(score_df, file.path(plot_dir, 'oligo3_ERBB3_distribution.pdf'))
+    pair_density(
+        score_global_df, file.path(plot_dir, 'oligo3_ERBB3_distribution.pdf')
+    )
+
+#-------------------------------------------------------------------------------
+#   E4+ vs E2+ comparison
+#-------------------------------------------------------------------------------
+
+plot_df = score_comp_df |>
+    filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
+    mutate(
+        cell_types = paste(source, '->', target),
+        lr_pair = paste0(ligand_complex, '->', receptor_complex)
+    )
+
+p = ggplot(
+        plot_df, aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`, shape = lr_pair)
+    ) +
+    geom_point(color = 'grey70') +
+    geom_point(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(color = source),
+        size = 3
+    ) +
+    geom_text_repel(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(label = cell_types, color = source),
+        size = 6
+    ) +
+    geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+    theme_bw(base_size = 20) +
+    guides(color = 'none') +
+    labs(
+        x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
+        shape = 'L->R'
+    ) +
+    scale_color_manual(values = cell_type_colors$anno) +
+    scale_x_log10() +
+    scale_y_log10()
+pdf(file.path(plot_dir, 'oligo3_ERBB3_scatter_difference.pdf'), width = 10)
+print(p)
+dev.off()
 
 session_info()
