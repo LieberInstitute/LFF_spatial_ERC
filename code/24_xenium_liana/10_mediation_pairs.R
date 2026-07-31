@@ -3,9 +3,13 @@ library(tidyverse)
 library(sessioninfo)
 library(ggrepel)
 
-score_path = here(
+score_global_path = here(
     'processed-data', '24_xenium_liana', '04_global_score_heatmap',
     'global_interactions_unfiltered.csv'
+)
+score_comp_path = here(
+    'processed-data', '24_xenium_liana', '05_top_scatter',
+    'pair_level_comparison.csv'
 )
 plot_dir = here('plots', '24_xenium_liana', '10_mediation_pairs')
 n_samples_sig = 4
@@ -69,7 +73,7 @@ pair_density = function(pair_df, score_df, plot_path) {
 #   Process significant pairs
 ################################################################################
 
-score_df = read_csv(score_path, show_col_types = FALSE) |>
+score_global_df = read_csv(score_global_path, show_col_types = FALSE) |>
     filter(pval < 0.05) |>
     group_by(source, target, ligand_complex, receptor_complex) |>
     filter(length(unique(sample_id)) >= n_samples_sig) |>
@@ -78,20 +82,44 @@ score_df = read_csv(score_path, show_col_types = FALSE) |>
     mutate(lr_specificity = lr_mean / max(lr_mean)) |>
     ungroup()
 
+score_comp_df = read_csv(score_comp_path, show_col_types = FALSE)
+
 ################################################################################
 #   Astros as receiver; FZD8 as receptor
 ################################################################################
 
-score_df |>
+#-------------------------------------------------------------------------------
+#   Global scores across all samples
+#-------------------------------------------------------------------------------
+
+score_global_df |>
     #   The only ligand in any cell-type pair is IGFBP4
     filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
     pair_scatter(file.path(plot_dir, 'astro_FZD8_scatter.pdf'))
 
-score_df |>
+score_global_df |>
     filter(target == 'Astro.2', receptor_complex == 'FZD8') |>
     slice_max(lr_mean, with_ties = FALSE, n = 1) |>
-    pair_density(score_df, file.path(plot_dir, 'astro2_FZD8_distribution.pdf'))
+    pair_density(
+        score_global_df, file.path(plot_dir, 'astro2_FZD8_distribution.pdf')
+    )
 
+#-------------------------------------------------------------------------------
+#   E4+ vs E2+ comparison
+#-------------------------------------------------------------------------------
+
+score_comp_df |>
+    filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
+    ggplot(aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`)) +
+        geom_point() +
+        geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+        theme_bw(base_size = 20) +
+        labs(
+            x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)'
+        ) +
+        scale_x_log10() +
+        scale_y_log10()
+    pair_scatter(file.path(plot_dir, 'astro_FZD8_scatter_difference.pdf'))
 ################################################################################
 #   Oligo.3 as receiver; ERBB3 as receptor
 ################################################################################
