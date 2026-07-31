@@ -23,24 +23,6 @@ dir.create(plot_dir, showWarnings = FALSE)
 #   Functions
 ################################################################################
 
-pair_scatter = function(score_df, plot_path) {
-    p = score_df |>
-        arrange(desc(lr_mean)) |>
-        slice_head(n = 10) |>
-        mutate(
-            lr_pair = paste0(ligand_complex, '->', receptor_complex),
-            cell_types = paste(source, '->', target)
-        ) |>
-        ggplot(aes(x = lr_mean, y = lr_specificity, color = cell_types)) +
-            geom_point() +
-            geom_text_repel(aes(label = lr_pair), size = 5) +
-            theme_bw(base_size = 20) +
-            labs(x = 'Mean LR Score', y = 'LR Specificity', color = 'Cell Types')
-    pdf(plot_path, width = 9)
-    print(p)
-    dev.off()
-}
-
 pair_density = function(pair_df, score_df, plot_path) {
     pair_df = pair_df |>
         mutate(
@@ -96,10 +78,25 @@ load(colors_path)
 #   Global scores across all samples
 #-------------------------------------------------------------------------------
 
-score_global_df |>
+p = score_global_df |>
     #   The only ligand in any cell-type pair is IGFBP4
     filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
-    pair_scatter(file.path(plot_dir, 'astro_FZD8_scatter.pdf'))
+    slice_max(lr_mean, n = 5, with_ties = FALSE) |>
+    arrange(desc(lr_mean)) |>
+    mutate(
+        cell_types = paste(source, '->', target),
+        cell_types = factor(cell_types, levels = cell_types)
+    ) |>
+    ggplot(aes(x = cell_types, y = lr_mean, fill = source)) +
+        geom_col() +
+        theme_bw(base_size = 20) +
+        guides(fill = 'none') +
+        labs(x = 'Source -> Target', y = 'Mean LR Score') +
+        scale_fill_manual(values = cell_type_colors$anno) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+pdf(file.path(plot_dir, 'astro_FZD8_bar.pdf'), width = 5)
+print(p)
+dev.off()
 
 score_global_df |>
     filter(target == 'Astro.2', receptor_complex == 'FZD8') |>
@@ -156,10 +153,28 @@ message(
 #   Global scores across all samples
 #-------------------------------------------------------------------------------
 
-score_global_df |>
+p = score_global_df |>
     #   Only two ligands for these criteria
     filter('Oligo.3' == target, receptor_complex == 'ERBB3') |>
-    pair_scatter(file.path(plot_dir, 'oligo3_ERBB3_scatter.pdf'))
+    mutate(lr_pair = paste0(ligand_complex, '->', receptor_complex)) |>
+    group_by(lr_pair) |>
+    slice_max(lr_mean, n = 5, with_ties = FALSE) |>
+    arrange(desc(lr_mean), .by_group = TRUE) |>
+    mutate(source_plot = paste(source, lr_pair, sep = '___')) |>
+    ungroup() |>
+    mutate(source_plot = factor(source_plot, levels = unique(source_plot))) |>
+    ggplot(aes(x = source_plot, y = lr_mean, fill = source)) +
+        geom_col() +
+        facet_wrap(~lr_pair, scales = 'free_x') +
+        theme_bw(base_size = 20) +
+        guides(fill = 'none') +
+        labs(x = 'Source Cell Type', y = 'Mean LR Score') +
+        scale_fill_manual(values = cell_type_colors$anno) +
+        scale_x_discrete(labels = function(x) sub('___.*', '', x)) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+pdf(file.path(plot_dir, 'oligo3_ERBB3_bar.pdf'))
+print(p)
+dev.off()
 
 score_global_df |>
     filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
