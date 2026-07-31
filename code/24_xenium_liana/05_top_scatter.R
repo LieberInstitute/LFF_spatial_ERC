@@ -120,6 +120,48 @@ comparison_scatter_manuscript = function(
 score_df = read_csv(score_path, show_col_types = FALSE)
 unfiltered_df = read_csv(unfiltered_path, show_col_types = FALSE)
 
+unfiltered_sig_df = unfiltered_df |>
+    mutate(log_lr_mean_pseudo = log10(lr_mean + 1e-6)) |>
+    group_by(source, target, ligand_complex, receptor_complex) |>
+    summarize(
+        n_e2 = sum(APOE_carrier == 'E2+'),
+        n_e4 = sum(APOE_carrier == 'E4+'),
+        n_nonzero_e2 = sum(APOE_carrier == 'E2+' & lr_mean > 0),
+        n_nonzero_e4 = sum(APOE_carrier == 'E4+' & lr_mean > 0),
+        `lr_mean_E2+` = mean(lr_mean[APOE_carrier == 'E2+'], na.rm = TRUE),
+        `lr_mean_E4+` = mean(lr_mean[APOE_carrier == 'E4+'], na.rm = TRUE),
+        p_value = {
+            e2_vals = log_lr_mean_pseudo[APOE_carrier == 'E2+']
+            e4_vals = log_lr_mean_pseudo[APOE_carrier == 'E4+']
+            e2_var = var(e2_vals)
+            e4_var = var(e4_vals)
+
+            if (
+                n_e2 < 2 || n_e4 < 2 ||
+                    n_nonzero_e2 < 3 || n_nonzero_e4 < 3 ||
+                    (isTRUE(e2_var == 0) && isTRUE(e4_var == 0))
+            ) {
+                NA_real_
+            } else {
+                t.test(e2_vals, e4_vals, alternative = 'two.sided')$p.value
+            }
+        },
+        .groups = 'drop'
+    ) |>
+    filter(n_e2 >= 2, n_e4 >= 2, n_nonzero_e2 >= 3, n_nonzero_e4 >= 3) |>
+    mutate(
+        is_nom_sig = p_value < 0.01,
+        avg_lr_mean = (`lr_mean_E2+` + `lr_mean_E4+`) / 2,
+        lr_mean_diff = ifelse(
+            avg_lr_mean == 0,
+            0,
+            200 * (`lr_mean_E4+` - `lr_mean_E2+`) /
+                (`lr_mean_E4+` + `lr_mean_E2+`)
+        ),
+        higher_in = ifelse(lr_mean_diff > 0, 'Higher in E4+', 'Higher in E2+'),
+        abs_lr_mean_diff = abs(lr_mean_diff)
+    )
+
 load(colors_path)
 
 #   APOE is involved in a bunch of interactions, but not between Oligo and Astro
@@ -159,20 +201,9 @@ score_df |>
 #   Top interactions higher in E2+ and higher in E4+
 #-------------------------------------------------------------------------------
 
-processed_df = unfiltered_df |>
-    group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
-    summarize(
-        is_sig = sum(pval < 0.05) >= n_samples_sig,
-        lr_mean = mean(lr_mean), # not necessarily among significant samples
-    ) |>
-    ungroup() |>
-    pivot_wider(names_from = APOE_carrier, values_from = c(is_sig, lr_mean)) |>
-    mutate(
-        lr_mean_diff = 200 * (`lr_mean_E4+` - `lr_mean_E2+`) / (`lr_mean_E4+` + `lr_mean_E2+`),
-        higher_in = ifelse(lr_mean_diff > 0, 'Higher in E4+', 'Higher in E2+'),
-        lr_mean_diff = abs(lr_mean_diff)
-    ) |>
-    filter(ifelse(higher_in == 'Higher in E4+', `is_sig_E4+`, `is_sig_E2+`)) |>
+processed_df = unfiltered_sig_df |>
+    filter(is_nom_sig) |>
+    mutate(lr_mean_diff = abs_lr_mean_diff) |>
     group_by(higher_in, ligand_complex, receptor_complex) |>
     mutate(lr_specificity = lr_mean_diff / max(lr_mean_diff)) |>
     ungroup()
@@ -201,18 +232,14 @@ processed_df |>
 #   All pairs involving Oligo.3, comparing E2+ and E4+ (scatter plot)
 ################################################################################
 
-p = unfiltered_df |>
-    group_by(source, target, ligand_complex, receptor_complex, APOE_carrier) |>
-    summarize(lr_mean = mean(lr_mean)) |>
-    ungroup() |>
+p = unfiltered_sig_df |>
     filter((source == 'Oligo.3') | (target == 'Oligo.3'), source != target) |>
-    pivot_wider(names_from = APOE_carrier, values_from = lr_mean) |>
     mutate(
         facet = ifelse(
             source == 'Oligo.3', 'Oligo.3 as Source', 'Oligo.3 as Target'
         )
     ) |>
-    ggplot(aes(x = `E2+`, y = `E4+`)) +
+    ggplot(aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`, color = is_nom_sig)) +
         geom_point(alpha = 0.3) +
         geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
         facet_wrap(~facet) +
