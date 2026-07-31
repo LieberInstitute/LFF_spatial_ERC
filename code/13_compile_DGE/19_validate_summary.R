@@ -33,11 +33,6 @@ source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
 
 #### Validation data ####
-
-## Xenium spatial validation layers, brought in as the 4th resolution.
-## `_wSN` files already carry a `validate` column (direction-concordant +
-## meets the nominal validation threshold vs. discovery) - use that directly
-## rather than re-deriving significance from a raw p-value/FDR column.
 validation_data_types <- c("Xenium_cell_type_anno", "Xenium_cell_type_anno_SpX", "Xenium_Oligo.3_Astro")
 
 load_DE_valid_data <- function(datatype){
@@ -131,7 +126,7 @@ valid_genes_summary_filter <- valid_genes_summary |>
     filter(cell_type_anno=="Oligo.3") |>
     ungroup() |>
     mutate(enviro2=fct_relevel(factor(enviro2), "multi"),
-           gene_name_reg = paste(gene_name, ifelse(reg == "up", '↑', "↓")))    
+           gene_name_reg = paste(gene_name, ifelse(reg == "up", '^', "")))    
 
 # extract ordered SpX suffixes from color names
 spx_order <- paste0("Oligo.3_", str_remove(names(SpX_colors) ,"~.*")) 
@@ -185,6 +180,7 @@ valid_genes_summary_bar_text <- valid_genes_summary_filter |>
     theme_bw() 
 
 ggsave(valid_genes_summary_bar_text, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3.png"), width = 5, height = 5)
+ggsave(valid_genes_summary_bar_text, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3.pdf"), width = 5, height = 5)
 
 
 valid_genes_summary_bar_text_gap <- valid_genes_summary_filter |>
@@ -202,6 +198,7 @@ valid_genes_summary_bar_text_gap <- valid_genes_summary_filter |>
     theme(legend.position = "None")
 
 ggsave(valid_genes_summary_bar_text_gap, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3_gap.png"), width = 5, height = 5)
+ggsave(valid_genes_summary_bar_text_gap, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3_gap.pdf"), width = 5, height = 5)
 
 
 label_data <- valid_genes_summary_filter |>
