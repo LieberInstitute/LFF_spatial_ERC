@@ -167,7 +167,7 @@ model_FDR05_tileplot <- sum_FDR05_tbl |>
     scale_y_discrete(limits = rev) +
     scale_x_discrete(limits = rev) +
     scale_color_manual(values = c("TRUE" = "white", "FALSE" = "black"), guide = "none") +
-    scale_fill_distiller(palette = "Blues", direction = 1) +
+    scale_fill_distiller(palette = "Blues", direction = 1, name = "n DEGs") +
     theme_bw() +
     theme(legend.position = "top", 
           legend.text = element_text(angle = 45, hjust = 1),
