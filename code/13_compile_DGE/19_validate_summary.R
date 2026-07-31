@@ -7,8 +7,6 @@ library("tidyverse")
 library("qs2")
 library("sessioninfo")
 library("patchwork")
-library("ComplexHeatmap")
-library("circlize")
 
 data_dir <- here("processed-data", "13_compile_DGE", "19_validate_summary")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -23,14 +21,6 @@ load(here("processed-data", "project_colors.Rdata"))
 # APOE_carrier_colors
 # E2+       E4+
 #"#51B8B1" "#D97D59"
-
-## CHECK: logFC_Heatmap() looks up `cluster_levels` from the global env for
-## row ordering (it's not a function argument) - loaded per-datatype below,
-## right before each call, so it's always the current resolution's levels.
-
-## fill_stat-adaptable logFC/t-stat heatmap helper (logFC_Heatmap / logFC_Heatmap_contrast)
-source(here("code", "13_compile_DGE", "logFC_heatmap.R")) 
-
 
 #### Validation data ####
 validation_data_types <- c("Xenium_cell_type_anno", "Xenium_cell_type_anno_SpX", "Xenium_Oligo.3_Astro")
@@ -56,7 +46,7 @@ DE_valid_data <- validation_data_types |>
     mutate(cluster = ifelse(data_type == "Xenium_cell_type_anno_SpX", cluster_SpX, as.character(cluster))) |>
     left_join(data_type_lookup)
 
-all(anchor_genes %in% DE_valid_data$gene_name)
+# all(anchor_genes %in% DE_valid_data$gene_name)
 
 message(nrow(DE_valid_data), " rows across ", n_distinct(DE_valid_data$data_type), " validation data types")
 count(DE_valid_data, data_type)
@@ -68,10 +58,10 @@ DE_valid_data |>
 
 #### Validation check ####
 
-DE_valid_data |> filter(cell_type_anno == "Oligo.3", gene_name == "OPALIN") |> count(validate)
+DE_valid_data |> filter(cell_type_anno == "Oligo.3", gene_name == "BCAS1") |> count(validate)
 
 DE_valid_data |> 
-    filter(cell_type_anno == "Oligo.3", gene_name == "OPALIN", validate) |> 
+    filter(cell_type_anno == "Oligo.3", gene_name == "BCAS1", validate) |> 
     select(data_type, cluster, cell_type_anno, gene_name)
 
 #### Validation summary ####    
@@ -85,6 +75,8 @@ valid_genes_summary <- DE_valid_data |>
                               TRUE ~ "ERROR")) |>
     arrange(-n)  |>
     mutate(enviro2=ifelse(n>1, "multi", enviro))
+
+valid_genes_summary |> filter(gene_name == "BCAS1")
 
 valid_genes_summary |> 
     filter(cell_type_anno == "Oligo.3") |> 
@@ -152,89 +144,82 @@ nnA_colors <- c(
 
 enviro2_colors <- c(multi = "#2D2D2D", nnA_colors, cell_type_colors$anno, SpX_colors2)[levels(valid_genes_summary_filter$enviro2)]
 
-valid_genes_summary_bar <- valid_genes_summary_filter |>
-    arrange(data_type_short, enviro2) |>
+
+valid_genes_summary_filter |> filter(gene_name == "BCAS1")
+
+## shared plot_data: compute y_pos once so all geom_text layers stay in sync
+plot_data <- valid_genes_summary_filter |>
+    arrange(data_type_short, -as.integer(enviro2)) |>
     group_by(data_type_short) |>
     mutate(y_pos=row_number() - 0.5) |>
-    ungroup() |>
-    ggplot(aes(x=data_type_short)) +
-    geom_bar(aes(fill=enviro2)) +
-    # geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color = "white") +
-    scale_fill_manual(values = enviro2_colors) +
-    labs(x = "Xenium validation context", y = "n validated DEGs") +
-    theme_bw() 
+    ungroup()
 
-ggsave(valid_genes_summary_bar, filename = here(plot_dir, "valid_genes_summary_bar_Oligo.3.png"), width = 5, height = 6)
+plot_data |> filter(gene_name == "FOS")
+plot_data |> filter(enviro2 == 'APOE_low_nnA_Astro.3')
 
-
-valid_genes_summary_bar_text <- valid_genes_summary_filter |>
-    arrange(data_type_short, enviro2) |>
-    group_by(data_type_short) |>
-    mutate(y_pos=row_number() - 0.5) |>
-    ungroup() |>
-    ggplot(aes(x=data_type_short)) +
-    geom_bar(aes(fill=enviro2)) +
-    geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color = "white") +
-    scale_fill_manual(values = enviro2_colors) +
-    labs(x = "Xenium validation context", y = "n validated DEGs") +
-    theme_bw() 
-
-ggsave(valid_genes_summary_bar_text, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3.png"), width = 5, height = 5)
-ggsave(valid_genes_summary_bar_text, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3.pdf"), width = 5, height = 5)
-
-
-valid_genes_summary_bar_text_gap <- valid_genes_summary_filter |>
-    arrange(data_type_short, enviro2) |>
-    group_by(data_type_short) |>
-    mutate(y_pos=row_number() - 0.5) |>
-    ungroup() |>
-    ggplot(aes(x=data_type_short)) +
-    geom_bar(aes(fill=enviro2), width=0.5) +
-    geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color = "white") +
-    scale_fill_manual(values = enviro2_colors) +
-    scale_x_discrete(expand=expansion(mult=0.2)) +
-    labs(x = "Xenium validation context", y = "n validated DEGs") +
-    theme_bw() +
-    theme(legend.position = "None")
-
-ggsave(valid_genes_summary_bar_text_gap, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3_gap.png"), width = 5, height = 5)
-ggsave(valid_genes_summary_bar_text_gap, filename = here(plot_dir, "valid_genes_summary_bar_text_Oligo.3_gap.pdf"), width = 5, height = 5)
-
-
-label_data <- valid_genes_summary_filter |>
-    arrange(data_type_short, desc(enviro2)) |>
-    group_by(data_type_short) |>
-    mutate(y_pos=row_number() - 0.5) |>
-    ungroup() |>
+## enviro2 label positions: mean y_pos per data_type_short/enviro2 group
+label_data <- plot_data |>
     group_by(data_type_short, enviro2) |>
     summarise(y_pos=mean(y_pos), .groups="drop")
 
+valid_genes_summary_bar <- plot_data |>
+    ggplot(aes(x=data_type_short)) +
+    geom_bar(aes(fill=enviro2)) +
+    # geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color = "white") +
+    scale_fill_manual(values=enviro2_colors) +
+    labs(x="Xenium validation context", y="n validated DEGs") +
+    theme_bw()
 
-valid_genes_summary_bar_text_enviro <- valid_genes_summary_filter |>
-    arrange(data_type_short, enviro2) |>
-    group_by(data_type_short) |>
-    mutate(y_pos=row_number() - 0.5) |>
-    ungroup() |>
+ggsave(valid_genes_summary_bar, filename=here(plot_dir, "valid_genes_summary_bar_Oligo.3.png"), width=5, height=6)
+
+
+valid_genes_summary_bar_text <- plot_data |>
+    ggplot(aes(x=data_type_short)) +
+    geom_bar(aes(fill=enviro2)) +
+    geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color="white") +
+    scale_fill_manual(values=enviro2_colors) +
+    labs(x="Xenium validation context", y="n validated DEGs") +
+    theme_bw()
+
+ggsave(valid_genes_summary_bar_text, filename=here(plot_dir, "valid_genes_summary_bar_text_Oligo.3.png"), width=5, height=5)
+ggsave(valid_genes_summary_bar_text, filename=here(plot_dir, "valid_genes_summary_bar_text_Oligo.3.pdf"), width=5, height=5)
+
+
+valid_genes_summary_bar_text_gap <- plot_data |>
+    ggplot(aes(x=data_type_short)) +
+    geom_bar(aes(fill=enviro2), width=0.5) +
+    geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color="white") +
+    scale_fill_manual(values=enviro2_colors) +
+    scale_x_discrete(expand=expansion(mult=0.2)) +
+    labs(x="Xenium validation context", y="n validated DEGs") +
+    theme_bw() +
+    theme(legend.position="None")
+
+ggsave(valid_genes_summary_bar_text_gap, filename=here(plot_dir, "valid_genes_summary_bar_text_Oligo.3_gap.png"), width=5, height=5)
+ggsave(valid_genes_summary_bar_text_gap, filename=here(plot_dir, "valid_genes_summary_bar_text_Oligo.3_gap.pdf"), width=5, height=5)
+
+
+valid_genes_summary_bar_text_enviro <- plot_data |>
     ggplot(aes(x=data_type_short)) +
     geom_bar(aes(fill=enviro2)) +
     geom_text(data=label_data, aes(y=y_pos, label=enviro2),
-              size=2.5, color="white", fontface="bold",) +
+              size=2.5, color="white", fontface="bold") +
     scale_fill_manual(values=enviro2_colors) +
     theme_bw() +
-    theme(legend.position = "None")
+    theme(legend.position="None")
 
-ggsave(valid_genes_summary_bar_text_enviro, filename = here(plot_dir, "valid_genes_summary_bar_text_enviro_Oligo.3.png"), width = 3, height = 4)
+ggsave(valid_genes_summary_bar_text_enviro, filename=here(plot_dir, "valid_genes_summary_bar_text_enviro_Oligo.3.png"), width=3, height=4)
 
 
 ## facet by datatype
 
-DE_valid_data |> 
-    filter(cell_type_anno == "Oligo.3", validate) |>
-    ggplot(aes(x = cluster)) +
-    geom_bar(aes(fill=cluster)) +
-    facet_wrap(~data_type, scales = "free_x", space = "free_x")  +
-    theme_bw() +
-    theme(axis.text.x=element_text(angle=45, hjust=1))
+# DE_valid_data |> 
+#     filter(cell_type_anno == "Oligo.3", validate) |>
+#     ggplot(aes(x = cluster)) +
+#     geom_bar(aes(fill=cluster)) +
+#     facet_wrap(~data_type, scales = "free_x", space = "free_x")  +
+#     theme_bw() +
+#     theme(axis.text.x=element_text(angle=45, hjust=1))
 
 #### Upset plot ####
 
