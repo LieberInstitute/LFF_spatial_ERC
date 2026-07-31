@@ -5,6 +5,7 @@
 library("tidyverse")
 library("here")
 library("SummarizedExperiment")
+library("patchwork")
 
 ## set plot dir
 data_dir <- here("processed-data", "13_compile_DGE", "16_all_mod_summary")
