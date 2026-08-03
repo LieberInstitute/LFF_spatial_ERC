@@ -133,9 +133,12 @@ compare_clus_validate |> count(DE_class_cluster, ONTOLOGY)
 saveRDS(compare_clus_validate, file = here(data_dir, "GO_compare_clus_sn_fine_Oligo3_validate.rds"))
 write.csv(compare_clus_validate, file = here(data_dir, "GO_results_sn_fine_Oligo3_validate.csv"), row.names = FALSE)
 
-## quick check: are BCAS1/ERBB3/LPAR1/UGT8 (validated, not previously
-## highlighted in text) driving any terms alongside the genes already named?
+## quick check: are BCAS1/ERBB3/LPAR1/UGT8 (validated, not previously highlighted in text) driving any terms alongside the genes already named?
 # compare_clus_validate |> filter(grepl("BCAS1|ERBB3|LPAR1|UGT8", geneID)) |> arrange(p.adjust)
+
+## load data 
+go_result_validate <- readRDS(here("processed-data", "13_compile_DGE", "02.1_GO_analysis_validate", "GO_result_sn_fine_Oligo3_validate.rds"))
+compare_clus_validate <- readRDS(here("processed-data", "13_compile_DGE", "02.1_GO_analysis_validate", "GO_compare_clus_sn_fine_Oligo3_validate.rds"))
 
 #### dot plots ####
 
@@ -190,6 +193,37 @@ walk2(go_result_validate, names(go_result_validate), function(gr, ont) {
 })
 dev.off()
 
+
+select_terms <- c("oligodendrocyte differentiation", # BP Down SOX10/LPAR1/OPALIN
+                  "myelination" ,# BP Down  "SOX10/LPAR1/BCAS1/UGT8/ERBB3"
+                  "regulation of membrane potential", #BP Up NTRK3/SLC4A4/LRRK2/SNTA1/SLC17A7
+                  "response to corticosterone", #BP Up FOS/NTRK3
+                  "presynaptic membrane", ## CC down NRXN3/PTPRD/LPAR1
+                  "glutamatergic synapse", ## CC up GPM6A/NPTXR/NTRK3/NRG3/LRRK2/CPNE4
+                  "transmembrane signaling receptor activity" ## MF down  NRXN3/PTPRD/LPAR1/ERBB3
+                  ) 
+
+compare_clus_select <- compare_clus_validate |> 
+    filter(Description %in% select_terms) |>
+    mutate(
+        GeneRatio_num = as.numeric(sub("/.*", "", GeneRatio)) / as.numeric(sub(".*/", "", GeneRatio)),
+        Description = factor(Description, levels = rev(select_terms))
+    )
+
+## build the combined dotplot
+go_select_plot <- compare_clus_select |> 
+    mutate(Description_genes = paste0(Description, "\n(", geneID,")"),
+           DE_class_simple = gsub("Oligo-3_validated_", "",DE_class_cluster)) |>
+    ggplot( aes(x = DE_class_simple, y = Description_genes)) +
+    geom_point(aes(size = GeneRatio_num, fill = p.adjust), shape = 21, color = "black", stroke = 0.4) +
+    facet_grid(ONTOLOGY ~ ., scales = "free_y", space = "free_y") +
+    scale_fill_gradient(low = "red", high = "blue", name = "p.adjust") +
+    scale_size_continuous(name = "GeneRatio", range = c(2, 8)) +
+    theme_bw(base_size = 11) +
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(x = NULL, y = NULL, title = "Xenium-validated Oligo.3 DEGs", subtitle = "Selected GO Terms")
+
+ggsave(go_select_plot, filename = here(plot_dir, "GO_dotplot_sn_fine_Oligo3_validate_select.png"), height = 5, width = 5)
 
 #### 
 
