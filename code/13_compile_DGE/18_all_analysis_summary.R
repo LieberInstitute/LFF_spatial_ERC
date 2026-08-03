@@ -63,6 +63,8 @@ count(DE_data, data_type)
 
 # DE_data |> filter(gene_name == "PLP1") |> arrange(vlmf_adj.P.Val)  # quick sanity check
 
+DE_data |> filter(grepl("WNT", gene_name)) |> arrange(vlmf_adj.P.Val) |> select(-(4:12)) # quick sanity check
+
 
 #### Anchor gene panel ####
 
@@ -77,7 +79,9 @@ anchor_genes <- c(
     "PLP1", "MAG", "MBP", "SOX10", "OPALIN",  # Oligo.3 myelination/differentiation program, downregulated
     "FOS", "TLR2", "STAT1", "STAT4",           # Oligo.3 inflammatory/interferon program, upregulated
     "CPNE4", ## L6 multi-cell enviroment gene
-    "FZD8", "CABLES1" #Mediation genes
+    "FZD8", "CABLES1", #Mediation genes
+    "MAPT", "MAP2",
+    "WNT7A"
 )
 
 
