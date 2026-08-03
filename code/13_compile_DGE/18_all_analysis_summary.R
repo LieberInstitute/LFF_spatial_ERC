@@ -338,7 +338,7 @@ cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the g
 dt_data <- DE_valid_data |> filter(data_type == dt)
 
 ## match the clusterd order from discovery dataset
-anchor_genes2 <- c("NPTXR", "CPNE4", "CABLES1", "FZD8", "FOS", "STAT4", "TLR2", "STAT1", "SOX10", "MBP", "MAL", "MAG", "KLK6", "OPALIN", "PLP1")
+anchor_genes2 <- c("NPTXR", "CPNE4", "CABLES1", "FZD8", "TLR2", "WNT7A", "MAP2", "STAT4", "FOS", "STAT1", "MAPT", "SOX10", "MBP", "MAL", "MAG", "KLK6", "OPALIN", "PLP1")
 
 ## full version - every cluster in this resolution
 logFC_Heatmap(
