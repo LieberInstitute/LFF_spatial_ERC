@@ -32,7 +32,7 @@ sce_pb <- readRDS(pb_fn)
 dim(sce_pb)
 table(sce_pb$registration_variable)
 
-## quick look at available metadata - check this against the assumptions below before trusting the full run
+## quick look at available metadata
 print(colnames(colData(sce_pb)))
 
 ## Clean up APOE carrier label (drop '+')
@@ -117,13 +117,10 @@ lmf_summary <- map_dfr(clusters, possibly(function(clus){
 
     message("Done - Save data")
     saveRDS(v.swt.e.tt, file = here(data_dir, sprintf("voomLmFit_ancestry_%s_%s.rds", opt$datatype, clus)))
-
-    return(purrr::map_int(v.swt.e.tt, ~sum(.x$adj.P.Val < 0.05)))
-
+    
+    return(map2_dfr(v.swt.e.tt, names(v.swt.e.tt), ~tibble(cluster = clus, contrast = .y, pval10 = sum(.x$P.Value < 0.10), FDR05 = sum(.x$adj.P.Val < 0.05))))
+    
 }, otherwise = NA))
-
-lmf_summary <- lmf_summary |>
-    add_column(cluster = clusters, .before = 1)
 
 write.csv(lmf_summary, file = here(data_dir, sprintf("vlmf_ancestry_FDR05_summary-%s.csv", opt$datatype)), row.names = FALSE)
 
