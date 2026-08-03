@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=10G
 #SBATCH --job-name=04.1_Clusterwise_voomLmFit_Xenium_ancestry
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
