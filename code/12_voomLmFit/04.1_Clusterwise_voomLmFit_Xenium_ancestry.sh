@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=10G
-#SBATCH --job-name=04_Clusterwise_voomLmFit_ancestry_Xenium
+#SBATCH --mem=25G
+#SBATCH --job-name=04.1_Clusterwise_voomLmFit_Xenium_ancestry
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
-#SBATCH -o logs/04_Clusterwise_voomLmFit_ancestry_Xenium.txt
-#SBATCH -e logs/04_Clusterwise_voomLmFit_ancestry_Xenium.txt
+#SBATCH -o logs/04.1_Clusterwise_voomLmFit_Xenium_ancestry.txt
+#SBATCH -e logs/04.1_Clusterwise_voomLmFit_Xenium_ancestry.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -21,13 +21,13 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.5
+module load conda_R/4.4
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 04_Clusterwise_voomLmFit_ancestry.R --datatype Xenium
+Rscript 04.1_Clusterwise_voomLmFit_Xenium_ancestry.R
 
 echo "**** Job ends ****"
 date
