@@ -79,6 +79,18 @@ single_vis_clus <- vis_clus(
 
 ggsave(single_vis_clus, filename = here(plot_dir, "xenium_spe_range_test.png")) 
 
+## run twice to get first weird first plot overwritten
+single_vis_clus <- vis_clus(
+    spe = spe_inrange,
+    point_size = 5,
+    colors = cell_type_colors$anno,
+    sampleid = "Br1039",
+    clustervar = "cell_type_anno",
+    datatype = "Xenium"
+)
+
+ggsave(single_vis_clus, filename = here(plot_dir, "xenium_spe_range_test.png")) 
+
 
 single_vis_clus <- vis_clus(
     spe = spe,
