@@ -30,15 +30,21 @@ neighbor_df_details <- neighbor_df_details[neighbor_df_details$BrNum == "Br1039"
 
 spe <- spe[, spe$sample_id == "Br1039"]
 
-spe_range <- function(target_barcode = "Br1039_bbfgbfki-1", radius = 50){
-
+get_coords <- function(target_barcode = "Br1039_bbfgbfki-1", radius = 50){
     target_coords <- spatialCoords(spe[, target_barcode])
     
     coord_limits <- list(x_max = target_coords[[1]] + radius,
                          x_min = target_coords[[1]] - radius,
                          y_max = target_coords[[2]] + radius,
                          y_min = target_coords[[2]] - radius
-                         )
+    )
+    
+    return(coord_limits)
+}
+
+spe_range <- function(target_barcode = "Br1039_bbfgbfki-1", radius = 50){
+
+    coord_limits <- get_coords(target_barcode, radius)
     
     
     x_in <- spatialCoords(spe)[, "x_centroid"] > coord_limits$x_min & spatialCoords(spe)[, "x_centroid"] < coord_limits$x_max
@@ -49,7 +55,9 @@ spe_range <- function(target_barcode = "Br1039_bbfgbfki-1", radius = 50){
 }
 
 neighbor_df_details |>
-    filter(neighbor_cell_type == "Astro.1", dist_class == "near",APOE_level == "high")
+    filter(neighbor_cell_type == "Astro.1", 
+           dist_class == "near",
+           APOE_level == "high")
 
 
 O3_pick <- "Br1039_bbfgbfki-1"
@@ -57,6 +65,7 @@ O3_pick <- "Br1039_bbfgbfki-1"
 
 neighbor_df_details |> filter(reference_barcode == O3_pick)
 
+coord_limits <- get_coords(O3_pick, radius = 80)
 spe_inrange <- spe_range(O3_pick, radius = 80)
 
 single_vis_clus <- vis_clus(
