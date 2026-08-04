@@ -37,7 +37,7 @@ message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_postQC"))
 
 ## load marker_reduced_dims
-load(here(data_dir, "erc_Marker_reducedDims.Rdata"), verbose = TRUE)
+load(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker", "erc_Marker_reducedDims.Rdata"), verbose = TRUE)
 
 reducedDim(spe, "HARMONY") <- marker_reduced_dims$marker_harmony
 reducedDim(spe, "PCA") <- marker_reduced_dims$marker_pca
