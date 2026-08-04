@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p katun
-#SBATCH --mem=25G
+#SBATCH --mem=150G
 #SBATCH --job-name=05_BayesSpace_Markers_cluster_offset
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
