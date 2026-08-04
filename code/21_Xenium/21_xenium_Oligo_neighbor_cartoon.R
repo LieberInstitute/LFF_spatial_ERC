@@ -10,8 +10,6 @@ library("here")
 library("sessioninfo")
 library("spatialLIBD")
 
-
-
 plot_dir <- here("plots", "21_Xenium", "21_xenium_Oligo_neighbor_cartoon")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
@@ -75,7 +73,7 @@ ggsave(single_vis_clus, filename = here(plot_dir, "xenium_spe_range_test.png"))
 
 single_vis_clus <- vis_clus(
     spe = spe,
-    point_size = 1,
+    point_size = 1.2,
     colors = cell_type_colors$anno,
     sampleid = "Br1039",
     clustervar = "cell_type_anno",
@@ -108,6 +106,37 @@ single_vis_apoe <- vis_gene(
 )
 
 ggsave(single_vis_apoe, filename = here(plot_dir, "xenium_spe_range_APOE.png")) 
+
+#### Plot SpX with same dims ###
+
+spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
+
+single_vis_clus_spx <- vis_clus(
+    spe = spe,
+    point_size = 1.5,
+    colors = metadata(spe)$SpX_colors,
+    sampleid = "Br1039",
+    clustervar = "SpX",
+    datatype = "Xenium",
+    guide_point_size = 3
+) +
+    geom_rect(xmin = coord_limits$x_min,
+              xmax = coord_limits$x_max,
+              ymin = coord_limits$y_min,
+              ymax = coord_limits$y_max,
+              color = "black",  
+              fill = "#00000000")
+
+ggsave(single_vis_clus_spx, filename = here(plot_dir, "xenium_spe_Br1039_vis_SpX.png"), height = 10, width = 10) 
+
+# slurmjobs::job_single('21_xenium_Oligo_neighbor_cartoon', create_shell = TRUE, memory = '200G', command = "Rscript 21_xenium_Oligo_neighbor_cartoon.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
 
 
