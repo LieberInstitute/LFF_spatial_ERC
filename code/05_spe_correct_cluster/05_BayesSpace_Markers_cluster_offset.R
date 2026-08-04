@@ -10,15 +10,15 @@ library("tidyverse")
 library("HDF5Array")
 library("here")
 library("sessioninfo")
+library("getopt")
 
 ## Choose k
-k <- as.numeric(
-    #   Only one of these environment variables will be defined, so grab the
-    #   defined one (handle SGE or SLURM)
-    paste0(Sys.getenv("SLURM_ARRAY_TASK_ID"), Sys.getenv("SGE_TASK_ID"))
+spec <- matrix(
+    c( "k", "k", "2", "numeric", "Number of clusters"),
+    ncol = 5, byrow = TRUE
 )
 
-# k <-9
+opt <- getopt(spec)
 
 k_nice <- sprintf("k%02d", k)
 message("Run BayesSpace: ", k_nice)
@@ -56,10 +56,6 @@ auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
 names(auto_offset_row) <- unique(spe$sample_id)
 spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
 spe$col <- colData(spe)$array_col
-
-# ## Fix colaname for row and col
-# spe$row <- spe$array_row
-# spe$col <- spe$array_col
 
 spe$pxl_col_in_fullres <- spatialCoords(spe)[,'pxl_col_in_fullres']
 spe$pxl_row_in_fullres <- spatialCoords(spe)[,'pxl_row_in_fullres']
