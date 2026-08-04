@@ -19,6 +19,8 @@ spec <- matrix(
 )
 
 opt <- getopt(spec)
+# k<- 9
+k <- opt$k
 
 k_nice <- sprintf("k%02d", k)
 message("Run BayesSpace: ", k_nice)
