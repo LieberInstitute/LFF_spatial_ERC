@@ -42,7 +42,7 @@ names(vlmf_fn) <- map_chr(vlmf_fn, ~gsub("voomLmFit_ancestry_Xenium_|.rds", "", 
 vlmf_data <- map(vlmf_fn, readRDS)
 
 ## what contrasts actually came out of the voomLmFit step (should be carrier_AA/carrier_EA)
-message("Contrasts found in Xenium ancestry results: ", paste(contrast_names, collapse = ", "))
+# message("Contrasts found in Xenium ancestry results: ", paste(contrast_names, collapse = ", "))
 
 vlmf_data_tb <- map_dfr(vlmf_data, ~do.call("rbind", .x)) |>
     dplyr::rename(vlmf_logFC = logFC,
