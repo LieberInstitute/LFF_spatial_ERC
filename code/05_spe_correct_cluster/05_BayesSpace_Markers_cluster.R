@@ -55,6 +55,22 @@ metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 spe$row <- spe$array_row
 spe$col <- spe$array_col
 
+## do offset so we can run BayesSpace
+auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
+names(auto_offset_row) <- unique(spe$sample_id)
+spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
+spe$col <- colData(spe)$array_col
+
+
+if(k == 2){ ## just plot this when k=2
+    spe$pxl_col_in_fullres <- spatialCoords(spe)[,'pxl_col_in_fullres']
+    spe$pxl_row_in_fullres <- spatialCoords(spe)[,'pxl_row_in_fullres']
+    
+    bayes_space_clusterPlot <- clusterPlot(spe, "sample_id", color = NA)
+    ggsave(bayes_space_clusterPlot, filename = here(plot_dir, "bayes_space_clusterPlot_offset.png"))
+    
+}
+
 ## Run BayesSpace
 message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = HARMONY")
 spe <- BayesSpace::spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 20000)
