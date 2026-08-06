@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -p katun
-#SBATCH --mem=100G
+#SBATCH --mem=200G
 #SBATCH --job-name=05_BayesSpace_SVGm
 #SBATCH -c 1
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=2-10%20
+#SBATCH --array=2-20%10
 
 ## Explicitly pipe script output to a log
 log_path=logs/05_BayesSpace_SVGm_200k_k${SLURM_ARRAY_TASK_ID}.txt

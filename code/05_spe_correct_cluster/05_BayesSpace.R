@@ -66,9 +66,12 @@ if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
-## Fix colaname for row and col
-spe$row <- spe$array_row
-spe$col <- spe$array_col
+
+## do offset so we can run BayesSpace
+auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
+names(auto_offset_row) <- unique(spe$sample_id)
+spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
+spe$col <- colData(spe)$array_col
 
 ## Run BayesSpace
 message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
