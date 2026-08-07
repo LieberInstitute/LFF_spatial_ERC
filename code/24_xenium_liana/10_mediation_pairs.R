@@ -302,4 +302,96 @@ pdf(file.path(plot_dir, 'oligo3_ERBB3_scatter_difference.pdf'), width = 10)
 print(p)
 dev.off()
 
+################################################################################
+#   APOE as ligand and any pair of cell types
+################################################################################
+
+#-------------------------------------------------------------------------------
+#   Most-different-pair distribution plot
+#-------------------------------------------------------------------------------
+
+#   Only pair is APOE->TREM2
+score_comp_df |>
+    filter(ligand_complex == 'APOE') |>
+    top_diff_density(
+        score_comp_df, cell_type_colors$anno,
+        file.path(plot_dir, 'APOE_difference_distribution.pdf'),
+        label_LR = FALSE
+    )
+
+#-------------------------------------------------------------------------------
+#   Global scores across all samples
+#-------------------------------------------------------------------------------
+
+p = score_global_df |>
+    #   Only two ligands for these criteria
+    filter(ligand_complex == 'APOE') |>
+    mutate(lr_pair = paste0(ligand_complex, '->', receptor_complex)) |>
+    group_by(lr_pair) |>
+    slice_max(lr_mean, n = 5, with_ties = FALSE) |>
+    arrange(desc(lr_mean), .by_group = TRUE) |>
+    mutate(source_plot = paste(source, lr_pair, sep = '___')) |>
+    ungroup() |>
+    mutate(source_plot = factor(source_plot, levels = unique(source_plot))) |>
+    ggplot(aes(x = source_plot, y = lr_mean, fill = source)) +
+        geom_col() +
+        facet_wrap(~lr_pair, scales = 'free_x') +
+        theme_bw(base_size = 20) +
+        guides(fill = 'none') +
+        labs(x = 'Source Cell Type', y = 'Mean LR Score') +
+        scale_fill_manual(values = cell_type_colors$anno) +
+        scale_x_discrete(labels = function(x) sub('___.*', '', x)) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+pdf(file.path(plot_dir, 'APOE_bar.pdf'))
+print(p)
+dev.off()
+
+score_global_df |>
+    filter(ligand_complex == 'APOE') |>
+    slice_max(lr_mean, with_ties = FALSE, n = 1) |>
+    pair_density(
+        score_global_df, file.path(plot_dir, 'APOE_distribution.pdf')
+    )
+
+#-------------------------------------------------------------------------------
+#   E4+ vs E2+ comparison
+#-------------------------------------------------------------------------------
+
+plot_df = score_comp_df |>
+    filter(ligand_complex == 'APOE') |>
+    mutate(
+        cell_types = paste(source, '->', target),
+        lr_pair = paste0(ligand_complex, '->', receptor_complex)
+    )
+
+p = ggplot(
+        plot_df, aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`, shape = lr_pair)
+    ) +
+    geom_point(color = 'grey70') +
+    geom_point(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(color = source),
+        size = 3
+    ) +
+    geom_text_repel(
+        data = plot_df |>
+            slice_max(abs(lr_mean_diff), n = 5, with_ties = FALSE),
+        aes(label = cell_types, color = source),
+        size = 6
+    ) +
+    geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'red') +
+    theme_bw(base_size = 20) +
+    guides(color = 'none') +
+    labs(
+        x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
+        shape = 'L->R'
+    ) +
+    scale_color_manual(values = cell_type_colors$anno) +
+    scale_x_log10() +
+    scale_y_log10()
+pdf(file.path(plot_dir, 'APOE_scatter_difference.pdf'), width = 10)
+print(p)
+dev.off()
+
 session_info()
