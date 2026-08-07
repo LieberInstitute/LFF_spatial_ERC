@@ -54,6 +54,60 @@ pair_density = function(pair_df, score_df, plot_path) {
     dev.off()
 }
 
+top_diff_density = function(
+        filtered_df, full_df, colors, plot_path, n = 5, label_LR = TRUE
+    ) {
+    top_pairs = filtered_df |>
+        slice_max(abs_lr_mean_diff, n = n, with_ties = FALSE)
+
+    if (label_LR) {
+        top_pairs = top_pairs |>
+            mutate(
+                label = sprintf(
+                    '%s->%s\n%s->%s',
+                    source, target, ligand_complex, receptor_complex
+                )
+            )
+    } else {
+        top_pairs = top_pairs |>
+            mutate(label = sprintf('%s->%s', source, target))
+    }
+
+    pair_colors = colors[top_pairs$source]
+
+    dens = density(full_df$lr_mean_diff, na.rm = TRUE)
+    y_max = max(dens$y)
+
+    # Assign y positions linearly spaced top-to-bottom, ordered by descending x
+    y_positions = seq(0.9 * y_max, 0.2 * y_max, length.out = nrow(top_pairs))
+    top_pairs = top_pairs |>
+        arrange(desc(lr_mean_diff)) |>
+        mutate(y_pos = y_positions)
+
+    p = ggplot(full_df, aes(x = lr_mean_diff)) +
+        geom_density(fill = 'steelblue', alpha = 0.5) +
+        geom_vline(
+            data = top_pairs,
+            aes(xintercept = lr_mean_diff, color = source),
+            linetype = 'dashed', linewidth = 1
+        ) +
+        ggrepel::geom_label_repel(
+            data = top_pairs,
+            aes(x = lr_mean_diff, y = y_pos, label = label, color = source),
+            size = 6, inherit.aes = FALSE,
+            direction = 'x', segment.size = 0.4, min.segment.length = 0
+        ) +
+        coord_cartesian(ylim = c(0, y_max)) +
+        scale_color_manual(values = pair_colors) +
+        labs(x = 'LR Mean % Difference', y = 'Density') +
+        theme_bw(base_size = 18) +
+        theme(legend.position = 'none')
+
+    pdf(plot_path)
+    print(p)
+    dev.off()
+}
+
 ################################################################################
 #   Process significant pairs
 ################################################################################
@@ -73,6 +127,18 @@ load(colors_path)
 ################################################################################
 #   Astros as receiver; FZD8 as receptor
 ################################################################################
+
+#-------------------------------------------------------------------------------
+#   Most-different-pair distribution plot
+#-------------------------------------------------------------------------------
+
+score_comp_df |>
+    filter(grepl('^Astro', target), receptor_complex == 'FZD8') |>
+    top_diff_density(
+        score_comp_df, cell_type_colors$anno,
+        file.path(plot_dir, 'astro_FZD8_difference_distribution.pdf'),
+        label_LR = FALSE
+    )
 
 #-------------------------------------------------------------------------------
 #   Global scores across all samples
@@ -150,12 +216,24 @@ message(
 ################################################################################
 
 #-------------------------------------------------------------------------------
+#   Most-different-pair distribution plot
+#-------------------------------------------------------------------------------
+
+score_comp_df |>
+    filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
+    top_diff_density(
+        score_comp_df, cell_type_colors$anno,
+        file.path(plot_dir, 'oligo3_ERBB3_difference_distribution.pdf'),
+        label_LR = TRUE
+    )
+
+#-------------------------------------------------------------------------------
 #   Global scores across all samples
 #-------------------------------------------------------------------------------
 
 p = score_global_df |>
     #   Only two ligands for these criteria
-    filter('Oligo.3' == target, receptor_complex == 'ERBB3') |>
+    filter(target == 'Oligo.3', receptor_complex == 'ERBB3') |>
     mutate(lr_pair = paste0(ligand_complex, '->', receptor_complex)) |>
     group_by(lr_pair) |>
     slice_max(lr_mean, n = 5, with_ties = FALSE) |>
