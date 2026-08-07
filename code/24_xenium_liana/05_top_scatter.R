@@ -217,15 +217,24 @@ p = unfiltered_sig_df |>
             NA_character_
         )
     ) |>
-    ggplot(aes(x = `lr_mean_E2+`, y = `lr_mean_E4+`, color = is_nom_sig)) +
-        geom_point(alpha = 0.5) +
+    ggplot(
+            aes(
+                x = `lr_mean_E2+`, y = `lr_mean_E4+`, color = is_nom_sig,
+                alpha = is_nom_sig
+            )
+        ) +
+        geom_point() +
         geom_text_repel(aes(label = pair_label), size = 4, na.rm = TRUE) +
         geom_abline(
             slope = 1, intercept = 0, linetype = 'dashed', color = 'black'
         ) +
         facet_wrap(~facet) +
         theme_bw(base_size = 20) +
-        guides(color = guide_legend(override.aes = list(alpha = 1))) +
+        scale_alpha_manual(values = c('FALSE' = 0.5, 'TRUE' = 1)) +
+        guides(
+            color = guide_legend(override.aes = list(alpha = 1)),
+            alpha = 'none'
+        ) +
         labs(
             x = 'Mean LR Score (E2+)', y = 'Mean LR Score (E4+)',
             color = 'p < 0.01'
@@ -242,10 +251,17 @@ dev.off()
 ################################################################################
 
 p = unfiltered_sig_df |>
-    ggplot(aes(x = avg_lr_mean, y = lr_mean_diff, color = is_nom_sig)) +
-        geom_point(alpha = 0.4) +
+    ggplot(
+            aes(
+                x = avg_lr_mean, y = lr_mean_diff, color = is_nom_sig,
+                alpha = is_nom_sig
+            )
+        ) +
+        geom_point() +
         theme_bw(base_size = 18) +
         scale_color_manual(values = c('FALSE' = 'grey60', 'TRUE' = 'red3')) +
+        scale_alpha_manual(values = c('FALSE' = 0.3, 'TRUE' = 1)) +
+        guides(alpha = 'none') +
         labs(
             x = 'Mean LR Score (Average)', y = 'LR Score Difference (%)',
             color = 'p < 0.01'
