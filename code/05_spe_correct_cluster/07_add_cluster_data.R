@@ -19,27 +19,14 @@ colData(spe)$APOE_carrier = ifelse(grepl("E2", spe$APOE), "E2+", "E4+")
 table(spe$APOE_carrier)
 
 #### Load BayesSpace clustering data ####
-bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm", "clusters_BayesSpace"),
+bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm_200k", "clusters_BayesSpace"),
            recursive = TRUE,
            full.names = TRUE)
 
+map(bayes_cluster_fn, ~as.Date(file.info(.x)$mtime))
+
 bayes_clusters <- map2(bayes_cluster_fn, map(str_split(bayes_cluster_fn, "/"), 12), function(file, name){
-    sp = sprintf("Sp%02d",parse_number(name))
-    clus <- read.csv(file) |>
-        mutate(cluster = factor(paste0(sp, "D", str_pad(cluster, 2,  pad = "0"))))
-    
-    colnames(clus)[2] <- name
-    return(clus)
-})
-
-bayes_cluster_markers_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker"),
-                                       recursive = TRUE,
-                                       full.names = TRUE,
-                                       pattern = "clusters.csv")
-## only select k02 and k11
-bayes_cluster_markers_fn <- bayes_cluster_markers_fn[grepl("k02|k11", bayes_cluster_markers_fn)]
-
-bayes_clusters_markers <- map2(bayes_cluster_markers_fn, map(str_split(bayes_cluster_markers_fn, "/"), 11), function(file, name){
+    name <- gsub("_200k", "", name)
     sp = sprintf("Sp%02d",parse_number(name))
     clus <- read.csv(file) |>
         mutate(cluster = factor(paste0(sp, "D", str_pad(cluster, 2,  pad = "0"))))
@@ -49,7 +36,7 @@ bayes_clusters_markers <- map2(bayes_cluster_markers_fn, map(str_split(bayes_clu
 })
 
 
-bayes_clusters_tab <- purrr::reduce(c(bayes_clusters, bayes_clusters_markers), dplyr::left_join, by = c("key"))
+bayes_clusters_tab <- purrr::reduce(bayes_clusters, dplyr::left_join, by = c("key"))
 head(bayes_clusters_tab)
 
 ## fix double BrNum in key
@@ -62,14 +49,16 @@ dim(bayes_clusters_tab)
 # [1] 122202     29
 
 #### Add annotations ####
-## TODO add to metadata
-load(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"), verbose = TRUE)
-# cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot
-
-cluster_anno_k9 <- cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot |>
-    mutate(BayesSpace_SVGm_k09_anno = paste0(layer_label_simple, "~", cluster))
-
-bayes_clusters_tab$BayesSpace_SVGm_k09_anno <- cluster_anno_k9$BayesSpace_SVGm_k09_anno[match(bayes_clusters_tab$BayesSpace_SVGm_k09, cluster_anno_k9$cluster)]
+if(FALSE){
+    ## TODO add to metadata
+    load(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"), verbose = TRUE)
+    # cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot
+    
+    cluster_anno_k9 <- cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot |>
+        mutate(BayesSpace_SVGm_k09_anno = paste0(layer_label_simple, "~", cluster))
+    
+    bayes_clusters_tab$BayesSpace_SVGm_k09_anno <- cluster_anno_k9$BayesSpace_SVGm_k09_anno[match(bayes_clusters_tab$BayesSpace_SVGm_k09, cluster_anno_k9$cluster)]
+}
 
 ## bind tables
 colData(spe) <- cbind(colData(spe), bayes_clusters_tab)
