@@ -1,11 +1,11 @@
 **** Job starts ****
-Thu Aug  6 03:28:05 PM EDT 2026
+Thu Aug  6 10:45:05 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 34692933
+Job id: 34694174
 Job name: 05_BayesSpace_SVGm
-Node name: compute-166
-Task id: 8
+Node name: compute-168
+Task id: 12
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
@@ -163,21 +163,18 @@ The following object is masked from ‘package:rhdf5’:
 Load spe from:spe_PCA_SVG
 Dimension Reduction:HARMONY
 Output name:SVGm_200k
-k:08
-2026-08-06 15:28:27.086436 - Load HDF5 SPE
-2026-08-06 15:31:38.376747 - Running spatialCluster: k=8, dimred = HARMONY
+k:12
+2026-08-06 22:45:27.984825 - Load HDF5 SPE
+2026-08-06 22:48:47.612034 - Running spatialCluster: k=12, dimred = HARMONY
 Neighbors were identified for 122200 out of 122202 spots.
 Fitting model...
 Calculating labels using iterations 1000 through 20000.
-2026-08-07 03:10:11.017418 - Format and Export
+2026-08-07 11:04:10.896093 - Format and Export
 
-    1     2     3     4     5     6     7     8 
-31473 17629 24306 17072  5092 12568 12349  1713 
+    1     2     3     4     5     6     7     8     9    10    11    12 
+18341 19904 15829  9565 13433 13388  5614 10406  4227  1742  1399  8354 
 Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
-Warning message:
-In dir.create(outdir, recursive = TRUE) :
-  '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/05_BayesSpace/clusters_BayesSpace-SVGm_200k/clusters_BayesSpace/BayesSpace_SVGm_200k_k08' already exists
-2026-08-07 03:10:11.702518 - Visualize clusters
+2026-08-07 11:04:11.581977 - Visualize clusters
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
@@ -210,9 +207,9 @@ Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2026-08-07 03:10:59 EDT"
+[1] "2026-08-07 11:05:02 EDT"
      user    system   elapsed 
-41857.176   161.793 42173.046 
+44036.257   196.083 44395.307 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -415,4 +412,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Aug  7 03:11:02 AM EDT 2026
+Fri Aug  7 11:05:05 AM EDT 2026

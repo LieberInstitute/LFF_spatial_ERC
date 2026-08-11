@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Nov 19 10:55:00 AM EST 2024
+Mon Aug 10 10:28:18 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 10790694
+Job id: 34802511
 Job name: 05_BayesSpace_Markers_cluster
-Node name: compute-124
+Node name: compute-168
 Task id: 6
 Loading conda_R/4.4
 
@@ -162,24 +162,27 @@ The following object is masked from ‘package:rhdf5’:
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Run BayesSpace: k06
-2024-11-19 10:55:14.8154 - Load HDF5 SPE
+2026-08-10 22:28:34.118061 - Load HDF5 SPE
 Loading objects:
   marker_reduced_dims
-2024-11-19 10:57:21.104344 - Set Up Clustering
-2024-11-19 10:57:21.216553 - Running spatialCluster: k=6, dimred = HARMONY
-Neighbors were identified for 122202 out of 122202 spots.
+2026-08-10 22:30:50.788471 - Set Up Clustering
+2026-08-10 22:30:50.990822 - Running spatialCluster: k=6, dimred = HARMONY
+Neighbors were identified for 122200 out of 122202 spots.
 Fitting model...
 Calculating labels using iterations 1000 through 20000.
-2024-11-19 20:09:11.354042 - Format and Export
+2026-08-11 05:52:16.73337 - Format and Export
 
-     1      2      3      4      5      6 
-  2907   5567   2104 100217   7023   4384 
+    1     2     3     4     5     6 
+25806 40147  6426 27499 13043  9281 
 Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
-2024-11-19 20:09:12.783926 - Visualize clusters
+Warning message:
+In dir.create(outdir, recursive = TRUE) :
+  '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/05_BayesSpace_Marker/BayesSpace_Markers_k06/BayesSpace_Markers_k06' already exists
+2026-08-11 05:52:17.184016 - Visualize clusters
 [1] "Reproducibility information:"
-[1] "2024-11-19 20:09:45 EST"
+[1] "2026-08-11 05:52:33 EDT"
      user    system   elapsed 
-32572.957   433.154 33284.398 
+26458.627   105.799 26653.505 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.0 Patched (2024-05-22 r86590)
@@ -190,7 +193,7 @@ Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite i
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-11-19
+ date     2026-08-11
  pandoc   3.1.13 @ /jhpce/shared/community/core/conda_R/4.4/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -376,4 +379,4 @@ Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite i
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Nov 19 08:09:51 PM EST 2024
+Tue Aug 11 05:52:34 AM EDT 2026

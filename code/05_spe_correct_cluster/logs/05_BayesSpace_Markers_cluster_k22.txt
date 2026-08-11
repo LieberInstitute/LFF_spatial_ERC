@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Nov 19 06:23:35 PM EST 2024
+Tue Aug 11 05:18:39 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 10793621
+Job id: 34807022
 Job name: 05_BayesSpace_Markers_cluster
-Node name: compute-154
+Node name: compute-140
 Task id: 22
 Loading conda_R/4.4
 
@@ -162,12 +162,10 @@ The following object is masked from ‘package:rhdf5’:
 
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Run BayesSpace: k22
-2024-11-19 18:23:49.051778 - Load HDF5 SPE
+2026-08-11 05:18:54.801064 - Load HDF5 SPE
 Loading objects:
   marker_reduced_dims
-2024-11-19 18:25:48.460224 - Set Up Clustering
-2024-11-19 18:25:48.556699 - Running spatialCluster: k=22, dimred = HARMONY
-Neighbors were identified for 122202 out of 122202 spots.
+2026-08-11 05:21:17.880637 - Set Up Clustering
+2026-08-11 05:21:18.102664 - Running spatialCluster: k=22, dimred = HARMONY
+Neighbors were identified for 122200 out of 122202 spots.
 Fitting model...
-Calculating labels using iterations 1000 through 20000.
-/var/spool/slurm/d/job10793621/slurm_script: line 39: 2242445 Killed                  Rscript 05_BayesSpace_Markers_cluster.R
