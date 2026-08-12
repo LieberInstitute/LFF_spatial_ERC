@@ -1,11 +1,11 @@
 **** Job starts ****
-Tue Aug 11 07:45:18 PM EDT 2026
+Tue Aug 11 08:42:39 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 34825245
+Job id: 34825664
 Job name: 05_BayesSpace_SVGm
-Node name: compute-176
-Task id: 23
+Node name: compute-166
+Task id: 29
 Unloading conda_R/4.5
 Loading conda_R/4.3.x
 
@@ -168,23 +168,20 @@ The following object is masked from ‘package:rhdf5’:
 Load spe from:spe_PCA_SVG
 Dimension Reduction:HARMONY
 Output name:SVGm
-k:23
-2026-08-11 19:45:38.566057 - Load HDF5 SPE
-2026-08-11 19:47:53.813351 - Running spatialCluster: k=23, dimred = HARMONY
+k:29
+2026-08-11 20:42:53.615803 - Load HDF5 SPE
+2026-08-11 20:44:46.685348 - Running spatialCluster: k=29, dimred = HARMONY
 Neighbors were identified for 122200 out of 122202 spots.
 Fitting model...
 Calculating labels using iterations 1000 through 20000.
-2026-08-12 04:00:06.573109 - Format and Export
+2026-08-12 04:05:47.926996 - Format and Export
 
-    1     2     3     4     5     6     7     8     9    10    11    12    13 
- 9016  8053 11082  3796  5155  3691  9351  4095  5630  5470  2177  4441  7355 
-   14    15    16    17    18    19    20    21    22    23 
- 6394  4146  3034  6522  5160  1878  5218  1183  6022  3333 
+   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
+2943 5532 7921 3477 4224 3623 6522 5489 3691 3878 5367 5575 3791 2178 2299 4624 
+  17   18   19   20   21   22   23   24   25   26   27   28   29 
+5989 3041 3041 7385 5523 3115 3681 3139 1962 4420 1167 6631 1974 
 Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
-Warning message:
-In dir.create(outdir, recursive = TRUE) :
-  '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/05_BayesSpace/clusters_BayesSpace-SVGm/clusters_BayesSpace/BayesSpace_SVGm_k23' already exists
-2026-08-12 04:00:07.24215 - Visualize clusters
+2026-08-12 04:05:48.338741 - Visualize clusters
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
@@ -217,9 +214,9 @@ Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2026-08-12 04:00:55 EDT"
+[1] "2026-08-12 04:06:23 EDT"
      user    system   elapsed 
-29523.923   104.506 29736.658 
+26415.396   119.509 26623.444 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -422,4 +419,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Aug 12 04:00:59 AM EDT 2026
+Wed Aug 12 04:06:25 AM EDT 2026

@@ -1,16 +1,16 @@
 **** Job starts ****
-Mon Nov  4 12:32:53 PM EST 2024
+Tue Aug 11 01:52:49 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 10413075
+Job id: 34820428
 Job name: 05_BayesSpace_SVGm
-Node name: compute-167
+Node name: compute-166
 Task id: 15
-Unloading conda_R/4.4
+Unloading conda_R/4.5
 Loading conda_R/4.3.x
 
 The following have been reloaded with a version change:
-  1) conda/3-24.3.0 => conda/3-23.3.1     2) conda_R/4.4 => conda_R/4.3.x
+  1) conda/3-24.3.0 => conda/3-23.3.1     2) conda_R/4.5 => conda_R/4.3.x
 
 
 Currently Loaded Modules:
@@ -169,19 +169,22 @@ Load spe from:spe_PCA_SVG
 Dimension Reduction:HARMONY
 Output name:SVGm
 k:15
-2024-11-04 12:33:05.809012 - Load HDF5 SPE
-2024-11-04 12:34:25.914648 - Running spatialCluster: k=15, dimred = HARMONY
-Neighbors were identified for 122202 out of 122202 spots.
+2026-08-11 13:53:03.210929 - Load HDF5 SPE
+2026-08-11 13:54:44.322622 - Running spatialCluster: k=15, dimred = HARMONY
+Neighbors were identified for 122200 out of 122202 spots.
 Fitting model...
-Calculating labels using iterations 1000 through 10000.
-2024-11-04 15:29:16.832633 - Format and Export
+Calculating labels using iterations 1000 through 20000.
+2026-08-11 19:45:39.256241 - Format and Export
 
     1     2     3     4     5     6     7     8     9    10    11    12    13 
- 8092 12145 10736 13055  7258  9640  5020 10338  4917  6025  1839  7987  8052 
+11313 16654 15373  3968 11967  9624  4733 10038  4109  1869  1396  8858  5930 
    14    15 
-12281  4817 
+11569  4801 
 Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
-2024-11-04 15:29:17.130695 - Visualize clusters
+Warning message:
+In dir.create(outdir, recursive = TRUE) :
+  '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/05_spe_correct_cluster/05_BayesSpace/clusters_BayesSpace-SVGm/clusters_BayesSpace/BayesSpace_SVGm_k15' already exists
+2026-08-11 19:45:39.747804 - Visualize clusters
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
@@ -214,9 +217,9 @@ Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2024-11-04 15:29:40 EST"
+[1] "2026-08-11 19:46:13 EDT"
      user    system   elapsed 
-10494.450    90.738 10605.784 
+21055.581    94.649 21202.990 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -227,7 +230,7 @@ Saving 7 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-11-04
+ date     2026-08-11
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -419,4 +422,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Nov  4 03:29:41 PM EST 2024
+Tue Aug 11 07:46:15 PM EDT 2026

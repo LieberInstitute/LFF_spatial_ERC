@@ -1,12 +1,11 @@
 **** Job starts ****
-Wed Nov 20 04:43:59 PM EST 2024
+Mon Aug 10 08:14:02 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 10814610
+Job id: 34771153
 Job name: 05.5_qTune
-Node name: compute-169
+Node name: compute-149
 Task id: 
-Unloading conda_R/4.4
 Loading conda_R/4.4
 
 Currently Loaded Modules:
@@ -134,11 +133,11 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Load spe from:spe_PCA_SVG
 Dimension Reduction:HARMONY
 Output name:SVGm
-2024-11-20 16:44:11.799725 - Load HDF5 SPE
-2024-11-20 16:46:02.604884 - Set Up Clustering
+2026-08-10 20:14:18.5422 - Load HDF5 SPE
+2026-08-10 20:16:47.34724 - Set Up Clustering
 Use 'HARMONY' as 'PCA'
-2024-11-20 16:46:02.797919 - qTune
-Neighbors were identified for 122202 out of 122202 spots.
+2026-08-10 20:16:47.621392 - qTune
+Neighbors were identified for 122200 out of 122202 spots.
 Fitting model...
 Fitting model...
 Fitting model...
@@ -167,40 +166,40 @@ Fitting model...
 Fitting model...
 Fitting model...
     q   loglik
-1   2 -2736658
-2   3 -2751060
-3   4 -2772929
-4   5 -2773228
-5   6 -2803933
-6   7 -2829129
-7   8 -2864629
-8   9 -3008368
-9  10 -2994293
-10 11 -2993969
-11 12 -2982492
-12 13 -2988604
-13 14 -2977595
-14 15 -2973135
-15 16 -2969702
-16 17 -2965040
-17 18 -2958620
-18 19 -2955626
-19 20 -2955662
-20 21 -2944345
-21 22 -2942060
-22 23 -2941155
-23 24 -2940736
-24 25 -2930912
-25 26 -2931963
-26 27 -2929195
-27 28 -2927239
-2024-11-21 04:17:42.414292 - Done qTune, save and plot
+1   2 -2675311
+2   3 -2633385
+3   4 -2611934
+4   5 -2605591
+5   6 -2589322
+6   7 -2571361
+7   8 -2568413
+8   9 -2569619
+9  10 -2558919
+10 11 -2562950
+11 12 -2565275
+12 13 -2576184
+13 14 -2576832
+14 15 -2581528
+15 16 -2577548
+16 17 -2583643
+17 18 -2590268
+18 19 -2590463
+19 20 -2595658
+20 21 -2581354
+21 22 -2592021
+22 23 -2598941
+23 24 -2597399
+24 25 -2595549
+25 26 -2604412
+26 27 -2604600
+27 28 -2608166
+2026-08-11 08:01:01.125535 - Done qTune, save and plot
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2024-11-21 04:17:42 EST"
+[1] "2026-08-11 08:01:01 EDT"
      user    system   elapsed 
-41190.140   319.349 41622.961 
+42184.709    75.084 42417.603 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.0 Patched (2024-05-22 r86590)
@@ -211,7 +210,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-11-21
+ date     2026-08-11
  pandoc   3.1.13 @ /jhpce/shared/community/core/conda_R/4.4/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -387,4 +386,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Nov 21 04:17:43 AM EST 2024
+Tue Aug 11 08:01:02 AM EDT 2026
