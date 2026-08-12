@@ -335,7 +335,10 @@ walk(c("ALL", "Vasc", "GM", "WM"), function(reg){
 
 library(ComplexHeatmap)
 
-Heatmap(z_mat, cluster_columns = FALSE)
+z_mat2 <- z_mat[, colSums(is.na(z_mat)) < nrow(z_mat)-5]
+
+Heatmap(z_mat2)
+Heatmap(z_mat2, cluster_columns = FALSE)
 
 
 #### Visualize in Sections ####
