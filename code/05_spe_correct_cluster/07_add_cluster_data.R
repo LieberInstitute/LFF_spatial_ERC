@@ -19,14 +19,13 @@ colData(spe)$APOE_carrier = ifelse(grepl("E2", spe$APOE), "E2+", "E4+")
 table(spe$APOE_carrier)
 
 #### Load BayesSpace clustering data ####
-bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm_200k", "clusters_BayesSpace"),
+bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm", "clusters_BayesSpace"),
            recursive = TRUE,
            full.names = TRUE)
 
 map(bayes_cluster_fn, ~as.Date(file.info(.x)$mtime))
 
 bayes_clusters <- map2(bayes_cluster_fn, map(str_split(bayes_cluster_fn, "/"), 12), function(file, name){
-    name <- gsub("_200k", "", name)
     sp = sprintf("Sp%02d",parse_number(name))
     clus <- read.csv(file) |>
         mutate(cluster = factor(paste0(sp, "D", str_pad(cluster, 2,  pad = "0"))))
