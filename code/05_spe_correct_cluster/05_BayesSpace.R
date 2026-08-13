@@ -1,4 +1,4 @@
-## Louise Huuki-Myers, Nov 2024
+## Louise Huuki-Myers, Nov 2024 - corrected Aug 2026 with offset 
 ## Run BayesSpace w/ spatialDLPFC marker genes - run clustering
 ## Adapted from https://github.com/LieberInstitute/spatial_NAc/blob/f3538df2e932f537f8670bf708f2ff9434ef5d91/code/05_harmony_BayesSpace/05-BayesSpace_k_search.R
 
@@ -18,13 +18,19 @@ spec <- matrix(
     c(
         c("spe", "dimred", "name"),
         c("s", "d", "n"),
-        c("1", "2", "3"),
+        c("append", "append", "append"),
         c("character", "character", "character"),
         c("spe filename", "Dimension Reduction", "name for output")
     ),
     ncol = 5
 )
 opt <- getopt(spec)
+
+#test 
+# opt$spe <- "spe_PCA_SVG"
+# opt$dimred <- "HARMONY"
+# opt$name <- "SVGm"
+# k <- 2
 
 ## get opts
 dimred <- opt$dimred
@@ -66,12 +72,23 @@ if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
-
 ## do offset so we can run BayesSpace
 auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
 names(auto_offset_row) <- unique(spe$sample_id)
-spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
-spe$col <- colData(spe)$array_col
+
+spe$array_row_og <- colData(spe)$array_row ## preserve original for spatialLIBD plotting 
+spe$array_row <- colData(spe)$array_row + auto_offset_row[spe$sample_id] ## this sets vertical stacking
+
+if(k ==2){
+    
+    ## UN-adjusted - just needed for clusterPlot
+    spe$pxl_col_in_fullres <- spatialCoords(spe)[,"pxl_col_in_fullres"]
+    spe$pxl_row_in_fullres <- spatialCoords(spe)[,"pxl_row_in_fullres"] 
+    
+    bayes_space_clusterPlot <- clusterPlot(spe, "sample_id", color = NA)
+    ggsave(bayes_space_clusterPlot, filename = here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name), "bayes_space_clusterPlot_offset.png"))
+    
+}
 
 ## Run BayesSpace
 message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
@@ -91,9 +108,16 @@ cluster_export(
     cluster_dir = here(dir_rdata, "clusters_BayesSpace")
 )
 
+## test
+# cluster_tab <- read.csv(here(dir_rdata, "clusters_BayesSpace", bayesSpace_name, "clusters.csv"))
+# spe[[bayesSpace_name]] <- cluster_tab$cluster
+
 ## Visualize BayesSpace results
 message(Sys.time(), " - Visualize clusters")
 sample_ids <- unique(spe$sample_id)
+
+## use original array_row to avoid spatialLIBD Error in frame_limits
+spe$array_row <- spe$array_row_og 
 
 ## create color pallet
 cols <- Polychrome::palette36.colors(k)
