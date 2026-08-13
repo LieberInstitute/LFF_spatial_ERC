@@ -561,7 +561,7 @@ rowData(sce)$astro_marker <- NULL
 rowData(sce)$astro_marker <- names(Astro_lit_markers)[match(rownames(sce), Astro_lit_markers)] 
 table(rowData(sce)$astro_marker)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_logCount.pdf")), height = 4, width = 5)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_logCount.pdf")), height = 5, width = 5)
 sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
@@ -574,9 +574,9 @@ sce[, sce$cell_type_broad == "Astro"]|>
     )
 dev.off()
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro.pdf")), height = 4, width = 5)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro.pdf")), height = 5, width = 5)
 sce[, sce$cell_type_broad == "Astro"]|>
-    scDotPlot(features = Astro_lit_markers[grepl("reactive|risk", names(Astro_lit_markers))],
+    scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "astro_marker",
@@ -587,9 +587,9 @@ sce[, sce$cell_type_broad == "Astro"]|>
     )
 dev.off()
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_disease_logCount.pdf")), height = 4, width = 5)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_disease_logCount.pdf")), height = 5, width = 5)
 sce[, sce$cell_type_broad == "Astro"]|>
-    scDotPlot(features = Astro_lit_markers[grepl("reactive|risk", names(Astro_lit_markers))],
+    scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "astro_marker",
