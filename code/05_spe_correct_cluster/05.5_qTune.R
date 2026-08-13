@@ -14,7 +14,7 @@ spec <- matrix(
     c(
         c("spe", "dimred", "name"),
         c("s", "d", "n"),
-        c("1", "2", "3"),
+        c("append", "append", "append"),
         c("character", "character", "character"),
         c("spe filename", "Dimension Reduction", "name for output")
     ),
