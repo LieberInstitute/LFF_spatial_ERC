@@ -75,6 +75,8 @@ metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 ## do offset so we can run BayesSpace
 auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
 names(auto_offset_row) <- unique(spe$sample_id)
+
+spe$array_row_og <- colData(spe)$array_row ## preserve original for spatialLIBD plotting 
 spe$array_row <- colData(spe)$array_row + auto_offset_row[spe$sample_id] ## this sets vertical stacking
 
 if(k ==2){
@@ -106,9 +108,16 @@ cluster_export(
     cluster_dir = here(dir_rdata, "clusters_BayesSpace")
 )
 
+## test
+# cluster_tab <- read.csv(here(dir_rdata, "clusters_BayesSpace", bayesSpace_name, "clusters.csv"))
+# spe[[bayesSpace_name]] <- cluster_tab$cluster
+
 ## Visualize BayesSpace results
 message(Sys.time(), " - Visualize clusters")
 sample_ids <- unique(spe$sample_id)
+
+## use original array_row to avoid spatialLIBD Error in frame_limits
+spe$array_row <- spe$array_row_og 
 
 ## create color pallet
 cols <- Polychrome::palette36.colors(k)
