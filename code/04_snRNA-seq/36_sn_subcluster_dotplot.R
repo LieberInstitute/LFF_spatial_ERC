@@ -7,6 +7,7 @@ library("SingleCellExperiment")
 library("HDF5Array")
 library("scDotPlot")
 library("tidyverse")
+library("readxl")
 
 data_dir <- here("processed-data", "04_snRNA-seq", "36_sn_subcluster_dotplot")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
@@ -175,6 +176,7 @@ dev.off()
 
 
 #### Oligo Enrich genes ####
+
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.pdf")), height = 5, width = 10)
 sce |>
     scDotPlot(features = enrichment_stats_top |> filter(cell_type_anno == "Oligo.03") |> pull(ensembl),
@@ -210,25 +212,44 @@ dev.off()
 
 #### Oligo OPC marker genes ####
 
+olig_marker_genes_lit <- read_xlsx(here("external-data", "Claude2026","olig_marker_genes_lit_comparison", "oligodendrocyte_marker_genes_lit_comparison.xlsx")) |>
+    filter(Gene %in% rownames(sce)) |>
+    mutate(Category_short = gsub(" / ", "/", Category_short))
+
+## levels
+Category_short_levels <- olig_marker_genes_lit |> 
+    count(BroadCategory, Category_short) |>
+    arrange(BroadCategory, Category_short) |>
+    pull(Category_short) |>
+    setdiff("Committed Precursor") |>
+    append("Committed Precursor", after=8)
+
+olig_marker_genes_lit$Category_short <- factor(olig_marker_genes_lit$Category_short, levels = Category_short_levels)
+
+olig_marker_genes_lit |> 
+    count(BroadCategory, Confidence)
+
 load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
 
-## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
-oligo_lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
-                    Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
-                    premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
-                    myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
-                    disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), #https://doi.org/10.1038/s41593-025-01873-x
-                    AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
-)
-
-# MBP, BACE1, and APP capable of producing ABeta  Bright/Ranjani
-oligo_lit_markers <- map(oligo_lit_markers, ~.x[.x %in% rownames(sce)])
-
-oligo_lit_markers <- AnnotationDbi::unlist2(oligo_lit_markers)
-
+# ## from https://www.biocompare.com/Editorial-Articles/590587-A-Guide-to-Oligodendrocyte-Markers/
+# oligo_lit_markers <- list(OPC = c("PDGFRA", "CSPG4", "MAG", "CNP", "A2B5"),
+#                     Oligo = c("PLP1", "ZFP191", "ZFP488", "ZFP536", "SOX17", "NKX6-2", "SMARCA4", "CD82", "TFR", "MAL"),
+#                     premyelin_Oligo = c("SOX10", "OLIG1", "OLIG2", "NKX2-2", "CD9"),
+#                     myelinating_Oligo = c("BMP4", "ENPP4", "ASAP", "TMEM10", "MOG"),
+#                     disease_associated = c("SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"), # Kedia & Simons review https://doi.org/10.1038/s41593-025-01873-x
+#                     AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
+# )
+# 
+# # MBP, BACE1, and APP capable of producing ABeta  Bright/Ranjani
+# oligo_lit_markers <- map(oligo_lit_markers, ~.x[.x %in% rownames(sce)])
+# 
+# oligo_lit_markers <- AnnotationDbi::unlist2(oligo_lit_markers)
+# 
+# 
+# oligo_lit_markers[!oligo_lit_markers %in% olig_marker_genes_lit$Gene]
 
 rowData(sce)$oligo_marker <- NULL
-rowData(sce)$oligo_marker <- names(oligo_lit_markers)[match(rownames(sce), oligo_lit_markers)] 
+rowData(sce)$oligo_marker <- olig_marker_genes_lit$Category_short[match(rownames(sce), olig_marker_genes_lit$Gene)] 
 table(rowData(sce)$oligo_marker)
 
 # oligo_lit_markers2 <- list(OPC = c("PDGFRA", "MEGF11"),
@@ -240,9 +261,9 @@ table(rowData(sce)$oligo_marker)
 # )
 
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_lit_alt_colors.pdf"))
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_lit_alt_colors_ID.pdf"))
 sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
-    scDotPlot(features = oligo_lit_markers,
+    scDotPlot(features = olig_marker_genes_lit |> filter(BroadCategory != "Disease relevance"),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "oligo_marker",
@@ -253,31 +274,18 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
               groupLegends = FALSE)
 dev.off()
 
-## Oligo markers from 
-## 10.3389/fcell.2021.714169
-oligo_lineage_markers <- list(OPC = c("PDGFRA", "CSPG4"),
-                              Oligo_premyelin = c("BMP4", "GPR17"),
-                              Oligo_new = c("TMEM2","PROM1"),
-                              Oligo = c("BCAS1", "ENPP6", "GJC2"),
-                              Oligo_myelin = c("PLP1", "MAG", "MOBP")
-)
-
-oligo_lineage_markers <- map(oligo_lineage_markers, ~.x[.x %in% rownames(sce)])
-
-oligo_lineage_markers <- AnnotationDbi::unlist2(oligo_lineage_markers)
-
-
-rowData(sce)$oligo_lineage_markers <- NULL
-rowData(sce)$oligo_lineage_markers <- names(oligo_lineage_markers)[match(rownames(sce), oligo_lineage_markers)] 
-table(rowData(sce)$oligo_lineage_markers)
-
+## lineage genes 
+oligo_lineage_markers <- olig_marker_genes_lit |> 
+    filter(BroadCategory != "Disease relevance", Confidence != "low") |>
+    arrange(Category_short) |>
+    pull(Gene) 
 
 pdf(here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors.pdf"))
 sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
-              featureAnno = "oligo_lineage_markers",
+              featureAnno = "oligo_marker",
               scale = TRUE,
               # annoColors = list("cell_type_anno" = cell_type_colors$anno),
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
@@ -290,7 +298,7 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
-              featureAnno = "oligo_lineage_markers",
+              featureAnno = "oligo_marker",
               scale = FALSE,
               # annoColors = list("cell_type_anno" = cell_type_colors$anno),
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
@@ -303,7 +311,7 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
-              featureAnno = "oligo_lineage_markers",
+              featureAnno = "oligo_marker",
               scale = TRUE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
@@ -315,14 +323,49 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
-              featureAnno = "oligo_lineage_markers",
+              featureAnno = "oligo_marker",
               scale = FALSE,
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
 dev.off()
 
-oligo_explore_genes <- c("FGFR3", "PLPP3", "NTSR2", "RYR3") ## Genes of interest from Bernie Jun 26, 2026
+
+## Oligo disease associated genes 
+oligo_disease_assoc_markers <- olig_marker_genes_lit |> 
+    filter(BroadCategory == "Disease relevance", Confidence != "low") |>
+    arrange(Category_short) |>
+    pull(Gene) 
+
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors.pdf"))
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+    scDotPlot(features = oligo_disease_assoc_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_marker",
+              scale = TRUE,
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors_exp.pdf"))
+sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+    scDotPlot(features = oligo_disease_assoc_markers,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "oligo_marker",
+              scale = FALSE,
+              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+## Genes of interest from Bernie Jun 26, 2026
+oligo_explore_genes <- c("FGFR3", "PLPP3", "NTSR2", "RYR3") 
 all(oligo_explore_genes %in% rownames(sce))
 
 pdf(here(plot_dir, "sn_subtype_OligoOPC_dotplot_explore.pdf"), width = 5)
@@ -497,15 +540,21 @@ dev.off()
 
 lit_markers |> filter(cell_type_broad == "Astro")
 
-Astro_lit_markers <- list(disease_associated = c("SERPINA3", "TNFRSF1A", "IL1B", "IL33", "HMOX1"), #https://doi.org/10.1038/s41593-025-01873-x
-                          AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
-                          Protoplasmic = c("SLC1A2", "SLC1A3"), #SLC from Dai et al. https://doi.org/10.1186/s40478-023-01624-8
-                          Fibrous = c("GFAP", "CD44", "AQP4", "CPAMD8"),
-                          Reactive = c("VIM"),
-                          Homeostatic = c("NRXN1"),
-                          Siletti_cortical = c("WIF1",   # grey matter 
-                                               "TNC",    # white matter 
-                                               "LMO2") # Interlaminar 
+Astro_lit_markers <- list(
+    # Dai et al. 2023 https://doi.org/10.1186/s40478-023-01624-8
+    # Top upregulated genes in reactive protoplasmic astrocytes (pseudotime regression, Fig 3d)
+    reactive_upregulated = c("ITM2C", "CHI3L1", "FTL", "VIM", "ITM2B"),
+    # Dai et al. 2023
+    # Top downregulated genes in reactive protoplasmic astrocytes (pseudotime regression, Fig 3d)
+    # Dominated by transcription factors and homeostatic function genes
+    reactive_downregulated = c("NRXN1", "ERBB4", "NFIA", "NRG3", "GPC5", 
+                               "CADM1", "CADM2", "CTNNA2"),
+    AD_risk = c("APOE", "CLU", "SORL1", "ABCA1", "SORCS1"), 
+    Protoplasmic = c("SLC1A2", "SLC1A3"), # Dai et al. 2023
+    Fibrous = c("GFAP", "CD44", "AQP4", "CPAMD8"), 
+    Siletti_cortical = c("WIF1",   # grey matter; Siletti et al. 2023
+                         "TNC",    # white matter; Siletti et al. 2023
+                         "LMO2")   # interlaminar/perivascular; Siletti et al. 2023
 )
 
 Astro_lit_markers <- AnnotationDbi::unlist2(Astro_lit_markers)
