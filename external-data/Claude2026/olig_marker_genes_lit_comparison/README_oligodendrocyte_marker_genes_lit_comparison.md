@@ -11,7 +11,7 @@ literature — built up incrementally across several review passes, each adding 
 papers as a new column. The goal is to let someone scan a single gene and see, at a glance,
 which papers use it, for which cell-type/stage, and how much agreement exists across sources.
 
-Current size: **55 gene rows × 22 columns**, plus a second sheet listing full citations for
+Current size: **64 gene rows × 22 columns**, plus a second sheet listing full citations for
 the 16 papers represented.
 
 ## Sheet 1: "Oligo Marker Genes"
@@ -34,16 +34,19 @@ qualitative synthesis right before the raw per-paper evidence grid that supports
 
 ### `Category_short` bucket definitions
 
-Ten buckets, chosen to be plot-friendly (short, mutually exclusive, few enough to color/facet by):
+Ten buckets, chosen to be plot-friendly (short, mutually exclusive, few enough to color/facet by).
+Bucket labels avoid abbreviations wherever possible — `OPC` is kept as the sole exception,
+since it's the field's universal shorthand and spelling it out ("oligodendrocyte precursor
+cell") on every row would hurt, not help, plot legibility:
 
 - **OPC** (13 genes) — precursor-stage markers, including CSPG-module genes and regional-subtype markers
-- **COP** (5) — committed OPC / early-differentiating markers
-- **NFOL** (4) — newly-formed-oligodendrocyte markers
-- **Myelinating** (8) — active myelination-stage / structural myelin genes
-- **Mature** (8) — terminal/mature-oligodendrocyte markers
+- **Committed Precursor** (6) — committed OPC / early-differentiating markers (formerly labeled `COP`)
+- **Newly Formed** (4) — newly-formed-oligodendrocyte markers (formerly labeled `NFOL`)
+- **Myelinating** (13) — active myelination-stage / structural myelin genes
+- **Mature** (11) — terminal/mature-oligodendrocyte markers
 - **Pan-lineage** (2) — OLIG2, SOX10 (span most/all stages)
-- **Immune/DAO** (6) — disease-associated-oligodendrocyte / immune signature genes
-- **MHC/Interferon** (3)
+- **Immune / Disease-Associated** (6) — disease-associated-oligodendrocyte / immune signature genes (formerly labeled `Immune/DAO`)
+- **Histocompatibility / Interferon** (3) — MHC-I / interferon-response genes (formerly labeled `MHC/Interferon`)
 - **Stress** (2)
 - **Amyloid** (4) — amyloid-processing genes discussed in the AD literature
 
@@ -75,7 +78,7 @@ Rule applied:
   mouse-only citation across ≥3 papers)
 - **Low** = single-source and/or mouse-only support, or a disqualifying caveat
 
-Current distribution: **11 High, 21 Medium, 23 Low**.
+Current distribution: **12 High, 22 Medium, 30 Low**.
 
 Two manual judgment calls layered on top of the mechanical rule:
 
@@ -84,17 +87,24 @@ Two manual judgment calls layered on top of the mechanical rule:
   ambiguous: the paper shows CD44 in a figure panel alongside OPALIN/RBFOX1 but never states
   which of the two mature oligodendrocyte types has higher expression. A marker whose
   direction is unconfirmed shouldn't score better than a plain single-source gene.
-- **`SOX10` is a known limitation, not a real signal.** It scores `Low` in this table purely
-  because only 2 of 15 paper columns happen to be populated for it (`Hughes2021`,
-  `Emery2024` — both general reviews, neither flagged as a "human dataset" column), even
-  though SOX10 is one of the most universally-used human oligodendrocyte-lineage markers in
-  the broader field. This table's `Confidence` score is only as good as its own per-paper
-  cell curation, which was not built to be an exhaustive marker panel for every paper —
-  several papers' columns were populated selectively for the genes most relevant to this
-  table's running narrative, not systematically for every gene they mention. **Treat `Low`/
-  `Medium` here as "under-supported within this specific comparison," not as "weak marker in
-  general," and cross-check against the wider literature before drawing a conclusion from
-  this column alone.**
+- **`SOX10` is a known limitation, only partly resolved.** It sat at `Low` for most of this
+  table's history purely because only 2 of 15 paper columns were populated for it
+  (`Hughes2021`, `Emery2024` — both general reviews, neither flagged as a "human dataset"
+  column), even though SOX10 is one of the most universally-used human oligodendrocyte-lineage
+  markers in the broader field. Adding Marques et al. (2016) as a directly-reviewed column
+  raised this to `Medium`, since that paper uses Sox10 extensively as a pan-lineage
+  validation marker (smFISH and IHC colocalization throughout) — but it's still a *mouse*
+  citation, so the row still has no confirmed-human source within this table and the
+  mechanical score likely still understates real-world consensus. This table's `Confidence`
+  score is only as good as its own per-paper cell curation, which was not built to be an
+  exhaustive marker panel for every paper — several papers' columns were populated
+  selectively for the genes most relevant to this table's running narrative, not
+  systematically for every gene they mention. **Treat `Low`/`Medium` here as "under-supported
+  within this specific comparison," not as "weak marker in general," and cross-check against
+  the wider literature before drawing a conclusion from this column alone.** `ITPR2` is a
+  parallel, still-unresolved case: it carries some of the richest primary functional evidence
+  in the whole table (from Marques et al. 2016's motor-learning experiment) yet remains `Low`
+  because it is still cited in only 2 of 15 paper columns.
 
 Full methodology text is also attached as a cell comment on the `Confidence` header itself,
 so it travels with the file even if this README is separated from it.
@@ -104,13 +114,17 @@ so it travels with the file even if this README is separated from it.
 One row per paper, with columns `ColumnCode | Citation | Title | Journal / Details | DOI |
 Source basis in this workbook`. The last column states plainly whether the paper was
 **reviewed directly** (PDF uploaded and read this session) or whether its marker genes were
-**taken secondhand** from another paper's summary table — currently, nine of the papers
-(`Marques2016`, `Zeisel2018`, `Falcao2018`, `Zhou2020`, `Lee2021`, `Sadick2022`,
-`Kenigsbuch2022`, `Pandey2022`, `Kaya2022`) were pulled from Table 2 of a mini-review
-(Valihrach et al. 2022) rather than read directly, and are flagged "verify against the
-primary paper before citing." The remaining seven (`Hughes2021`, `Jakel2019`, `Kedia2025`,
-`Siletti2023`, `Mironova2026`, `Emery2024`, plus Valihrach et al. 2022 itself as the
-"(review source)" row) were reviewed directly from uploaded PDFs.
+**taken secondhand** from another paper's summary table — currently, eight of the papers
+(`Zeisel2018`, `Falcao2018`, `Zhou2020`, `Lee2021`, `Sadick2022`, `Kenigsbuch2022`,
+`Pandey2022`, `Kaya2022`) were pulled from Table 2 of a mini-review (Valihrach et al. 2022)
+rather than read directly, and are flagged "verify against the primary paper before citing."
+The remaining eight (`Hughes2021`, `Jakel2019`, `Kedia2025`, `Siletti2023`, `Mironova2026`,
+`Emery2024`, `Marques2016`, plus Valihrach et al. 2022 itself as the "(review source)" row)
+were reviewed directly from uploaded PDFs. `Marques2016` was upgraded from secondhand to
+directly-reviewed in the most recent pass — see the source-basis cell for that row for the
+handful of granular sub-claims (inherited from the original secondhand citation) that could
+not be independently reconfirmed from the main text/figures and are still flagged for
+supplementary-material verification.
 
 One DOI was corrected during this process: Mironova et al. 2026's DOI was initially entered
 from memory and flagged `NOT VERIFIED`; once the PDF was uploaded and reviewed directly, the
@@ -141,6 +155,28 @@ The workbook was built incrementally, each pass adding one or more newly-reviewe
 6. **+ `Confidence` column** — derived Low/Medium/High per gene from citation breadth and
    human-model support (methodology above), and did a final column reorder so `Notes` sits
    immediately before the paper-column data grid.
+7. **Marques et al. (2016) upgraded from secondhand to reviewed directly** (uploaded PDF):
+   re-verified and enriched the existing `Marques2016` column for 18 rows (including
+   resolving two "secondhand-within-a-review" caveats on `CASR` and `APOD`, and flagging
+   three sub-claims — `MOBP`'s stage, `KLK6`'s MOL2 sub-cluster, `IL33`'s MOL6 assignment —
+   as still unconfirmed pending supplementary-table review); added 9 new rows (`NEU4`,
+   `MAL`, `MOG`, `SERINC5`, `TRF`, `PMP22`, `FAR1`, `GRM3`, `JPH4`); added a VLMC-contamination
+   caveat to `PDGFRA`/`CSPG4`; flagged a cross-species/cross-method OPC-vs-COP staging
+   discrepancy for `SOX6` between Jäkel et al. (2019, human protein) and Marques et al. (2016,
+   mouse mRNA); and recomputed `Confidence` for `PTPRZ1` (Low→Medium), `SOX6` (Medium→High),
+   and `SOX10` (Low→Medium) per the existing breadth/human-support rule. Also renamed all
+   `Category_short` bucket labels to avoid abbreviations except `OPC` (`COP`→`Committed
+   Precursor`, `NFOL`→`Newly Formed`, `Immune/DAO`→`Immune / Disease-Associated`,
+   `MHC/Interferon`→`Histocompatibility / Interferon`).
+8. **+ Marques et al. (2016) supplementary figures (S1–S16)** (uploaded PDF): resolved two of
+   the three sub-claims flagged as unverified in step 7 by quantitatively analyzing the pixel
+   brightness of the ~139-gene single-cell heatmap in Fig. S1B, cluster-by-cluster (`KLK6`→MOL2,
+   `IL33`→MOL6, both confirmed exactly as originally cited). The same analysis refined `VCAN`
+   (OPC/COP, not OPC-only), `TCF7L2` (peaks at NFOL1 specifically), and `ITPR2` (peaks at NFOL2
+   specifically), and corrected the `GRM3`/`JPH4` rows added in step 7, whose draft
+   MOL6-centric assignments didn't hold up once this heatmap was available to check against.
+   `MOBP`'s stage claim remains unresolved — not found in the main text or the supplement —
+   and now points to the paper's external Table S1/S2 as the likely source.
 
 ## Formatting conventions
 
@@ -157,7 +193,7 @@ The workbook was built incrementally, each pass adding one or more newly-reviewe
 
 ## Known limitations / things to check before citing
 
-- **Secondhand columns aren't verified.** Nine paper columns were populated from a
+- **Secondhand columns aren't verified.** Eight paper columns were populated from a
   third-party summary table, not the primary papers. Treat their per-gene claims as
   provisional until checked against the original source (flagged per-row in `References`).
 - **`Confidence` reflects this table's coverage, not the full literature** — see the SOX10
@@ -165,12 +201,40 @@ The workbook was built incrementally, each pass adding one or more newly-reviewe
   hasn't captured much evidence for it yet." Check `Notes`/`Consensus` and, ideally, the
   primary papers before treating `Confidence` as a standalone verdict.
 - **A few specific per-gene caveats worth remembering**: `CD44`'s Oligo1/Oligo2 direction is
-  unconfirmed in the source text (figure-only); `NELL1`/`CASR`/`APOD` trace to citations
-  nested inside a review rather than a primary source; one `RBFOX1` subcluster in Siletti et
-  al. 2023 was flagged by the authors themselves as likely low-quality/donor-derived; the
-  cluster-number labels "Oligo1"/"Oligo2" for `OPALIN`/`RBFOX1` are **not** consistent between
-  Jäkel et al. 2019 and Siletti et al. 2023, even though both use the same two marker genes —
-  cite the marker gene, not the cluster number, when comparing across studies.
+  unconfirmed in the source text (figure-only); `NELL1` traces to a citation nested inside a
+  review rather than a primary source; one `RBFOX1` subcluster in Siletti et al. 2023 was
+  flagged by the authors themselves as likely low-quality/donor-derived; the cluster-number
+  labels "Oligo1"/"Oligo2" for `OPALIN`/`RBFOX1` are **not** consistent between Jäkel et al.
+  2019 and Siletti et al. 2023, even though both use the same two marker genes — cite the
+  marker gene, not the cluster number, when comparing across studies. `SOX6`'s stage
+  assignment also differs by species/method: Jäkel et al. (2019, human IHC) place it at the
+  OPC stage; Marques et al. (2016, mouse mRNA) place it at the COP stage — this table keeps
+  the OPC categorization but flags the discrepancy in `SOX6`'s `Notes`.
+- **Two of the three `Marques2016` sub-claims flagged in the previous pass are now resolved.**
+  After reviewing the paper's supplementary figures (S1–S16), `KLK6`'s MOL2 sub-cluster claim
+  and `IL33`'s MOL6 assignment are both directly confirmed: both genes are plotted in the
+  ~139-gene single-cell heatmap in Fig. S1B (columns ordered VLMC→OPC→COP→NFOL1→NFOL2→
+  MFOL1→MFOL2→MOL1→MOL2→MOL3→MOL4→MOL5→MOL6), and quantitative pixel-brightness analysis of
+  that heatmap shows Klk6 peaking sharply at MOL2 and Il33 peaking sharply and specifically at
+  MOL6 — exact matches to the original citations. The same analysis also refined several other
+  cells: `VCAN` is better described as OPC/COP (near-equal peak, not OPC-only); `TCF7L2` peaks
+  specifically at NFOL1 (not evenly across NFOL1/NFOL2); `ITPR2` peaks specifically at NFOL2;
+  and two newly-added rows, `GRM3` and `JPH4`, had their draft "MOL6 mainly" / "MOL6"
+  assignments corrected to "broadly MOL1–MOL6, nominal peak MOL5" and "MOL5 (MOL6 a close
+  second)" respectively, once the heatmap became available to check against.
+- **`MOBP`'s NFOL2-onset stage claim remains unresolved.** Mobp does not appear by name in
+  either the main text or the supplementary figures (S1–S16) of Marques et al. (2016). It
+  most likely traces to the paper's external Table S1 ("List of 50 up-regulated genes in each
+  branch of the dendrogram") or Table S2 — referenced by title on p. 24 of the supplement but
+  not included as data in either PDF reviewed this session. Treat this one claim as still
+  provisional; every other `Marques2016` attribution in the table has now been directly
+  confirmed, several of them quantitatively.
+- **`PDGFRA`/`CSPG4` alone risk VLMC contamination.** Marques et al. (2016) identify a second,
+  non-oligodendrocyte `Pdgfra+` population — vascular/leptomeningeal cells (VLMCs), marked by
+  low `Cspg4` plus `Lum`/`Vtn`/`Tbx18`/`Col1a2` — that can co-purify with true OPCs in
+  PDGFRA-based FACS/IHC isolation. This table does not carry VLMC marker genes as their own
+  rows (they are not oligodendrocyte-lineage cells), but the caveat is noted on the `PDGFRA`
+  and `CSPG4` rows for anyone designing an isolation strategy around this marker.
 
 ## How to extend this table further
 
