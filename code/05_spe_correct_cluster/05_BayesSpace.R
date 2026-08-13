@@ -26,6 +26,12 @@ spec <- matrix(
 )
 opt <- getopt(spec)
 
+#test 
+# opt$spe <- "spe_PCA_SVG"
+# opt$dimred <- "HARMONY"
+# opt$name <- "SVGm"
+# k <- 2
+
 ## get opts
 dimred <- opt$dimred
 name <- opt$name
@@ -66,12 +72,21 @@ if(!dir.exists(dir_rdata)) dir.create(dir_rdata, showWarnings = FALSE, recursive
 ## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
 metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
 
-
 ## do offset so we can run BayesSpace
 auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
 names(auto_offset_row) <- unique(spe$sample_id)
-spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
-spe$col <- colData(spe)$array_col
+spe$array_row <- colData(spe)$array_row + auto_offset_row[spe$sample_id] ## this sets vertical stacking
+
+if(k ==2){
+    
+    ## UN-adjusted - just needed for clusterPlot
+    spe$pxl_col_in_fullres <- spatialCoords(spe)[,"pxl_col_in_fullres"]
+    spe$pxl_row_in_fullres <- spatialCoords(spe)[,"pxl_row_in_fullres"] 
+    
+    bayes_space_clusterPlot <- clusterPlot(spe, "sample_id", color = NA)
+    ggsave(bayes_space_clusterPlot, filename = here("plots", "05_spe_correct_cluster", "05_BayesSpace", paste0("clusters_BayesSpace-", name), "bayes_space_clusterPlot_offset.png"))
+    
+}
 
 ## Run BayesSpace
 message(Sys.time(), " - Running spatialCluster: k=", k, ", dimred = ", dimred)
