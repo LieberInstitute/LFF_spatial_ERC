@@ -18,17 +18,19 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### get reference layer enrichment statistics ####
 layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = "spatialDLPFC_Visium_modeling_results"), fetch_data)
 
+## Franjic & Sestan ERC
+layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
+colnames(layer_modeling_results$sestan_EC$enrichment)
+
 #### load data ####
 modeling_fn <- c(
     list.files(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm"),
            pattern = "modeling_results",
-           full.names = TRUE),
-    list.files(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_Markers"),
-           pattern = "modeling_results",
-           full.names = TRUE)
-    )
+           full.names = TRUE))
 
 names(modeling_fn) <- gsub("modeling_results-|.rds", "", basename(modeling_fn))
+
+map(modeling_fn, ~as.Date(file.info(.x)$mtime))
 
 modeling_fn
 
@@ -87,18 +89,19 @@ save(cor_anno, file = here(data_dir, "spatial_registration_erc_v_DLPFC_cor_anno.
 cor_anno$BayesSpace_SVGm_k09$cor$spatialDLPFC
 
 cor_anno$BayesSpace_SVGm_k09$layer_anno$HumanPilot
+cor_anno$BayesSpace_SVGm_k11$layer_anno$HumanPilot
 # cluster layer_confidence   layer_label layer_label_simple
 # 1 Sp09D06             good            WM                 WM
 # 2 Sp09D07             good            WM                 WM
 # 3 Sp09D05             good        Layer1                 L1
 # 4 Sp09D08             good        Layer1                 L1
-# 5 Sp09D04             good        Layer6                 L6
-# 6 Sp09D03             good Layer5/Layer4               L5/4
-# 7 Sp09D09             good        Layer4                 L4
-# 8 Sp09D01             good Layer2/Layer3               L2/3
-# 9 Sp09D02             good        Layer3                 L3
+# 5 Sp09D09             good Layer3/Layer4               L3/4
+# 6 Sp09D01             good Layer2/Layer3               L2/3
+# 7 Sp09D02             good        Layer3                 L3
+# 8 Sp09D03             good        Layer5                 L5
+# 9 Sp09D04             good        Layer6                 L6
 
-cor_anno$BayesSpace_SVGm_k09$layer_anno$spatialDLPFC
+cor_anno$BayesSpace_SVGm_k11$layer_anno$spatialDLPFC |> arrange(layer_label)
 # cluster layer_confidence                                 layer_label
 # 1 Sp09D06             good                                  WM~Sp09D06
 # 2 Sp09D07             good                       WM~Sp09D06/WM~Sp09D09
@@ -110,16 +113,26 @@ cor_anno$BayesSpace_SVGm_k09$layer_anno$spatialDLPFC
 # 8 Sp09D01             good                       L3~Sp09D05/L2~Sp09D03
 # 9 Sp09D09             good L4~Sp09D08/L3~Sp09D05/L5~Sp09D04/L2~Sp09D03
 
-anno_summary <- map2_dfr(cor_anno$BayesSpace_SVGm_k09$layer_anno, names(cor_anno$BayesSpace_SVGm_k09$layer_anno), ~.x |> 
-                             select(cluster, layer_label) |>
-                             mutate(dataset = .y)) |>
-    pivot_wider(names_from = "dataset",
-                values_from = "layer_label") |>
-    arrange(cluster)
 
-write_csv(anno_summary, file = here(data_dir, "ERC_SpD_spatial_registration_anno_summary.csv"))
+`summarize_annotation <- function(k = "k09"){
+    
+    cor_anno_k <- cor_anno[[paste0("BayesSpace_SVGm_", k)]]
+    
+    anno_summary <- map2_dfr(cor_anno_k$layer_anno, names(cor_anno_k$layer_anno), ~.x |> 
+                                 select(cluster, layer_label) |>
+                                 mutate(dataset = .y)) |>
+        pivot_wider(names_from = "dataset",
+                    values_from = "layer_label") |>
+        arrange(spatialDLPFC)
+    
+    write_csv(anno_summary, file = here(data_dir, sprintf("ERC_SpD_spatial_registration_anno_summary_%s.csv", k)))
+    return(anno_summary)
+}
 
-
+summarize_annotation(k = "k09")
+summarize_annotation(k = "k10")
+summarize_annotation(k = "k11")
+summarize_annotation(k = "k12")
 
 #### complex heatmap ####
 # 
@@ -158,6 +171,10 @@ walk2(cor_anno, names(cor_anno), function(cor, name){
     
 walk2(cor_anno, names(cor_anno), function(ca, name){
 
+    #test
+    # ca <- cor_anno[[1]]
+    # name <- names(cor_anno)[[1]]
+    
     #get numeric k
     k <- readr::parse_number(name)
     knice <- gsub("BayesSpace_SVGm_", "", name)
@@ -182,14 +199,13 @@ walk2(cor_anno, names(cor_anno), function(ca, name){
             } else ref_color <- NULL
         
         # Create heatmap
-        pdf(here(plot_dir, sprintf("spatial_registration_heatmap_erc_%s_v_%s.pdf", knice, dataset)), height = 5, width = 5)
-        print(layer_stat_cor_plot_complex(
+        pdf(here(plot_dir, sprintf("spatial_registration_heatmap_erc_%s_v_%s.pdf", knice, dataset)), height = 5, width = (ncol(cor_matrix)/3) + 2)
+        print(layer_stat_cor_plot(
             cor_stats_layer = cor_matrix,
             query_colors = erc_colors,
             reference_colors = ref_color,
             annotation = anno,
-            cluster_columns = FALSE
-            
+            cluster_columns = dataset == "sestan_EC"
         ))
         dev.off()
     })
