@@ -23,13 +23,13 @@ cluster_type <- opt$cluster
 data_dir <- here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", cluster_type)
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
-
 ## Choose k
 k <- as.numeric(
     #   Only one of these environment variables will be defined, so grab the
     #   defined one (handle SGE or SLURM)
-    paste0(Sys.getenv("SLURM_ARRAY_TASK_ID"), Sys.getenv("SGE_TASK_ID"))
+    Sys.getenv("SLURM_ARRAY_TASK_ID")
 )
+stopifnot(!is.na(k))
 k_nice <- sprintf("%02d", k)
 
 message("k:", k_nice)
@@ -38,7 +38,13 @@ message("k:", k_nice)
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC"))
 
+colnames(colData(spe))
+
 cluster_var <- sprintf("%s_k%02d", cluster_type, k)
+
+## Add syntatic APOE
+spe$APOE_syn <- factor(gsub("/", ".", spe$APOE))
+levels(spe$APOE_syn)
 
 #### Run Spatial Registration Function ####
 message(Sys.time(), " - Running Spatial Registration on: ", cluster_var)
@@ -48,7 +54,7 @@ modeling_results <-registration_wrapper(
     sce = spe,
     var_registration = cluster_var,
     var_sample_id = "sample_id",
-    covars = c("APOE", "Sex", "Age", "Anc_Afr"),
+    covars = c("APOE_syn", "Sex", "Age", "Anc_Afr"),
     gene_ensembl = "gene_id",
     gene_name = "gene_name",
     # suffix = k_nice,
@@ -61,7 +67,9 @@ saveRDS(modeling_results, file = here(data_dir, sprintf("modeling_results-%s.rds
 
 # slurmjobs::job_single('08_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 08_model_pseudobulk.R")
 
-# slurmjobs::array_submit(name = "08_model_pseudobulk", task_ids = c(2), submit = TRUE)
+# slurmjobs::job_loop('08_model_pseudobulk_Marker', create_shell = TRUE, memory = '100G', loops = list(k = c("2", "9", "15", "20")))
+
+# slurmjobs::array_submit(name = "08_model_pseudobulk", task_ids = c(9), submit = TRUE)
 
 ## Reproducibility information
 print("Reproducibility information:")
