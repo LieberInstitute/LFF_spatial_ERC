@@ -12,7 +12,7 @@ library("getopt")
 
 # Import command-line parameters
 spec <- matrix(
-    c(  "cluster", "i", "1", "character", "Name of cluster"),
+    c(  "cluster", "i", "append", "character", "Name of cluster"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(spec)

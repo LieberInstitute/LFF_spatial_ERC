@@ -25,7 +25,11 @@ echo "Node name: ${SLURMD_NODENAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
+<<<<<<< HEAD
 module load conda_R/4.5
+=======
+module load conda_R/4.5.x
+>>>>>>> 824ab679ba04ae6034b4ba3277441138afbf6464
 
 ## List current modules for reproducibility
 module list
