@@ -65,12 +65,23 @@ AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
 nrow(AD_risk)
 
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_AD_risk.pdf")), height = 10)
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_AD_risk.pdf")), height = 7)
 sce |>
     scDotPlot(features = unique(AD_risk$symbol),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
+              clusterColumns = FALSE,
               scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = TRUE,
+              groupLegends = FALSE
+    )
+sce |>
+    scDotPlot(features = unique(AD_risk$symbol),
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              clusterColumns = FALSE,
+              scale = FALSE,
               annoColors = list("cell_type_anno" = cell_type_colors$anno),
               clusterRows = TRUE,
               groupLegends = FALSE
@@ -212,9 +223,16 @@ dev.off()
 
 #### Oligo OPC marker genes ####
 
+Oligo_AD_risk_genes <- tibble(BroadCategory= "Disease relevance",
+                             Category_short = "AD risk",
+                             Gene = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1"),
+                             Confidence = "High")
+
 olig_marker_genes_lit <- read_xlsx(here("external-data", "Claude2026","olig_marker_genes_lit_comparison", "oligodendrocyte_marker_genes_lit_comparison.xlsx")) |>
-    filter(Gene %in% rownames(sce)) |>
-    mutate(Category_short = gsub(" / ", "/", Category_short))
+    filter(Gene %in% rownames(sce), 
+           Category_short != "Amyloid processing", Gene != "APOE") |> # overlaps with AD risk genes
+    mutate(Category_short = gsub(" / ", "/", Category_short)) |>
+    bind_rows(Oligo_AD_risk_genes)
 
 ## levels
 Category_short_levels <- olig_marker_genes_lit |> 
@@ -242,7 +260,9 @@ load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose 
 # 
 # # MBP, BACE1, and APP capable of producing ABeta  Bright/Ranjani
 # oligo_lit_markers <- map(oligo_lit_markers, ~.x[.x %in% rownames(sce)])
-# 
+
+# oligo_lit_markers$AD_risk[!oligo_lit_markers$AD_risk %in% (olig_marker_genes_lit |> filter(Category_short == "Amyloid processing") |> pull(Gene))]
+
 # oligo_lit_markers <- AnnotationDbi::unlist2(oligo_lit_markers)
 # 
 # 
@@ -251,28 +271,6 @@ load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose 
 rowData(sce)$oligo_marker <- NULL
 rowData(sce)$oligo_marker <- olig_marker_genes_lit$Category_short[match(rownames(sce), olig_marker_genes_lit$Gene)] 
 table(rowData(sce)$oligo_marker)
-
-# oligo_lit_markers2 <- list(OPC = c("PDGFRA", "MEGF11"),
-#                     Oligo = c("OLIG1", "OLIG2"),
-#                     premyelin_Oligo = c("SOX10",  "NKX2-2"),
-#                     myelinating_Oligo = c("MBP", "PLP"),
-#                     disease_associated = c("SERPINA3", "C4B"), #https://doi.org/10.1038/s41593-025-01873-x
-#                     AD_risk = c("APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1")
-# )
-
-
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_lit_alt_colors_ID.pdf"))
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
-    scDotPlot(features = olig_marker_genes_lit |> filter(BroadCategory != "Disease relevance"),
-              group = "cell_type_anno",
-              groupAnno = "cell_type_anno",
-              featureAnno = "oligo_marker",
-              scale = TRUE,
-              # annoColors = list("cell_type_anno" = cell_type_colors$anno),
-              annoColors = list("cell_type_anno" = Oligo_OPC_colors),
-              clusterRows = FALSE,
-              groupLegends = FALSE)
-dev.off()
 
 ## lineage genes 
 oligo_lineage_markers <- olig_marker_genes_lit |> 
@@ -338,7 +336,7 @@ oligo_disease_assoc_markers <- olig_marker_genes_lit |>
     pull(Gene) 
 
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors.pdf"))
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors.pdf"), height = 6)
 sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_disease_assoc_markers,
               group = "cell_type_anno",
@@ -351,7 +349,7 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
               groupLegends = FALSE)
 dev.off()
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors_exp.pdf"))
+pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors_exp.pdf"), height = 6)
 sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_disease_assoc_markers,
               group = "cell_type_anno",
@@ -565,7 +563,7 @@ table(rowData(sce)$astro_marker)
 
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_logCount.pdf")), height = 5, width = 5)
 sce[, sce$cell_type_broad == "Astro"]|>
-    scDotPlot(features = Astro_lit_markers,
+    scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "astro_marker",
@@ -578,7 +576,31 @@ dev.off()
 
 pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro.pdf")), height = 5, width = 5)
 sce[, sce$cell_type_broad == "Astro"]|>
-    scDotPlot(features = Astro_lit_markers,
+    scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+dev.off()
+
+pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_disease_logCount.pdf")), height = 5, width = 5)
+sce[, sce$cell_type_broad == "Astro"]|>
+    scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "astro_marker",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE
+    )
+
+sce[, sce$cell_type_broad == "Astro"]|>
+    scDotPlot(features = Astro_lit_markers[grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
               featureAnno = "astro_marker",
