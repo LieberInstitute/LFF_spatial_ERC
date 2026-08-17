@@ -75,24 +75,24 @@ walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"), function(dim){
 
 message(Sys.time(), "- Scran Outlier Violin Plots")
 
-map(c(2,12), function(k){
+map(c(9,11,12), function(k){
     
     SpD_colors_k <- SpD_colors[[sprintf("k%02d", k)]]
     my_var = sprintf("BayesSpace_SVGm_k%02d", k)
     
     pdf(here(plot_dir, sprintf("spe_erc_QC_%s.pdf", my_var)), width = 21)
     
-    plotColData(spe, x = my_var, y = "sum_umi", colour_by = "scran_low_lib_size") +
+    print(plotColData(spe, x = my_var, y = "sum_umi", colour_by = "scran_low_lib_size") +
         ggtitle("sum_umi") +
-        scale_fill_manual(values = SpD_colors_k)
+        scale_fill_manual(values = SpD_colors_k))
     
-    plotColData(spe, x = my_var, y = "sum_gene", colour_by = "scran_low_n_features") +
+    print(plotColData(spe, x = my_var, y = "sum_gene", colour_by = "scran_low_n_features") +
         ggtitle("sum_gene") +
-        scale_fill_manual(values = SpD_colors_k)
+        scale_fill_manual(values = SpD_colors_k))
     
-    plotColData(spe, x = my_var, y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
+    print(plotColData(spe, x = my_var, y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
         ggtitle("expr_chrM_ratio") +
-        scale_fill_manual(values = SpD_colors_k) 
+        scale_fill_manual(values = SpD_colors_k))
     
     dev.off()
 })
@@ -107,7 +107,8 @@ pd_qc_long <- map(c(k02 = 2, k09 = 9, k11 = 11), function(k){
     my_var = sprintf("BayesSpace_SVGm_k%02d", k)
     
     pd_qc_long <- pd |>
-        select(sample_id, key, sum_umi, sum_gene, expr_chrM_ratio, all_of(!!my_var)) |>
+        select(sample_id, key, sum_umi, sum_gene, expr_chrM_ratio, !!my_var) |>
+        # mutate(sum_umi = log10(sum_umi)) |>
         pivot_longer(!c("sample_id", "key", my_var))
     
     my_var <- sym(my_var)
@@ -121,7 +122,8 @@ pd_qc_long <- map(c(k02 = 2, k09 = 9, k11 = 11), function(k){
         facet_wrap(~name, ncol = 1, scales= "free_y") +
         scale_fill_manual(values = SpD_colors_k) +
         theme_bw() +
-        theme(legend.position = "None")
+        theme(legend.position = "None") 
+        # theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
     
     ggsave(SpD_qc, filename = here(plot_dir, sprintf("SpD%02d_QC.png", k)))
     
@@ -134,64 +136,61 @@ pd_qc_long <- map(c(k02 = 2, k09 = 9, k11 = 11), function(k){
 
 rownames(spe) <- rowData(spe)$gene_name
 
-spe_pb_k11 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k11.rds"))
-spe_pb_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k09.rds"))
-spe_pb_k02 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","spe_pseudobulk-BayesSpace_SVGm_k02.rds"))
-
-modeling_results_k11 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","modeling_results-BayesSpace_SVGm_k11.rds"))
-modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","modeling_results-BayesSpace_SVGm_k09.rds"))
-modeling_results_k09 <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm","modeling_results-BayesSpace_SVGm_k02.rds"))
-
-modeling_results_k09$enrichment |> 
-    select(gene, ends_with("Sp09D07")) |>
-    filter(logFC_Sp09D07 > 0) |>
-    arrange(fdr_Sp09D07) |>
-    head(10)
-
-
-spe_pb_k09$spatialLIBD <- spe_pb_k09$BayesSpace_SVGm_k09
-
-sig_genes <- sig_genes_extract_all(
-    modeling_results = modeling_results_k09,
-    sce_layer = spe_pb_k09,
-    n = 10
-) |>
-    as.data.frame()
-
-enrich_top <- sig_genes |>
-    filter(model_type  == "enrichment", top <= 5)
-
-enrich_top_list <- map(rafalib::splitit(enrich_top5$test), ~enrich_top5$gene[.x])
+enrich_top <- map(c(k02 = "k02", k09 = "k09", k11 = "k11"), function(k){
     
-plot_marker_express_List(
-    sce = spe,
-    gene_list = enrich_top_list,
-    pdf_fn = here(plot_dir, "SpD09_enrichment_top5.pdf"),
-    cellType_col = "BayesSpace_SVGm_k09",
-    gene_name_col = "gene_name",
-    color_pal = SpD_colors,
-    plot_points = FALSE
-)
+    spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", sprintf("spe_pseudobulk-BayesSpace_SVGm_%s.rds", k)))
+    
+    modeling_results <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", sprintf("modeling_results-BayesSpace_SVGm_%s.rds", k)))
+    
+    enrich_top <- sig_genes_extract(
+        modeling_results = modeling_results,
+        sce_layer = spe_pb,
+        n = 10,
+        model_type = "enrichment"
+    ) 
+    
+    enrich_top_list <- map(rafalib::splitit(enrich_top$test), ~enrich_top$gene[.x])
+    
+    plot_marker_express_List(
+        sce = spe,
+        gene_list = enrich_top_list,
+        pdf_fn = here(plot_dir, sprintf("%s_enrichment_top10.pdf", k)),
+        cellType_col = sprintf("BayesSpace_SVGm_%s", k),
+        gene_name_col = "gene_name",
+        color_pal = SpD_colors[[k]],
+        plot_points = FALSE
+    )
+    
+    write_csv(enrich_top, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", sprintf("modeling_results-BayesSpace_SVGm_%s.csv", k)))
+    
+    return(enrich_top)
+})
 
-sig_genes_k02 <- sig_genes_extract_all(
-    modeling_results = modeling_results_k02,
-    sce_layer = spe_pb_k02,
-    n = 10
-) |>
-    as.data.frame()
+#### compile details 
+
+summary_tab <- map(c("k09", "k11"), function(k){
+    
+    my_var = sprintf("BayesSpace_SVGm_%s", k)
+    
+    pd_qc_median <- pd |>
+        select(sum_umi, sum_gene, expr_chrM_ratio, !!my_var) |>
+        group_by(!!sym(my_var)) |>
+        summarise(across(c(sum_umi, sum_gene, expr_chrM_ratio), 
+                         list(median=median), 
+                         na.rm=TRUE))
+    
+    enrich_top_wide <- enrich_top[[k]] |>
+        group_by(test) |>
+        summarise(top_enrich_genes = paste(gene, collapse = ", ")) |>
+        rename(!!my_var := test)
+    
+    summary_tab <- enrich_top_wide |> left_join(pd_qc_median)
+    
+    write_csv(summary_tab, file = here(data_dir, sprintf("BayesSpace_SVGm_%s_summary.csv", k)))
+    return(summary_tab)
+})
 
 
-modeling_results_k02$enrichment |>     
-    dplyr::filter(logFC_Sp02D02 > 0) |>
-    dplyr::arrange(fdr_Sp02D02) |>
-    head()
-
-modeling_results_k02$enrichment |>     
-    dplyr::filter(logFC_Sp02D01 > 0) |>
-    dplyr::arrange(fdr_Sp02D01) |>
-    head()
-
-# write_csv(modeling_results_k02$enrichment, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "modeling_results-BayesSpace_SVGm_k02.csv"))
 
 ## from literature
 modeling_results <- fetch_data(type = "modeling_results")
@@ -289,16 +288,17 @@ table(spe$scran_discard, spe$BayesSpace_SVGm_k09)
 
 ## 70% of Sp09D07 are low library size
 table(spe$scran_low_lib_size, spe$BayesSpace_SVGm_k09)
-#       Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07 Sp09D08 Sp09D09
-# TRUE        2     329      18      72      15     114    3693       5    1669
-# FALSE    8310    5666    8942   54805   10210   10086    1544    9697    7025
-
 table(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
-#         Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07 Sp09D08 Sp09D09
-# Sp02D01    8312    5991    8960   54877   10225   10200    1720    9702    8648
-# Sp02D02       0       4       0       0       0       0    3517       0      46
 
-jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
+jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k09, spe$BayesSpace_SVGm_k11)
+
+write.csv(jacc.mat, file = here(data_dir, "SVGm_k9_v_k11_jacc_mat.csv"))
+
+pdf(here(plot_dir, "BayesSpace_SVGm_k9_v_k11.pdf"))
+ComplexHeatmap::Heatmap(jacc.mat, 
+                        col = c("black", viridisLite::plasma(100)),
+                        na_col = "black")
+dev.off()
 
 # slurmjobs::job_single('011_SpD_check', create_shell = TRUE, memory = '25G', command = "Rscript 011_SpD_check.R")
 
