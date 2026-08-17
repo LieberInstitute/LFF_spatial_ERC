@@ -37,15 +37,22 @@ offset_clusters <- read_csv(here("processed-data", "05_spe_correct_cluster", "05
 
 identical(spe$key, offset_clusters$key)
 
-table(spe$SpD, offset_clusters$cluster2)
+cluster_tab <- table(spe$SpD, offset_clusters$cluster2)
+
+cluster_tab_long <- cluster_tab  |>
+    reshape2::melt() |>
+    rename(SpD = Var1, offset = Var2, n = value)
 
 #### annotate colors with JACC mat ####
 jacc_mat <- linkClustersMatrix(spe$SpD, offset_clusters$cluster2)
 
 jacc_mat_long <- jacc_mat |>
     reshape2::melt() |>
-    rename(SpD = Var1, offset = Var2, Jacc = value)
+    rename(SpD = Var1, offset = Var2, Jacc = value) |> 
+    left_join(cluster_tab_long)
                                
+
+write_csv(jacc_mat_long, file = here(data_dir, "Offset_jacc_mat_long_k9.csv"))
 
 cluster_match <- jacc_mat_long |>
                         group_by(offset) |>
@@ -55,7 +62,11 @@ cluster_match <- jacc_mat_long |>
                                SpD_offset = paste0(SpD_match, "~", offset)) |>
                         arrange(SpD_offset)
 
-cluster_match$SpD_offset
+sum(cluster_match$n)/ncol(spe)
+
+
+
+cluster_match |
 
 #### Match colors ####
 ## create color pallet
