@@ -64,18 +64,7 @@ names(SpD_colors) <-  my_clusters
 
 anno_cluster_table <- map(my_clusters, ~read_xlsx(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", sprintf("ERC_SpD_spatial_registration_anno_summary_%s.xlsx", .x))))
 
-anno_cluster_table$k09 <- anno_cluster_table$k09 |>
-    rename(anno = Annotation,
-           order = Order)
-
-anno_cluster_table$k11 <- anno_cluster_table$k11 |>
-    rename(anno = annotation)
-
 unique(unlist(map(anno_cluster_table, "anno")))
-
-
-anno_cluster_table$k09 |>
-    mutate(SpD = fct_reorder(paste0(anno, "~", cluster),order))
 
 anno_cluster_table2 <- map2(anno_cluster_table, my_clusters,  ~.x |>
                                mutate(SpD = fct_reorder(paste0(anno, "~", cluster),order)) |>
@@ -89,7 +78,9 @@ anno_cluster_table3 <- map(anno_cluster_table,  ~.x |>
                            )
 
 ## Add to colData(spe)
-pb <- colData(spe) |> as.data.frame()
+pd <- colData(spe) |> as.data.frame()
+
+pd <- pd[,!grepl("SpD", colnames(pd))]
 
 for(tab in anno_cluster_table2){
     pb <- left_join(pb,tab)
@@ -97,11 +88,9 @@ for(tab in anno_cluster_table2){
 
 colData(spe) <- DataFrame(pb)
 
+table(spe$SpD_k10, spe$BayesSpace_SVGm_k10)
+
 ## create color annotation
-SpD_colors$k11_Markers_anno <-SpD_colors$k11[cluster_eval_anno$Markers_k11$cluster]
-names(SpD_colors$k11_Markers_anno) <- cluster_eval_anno$Markers_k11$anno
-
-
 SpD_colors_V4 <- c("Vasc"      = "#FF56AF",
                    "L1"        = "#47C281",
                    "L2"        = "#41D4EB",
@@ -155,19 +144,6 @@ marker_match <- map(svgVm_jacc_mat_long, ~.x |>
 
 #### Match colors ####
 
-SpD_colors$k11_SVGm_anno[[i_replace ]] <- "#FE7215" 
-names(SpD_colors$k11_SVGm_anno)[[i_replace ]] <- "L4/3~Sp11D10"
-
-SpD_colors$k11_SVGm_anno <- SpD_colors$k11_SVGm_anno[sort(names(SpD_colors$k11_SVGm_anno))]
-
-SpD_colors$k11_SVGm_anno
-# L1~Sp11D06     L1~Sp11D09   L3/2~Sp11D01     L3~Sp11D02   L4/3~Sp11D10 L4/5/3~Sp11D03     L5~Sp11D04     L6~Sp11D05
-# "#16FF32"      "#90AD1C"      "#5A5156"      "#3283FE"      "#FE7215"      "#FE00FA"      "#E4E1E3"      "#F6222E"
-# WM~Sp11D07     WM~Sp11D08     WM~Sp11D11
-# "#FEAF16"      "#1CFFCE"      "#B00068"
-
-## M11 vs svg9
-
 #### Spot plots ####
 sample_order <- sort(unique(spe$BrNum))
 ## plot SVGm with Marker color match
@@ -182,7 +158,8 @@ map(my_clusters, ~vis_grid_clus(
     sample_order = sample_order)
 )
 
-
+rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "rep_section.csv")) |>
+    filter(rep_section)
 
 #### Jacc heatmaps ####
 col_ha <- HeatmapAnnotation(
