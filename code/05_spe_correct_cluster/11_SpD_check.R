@@ -151,33 +151,46 @@ enrich_top <- map(c(k02 = "k02", k09 = "k09", k11 = "k11"), function(k){
     
     enrich_top_list <- map(rafalib::splitit(enrich_top$test), ~enrich_top$gene[.x])
     
-    plot_marker_express_List(
-        sce = spe,
-        gene_list = enrich_top_list,
-        pdf_fn = here(plot_dir, sprintf("%s_enrichment_top10.pdf", k)),
-        cellType_col = sprintf("BayesSpace_SVGm_%s", k),
-        gene_name_col = "gene_name",
-        color_pal = SpD_colors[[k]],
-        plot_points = FALSE
-    )
+    # plot_marker_express_List(
+    #     sce = spe,
+    #     gene_list = enrich_top_list,
+    #     pdf_fn = here(plot_dir, sprintf("%s_enrichment_top10.pdf", k)),
+    #     cellType_col = sprintf("BayesSpace_SVGm_%s", k),
+    #     gene_name_col = "gene_name",
+    #     color_pal = SpD_colors[[k]],
+    #     plot_points = FALSE
+    # )
     
     write_csv(enrich_top, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", sprintf("modeling_results-BayesSpace_SVGm_%s.csv", k)))
+    
+    spe_pb$spatialLIBD <- spe_pb[[sprintf("BayesSpace_SVGm_%s", k)]]
+    
+    sig_genes_all <- sig_genes_extract_all(
+        modeling_results = modeling_results,
+        sce_layer = spe_pb,
+        n = 10
+    ) |>
+        as.data.frame()
+    
+    write_csv(sig_genes_all, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", sprintf("modeling_results_ALL-BayesSpace_SVGm_%s.csv", k)))
+    
     
     return(enrich_top)
 })
 
 #### compile details 
 
-summary_tab <- map(c("k09", "k11"), function(k){
+summary_tab <- map(c("k09", "k11",  "k11"), function(k){
     
     my_var = sprintf("BayesSpace_SVGm_%s", k)
     
     pd_qc_median <- pd |>
-        select(sum_umi, sum_gene, expr_chrM_ratio, !!my_var) |>
+        select(sum_umi, sum_gene, expr_chrM_ratio, Nmask_dark_blue, !!my_var) |>
         group_by(!!sym(my_var)) |>
         summarise(across(c(sum_umi, sum_gene, expr_chrM_ratio), 
                          list(median=median), 
-                         na.rm=TRUE))
+                         na.rm=TRUE),
+                  )
     
     enrich_top_wide <- enrich_top[[k]] |>
         group_by(test) |>
@@ -284,21 +297,20 @@ p_list = vis_grid_clus(
 
 #### Jaccard indicies #####
 
-table(spe$scran_discard, spe$BayesSpace_SVGm_k09)
-
-## 70% of Sp09D07 are low library size
-table(spe$scran_low_lib_size, spe$BayesSpace_SVGm_k09)
 table(spe$BayesSpace_SVGm_k02, spe$BayesSpace_SVGm_k09)
 
-jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k09, spe$BayesSpace_SVGm_k11)
+jacc.mat <- linkClustersMatrix(spe$BayesSpace_SVGm_k10, spe$BayesSpace_SVGm_k11)
 
-write.csv(jacc.mat, file = here(data_dir, "SVGm_k9_v_k11_jacc_mat.csv"))
+write.csv(jacc.mat, file = here(data_dir, "SVGm_k10_v_k11_jacc_mat.csv"))
 
-pdf(here(plot_dir, "BayesSpace_SVGm_k9_v_k11.pdf"))
+pdf(here(plot_dir, "BayesSpace_SVGm_k10_v_k11.pdf"))
 ComplexHeatmap::Heatmap(jacc.mat, 
                         col = c("black", viridisLite::plasma(100)),
                         na_col = "black")
 dev.off()
+
+
+
 
 # slurmjobs::job_single('011_SpD_check', create_shell = TRUE, memory = '25G', command = "Rscript 011_SpD_check.R")
 
