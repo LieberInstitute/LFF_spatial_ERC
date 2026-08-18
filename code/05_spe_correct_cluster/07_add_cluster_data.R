@@ -18,6 +18,9 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 colData(spe)$APOE_carrier = ifelse(grepl("E2", spe$APOE), "E2+", "E4+")
 table(spe$APOE_carrier)
 
+spe$APOE_syn <- factor(gsub("/", ".", spe$APOE))
+levels(spe$APOE_syn)
+
 #### Load BayesSpace clustering data ####
 bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm", "clusters_BayesSpace"),
            recursive = TRUE,
