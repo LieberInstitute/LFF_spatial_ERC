@@ -9,6 +9,7 @@ library("bluster")
 library("ComplexHeatmap")
 library("here")
 library("sessioninfo")
+library("readxl")
 
 #### define dirs ####
 data_dir <- here("processed-data", "05_spe_correct_cluster", "18_compare_clusters")
@@ -30,7 +31,7 @@ reducedDimNames(spe)
 
 ## create color pallet
 
-SpD_colors <- map(c(2, 9, 11), function(k){
+SpD_colors <- map(c(9, 10, 11), function(k){
     
     colors <- Polychrome::palette36.colors(k)
     if(k < 3) colors <- colors[1:2]
@@ -38,40 +39,105 @@ SpD_colors <- map(c(2, 9, 11), function(k){
     return(colors)
 })
 
-names(SpD_colors) <- sprintf("k%02d", c(2,9,11))
+my_clusters <- sprintf("k%02d", c(9,10,11))
+names(my_clusters) <- my_clusters
+
+names(SpD_colors) <-  my_clusters
 
 #### Add spatial registration data for context ####
 
-my_clusters <- c(SVGm_k09 = "BayesSpace_SVGm_k09", SVGm_k11 = "BayesSpace_SVGm_k11", Markers_k11 = "BayesSpace_Markers_k11")
+# my_clusters <- c(SVGm_k09 = "BayesSpace_SVGm_k09", SVGm_k11 = "BayesSpace_SVGm_k10", SVGm_k11 = "BayesSpace_SVGm_k11")
+# load(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"), verbose = TRUE)
+# 
+# cluster_eval_anno <- map(my_clusters, 
+#                          ~cor_anno[[.x]]$layer_anno$HumanPilot |>
+#                              mutate(anno = paste0(layer_label, "~", cluster))
+#                              )
+# 
+# anno_cluster_table <- as.data.frame(map2(my_clusters, cluster_eval_anno, ~.y$anno[match(spe[[.x]], .y$cluster)]))
+# head(anno_cluster_table)
+# 
+# cluster_eval_anno_long <- do.call("rbind", cluster_eval_anno) |>
+#     rownames_to_column("input") |>
+#     mutate(input = gsub("\\.[0-9]+", "", input)) |>
+#     select(input, SpD = cluster, anno)
 
-load(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", "spatial_registration_erc_v_DLPFC_cor_anno.Rdata"), verbose = TRUE)
+anno_cluster_table <- map(my_clusters, ~read_xlsx(here("processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC", sprintf("ERC_SpD_spatial_registration_anno_summary_%s.xlsx", .x))))
 
-cluster_eval_anno <- map(my_clusters, 
-                         ~cor_anno[[.x]]$layer_anno$HumanPilot |>
-                             mutate(anno = paste0(layer_label, "~", cluster))
-                             )
+anno_cluster_table$k09 <- anno_cluster_table$k09 |>
+    rename(anno = Annotation,
+           order = Order)
 
-anno_cluster_table <- as.data.frame(map2(my_clusters, cluster_eval_anno, ~.y$anno[match(spe[[.x]], .y$cluster)]))
-head(anno_cluster_table)
+anno_cluster_table$k11 <- anno_cluster_table$k11 |>
+    rename(anno = annotation)
 
-cluster_eval_anno_long <- do.call("rbind", cluster_eval_anno) |>
-    rownames_to_column("input") |>
-    mutate(input = gsub("\\.[0-9]+", "", input)) |>
-    select(input, SpD = cluster, anno)
+unique(unlist(map(anno_cluster_table, "anno")))
 
-## reset
-# colData(spe)[,names(my_clusters)] <- NULL
 
-colData(spe) <- cbind(colData(spe), anno_cluster_table)
+anno_cluster_table$k09 |>
+    mutate(SpD = fct_reorder(paste0(anno, "~", cluster),order))
+
+anno_cluster_table2 <- map2(anno_cluster_table, my_clusters,  ~.x |>
+                               mutate(SpD = fct_reorder(paste0(anno, "~", cluster),order)) |>
+                               select(!!paste0("BayesSpace_SVGm_", .y) := cluster,
+                                      !!paste0("SpD_", .y) := SpD)
+                           )
+
+anno_cluster_table3 <- map(anno_cluster_table,  ~.x |>
+                               mutate(SpD = fct_reorder(paste0(anno, "~", cluster),order)) |>
+                               select(cluster, anno, SpD)
+                           )
+
+## Add to colData(spe)
+pb <- colData(spe) |> as.data.frame()
+
+for(tab in anno_cluster_table2){
+    pb <- left_join(pb,tab)
+}
+
+colData(spe) <- DataFrame(pb)
 
 ## create color annotation
 SpD_colors$k11_Markers_anno <-SpD_colors$k11[cluster_eval_anno$Markers_k11$cluster]
 names(SpD_colors$k11_Markers_anno) <- cluster_eval_anno$Markers_k11$anno
 
+
+SpD_colors_V4 <- c("Vasc"      = "#FF56AF",
+                   "L1"        = "#47C281",
+                   "L2"        = "#41D4EB",
+                   # "L3"        = "#0D8278",
+                   "L3"        = "#788EE2",
+                   "L3_Inhib"  = "#B6686F",
+                   "LD"        = "grey80",
+                   "L5_LD"     = "#B1C2CE",
+                   "L5"        = "#0072CE",
+                   "L6"        = "#0A2E5C",
+                   "L6a"       = "#24487A",
+                   "L6b"       = "#05193B",
+                   "WMuf"      = "#F4A460",
+                   "WMtz"      = "#E8720C",
+                   "WM"        = "#F57A00",
+                   "WMd"       = "#581009",
+                   "Inhib"     = "#E83E38")
+
+#' Build a color vector for one resolution's annotation table
+make_SpD_colors <- function(anno_table, domain_colors = SpD_colors_V4) {
+    missing_domains <- setdiff(anno_table$anno, names(domain_colors))
+    if (length(missing_domains) > 0) {
+        stop("No color defined for domain(s): ", paste(missing_domains, collapse = ", "))
+    }
+    
+    colors_out <- domain_colors[anno_table$anno]
+    names(colors_out) <- anno_table$SpD
+    colors_out
+}
+
+SpD_colors_by_k <- purrr::map(anno_cluster_table3, make_SpD_colors)
+
 #### Compare clusters with Jacquard Matrix ####
-svg_marker_pairs <- list(svg9_m11 = c("SVGm_k09", "Markers_k11"),
-                         svg9_svg11 = c("SVGm_k09", "SVGm_k11"),
-                         svg11_m11 = c("SVGm_k11", "Markers_k11")
+svg_marker_pairs <- list(k9_k10 = c("SpD_k09", "SpD_k10"),
+                         k9_k11 = c("SpD_k09", "SpD_k11"),
+                         k10_k11 = c("SpD_k10", "SpD_k11")
 )
 
 svgVm_jacc_mat <- map(svg_marker_pairs, ~linkClustersMatrix(spe[[.x[[1]]]], spe[[.x[[2]]]]))
@@ -80,25 +146,14 @@ svgVm_jacc_mat_long <- map(svgVm_jacc_mat, ~.x |>
                                reshape2::melt() |>
                                rename(SVGm = Var1, Marker = Var2, Jacc = value))
 
-## think about colnames here - Marker is actually svg11
-head(svgVm_jacc_mat_long$svg9_svg11)
-
-
 marker_match <- map(svgVm_jacc_mat_long, ~.x |>
                         group_by(SVGm) |>
                         arrange(-Jacc) |>
                         slice(1) |>
-                        mutate(Marker_unanno = gsub("^.*?~", "", Marker)) |>
+                        mutate(Marker_unanno = gsub("~.*?$", "", Marker)) |>
                         arrange(Marker_unanno))
 
 #### Match colors ####
-
-## M11 vs svg11
-SpD_colors$k11_SVGm_anno <- SpD_colors$k11[marker_match$svg11_m11$Marker_unanno]
-names(SpD_colors$k11_SVGm_anno) <- marker_match$svg11_m11$SVGm
-
-## replace Sp11D10 color which has poor match
-i_replace <- match("L4/3~Sp11D10", marker_match$svg11_m11$SVGm)
 
 SpD_colors$k11_SVGm_anno[[i_replace ]] <- "#FE7215" 
 names(SpD_colors$k11_SVGm_anno)[[i_replace ]] <- "L4/3~Sp11D10"
@@ -112,49 +167,22 @@ SpD_colors$k11_SVGm_anno
 # "#FEAF16"      "#1CFFCE"      "#B00068"
 
 ## M11 vs svg9
-SpD_colors$k09_SVGm_anno <- SpD_colors$k11[marker_match$svg9_m11$Marker_unanno]
-names(SpD_colors$k09_SVGm_anno) <- marker_match$svg9_m11$SVGm
-
-## replace poor match for L4~Sp09D09
-i_replace <- match("L4~Sp09D09", names(SpD_colors$k09_SVGm_anno))
-SpD_colors$k09_SVGm_anno[[i_replace ]] <- "brown" 
-names(SpD_colors$k09_SVGm_anno)[[i_replace ]] <- "L4~Sp09D09"
-
-(SpD_colors$k09_SVGm_anno <- SpD_colors$k09_SVGm_anno[sort(names(SpD_colors$k09_SVGm_anno))])
-
-# L1~Sp09D05   L1~Sp09D08 L2/3~Sp09D01   L3~Sp09D02   L4~Sp09D09 L5/4~Sp09D03   L6~Sp09D04   WM~Sp09D06   WM~Sp09D07 
-# "#16FF32"    "#90AD1C"    "#5A5156"    "#3283FE"      "brown"    "#FE00FA"    "#F6222E"    "#FEAF16"    "#1CFFCE" 
 
 #### Spot plots ####
 sample_order <- sort(unique(spe$BrNum))
 ## plot SVGm with Marker color match
 
-vis_grid_clus(
+map(my_clusters, ~vis_grid_clus(
     spe = spe,
-    clustervar = "Markers_k11",
-    pdf = here::here(plot_dir, "spe_erc-BayesSpace_Markers_k11.pdf"),
+    clustervar = paste0("SpD_", .x),
+    pdf = here::here(plot_dir, sprintf("spe_erc-BayesSpace_SVGm_%s_compare.pdf", .x)),
     sort_clust = FALSE,
     point_size = 1.2,
-    colors = SpD_colors$k11_Markers_anno,
+    colors = SpD_colors_by_k[[.x]],
     sample_order = sample_order)
+)
 
-vis_grid_clus(
-    spe = spe,
-    clustervar = "SVGm_k11",
-    pdf = here::here(plot_dir, "spe_erc-BayesSpace_SVGm_k11_Marker_colors.pdf"),
-    sort_clust = FALSE,
-    point_size = 1.2,
-    colors = SpD_colors$k11_SVGm_anno,
-    sample_order = sample_order)
 
-vis_grid_clus(
-    spe = spe,
-    clustervar = "SVGm_k09",
-    pdf = here::here(plot_dir, "spe_erc-BayesSpace_SVGm_k09_Marker_colors.pdf"),
-    sort_clust = FALSE,
-    point_size = 1.2,
-    colors = SpD_colors$k09_SVGm_anno,
-    sample_order = sample_order)
 
 #### Jacc heatmaps ####
 col_ha <- HeatmapAnnotation(
