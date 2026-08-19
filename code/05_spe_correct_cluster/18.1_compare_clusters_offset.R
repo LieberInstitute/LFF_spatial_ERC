@@ -35,6 +35,36 @@ spe$SpD_preprint <- spe$SpD
 table(spe$SpD_preprint)
 
 #### Load updated (SVGm k11) clustering + annotation ####
+
+bayes_cluster_fn <- list.files(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace", "clusters_BayesSpace-SVGm", "clusters_BayesSpace"),
+                               recursive = TRUE,
+                               full.names = TRUE)
+
+map(bayes_cluster_fn, ~as.Date(file.info(.x)$mtime))
+
+bayes_clusters <- map2(bayes_cluster_fn, map(str_split(bayes_cluster_fn, "/"), 12), function(file, name){
+    sp = sprintf("Sp%02d",parse_number(name))
+    clus <- read.csv(file) |>
+        mutate(cluster = factor(paste0(sp, "D", str_pad(cluster, 2,  pad = "0"))))
+    
+    colnames(clus)[2] <- name
+    return(clus)
+})
+
+
+bayes_clusters_tab <- purrr::reduce(bayes_clusters, dplyr::left_join, by = c("key"))
+## fix double brain number in key
+bayes_clusters_tab$key <- gsub("(^.*?_Br[0-9]+)_Br[0-9+]+$", "\\1", bayes_clusters_tab$key)
+identical(colnames(spe), bayes_clusters_tab$key)
+head(bayes_clusters_tab)
+
+pd <- colData(spe) |> as.data.frame()
+pd <- pd[, !grepl("BayesSpace_SVGm_", colnames(pd))]
+
+pd <- left_join(pd, bayes_clusters_tab)
+
+colData(spe) <- DataFrame(pd)
+
 ## same convention as 18_compare_clusters.R: BayesSpace_SVGm_k11 clusters,
 ## annotated via the k11 spatial registration summary
 anno_table_k11 <- read_xlsx(here(
@@ -53,7 +83,7 @@ SpD_colors_simple <- metadata(spe)$SpD_colors
 
 ## updated (k11) uses the new V4 domain palette, mapped onto the k11 SpD labels
 SpD_colors_V4 <- c(
-    "Vasc"      = "#FF56AF",
+    "Vasc"      = "#E05AD2",
     "L1"        = "#47C281",
     "L2"        = "#41D4EB",
     "L3"        = "#889DF0",
@@ -68,7 +98,7 @@ SpD_colors_V4 <- c(
     "WMtz"      = "#E8720C",
     "WM"        = "#F57A00",
     "WMd"       = "#581009",
-    "Inhib"     = "#E83E38"
+    "Inhib"     = "#C82100"
 )
 
 #' Build a color vector for one resolution's annotation table, keyed by SpD
@@ -168,7 +198,7 @@ cluster_plots_by_row <- map(names(row_clustervars), function(row_label) {
 
         vis_clus_plot <- vis_clus(
             spe = spe,
-            point_size = 1.2,
+            point_size = 1.3,
             colors = row_pal,
             sampleid = s,
             clustervar = clustervar
