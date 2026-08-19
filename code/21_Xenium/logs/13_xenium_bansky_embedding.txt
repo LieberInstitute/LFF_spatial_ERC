@@ -1,11 +1,12 @@
 **** Job starts ****
-Wed May 27 02:56:41 PM EDT 2026
+Wed Aug 19 02:29:56 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32209780
+Job id: 34987828
 Job name: 13_xenium_bansky_embedding
-Node name: compute-092
+Node name: compute-176
 Task id: 
+Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -101,10 +102,10 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 Loading required package: Rcpp
-• This is Harmony2 version 2.0.3
-• Read the guide: run vignette()
-• Get help: Visit the website at https://korsunskylab.github.io/harmony2/ and
-report issues on https://github.com/immunogenomics/harmony/issues
+• This is Harmony2 version 2.0.5
+• Read the guide: run vignette("quickstart", package="harmony")
+• Get help: Visit the website at <https://korsunskylab.github.io/harmony2/> and
+report issues on <https://github.com/immunogenomics/harmony/issues>
 Loading required package: scuttle
 Loading required package: ggplot2
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
@@ -131,10 +132,10 @@ Loading required package: ggplot2
 ✖ lubridate::stamp()    masks cowplot::stamp()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-05-27 14:57:07.067701 - Load spe data
+2026-08-19 02:30:15.483821 - Load spe data
 n cells: 447183
-2026-05-27 14:57:26.51535 | Staggering spatial coordinates
-2026-05-27 14:57:26.86241 | Running computeBanksy on full dataset
+2026-08-19 02:30:37.015753 | Staggering spatial coordinates
+2026-08-19 02:30:37.286921 | Running computeBanksy on full dataset
 Computing neighbors...
 Spatial mode is kNN_median
 Parameters: k_geom=25
@@ -149,14 +150,14 @@ Done
 Warning message:
 In asMethod(object) :
   sparse->dense coercion: allocating vector of size 1.2 GiB
-2026-05-27 15:02:58.849754 | Running PCA on embedding
+2026-08-19 02:34:01.500292 | Running PCA on embedding
 Using seed=514
 Warning message:
 In asMethod(object) :
   sparse->dense coercion: allocating vector of size 1.2 GiB
-2026-05-27 15:05:09.94747 | Running UMAP on embedding
+2026-08-19 02:35:45.274427 | Running UMAP on embedding
 Using seed=514
-2026-05-27 15:19:14.746648 | Running Harmony...
+2026-08-19 02:45:17.680107 | Running Harmony...
 Transposing data matrix
 Using automatic lambda estimation
 Thetas: 2
@@ -203,14 +204,12 @@ Harmony 5/10
 Harmony converged after 5 iterations
 null device 
           1 
-2026-05-27 15:22:34.654704 | Running UMAP on Harmony-corrected embedding
+2026-08-19 02:47:19.046445 | Running UMAP on Harmony-corrected embedding
 Using seed=514
 null device 
           1 
-2026-05-27 15:38:47.920158 | Performing clustering k=9
+2026-08-19 02:57:30.546652 | Performing clustering k=9
 Using seed=514
-Warning message:
-Quick-TRANSfer stage steps exceeded maximum (= 22359150) 
 
     1     2     3     4     5     6     7     8     9 
 77750 37752 77341 43288 54877 21918 41894 27165 65198 
@@ -230,58 +229,11 @@ Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
-[[1]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br1039.png"
-
-[[2]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br1556.png"
-
-[[3]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5367.png"
-
-[[4]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5599.png"
-
-[[5]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br1706.png"
-
-[[6]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5415.png"
-
-[[7]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5941.png"
-
-[[8]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br6538.png"
-
-[[9]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br2582.png"
-
-[[10]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5426.png"
-
-[[11]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5517.png"
-
-[[12]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br6098.png"
-
-[[13]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5161.png"
-
-[[14]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5460.png"
-
-[[15]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5634.png"
-
-[[16]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k9_Br5854.png"
-
-2026-05-27 15:39:27.060366 | Performing clustering k=12
+2026-08-19 02:57:54.801512 | Performing clustering k=10
 Using seed=514
-Warning message:
-did not converge in 10 iterations 
+
+    1     2     3     4     5     6     7     8     9    10 
+59629 24403 39445 40574 76470 20017 30803 23105 55380 77357 
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
@@ -298,57 +250,51 @@ Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
-[[1]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br1039.png"
+2026-08-19 02:58:19.893827 | Performing clustering k=11
+Using seed=514
 
-[[2]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br1556.png"
-
-[[3]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5367.png"
-
-[[4]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5599.png"
-
-[[5]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br1706.png"
-
-[[6]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5415.png"
-
-[[7]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5941.png"
-
-[[8]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br6538.png"
-
-[[9]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br2582.png"
-
-[[10]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5426.png"
-
-[[11]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5517.png"
-
-[[12]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br6098.png"
-
-[[13]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5161.png"
-
-[[14]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5460.png"
-
-[[15]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5634.png"
-
-[[16]]
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_bansky_k12_Br5854.png"
-
+    1     2     3     4     5     6     7     8     9    10    11 
+56424 24551 56971 39408 69150 19987 32827 22751 39849 62635 22630 
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+2026-08-19 02:58:46.584598 | Performing clustering k=12
+Using seed=514
 
     1     2     3     4     5     6     7     8     9    10    11    12 
 38608 66410 30395 36330 62210  5057 33665 21700 41505 70418 23278 17607 
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Warning messages:
+1: Quick-TRANSfer stage steps exceeded maximum (= 22359150) 
+2: did not converge in 10 iterations 
    
         1     2     3     4     5     6     7     8     9    10    11    12
   1 27206 46935     0   367  2055     1     3     0  1164     0    19     0
@@ -360,343 +306,264 @@ Saving 12 x 7 in image
   7    36     9 29644     0 10494    46   566     0     1   321   649   128
   8     0     0    19     0     1    45     0 21623     0     0  3856  1621
   9  1085  1024     3     0 22658    37     7     0 39936   365    83     0
-DataFrame with 447183 rows and 65 columns
-                                  Sample     Barcode     cell_id
-                             <character> <character> <character>
-Br1039_aaaaabke-1 /dcs05/lieber/marmay..  aaaaabke-1  aaaaabke-1
-Br1039_aaaaepee-1 /dcs05/lieber/marmay..  aaaaepee-1  aaaaepee-1
-Br1039_aaagdfnc-1 /dcs05/lieber/marmay..  aaagdfnc-1  aaagdfnc-1
-Br1039_aaajpooh-1 /dcs05/lieber/marmay..  aaajpooh-1  aaajpooh-1
-Br1039_aaalplmo-1 /dcs05/lieber/marmay..  aaalplmo-1  aaalplmo-1
-...                                  ...         ...         ...
-Br5854_oipciide-1 /dcs05/lieber/marmay..  oipciide-1  oipciide-1
-Br5854_oipfagpf-1 /dcs05/lieber/marmay..  oipfagpf-1  oipfagpf-1
-Br5854_oipgigep-1 /dcs05/lieber/marmay..  oipgigep-1  oipgigep-1
-Br5854_oiphphbd-1 /dcs05/lieber/marmay..  oiphphbd-1  oiphphbd-1
-Br5854_ojaapmlh-1 /dcs05/lieber/marmay..  ojaapmlh-1  ojaapmlh-1
-                  transcript_counts control_probe_counts genomic_control_counts
-                          <numeric>            <numeric>              <numeric>
-Br1039_aaaaabke-1               394                    0                      0
-Br1039_aaaaepee-1               193                    0                      0
-Br1039_aaagdfnc-1               651                    0                      0
-Br1039_aaajpooh-1               139                    0                      0
-Br1039_aaalplmo-1               429                    0                      0
-...                             ...                  ...                    ...
-Br5854_oipciide-1               137                    0                      0
-Br5854_oipfagpf-1               435                    0                      0
-Br5854_oipgigep-1               273                    0                      0
-Br5854_oiphphbd-1               704                    0                      0
-Br5854_ojaapmlh-1               549                    0                      0
-                  control_codeword_counts unassigned_codeword_counts
-                                <numeric>                  <numeric>
-Br1039_aaaaabke-1                       0                          0
-Br1039_aaaaepee-1                       0                          0
-Br1039_aaagdfnc-1                       0                          0
-Br1039_aaajpooh-1                       0                          0
-Br1039_aaalplmo-1                       0                          0
-...                                   ...                        ...
-Br5854_oipciide-1                       0                          0
-Br5854_oipfagpf-1                       0                          0
-Br5854_oipgigep-1                       0                          0
-Br5854_oiphphbd-1                       0                          0
-Br5854_ojaapmlh-1                       0                          0
-                  deprecated_codeword_counts total_counts cell_area
-                                   <numeric>    <numeric> <numeric>
-Br1039_aaaaabke-1                          1          395   154.886
-Br1039_aaaaepee-1                          0          193   123.728
-Br1039_aaagdfnc-1                          2          653   248.269
-Br1039_aaajpooh-1                          0          139   116.413
-Br1039_aaalplmo-1                          0          429   242.941
-...                                      ...          ...       ...
-Br5854_oipciide-1                          0          137   109.143
-Br5854_oipfagpf-1                          3          438   119.980
-Br5854_oipgigep-1                          1          274   108.285
-Br5854_oiphphbd-1                          4          708   139.397
-Br5854_ojaapmlh-1                          0          549   126.618
-                  nucleus_area nucleus_count    segmentation_method   sample_id
-                     <numeric>     <numeric>            <character> <character>
-Br1039_aaaaabke-1     17.20453             1 Segmented by nucleus..      Br1039
-Br1039_aaaaepee-1      6.81859             1 Segmented by nucleus..      Br1039
-Br1039_aaagdfnc-1     51.97485             1 Segmented by nucleus..      Br1039
-Br1039_aaajpooh-1      6.72828             1 Segmented by nucleus..      Br1039
-Br1039_aaalplmo-1     44.07250             1 Segmented by nucleus..      Br1039
-...                        ...           ...                    ...         ...
-Br5854_oipciide-1      5.37359             1 Segmented by nucleus..      Br5854
-Br5854_oipfagpf-1      6.05094             1 Segmented by nucleus..      Br5854
-Br5854_oipgigep-1     14.04359             1 Segmented by nucleus..      Br5854
-Br5854_oiphphbd-1     11.51484             1 Segmented by nucleus..      Br5854
-Br5854_ojaapmlh-1      8.21844             1 Segmented by nucleus..      Br5854
-                        BrNum     APOE APOE_carrier Ancestry      Sex       Age
-                  <character> <factor>     <factor> <factor> <factor> <numeric>
-Br1039_aaaaabke-1      Br1039    E4/E4          E4+       AA        F     51.45
-Br1039_aaaaepee-1      Br1039    E4/E4          E4+       AA        F     51.45
-Br1039_aaagdfnc-1      Br1039    E4/E4          E4+       AA        F     51.45
-Br1039_aaajpooh-1      Br1039    E4/E4          E4+       AA        F     51.45
-Br1039_aaalplmo-1      Br1039    E4/E4          E4+       AA        F     51.45
-...                       ...      ...          ...      ...      ...       ...
-Br5854_oipciide-1      Br5854    E2/E3          E2+       AA        M     68.38
-Br5854_oipfagpf-1      Br5854    E2/E3          E2+       AA        M     68.38
-Br5854_oipgigep-1      Br5854    E2/E3          E2+       AA        M     68.38
-Br5854_oiphphbd-1      Br5854    E2/E3          E2+       AA        M     68.38
-Br5854_ojaapmlh-1      Br5854    E2/E3          E2+       AA        M     68.38
-                    Diagnosis   Anc_Afr   Anc_Eur       Rin  taupathy
-                  <character> <numeric> <numeric> <numeric> <logical>
-Br1039_aaaaabke-1     Control     0.719     0.281       8.6      TRUE
-Br1039_aaaaepee-1     Control     0.719     0.281       8.6      TRUE
-Br1039_aaagdfnc-1     Control     0.719     0.281       8.6      TRUE
-Br1039_aaajpooh-1     Control     0.719     0.281       8.6      TRUE
-Br1039_aaalplmo-1     Control     0.719     0.281       8.6      TRUE
-...                       ...       ...       ...       ...       ...
-Br5854_oipciide-1     Control     0.578     0.422         9      TRUE
-Br5854_oipfagpf-1     Control     0.578     0.422         9      TRUE
-Br5854_oipgigep-1     Control     0.578     0.422         9      TRUE
-Br5854_oiphphbd-1     Control     0.578     0.422         9      TRUE
-Br5854_ojaapmlh-1     Control     0.578     0.422         9      TRUE
-                        CERAD       Braak        chip  experiment         Run
-                  <character> <character> <character> <character> <character>
-Br1039_aaaaabke-1          NA          NA    c0061389     LFF-ERC        Run2
-Br1039_aaaaepee-1          NA          NA    c0061389     LFF-ERC        Run2
-Br1039_aaagdfnc-1          NA          NA    c0061389     LFF-ERC        Run2
-Br1039_aaajpooh-1          NA          NA    c0061389     LFF-ERC        Run2
-Br1039_aaalplmo-1          NA          NA    c0061389     LFF-ERC        Run2
-...                       ...         ...         ...         ...         ...
-Br5854_oipciide-1     C0-none B1 (I - II)    c0102694     LFF-ERC        Run2
-Br5854_oipfagpf-1     C0-none B1 (I - II)    c0102694     LFF-ERC        Run2
-Br5854_oipgigep-1     C0-none B1 (I - II)    c0102694     LFF-ERC        Run2
-Br5854_oiphphbd-1     C0-none B1 (I - II)    c0102694     LFF-ERC        Run2
-Br5854_ojaapmlh-1     C0-none B1 (I - II)    c0102694     LFF-ERC        Run2
-                         date       chip2 APOE_ancestry       sum  detected
-                  <character> <character>   <character> <numeric> <integer>
-Br1039_aaaaabke-1    20260417      183516         E4_AA       395        84
-Br1039_aaaaepee-1    20260417      183516         E4_AA       193        42
-Br1039_aaagdfnc-1    20260417      183516         E4_AA       653       109
-Br1039_aaajpooh-1    20260417      183516         E4_AA       139        31
-Br1039_aaalplmo-1    20260417      183516         E4_AA       429        57
-...                       ...         ...           ...       ...       ...
-Br5854_oipciide-1    20260417      183516         E2_AA       137        33
-Br5854_oipfagpf-1    20260417      183516         E2_AA       438        90
-Br5854_oipgigep-1    20260417      183516         E2_AA       274        68
-Br5854_oiphphbd-1    20260417      183516         E2_AA       708       113
-Br5854_ojaapmlh-1    20260417      183516         E2_AA       549       100
-                  subsets_negProbe_sum subsets_negProbe_detected
-                             <numeric>                 <integer>
-Br1039_aaaaabke-1                    0                         0
-Br1039_aaaaepee-1                    0                         0
-Br1039_aaagdfnc-1                    0                         0
-Br1039_aaajpooh-1                    0                         0
-Br1039_aaalplmo-1                    0                         0
-...                                ...                       ...
-Br5854_oipciide-1                    0                         0
-Br5854_oipfagpf-1                    0                         0
-Br5854_oipgigep-1                    0                         0
-Br5854_oiphphbd-1                    0                         0
-Br5854_ojaapmlh-1                    0                         0
-                  subsets_negProbe_percent subsets_negCodeword_sum
-                                 <numeric>               <numeric>
-Br1039_aaaaabke-1                        0                       0
-Br1039_aaaaepee-1                        0                       0
-Br1039_aaagdfnc-1                        0                       0
-Br1039_aaajpooh-1                        0                       0
-Br1039_aaalplmo-1                        0                       0
-...                                    ...                     ...
-Br5854_oipciide-1                        0                       0
-Br5854_oipfagpf-1                        0                       0
-Br5854_oipgigep-1                        0                       0
-Br5854_oiphphbd-1                        0                       0
-Br5854_ojaapmlh-1                        0                       0
-                  subsets_negCodeword_detected subsets_negCodeword_percent
-                                     <integer>                   <numeric>
-Br1039_aaaaabke-1                            0                           0
-Br1039_aaaaepee-1                            0                           0
-Br1039_aaagdfnc-1                            0                           0
-Br1039_aaajpooh-1                            0                           0
-Br1039_aaalplmo-1                            0                           0
-...                                        ...                         ...
-Br5854_oipciide-1                            0                           0
-Br5854_oipfagpf-1                            0                           0
-Br5854_oipgigep-1                            0                           0
-Br5854_oiphphbd-1                            0                           0
-Br5854_ojaapmlh-1                            0                           0
-                  subsets_unassigned_sum subsets_unassigned_detected
-                               <numeric>                   <integer>
-Br1039_aaaaabke-1                      0                           0
-Br1039_aaaaepee-1                      0                           0
-Br1039_aaagdfnc-1                      0                           0
-Br1039_aaajpooh-1                      0                           0
-Br1039_aaalplmo-1                      0                           0
-...                                  ...                         ...
-Br5854_oipciide-1                      0                           0
-Br5854_oipfagpf-1                      0                           0
-Br5854_oipgigep-1                      0                           0
-Br5854_oiphphbd-1                      0                           0
-Br5854_ojaapmlh-1                      0                           0
-                  subsets_unassigned_percent subsets_any_neg_sum
-                                   <numeric>           <numeric>
-Br1039_aaaaabke-1                          0                   0
-Br1039_aaaaepee-1                          0                   0
-Br1039_aaagdfnc-1                          0                   0
-Br1039_aaajpooh-1                          0                   0
-Br1039_aaalplmo-1                          0                   0
-...                                      ...                 ...
-Br5854_oipciide-1                          0                   0
-Br5854_oipfagpf-1                          0                   0
-Br5854_oipgigep-1                          0                   0
-Br5854_oiphphbd-1                          0                   0
-Br5854_ojaapmlh-1                          0                   0
-                  subsets_any_neg_detected subsets_any_neg_percent
-                                 <integer>               <numeric>
-Br1039_aaaaabke-1                        0                       0
-Br1039_aaaaepee-1                        0                       0
-Br1039_aaagdfnc-1                        0                       0
-Br1039_aaajpooh-1                        0                       0
-Br1039_aaalplmo-1                        0                       0
-...                                    ...                     ...
-Br5854_oipciide-1                        0                       0
-Br5854_oipfagpf-1                        0                       0
-Br5854_oipgigep-1                        0                       0
-Br5854_oiphphbd-1                        0                       0
-Br5854_ojaapmlh-1                        0                       0
-                  subsets_GEX_sum subsets_GEX_detected subsets_GEX_percent
-                        <numeric>            <integer>           <numeric>
-Br1039_aaaaabke-1             394                   83             99.7468
-Br1039_aaaaepee-1             193                   42            100.0000
-Br1039_aaagdfnc-1             651                  107             99.6937
-Br1039_aaajpooh-1             139                   31            100.0000
-Br1039_aaalplmo-1             429                   57            100.0000
-...                           ...                  ...                 ...
-Br5854_oipciide-1             137                   33            100.0000
-Br5854_oipfagpf-1             435                   88             99.3151
-Br5854_oipgigep-1             273                   67             99.6350
-Br5854_oiphphbd-1             704                  110             99.4350
-Br5854_ojaapmlh-1             549                  100            100.0000
-                      total   sum_gex detected_gex exclude_any_neg sum_gex_low
-                  <numeric> <numeric>    <integer>       <logical>   <logical>
-Br1039_aaaaabke-1       395       394           83           FALSE       FALSE
-Br1039_aaaaepee-1       193       193           42           FALSE       FALSE
-Br1039_aaagdfnc-1       653       651          107           FALSE       FALSE
-Br1039_aaajpooh-1       139       139           31           FALSE       FALSE
-Br1039_aaalplmo-1       429       429           57           FALSE       FALSE
-...                     ...       ...          ...             ...         ...
-Br5854_oipciide-1       137       137           33           FALSE       FALSE
-Br5854_oipfagpf-1       438       435           88           FALSE       FALSE
-Br5854_oipgigep-1       274       273           67           FALSE       FALSE
-Br5854_oiphphbd-1       708       704          110           FALSE       FALSE
-Br5854_ojaapmlh-1       549       549          100           FALSE       FALSE
-                  detected_gex_low cell_area_outlier global_outliers off_tissue
-                  <outlier.filter>  <outlier.filter>       <logical>  <logical>
-Br1039_aaaaabke-1            FALSE             FALSE           FALSE      FALSE
-Br1039_aaaaepee-1            FALSE             FALSE           FALSE      FALSE
-Br1039_aaagdfnc-1            FALSE             FALSE           FALSE      FALSE
-Br1039_aaajpooh-1            FALSE             FALSE           FALSE      FALSE
-Br1039_aaalplmo-1            FALSE             FALSE           FALSE      FALSE
-...                            ...               ...             ...        ...
-Br5854_oipciide-1            FALSE             FALSE           FALSE      FALSE
-Br5854_oipfagpf-1            FALSE             FALSE           FALSE      FALSE
-Br5854_oipgigep-1            FALSE             FALSE           FALSE      FALSE
-Br5854_oiphphbd-1            FALSE             FALSE           FALSE      FALSE
-Br5854_ojaapmlh-1            FALSE             FALSE           FALSE      FALSE
-                  cell_area.sf nucleus_area.sf sizeFactor clust_HARMONY_kmeans9
-                     <numeric>       <numeric>  <numeric>              <factor>
-Br1039_aaaaabke-1     0.923781        0.477444   0.630517                     7
-Br1039_aaaaepee-1     0.737948        0.189223   0.308857                     7
-Br1039_aaagdfnc-1     1.480743        1.442356   1.041793                     7
-Br1039_aaajpooh-1     0.694317        0.186717   0.222441                     7
-Br1039_aaalplmo-1     1.448963        1.223058   0.686527                     7
-...                        ...             ...        ...                   ...
-Br5854_oipciide-1     0.650956        0.149123   0.219241                     2
-Br5854_oipfagpf-1     0.715594        0.167920   0.696129                     4
-Br5854_oipgigep-1     0.645839        0.389724   0.436881                     2
-Br5854_oiphphbd-1     0.831403        0.319549   1.126609                     1
-Br5854_ojaapmlh-1     0.755184        0.228070   0.878563                     1
-                  clust_HARMONY_kmeans12
-                                <factor>
-Br1039_aaaaabke-1                      3
-Br1039_aaaaepee-1                      3
-Br1039_aaagdfnc-1                      3
-Br1039_aaajpooh-1                      3
-Br1039_aaalplmo-1                      3
-...                                  ...
-Br5854_oipciide-1                      7
-Br5854_oipfagpf-1                      4
-Br5854_oipgigep-1                      2
-Br5854_oiphphbd-1                      1
-Br5854_ojaapmlh-1                      2
-            
-                 1     2     3     4     5     6     7     8     9
-  Vasc~SpX3      0     0 77341     0     0     0     0     0     0
-  L1~SpX6        0     0     0     0     0 21918     0     0     0
-  L1~SpX7        0     0     0     0     0     0 41894     0     0
-  L2.3~SpX4      0     0     0 43288     0     0     0     0     0
-  Inhib~SpX5     0     0     0     0 54877     0     0     0     0
-  L5~SpX1    77750     0     0     0     0     0     0     0     0
-  L6~SpX9        0     0     0     0     0     0     0     0 65198
-  WMtz~SpX8      0     0     0     0     0     0     0 27165     0
-  WM~SpX2        0 37752     0     0     0     0     0     0     0
-2026-05-27 15:40:13.726993- Load rctd data
-Loading required namespace: spacexr
-[1] TRUE
+2026-08-19 02:59:16.589108 - Saving preliminary SPE object
+[1] "Reproducibility information:"
+[1] "2026-08-19 02:59:51 EDT"
+    user   system  elapsed 
+2034.449   31.547 1793.965 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-08-19
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
 
- Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib 
- 84797   6278  35778 132887  27195  71999  60132  28117 
-            
-             Astro Macro Micro Oligo   OPC  Vasc Excit Inhib
-  Vasc~SpX3   8352   213  5265 53847  3251  3935  1283  1195
-  L1~SpX6     1988  3900  1303  1640   200 12570   159   158
-  L1~SpX7    16209   262  4639 12534  2511  3432   544  1763
-  L2.3~SpX4   7448    59  3165  2493  3454  3628 17432  5609
-  Inhib~SpX5 10370   625  6266 13201  3601 12914  5281  2619
-  L5~SpX1    14037    85  5809 17904  6040  5579 20819  7477
-  L6~SpX9    11351    83  5167 25551  4372  4047 12106  2521
-  WMtz~SpX8   1459   978   659  1147   191 22262   268   201
-  WM~SpX2    13583    73  3505  4570  3575  3632  2240  6574
-            
-             reject singlet doublet_certain doublet_uncertain
-  Vasc~SpX3     646   64412           10855              1428
-  L1~SpX6       773   13298            6439              1408
-  L1~SpX7       616   31465            8544              1269
-  L2.3~SpX4     271   23426           17486              2105
-  Inhib~SpX5    854   37488           14209              2326
-  L5~SpX1       690   44250           28796              4014
-  L6~SpX9       885   40540           20535              3238
-  WMtz~SpX8     380   22633            3414               738
-  WM~SpX2       347   24767           11334              1304
-2026-05-27 15:40:26.231125 - Saving SPE object
-Saving 12 x 7 in image
-Error in `map()`:
-ℹ In index: 1.
-Caused by error in `geom_point()`:
-! Problem while computing aesthetics.
-ℹ Error occurred in the 1st layer.
-Caused by error in `FUN()`:
-! `data` must be uniquely named but has duplicate columns
-Backtrace:
-     ▆
-  1. ├─purrr::map(...)
-  2. │ └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
-  3. │   ├─purrr:::with_indexed_errors(...)
-  4. │   │ └─base::withCallingHandlers(...)
-  5. │   ├─purrr:::call_with_cleanup(...)
-  6. │   └─global .f(.x[[i]], ...)
-  7. │     └─ggplot2::ggsave(...)
-  8. │       └─base::lapply(plot, grid.draw)
-  9. │         ├─grid (local) FUN(X[[i]], ...)
- 10. │         └─ggplot2 (local) `grid.draw.ggplot2::ggplot`(X[[i]], ...)
- 11. │           ├─base::print(x)
- 12. │           └─ggplot2 (local) `print.ggplot2::ggplot`(x)
- 13. │             ├─ggplot2::ggplot_build(x)
- 14. │             └─ggplot2 (local) `ggplot_build.ggplot2::ggplot`(x)
- 15. │               └─ggplot2:::by_layer(...)
- 16. │                 ├─rlang::try_fetch(...)
- 17. │                 │ ├─base::tryCatch(...)
- 18. │                 │ │ └─base (local) tryCatchList(expr, classes, parentenv, handlers)
- 19. │                 │ │   └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])
- 20. │                 │ │     └─base (local) doTryCatch(return(expr), name, parentenv, handler)
- 21. │                 │ └─base::withCallingHandlers(...)
- 22. │                 └─ggplot2 (local) f(l = layers[[i]], d = data[[i]])
- 23. │                   └─l$compute_aesthetics(d, plot)
- 24. │                     └─ggplot2 (local) compute_aesthetics(..., self = self)
- 25. │                       └─ggplot2:::eval_aesthetics(aesthetics, data)
- 26. │                         └─base::lapply(aesthetics, eval_tidy, data = data, env = env)
- 27. │                           └─rlang (local) FUN(X[[i]], ...)
- 28. └─rlang::abort(message = message)
-Execution halted
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
+ AnnotationDbi          1.72.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ AnnotationHub          4.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ ape                    5.8-1     2024-12-16 [1] CRAN (R 4.5.0)
+ aplot                  0.2.9     2025-09-12 [1] CRAN (R 4.5.0)
+ aricode                1.1.0     2026-05-13 [1] CRAN (R 4.5.0)
+ attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
+ Banksy               * 1.6.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ beachmat               2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
+ benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
+ benchmarkmeData        2.0.0     2026-01-19 [1] CRAN (R 4.5.0)
+ Biobase              * 2.70.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocFileCache          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocIO                 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocManager            1.30.27   2025-11-14 [1] CRAN (R 4.5.0)
+ BiocNeighbors          2.4.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel           1.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocSingular           1.26.1    2025-11-17 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocVersion            3.22.0    2025-10-07 [1] Bioconductor 3.22 (R 4.5.0)
+ Biostrings             2.78.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2     2026-05-19 [1] CRAN (R 4.5.0)
+ bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
+ blob                   1.3.0     2026-01-14 [1] CRAN (R 4.5.0)
+ bslib                  0.11.0    2026-05-16 [1] CRAN (R 4.5.0)
+ cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
+ cigarillo              1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ circlize               0.4.18    2026-04-04 [1] CRAN (R 4.5.0)
+ cli                    3.6.6     2026-04-09 [1] CRAN (R 4.5.0)
+ clue                   0.3-68    2026-03-26 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-2     2025-09-22 [1] CRAN (R 4.5.0)
+ ComplexHeatmap         2.26.1    2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
+ config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
+ cowplot              * 1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
+ curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
+ data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
+ DBI                    1.3.0     2026-02-25 [1] CRAN (R 4.5.0)
+ dbplyr                 2.5.2     2026-02-13 [1] CRAN (R 4.5.0)
+ dbscan                 1.2.5     2026-06-09 [1] CRAN (R 4.5.0)
+ DelayedArray           0.36.1    2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ deldir                 2.0-4     2024-02-28 [2] CRAN (R 4.5.0)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
+ dotCall64              1.2       2024-10-04 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1     2026-04-03 [1] CRAN (R 4.5.0)
+ DT                     0.34.0    2025-09-02 [1] CRAN (R 4.5.0)
+ edgeR                  4.8.2     2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
+ ExperimentHub          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
+ fastDummies            1.7.5     2025-01-20 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
+ fitdistrplus           1.2-6     2026-01-24 [1] CRAN (R 4.5.0)
+ fontBitstreamVera      0.1.1     2017-02-01 [1] CRAN (R 4.5.0)
+ fontLiberation         0.1.0     2016-10-15 [1] CRAN (R 4.5.0)
+ fontquiver             0.2.1     2017-02-01 [1] CRAN (R 4.5.0)
+ forcats              * 1.0.1     2025-09-25 [1] CRAN (R 4.5.0)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
+ fs                     2.1.0     2026-04-18 [1] CRAN (R 4.5.0)
+ future                 1.70.0    2026-03-14 [1] CRAN (R 4.5.0)
+ future.apply           1.20.2    2026-02-20 [1] CRAN (R 4.5.0)
+ gdtools                0.5.1     2026-05-25 [1] CRAN (R 4.5.0)
+ generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicAlignments      1.46.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ GenomicRanges        * 1.62.1    2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ GetoptLong             1.1.1     2026-04-08 [1] CRAN (R 4.5.0)
+ ggbeeswarm             0.7.3     2025-11-29 [1] CRAN (R 4.5.0)
+ ggfun                  0.2.0     2025-07-15 [1] CRAN (R 4.5.0)
+ ggiraph                0.9.6     2026-02-21 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3     2026-04-22 [1] CRAN (R 4.5.0)
+ ggplotify              0.1.3     2025-09-20 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.8     2026-03-17 [1] CRAN (R 4.5.0)
+ ggridges               0.5.7     2025-08-27 [1] CRAN (R 4.5.0)
+ ggsci                  3.2.0     2024-06-18 [2] CRAN (R 4.5.0)
+ ggtree                 4.0.5     2026-03-17 [1] Bioconductor 3.22 (R 4.5.0)
+ GlobalOptions          0.1.4     2026-04-08 [1] CRAN (R 4.5.0)
+ globals                0.19.1    2026-03-13 [1] CRAN (R 4.5.0)
+ glue                   1.8.1     2026-04-17 [1] CRAN (R 4.5.0)
+ goftest                1.2-3     2021-10-07 [2] CRAN (R 4.5.0)
+ golem                  0.5.1     2024-08-27 [2] CRAN (R 4.5.0)
+ gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
+ gridGraphics           0.5-1     2020-12-13 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
+ harmony              * 2.0.5     2026-06-12 [1] CRAN (R 4.5.0)
+ here                 * 1.0.2     2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4     2025-10-17 [1] CRAN (R 4.5.0)
+ htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv                 1.6.17    2026-03-18 [1] CRAN (R 4.5.0)
+ httr                   1.4.8     2026-02-13 [1] CRAN (R 4.5.0)
+ httr2                  1.2.2     2025-12-08 [1] CRAN (R 4.5.0)
+ ica                    1.0-3     2022-07-08 [2] CRAN (R 4.5.0)
+ igraph                 2.2.2     2026-02-12 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ irlba                  2.3.7     2026-01-30 [1] CRAN (R 4.5.0)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
+ jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGREST               1.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ KernSmooth             2.23-26   2025-01-01 [3] CRAN (R 4.5.0)
+ labeling               0.4.3     2023-08-29 [2] CRAN (R 4.5.0)
+ later                  1.4.5     2026-01-08 [1] CRAN (R 4.5.0)
+ lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.3     2026-04-04 [1] CRAN (R 4.5.0)
+ leidenAlg              1.1.8     2026-05-31 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
+ limma                  3.66.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ listenv                0.10.1    2026-03-10 [1] CRAN (R 4.5.0)
+ lmtest                 0.9-40    2022-03-21 [2] CRAN (R 4.5.0)
+ locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.5     2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1     2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5     2026-04-04 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
+ mclust                 6.1.1     2024-04-29 [2] CRAN (R 4.5.0)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
+ mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
+ miniUI                 0.1.2     2025-04-17 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168   2025-03-31 [3] CRAN (R 4.5.0)
+ otel                   0.2.0     2025-08-29 [1] CRAN (R 4.5.0)
+ paletteer              1.7.0     2026-01-08 [1] CRAN (R 4.5.0)
+ parallelly             1.47.0    2026-04-17 [1] CRAN (R 4.5.0)
+ patchwork              1.3.2     2025-08-25 [1] CRAN (R 4.5.0)
+ pbapply                1.7-4     2025-07-20 [1] CRAN (R 4.5.0)
+ pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
+ plotly                 4.12.0    2026-01-24 [1] CRAN (R 4.5.0)
+ plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-9     2026-03-15 [1] CRAN (R 4.5.0)
+ polyclip               1.10-7    2024-07-23 [2] CRAN (R 4.5.0)
+ progressr              0.19.0    2026-03-31 [1] CRAN (R 4.5.0)
+ promises               1.5.0     2025-11-01 [1] CRAN (R 4.5.0)
+ purrr                * 1.2.1     2026-01-09 [1] CRAN (R 4.5.0)
+ qs2                  * 0.2.1     2026-05-04 [1] CRAN (R 4.5.0)
+ R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
+ ragg                   1.5.2     2026-03-23 [1] CRAN (R 4.5.0)
+ RANN                   2.6.2     2024-08-25 [2] CRAN (R 4.5.0)
+ rappdirs               0.3.4     2026-01-17 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                 * 1.1.1     2026-01-10 [1] CRAN (R 4.5.0)
+ RcppAnnoy              0.0.23    2026-01-12 [1] CRAN (R 4.5.0)
+ RcppHNSW               0.6.0     2024-02-04 [2] CRAN (R 4.5.0)
+ RcppHungarian          0.3       2023-09-05 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2  2026-03-05 [1] CRAN (R 4.5.0)
+ RCurl                  1.98-1.19 2026-06-03 [1] CRAN (R 4.5.0)
+ readr                * 2.2.0     2026-02-19 [1] CRAN (R 4.5.0)
+ rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
+ reshape2               1.4.5     2025-11-12 [1] CRAN (R 4.5.0)
+ restfulr               0.0.17    2026-06-11 [1] CRAN (R 4.5.0)
+ reticulate             1.45.0    2026-02-13 [1] CRAN (R 4.5.0)
+ RhpcBLASctl            0.23-42   2023-02-11 [2] CRAN (R 4.5.0)
+ rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0     2026-04-06 [1] CRAN (R 4.5.0)
+ ROCR                   1.0-12    2026-01-23 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
+ Rsamtools              2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ RSpectra               0.16-2    2024-07-18 [2] CRAN (R 4.5.0)
+ RSQLite                2.4.5     2025-11-30 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
+ rtracklayer            1.70.1    2025-12-22 [1] Bioconductor 3.22 (R 4.5.0)
+ Rtsne                  0.17      2023-12-07 [2] CRAN (R 4.5.0)
+ S4Arrays               1.10.1    2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1    2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2     2026-04-22 [1] CRAN (R 4.5.0)
+ sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
+ ScaledMatrix           1.18.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
+ scater               * 1.38.1    2026-03-20 [1] Bioconductor 3.22 (R 4.5.0)
+ scattermore            1.2       2023-06-12 [2] CRAN (R 4.5.0)
+ sccore                 1.0.7     2026-04-06 [1] CRAN (R 4.5.0)
+ scDotPlot            * 1.4.0     2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ sctransform            0.4.3     2026-01-10 [1] CRAN (R 4.5.0)
+ scuttle              * 1.20.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ Seqinfo              * 1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4     2026-06-04 [1] CRAN (R 4.5.0)
+ Seurat                 5.5.0     2026-04-22 [1] CRAN (R 4.5.0)
+ SeuratObject           5.4.0     2026-04-11 [1] CRAN (R 4.5.0)
+ shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
+ shiny                  1.13.0    2026-02-20 [1] CRAN (R 4.5.0)
+ shinyWidgets           0.9.1     2026-03-09 [1] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sp                     2.2-1     2026-02-13 [1] CRAN (R 4.5.0)
+ spam                   2.11-4    2026-05-29 [1] CRAN (R 4.5.0)
+ SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment    * 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ spatialLIBD          * 1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
+ spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
+ spatstat.explore       3.8-1     2026-05-24 [1] CRAN (R 4.5.0)
+ spatstat.geom          3.8-1     2026-05-23 [1] CRAN (R 4.5.0)
+ spatstat.random        3.5-0     2026-05-24 [1] CRAN (R 4.5.0)
+ spatstat.sparse        3.2-0     2026-05-21 [1] CRAN (R 4.5.0)
+ spatstat.univar        3.2-0     2026-05-18 [1] CRAN (R 4.5.0)
+ spatstat.utils         3.2-3     2026-05-10 [1] CRAN (R 4.5.0)
+ statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
+ stringfish             0.19.0    2026-04-21 [1] CRAN (R 4.5.0)
+ stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ survival               3.8-3     2024-12-17 [3] CRAN (R 4.5.0)
+ systemfonts            1.3.2     2026-03-05 [1] CRAN (R 4.5.0)
+ tensor                 1.5.1     2025-06-17 [1] CRAN (R 4.5.0)
+ textshaping            1.0.5     2026-03-06 [1] CRAN (R 4.5.0)
+ tibble               * 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2     2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
+ tidytree               0.4.7     2026-01-08 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0     2026-01-29 [1] CRAN (R 4.5.0)
+ treeio                 1.34.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.5.0)
+ uwot                   0.2.4     2025-11-10 [1] CRAN (R 4.5.0)
+ vctrs                  0.7.3     2026-04-11 [1] CRAN (R 4.5.0)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3     2026-02-04 [1] CRAN (R 4.5.0)
+ withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
+ XML                    3.99-0.22 2026-02-10 [1] CRAN (R 4.5.0)
+ xtable                 1.8-8     2026-02-22 [1] CRAN (R 4.5.0)
+ XVector                0.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ yaml                   2.3.12    2025-12-10 [1] CRAN (R 4.5.0)
+ yulab.utils            0.2.4     2026-02-02 [1] CRAN (R 4.5.0)
+ zoo                    1.8-15    2025-12-15 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Aug 19 02:59:52 AM EDT 2026
