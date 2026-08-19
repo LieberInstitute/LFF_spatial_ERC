@@ -27,7 +27,7 @@ module load conda_R/4.5.x
 module list
 
 ## Edit with your job command
-Rscript 18.1_compare_clusters_offset
+Rscript 18.1_compare_clusters_offset.R
 
 echo "**** Job ends ****"
 date
