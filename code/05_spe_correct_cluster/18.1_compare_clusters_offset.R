@@ -168,7 +168,7 @@ cluster_plots_by_row <- map(names(row_clustervars), function(row_label) {
 
         vis_clus_plot <- vis_clus(
             spe = spe,
-            point_size = 1.5,
+            point_size = 1.2,
             colors = row_pal,
             sampleid = s,
             clustervar = clustervar
@@ -190,7 +190,7 @@ cluster_plots_by_row <- map(names(row_clustervars), function(row_label) {
 cluster_grid <- Reduce("/", cluster_plots_by_row)
 
 # ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_preprint_v_update_rep_sections.pdf"), width = 18, height = 6)
-ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_preprint_v_update_rep_sections.png"), width = 18, height = 6)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_preprint_v_update_rep_sections.png"), width = 18, height = 9)
 
 # slurmjobs::job_single('18.1_compare_clusters_offset', create_shell = TRUE, memory = '10G', command = "Rscript 18.1_compare_clusters_offset")
 
