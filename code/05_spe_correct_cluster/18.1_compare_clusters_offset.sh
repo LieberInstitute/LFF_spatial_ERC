@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=10G
 #SBATCH --job-name=18.1_compare_clusters_offset
 #SBATCH -c 1

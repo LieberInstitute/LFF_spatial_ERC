@@ -1,4 +1,4 @@
-## November 2024, Louise Huuki-Myers
+## November 2024, Louise Huuki-Myers (Updated Aug 2026)
 ## Compare SVGm clusters across resolutions (k=9, k=10, k=11)
 
 library("spatialLIBD")
@@ -137,7 +137,7 @@ cluster_plots_by_k <- map(my_clusters, function(k) {
 
         vis_clus_plot <- vis_clus(
             spe = spe,
-            point_size = 1.5,
+            point_size = 1.2,
             colors = SpD_colors_by_k[[k]],
             sampleid = s,
             clustervar = paste0("SpD_", k)
@@ -158,8 +158,8 @@ cluster_plots_by_k <- map(my_clusters, function(k) {
 
 cluster_grid <- Reduce("/", cluster_plots_by_k)
 
-ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.pdf"), width = 18, height = 9)
-ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.png"), width = 18, height = 9)
+# ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections_compare_k.pdf"), width = 18, height = 9)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections_compare_k.png"), width = 15, height = 12)
 
 #### Compare resolutions with a Jaccard-style correspondence matrix ####
 k_pairs <- list(
@@ -224,30 +224,14 @@ plot_jacc_heatmap <- function(jacc_mat, row_k, col_k, colors_by_k) {
     )
 }
 
+pdf(here(plot_dir, "jacc_mat_k9-11.pdf"))
+
 iwalk(jacc_mat_list, function(jacc_mat, pair_name) {
     row_k <- gsub("SpD_", "", k_pairs[[pair_name]][[1]])
     col_k <- gsub("SpD_", "", k_pairs[[pair_name]][[2]])
-
-    pdf(here(plot_dir, sprintf("jacc_mat_%s.pdf", pair_name)))
     print(plot_jacc_heatmap(jacc_mat, row_k, col_k, SpD_colors_by_k))
-    dev.off()
 })
-
-#### graph qTune likelihoods together ####
-q_tune <- map_dfr(
-    list(
-        markers = here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker", "qTune_logliks_Markers.csv"),
-        SVGm = here("processed-data", "05_spe_correct_cluster", "05.5_qTune", "qTune_logliks_SVGm.csv")
-    ),
-    ~ read.csv(.x, row.names = 1) |>
-        mutate(input = gsub("qTune_logliks_(.*?).csv", "\\1", basename(.x)))
-)
-
-q_tune_line <- ggplot(q_tune, aes(x = q, y = -loglik, color = input)) +
-    geom_line() +
-    theme_bw()
-
-ggsave(q_tune_line, filename = here(plot_dir, "q_tune_line.png"), height = 5)
+dev.off()
 
 ## Reproducibility information
 print("Reproducibility information:")
