@@ -31,7 +31,28 @@ reducedDimNames(spe)
 # [8] "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
 
 ## preprint annotation, kept under an explicit name for clarity
-spe$SpD_preprint <- spe$SpD
+##
+## 19_SpD_update_spe.R is about to be re-run and will overwrite
+## spe_ERC_annotated with the k11-based updated annotation (SpDv/SpDv_k11),
+## dropping the old BayesSpace_SVGm_k09 + SpD (preprint) columns loaded here.
+## Stash those columns to a csv now, while they're still around, keyed on
+## `key` so they can be matched back onto the post-overwrite spe. Once
+## 19_SpD_update_spe.R has been re-run, flip this to `if (FALSE)` to reload
+## the stashed preprint labels instead of expecting spe$SpD to still exist.
+if (TRUE) {
+    preprint_stash <- colData(spe) |>
+        as.data.frame() |>
+        select(key, BayesSpace_SVGm_k09, SpD)
+
+    write_csv(preprint_stash, file = here(data_dir, "preprint_SpD_stash.csv"))
+
+    spe$SpD_preprint <- spe$SpD
+} else {
+    preprint_stash <- read_csv(here(data_dir, "preprint_SpD_stash.csv"))
+
+    spe$SpD_preprint <- preprint_stash$SpD[match(spe$key, preprint_stash$key)]
+}
+
 table(spe$SpD_preprint)
 
 #### Load updated (SVGm k11) clustering + annotation ####
@@ -78,8 +99,18 @@ spe$SpD_update <- anno_table_k11$SpD[match(spe$BayesSpace_SVGm_k11, anno_table_k
 table(spe$SpD_update, spe$BayesSpace_SVGm_k11)
 
 #### Match colors ####
-## preprint uses the original SpD colors already stored on spe
-SpD_colors_simple <- metadata(spe)$SpD_colors
+## preprint colors, stashed here directly (not in a file) since
+## metadata(spe)$SpD_colors will be overwritten with the new V4 palette once
+## 19_SpD_update_spe.R re-runs
+SpD_colors_simple <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
+                       "L1~Sp09D05" = "#0220DE", #Chrystler Blue
+                       "L2.3~Sp09D01" = "#FEAF16", #light orange
+                       "LD~Sp09D02" = "#00BCF9", #dark sky blue
+                       "Inhib~Sp09D09" = "#C82100", #Engineering red
+                       "L5~Sp09D03" = "#16FF32", #lime
+                       "L6~Sp09D04" = "#178C6D", #forest green
+                       "WM.uf~Sp09D07" = "#E4E1E3", # purpe white
+                       "WM~Sp09D06" = "#581009") #brown
 
 ## updated (k11) uses the new V4 domain palette, mapped onto the k11 SpD labels
 SpD_colors_V4 <- c(
