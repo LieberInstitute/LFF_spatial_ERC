@@ -105,6 +105,26 @@ make_SpD_colors <- function(anno_table, domain_colors = SpD_colors_V4) {
 ## one color vector per resolution: SpD_colors_by_k$k09, $k10, $k11
 SpD_colors_by_k <- purrr::map(anno_cluster_table3, make_SpD_colors)
 
+#' Annotate a vector of model `test` values, which can be either single-cluster
+#' tests (e.g. "Sp11D01", from anova/enrichment) or pairwise tests
+#' (e.g. "Sp11D01-Sp11D02"), against a cluster/anno/SpD lookup table.
+#' Pairwise tests get their annotation from each side, joined with "-"
+#' (e.g. anno = "L2-L3", SpD = "L2~Sp11D01-L3~Sp11D02").
+annotate_test <- function(test, anno_lookup) {
+    anno_lookup <- anno_lookup |> mutate(cluster = as.character(cluster))
+
+    tibble(test = as.character(test)) |>
+        distinct() |>
+        separate(test, into = c("cluster1", "cluster2"), sep = "-", fill = "right", remove = FALSE) |>
+        left_join(anno_lookup |> rename(cluster1 = cluster, anno1 = anno, SpD1 = SpD), by = "cluster1") |>
+        left_join(anno_lookup |> rename(cluster2 = cluster, anno2 = anno, SpD2 = SpD), by = "cluster2") |>
+        mutate(
+            anno = if_else(is.na(cluster2), anno1, paste0(anno1, "-", anno2)),
+            SpD  = if_else(is.na(cluster2), SpD1, paste0(SpD1, "-", SpD2))
+        ) |>
+        select(test, anno, SpD)
+}
+
 #### Plot HARMONY reduced dims, colored by SpD_k09/k10/k11 ####
 walk(c("UMAP.HARMONY", "TSNE.HARMONY"), function(dim) {
     walk(my_clusters, function(k) {
@@ -194,10 +214,7 @@ enrich_top <- map(my_clusters, function(k) {
     ## join in the domain annotation as a new column
     enrich_top <- enrich_top |>
         mutate(test = as.character(test)) |>
-        left_join(
-            anno_cluster_table3[[k]] |> mutate(cluster = as.character(cluster)),
-            by = c("test" = "cluster")
-        )
+        left_join(annotate_test(enrich_top$test, anno_cluster_table3[[k]]), by = "test")
 
     enrich_top_list <- map(rafalib::splitit(enrich_top$SpD), ~enrich_top$gene[.x])
 
@@ -211,11 +228,13 @@ enrich_top <- map(my_clusters, function(k) {
         n = 10
     ) |>
         as.data.frame() |>
-        mutate(test = as.character(test)) |>
-        left_join(
-            anno_cluster_table3[[k]] |> mutate(cluster = as.character(cluster)),
-            by = c("test" = "cluster")
-        )
+        mutate(test = as.character(test))
+
+    ## `test` here includes both single-cluster tests (anova/enrichment) and
+    ## pairwise tests like "Sp11D01-Sp11D02" - annotate_test() handles both,
+    ## giving pairwise anno = "L2-L3" and SpD = "L2~Sp11D01-L3~Sp11D02"
+    sig_genes_all <- sig_genes_all |>
+        left_join(annotate_test(sig_genes_all$test, anno_cluster_table3[[k]]), by = "test")
 
     write_csv(sig_genes_all, file = here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", sprintf("modeling_results_ALL-BayesSpace_SVGm_%s.csv", k)))
 
@@ -254,69 +273,83 @@ plot_marker_express_List(
     sce = spe,
     gene_list = list(`Maynard_NatNeuro` = layer_marker_genes$gene),
     pdf_fn = here(plot_dir, "SpD_k09_layer_markers.pdf"),
-    cellType_col = "SpD_k11",
+    cellType_col = "SpD_k09",
     gene_name_col = "gene_name",
     color_pal = SpD_colors_by_k$k09,
     plot_points = FALSE
 )
 
-# sample_order <- sort(unique(spe$BrNum))
+sample_order <- sort(unique(spe$BrNum))
 
 ## SVGs
-# nnSVG_avg <- read.csv(here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG", "nnSVG_avg.csv"))
-# 
-# top_svg <- nnSVG_avg$gene_name
-# 
-# walk(top_svg,
-#      ~ vis_grid_gene(
-#          spe = spe,
-#          geneid = .x,
-#          pdf = here::here(plot_dir, sprintf("spe_erc-SVG_%s.pdf", .x)),
-#          assayname = "logcounts",
-#          point_size = 1,
-#          sample_order = sample_order
-#      ))
+nnSVG_avg <- read.csv(here("processed-data", "05_spe_correct_cluster", "13_gather_nnSVG", "nnSVG_avg.csv"))
 
-# #### position ####
-# spe_position <- read.table(here("processed-data", "02_build_spe", "spe_position.csv"), sep = "\t", header = TRUE)
-# 
-# # missing order
-# sample_order[!sample_order %in% spe_position$sample_id]
-# # [1] "Br1039" "Br1556" "Br1691" "Br1706" "Br2305" "Br3974" "Br5460" "Br5529" "Br5599" "Br5832" "Br5854" "Br5941"
-# # [13] "Br6085" "Br6098" "Br6476"
-# 
-# rownames(spe_position) <- spe_position$sample_id
-# 
-# spe$position <- spe_position[spe$sample_id, "position"]
-# 
-# spe$sample_id <- paste(spe$position, spe$sample_id)
-# 
-# table(spe$position)
-# 
-# if(!dir.exists(here(plot_dir, "position"))) dir.create(here(plot_dir, "position"))
-# 
-# sample_order <- sort(unique(spe$sample_id))
-# # walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
-# walk(c("GULP1", "COL25A1", "SATB1", "PEX5L"),
-#      ~ vis_grid_gene(
-#          spe = spe,
-#          geneid = .x,
-#          pdf = here::here(plot_dir, "position", sprintf("spe_erc_AMY-%s.pdf", .x)),
-#          assayname = "logcounts",
-#          point_size = 1,
-#          sample_order = sample_order
-#      ))
-# 
-# walk(c("FN1", "NTS", "TLE1"),
-#      ~ vis_grid_gene(
-#          spe = spe,
-#          geneid = .x,
-#          pdf = here::here(plot_dir, "position", sprintf("spe_erc_HP-%s.pdf", .x)),
-#          assayname = "logcounts",
-#          point_size = 1,
-#          sample_order = sample_order
-#      ))
+top_svg <- nnSVG_avg$gene_name
 
+walk(top_svg,
+     ~ vis_grid_gene(
+         spe = spe,
+         geneid = .x,
+         pdf = here::here(plot_dir, sprintf("spe_erc-SVG_%s.pdf", .x)),
+         assayname = "logcounts",
+         point_size = 1,
+         sample_order = sample_order
+     ))
+
+#### position ####
+spe_position <- read.table(here("processed-data", "02_build_spe", "spe_position.csv"), sep = "\t", header = TRUE)
+
+# missing order
+sample_order[!sample_order %in% spe_position$sample_id]
+# [1] "Br1039" "Br1556" "Br1691" "Br1706" "Br2305" "Br3974" "Br5460" "Br5529" "Br5599" "Br5832" "Br5854" "Br5941"
+# [13] "Br6085" "Br6098" "Br6476"
+
+rownames(spe_position) <- spe_position$sample_id
+
+spe$position <- spe_position[spe$sample_id, "position"]
+
+spe$sample_id <- paste(spe$position, spe$sample_id)
+
+table(spe$position)
+
+if(!dir.exists(here(plot_dir, "position"))) dir.create(here(plot_dir, "position"))
+
+sample_order <- sort(unique(spe$sample_id))
+# walk(c("MBP", "AQP4", "HPCAL1", "KRT17", "MOBP", "PCP4", "SNAP25"),
+walk(c("GULP1", "COL25A1", "SATB1", "PEX5L"),
+     ~ vis_grid_gene(
+         spe = spe,
+         geneid = .x,
+         pdf = here::here(plot_dir, "position", sprintf("spe_erc_AMY-%s.pdf", .x)),
+         assayname = "logcounts",
+         point_size = 1,
+         sample_order = sample_order
+     ))
+
+walk(c("FN1", "NTS", "TLE1"),
+     ~ vis_grid_gene(
+         spe = spe,
+         geneid = .x,
+         pdf = here::here(plot_dir, "position", sprintf("spe_erc_HP-%s.pdf", .x)),
+         assayname = "logcounts",
+         point_size = 1,
+         sample_order = sample_order
+     ))
+
+#### spot plots ####
+if(!dir.exists(here(plot_dir, "spot_plots"))) dir.create(here(plot_dir, "spot_plots"))
+
+sample_ids <- sort(unique(spe$sample_id))
+
+p_list <- vis_grid_clus(
+    spe = spe,
+    clustervar = 'BayesSpace_SVGm_k02',
+    pdf = here(plot_dir, "spot_plots", "spe_BayesSpace_SVGm_k02-ALL.pdf"),
+    sort_clust = FALSE,
+    spatial = FALSE,
+    point_size = 1,
+    sample_order = sample_ids
+)
 
 # slurmjobs::job_single('11_SpD_check', create_shell = TRUE, memory = '25G', command = "Rscript 11_SpD_check.R")
 
