@@ -1,14 +1,15 @@
 ## November 2024, Louise Huuki-Myers
-## Compare SVGm vs. Marker clusters
+## Compare preprint SpD annotation ("SpD_preprint") to the updated SVGm k11
+## clustering used in 18_compare_clusters.R ("SpD_update")
 
 library("spatialLIBD")
-library("scater")
 library("tidyverse")
-library("DeconvoBuddies")
 library("bluster")
 library("ComplexHeatmap")
+library("patchwork")
 library("here")
 library("sessioninfo")
+library("readxl")
 
 #### define dirs ####
 data_dir <- here("processed-data", "05_spe_correct_cluster", "18_compare_clusters")
@@ -29,160 +30,173 @@ reducedDimNames(spe)
 # [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"       "TSNE"         "UMAP"        
 # [8] "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
 
-table(spe$SpD)
+## preprint annotation, kept under an explicit name for clarity
+spe$SpD_preprint <- spe$SpD
+table(spe$SpD_preprint)
 
-offset_clusters <- read_csv(here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker_offset", "BayesSpace_Markers_k09","BayesSpace_Markers_k09", "clusters.csv")) |>
-    mutate(key = gsub("(_Br[^_]+)\\1", "\\1", key),
-           cluster2 = paste0("Os", cluster))
+#### Load updated (SVGm k11) clustering + annotation ####
+## same convention as 18_compare_clusters.R: BayesSpace_SVGm_k11 clusters,
+## annotated via the k11 spatial registration summary
+anno_table_k11 <- read_xlsx(here(
+    "processed-data", "05_spe_correct_cluster", "10_spatial_registration_DLPFC",
+    "ERC_SpD_spatial_registration_anno_summary_k11.xlsx"
+)) |>
+    mutate(SpD = fct_reorder(paste0(anno, "~", cluster), order))
 
-identical(spe$key, offset_clusters$key)
+spe$SpD_update <- anno_table_k11$SpD[match(spe$BayesSpace_SVGm_k11, anno_table_k11$cluster)]
 
-cluster_tab <- table(spe$SpD, offset_clusters$cluster2)
-
-cluster_tab_long <- cluster_tab  |>
-    reshape2::melt() |>
-    rename(SpD = Var1, offset = Var2, n = value)
-
-#### annotate colors with JACC mat ####
-jacc_mat <- linkClustersMatrix(spe$SpD, offset_clusters$cluster2)
-
-jacc_mat_long <- jacc_mat |>
-    reshape2::melt() |>
-    rename(SpD = Var1, offset = Var2, Jacc = value) |> 
-    left_join(cluster_tab_long)
-                               
-
-write_csv(jacc_mat_long, file = here(data_dir, "Offset_jacc_mat_long_k9.csv"))
-
-cluster_match <- jacc_mat_long |>
-                        group_by(offset) |>
-                        arrange(-Jacc) |>
-                        slice(1) |>
-                        mutate(SpD_match = gsub("~.*?$", "", SpD),
-                               SpD_offset = paste0(SpD_match, "~", offset)) |>
-                        arrange(SpD_offset)
-
-sum(cluster_match$n)/ncol(spe)
-
-
-
-cluster_match |
+table(spe$SpD_update, spe$BayesSpace_SVGm_k11)
 
 #### Match colors ####
-## create color pallet
-
+## preprint uses the original SpD colors already stored on spe
 SpD_colors_simple <- metadata(spe)$SpD_colors
-names(SpD_colors_simple) <- names(SpD_colors_simple)
 
-SpD_offset_colors <- c(
-    "L1~Os4"    = "grey40",   # original L1 blue
-    "L1~Os6"    = "#0220DE",   # lighter blue for second L1
-    "L2.3~Os1"  = "#FEAF16",
-    "L5~Os3"    = "#16FF32",
-    "L6~Os5"    = "#178C6D",
-    "LD~Os2"    = "#00BCF9",
-    "Vasc~Os9"  = "#E05AD2",
-    "WM.uf~Os8" = "#E4E1E3",
-    "WM~Os7"    = "#581009"
+## updated (k11) uses the new V4 domain palette, mapped onto the k11 SpD labels
+SpD_colors_V4 <- c(
+    "Vasc"      = "#FF56AF",
+    "L1"        = "#47C281",
+    "L2"        = "#41D4EB",
+    "L3"        = "#889DF0",
+    "L3_Inhib"  = "#B6686F",
+    "LD"        = "grey80",
+    "L5_LD"     = "#B1C2CE",
+    "L5"        = "#0072CE",
+    "L6"        = "#0A2E5C",
+    "L6a"       = "#24487A",
+    "L6b"       = "#05193B",
+    "WMuf"      = "#F4A460",
+    "WMtz"      = "#E8720C",
+    "WM"        = "#F57A00",
+    "WMd"       = "#581009",
+    "Inhib"     = "#E83E38"
 )
 
-offset_clusters <- offset_clusters |> left_join(cluster_match |> select(cluster2 = offset, SpD_offset))
+#' Build a color vector for one resolution's annotation table, keyed by SpD
+make_SpD_colors <- function(anno_table, domain_colors = SpD_colors_V4) {
+    missing_domains <- setdiff(anno_table$anno, names(domain_colors))
+    if (length(missing_domains) > 0) {
+        stop("No color defined for domain(s): ", paste(missing_domains, collapse = ", "))
+    }
+    colors_out <- domain_colors[anno_table$anno]
+    names(colors_out) <- anno_table$SpD
+    colors_out
+}
 
-spe$SpD_offset <- offset_clusters$SpD_offset
-
-table(spe$SpD_offset, spe$SpD)
+SpD_colors_update <- make_SpD_colors(anno_table_k11)
 
 #### Spot plots ####
 sample_order <- sort(unique(spe$BrNum))
-## plot SVGm with Marker color match
 
 vis_grid_clus(
     spe = spe,
-    clustervar = "SpD_offset",
-    pdf = here::here(plot_dir, "spe_erc-BayesSpace_offset.pdf"),
+    clustervar = "SpD_update",
+    pdf = here(plot_dir, "spe_erc-BayesSpace_SVGm_k11_update.pdf"),
     sort_clust = FALSE,
     point_size = 1.2,
-    colors = SpD_offset_colors,
-    sample_order = sample_order)
+    colors = SpD_colors_update,
+    sample_order = sample_order
+)
 
+#### Compare preprint vs. update with a Jaccard-style correspondence matrix ####
+cluster_tab <- table(spe$SpD_preprint, spe$SpD_update)
 
-#### Jacc heatmaps ####
+cluster_tab_long <- cluster_tab |>
+    reshape2::melt() |>
+    rename(SpD_preprint = Var1, SpD_update = Var2, n = value)
 
-jacc_mat <- linkClustersMatrix(spe$SpD, spe$SpD_offset)
+jacc_mat <- linkClustersMatrix(spe$SpD_preprint, spe$SpD_update)
 
+jacc_mat_long <- jacc_mat |>
+    reshape2::melt() |>
+    rename(SpD_preprint = Var1, SpD_update = Var2, Jacc = value) |>
+    left_join(cluster_tab_long)
+
+write_csv(jacc_mat_long, file = here(data_dir, "preprint_v_update_jacc_mat_long_k11.csv"))
+
+## for each updated (k11) cluster, its single best-matching preprint domain
+cluster_match <- jacc_mat_long |>
+    group_by(SpD_update) |>
+    arrange(-Jacc) |>
+    slice(1) |>
+    ungroup() |>
+    arrange(-Jacc)
+
+sum(cluster_match$n) / ncol(spe)
+
+#### Jacc heatmap, annotated with each clustering's own colors ####
+row_ha <- rowAnnotation(
+    df = data.frame(SpD_preprint = rownames(jacc_mat)),
+    col = list(SpD_preprint = SpD_colors_simple),
+    show_legend = FALSE
+)
 
 col_ha <- HeatmapAnnotation(
-    df = as.data.frame(list(Markers = colnames(svgVm_jacc_mat$svg11_m11))),
-    col = list(
-        Markers = SpD_colors$k11_Markers_anno
-    ),
-    annotation_name_side = "left",
-    show_legend = c(FALSE)
+    df = data.frame(SpD_update = colnames(jacc_mat)),
+    col = list(SpD_update = SpD_colors_update),
+    show_legend = FALSE
 )
 
-row_ha <- rowAnnotation(
-    df = as.data.frame(list(SVGm = rownames(svgVm_jacc_mat$svg11_m11))),
-    col = list(
-        SVGm = SpD_colors$k11_SVGm_anno
-    ),
-    show_legend = c(FALSE)
-)
-
-SVGm_count <- rowAnnotation(n_spots = anno_barplot(as.numeric(table(spe$SVGm_k11))))
-Mark_count <- columnAnnotation(n_spots = anno_barplot(as.numeric(table(spe$Markers_k11))))
-
-pdf(here(plot_dir, "jacc_mat_k9_offset.pdf"))
-
-print(Heatmap(jacc_mat,
-              name = "Correspondence",
-              cluster_rows = FALSE,
-              cluster_columns = FALSE,
-              # right_annotation = row_ha,
-              # left_annotation = SVGm_count,
-              # bottom_annotation = col_ha,
-              # top_annotation = Mark_count,
-              col = c("black", viridisLite::plasma(100)),
-              na_col = "black"
+pdf(here(plot_dir, "jacc_mat_preprint_v_update_k11.pdf"))
+print(Heatmap(
+    jacc_mat,
+    name = "Correspondence",
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    right_annotation = row_ha,
+    bottom_annotation = col_ha,
+    col = c("black", viridisLite::plasma(100)),
+    na_col = "black"
 ))
-
 dev.off()
 
+#### Representative section grid: SpD_preprint (top) vs SpD_update (bottom) ####
+rep_sections_tb <- read.csv(here("processed-data", "05_spe_correct_cluster", "22_SpD_clean_plots", "rep_section.csv"))
 
-#### which cluster has strong correlation with Human Pilot layers? ####
+rep_samples_4 <- rep_sections_tb |>
+    filter(rep_section_4) |>
+    pull(sample_id)
 
-cluster_eval_cor <- do.call("rbind", map2(my_clusters, names(my_clusters), 
-                         ~cor_anno[[.x]]$cor_layer$HumanPilot |>
-                            reshape2::melt() |>
-                             rename(SpD = Var1, HumanPilot = Var2, cor = value) |>
-                             mutate(input = .y))) |> 
-    left_join(cluster_eval_anno_long)
+row_clustervars <- c(SpD_preprint = "SpD_preprint", SpD_update = "SpD_update")
+row_colors <- list(SpD_preprint = SpD_colors_simple, SpD_update = SpD_colors_update)
 
+cluster_plots_by_row <- map(names(row_clustervars), function(row_label) {
+    clustervar <- row_clustervars[[row_label]]
+    row_pal <- row_colors[[row_label]]
 
-cluster_eval_cor |> count(anno)
+    cluster_row_plots <- imap(rep_samples_4, function(s, i) {
+        is_last <- i == length(rep_samples_4)
 
+        vis_clus_plot <- vis_clus(
+            spe = spe,
+            point_size = 1.5,
+            colors = row_pal,
+            sampleid = s,
+            clustervar = clustervar
+        ) +
+            labs(title = s, y = if (i == 1) row_label else NULL) +
+            theme(
+                legend.position = if (is_last) "right" else "none", ## only right-most sample keeps its legend
+                axis.title.x = element_blank(),
+                text = element_text(size = 12),
+                plot.title = element_text(hjust = 0.5)
+            )
 
-cluster_cor_point <- cluster_eval_cor |>
-    # filter(grepl("k11", input)) |>
-    ggplot(aes(x = HumanPilot, y = cor, shape = input, color = anno)) +
-    geom_point(position = position_jitter(w = 0.2, h = 0), size = 1.5) +
-    scale_color_manual(values = c(SpD_colors$k11_Markers_anno, SpD_colors$k11_SVGm_anno, SpD_colors$k09_SVGm_anno)) +
-    theme_bw()
+        vis_clus_plot
+    })
 
-ggsave(cluster_cor_point, filename = here(plot_dir, "cluster_cor_point.png"))
+    Reduce("+", cluster_row_plots) + plot_layout(nrow = 1)
+})
 
+cluster_grid <- Reduce("/", cluster_plots_by_row)
 
-#### graph likelihoods together ####
+# ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_preprint_v_update_rep_sections.pdf"), width = 18, height = 6)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_preprint_v_update_rep_sections.png"), width = 18, height = 6)
 
-q_tune = map_dfr(list(markers = here("processed-data", "05_spe_correct_cluster", "05_BayesSpace_Marker", "qTune_logliks_Markers.csv"),
-         SVGm = here("processed-data", "05_spe_correct_cluster", "05.5_qTune", "qTune_logliks_SVGm.csv")),
-    ~read.csv(.x, row.names = 1) |>
-        mutate(input = gsub("qTune_logliks_(.*?).csv", "\\1", basename(.x))))
+# slurmjobs::job_single('18.1_compare_clusters_offset', create_shell = TRUE, memory = '10G', command = "Rscript 18.1_compare_clusters_offset")
 
-q_tune_line = ggplot(q_tune, 
-                     aes(x = q, y = -loglik, color = input)) +
-    geom_line() +
-    theme_bw()
-
-ggsave(q_tune_line, filename = here(plot_dir, "q_tune_line.png"), height = 5)
-
-
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
