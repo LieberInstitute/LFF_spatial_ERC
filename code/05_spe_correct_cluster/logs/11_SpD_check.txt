@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Aug 19 01:51:29 PM EDT 2026
+Wed Aug 19 01:18:49 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35013991
-Job name: 18.1_compare_clusters_offset
-Node name: compute-093
+Job id: 35013375
+Job name: 11_SpD_check
+Node name: compute-168
 Task id: 
 Unloading conda_R/4.5.x
 Loading conda_R/4.5.x
@@ -101,12 +101,13 @@ The following objects are masked from ‘package:matrixStats’:
 
     anyMissing, rowMedians
 
+Loading required package: scuttle
+Loading required package: ggplot2
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
-✔ ggplot2   4.0.3     ✔ tibble    3.3.1
-✔ lubridate 1.9.5     ✔ tidyr     1.3.2
-✔ purrr     1.2.2     
+✔ lubridate 1.9.5     ✔ tibble    3.3.1
+✔ purrr     1.2.2     ✔ tidyr     1.3.2
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ lubridate::%within%() masks IRanges::%within%()
 ✖ dplyr::collapse()     masks IRanges::collapse()
@@ -124,245 +125,116 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-Loading required package: grid
-========================================
-ComplexHeatmap version 2.26.1
-Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
-Github page: https://github.com/jokergoo/ComplexHeatmap
-Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
-
-If you use it in published research, please cite either one:
-- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
-- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
-    genomic data. Bioinformatics 2016.
-
-
-The new InteractiveComplexHeatmap package can directly export static 
-complex heatmaps into an interactive Shiny app with zero effort. Have a try!
-
-This message can be suppressed by:
-  suppressPackageStartupMessages(library(ComplexHeatmap))
-========================================
-
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
-2026-08-19 13:51:54.785357 - Load HDF5 SPE
-class: SpatialExperiment 
-dim: 30494 122202 
-metadata(1): SpD_colors
-assays(2): counts logcounts
-rownames(30494): ENSG00000243485 ENSG00000238009 ... ENSG00000278817
-  ENSG00000277196
-rowData names(6): source type ... gene_name gene_type
-colnames(122202): AAACAACGAATAGTTC-1_Br5212 AAACAAGTATCTCCCA-1_Br5212
-  ... TTGTTTGTATTACACG-1_Br6263 TTGTTTGTGTAAATTC-1_Br6263
-colData names(78): sample_id in_tissue ... Annotation SpD
-reducedDimNames(11): 10x_pca 10x_tsne ... TSNE.HARMONY PCA_SVG
-mainExpName: NULL
-altExpNames(0):
-spatialCoords names(2) : pxl_col_in_fullres pxl_row_in_fullres
-imgData names(4): sample_id image_id data scaleFactor
+2026-08-19 13:19:04.443823 - Load HDF5 SPE
  [1] "10x_pca"      "10x_tsne"     "10x_umap"     "PCA_p1"       "PCA_p2"      
  [6] "TSNE"         "UMAP"         "HARMONY"      "UMAP.HARMONY" "TSNE.HARMONY"
 [11] "PCA_SVG"     
-
- Vasc~Sp09D08    L1~Sp09D05  L2.3~Sp09D01    LD~Sp09D02 Inhib~Sp09D09 
-         6217         15363         11471         26479          6915 
-   L5~Sp09D03    L6~Sp09D04 WM.uf~Sp09D07    WM~Sp09D06 
-        11617         19464         12510         12166 
-[[1]]
-[1] "2026-08-14"
-
-[[2]]
-[1] "2026-08-14"
-
-[[3]]
-[1] "2026-08-14"
-
-[[4]]
-[1] "2026-08-14"
-
-[[5]]
-[1] "2026-08-14"
-
-[[6]]
-[1] "2026-08-14"
-
-[[7]]
-[1] "2026-08-14"
-
-[[8]]
-[1] "2026-08-14"
-
-[[9]]
-[1] "2026-08-14"
-
-[[10]]
-[1] "2026-08-14"
-
-[[11]]
-[1] "2026-08-14"
-
-[[12]]
-[1] "2026-08-14"
-
-[[13]]
-[1] "2026-08-14"
-
-[[14]]
-[1] "2026-08-14"
-
-[[15]]
-[1] "2026-08-14"
-
-[[16]]
-[1] "2026-08-14"
-
-[[17]]
-[1] "2026-08-14"
-
-[[18]]
-[1] "2026-08-14"
-
-[[19]]
-[1] "2026-08-14"
-
-[[20]]
-[1] "2026-08-14"
-
-[[21]]
-[1] "2026-08-14"
-
-[[22]]
-[1] "2026-08-14"
-
-[[23]]
-[1] "2026-08-14"
-
-[[24]]
-[1] "2026-08-14"
-
-[[25]]
-[1] "2026-08-14"
-
-[[26]]
-[1] "2026-08-14"
-
-[[27]]
-[1] "2026-08-14"
-
-[[28]]
-[1] "2026-08-14"
-
-[[29]]
-[1] "2026-08-14"
-
-[1] TRUE
-                        key BayesSpace_SVGm_k02 BayesSpace_SVGm_k03
-1 AAACAACGAATAGTTC-1_Br5212             Sp02D01             Sp03D02
-2 AAACAAGTATCTCCCA-1_Br5212             Sp02D01             Sp03D01
-3 AAACAATCTACTAGCA-1_Br5212             Sp02D01             Sp03D02
-4 AAACACCAATAACTGC-1_Br5212             Sp02D01             Sp03D02
-5 AAACAGAGCGACTCCT-1_Br5212             Sp02D01             Sp03D01
-6 AAACAGCTTTCAGAAG-1_Br5212             Sp02D01             Sp03D02
-  BayesSpace_SVGm_k04 BayesSpace_SVGm_k05 BayesSpace_SVGm_k06
-1             Sp04D02             Sp05D03             Sp06D04
-2             Sp04D01             Sp05D01             Sp06D01
-3             Sp04D02             Sp05D03             Sp06D04
-4             Sp04D02             Sp05D03             Sp06D04
-5             Sp04D01             Sp05D01             Sp06D01
-6             Sp04D02             Sp05D03             Sp06D04
-  BayesSpace_SVGm_k07 BayesSpace_SVGm_k08 BayesSpace_SVGm_k09
-1             Sp07D04             Sp08D04             Sp09D04
-2             Sp07D01             Sp08D01             Sp09D01
-3             Sp07D03             Sp08D03             Sp09D03
-4             Sp07D03             Sp08D03             Sp09D03
-5             Sp07D01             Sp08D01             Sp09D01
-6             Sp07D04             Sp08D06             Sp09D06
-  BayesSpace_SVGm_k10 BayesSpace_SVGm_k11 BayesSpace_SVGm_k12
-1             Sp10D05             Sp11D05             Sp12D05
-2             Sp10D01             Sp11D01             Sp12D01
-3             Sp10D04             Sp11D04             Sp12D04
-4             Sp10D03             Sp11D04             Sp12D04
-5             Sp10D01             Sp11D01             Sp12D01
-6             Sp10D07             Sp11D07             Sp12D07
-  BayesSpace_SVGm_k13 BayesSpace_SVGm_k14 BayesSpace_SVGm_k15
-1             Sp13D05             Sp14D05             Sp15D05
-2             Sp13D01             Sp14D01             Sp15D14
-3             Sp13D02             Sp14D02             Sp15D04
-4             Sp13D03             Sp14D03             Sp15D03
-5             Sp13D13             Sp14D14             Sp15D02
-6             Sp13D07             Sp14D07             Sp15D07
-  BayesSpace_SVGm_k16 BayesSpace_SVGm_k17 BayesSpace_SVGm_k18
-1             Sp16D05             Sp17D05             Sp18D05
-2             Sp16D01             Sp17D01             Sp18D01
-3             Sp16D02             Sp17D02             Sp18D02
-4             Sp16D03             Sp17D03             Sp18D03
-5             Sp16D15             Sp17D12             Sp18D13
-6             Sp16D08             Sp17D08             Sp18D08
-  BayesSpace_SVGm_k19 BayesSpace_SVGm_k20 BayesSpace_SVGm_k21
-1             Sp19D05             Sp20D05             Sp21D05
-2             Sp19D01             Sp20D01             Sp21D01
-3             Sp19D09             Sp20D09             Sp21D09
-4             Sp19D03             Sp20D07             Sp21D07
-5             Sp19D18             Sp20D19             Sp21D20
-6             Sp19D08             Sp20D08             Sp21D08
-  BayesSpace_SVGm_k22 BayesSpace_SVGm_k23 BayesSpace_SVGm_k24
-1             Sp22D05             Sp23D05             Sp24D05
-2             Sp22D01             Sp23D01             Sp24D01
-3             Sp22D09             Sp23D09             Sp24D02
-4             Sp22D07             Sp23D07             Sp24D07
-5             Sp22D21             Sp23D22             Sp24D23
-6             Sp22D04             Sp23D04             Sp24D04
-  BayesSpace_SVGm_k25 BayesSpace_SVGm_k26 BayesSpace_SVGm_k27
-1             Sp25D05             Sp26D05             Sp27D05
-2             Sp25D01             Sp26D01             Sp27D01
-3             Sp25D02             Sp26D02             Sp27D02
-4             Sp25D07             Sp26D07             Sp27D19
-5             Sp25D24             Sp26D19             Sp27D26
-6             Sp25D04             Sp26D04             Sp27D04
-  BayesSpace_SVGm_k28 BayesSpace_SVGm_k29 BayesSpace_SVGm_k30
-1             Sp28D05             Sp29D05             Sp30D05
-2             Sp28D01             Sp29D01             Sp30D01
-3             Sp28D02             Sp29D02             Sp30D02
-4             Sp28D20             Sp29D20             Sp30D20
-5             Sp28D27             Sp29D28             Sp30D29
-6             Sp28D09             Sp29D09             Sp30D09
-Joining with `by = join_by(key)`
-               
-                Sp11D01 Sp11D02 Sp11D03 Sp11D04 Sp11D05 Sp11D06 Sp11D07 Sp11D08
-  Vasc~Sp11D09        0       0       0       0       0       0       0       0
-  L1~Sp11D06          0       0       0       0       0   16895       0       0
-  L2~Sp11D01      14069       0       0       0       0       0       0       0
-  Inhib~Sp11D10       0       0       0       0       0       0       0       0
-  L3~Sp11D02          0   17773       0       0       0       0       0       0
-  LD~Sp11D03          0       0   11577       0       0       0       0       0
-  L5~Sp11D04          0       0       0   14608       0       0       0       0
-  L6~Sp11D05          0       0       0       0   14548       0       0       0
-  WMuf~Sp11D08        0       0       0       0       0       0       0   12025
-  WMtz~Sp11D11        0       0       0       0       0       0       0       0
-  WMd~Sp11D07         0       0       0       0       0       0    5041       0
-               
-                Sp11D09 Sp11D10 Sp11D11
-  Vasc~Sp11D09     5055       0       0
-  L1~Sp11D06          0       0       0
-  L2~Sp11D01          0       0       0
-  Inhib~Sp11D10       0    2419       0
-  L3~Sp11D02          0       0       0
-  LD~Sp11D03          0       0       0
-  L5~Sp11D04          0       0       0
-  L6~Sp11D05          0       0       0
-  WMuf~Sp11D08        0       0       0
-  WMtz~Sp11D11        0       0    8192
-  WMd~Sp11D07         0       0       0
-[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/05_spe_correct_cluster/18_compare_clusters/spe_erc-BayesSpace_SVGm_k11_update.pdf"
-Joining with `by = join_by(SpD_preprint, SpD_update)`
-[1] 0.7243826
+Joining with `by = join_by(BayesSpace_SVGm_k09)`
+Joining with `by = join_by(BayesSpace_SVGm_k10)`
+Joining with `by = join_by(BayesSpace_SVGm_k11)`
+                  
+                   Sp09D01 Sp09D02 Sp09D03 Sp09D04 Sp09D05 Sp09D06 Sp09D07
+  Vasc~Sp09D08           0       0       0       0       0       0       0
+  L1~Sp09D05             0       0       0       0   17131       0       0
+  L2~Sp09D01         14645       0       0       0       0       0       0
+  L3_Inhib~Sp09D02       0   17289       0       0       0       0       0
+  LD~Sp09D09             0       0       0       0       0       0       0
+  L5~Sp09D03             0       0   15346       0       0       0       0
+  L6~Sp09D04             0       0       0   15017       0       0       0
+  WMuf~Sp09D07           0       0       0       0       0       0   12529
+  WM~Sp09D06             0       0       0       0       0   11732       0
+                  
+                   Sp09D08 Sp09D09
+  Vasc~Sp09D08        4926       0
+  L1~Sp09D05             0       0
+  L2~Sp09D01             0       0
+  L3_Inhib~Sp09D02       0       0
+  LD~Sp09D09             0   13587
+  L5~Sp09D03             0       0
+  L6~Sp09D04             0       0
+  WMuf~Sp09D07           0       0
+  WM~Sp09D06             0       0
+spe_UMAP.HARMONY_cat-SpD_k09.png - Saving 7 x 7 in image
+spe_UMAP.HARMONY_cat-SpD_k10.png - Saving 7 x 7 in image
+spe_UMAP.HARMONY_cat-SpD_k11.png - Saving 7 x 7 in image
+spe_TSNE.HARMONY_cat-SpD_k09.png - Saving 7 x 7 in image
+spe_TSNE.HARMONY_cat-SpD_k10.png - Saving 7 x 7 in image
+spe_TSNE.HARMONY_cat-SpD_k11.png - Saving 7 x 7 in image
+2026-08-19 13:21:23.638337- Scran Outlier Violin Plots
+$k09
 null device 
           1 
+
+$k10
+null device 
+          1 
+
+$k11
+null device 
+          1 
+
+Warning messages:
+1: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+2: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+3: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+4: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+5: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+6: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+7: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+8: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+9: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Warning message:
+Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %>% select(my_var)
+
+  # Now:
+  data %>% select(all_of(my_var))
+
+See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>. 
+Joining with `by = join_by(SpD_k09)`
+Joining with `by = join_by(SpD_k10)`
+Joining with `by = join_by(SpD_k11)`
+Warning message:
+There was 1 warning in `summarise()`.
+ℹ In argument: `across(...)`.
+ℹ In group 1: `SpD_k09 = Vasc~Sp09D08`.
+Caused by warning:
+! The `...` argument of `across()` is deprecated as of dplyr 1.1.0.
+Supply arguments directly to `.fns` through an anonymous function instead.
+
+  # Previously
+  across(a:b, mean, na.rm = TRUE)
+
+  # Now
+  across(a:b, \(x) mean(x, na.rm = TRUE)) 
+$Maynard_NatNeuro
+
+null device 
+          1 
+Warning messages:
+1: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+2: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
 [1] "Reproducibility information:"
-[1] "2026-08-19 13:57:23 EDT"
+[1] "2026-08-19 13:22:59 EDT"
    user  system elapsed 
-339.143   6.014 351.432 
+226.592   4.778 249.124 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.3 Patched (2026-03-11 r90424)
@@ -401,10 +273,9 @@ null device
  bit64                  4.8.2     2026-05-19 [2] CRAN (R 4.5.3)
  bitops                 1.1-0     2026-07-30 [2] CRAN (R 4.5.3)
  blob                   1.3.0     2026-01-14 [2] CRAN (R 4.5.2)
- bluster              * 1.20.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ bluster                1.20.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  bslib                  0.12.0    2026-08-04 [2] CRAN (R 4.5.3)
  cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
- Cairo                  1.7-0     2025-10-29 [2] CRAN (R 4.5.2)
  cellranger             1.1.0     2016-07-27 [2] CRAN (R 4.5.0)
  cigarillo              1.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  circlize               0.4.18    2026-04-04 [2] CRAN (R 4.5.3)
@@ -413,7 +284,7 @@ null device
  cluster                2.1.8.2   2026-02-05 [3] CRAN (R 4.5.3)
  codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.3)
  colorspace             2.1-3     2026-07-12 [2] CRAN (R 4.5.3)
- ComplexHeatmap       * 2.26.1    2026-02-03 [2] Bioconductor 3.22 (R 4.5.2)
+ ComplexHeatmap         2.26.1    2026-02-03 [2] Bioconductor 3.22 (R 4.5.2)
  config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
  cowplot                1.2.0     2025-07-07 [2] CRAN (R 4.5.1)
  crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
@@ -421,11 +292,14 @@ null device
  data.table             1.18.4    2026-05-06 [2] CRAN (R 4.5.3)
  DBI                    1.3.0     2026-02-25 [2] CRAN (R 4.5.2)
  dbplyr                 2.6.0     2026-06-17 [2] CRAN (R 4.5.3)
+ DeconvoBuddies       * 1.2.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.3)
  DelayedArray           0.36.1    2026-03-31 [2] Bioconductor 3.22 (R 4.5.3)
+ DelayedMatrixStats     1.32.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  dichromat              2.0-1     2026-07-22 [2] CRAN (R 4.5.3)
  digest                 0.6.39    2025-11-19 [2] CRAN (R 4.5.2)
  doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
  dplyr                * 1.2.1     2026-04-03 [2] CRAN (R 4.5.3)
+ dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.5.0)
  DT                     0.34.0    2025-09-02 [2] CRAN (R 4.5.1)
  edgeR                  4.8.2     2025-12-25 [2] Bioconductor 3.22 (R 4.5.2)
  ExperimentHub          3.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
@@ -475,10 +349,10 @@ null device
  MatrixGenerics       * 1.22.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
  memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
+ metapod                1.18.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
  otel                   0.2.0     2025-08-29 [2] CRAN (R 4.5.2)
  paletteer              1.7.0     2026-01-08 [2] CRAN (R 4.5.2)
- patchwork            * 1.3.2     2025-08-25 [2] CRAN (R 4.5.1)
  pillar                 1.11.1    2025-09-17 [2] CRAN (R 4.5.1)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
  plotly                 4.12.1    2026-07-22 [2] CRAN (R 4.5.3)
@@ -487,6 +361,7 @@ null device
  promises               1.5.0     2025-11-01 [2] CRAN (R 4.5.2)
  purrr                * 1.2.2     2026-04-10 [2] CRAN (R 4.5.3)
  R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
+ rafalib                1.0.4     2025-04-08 [1] CRAN (R 4.5.3)
  ragg                   1.5.2     2026-03-23 [2] CRAN (R 4.5.3)
  rappdirs               0.3.4     2026-01-17 [2] CRAN (R 4.5.2)
  RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
@@ -513,8 +388,9 @@ null device
  sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
  ScaledMatrix           1.18.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
- scater                 1.38.1    2026-03-20 [2] Bioconductor 3.22 (R 4.5.3)
- scuttle                1.20.0    2025-10-30 [2] Bioconductor 3.22 (R 4.5.2)
+ scater               * 1.38.1    2026-03-20 [2] Bioconductor 3.22 (R 4.5.3)
+ scran                  1.38.1    2026-02-25 [2] Bioconductor 3.22 (R 4.5.2)
+ scuttle              * 1.20.0    2025-10-30 [2] Bioconductor 3.22 (R 4.5.2)
  Seqinfo              * 1.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  sessioninfo          * 1.2.4     2026-06-04 [2] CRAN (R 4.5.3)
  shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
@@ -522,6 +398,7 @@ null device
  shinyWidgets           0.9.1     2026-03-09 [2] CRAN (R 4.5.3)
  SingleCellExperiment * 1.32.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  SparseArray            1.10.10   2026-03-30 [2] Bioconductor 3.22 (R 4.5.3)
+ sparseMatrixStats      1.22.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  SpatialExperiment    * 1.20.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
  spatialLIBD          * 1.25.2    2026-08-13 [1] Github (LieberInstitute/spatialLIBD@94b68c6)
  statmod                1.5.2     2026-05-17 [2] CRAN (R 4.5.3)
@@ -554,4 +431,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Aug 19 01:57:24 PM EDT 2026
+Wed Aug 19 01:23:00 PM EDT 2026
