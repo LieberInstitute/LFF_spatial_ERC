@@ -39,7 +39,7 @@ reducedDimNames(spe)
 ## `key` so they can be matched back onto the post-overwrite spe. Once
 ## 19_SpD_update_spe.R has been re-run, flip this to `if (FALSE)` to reload
 ## the stashed preprint labels instead of expecting spe$SpD to still exist.
-if (TRUE) {
+if (FALSE) { # Overwriting spe object on Aug 20 , 2026
     preprint_stash <- colData(spe) |>
         as.data.frame() |>
         select(key, BayesSpace_SVGm_k09, SpD)
