@@ -203,8 +203,11 @@ for (k in 9:12) {
 
     ## relabel raw numeric cluster IDs as "xSp{k}D{cluster}", left zero-padded
     ## to the number of digits in k (e.g. "xSp9D1", "xSp10D01")
+    ## coerce via character first: if clust_var is a factor, its internal
+    ## integer codes follow character-sorted level order ("1","10","11",...),
+    ## which does NOT match numeric cluster order for k=10/11/12
     pad_width <- nchar(as.character(k))
-    cluster_int <- colData(spe)[[clust_var]]
+    cluster_int <- as.integer(as.character(colData(spe)[[clust_var]]))
     colData(spe)[[clust_var]] <- sprintf("xSp%dD%0*d", k, pad_width, cluster_int)
 
     print(table(colData(spe)[[clust_var]]))
@@ -233,19 +236,17 @@ rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transf
 
 rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
 
-identical(colnames(spe), rownames(rctd_data@results$results_df))
+## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
+## produce NA-filled rows with mismatched row names, so this must hold before cbind
+stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
 
 spe$cell_id <- colnames(spe)
-colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
-
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 
 spe$cell_type_anno <- spe$first_type
 spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
 table(spe$cell_type_broad)
 
-table(spe$SpX, spe$cell_type_broad)
-table(spe$SpX, spe$spot_class)
 
 #### Save preliminary SPE with Bansky embeddings + clusters ####
 message(Sys.time(), " - Saving preliminary SPE object")
