@@ -10,6 +10,7 @@ library("qs2")
 library("here")
 library("sessioninfo")
 library("SpatialExperiment")
+library("spatialLIBD")
 
 #### define dirs ####
 data_dir <- here("processed-data", "21_Xenium", "13.1_xenium_comapre_bansky_clusters")
@@ -57,6 +58,33 @@ names(cluster_colors_by_k) <- k_labels
 # "#f62062" "#f45e28" "#cf9800" "#608d00" "#01e090" "#3ed9e6" "#0064ca" "#9215a3" "#ff8ee2"
 
 #### Model pseudobulk ####
+rownames(spe) <- rowData(spe)$gene_id
+## make APOE syntatic
+spe$APOE_syn <- gsub("/", ".", spe$APOE)
+
+modeling_results <- map(cluster_vars, ~registration_wrapper(
+    sce = spe,
+    var_registration = .x,
+    var_sample_id = "sample_id",
+    covars = c("APOE_syn", "Age", "Anc_Afr"),
+    gene_ensembl = "gene_id",
+    gene_name = "gene_name",
+    min_ncells = 10,
+))
+
+vSpD_mod <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+
+cor_layer <- map(modeling_results, ~layer_stat_cor(stats = .x$enrichment,
+                                                   modeling_results = vSpD_mod,
+                                                   model_type = "enrichment",
+                                                   top_n = NULL)
+)
+
+anno <- map(cor_layer, ~annotate_registered_clusters(
+    cor_stats_layer = .x,
+    confidence_threshold = 0.6,
+    cutoff_merge_ratio = 0.05 ## very strict annotation merge
+))
 
 
 #### Compare resolutions with a Jaccard-style correspondence matrix ####
