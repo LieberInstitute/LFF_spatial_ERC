@@ -100,12 +100,10 @@ if(opt$var == "SpX"){
     
     #### Register to Visium SpD ####
     reference_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-    colnames(reference_modeling$enrichment) <- gsub("_Sp09D0", "~SpD", colnames(reference_modeling$enrichment))
     colnames(reference_modeling$enrichment) 
     
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     ref_colors <- SpD_colors
-    names(ref_colors) <- gsub("Sp09D0", "SpD", names(ref_colors))
     q_colors <- metadata(spe)$SpX_colors
     
    
