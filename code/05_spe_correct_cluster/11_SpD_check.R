@@ -351,6 +351,72 @@ p_list <- vis_grid_clus(
     sample_order = sample_ids
 )
 
+
+#### check k11 WM split ####
+
+k <- "k11"
+
+spe_pb <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", sprintf("spe_pseudobulk-BayesSpace_SVGm_%s.rds", k)))
+modeling_results <- readRDS(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm", sprintf("modeling_results-BayesSpace_SVGm_%s.rds", k)))
+spe_pb$spatialLIBD <- spe_pb[[sprintf("BayesSpace_SVGm_%s", k)]]
+
+sig_genes_all <- sig_genes_extract_all(
+    modeling_results = modeling_results,
+    sce_layer = spe_pb,
+    n = nrow(spe_pb)
+) |>
+    as.data.frame() |>
+    mutate(test = as.character(test))
+
+sig_genes_all <- sig_genes_all |>
+    left_join(annotate_test(sig_genes_all$test, anno_cluster_table3[[k]]), by = "test")
+
+
+# 10 Sp11D11 WMim  WMim~Sp11D11 
+# 11 Sp11D07 WMd   WMd~Sp11D07
+
+FDR_cut <- 0.01
+
+WM_deep_pair <- sig_genes_all |>
+    filter(model_type == "pairwise") |>
+    filter(SpD == "WMim~Sp11D11-WMd~Sp11D07") |>  #SpD == "WMd~Sp11D07-WMim~Sp11D11"
+    mutate(DE_class = case_when(fdr < FDR_cut & abs(logFC) > 1  ~ "both",
+                                fdr < FDR_cut ~ paste("FDR<", FDR_cut),
+                                abs(logFC) > 1 ~ "abs(logFC)>1",
+                                TRUE ~ "None"))
+
+WM_deep_pair |> filter(gene == "APLP1")
+
+signif_colors <- c("purple", "blue", "red")
+names(signif_colors) <- c("both", paste("FDR<", FDR_cut) , "abs(logFC)>1" )
+
+library(ggrepel)
+
+WM_deep_pair_volcano <- WM_deep_pair |>
+    ggplot(aes(x = logFC, y = -log10(pval), color = DE_class)) +
+    geom_point() +
+    ggrepel::geom_text_repel(aes(label = ifelse(DE_class != "None", gene, "")), size = 2) +
+    scale_color_manual(values = signif_colors) +
+    theme_bw()
+
+ggsave(WM_deep_pair_volcano, filename = here(plot_dir, "k11_WM_deep_pair_volcano.png"))
+
+Oligo_subtype_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "modeling_results_subtype-Oligo.rds"))
+
+head(Oligo_subtype_modeling$enrichment)
+
+Oligo_tstat <- Oligo_subtype_modeling$enrichment[, grepl('t_stat', colnames(Oligo_subtype_modeling$enrichment))]
+
+## align genes by ENSEMBL ID
+common_genes <- intersect(WM_deep_pair$ensembl, rownames(Oligo_tstat))
+length(common_genes)  # sanity check overlap size
+
+wm_stat   <- WM_deep_pair$stat[match(common_genes, WM_deep_pair$ensembl)]
+oligo_sub <- Oligo_tstat[common_genes, , drop = FALSE]
+
+## quick look: correlation of WM_deep_pair$stat vs each Oligo_tstat column
+sapply(colnames(oligo_sub), function(col) cor(wm_stat, oligo_sub[, col]))
+
 # slurmjobs::job_single('11_SpD_check', create_shell = TRUE, memory = '25G', command = "Rscript 11_SpD_check.R")
 
 ## Reproducibility information
