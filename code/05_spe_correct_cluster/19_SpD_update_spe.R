@@ -25,13 +25,9 @@ spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objec
 spe
 
 table(spe$BayesSpace_SVGm_k11, spe$sample_id)
-table(spe$BayesSpace_SVGm_k09_anno)
 
 ## clean up colData
 colnames(colData(spe))
-
-colData(spe) <- colData(spe)[,!grepl("Markers", colnames(colData(spe)))]
-colData(spe)$BayesSpace_SVGm_k09_anno <- NULL
 
 #### Update Ancestry data ####
 ## updated FLARE data from Feb 2025
@@ -42,21 +38,20 @@ samples_ancestry <- samples_ancestry |> column_to_rownames("BrNum")
 spe$Anc_Afr <- samples_ancestry[spe$sample_id, "Afr"]
 spe$Anc_Eur <- samples_ancestry[spe$sample_id, "Eur"]
 
-
 #### load SpD annotations (k11) ####
 spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_anno_summary_k11.xlsx"))
 
-spd_anno$cluster %in% spe$BayesSpace_SVGm_k11
+all(spd_anno$cluster %in% spe$BayesSpace_SVGm_k11)
 
 ## vSpD_anno = plain annotation (ex. "L1")
 ## vSpD      = "v"-prefixed simple annotation (ex. "vL1")
-## vSpD_k11  = full "v"-prefixed k + domain label (ex. "vL1~vSp11D06")
+## vSpD_k11  = full "v"-prefixed k + domain label (ex. "vL1~Sp11D06")
 ## all three ordered by `order`
 anno_table <- spd_anno |>
     mutate(
         vSpD_anno = fct_reorder(anno, order),
         vSpD = fct_reorder(paste0("v", anno), order),
-        vSpD_k11 = fct_reorder(paste0("v", anno, "~vSp11D", sprintf("%02d", as.numeric(cluster))), order)
+        vSpD_k11 = fct_reorder(paste0("v", anno, "~", cluster), order)
     ) |>
     select(cluster, vSpD, vSpD_anno, vSpD_k11) |>
     column_to_rownames("cluster")
@@ -80,33 +75,36 @@ table(spe$vSpD, spe$BayesSpace_SVGm_k11)
 
 SpD_colors_V4 <- c(
     "Vasc"      = "#E05AD2",
-    "L1"        = "#47C281",
-    "L2"        = "#41D4EB",
+    "L1"        = "#16C72B",
+    "L2"        = "#40DAF2",
     "L3"        = "#889DF0",
     "LD"        = "grey80",
-    "L5"        = "#0072CE",
-    "L6"        = "#0A2E5C",
+    "L5"        = "#0087F5",
+    "L6"        = "#021AB6",
     "WMuf"      = "#F4A460",
-    "WMtz"      = "#E8720C",
+    "WMim"      = "#E8720C",
     "WMd"       = "#581009",
     "Inhib"     = "#C82100"
 )
 
-## SpD_colors_V4 is keyed on plain domain names (e.g. "L1"), so plotting uses
-## vSpD_anno (plain) rather than vSpD/vSpD_k11 ("v"-prefixed)
+# add v prefix
+names(SpD_colors_V4) <- paste0('v', names(SpD_colors_V4))
+
+## test colors 
 color_test <- vis_clus(
     spe = spe,
     sampleid = "Br5517",
-    clustervar = "vSpD_anno",
+    clustervar = "vSpD",
     colors = SpD_colors_V4,
-    point_size = 1.5
+    point_size = 2,
+    guide_point_size = 2.5
 )
 ggsave(color_test, filename = here(plot_dir, "vSpD_color_test_Br5517.png"))
 
 
 vis_clus_plots <- vis_grid_clus(
     spe = spe,
-    clustervar = "vSpD_anno",
+    clustervar = "vSpD",
     colors = SpD_colors_V4,
     sort_clust = FALSE,
     return_plots = TRUE,
@@ -127,7 +125,7 @@ apoe_split <- splitit(apoe_anc$APOE)
 map2(apoe_split, names(apoe_split), 
       ~vis_grid_clus(
           spe = spe[,spe$sample_id %in% apoe_anc$sample_id[.x]],
-          clustervar = "vSpD_anno",
+          clustervar = "vSpD",
           colors = SpD_colors_V4,
           sort_clust = FALSE,
           return_plots = FALSE,
@@ -142,7 +140,7 @@ walk(c("UMAP", "TSNE"),
                           prefix = "ERC_spe",
                           var_type = "cat",
                           dimred = .x,
-                          my_var = "vSpD_anno",
+                          my_var = "vSpD",
                           color_pal = SpD_colors_V4))
 
 #### plot each sample ####
@@ -153,7 +151,7 @@ walk(apoe_anc$sample_id, function(s){
     vc <- vis_clus(
         spe = spe,
         sampleid = s,
-        clustervar = "vSpD_anno",
+        clustervar = "vSpD",
         colors = SpD_colors_V4,
         point_size = 1.3
     )
@@ -183,7 +181,7 @@ lit_markers_list <- map(splitit(lit_markers$Layer), ~lit_markers$gene_name[.x])
 plot_marker_express_List(spe, 
                          lit_markers_list, 
                          pdf_fn = here(plot_dir, "ERC_vSpD_Layer_lit_markers.pdf"),
-                         cellType_col = "vSpD_anno",
+                         cellType_col = "vSpD",
                          gene_name_col = "gene_name",
                          color_pal = SpD_colors_V4,
 )
@@ -214,13 +212,13 @@ cluster_metrics_long <- pd |>
 
 ## violin plot uses vSpD_anno (plain) to match SpD_colors_V4
 qc_violin_plot_all <- pd |> 
-    select(vSpD_anno,
+    select(vSpD,
            sum_gene, 
            sum_umi, 
            expr_chrM_ratio)   |>
-    pivot_longer(!c(vSpD_anno), names_to = "metric") |>
+    pivot_longer(!c(vSpD), names_to = "metric") |>
     ggplot() +
-    geom_violin(aes(x = vSpD_anno, y = value, fill = vSpD_anno), 
+    geom_violin(aes(x = vSpD, y = value, fill = vSpD), 
                 scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
     scale_fill_manual(values = SpD_colors_V4, guide = "none") +
     theme_bw() +
@@ -234,7 +232,7 @@ ggsave(qc_violin_plot_all, filename = here(plot_dir, "ERC_vSpD_QCmetricViolin_AL
 ####  SpD Proportions ####
 
 SpD_GM_proportions <- pd |>
-    group_by(sample_id, APOE, Sex, Ancestry, GM = grepl("L", vSpD_anno)) |>
+    group_by(sample_id, APOE, Sex, Ancestry, GM = grepl("L", vSpD)) |>
     summarize(n = n()) |> 
     group_by(sample_id, APOE, Sex, Ancestry) |>
     mutate(prop = n/sum(n))
@@ -252,9 +250,9 @@ SpD_proportions <- pd |>
 save(SpD_proportions, file = here(data_dir, "SpD_proportions.Rdata"))
 write.csv(SpD_proportions, file = here(data_dir, "SpD_proportions.csv"))
 
-## proportion plots (fill uses vSpD_anno, plain, to match SpD_colors_V4)
+## proportion plots 
 SpD_proportion_bar <- SpD_proportions |>
-    ggplot(aes(x = sample_id, y = prop, fill = vSpD_anno)) +
+    ggplot(aes(x = sample_id, y = prop, fill = vSpD)) +
     geom_col() +
     geom_text(aes(label = ifelse(prop > .02, round(prop, 2), "")),
               position = position_stack(vjust = .5),
@@ -267,7 +265,7 @@ SpD_proportion_bar <- SpD_proportions |>
 ggsave(SpD_proportion_bar, filename = here(plot_dir, "ERC_sn_barplot_vSpD_prop.png"), width = 10)
 
 SpD_proportion_bar_APOE <- SpD_proportions |>
-    ggplot(aes(x = sample_id, y = prop, fill = vSpD_anno)) +
+    ggplot(aes(x = sample_id, y = prop, fill = vSpD)) +
     geom_col() +
     geom_text(aes(label = ifelse(prop > .02, round(prop, 2), "")),
               position = position_stack(vjust = .5),
@@ -306,7 +304,7 @@ sample_qc |> arrange(-max_prop)
 
 ## plot sample by SpD proportions bar (x-axis uses vSpD_anno, plain)
 sample_proportion_bar <- sample_proportions |>
-    ggplot(aes(x = vSpD_anno, y = prop, fill = sample_id)) +
+    ggplot(aes(x = vSpD, y = prop, fill = sample_id)) +
     geom_col() +
     geom_text(aes(label = ifelse(prop > 0.3, sprintf("%s - %g", sample_id, round(prop, 3)), "")),
               position = position_stack(vjust = .5),
