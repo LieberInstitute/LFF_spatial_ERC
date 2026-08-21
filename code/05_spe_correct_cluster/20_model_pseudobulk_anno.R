@@ -15,19 +15,16 @@ if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive =
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
 
-## add syntacticly valid version of SpD
-spe$SpD_syn <- gsub("~", "_", spe$SpD)
-table(spe$SpD_syn)
 
 ## make APOE syntatic
 spe$APOE <- gsub("/", "", spe$APOE)
 
 #### Run Spatial Registration Function ####
-message(Sys.time(), " - Running Spatial Registration on: SpD_syn")
+message(Sys.time(), " - Running Spatial Registration on: vSpD")
 
 modeling_results <-registration_wrapper(
     sce = spe,
-    var_registration = "SpD_syn",
+    var_registration = "vSpD",
     var_sample_id = "sample_id",
     covars = c("APOE", "Sex", "Age", "Anc_Afr"),
     gene_ensembl = "gene_id",
@@ -47,8 +44,6 @@ top_DEGs <- sig_genes_extract(n = 100,
                               modeling_results = modeling_results,
                               model_type = "enrichment",
                               sce_layer = spe_pb) 
-
-top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
 write.csv(top_DEGs, file = here(data_dir, "enrichment_modeling_SpD_top100.csv"), row.names = FALSE)
 
