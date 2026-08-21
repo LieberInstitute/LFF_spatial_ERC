@@ -35,8 +35,8 @@ load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ances
 
 samples_ancestry <- samples_ancestry |> column_to_rownames("BrNum")
 
-spe$Anc_Afr <- samples_ancestry[spe$sample_id, "Afr"]
-spe$Anc_Eur <- samples_ancestry[spe$sample_id, "Eur"]
+spe$Anc_Afr <- samples_ancestry[spe$sample_id, "YRI"]
+spe$Anc_Eur <- samples_ancestry[spe$sample_id, "CEU"]
 
 #### load SpD annotations (k11) ####
 spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_anno_summary_k11.xlsx"))
