@@ -189,12 +189,12 @@ cluster_colors <- c("#f62062",
 for (k in 9:12) {
     message(Sys.time(), sprintf(' | Performing clustering k=%d', k))
     spe = clusterBanksy(
-        spe, 
-        use_agf = TRUE, 
+        spe,
+        use_agf = TRUE,
         lambda = lambda,
         seed = random_seed,
-        algo = "kmeans", 
-        # resolution = res, 
+        algo = "kmeans",
+        # resolution = res,
         dimred = "HARMONY",
         kmeans.centers = k
     )
@@ -204,7 +204,7 @@ for (k in 9:12) {
     ## relabel raw numeric cluster IDs as "xSp{k}D{cluster}", left zero-padded
     ## to the number of digits in k (e.g. "xSp9D1", "xSp10D01")
     pad_width <- nchar(as.character(k))
-    cluster_int <- as.integer(as.character(colData(spe)[[clust_var]]))
+    cluster_int <- colData(spe)[[clust_var]]
     colData(spe)[[clust_var]] <- sprintf("xSp%dD%0*d", k, pad_width, cluster_int)
 
     print(table(colData(spe)[[clust_var]]))
@@ -225,6 +225,27 @@ for (k in 9:12) {
 }
 
 table(spe$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans12)
+
+#### Add RCTD data ####
+
+message(Sys.time(), "- Load rctd data")
+rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
+
+rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
+
+identical(colnames(spe), rownames(rctd_data@results$results_df))
+
+spe$cell_id <- colnames(spe)
+colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
+
+colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
+
+spe$cell_type_anno <- spe$first_type
+spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+table(spe$cell_type_broad)
+
+table(spe$SpX, spe$cell_type_broad)
+table(spe$SpX, spe$spot_class)
 
 #### Save preliminary SPE with Bansky embeddings + clusters ####
 message(Sys.time(), " - Saving preliminary SPE object")
