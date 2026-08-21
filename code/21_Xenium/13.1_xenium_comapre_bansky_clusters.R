@@ -28,24 +28,10 @@ k_labels <- sprintf("k%02d", k_values)
 cluster_vars <- sprintf("clust_HARMONY_kmeans%d", k_values)
 names(cluster_vars) <- k_labels
 
-## fix lables
-for(k in k_labels){
-    var <- cluster_vars[[k]]
-    colData(spe)[[var]] <- paste0(k, "c", colData(spe)[[var]])
-    }
-
-colData(spe)[, cluster_vars]
-
 ## sanity check the expected clustering columns are present
 stopifnot(all(cluster_vars %in% colnames(colData(spe))))
 
 #### Generic per-cluster colors ####
-## Xenium Banksy clusters only have a domain-name crosswalk for k09
-## (Bansky_cluster_notes.xlsx / spe$SpX, built in 13_xenium_bansky_annotate.R) -
-## there's no equivalent registration for k10/k11/k12 yet, so all four
-## resolutions here just get a consistent generic palette by cluster index,
-## reusing the same colors used for the per-sample spot plots in
-## 13_xenium_bansky_embedding.R
 cluster_colors <- c("#f62062",
                     "#f45e28",
                     "#cf9800",
@@ -59,18 +45,18 @@ cluster_colors <- c("#f62062",
                     "grey",
                     "brown")
 
-make_generic_colors <- function(k, k_label, palette = cluster_colors) {
-    setNames(palette[seq_len(k)], paste0(k_label, "c", seq_len(k)))
+make_generic_colors <- function(k, palette = cluster_colors) {
+    pad_width <- nchar(as.character(k))
+    setNames(palette[seq_len(k)], sprintf("xSp%dD%0*d", k, pad_width, seq_len(k)))
 }
-cluster_colors_by_k <- map2(k_values, k_labels, make_generic_colors)
+cluster_colors_by_k <- map(k_values, make_generic_colors)
 names(cluster_colors_by_k) <- k_labels
 
 # $k09
-# k09c1     k09c2     k09c3     k09c4     k09c5     k09c6     k09c7     k09c8     k09c9 
-# "#f62062" "#f45e28" "#cf9800" "#608d00" "#01e090" "#3ed9e6" "#0064ca" "#9215a3" "#ff8ee2" 
+# xSp9D1    xSp9D2    xSp9D3    xSp9D4    xSp9D5    xSp9D6    xSp9D7    xSp9D8    xSp9D9
+# "#f62062" "#f45e28" "#cf9800" "#608d00" "#01e090" "#3ed9e6" "#0064ca" "#9215a3" "#ff8ee2"
 
 #### Model pseudobulk ####
-
 
 
 #### Compare resolutions with a Jaccard-style correspondence matrix ####
@@ -118,8 +104,8 @@ plot_jacc_heatmap <- function(jacc_mat, row_k, col_k, colors_by_k) {
     Heatmap(
         jacc_mat,
         name = "Correspondence",
-        cluster_rows = FALSE,
-        cluster_columns = FALSE,
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
         right_annotation = row_ha,
         bottom_annotation = col_ha,
         col = c("black", viridisLite::plasma(100)),
