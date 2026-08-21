@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=100G
 #SBATCH --job-name=13_xenium_bansky_embedding
 #SBATCH -c 1
@@ -21,7 +21,7 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.5
+module load conda_R/4.5.x
 
 ## List current modules for reproducibility
 module list

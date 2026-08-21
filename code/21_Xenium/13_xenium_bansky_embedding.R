@@ -200,6 +200,13 @@ for (k in 9:12) {
     )
 
     clust_var <- sprintf("clust_HARMONY_kmeans%d", k)
+
+    ## relabel raw numeric cluster IDs as "xSp{k}D{cluster}", left zero-padded
+    ## to the number of digits in k (e.g. "xSp9D1", "xSp10D01")
+    pad_width <- nchar(as.character(k))
+    cluster_int <- as.integer(as.character(colData(spe)[[clust_var]]))
+    colData(spe)[[clust_var]] <- sprintf("xSp%dD%0*d", k, pad_width, cluster_int)
+
     print(table(colData(spe)[[clust_var]]))
 
     map(unique(spe$BrNum), function(samp){
