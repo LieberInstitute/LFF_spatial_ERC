@@ -229,24 +229,6 @@ for (k in 9:12) {
 
 table(spe$clust_HARMONY_kmeans9, spe$clust_HARMONY_kmeans12)
 
-#### Add RCTD data ####
-
-message(Sys.time(), "- Load rctd data")
-rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
-
-rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
-
-## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
-## produce NA-filled rows with mismatched row names, so this must hold before cbind
-stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
-
-spe$cell_id <- colnames(spe)
-colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
-
-spe$cell_type_anno <- spe$first_type
-spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
-table(spe$cell_type_broad)
-
 
 #### Save preliminary SPE with Bansky embeddings + clusters ####
 message(Sys.time(), " - Saving preliminary SPE object")
