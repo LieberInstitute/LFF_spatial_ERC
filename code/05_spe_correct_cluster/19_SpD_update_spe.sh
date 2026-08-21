@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=25G
 #SBATCH --job-name=19_SpD_update_spe
 #SBATCH -c 1
@@ -21,7 +21,7 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4.x
+module load conda_R/4.5.x
 
 ## List current modules for reproducibility
 module list
