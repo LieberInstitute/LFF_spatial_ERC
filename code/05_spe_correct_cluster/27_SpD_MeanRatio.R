@@ -53,7 +53,8 @@ save(marker_stats, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdat
 #### plot top markers ####
 message(Sys.time(), " - Plots")
 
-load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+# load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+SpD_colors <- metadata(spe)$SpD_colors
 
 cluster %in% colnames(colData(spe))
 

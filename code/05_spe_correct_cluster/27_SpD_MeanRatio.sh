@@ -21,13 +21,13 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4.x
+module load conda_R/4.5.x
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 27_SpD_MeanRatio.R --cluster 'SpD'
+Rscript 27_SpD_MeanRatio.R --cluster 'vSpD'
 
 echo "**** Job ends ****"
 date
