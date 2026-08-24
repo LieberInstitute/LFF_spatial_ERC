@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p katun
 #SBATCH --mem=50G
 #SBATCH --job-name=27_SpD_MeanRatio
 #SBATCH -c 1
