@@ -13,7 +13,7 @@ library("dplyr")
 
 # Import command-line parameters
 spec <- matrix(
-    c(  "cluster", "c", "1", "character", "Name of cluster"),
+    c(  "cluster", "c", "append", "character", "Name of cluster"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(spec)
