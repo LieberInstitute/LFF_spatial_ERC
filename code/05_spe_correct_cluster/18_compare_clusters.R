@@ -73,7 +73,7 @@ table(spe$SpD_k10, spe$BayesSpace_SVGm_k10)
 
 #### Build color palette, keyed by domain name ####
 SpD_colors_V4 <- c(
-    "Vasc"      = "#FF56AF",
+    "Vasc"      = "#E05AD2",
     "L1"        = "#47C281",
     "L2"        = "#41D4EB",
     # "L3"      = "#0D8278",
