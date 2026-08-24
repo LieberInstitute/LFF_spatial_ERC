@@ -11,12 +11,13 @@ library("here")
 library("sessioninfo")
 library("SpatialExperiment")
 library("spatialLIBD")
+library("scDotPlot")
 
 #### define dirs ####
-data_dir <- here("processed-data", "21_Xenium", "13.1_xenium_comapre_bansky_clusters")
+data_dir <- here("processed-data", "21_Xenium", "13.1_xenium_compare_bansky_clusters")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "21_Xenium", "13.1_xenium_comapre_bansky_clusters")
+plot_dir <- here("plots", "21_Xenium", "13.1_xenium_compare_bansky_clusters")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load prelim data (from 13_xenium_bansky_embedding.R) ####
@@ -82,9 +83,21 @@ cor_layer <- map(modeling_results, ~layer_stat_cor(stats = .x$enrichment,
 
 anno <- map(cor_layer, ~annotate_registered_clusters(
     cor_stats_layer = .x,
-    confidence_threshold = 0.6,
+    confidence_threshold = 0.5,
     cutoff_merge_ratio = 0.05 ## very strict annotation merge
 ))
+
+map2(anno, names(anno), ~write_csv(.x, file = here(data_dir, sprintf("banksy_clustering_annotation_%s.csv", .y))))
+
+pdf(here(plot_dir, "layer_stat_cor_x_vs_vSpD.pdf"))
+
+walk(k_labels, ~print(layer_stat_cor_plot(cor_stats_layer = cor_layer[[.x]],
+                                           cluster_rows =TRUE,
+                                           cluster_columns = FALSE,
+                                           annotation = anno[[.x]],
+                                           query_colors = cluster_colors_by_k[[.x]]))
+)
+dev.off()
 
 
 #### Compare resolutions with a Jaccard-style correspondence matrix ####
@@ -152,7 +165,106 @@ iwalk(jacc_mat_list, function(jacc_mat, pair_name) {
     dev.off()
 })
 
-# slurmjobs::job_single('13.1_xenium_comapre_bansky_clusters', create_shell = TRUE, memory = '50G', command = "Rscript 13.1_xenium_comapre_bansky_clusters.R")
+#### Layer expression plots ####
+
+lit_markers <- read_csv(here("processed-data","05_spe_correct_cluster", "00_lit_marker_genes_layer", "lit_layer_marker_summary.csv")) |>
+    filter(gene_name %in% rowData(spe)$gene_name) |>
+    arrange(Layer)
+
+rowData(spe)$LitMarker <- NULL
+rowData(spe)$LitMarker <- lit_markers$Layer[match(rownames(spe), lit_markers$gene_name)] 
+table(rowData(spe)$LitMarker)
+
+layer_colors <- c(Vasc = '#FF99C0',
+                  Layer1 = "#F0027F",
+                  Layer2 = "#377EB8",
+                  Layer3 = "#4DAF4A",
+                  Layer4 = "#984EA3",
+                  Layer5 = "#FFD700",
+                  Layer5a = "#E9FF70",
+                  Layer5b = "#FF9770",
+                  Layer6 = "#FF7F00",
+                  WM = "grey90",
+                  GM = "grey25",
+                  `Para-subiculum` = "brown",
+                  Interneuron = "red")
+
+
+pdf(here(plot_dir, "Xenium_test_SpD_dotplot_LitMarkers.pdf"))
+map2(cluster_vars, cluster_colors_by_k, ~spe |>
+    scDotPlot(features = lit_markers$gene_name,
+              group = .x,
+              groupAnno = .x,
+              featureAnno = "LitMarker",
+              scale = TRUE,
+              annoColors = list(.x = .y,
+                                LitMarker = layer_colors),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE))
+dev.off()
+
+#### compare cell types ####
+
+#### Add RCTD data ####
+# 
+message(Sys.time(), "- Load rctd data")
+rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
+
+rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
+
+## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
+## produce NA-filled rows with mismatched row names, so this must hold before cbind
+stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
+
+spe$cell_id <- colnames(spe)
+colData(spe) <- cbind(colData(spe), rctd_data@results$results_df[colnames(spe),])
+
+spe$cell_type_anno <- spe$first_type
+spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+table(spe$cell_type_broad)
+
+
+library("ComplexHeatmap")
+
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
+
+cell_v_SpX <- map(cluster_vars, ~table(spe[, spe$spot_class == "singlet"][[.x]], spe[, spe$spot_class == "singlet"]$cell_type_anno))
+
+## proportion cell type (SpX rows sum to 1)
+cell_prop_v_SpX <- map(cell_v_SpX, ~sweep(.x, 1, rowSums(.x), FUN = "/"))
+rowSums(cell_prop_v_SpX[[1]])
+
+## proportion SpX (cell type cols sum to 1)
+cell_v_SpX_prop <- map(cell_prop_v_SpX, ~sweep(.x, 2, colSums(.x), FUN = "/"))
+colSums(cell_v_SpX_prop[[1]])
+
+## PLOT HEATMAPS
+pdf(here(plot_dir, "Xenium_bansky_test_SpX_v_cell_type_heatmap.pdf"), width = 10)
+
+## proportion cell type (SpX row sum to 1)
+map(cell_prop_v_SpX, ~ComplexHeatmap::Heatmap(.x,
+                        name = "prop cell type\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = TRUE,
+                        cluster_rows = TRUE  ## cluster SpX
+                        )
+)
+
+## proportion cell type (SpX row sum to 1)
+map(cell_v_SpX_prop, ~ComplexHeatmap::Heatmap(.x,
+                        name = "prop SpX\nsinglet cells",
+                        col = c("black", viridisLite::plasma(100)),
+                        cluster_columns = TRUE,
+                        cluster_rows = TRUE  ## cluster SpX
+                        )
+)
+
+dev.off()
+
+
+
+# slurmjobs::job_single('13.1_xenium_compare_bansky_clusters', create_shell = TRUE, memory = '50G', command = "Rscript 13.1_xenium_compare_bansky_clusters.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
