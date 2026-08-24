@@ -245,15 +245,30 @@ Oligo_OPC_colors <- c(cell_type_colors_anno[grepl("OPC", names(cell_type_colors_
 save(Oligo_OPC_colors, file = here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"))
 
 #### SpD colors ####
-SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
-                "L1~Sp09D05" = "#0220DE", #Chrystler Blue
-                "L2.3~Sp09D01" = "#FEAF16", #light orange
-                "LD~Sp09D02" = "#00BCF9", #dark sky blue
-                "Inhib~Sp09D09" = "#C82100", #Engineering red
-                "L5~Sp09D03" = "#16FF32", #lime
-                "L6~Sp09D04" = "#178C6D", #forest green
-                "WM.uf~Sp09D07" = "#E4E1E3", # purpe white
-                "WM~Sp09D06" = "#581009") #brown
+# SpD_colors_V1 <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
+#                 "L1~Sp09D05" = "#0220DE", #Chrystler Blue
+#                 "L2.3~Sp09D01" = "#FEAF16", #light orange
+#                 "LD~Sp09D02" = "#00BCF9", #dark sky blue
+#                 "Inhib~Sp09D09" = "#C82100", #Engineering red
+#                 "L5~Sp09D03" = "#16FF32", #lime
+#                 "L6~Sp09D04" = "#178C6D", #forest green
+#                 "WM.uf~Sp09D07" = "#E4E1E3", # purple white
+#                 "WM~Sp09D06" = "#581009") #brown
+
+SpD_colors <- c(
+    "Vasc"      = "#E05AD2",
+    "L1"        = "#16C72B",
+    "L2"        = "#021AB6",
+    "L3"        = "#889DF0",
+    "LD"        = "grey70",
+    "L5"        = "#0087F5",
+    "L6"        = "#40DAF2",
+    "WMuf"      = "#F4A460",
+    "WMim"      = "#E8720C",
+    "WMd"       = "#581009",
+    "Inhib"     = "#C82100"
+)
+
 
 pdf(here(plot_dir, "ERC_SpD_colors.pdf"), height = 11, width = 8)
 test_pallet_plots(SpD_colors, "SpD Colors: ERC")
@@ -272,6 +287,19 @@ SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
                 "WM~Sp09D06" = "#581009")
 
 save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors2.Rdata"))
+
+
+SpD_colors_V3 <- c("Vasc" = "#E05AD2", 
+                "L1a" = "#16FF32", 
+                "L1b" = "#178C6D",
+                "L2.3" = "#FEAF16", 
+                "LD" = "#5A5156",
+                "Inhib" = "#C82100", 
+                "L5" = "#00BCF9", 
+                "L6" = "#0220DE", 
+                "WM.uf" = "#E4E1E3",
+                "WM" = "#581009") 
+
 
 ## plot offical colors
 pdf(here(plot_dir, "ERC_SpD_colors.2.pdf"), height = 11, width = 8)
