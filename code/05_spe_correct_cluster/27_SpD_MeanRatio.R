@@ -72,6 +72,12 @@ plot_marker_express_ALL(
     plot_points = FALSE
 )
 
+marker_stats_top <- marker_stats |>
+    filter(MeanRatio.rank <= 10) |>
+    arrange(vSpD)
+
+save(marker_stats_top, file = here(data_dir, sprintf("marker_stats_MeanRatio_top10_%s.csv", cluster)))
+
 
 # slurmjobs::job_single('27_SpD_MeanRatio', create_shell = TRUE, memory = '50G', command = "Rscript 27_SpD_MeanRatio.R --cluster 'SpD'")
 
