@@ -74,7 +74,8 @@ layer_colors <- c(Vasc = '#FF99C0',
                   Layer6 = "#FF7F00",
                   WM = "grey90",
                   GM = "grey25",
-                  `Para-subiculum` = "brown")
+                  `Para-subiculum` = "brown",
+                  Interneuron = "red")
 
 pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers.pdf"))
 spe |>
@@ -90,8 +91,23 @@ spe |>
               groupLegends = FALSE)
 dev.off()
 
+key_ramsden_markers <- c("NXPH4", "FEZF2", "ETV1", "DCC", "RELN", "WFS1")
 
 pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden.pdf"), width = 4, height = 6)
+spe |>
+    scDotPlot(features = key_ramsden_markers,
+              group = "vSpD",
+              groupAnno = "vSpD",
+              featureAnno = "LitMarker",
+              scale = TRUE,
+              annoColors = list("vSpD" = SpD_colors,
+                                LitMarker = layer_colors),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 7, height = 7)
 spe |>
     scDotPlot(features = lit_markers |> filter(grepl("Ramsden", studies)) |> pull(gene_name),
               group = "vSpD",
@@ -116,29 +132,29 @@ Gene %in% rownames(spe)
 
 
 #### MeanRatio dot plots ####
-load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE)
+load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_vSpD.Rdata"), verbose = TRUE)
 
 marker_stats_top <- marker_stats |>
     filter(MeanRatio.rank <= 5, MeanRatio >1) |>
-    select(gene, MeanRatio.rank, SpD = cellType.target) |>
-    mutate(SpD = factor(SpD, levels = spd_levels)) |>
-    arrange(SpD)
+    select(gene, MeanRatio.rank, vSpD = cellType.target) |>
+    mutate(vSpD = factor(vSpD, levels = spd_levels)) |>
+    arrange(vSpD)
 
-marker_stats_top |> count(SpD)
+marker_stats_top |> count(vSpD)
 
-rowData(spe)$SpD_Marker <- NULL
-rowData(spe)$SpD_Marker <- marker_stats_top$SpD[match(rownames(spe), marker_stats_top$gene)] 
-table(rowData(spe)$SpD_Marker)
+rowData(spe)$vSpD_Marker <- NULL
+rowData(spe)$vSpD_Marker <- marker_stats_top$vSpD[match(rownames(spe), marker_stats_top$gene)] 
+table(rowData(spe)$vSpD_Marker)
 
 pdf(here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 7)
 spe |>
     scDotPlot(features = marker_stats_top$gene,
-              group = "SpD",
-              groupAnno = "SpD",
-              featureAnno = "SpD_Marker",
+              group = "vSpD",
+              groupAnno = "vSpD",
+              featureAnno = "vSpD_Marker",
               scale = TRUE,
-              annoColors = list("SpD" = SpD_colors,
-                                "SpD_Marker" = SpD_colors),
+              annoColors = list("vSpD" = SpD_colors,
+                                "vSpD_Marker" = SpD_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
