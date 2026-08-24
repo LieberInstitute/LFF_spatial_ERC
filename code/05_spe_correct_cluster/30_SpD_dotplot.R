@@ -19,9 +19,10 @@ spe
 rownames(spe) <- rowData(spe)$gene_name
 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
-load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+# load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+SpD_colors <- metadata(spe)$SpD_colors
 
-spd_levels <- levels(spe$SpD)
+spd_levels <- levels(spe$vSpD)
 
 #### Sex gene dot plot ####
 sex_check <- list(male = c("SRY", "RPS4Y1", "RPS4Y2", "DDX3Y", "KDM5D", "UTY", "ZFY", "EIF1AY", "USP9Y", "TSPY1"),
@@ -78,11 +79,11 @@ layer_colors <- c(Vasc = '#FF99C0',
 pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers.pdf"))
 spe |>
     scDotPlot(features = lit_markers$gene_name,
-              group = "SpD",
-              groupAnno = "SpD",
+              group = "vSpD",
+              groupAnno = "vSpD",
               featureAnno = "LitMarker",
               scale = TRUE,
-              annoColors = list("SpD" = SpD_colors,
+              annoColors = list("vSpD" = SpD_colors,
                                 LitMarker = layer_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
@@ -93,11 +94,11 @@ dev.off()
 pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden.pdf"), width = 4, height = 6)
 spe |>
     scDotPlot(features = lit_markers |> filter(grepl("Ramsden", studies)) |> pull(gene_name),
-              group = "SpD",
-              groupAnno = "SpD",
+              group = "vSpD",
+              groupAnno = "vSpD",
               featureAnno = "LitMarker",
               scale = TRUE,
-              annoColors = list("SpD" = SpD_colors,
+              annoColors = list("vSpD" = SpD_colors,
                                 LitMarker = layer_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,

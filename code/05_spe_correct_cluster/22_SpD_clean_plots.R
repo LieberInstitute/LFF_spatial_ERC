@@ -35,14 +35,16 @@ colnames(pd)
 
 #### SpD Summary ####
 SpD_summary <- pd |>
-    group_by(SpD) |>
+    group_by(vSpD) |>
     summarise(n_spots = n(),
               prop = n_spots/ncol(spe),
               n_donors = length(unique(sample_id)),
               median_sum_umi = median(sum_umi),
               median_sum_gene = median(sum_gene),
               median_expr_chrM_ratio = median(expr_chrM_ratio),
-              median_nuclei = median(Nmask_dark_blue))
+              median_nuclei = median(Nmask_dark_blue),
+              prop_zero_nuc = sum(Nmask_dark_blue==0)/n_spots,
+              )
 # |>
 #     left_join(enrichment_stats_top_list)
 
@@ -64,7 +66,7 @@ write.csv(sample_summary, file = here(data_dir, "ERC_Visium_summary_sample.csv")
 
 #### Quality metrics ####
 
-qc_violin_sum_umi <- ggplot(pd, aes(x = SpD, y = sum_umi, fill = SpD)) +
+qc_violin_sum_umi <- ggplot(pd, aes(x = vSpD, y = sum_umi, fill = vSpD)) +
     geom_violin(draw_quantiles = c(.5)) +
     scale_fill_manual(values = SpD_colors) +
     scale_y_continuous(trans='log10') +
@@ -75,7 +77,7 @@ qc_violin_sum_umi <- ggplot(pd, aes(x = SpD, y = sum_umi, fill = SpD)) +
 
 ggsave(qc_violin_sum_umi, filename = here(plot_dir, "ERC_Visium_SpD_QC_violin_sum_umi.png"), width = 7, height =4)
 
-qc_violin_detected <- ggplot(pd, aes(x = SpD, y = sum_gene, fill = SpD)) +
+qc_violin_detected <- ggplot(pd, aes(x = vSpD, y = sum_gene, fill = vSpD)) +
     geom_violin(draw_quantiles = c(.5)) +
     scale_fill_manual(values = SpD_colors) +
     theme_bw() +
@@ -86,7 +88,7 @@ qc_violin_detected <- ggplot(pd, aes(x = SpD, y = sum_gene, fill = SpD)) +
 ggsave(qc_violin_detected, filename = here(plot_dir, "ERC_Visium_SpD_QC_violin_detected.png"), width = 7, height =4)
 
 
-qc_violin_mito <- ggplot(pd, aes(x = SpD, y = expr_chrM_ratio, fill = SpD)) +
+qc_violin_mito <- ggplot(pd, aes(x = vSpD, y = expr_chrM_ratio, fill = vSpD)) +
     geom_violin(draw_quantiles = c(.5)) +
     scale_fill_manual(values = SpD_colors) +
     theme_bw() +
@@ -98,12 +100,12 @@ ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_Visium_QC_SpD_violin_Mito_
 
 #### SpD metrics ####
 SpD_info <- read_csv(here("processed-data", "05_spe_correct_cluster", "19_SpD_update_spe", "ERC_spe_cluster_info.csv")) |>
-    mutate(SpD = factor(SpD, levels = names(SpD_colors)))
+    mutate(SpD = factor(vSpD, levels = names(SpD_colors)))
 
 # n nuclei bar plot 
 
 SpD_barplot_n_spots <- SpD_info |>
-    ggplot(aes(x = SpD, y =n, fill = SpD)) +
+    ggplot(aes(x = vSpD, y =n, fill = vSpD)) +
     geom_col() +
     geom_text(aes(label = n), vjust = -.5) +
     scale_fill_manual(values = SpD_colors) +
@@ -119,8 +121,9 @@ ggsave(SpD_barplot_n_spots, filename = here(plot_dir, "ERC_SpD_barplot_n_spots.p
 summary(pd$CNmask_dark_blue)
 
 pd |>
-    group_by(SpD) |>
-    summarise(median_nuc = median(CNmask_dark_blue),
+    group_by(vSpD) |>
+    summarise(n_nuc = n(),
+              median_nuc = median(CNmask_dark_blue),
               n_0_nuc = sum(CNmask_dark_blue == 0),
               p_0_nuc = n_0_nuc/n(),
               n_100_nuc = sum(CNmask_dark_blue > 100),
@@ -139,7 +142,22 @@ pd |>
 # 8 WM.uf~Sp09D07          6    1870  0.149        718   0.0574    398
 # 9 WM~Sp09D06             9     419  0.0344       790   0.0649    374
 
-n_nuclei_violin <- ggplot(pd, aes(x = SpD, y = CNmask_dark_blue, fill = SpD)) +
+
+# vSpD   n_nuc median_nuc n_0_nuc p_0_nuc n_100_nuc p_100_nuc   max
+# <fct>  <int>      <dbl>   <int>   <dbl>     <int>     <dbl> <int>
+# 1 vVasc   5055          4    1277  0.253         94   0.0186    241
+# 2 vL1    16895          3    2611  0.155        230   0.0136    285
+# 3 vL2    14069          5    1404  0.0998        82   0.00583   231
+# 4 vInhib  2419          5      55  0.0227        27   0.0112    284
+# 5 vL3    17773          3    2627  0.148        102   0.00574   203
+# 6 vLD    11577          6     792  0.0684       115   0.00993   178
+# 7 vL5    14608          5    1157  0.0792       160   0.0110    209
+# 8 vL6    14548          5    1035  0.0711       226   0.0155    290
+# 9 vWMuf  12025          6    1514  0.126        706   0.0587    398
+# 10 vWMim   8192          8     476  0.0581       543   0.0663    314
+# 11 vWMd    5041         10     104  0.0206       336   0.0667    374
+
+n_nuclei_violin <- ggplot(pd, aes(x = vSpD, y = CNmask_dark_blue, fill = vSpD)) +
     geom_violin(draw_quantiles = c(.5)) +
     scale_fill_manual(values = SpD_colors) +
     theme_bw() +
@@ -158,7 +176,7 @@ genes <- c("APOE", "PCP4")
 walk(c("APOE", "PCP4"), function(g){
     gene_plot <- plot_gene_express(sce = spe,
                                    genes = g,
-                                   category = "SpD",
+                                   category = "vSpD",
                                    color_pal = SpD_colors)
     
     ggsave(gene_plot, filename = here(plot_dir, sprintf("ERC_Visium_SpD_express_violin_%s.png", g)), height = 4, width = 6)
@@ -173,10 +191,10 @@ rep_sections_tb <- read.csv(here(data_dir, "rep_section.csv")) |>
 
 single_vis_clus <- vis_clus(
     spe = spe,
-    point_size = 1.7,
+    point_size = 2,
     colors = SpD_colors,
     sampleid = "Br5517",
-    clustervar = "SpD",
+    clustervar = "vSpD",
     spatial = FALSE,
     guide_point_size = 5
 )
@@ -196,7 +214,7 @@ cluster_plots <- map(c("AA", "EA"), function(anc) {
             point_size = 1.5,
             colors = SpD_colors,
             sampleid = s,
-            clustervar = "SpD"
+            clustervar = "vSpD"
         ) +
             labs(title = s)  +
             theme(
@@ -224,7 +242,7 @@ walk(c("UMAP", "TSNE"),
                           prefix = "ERC_spe",
                           var_type = "cat",
                           dimred = .x,
-                          my_var = "SpD",
+                          my_var = "vSpD",
                           color_pal = SpD_colors))
 
 
@@ -245,6 +263,7 @@ head(layer_modeling_results$spatialDLPFC$enrichment)
 ## spatial HPC modeling 
 layer_modeling_results$spatialHPC <- list()
 layer_modeling_results$spatialHPC$enrichment <- read.csv("/dcs04/lieber/lcolladotor/spatialHPC_LIBD4035/spatial_hpc/snRNAseq_hpc/processed-data/revision/sn_enrichment_stats_superfine.csv", row.names=1)
+colnames(layer_modeling_results$spatialHPC$enrichment)
 
 ## Franjic & Sestan ERC
 layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
@@ -252,9 +271,6 @@ colnames(layer_modeling_results$sestan_EC$enrichment)
 
 ## ERC Annotated modeling results
 erc_modeling <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-
-colnames(erc_modeling$enrichment) <- gsub("_Sp", "~Sp", colnames(erc_modeling$enrichment))
-
 
 ## correlate 
 cor_layer <- map(layer_modeling_results, function(layer_mod){
@@ -264,7 +280,7 @@ cor_layer <- map(layer_modeling_results, function(layer_mod){
                                 model_type = "enrichment",
                                 top_n = 100)
     
-    cor_layer <- cor_layer[levels(spe$SpD),order(colnames(cor_layer))] ## match factor level for SpD
+    cor_layer <- cor_layer[levels(spe$vSpD),order(colnames(cor_layer))] ## match factor level for SpD
     
     return(cor_layer)
     
@@ -343,7 +359,7 @@ top_n_index <- unique(as.vector(apply(tstats, 2, function(t) {
 model_results <- model_results[top_n_index, , drop = FALSE]
 tstats <- tstats[top_n_index, , drop = FALSE]
 
-L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5 = `t_stat_L5~Sp09D03`) |>
+L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5 = `t_stat_vL5`) |>
     left_join(layer_modeling_results$spatialDLPFC$enrichment |>
                   filter(ensembl %in% rownames(tstats)) |> 
                   select(DLPFC_tstat_L5 = `t_stat_L5~Sp09D04`, ensembl, gene)) |>
@@ -352,9 +368,9 @@ L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5 = `t_s
 L5_stat_scatter <- L5_stats |>
     filter(!is.na(DLPFC_tstat_L5)) |>
     ggplot(aes(x = DLPFC_tstat_L5, y = ERC_tstat_L5)) +
-    geom_point() +
+    geom_point(size = 1, alpha = 0.5) +
     geom_smooth(method = "lm") +
-    geom_text_repel(aes(label = gene)) +
+    geom_text_repel(aes(label = ifelse(gene == "PCP4", gene, ""))) +
     theme_bw()
 
 ggsave(L5_stat_scatter, filename = here(plot_dir, "layer_stat_cor_L5_scatter.png"), height = 4, width = 4)
@@ -375,7 +391,7 @@ rownames(spe_pb) <- rowData(spe_pb)$gene_name
 
 pb_expres_PCP4 <- plot_gene_express(sce = spe_pb,
                   genes = "PCP4",
-                  category = "SpD",
+                  category = "vSpD",
                   color_pal = SpD_colors,
                   plot_type = "boxplot") +
     labs(title = "ERC")
@@ -416,7 +432,7 @@ plot_marker_express_ALL(
     rank_col = "top",
     anno_col = NULL,
     gene_col = "gene",
-    cellType_col = "SpD",
+    cellType_col = "vSpD",
     color_pal = SpD_colors,
     plot_points = TRUE
 )
@@ -435,7 +451,7 @@ plot_marker_express_ALL(
 )
 
 
-sig_genes_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "sig_genes_SpD.rds"))
+sig_genes_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "sig_genes_vSpD.rds"))
 
 #### Layer5 sublayer plots ####
 
@@ -451,7 +467,7 @@ sig_genes_SpD |>
 L5_sublayer_express <- plot_gene_express(
     spe,
     genes = c("ETV1", "BCL11B","FEZF2"),
-    category = "SpD",
+    category = "vSpD",
     color_pal = SpD_colors,
     ncol = 1
 )
@@ -461,7 +477,7 @@ ggsave(L5_sublayer_express, filename = here(plot_dir, "L5_sublayer_expression.pn
 L5_sublayer_express_pb <- plot_gene_express(
     spe_pb,
     genes = c("ETV1", "BCL11B","FEZF2"),
-    category = "SpD",
+    category = "vSpD",
     color_pal = SpD_colors,
     # plot_type = "boxplot",
     plot_points = TRUE,
