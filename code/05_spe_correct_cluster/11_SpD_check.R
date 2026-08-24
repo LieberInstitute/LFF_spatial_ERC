@@ -417,6 +417,44 @@ oligo_sub <- Oligo_tstat[common_genes, , drop = FALSE]
 ## quick look: correlation of WM_deep_pair$stat vs each Oligo_tstat column
 sapply(colnames(oligo_sub), function(col) cor(wm_stat, oligo_sub[, col]))
 
+# t_stat_Oligo.1 t_stat_Oligo.2 t_stat_Oligo.3 t_stat_Oligo.4 t_stat_Oligo.5 
+#     -0.4792996     -0.4481378      0.5423421     -0.1651901      0.3425903 
+
+
+n_top <- 20
+
+## highest and lowest WM_deep_pair genes
+wm_top_high <- WM_deep_pair |> slice_max(stat, n = n_top) |> pull(ensembl)
+wm_top_low  <- WM_deep_pair |> slice_min(stat, n = n_top) |> pull(ensembl)
+
+## top 20 genes per Oligo_tstat column, keeping rownames (ensembl ids) attached
+oligo_top_genes <- apply(Oligo_tstat, 2, function(col) {
+    named_col <- setNames(col, rownames(Oligo_tstat))
+    names(sort(named_col, decreasing = TRUE))[1:n_top]
+})
+# columns = Oligo_tstat columns, rows = rank 1..20 gene ids
+
+## overlap with WM_deep_pair's top/bottom
+overlap_high <- apply(oligo_top_genes, 2, function(genes) intersect(genes, wm_top_high))
+overlap_low  <- apply(oligo_top_genes, 2, function(genes) intersect(genes, wm_top_low))
+
+overlap_high
+overlap_low
+
+
+overlap_summary <- map_dfr(colnames(oligo_top_genes), function(col) {
+    genes <- oligo_top_genes[, col]
+    tibble(
+        column = col,
+        n_overlap_high = length(intersect(genes, wm_top_high)),
+        genes_high = paste(intersect(genes, wm_top_high), collapse = ", "),
+        n_overlap_low = length(intersect(genes, wm_top_low)),
+        genes_low = paste(intersect(genes, wm_top_low), collapse = ", ")
+    )
+})
+
+overlap_summary
+
 # slurmjobs::job_single('11_SpD_check', create_shell = TRUE, memory = '25G', command = "Rscript 11_SpD_check.R")
 
 ## Reproducibility information
