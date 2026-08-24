@@ -256,17 +256,17 @@ save(Oligo_OPC_colors, file = here("processed-data","00_project_prep","Oligo_OPC
 #                 "WM~Sp09D06" = "#581009") #brown
 
 SpD_colors <- c(
-    "Vasc"      = "#E05AD2",
-    "L1"        = "#16C72B",
-    "L2"        = "#021AB6",
-    "L3"        = "#889DF0",
-    "LD"        = "grey70",
-    "L5"        = "#0087F5",
-    "L6"        = "#40DAF2",
-    "WMuf"      = "#F4A460",
-    "WMim"      = "#E8720C",
-    "WMd"       = "#581009",
-    "Inhib"     = "#C82100"
+    "vVasc"      = "#E05AD2",
+    "vL1"        = "#16C72B",
+    "vL2"        = "#021AB6",
+    "vInhib"     = "#C82100",
+    "vL3"        = "#889DF0",
+    "vLD"        = "grey70",
+    "vL5"        = "#0087F5",
+    "vL6"        = "#40DAF2",
+    "vWMuf"      = "#F4A460",
+    "vWMim"      = "#E8720C",
+    "vWMd"       = "#581009"
 )
 
 
