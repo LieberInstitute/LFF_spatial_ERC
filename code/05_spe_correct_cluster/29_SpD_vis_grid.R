@@ -60,7 +60,7 @@ SpD_row <- Reduce("+",
                   map(poster_samples, 
                       ~vis_clus(spe, sampleid = .x, 
                                 point_size = 1, 
-                                clustervar = "SpD", 
+                                clustervar = "vSpD", 
                                 colors = SpD_colors) + 
                           theme(legend.position = "None") +
                           labs(title = NULL))
@@ -132,7 +132,7 @@ walk(names(samples_by_apoe), function(apoe){
     ## SpD Column
     SpD_col <- Reduce("/", map(samples, ~vis_clus(spe, sampleid = .x, 
                                                   point_size = 1, 
-                                                  clustervar = "SpD", 
+                                                  clustervar = "vSpD", 
                                                   colors = SpD_colors) + 
                                    theme(legend.position = "None",
                                          plot.margin = no_margin) +
@@ -160,4 +160,12 @@ walk(names(samples_by_apoe), function(apoe){
     
 })
 
+# slurmjobs::job_single('29_SpD_vis_grid', create_shell = TRUE, memory = '50G', command = "Rscript 29_SpD_vis_grid.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 

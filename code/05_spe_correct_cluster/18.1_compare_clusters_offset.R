@@ -105,32 +105,30 @@ table(spe$SpD_update, spe$BayesSpace_SVGm_k11)
 SpD_colors_simple <- c("Vasc~Sp09D08" = "#E05AD2", #Orchid
                        "L1~Sp09D05" = "#0220DE", #Chrystler Blue
                        "L2.3~Sp09D01" = "#FEAF16", #light orange
-                       "LD~Sp09D02" = "#00BCF9", #dark sky blue
                        "Inhib~Sp09D09" = "#C82100", #Engineering red
+                       "LD~Sp09D02" = "#00BCF9", #dark sky blue
                        "L5~Sp09D03" = "#16FF32", #lime
                        "L6~Sp09D04" = "#178C6D", #forest green
                        "WM.uf~Sp09D07" = "#E4E1E3", # purpe white
                        "WM~Sp09D06" = "#581009") #brown
 
+spe$SpD_preprint <- factor(spe$SpD_preprint, levels = names(SpD_colors_simple))
+
 ## updated (k11) uses the new V4 domain palette, mapped onto the k11 SpD labels
 SpD_colors_V4 <- c(
     "Vasc"      = "#E05AD2",
-    "L1"        = "#47C281",
-    "L2"        = "#41D4EB",
-    "L3"        = "#889DF0",
-    "L3_Inhib"  = "#B6686F",
-    "LD"        = "grey80",
-    "L5_LD"     = "#B1C2CE",
-    "L5"        = "#0072CE",
-    "L6"        = "#0A2E5C",
-    "L6a"       = "#24487A",
-    "L6b"       = "#05193B",
-    "WMuf"      = "#F4A460",
-    "WMtz"      = "#E8720C",
-    "WM"        = "#F57A00",
-    "WMd"       = "#581009",
-    "Inhib"     = "#C82100"
+    "L1"        = "#16C72B",
+    "L2"        = "#021AB6",
+    "Inhib"     = "#C82100",
+    "LD"        = "#CFC9CD",
+    "L5a"       = "#889DF0",
+    "L5b"       = "#0087F5",
+    "L6"        = "#40DAF2",
+    "WMuf"      = "#F39E53",
+    "WMpv"      = "#6F140C",
+    "WMd"       = "#D5690B"
 )
+
 
 #' Build a color vector for one resolution's annotation table, keyed by SpD
 make_SpD_colors <- function(anno_table, domain_colors = SpD_colors_V4) {
@@ -183,6 +181,7 @@ cluster_match <- jacc_mat_long |>
     arrange(-Jacc)
 
 sum(cluster_match$n) / ncol(spe)
+# [1] 0.7243826
 
 #### Jacc heatmap, annotated with each clustering's own colors ####
 row_ha <- rowAnnotation(
