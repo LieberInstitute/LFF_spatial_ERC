@@ -71,31 +71,31 @@ colData(spe) <- cbind(colData(spe), anno_table)
 table(spe$vSpD, spe$BayesSpace_SVGm_k11)
 
 #### Define colors for SpD ####
-# load(here("processed-data", "SpD_colors.Rdata"))
+load(here("processed-data", "SpD_colors.Rdata"))
 
-SpD_colors_V4 <- c(
-    "Vasc"      = "#E05AD2",
-    "L1"        = "#16C72B",
-    "L2"        = "#40DAF2",
-    "L3"        = "#889DF0",
-    "LD"        = "grey80",
-    "L5"        = "#0087F5",
-    "L6"        = "#021AB6",
-    "WMuf"      = "#F4A460",
-    "WMim"      = "#E8720C",
-    "WMd"       = "#581009",
-    "Inhib"     = "#C82100"
-)
-
-# add v prefix
-names(SpD_colors_V4) <- paste0('v', names(SpD_colors_V4))
+# SpD_colors_V4 <- c(
+#     "Vasc"      = "#E05AD2",
+#     "L1"        = "#16C72B",
+#     "L2"        = "#40DAF2",
+#     "L3"        = "#889DF0",
+#     "LD"        = "grey80",
+#     "L5"        = "#0087F5",
+#     "L6"        = "#021AB6",
+#     "WMuf"      = "#F4A460",
+#     "WMim"      = "#E8720C",
+#     "WMd"       = "#581009",
+#     "Inhib"     = "#C82100"
+# )
+# 
+# # add v prefix
+# names(SpD_colors_V4) <- paste0('v', names(SpD_colors_V4))
 
 ## test colors 
 color_test <- vis_clus(
     spe = spe,
     sampleid = "Br5517",
     clustervar = "vSpD",
-    colors = SpD_colors_V4,
+    colors = SpD_colors,
     point_size = 2,
     guide_point_size = 2.5
 )
@@ -105,7 +105,7 @@ ggsave(color_test, filename = here(plot_dir, "vSpD_color_test_Br5517.png"))
 vis_clus_plots <- vis_grid_clus(
     spe = spe,
     clustervar = "vSpD",
-    colors = SpD_colors_V4,
+    colors = SpD_colors,
     sort_clust = FALSE,
     return_plots = TRUE,
     point_size = 1,
@@ -126,7 +126,7 @@ map2(apoe_split, names(apoe_split),
       ~vis_grid_clus(
           spe = spe[,spe$sample_id %in% apoe_anc$sample_id[.x]],
           clustervar = "vSpD",
-          colors = SpD_colors_V4,
+          colors = SpD_colors,
           sort_clust = FALSE,
           return_plots = FALSE,
           point_size =  2+1/length(apoe_split),
@@ -141,7 +141,7 @@ walk(c("UMAP", "TSNE"),
                           var_type = "cat",
                           dimred = .x,
                           my_var = "vSpD",
-                          color_pal = SpD_colors_V4))
+                          color_pal = SpD_colors))
 
 #### plot each sample ####
 plot_dir_sample <- here("plots", "05_spe_correct_cluster", "19_SpD_update_spe", "vis_clus_sample")
@@ -152,7 +152,7 @@ walk(apoe_anc$sample_id, function(s){
         spe = spe,
         sampleid = s,
         clustervar = "vSpD",
-        colors = SpD_colors_V4,
+        colors = SpD_colors,
         point_size = 1.3
     )
     ggsave(vc, filename = here(plot_dir_sample, sprintf("ERC_vSpD_%s.png", s)))
@@ -183,7 +183,7 @@ plot_marker_express_List(spe,
                          pdf_fn = here(plot_dir, "ERC_vSpD_Layer_lit_markers.pdf"),
                          cellType_col = "vSpD",
                          gene_name_col = "gene_name",
-                         color_pal = SpD_colors_V4,
+                         color_pal = SpD_colors,
 )
 
 
@@ -210,7 +210,7 @@ cluster_metrics_long <- pd |>
     group_by(vSpD, vSpD_k11, metric) |>
     summarize(median = median(value))
 
-## violin plot uses vSpD_anno (plain) to match SpD_colors_V4
+## violin plot uses vSpD_anno (plain) to match SpD_colors
 qc_violin_plot_all <- pd |> 
     select(vSpD,
            sum_gene, 
@@ -220,7 +220,7 @@ qc_violin_plot_all <- pd |>
     ggplot() +
     geom_violin(aes(x = vSpD, y = value, fill = vSpD), 
                 scale = "width", draw_quantiles = c(.25, 0.5, .75)) +
-    scale_fill_manual(values = SpD_colors_V4, guide = "none") +
+    scale_fill_manual(values = SpD_colors, guide = "none") +
     theme_bw() +
     facet_grid(metric~., scales = "free_y") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
@@ -258,7 +258,7 @@ SpD_proportion_bar <- SpD_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = SpD_colors_V4, guide = "none") +
+    scale_fill_manual(values = SpD_colors, guide = "none") +
     labs(y = "SpD Proportion")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
@@ -271,7 +271,7 @@ SpD_proportion_bar_APOE <- SpD_proportions |>
               position = position_stack(vjust = .5),
               size = 2) +
     theme_bw() +
-    scale_fill_manual(values = SpD_colors_V4) +
+    scale_fill_manual(values = SpD_colors) +
     facet_grid(.~APOE, scales = "free_x", space = "free") +
     labs(y = "SpD Proportion")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
@@ -340,7 +340,7 @@ rowRanges(spe) <- gtf[match_genes]
 
 
 #### Add colors to metadata ####
-metadata(spe)$SpD_colors <- SpD_colors_V4
+metadata(spe)$SpD_colors <- SpD_colors
 
 #### Save data ####
 message(Sys.time(), " - Saving HDF5 SPE")
