@@ -73,7 +73,7 @@ make_cluster_annotation <- function(labels, k_label, colors_by_k, side = c("row"
 message(Sys.time(), " - Load RCTD data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD", "rctd_results_xenium.qs2"))
 
-rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe), ]
+# rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe), ]
 
 ## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
 ## produce NA-filled rows with mismatched row names, so this must hold before cbind
