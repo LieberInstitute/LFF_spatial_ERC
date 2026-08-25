@@ -264,8 +264,8 @@ SpD_colors <- c(
     "vL5a"       = "#889DF0",
     "vL5b"       = "#0087F5",
     "vL6"        = "#40DAF2",
-    "vWMuf"      = "#F4A460",
-    "vWMpv"      = "#581009",
+    "vWMuf"      = "#F39E53",
+    "vWMpv"      = "#6F140C",
     "vWMd"       = "#D5690B"
 )
 
