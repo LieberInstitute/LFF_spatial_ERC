@@ -74,7 +74,7 @@ plot_marker_express_ALL(
 
 marker_stats_top <- marker_stats |>
     filter(MeanRatio.rank <= 10) |>
-    arrange(vSpD)
+    arrange(cellType.target)
 
 save(marker_stats_top, file = here(data_dir, sprintf("marker_stats_MeanRatio_top10_%s.csv", cluster)))
 
