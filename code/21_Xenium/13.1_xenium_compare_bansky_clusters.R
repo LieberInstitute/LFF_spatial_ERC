@@ -73,11 +73,11 @@ make_cluster_annotation <- function(labels, k_label, colors_by_k, side = c("row"
 message(Sys.time(), " - Load RCTD data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD", "rctd_results_xenium.qs2"))
 
-# rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe), ]
+rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe), ]
 
 ## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
 ## produce NA-filled rows with mismatched row names, so this must hold before cbind
-# stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
+stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
 
 spe$cell_id <- colnames(spe)
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df[colnames(spe), ])
@@ -150,6 +150,54 @@ top_cell_types_wide <- map(celltype_detail, ~.x |>
     slice_max(prop_of_cluster, n = 3, with_ties = FALSE) |>
     summarise(top_cell_types = paste0(cell_type, " (", round(100 * prop_of_cluster), "%)", collapse = ", ")))
 
+## Cell types making up >= specific_pct_threshold of a cluster specifically -
+## as opposed to top_cell_types above, which always lists the top 3 regardless
+## of magnitude. A cluster with no entry here is a genuine mix with no single
+## clearly dominant cell type; clusters that DO get an entry are candidates for
+## a cleaner single-cell-type annotation.
+## NOTE: this only catches dominance by one fine-grained cell_type_anno value
+## (e.g. "Oligo.3"). A cluster split fairly evenly across several subtypes of
+## the same broad type (e.g. Oligo.2/3/4 each ~20-25%) won't trigger this even
+## though the broad category is clearly dominant - see cell_type_broad version
+## below if that distinction matters for a given cluster.
+specific_pct_threshold <- 0.30
+
+specific_cell_types_wide <- map(celltype_detail, ~.x |>
+    filter(prop_of_cluster >= specific_pct_threshold) |>
+    group_by(cluster) |>
+    arrange(desc(prop_of_cluster), .by_group = TRUE) |>
+    summarise(specific_cell_types = paste0(cell_type, " (", round(100 * prop_of_cluster), "%)", collapse = ", ")))
+
+## Cell types with a meaningful share of their TOTAL population (across every
+## cluster) concentrated specifically in this one cluster - the opposite
+## question from specific_cell_types above. Uses prop_of_cell_type (built from
+## cell_v_SpX_prop, i.e. column-normalized: for a given cell type, what
+## fraction of all its cells fall in this cluster). A cell type can pass this
+## threshold even if it's a small fraction OF the cluster - e.g. a rare cell
+## type that's nonetheless disproportionately concentrated here - which
+## specific_cell_types (composition) would miss entirely, and vice versa.
+concentration_pct_threshold <- 0.20
+
+concentrated_cell_types_wide <- map(celltype_detail, ~.x |>
+    filter(prop_of_cell_type >= concentration_pct_threshold) |>
+    group_by(cluster) |>
+    arrange(desc(prop_of_cell_type), .by_group = TRUE) |>
+    summarise(concentrated_cell_types = paste0(cell_type, " (", round(100 * prop_of_cell_type), "%)", collapse = ", ")))
+
+## Broad-category counterpart of the block above: catches cases where a
+## cluster is dominated by one *broad* cell type split across several fine
+## subtypes (e.g. Oligo.2/3/4 each individually under 30%, but summing well
+## past it) - the fine-grained version above would silently miss this.
+cell_v_SpX_broad <- map(cluster_vars, ~table(spe_singlet[[.x]], spe_singlet$cell_type_broad))
+cell_prop_v_SpX_broad <- map(cell_v_SpX_broad, ~sweep(.x, 1, rowSums(.x), FUN = "/"))
+
+specific_cell_types_broad_wide <- map(cell_prop_v_SpX_broad, ~as.data.frame(.x) |>
+    dplyr::rename(cluster = Var1, cell_type_broad = Var2, prop_of_cluster = Freq) |>
+    filter(prop_of_cluster >= specific_pct_threshold) |>
+    group_by(cluster) |>
+    arrange(desc(prop_of_cluster), .by_group = TRUE) |>
+    summarise(specific_cell_types_broad = paste0(cell_type_broad, " (", round(100 * prop_of_cluster), "%)", collapse = ", ")))
+
 #### Model pseudobulk ####
 rownames(spe) <- rowData(spe)$gene_id
 ## make APOE syntactic
@@ -198,9 +246,12 @@ anno <- map(cor_layer, ~annotate_registered_clusters(
 
 ## Combine registration confidence/label, top marker genes, and top cell
 ## types into one summary table per resolution, then export.
-anno_enrich <- pmap(list(anno, enrich_top_wide, top_cell_types_wide), function(anno_k, enrich_k, celltype_k) {
-    anno_k |> left_join(enrich_k) |> left_join(celltype_k)
-})
+anno_enrich <- pmap(
+    list(anno, enrich_top_wide, top_cell_types_wide, specific_cell_types_wide, concentrated_cell_types_wide, specific_cell_types_broad_wide),
+    function(anno_k, enrich_k, top_k, specific_k, concentrated_k, specific_broad_k) {
+        anno_k |> left_join(enrich_k) |> left_join(top_k) |> left_join(specific_k) |> left_join(concentrated_k) |> left_join(specific_broad_k)
+    }
+)
 
 iwalk(anno_enrich, ~write_csv(.x, file = here(data_dir, sprintf("banksy_clustering_annotation_%s.csv", .y))))
 
