@@ -73,6 +73,22 @@ modeling_results <- map(cluster_vars, ~registration_wrapper(
     min_ncells = 10,
 ))
 
+enrich_top <- map(modeling_results, ~sig_genes_extract(
+    modeling_results = .x,
+    sce_layer = spe,
+    n = 10,
+    model_type = "enrichment"
+))
+
+enrich_top_all <- map2_dfr(enrich_top, names(enrich_top), ~.x |> mutate(bansky = .y, .before = 1))
+
+write_csv(enrich_top_all, file = here(data_dir, "banksy_clustering_enrich_top_k9-12.csv"))
+
+enrich_top_wide <- map(enrich_top, ~.x |>
+    group_by(cluster = test) |>
+    summarise(top_enrich = paste(gene, collapse = ", ")))
+
+
 vSpD_mod <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
 
 cor_layer <- map(modeling_results, ~layer_stat_cor(stats = .x$enrichment,
@@ -87,7 +103,9 @@ anno <- map(cor_layer, ~annotate_registered_clusters(
     cutoff_merge_ratio = 0.05 ## very strict annotation merge
 ))
 
-map2(anno, names(anno), ~write_csv(.x, file = here(data_dir, sprintf("banksy_clustering_annotation_%s.csv", .y))))
+anno_enrich <- map2(anno, enrich_top_wide, ~.x |> left_join(.y) )
+
+map2(anno_enrich, names(anno_enrich), ~write_csv(.x, file = here(data_dir, sprintf("banksy_clustering_annotation_%s.csv", .y))))
 
 pdf(here(plot_dir, "layer_stat_cor_x_vs_vSpD.pdf"))
 
