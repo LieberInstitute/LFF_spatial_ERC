@@ -260,7 +260,7 @@ SpD_colors <- c(
     "vL1"        = "#16C72B",
     "vL2"        = "#021AB6",
     "vInhib"     = "#C82100",
-    "vLD"        = "#E4E1E3",
+    "vLD"        = "#CFC9CD",
     "vL5a"       = "#889DF0",
     "vL5b"       = "#0087F5",
     "vL6"        = "#40DAF2",
