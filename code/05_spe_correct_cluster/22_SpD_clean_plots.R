@@ -34,6 +34,14 @@ pd <- as.data.frame(colData(spe))
 colnames(pd)
 
 #### SpD Summary ####
+
+enrichment_stats_top <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "enrichment_modeling_SpD_top100.csv"))
+
+enrichment_stats_top_list <- enrichment_stats_top |>
+    filter(top <= 5) |>
+    group_by(vSpD = test) |>
+    summarise(top_enrich_genes = paste0(gene, collapse = ", "))
+
 SpD_summary <- pd |>
     group_by(vSpD) |>
     summarise(n_spots = n(),
@@ -44,9 +52,8 @@ SpD_summary <- pd |>
               median_expr_chrM_ratio = median(expr_chrM_ratio),
               median_nuclei = median(Nmask_dark_blue),
               prop_zero_nuc = sum(Nmask_dark_blue==0)/n_spots,
-              )
-# |>
-#     left_join(enrichment_stats_top_list)
+              ) |>
+    left_join(enrichment_stats_top_list)
 
 
 write.csv(SpD_summary, file = here(data_dir, "ERC_Visium_summary_SpD.csv"))
@@ -100,7 +107,7 @@ ggsave(qc_violin_mito, filename = here(plot_dir, "ERC_Visium_QC_SpD_violin_Mito_
 
 #### SpD metrics ####
 SpD_info <- read_csv(here("processed-data", "05_spe_correct_cluster", "19_SpD_update_spe", "ERC_spe_cluster_info.csv")) |>
-    mutate(SpD = factor(vSpD, levels = names(SpD_colors)))
+    mutate(vSpD = factor(vSpD, levels = names(SpD_colors)))
 
 # n nuclei bar plot 
 
@@ -130,19 +137,6 @@ pd |>
               p_100_nuc = n_100_nuc/n(),
               max = max(CNmask_dark_blue))
 
-# SpD           median_nuc n_0_nuc p_0_nuc n_100_nuc p_100_nuc   max
-# <fct>              <dbl>   <int>   <dbl>     <int>     <dbl> <int>
-# 1 Vasc~Sp09D08           4    1434  0.231        124   0.0199    314
-# 2 L1~Sp09D05             3    2134  0.139        243   0.0158    307
-# 3 L2.3~Sp09D01           6     801  0.0698        53   0.00462   231
-# 4 LD~Sp09D02             3    3871  0.146        244   0.00921   244
-# 5 Inhib~Sp09D09          5     316  0.0457        64   0.00926   235
-# 6 L5~Sp09D03             6     629  0.0541       104   0.00895   190
-# 7 L6~Sp09D04             5    1578  0.0811       281   0.0144    290
-# 8 WM.uf~Sp09D07          6    1870  0.149        718   0.0574    398
-# 9 WM~Sp09D06             9     419  0.0344       790   0.0649    374
-
-
 # vSpD   n_nuc median_nuc n_0_nuc p_0_nuc n_100_nuc p_100_nuc   max
 # <fct>  <int>      <dbl>   <int>   <dbl>     <int>     <dbl> <int>
 # 1 vVasc   5055          4    1277  0.253         94   0.0186    241
@@ -171,9 +165,9 @@ ggsave(n_nuclei_violin, filename = here(plot_dir, "ERC_Visium_SpD_violin_n_nucle
 
 rownames(spe) <- rowData(spe)$gene_name
 
-genes <- c("APOE", "PCP4")
+genes_to_plot <- c("APOE", "PCP4", "RELN")
 
-walk(c("APOE", "PCP4"), function(g){
+walk(genes_to_plot, function(g){
     gene_plot <- plot_gene_express(sce = spe,
                                    genes = g,
                                    category = "vSpD",
@@ -237,7 +231,7 @@ ggsave(cluster_grid, filename = here(plot_dir, "vis_SpD_rep_sections.png"), widt
 
 
 #### Plot reduced dims ####
-walk(c("UMAP", "TSNE"),
+walk(c("UMAP", "TSNE","UMAP.HARMONY", "TSNE.HARMONY"),
      ~my_plot_reduced_dim(spe,
                           prefix = "ERC_spe",
                           var_type = "cat",
@@ -359,7 +353,7 @@ top_n_index <- unique(as.vector(apply(tstats, 2, function(t) {
 model_results <- model_results[top_n_index, , drop = FALSE]
 tstats <- tstats[top_n_index, , drop = FALSE]
 
-L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5 = `t_stat_vL5`) |>
+L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5b = `t_stat_vL5b`) |>
     left_join(layer_modeling_results$spatialDLPFC$enrichment |>
                   filter(ensembl %in% rownames(tstats)) |> 
                   select(DLPFC_tstat_L5 = `t_stat_L5~Sp09D04`, ensembl, gene)) |>
@@ -367,7 +361,7 @@ L5_stats <- erc_modeling$enrichment |> select(ensembl, gene, ERC_tstat_L5 = `t_s
 
 L5_stat_scatter <- L5_stats |>
     filter(!is.na(DLPFC_tstat_L5)) |>
-    ggplot(aes(x = DLPFC_tstat_L5, y = ERC_tstat_L5)) +
+    ggplot(aes(x = DLPFC_tstat_L5, y = ERC_tstat_L5b)) +
     geom_point(size = 1, alpha = 0.5) +
     geom_smooth(method = "lm") +
     geom_text_repel(aes(label = ifelse(gene == "PCP4", gene, ""))) +
@@ -378,9 +372,12 @@ ggsave(L5_stat_scatter, filename = here(plot_dir, "layer_stat_cor_L5_scatter.png
 
 L5_stats |> filter(gene == "PCP4")
     
-lm("DLPFC_tstat_L5~ERC_tstat_L5", 
+lm("DLPFC_tstat_L5~ERC_tstat_L5b", 
    data = L5_stats |>
            filter(!is.na(DLPFC_tstat_L5)))
+# Coefficients:
+#     (Intercept)  ERC_tstat_L5b  
+# 0.3131         0.7954  
     
 
 ## load pseuodbulked data
@@ -451,7 +448,7 @@ plot_marker_express_ALL(
 )
 
 
-sig_genes_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "sig_genes_vSpD.rds"))
+sig_genes_SpD <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "sig_genes_SpD.rds"))
 
 #### Layer5 sublayer plots ####
 
@@ -472,7 +469,7 @@ L5_sublayer_express <- plot_gene_express(
     ncol = 1
 )
 
-ggsave(L5_sublayer_express, filename = here(plot_dir, "L5_sublayer_expression.png"), height = 9, width = 4)
+ggsave(L5_sublayer_express, filename = here(plot_dir, "L5_sublayer_expression.png"), height = 8, width = 3)
 
 L5_sublayer_express_pb <- plot_gene_express(
     spe_pb,
@@ -484,7 +481,7 @@ L5_sublayer_express_pb <- plot_gene_express(
     ncol = 1
 )
 
-ggsave(L5_sublayer_express_pb, filename = here(plot_dir, "L5_sublayer_expression_pb.png"), height = 9, width = 4)
+ggsave(L5_sublayer_express_pb, filename = here(plot_dir, "L5_sublayer_expression_pb.png"), height = 8, width = 3)
 
 L5_vis_gene <- map(c("ETV1", "BCL11B","FEZF2"), ~vis_gene(spe = spe,
                                                             point_size = 1.7,
@@ -503,7 +500,7 @@ L5_escheR <- map(c("ETV1", "BCL11B","FEZF2"), function(g){
     spe$logcounts <- logcounts(spe)[which(rowData(spe)$gene_name==g),]
     
     p <- make_escheR(spe[, spe$sample_id %in% c("Br5517")]) |>
-        add_ground(var = "SpD") |>
+        add_ground(var = "vSpD") |>
         add_fill(var = "logcounts") + 
         scale_fill_gradient(low = "white", high = "black") +
         scale_color_manual(values = SpD_colors) +
