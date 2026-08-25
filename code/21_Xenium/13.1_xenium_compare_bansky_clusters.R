@@ -118,13 +118,13 @@ walk(cell_v_SpX_prop, ~stopifnot(all.equal(unname(colSums(.x)), rep(1, ncol(.x))
 ## normalized proportions for a single k, for full-detail export.
 tidy_celltype_table <- function(n_mat, row_prop_mat, col_prop_mat) {
     as.data.frame(n_mat) |>
-        rename(cluster = Var1, cell_type = Var2, n = Freq) |>
+        dplyr::rename(cluster = Var1, cell_type = Var2, n = Freq) |>
         left_join(
-            as.data.frame(row_prop_mat) |> rename(cluster = Var1, cell_type = Var2, prop_of_cluster = Freq),
+            as.data.frame(row_prop_mat) |> dplyr::rename(cluster = Var1, cell_type = Var2, prop_of_cluster = Freq),
             by = c("cluster", "cell_type")
         ) |>
         left_join(
-            as.data.frame(col_prop_mat) |> rename(cluster = Var1, cell_type = Var2, prop_of_cell_type = Freq),
+            as.data.frame(col_prop_mat) |> dplyr::rename(cluster = Var1, cell_type = Var2, prop_of_cell_type = Freq),
             by = c("cluster", "cell_type")
         )
 }
