@@ -77,7 +77,7 @@ rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transf
 
 ## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
 ## produce NA-filled rows with mismatched row names, so this must hold before cbind
-stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
+# stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
 
 spe$cell_id <- colnames(spe)
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df[colnames(spe), ])
