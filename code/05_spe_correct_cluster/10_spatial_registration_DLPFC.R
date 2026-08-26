@@ -22,6 +22,9 @@ layer_modeling_results <- map(c(HumanPilot = "modeling_results", spatialDLPFC = 
 layer_modeling_results$sestan_EC <- readRDS(here("processed-data", "04_snRNA-seq", "24_external_data_check", "sestan_EC_modeling.rds"))
 colnames(layer_modeling_results$sestan_EC$enrichment)
 
+## Xenium 
+# layer_modeling_results$Xenium_SpX <- readRDS(here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "xenium_modeling_results-SpX.rds"))
+
 #### load data ####
 modeling_fn <- c(
     list.files(here("processed-data", "05_spe_correct_cluster", "08_model_pseudobulk", "BayesSpace_SVGm"),
@@ -114,7 +117,7 @@ cor_anno$BayesSpace_SVGm_k11$layer_anno$spatialDLPFC |> arrange(layer_label)
 # 9 Sp09D09             good L4~Sp09D08/L3~Sp09D05/L5~Sp09D04/L2~Sp09D03
 
 
-`summarize_annotation <- function(k = "k09"){
+summarize_annotation <- function(k = "k09"){
     
     cor_anno_k <- cor_anno[[paste0("BayesSpace_SVGm_", k)]]
     
@@ -129,6 +132,7 @@ cor_anno$BayesSpace_SVGm_k11$layer_anno$spatialDLPFC |> arrange(layer_label)
     return(anno_summary)
 }
 
+summarize_annotation(k = "k07")
 summarize_annotation(k = "k09")
 summarize_annotation(k = "k10")
 summarize_annotation(k = "k11")
