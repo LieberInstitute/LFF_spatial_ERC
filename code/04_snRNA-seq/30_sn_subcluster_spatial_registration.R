@@ -27,7 +27,6 @@ layer_modeling_results <- map(c(HumanPilot = "modeling_results",
                               fetch_data)
 
 layer_modeling_results$spatialERC <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
-colnames(layer_modeling_results$spatialERC$enrichment) <- gsub("_Sp", "~Sp", colnames(layer_modeling_results$spatialERC$enrichment))
 colnames(layer_modeling_results$spatialERC$enrichment) 
 
 ## Add spatialDLPFC spatial domain annotations to spatialDLPFC modeling
@@ -103,6 +102,8 @@ layer_colors <- list(HumanPilot = spatialLIBD::libd_layer_colors,
 
 map2(cor_layer, layer_colors, ~all(colnames(.x) %in% names(.y)))
 
+setequal(names(cor_layer), names(layer_colors))
+
 walk(names(cor_layer), function(ref){
     message(ref)
     pdf(here(plot_dir, sprintf("sn_subcluster_layer_stat_cor_%s.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7), height = 8)
@@ -126,6 +127,7 @@ names(SpD_colors) %in% colnames(cor_layer$spatialERC)
 
 walk(names(cor_layer), function(ref){
     pdf(here(plot_dir, sprintf("sn_subcluster_layer_stat_cor_%s_uncluster.pdf", ref)), width = 6 + (ncol(cor_layer[[ref]])/7), height = 8)
+    
     print(layer_stat_cor_plot(
         cor_stats_layer = cor_layer[[ref]],
         reference_colors = layer_colors[[ref]],
@@ -133,7 +135,17 @@ walk(names(cor_layer), function(ref){
         query_colors = cell_type_colors$anno,
         cluster_rows = FALSE,
         cluster_columns = FALSE,
+    ))    
+    
+    print(layer_stat_cor_plot(
+        cor_stats_layer = cor_layer[[ref]],
+        reference_colors = layer_colors[[ref]],
+        annotation = anno[[ref]],
+        query_colors = cell_type_colors$anno,
+        cluster_rows = TRUE,
+        cluster_columns = FALSE,
     ))
+    
     dev.off()
 })
 
