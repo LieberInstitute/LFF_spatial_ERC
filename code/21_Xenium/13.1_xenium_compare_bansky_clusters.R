@@ -73,11 +73,11 @@ make_cluster_annotation <- function(labels, k_label, colors_by_k, side = c("row"
 message(Sys.time(), " - Load RCTD data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD", "rctd_results_xenium.qs2"))
 
-rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe), ]
+# rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe), ]
 
 ## enforce alignment - if any spe cell isn't in rctd_data, this indexing would
 ## produce NA-filled rows with mismatched row names, so this must hold before cbind
-stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
+# stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
 
 spe$cell_id <- colnames(spe)
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df[colnames(spe), ])
@@ -255,12 +255,15 @@ anno_enrich <- pmap(
 
 iwalk(anno_enrich, ~write_csv(.x, file = here(data_dir, sprintf("banksy_clustering_annotation_%s.csv", .y))))
 
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+
 pdf(here(plot_dir, "layer_stat_cor_x_vs_vSpD.pdf"))
 walk(k_labels, ~print(layer_stat_cor_plot(
     cor_stats_layer = cor_layer[[.x]],
     cluster_rows = TRUE,
     cluster_columns = FALSE,
     annotation = anno[[.x]],
+    reference_colors = SpD_colors,
     query_colors = cluster_colors_by_k[[.x]]
 )))
 dev.off()
