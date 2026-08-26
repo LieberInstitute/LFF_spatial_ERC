@@ -174,6 +174,8 @@ concentrated_cell_types_wide <- map(celltype_detail, ~.x |>
 cell_v_SpX_broad <- map(cluster_vars, ~table(spe_singlet[[.x]], spe_singlet$cell_type_broad))
 cell_prop_v_SpX_broad <- map(cell_v_SpX_broad, ~sweep(.x, 1, rowSums(.x), FUN = "/"))
 
+specific_pct_threshold <- 0.40
+
 specific_cell_types_broad_wide <- map(cell_prop_v_SpX_broad, ~as.data.frame(.x) |>
     dplyr::rename(cluster = Var1, cell_type_broad = Var2, prop_of_cluster = Freq) |>
     filter(prop_of_cluster >= specific_pct_threshold) |>
