@@ -41,6 +41,8 @@ spe$Anc_Eur <- samples_ancestry[spe$sample_id, "CEU"]
 #### load SpD annotations (k11) ####
 spd_anno <- readxl::read_excel(here("processed-data","05_spe_correct_cluster", "10_spatial_registration_DLPFC", "ERC_SpD_spatial_registration_anno_summary_k11.xlsx"))
 
+spd_anno |> select(cluster, anno)
+
 all(spd_anno$cluster %in% spe$BayesSpace_SVGm_k11)
 
 ## vSpD_anno = plain annotation (ex. "L1")
@@ -97,7 +99,7 @@ color_test <- vis_clus(
     clustervar = "vSpD",
     colors = SpD_colors,
     point_size = 2,
-    guide_point_size = 2.5
+    guide_point_size = 3
 )
 ggsave(color_test, filename = here(plot_dir, "vSpD_color_test_Br5517.png"))
 
@@ -135,7 +137,7 @@ map2(apoe_split, names(apoe_split),
       )
 
 #### Plot reduced dims ####
-walk(c("UMAP", "TSNE"),
+walk(c("UMAP", "TSNE", "UMAP.HARMONY", "TSNE.HARMONY"),
      ~my_plot_reduced_dim(spe,
                           prefix = "ERC_spe",
                           var_type = "cat",
