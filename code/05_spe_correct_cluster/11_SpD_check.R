@@ -39,6 +39,8 @@ anno_cluster_table <- map(
     ))
 )
 
+anno_cluster_table$k11 |> select(cluster, anno)
+
 ## columns to join onto colData(spe): raw cluster -> annotated SpD_k09/k10/k11
 anno_cluster_table2 <- map2(
     anno_cluster_table, my_clusters,
@@ -69,26 +71,38 @@ for (tab in anno_cluster_table2) {
 colData(spe) <- DataFrame(pd)
 
 table(spe$SpD_k09, spe$BayesSpace_SVGm_k09)
+table(spe$SpD_k11, spe$BayesSpace_SVGm_k11)
 
 #### Build color palette, keyed by domain name ####
 SpD_colors_V4 <- c(
-    "Vasc"      = "#FF56AF",
-    "L1"        = "#47C281",
-    "L2"        = "#41D4EB",
-    "L3"        = "#889DF0",
-    "L3_Inhib"  = "#B6686F",
-    "LD"        = "grey80",
-    "L5_LD"     = "#B1C2CE",
-    "L5"        = "#0072CE",
-    "L6"        = "#0A2E5C",
-    "L6a"       = "#24487A",
-    "L6b"       = "#05193B",
-    "WMuf"      = "#F4A460",
-    "WMtz"      = "#E8720C",
-    "WM"        = "#F57A00",
-    "WMd"       = "#581009",
-    "Inhib"     = "#E83E38"
+    "Vasc"      = "#E05AD2",  # matches vVasc
+    "L1"        = "#16C72B",  # matches vL1
+    "L2"        = "#021AB6",  # matches vL2
+    "Inhib"     = "#C82100",  # matches vInhib
+    
+    ## -- L3 / LD / L5 relabeling: old-L3 -> LD, old-LD -> L5a, old-L5 -> L5b --
+    "L3"        = "grey70",   # legacy name for current LD; matches vLD
+    "LD"        = "grey70",   # current name; matches vLD
+    "L3_Inhib"  = "#B6686F",  # k9-era compound category (LD + Inhib) - left as its own color
+    "L5_LD"     = "#B1C2CE",  # ambiguous/transitional boundary category - left as its own color
+    "L5a"       = "#889DF0",  # current name; matches vL5a
+    "L5"        = "#0087F5",  # legacy name for current L5b; matches vL5b
+    "L5b"       = "#0087F5",  # current name; matches vL5b
+    
+    ## -- L6 --
+    "L6"        = "#40DAF2",  # matches vL6
+    "L6a"       = "#83E7F7",  # k10 sublamination, no vSpD counterpart - lighter tint of vL6
+    "L6b"       = "#237885",  # k10 sublamination, no vSpD counterpart - darker shade of vL6
+    
+    ## -- White matter --
+    "WMuf"      = "#F4A460",  # matches vWMuf (unchanged)
+    "WMtz"      = "#E8720C",  # legacy name for current WMim; matches vWMim (unchanged - already matched)
+    "WMim"      = "#E8720C",  # vWMim
+    "WMpv"      = "#E8720C",  # current name; matches vWMim
+    "WM"        = "#F57A00",  # generic/undifferentiated WM catch-all, no vSpD counterpart - left as its own color
+    "WMd"       = "#581009"   # matches vWMd (unchanged)
 )
+
 
 #' Build a color vector for one resolution's annotation table, keyed by SpD
 make_SpD_colors <- function(anno_table, domain_colors = SpD_colors_V4) {
@@ -151,17 +165,14 @@ map(my_clusters, function(k) {
 
     print(plotColData(spe, x = my_var, y = "sum_umi", colour_by = "scran_low_lib_size") +
         ggtitle("sum_umi") +
-        scale_fill_manual(values = SpD_colors_k) +
         theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)))
 
     print(plotColData(spe, x = my_var, y = "sum_gene", colour_by = "scran_low_n_features") +
         ggtitle("sum_gene") +
-        scale_fill_manual(values = SpD_colors_k) +
         theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)))
 
     print(plotColData(spe, x = my_var, y = "expr_chrM_ratio", colour_by = "scran_high_Mito_percent") +
         ggtitle("expr_chrM_ratio") +
-        scale_fill_manual(values = SpD_colors_k) +
         theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)))
 
     dev.off()
@@ -175,7 +186,8 @@ pd_qc_long <- map(my_clusters, function(k) {
     my_var_sym <- sym(my_var)
 
     pd_qc_long <- pd |>
-        select(sample_id, key, sum_umi, sum_gene, expr_chrM_ratio, !!my_var) |>
+        select(sample_id, key, sum_umi, sum_gene, expr_chrM_ratio, n_nuclei = CNmask_dark_blue, all_of(!!my_var)) |>
+        mutate(n_nuclei = ifelse(n_nuclei > 100,101,n_nuclei)) |>
         pivot_longer(!c("sample_id", "key", my_var))
 
     SpD_qc <- pd_qc_long |>
@@ -371,6 +383,9 @@ sig_genes_all <- sig_genes_extract_all(
 sig_genes_all <- sig_genes_all |>
     left_join(annotate_test(sig_genes_all$test, anno_cluster_table3[[k]]), by = "test")
 
+sig_genes_all |> count(SpD) |> filter(grepl("WMpv", SpD))
+
+# WMpv~Sp11D11-WMd~Sp11D07
 
 # 10 Sp11D11 WMim  WMim~Sp11D11 
 # 11 Sp11D07 WMd   WMd~Sp11D07
@@ -379,7 +394,7 @@ FDR_cut <- 0.01
 
 WM_deep_pair <- sig_genes_all |>
     filter(model_type == "pairwise") |>
-    filter(SpD == "WMim~Sp11D11-WMd~Sp11D07") |>  #SpD == "WMd~Sp11D07-WMim~Sp11D11"
+    filter(SpD == "WMa~Sp11D11-WMd~Sp11D07") |>  #SpD == "WMd~Sp11D07-WMim~Sp11D11"
     mutate(DE_class = case_when(fdr < FDR_cut & abs(logFC) > 1  ~ "both",
                                 fdr < FDR_cut ~ paste("FDR<", FDR_cut),
                                 abs(logFC) > 1 ~ "abs(logFC)>1",
@@ -403,9 +418,33 @@ ggsave(WM_deep_pair_volcano, filename = here(plot_dir, "k11_WM_deep_pair_volcano
 
 Oligo_subtype_modeling <- readRDS(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "modeling_results_subtype-Oligo.rds"))
 
+Oligo_subtype_top_enrich <- read_csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_enrichment_top10_Oligo.csv"))
+Oligo_subtype_MeanRatio <- read_csv(here("processed-data", "04_snRNA-seq", "35_sn_subcluster_marker_modeling", "Oligo", "subtype_MeanRatio_top10_Oligo.csv"))
+
+Oligo_subtype_check <-  Oligo_subtype_MeanRatio |> 
+    select(gene, cellType.target) |>
+    full_join(Oligo_subtype_top_enrich |> 
+                  select(gene, cellType.target = test))
+
 head(Oligo_subtype_modeling$enrichment)
 
 Oligo_tstat <- Oligo_subtype_modeling$enrichment[, grepl('t_stat', colnames(Oligo_subtype_modeling$enrichment))]
+
+
+WM_deep_pair_oligo <- WM_deep_pair |> left_join(Oligo_subtype_check |> select(gene, cellType.target))
+
+WM_deep_pair_oligo |> count(cellType.target)
+
+WM_deep_pair_volcano <- WM_deep_pair_oligo |>
+    filter(!is.na(cellType.target)) |>
+    ggplot(aes(x = logFC, y = -log10(pval), color = cellType.target)) +
+    geom_point() +
+    ggrepel::geom_text_repel(aes(label = ifelse(!is.na(cellType.target), gene, "")), size = 2) +
+    # scale_color_manual(values = signif_colors) +
+    theme_bw()
+
+ggsave(WM_deep_pair_volcano, filename = here(plot_dir, "k11_WM_deep_pair_volcano_Oligo_MR.png"))
+
 
 ## align genes by ENSEMBL ID
 common_genes <- intersect(WM_deep_pair$ensembl, rownames(Oligo_tstat))
