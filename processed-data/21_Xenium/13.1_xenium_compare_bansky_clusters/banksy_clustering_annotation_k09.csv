@@ -1,10 +1,10 @@
-cluster,layer_confidence,layer_label,top_enrich,top_cell_types
-xSp9D6,good,vVasc,"CD2, TRAC, PTPRC, CCL4, CD3G, CD52, CTSS, STXBP2, ITGB2, IL7R","Vasc.PC (25%), Vasc.VLMC (22%), Vasc.Endo (16%)"
-xSp9D8,good,vVasc,"ITGA8, NPNT, CSPG4, CAV1, PLCE1, MAGED2, CDH6, LOX, IGFBP3, SDK1","Vasc.PC (44%), Vasc.Endo (36%), Vasc.VLMC (8%)"
-xSp9D3,good,vWMd,"GOLGA7, PCSK6, PSEN1, LRRC63, LINC00486, ERBB3, MAL, LURAP1L-AS1, CNTN2, ST18","Oligo.3 (27%), Oligo.4 (24%), Oligo.2 (11%)"
-xSp9D7,good,vL1/vWMim,"SOX9, PAX6, AQP4, GJA1, FZD8, SPON1, SOX2, FGFR3, MMD2, ELOVL2","Astro.5 (20%), Oligo.3 (15%), Oligo.4 (10%)"
-xSp9D9,good,vL6,"HS3ST4, RXFP1, HS3ST2, POU6F2, BRINP3, ROS1, NNAT, NPFFR2, RASGRP1, SULF1","Oligo.3 (30%), Astro.5 (12%), Oligo.4 (10%)"
-xSp9D1,good,vLD,"PLCH1, NTNG1, CNTNAP3B, RIT2, PCSK1, MEPE, SPHKAP, TRHDE, CPNE4, PVALB","Oligo.3 (17%), Astro.5 (11%), Excit.L5.1 (6%)"
-xSp9D4,good,vL2,"ADAMTS3, PABPN1, LAMP5, ADRB1, GOLGA8A, TESPA1, FSTL4, MTX2, NPTXR, ADAMTS16","Excit.L2 (31%), Astro.1 (8%), Inhib.Vip (7%)"
-xSp9D2,good,vInhib,"LYPD6, CXCL14, KIT, VIP, PLD5, ERBB4, LYPD6B, TGFB2, WIF1, RELN","Astro.5 (16%), Astro.1 (15%), Astro.2 (12%)"
-xSp9D5,poor,vL3*,"P2RY12, FLT1, ADGRF5, ATP10A, NTNG1, WIF1, RIT2, CPNE4, PCSK1, CUX2","Oligo.3 (17%), Vasc.Endo (17%), Astro.5 (11%)"
+cluster,layer_confidence,layer_label,top_enrich,top_cell_types,specific_cell_types,concentrated_cell_types,specific_cell_types_broad
+xSp9D6,good,vVasc,"CD2, TRAC, PTPRC, CCL4, CD3G, CD52, CTSS, STXBP2, ITGB2, IL7R","Vasc.PC (25%), Vasc.VLMC (22%), Vasc.Endo (16%)",NA,"Macro (83%), Vasc.VLMC (72%), Micro.1 (29%), Vasc.PC (28%), Micro.4 (20%)",Vasc (63%)
+xSp9D8,good,vVasc,"ITGA8, NPNT, CSPG4, CAV1, PLCE1, MAGED2, CDH6, LOX, IGFBP3, SDK1","Vasc.PC (44%), Vasc.Endo (36%), Vasc.VLMC (8%)","Vasc.PC (44%), Vasc.Endo (36%)","Vasc.PC (50%), Vasc.Endo (36%), Vasc.VLMC (25%)",Vasc (87%)
+xSp9D3,good,vWMd,"GOLGA7, PCSK6, PSEN1, LRRC63, LINC00486, ERBB3, MAL, LURAP1L-AS1, CNTN2, ST18","Oligo.3 (27%), Oligo.4 (24%), Oligo.2 (11%)",NA,"Oligo.2 (65%), Oligo.1 (48%), Micro.1 (46%), Oligo.5 (41%), Oligo.4 (39%)",Oligo (75%)
+xSp9D7,good,vL1/vWMpv,"SOX9, PAX6, AQP4, GJA1, FZD8, SPON1, SOX2, FGFR3, MMD2, ELOVL2","Astro.5 (20%), Oligo.3 (15%), Oligo.4 (10%)",NA,"Astro.4 (50%), Micro.3 (23%), Astro.3 (23%), Astro.5 (23%), Micro.4 (21%)","Astro (43%), Oligo (31%)"
+xSp9D9,good,vL6,"HS3ST4, RXFP1, HS3ST2, POU6F2, BRINP3, ROS1, NNAT, NPFFR2, RASGRP1, SULF1","Oligo.3 (30%), Astro.5 (12%), Oligo.4 (10%)",Oligo.3 (30%),"Excit.L6b (85%), Excit.L6_CT (80%), Astro.3 (27%), Oligo.3 (24%), Excit.L5_6_NP (23%)",Oligo (45%)
+xSp9D1,good,vL5a,"PLCH1, NTNG1, CNTNAP3B, RIT2, PCSK1, MEPE, SPHKAP, TRHDE, CPNE4, PVALB","Oligo.3 (17%), Astro.5 (11%), Excit.L5.1 (6%)",NA,"Excit.L2_5.2 (69%), Excit.L5.1 (64%), Excit.L5_6_NP (58%), Inhib.Pvalb (41%), Inhib.Sst (31%)",NA
+xSp9D4,good,vL2,"ADAMTS3, PABPN1, LAMP5, ADRB1, GOLGA8A, TESPA1, FSTL4, MTX2, NPTXR, ADAMTS16","Excit.L2 (31%), Astro.1 (8%), Inhib.Vip (7%)",Excit.L2 (31%),"Excit.L2 (75%), Excit.L5.2 (50%), OPC.1 (38%), Excit.L2_5.1 (35%), Inhib.Vip (33%)",Excit (41%)
+xSp9D2,good,vInhib,"LYPD6, CXCL14, KIT, VIP, PLD5, ERBB4, LYPD6B, TGFB2, WIF1, RELN","Astro.5 (16%), Astro.1 (15%), Astro.2 (12%)",NA,"Inhib.Pax6 (49%), Inhib.Vip (41%), Astro.1 (35%), Astro.2 (27%), Inhib.Lamp5_Lhx6 (27%)",Astro (44%)
+xSp9D5,poor,vLD*,"P2RY12, FLT1, ADGRF5, ATP10A, NTNG1, WIF1, RIT2, CPNE4, PCSK1, CUX2","Oligo.3 (17%), Vasc.Endo (17%), Astro.5 (11%)",NA,NA,NA

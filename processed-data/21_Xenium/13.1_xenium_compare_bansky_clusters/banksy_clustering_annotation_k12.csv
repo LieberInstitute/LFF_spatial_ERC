@@ -1,13 +1,13 @@
-cluster,layer_confidence,layer_label,top_enrich,top_cell_types
-xSp12D08,good,vVasc,"ITGA8, PLCE1, NPNT, MAGED2, CSPG4, CDH6, CAV1, IGFBP3, SDK1, OST4","Vasc.PC (48%), Vasc.Endo (37%), Vasc.VLMC (7%)"
-xSp12D06,good,vVasc,"TRAC, CD2, CD3G, CD52, THEMIS, GZMA, CCL5, GNLY, IL7R, NKG7","Vasc.PC (20%), Vasc.Endo (19%), Macro (14%)"
-xSp12D12,good,vVasc,"CEMIP, CTSS, TMEM132C, CD14, CD163, C1orf162, SPI1, ADAMTS12, TLR2, FCER1G","Vasc.PC (28%), Vasc.VLMC (26%), Vasc.Endo (15%)"
-xSp12D02,poor,vL1/vWMuf*,"IDH2, CABLES1, SNTA1, MT-ND1, FGFR3, SLC4A4, WIF1, SPON1, GJA1, P2RY12","Oligo.3 (21%), Astro.5 (16%), Vasc.Endo (10%)"
-xSp12D05,poor,vWMuf*,"CNDP1, BCAS1, MOG, MAG, MBP, ERMN, SOX10, ERBB3, PLP1, ST18","Oligo.3 (30%), Astro.5 (13%), Oligo.4 (11%)"
-xSp12D03,good,vWMim/vWMd,"SOX9, AQP4, SFRP2, FZD8, PAX6, SOX2, LINC00609, VCAN, CBS, ADRA1A","Astro.5 (21%), Astro.4 (13%), Oligo.3 (11%)"
-xSp12D10,good,vWMd,"PSEN1, GOLGA7, PCSK6, MBP, ERBB3, MOBP, LINC00609, CNTN2, CTNNA3, ST18","Oligo.3 (26%), Oligo.4 (25%), Oligo.2 (12%)"
-xSp12D09,good,vL6,"HS3ST4, RXFP1, POU6F2, BRINP3, SULF1, NNAT, RASGRP1, NPFFR2, HS3ST2, ROS1","Oligo.3 (28%), Astro.5 (11%), Oligo.4 (9%)"
-xSp12D01,good,vLD,"CNTNAP3B, NTNG1, ARHGEF3, PABPN1, MTX2, APP, MYO16, PLCH1, RIT2, PSEN2","Excit.L2 (25%), Excit.L5.1 (16%), Excit.L2_5.2 (15%)"
-xSp12D04,good,vL2,"FSTL4, TESPA1, LAMP5, ADRB1, ADAMTS3, ANO3, ADAMTS16, PLPPR4, NWD2, CDH12","Excit.L2 (30%), Astro.1 (9%), Inhib.Vip (8%)"
-xSp12D07,good,vL1,"TGFB2, CXCL14, KIT, THSD7B, PROX1, ADRA1A, VIP, PLD5, CHST11, BTBD11","Astro.5 (16%), Astro.1 (15%), Astro.2 (12%)"
-xSp12D11,poor,vVasc*,"ADGRF5, FLT1, THSD4, ATP10A, KLF4, RNF144B, KLF2, PECAM1, CDH6, CD163","Vasc.Endo (25%), Oligo.3 (13%), Vasc.PC (12%)"
+cluster,layer_confidence,layer_label,top_enrich,top_cell_types,specific_cell_types,concentrated_cell_types,specific_cell_types_broad
+xSp12D08,good,vVasc,"ITGA8, PLCE1, NPNT, MAGED2, CSPG4, CDH6, CAV1, IGFBP3, SDK1, OST4","Vasc.PC (48%), Vasc.Endo (37%), Vasc.VLMC (7%)","Vasc.PC (48%), Vasc.Endo (37%)","Vasc.PC (38%), Vasc.Endo (27%)",Vasc (92%)
+xSp12D06,good,vVasc,"TRAC, CD2, CD3G, CD52, THEMIS, GZMA, CCL5, GNLY, IL7R, NKG7","Vasc.PC (20%), Vasc.Endo (19%), Macro (14%)",NA,"Macro (55%), Micro.1 (26%), Vasc.VLMC (25%)",Vasc (51%)
+xSp12D12,good,vVasc,"CEMIP, CTSS, TMEM132C, CD14, CD163, C1orf162, SPI1, ADAMTS12, TLR2, FCER1G","Vasc.PC (28%), Vasc.VLMC (26%), Vasc.Endo (15%)",NA,"Vasc.VLMC (54%), Macro (34%), Vasc.PC (22%)",Vasc (69%)
+xSp12D02,poor,vL1/vWMuf*,"IDH2, CABLES1, SNTA1, MT-ND1, FGFR3, SLC4A4, WIF1, SPON1, GJA1, P2RY12","Oligo.3 (21%), Astro.5 (16%), Vasc.Endo (10%)",NA,NA,"Astro (33%), Oligo (30%)"
+xSp12D05,poor,vWMuf*,"CNDP1, BCAS1, MOG, MAG, MBP, ERMN, SOX10, ERBB3, PLP1, ST18","Oligo.3 (30%), Astro.5 (13%), Oligo.4 (11%)",NA,NA,Oligo (45%)
+xSp12D03,good,vWMpv/vWMd,"SOX9, AQP4, SFRP2, FZD8, PAX6, SOX2, LINC00609, VCAN, CBS, ADRA1A","Astro.5 (21%), Astro.4 (13%), Oligo.3 (11%)",NA,"Astro.4 (49%), Micro.3 (21%)",Astro (47%)
+xSp12D10,good,vWMd,"PSEN1, GOLGA7, PCSK6, MBP, ERBB3, MOBP, LINC00609, CNTN2, CTNNA3, ST18","Oligo.3 (26%), Oligo.4 (25%), Oligo.2 (12%)",NA,"Oligo.2 (59%), Oligo.1 (41%), Oligo.5 (35%), Micro.1 (33%), Oligo.4 (33%)",Oligo (76%)
+xSp12D09,good,vL6,"HS3ST4, RXFP1, POU6F2, BRINP3, SULF1, NNAT, RASGRP1, NPFFR2, HS3ST2, ROS1","Oligo.3 (28%), Astro.5 (11%), Oligo.4 (9%)",NA,"Excit.L6b (82%), Excit.L6_CT (74%), Astro.3 (25%)",Oligo (42%)
+xSp12D01,good,vL5a,"CNTNAP3B, NTNG1, ARHGEF3, PABPN1, MTX2, APP, MYO16, PLCH1, RIT2, PSEN2","Excit.L2 (25%), Excit.L5.1 (16%), Excit.L2_5.2 (15%)",NA,"Excit.L2_5.2 (90%), Excit.L5.1 (85%), Excit.L5_6_NP (79%), Inhib.Pvalb (68%), Excit.L5.2 (67%)",Excit (71%)
+xSp12D04,good,vL2,"FSTL4, TESPA1, LAMP5, ADRB1, ADAMTS3, ANO3, ADAMTS16, PLPPR4, NWD2, CDH12","Excit.L2 (30%), Astro.1 (9%), Inhib.Vip (8%)",NA,"Excit.L2 (50%), OPC.1 (30%), Inhib.Vip (28%), Excit.L2_5.1 (26%)",Excit (38%)
+xSp12D07,good,vL1,"TGFB2, CXCL14, KIT, THSD7B, PROX1, ADRA1A, VIP, PLD5, CHST11, BTBD11","Astro.5 (16%), Astro.1 (15%), Astro.2 (12%)",NA,"Inhib.Pax6 (39%), Inhib.Vip (33%), Astro.1 (31%), Astro.2 (23%)",Astro (44%)
+xSp12D11,poor,vVasc*,"ADGRF5, FLT1, THSD4, ATP10A, KLF4, RNF144B, KLF2, PECAM1, CDH6, CD163","Vasc.Endo (25%), Oligo.3 (13%), Vasc.PC (12%)",NA,NA,Vasc (39%)
