@@ -518,7 +518,7 @@ dev.off()
 
 
 
-# slurmjobs::job_single('13_xenium_bansky_annotate', create_shell = TRUE, memory = '100G', command = "Rscript 13_xenium_bansky_annotate.R")
+# slurmjobs::job_single('13.5_xenium_bansky_annotate', create_shell = TRUE, memory = '50G', command = "Rscript 13.5_xenium_bansky_annotate.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
