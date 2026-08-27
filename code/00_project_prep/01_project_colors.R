@@ -276,29 +276,51 @@ dev.off()
 
 save(SpD_colors, file = here("processed-data","SpD_colors.Rdata"))
 
-SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
-                "L1~Sp09D05" = "#0220DE",
-                "L2.3~Sp09D01" = "#80428A",
-                "L3~Sp09D02" = "#AFADFF",
-                "LD~Sp09D09" = "#F55200",
-                "L5~Sp09D03" = "#A2E838",
-                "L6~Sp09D04" = "#147B5F",
-                "WM.uf~Sp09D07" = "#E4E1E3",
-                "WM~Sp09D06" = "#581009")
+# SpD_colors <- c("Vasc~Sp09D08" = "#E05AD2",
+#                 "L1~Sp09D05" = "#0220DE",
+#                 "L2.3~Sp09D01" = "#80428A",
+#                 "L3~Sp09D02" = "#AFADFF",
+#                 "LD~Sp09D09" = "#F55200",
+#                 "L5~Sp09D03" = "#A2E838",
+#                 "L6~Sp09D04" = "#147B5F",
+#                 "WM.uf~Sp09D07" = "#E4E1E3",
+#                 "WM~Sp09D06" = "#581009")
+# 
+# save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors2.Rdata"))
 
-save(SpD_colors, file = here("processed-data","00_project_prep","SpD_colors2.Rdata"))
+# 
+# SpD_colors_V3 <- c("Vasc" = "#E05AD2", 
+#                 "L1a" = "#16FF32", 
+#                 "L1b" = "#178C6D",
+#                 "L2.3" = "#FEAF16", 
+#                 "LD" = "#5A5156",
+#                 "Inhib" = "#C82100", 
+#                 "L5" = "#00BCF9", 
+#                 "L6" = "#0220DE", 
+#                 "WM.uf" = "#E4E1E3",
+#                 "WM" = "#581009") 
 
+#### Xenium SpD colors (SpX) ####
 
-SpD_colors_V3 <- c("Vasc" = "#E05AD2", 
-                "L1a" = "#16FF32", 
-                "L1b" = "#178C6D",
-                "L2.3" = "#FEAF16", 
-                "LD" = "#5A5156",
-                "Inhib" = "#C82100", 
-                "L5" = "#00BCF9", 
-                "L6" = "#0220DE", 
-                "WM.uf" = "#E4E1E3",
-                "WM" = "#581009") 
+SpX_colors <- c(
+    "xVasc"     = "#E05AD2",  # = vVasc directly (the anchor vascular domain)
+    "xVasc.im"  = "#9B1F87",  # deeper magenta-purple - immune-associated vasculature
+    "xVasc.adj" = "#F5A8E8",  # lighter, softer pink - adjacent/perivascular
+    "xGL"       = "#6FA86B",  # muted sage green, related to vL1's green (glia limitans sits at the same superficial/boundary position as L1, but is a distinct glial domain)
+    "xL2"       = "#021AB6",  # = vL2
+    "xInhib"    = "#C82100",  # = vInhib
+    "xLD"       = "#CFC9CD",  # = vLD
+    "xL5"       = "#4492F3",  # blend of vL5a (#889DF0) + vL5b (#0087F5) - xSpD only has one L5 domain where vSpD splits it in two
+    "xL6"       = "#40DAF2",  # = vL6
+    "xWMuf"     = "#F39E53",  # = vWMuf
+    "xWMd"      = "#C2600A"   # = vWMd
+)
+
+pdf(here(plot_dir, "ERC_SpX_colors.pdf"), height = 11, width = 8)
+test_pallet_plots(SpX_colors, "SpX Colors: ERC")
+dev.off()
+
+save(SpX_colors, file = here("processed-data","SpX_colors.Rdata"))
 
 
 ## plot offical colors
