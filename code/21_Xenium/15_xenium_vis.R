@@ -36,7 +36,7 @@ marker_stats_top <- marker_stats |>
     select(gene, MeanRatio.rank, vSpD = cellType.target) |>
     arrange(vSpD)
 
-marker_stats_top |> filter(grepl("WM", SpD))
+marker_stats_top |> filter(grepl("WM", vSpD))
 
 
 map(c("MBP", "MBP", "ERMN"), function(gene){
