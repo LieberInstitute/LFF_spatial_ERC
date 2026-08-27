@@ -149,8 +149,8 @@ map(unique(spe$BrNum), function(samp){
 
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
-
-walk2(c("clust_HARMONY_kmeans9","clust_HARMONY_kmeans12", "xSpD_anno"), list(cluster_colors,cluster_colors, SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
+## previously plotted clsuters, could flatten loop
+walk2(c("xSpD"), list(SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
 
 
 #### SpD gene expression ####
@@ -172,22 +172,15 @@ map(spd_marker_list, ~all(.x %in% rownames(spe)))
 
 DeconvoBuddies::plot_marker_express_List(sce = spe, 
                                          spd_marker_list, 
-                                         color_pal = cluster_colors,
-                                         cellType_col = "clust_HARMONY_kmeans9",
-                                         pdf = here(plot_dir, "xenium_bansky_cluster_k9_SpD_markers.pdf"),
-                                         gene_name_col = "gene_name")
-
-DeconvoBuddies::plot_marker_express_List(sce = spe, 
-                                         spd_marker_list, 
                                          color_pal = SpX_colors,
-                                         cellType_col = "xSpD_anno",
+                                         cellType_col = "xSpD",
                                          pdf = here(plot_dir, "xenium_bansky_xSpD_SpD_markers.pdf"),
                                          gene_name_col = "gene_name")
 
 ## APOE expression
 spx_APOE <- DeconvoBuddies::plot_gene_express(sce = spe, 
                                   genes = "APOE",
-                                  category = "xSpD_anno",
+                                  category = "xSpD",
                                   color_pal = SpX_colors
                                   )
 
@@ -206,25 +199,12 @@ rowData(spe)$SpD_marker <- NULL
 rowData(spe)$SpD_marker <- marker_stats_top$SpD[match(rownames(spe), marker_stats_top$gene)] 
 table(rowData(spe)$SpD_marker)
 
-pdf(here(plot_dir, "Xenium_bansky_k9_dotplot_SpD_markers.pdf"))
-spe |>
-    scDotPlot(features = marker_stats_top$gene,
-              group = "clust_HARMONY_kmeans9",
-              groupAnno = "clust_HARMONY_kmeans9",
-              featureAnno = "SpD_marker",
-              scale = TRUE,
-              annoColors = list(clust_HARMONY_kmeans9 = cluster_colors,
-                                SpD_marker = SpD_colors),
-              clusterRows = FALSE,
-              clusterColumns = TRUE,
-              groupLegends = FALSE)
-dev.off()
 
 pdf(here(plot_dir, "Xenium_bansky_xSpD_dotplot_SpD_markers.pdf"))
 spe |>
     scDotPlot(features = marker_stats_top$gene,
-              group = "xSpD_anno",
-              groupAnno = "xSpD_anno",
+              group = "xSpD",
+              groupAnno = "xSpD",
               featureAnno = "SpD_marker",
               scale = TRUE,
               annoColors = list(xSpD_anno = SpX_colors,
@@ -235,8 +215,8 @@ spe |>
 
 spe |>
     scDotPlot(features = marker_stats_top$gene,
-              group = "xSpD_anno",
-              groupAnno = "xSpD_anno",
+              group = "xSpD",
+              groupAnno = "xSpD",
               featureAnno = "SpD_marker",
               scale = TRUE,
               annoColors = list(xSpD_anno = SpX_colors,
