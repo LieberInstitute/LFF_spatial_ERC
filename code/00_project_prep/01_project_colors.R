@@ -314,13 +314,13 @@ save(SpD_colors, file = here("processed-data","SpD_colors.Rdata"))
 #                'WM~SpX2'= "#581009")
 
 SpX_colors <- c(
-    "xVasc"     = "#E05AD2",  # = vVasc directly (the anchor vascular domain)
-    "xVasc.im"  = "#9B1F87",  # deeper magenta-purple - immune-associated vasculature
-    "xVasc.adj" = "#F5A8E8",  # lighter, softer pink - adjacent/perivascular
+    "xVasc_mural"= "#E05AD2",  # = vVasc directly (the anchor vascular domain)
+    "xVasc_im"  = "#9B1F87",  # deeper magenta-purple - immune-associated vasculature
+    "xVasc_adj" = "#F5A8E8",  # lighter, softer pink - adjacent/perivascular
     "xGL"       = "#6FA86B",  # muted sage green, related to vL1's green (glia limitans sits at the same superficial/boundary position as L1, but is a distinct glial domain)
+    "xL1_inhib" = "#C82100",  # = vInhib
     "xL2"       = "#021AB6",  # = vL2
-    "xInhib"    = "#C82100",  # = vInhib
-    "xLD"       = "#CFC9CD",  # = vLD
+    "xLD_glia"  = "#CFC9CD",  # = vLD
     "xL5"       = "#4492F3",  # blend of vL5a (#889DF0) + vL5b (#0087F5) - xSpD only has one L5 domain where vSpD splits it in two
     "xL6"       = "#40DAF2",  # = vL6
     "xWMuf"     = "#F39E53",  # = vWMuf
