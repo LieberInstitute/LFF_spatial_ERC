@@ -95,7 +95,7 @@ region_lookup <- c(
     "WMd"      = "WM"
 )
 
-spe$region <- factor(region_lookup[spe$xSpD_anno], levels = c("Vasc", "GM_L1", "GM_L2_6", "WM"))
+spe$region <- factor(region_lookup[spe$xSpD_anno], levels = c("Vasc", "GM_L1", "GM_L2_5", "GM_deep", "WM"))
 
 table(spe$xSpD, spe$region)
 
