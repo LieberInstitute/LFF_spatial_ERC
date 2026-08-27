@@ -110,7 +110,7 @@ metadata(spe)$region_colors <- region_colors
 message(Sys.time(), " - Saving SPE object")
 
 metadata(spe)$SpX_colors <- SpX_colors
-metadata(spe)$xSpD_colors <- xSpD_colors
+metadata(spe)$SpX_colors <- SpX_colors
 
 qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
@@ -125,7 +125,7 @@ map(unique(spe$BrNum), function(samp){
                                             datatype = "Xenium",
                                             point_size = 1.5,
                                             # alpha = 0.5,
-                                            colors = xSpD_colors,
+                                            colors = SpX_colors,
                                             guide_point_size = 3)
     
     ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_SpX_%s.png", samp)), width = 12)
@@ -150,7 +150,7 @@ map(unique(spe$BrNum), function(samp){
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 
-walk2(c("clust_HARMONY_kmeans9","clust_HARMONY_kmeans12", "xSpD_anno"), list(cluster_colors,cluster_colors, xSpD_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("clust_HARMONY_kmeans9","clust_HARMONY_kmeans12", "xSpD_anno"), list(cluster_colors,cluster_colors, SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
 
 
 #### SpD gene expression ####
@@ -179,7 +179,7 @@ DeconvoBuddies::plot_marker_express_List(sce = spe,
 
 DeconvoBuddies::plot_marker_express_List(sce = spe, 
                                          spd_marker_list, 
-                                         color_pal = xSpD_colors,
+                                         color_pal = SpX_colors,
                                          cellType_col = "xSpD_anno",
                                          pdf = here(plot_dir, "xenium_bansky_xSpD_SpD_markers.pdf"),
                                          gene_name_col = "gene_name")
@@ -188,7 +188,7 @@ DeconvoBuddies::plot_marker_express_List(sce = spe,
 spx_APOE <- DeconvoBuddies::plot_gene_express(sce = spe, 
                                   genes = "APOE",
                                   category = "xSpD_anno",
-                                  color_pal = xSpD_colors
+                                  color_pal = SpX_colors
                                   )
 
 ggsave(spx_APOE, filename = here(plot_dir, "xenium_bansky_xSpD_APOE.png"))
@@ -227,7 +227,7 @@ spe |>
               groupAnno = "xSpD_anno",
               featureAnno = "SpD_marker",
               scale = TRUE,
-              annoColors = list(xSpD_anno = xSpD_colors,
+              annoColors = list(xSpD_anno = SpX_colors,
                                 SpD_marker = SpD_colors),
               clusterRows = FALSE,
               clusterColumns = TRUE,
@@ -239,7 +239,7 @@ spe |>
               groupAnno = "xSpD_anno",
               featureAnno = "SpD_marker",
               scale = TRUE,
-              annoColors = list(xSpD_anno = xSpD_colors,
+              annoColors = list(xSpD_anno = SpX_colors,
                                 SpD_marker = SpD_colors),
               clusterRows = FALSE,
               clusterColumns = FALSE,
@@ -294,7 +294,7 @@ cell_v_xSpD_prop <- cell_v_xSpD_prop[, cell_v_xSpD_max$cell_type_anno]
 ## create annotations 
 xSpD_row_ha <- rowAnnotation(
     xSpD = rownames(cell_v_xSpD),
-    col = list(xSpD = xSpD_colors),
+    col = list(xSpD = SpX_colors),
     show_legend = FALSE
 )
 
