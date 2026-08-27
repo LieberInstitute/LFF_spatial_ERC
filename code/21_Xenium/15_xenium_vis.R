@@ -167,3 +167,11 @@ ggsave(visium_row, filename = here(plot_dir, "vis_SpD_rep_sections.png"), width 
 xen_vis_rep_grid <- visium_row / xenium_row
 ggsave(xen_vis_rep_grid, filename = here(plot_dir, "vis_SpD_SpX_rep_sections.png"), width = 18, height = 9)
 
+# slurmjobs::job_single('15_xenium_vis', create_shell = TRUE, memory = '50G', command = "Rscript 15_xenium_vis.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
