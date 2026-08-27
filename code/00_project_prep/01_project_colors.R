@@ -302,6 +302,17 @@ save(SpD_colors, file = here("processed-data","SpD_colors.Rdata"))
 
 #### Xenium SpD colors (SpX) ####
 
+## Archive k09 colors
+# SpX_colors = c('Vasc~SpX3' = "#E05AD2",
+#                'L1a~SpX6' = "#9AA7FE",
+#                'L1b~SpX7' = "#0220DE",
+#                'L2.3~SpX4' = "#FEAF16",
+#                'Inhib~SpX5' = "#C82100",
+#                'L5~SpX1' = "#16FF32",
+#                'L6~SpX9' = "#178C6D",
+#                'WMtz~SpX8' = "grey",
+#                'WM~SpX2'= "#581009")
+
 SpX_colors <- c(
     "xVasc"     = "#E05AD2",  # = vVasc directly (the anchor vascular domain)
     "xVasc.im"  = "#9B1F87",  # deeper magenta-purple - immune-associated vasculature
