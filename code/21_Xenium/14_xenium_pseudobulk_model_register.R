@@ -11,6 +11,7 @@ library("qs2")
 library("spatialLIBD")
 library("scDotPlot")
 library("getopt")
+library("DeconvoBuddies")
 
 # Import command-line parameters
 scec <- matrix(
@@ -125,7 +126,7 @@ cor_layer <- cor_layer[q_levels ,ref_levels]
 
 anno <- annotate_registered_clusters(
     cor_stats_layer = cor_layer,
-    confidence_threshold = 0.6,
+    confidence_threshold = 0.5,
     cutoff_merge_ratio = 0.05 ## very strict annotation merge
 )
 
@@ -161,7 +162,7 @@ rownames(spe) <- rowData(spe)$gene_name
 if(opt$var == "xSpD"){
     
     top_DEGs <- top_DEGs |> 
-        mutate(test = factor(test, levels(spe_pb$SpX)),
+        mutate(test = factor(test, levels(spe_pb$xSpD)),
                duplicated = duplicated(gene),
                anno = paste0(top, ": logFC =", round(logFC, 2)),
                cellType.target = test) |>
@@ -182,20 +183,20 @@ if(opt$var == "xSpD"){
                                         pdf = here(plot_dir, "xenium_SpX_topEnrich_violin_express.pdf"))
     
     
-    rowData(spe)$SpX_marker <- NULL
-    rowData(spe)$SpX_marker <- top_DEGs$test[match(rownames(spe), top_DEGs$gene)] 
-    table(rowData(spe)$SpX_marker)
+    rowData(spe)$xSpD_marker <- NULL
+    rowData(spe)$xSpD_marker <- top_DEGs$test[match(rownames(spe), top_DEGs$gene)] 
+    table(rowData(spe)$xSpD_marker)
     
-    pdf(here(plot_dir, "xenium_SpX_topEnrich_dotplot.pdf"), height = 10)
+    pdf(here(plot_dir, "xenium_SpX_topEnrich_dotplot.pdf"), height = 11)
     
     spe |>
         scDotPlot(features = top_DEGs$gene,
                   group = "xSpD",
                   groupAnno = "xSpD",
-                  featureAnno = "SpX_marker",
+                  featureAnno = "xSpD_marker",
                   scale = TRUE,
-                  annoColors = list(SpX = metadata(spe)$SpX_colors,
-                                    SpX_marker = metadata(spe)$SpX_colors),
+                  annoColors = list(xSpD = metadata(spe)$SpX_colors,
+                                    xSpD_marker = metadata(spe)$SpX_colors),
                   clusterRows = FALSE,
                   clusterColumns = FALSE,
                   groupLegends = FALSE)
@@ -204,10 +205,10 @@ if(opt$var == "xSpD"){
         scDotPlot(features = top_DEGs$gene,
                   group = "xSpD",
                   groupAnno = "xSpD",
-                  featureAnno = "SpX_marker",
+                  featureAnno = "xSpD_marker",
                   scale = TRUE,
-                  annoColors = list(SpX = metadata(spe)$SpX_colors,
-                                    SpX_marker = metadata(spe)$SpX_colors),
+                  annoColors = list(xSpD = metadata(spe)$SpX_colors,
+                                    xSpD_marker = metadata(spe)$SpX_colors),
                   clusterRows = TRUE,
                   clusterColumns = TRUE,
                   groupLegends = FALSE)
@@ -220,12 +221,36 @@ if(opt$var == "xSpD"){
         scDotPlot(features = top_DEGs |> filter(top <=5) |> pull(gene),
                   group = "xSpD",
                   groupAnno = "xSpD",
-                  featureAnno = "SpX_marker",
+                  featureAnno = "xSpD_marker",
                   scale = TRUE,
-                  annoColors = list(SpX = metadata(spe)$SpX_colors,
-                                    SpX_marker = metadata(spe)$SpX_colors),
+                  annoColors = list(xSpD = metadata(spe)$SpX_colors,
+                                    xSpD_marker = metadata(spe)$SpX_colors),
                   clusterRows = FALSE,
                   clusterColumns = FALSE,
+                  groupLegends = FALSE)    
+    
+    spe |>
+        scDotPlot(features = top_DEGs |> filter(top <=5) |> pull(gene),
+                  group = "xSpD",
+                  groupAnno = "xSpD",
+                  featureAnno = "xSpD_marker",
+                  scale = TRUE,
+                  annoColors = list(xSpD = metadata(spe)$SpX_colors,
+                                    xSpD_marker = metadata(spe)$SpX_colors),
+                  clusterRows = FALSE,
+                  clusterColumns = TRUE,
+                  groupLegends = FALSE)    
+    
+    spe |>
+        scDotPlot(features = top_DEGs |> filter(top <=5) |> pull(gene),
+                  group = "xSpD",
+                  groupAnno = "xSpD",
+                  featureAnno = "xSpD_marker",
+                  scale = TRUE,
+                  annoColors = list(xSpD = metadata(spe)$SpX_colors,
+                                    xSpD_marker = metadata(spe)$SpX_colors),
+                  clusterRows = TRUE,
+                  clusterColumns = TRUE,
                   groupLegends = FALSE)
     dev.off()
     
@@ -295,7 +320,7 @@ if(opt$var == "xSpD"){
 
 
 #### Expression of key genes ####
-library(DeconvoBuddies)
+
 
 rownames(spe_pb) <- rowData(spe_pb)$gene_name
 
