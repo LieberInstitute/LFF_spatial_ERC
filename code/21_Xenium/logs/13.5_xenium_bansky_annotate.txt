@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Aug 27 09:13:30 AM EDT 2026
+Thu Aug 27 06:15:15 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35234584
+Job id: 35325200
 Job name: 13.5_xenium_bansky_annotate
-Node name: compute-160
+Node name: compute-141
 Task id: 
 Loading conda_R/4.5.x
 
@@ -144,37 +144,37 @@ This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 
-2026-08-27 09:13:46.924367 - Load prelim spe data
+2026-08-27 18:15:45.80206 - Load prelim spe data
 n cells: 447183
 Loading objects:
   SpX_colors
-           
-            xSp11D01 xSp11D02 xSp11D03 xSp11D04 xSp11D05 xSp11D06 xSp11D07
-  xVasc            0        0        0        0        0        0        0
-  xVasc.im         0        0        0        0        0    19987        0
-  xGL              0        0        0        0        0        0    32827
-  xL2              0        0        0    39408        0        0        0
-  xInhib           0    24551        0        0        0        0        0
-  xLD              0        0        0        0    69150        0        0
-  xVasc.adj        0        0        0        0        0        0        0
-  xL5          56424        0        0        0        0        0        0
-  xL6              0        0        0        0        0        0        0
-  xWMuf            0        0    56971        0        0        0        0
-  xWMd             0        0        0        0        0        0        0
-           
-            xSp11D08 xSp11D09 xSp11D10 xSp11D11
-  xVasc        22751        0        0        0
-  xVasc.im         0        0        0        0
-  xGL              0        0        0        0
-  xL2              0        0        0        0
-  xInhib           0        0        0        0
-  xLD              0        0        0        0
-  xVasc.adj        0        0        0    22630
-  xL5              0        0        0        0
-  xL6              0    39849        0        0
-  xWMuf            0        0        0        0
-  xWMd             0        0    62635        0
-2026-08-27 09:14:41.993673 - Load RCTD data
+             
+              xSp11D01 xSp11D02 xSp11D03 xSp11D04 xSp11D05 xSp11D06 xSp11D07
+  xVasc_mural        0        0        0        0        0        0        0
+  xVasc_im           0        0        0        0        0    19987        0
+  xGL                0        0        0        0        0        0    32827
+  xL2                0        0        0    39408        0        0        0
+  xL1_inhib          0    24551        0        0        0        0        0
+  xLD_glia           0        0        0        0    69150        0        0
+  xVasc_adj          0        0        0        0        0        0        0
+  xL5            56424        0        0        0        0        0        0
+  xL6                0        0        0        0        0        0        0
+  xWMuf              0        0    56971        0        0        0        0
+  xWMd               0        0        0        0        0        0        0
+             
+              xSp11D08 xSp11D09 xSp11D10 xSp11D11
+  xVasc_mural    22751        0        0        0
+  xVasc_im           0        0        0        0
+  xGL                0        0        0        0
+  xL2                0        0        0        0
+  xL1_inhib          0        0        0        0
+  xLD_glia           0        0        0        0
+  xVasc_adj          0        0        0    22630
+  xL5                0        0        0        0
+  xL6                0    39849        0        0
+  xWMuf              0        0        0        0
+  xWMd               0        0    62635        0
+2026-08-27 18:16:50.665846 - Load RCTD data
 
          Astro.1          Astro.2          Astro.3          Astro.4 
            15082            18048              941             8485 
@@ -199,20 +199,20 @@ Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb
 
  Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib 
  84797   6278  35778 132887  27195  71999  60132  28117 
-           
-             Vasc GM_L1 GM_L2_6    WM
-  xVasc     22751     0       0     0
-  xVasc.im  19987     0       0     0
-  xGL           0 32827       0     0
-  xL2           0     0   39408     0
-  xInhib        0     0   24551     0
-  xLD           0     0   69150     0
-  xVasc.adj 22630     0       0     0
-  xL5           0     0   56424     0
-  xL6           0     0   39849     0
-  xWMuf         0     0       0 56971
-  xWMd          0     0       0 62635
-2026-08-27 09:14:50.985476 - Saving SPE object
+             
+               Vasc GM_L1 GM_L2_5 GM_deep    WM
+  xVasc_mural 22751     0       0       0     0
+  xVasc_im    19987     0       0       0     0
+  xGL             0 32827       0       0     0
+  xL2             0     0   39408       0     0
+  xL1_inhib       0 24551       0       0     0
+  xLD_glia        0     0   69150       0     0
+  xVasc_adj   22630     0       0       0     0
+  xL5             0     0   56424       0     0
+  xL6             0     0       0   39849     0
+  xWMuf           0     0       0       0 56971
+  xWMd            0     0       0       0 62635
+2026-08-27 18:17:04.98102 - Saving SPE object
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
@@ -344,45 +344,50 @@ Saving 12 x 7 in image
 ERC_xenium_UMAP_HARMONY_cat-xSpD.png - Saving 7 x 7 in image
 Loading objects:
   marker_stats
-$`Vasc~Sp09D08`
+$vVasc
 [1] TRUE
 
-$`L1~Sp09D05`
+$vL1
 [1] TRUE
 
-$`L2.3~Sp09D01`
+$vL2
 [1] TRUE
 
-$`LD~Sp09D02`
+$vInhib
 [1] TRUE
 
-$`Inhib~Sp09D09`
+$vLD
 [1] TRUE
 
-$`L5~Sp09D03`
+$vL5a
 [1] TRUE
 
-$`L6~Sp09D04`
+$vL5b
 [1] TRUE
 
-$`WM~Sp09D06`
+$vL6
 [1] TRUE
 
-$`Vasc~Sp09D08`
+$vWMd
+[1] TRUE
 
-$`L1~Sp09D05`
+$vVasc
 
-$`L2.3~Sp09D01`
+$vL1
 
-$`LD~Sp09D02`
+$vL2
 
-$`Inhib~Sp09D09`
+$vInhib
 
-$`L5~Sp09D03`
+$vLD
 
-$`L6~Sp09D04`
+$vL5a
 
-$`WM~Sp09D06`
+$vL5b
+
+$vL6
+
+$vWMd
 
 null device 
           1 
@@ -390,36 +395,16 @@ Saving 7 x 7 in image
 Loading objects:
   SpD_colors
 
- Vasc~Sp09D08    L1~Sp09D05  L2.3~Sp09D01    LD~Sp09D02 Inhib~Sp09D09 
-            1             5             5             2             5 
-   L5~Sp09D03    L6~Sp09D04 WM.uf~Sp09D07    WM~Sp09D06 
-            5             2             0             5 
-Warning messages:
-1: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-2: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-3: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-4: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-Warning messages:
-1: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-2: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-3: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
-4: No shared levels found between `names(values)` of the manual scale and the
-data's fill values. 
+ vVasc    vL1    vL2 vInhib    vLD   vL5a   vL5b    vL6  vWMuf  vWMpv   vWMd 
+     1      5      5      5      2      3      3      2      0      0      5 
 null device 
           1 
 Loading objects:
   cell_type_colors
-    xVasc  xVasc.im       xGL       xL2    xInhib       xLD xVasc.adj       xL5 
-        1         1         1         1         1         1         1         1 
-      xL6     xWMuf      xWMd 
-        1         1         1 
+xVasc_mural    xVasc_im         xGL         xL2   xL1_inhib    xLD_glia 
+          1           1           1           1           1           1 
+  xVasc_adj         xL5         xL6       xWMuf        xWMd 
+          1           1           1           1           1 
          Astro.1          Astro.2          Astro.3          Astro.4 
                1                1                1                1 
          Astro.5            Macro          Micro.1          Micro.2 
@@ -444,68 +429,68 @@ Joining with `by = join_by(xSpD, cell_type_anno)`
 Joining with `by = join_by(xSpD, cell_type_anno)`
 # A tibble: 39 × 5
 # Groups:   cell_type_anno [38]
-   xSpD     cell_type_anno   n_cell prop_cell_type prop_xSpD
-   <fct>    <fct>             <int>          <dbl>     <dbl>
- 1 xVasc    Vasc.Endo          7021      0.361         0.259
- 2 xVasc    Vasc.PC            9226      0.475         0.461
- 3 xVasc.im Macro              1292      0.108         0.672
- 4 xVasc.im Vasc.VLMC          2890      0.241         0.569
- 5 xGL      Astro.4            2899      0.118         0.435
- 6 xL2      OPC.1                 6      0.000281      0.24 
- 7 xL2      Excit.L2           6907      0.324         0.603
- 8 xInhib   Inhib.Pax6          283      0.0176        0.393
- 9 xInhib   Inhib.Vip          2146      0.134         0.347
-10 xLD      Astro.1            4103      0.0890        0.319
-11 xLD      Astro.2            3864      0.0838        0.269
-12 xLD      Astro.5            7531      0.163         0.257
-13 xLD      Micro.2            2001      0.0434        0.231
-14 xLD      Micro.5            2674      0.0580        0.241
-15 xLD      OPC.2              1474      0.0320        0.198
-16 xLD      OPC.5              1912      0.0415        0.238
-17 xL5      OPC.1                 6      0.000198      0.24 
-18 xL5      Excit.L2_5.1       1231      0.0405        0.251
-19 xL5      Excit.L2_5.2       2372      0.0781        0.717
-20 xL5      Excit.L5.1         2600      0.0856        0.693
-21 xL5      Excit.L5.2          503      0.0166        0.378
-22 xL5      Excit.L5_6_NP       169      0.00556       0.575
-23 xL5      Inhib.Chandelier    252      0.00830       0.330
-24 xL5      Inhib.Lamp5_Lhx6    495      0.0163        0.192
-25 xL5      Inhib.Pvalb        1299      0.0428        0.475
-26 xL5      Inhib.Sst           676      0.0223        0.365
-27 xL6      Excit.L6_CT        1088      0.0492        0.778
-28 xL6      Excit.L6b          1107      0.0501        0.777
-29 xWMuf    Astro.3             166      0.00396       0.234
-30 xWMuf    Oligo.3           13936      0.333         0.265
-31 xWMd     Micro.1              96      0.00181       0.686
-32 xWMd     Micro.3             658      0.0124        0.532
-33 xWMd     Micro.4              51      0.000962      0.443
-34 xWMd     OPC.3                 5      0.0000943     0.417
-35 xWMd     OPC.4               364      0.00687       0.211
-36 xWMd     Oligo.1            5727      0.108         0.577
-37 xWMd     Oligo.2            6915      0.130         0.741
-38 xWMd     Oligo.4           13780      0.260         0.474
+   xSpD        cell_type_anno   n_cell prop_cell_type prop_xSpD
+   <fct>       <fct>             <int>          <dbl>     <dbl>
+ 1 xVasc_mural Vasc.Endo          7021      0.361         0.259
+ 2 xVasc_mural Vasc.PC            9226      0.475         0.461
+ 3 xVasc_im    Macro              1292      0.108         0.672
+ 4 xVasc_im    Vasc.VLMC          2890      0.241         0.569
+ 5 xGL         Astro.4            2899      0.118         0.435
+ 6 xL2         OPC.1                 6      0.000281      0.24 
+ 7 xL2         Excit.L2           6907      0.324         0.603
+ 8 xL1_inhib   Inhib.Pax6          283      0.0176        0.393
+ 9 xL1_inhib   Inhib.Vip          2146      0.134         0.347
+10 xLD_glia    Astro.1            4103      0.0890        0.319
+11 xLD_glia    Astro.2            3864      0.0838        0.269
+12 xLD_glia    Astro.5            7531      0.163         0.257
+13 xLD_glia    Micro.2            2001      0.0434        0.231
+14 xLD_glia    Micro.5            2674      0.0580        0.241
+15 xLD_glia    OPC.2              1474      0.0320        0.198
+16 xLD_glia    OPC.5              1912      0.0415        0.238
+17 xL5         OPC.1                 6      0.000198      0.24 
+18 xL5         Excit.L2_5.1       1231      0.0405        0.251
+19 xL5         Excit.L2_5.2       2372      0.0781        0.717
+20 xL5         Excit.L5.1         2600      0.0856        0.693
+21 xL5         Excit.L5.2          503      0.0166        0.378
+22 xL5         Excit.L5_6_NP       169      0.00556       0.575
+23 xL5         Inhib.Chandelier    252      0.00830       0.330
+24 xL5         Inhib.Lamp5_Lhx6    495      0.0163        0.192
+25 xL5         Inhib.Pvalb        1299      0.0428        0.475
+26 xL5         Inhib.Sst           676      0.0223        0.365
+27 xL6         Excit.L6_CT        1088      0.0492        0.778
+28 xL6         Excit.L6b          1107      0.0501        0.777
+29 xWMuf       Astro.3             166      0.00396       0.234
+30 xWMuf       Oligo.3           13936      0.333         0.265
+31 xWMd        Micro.1              96      0.00181       0.686
+32 xWMd        Micro.3             658      0.0124        0.532
+33 xWMd        Micro.4              51      0.000962      0.443
+34 xWMd        OPC.3                 5      0.0000943     0.417
+35 xWMd        OPC.4               364      0.00687       0.211
+36 xWMd        Oligo.1            5727      0.108         0.577
+37 xWMd        Oligo.2            6915      0.130         0.741
+38 xWMd        Oligo.4           13780      0.260         0.474
 # ℹ 1 more row
 # A tibble: 11 × 5
-   xSpD      cell_type_anno n_cell prop_cell_type prop_xSpD
-   <fct>     <fct>           <int>          <dbl>     <dbl>
- 1 xWMuf     Oligo.3         13936         0.333    0.265  
- 2 xWMd      Oligo.3         13325         0.251    0.254  
- 3 xLD       Oligo.3          7360         0.160    0.140  
- 4 xL6       Oligo.3          5814         0.263    0.111  
- 5 xL5       Oligo.3          4411         0.145    0.0839 
- 6 xGL       Oligo.3          2928         0.119    0.0557 
- 7 xVasc.adj Oligo.3          2114         0.138    0.0402 
- 8 xInhib    Oligo.3           992         0.0618   0.0189 
- 9 xL2       Oligo.3           805         0.0377   0.0153 
-10 xVasc.im  Oligo.3           595         0.0495   0.0113 
-11 xVasc     Oligo.3           275         0.0141   0.00523
+   xSpD        cell_type_anno n_cell prop_cell_type prop_xSpD
+   <fct>       <fct>           <int>          <dbl>     <dbl>
+ 1 xWMuf       Oligo.3         13936         0.333    0.265  
+ 2 xWMd        Oligo.3         13325         0.251    0.254  
+ 3 xLD_glia    Oligo.3          7360         0.160    0.140  
+ 4 xL6         Oligo.3          5814         0.263    0.111  
+ 5 xL5         Oligo.3          4411         0.145    0.0839 
+ 6 xGL         Oligo.3          2928         0.119    0.0557 
+ 7 xVasc_adj   Oligo.3          2114         0.138    0.0402 
+ 8 xL1_inhib   Oligo.3           992         0.0618   0.0189 
+ 9 xL2         Oligo.3           805         0.0377   0.0153 
+10 xVasc_im    Oligo.3           595         0.0495   0.0113 
+11 xVasc_mural Oligo.3           275         0.0141   0.00523
 [1] TRUE
 null device 
           1 
 null device 
           1 
-   Vasc   GM_L1 GM_L2_6      WM 
-      1       1       1       1 
+   Vasc   GM_L1 GM_L2_5 GM_deep      WM 
+      1       1       1       1       1 
          Astro.1          Astro.2          Astro.3          Astro.4 
                1                1                1                1 
          Astro.5            Macro          Micro.1          Micro.2 
@@ -536,54 +521,55 @@ Joining with `by = join_by(region, cell_type_anno)`
  2 Vasc    Vasc.Endo         12648      0.270           0.466
  3 Vasc    Vasc.PC           14331      0.306           0.716
  4 Vasc    Vasc.VLMC          4791      0.102           0.944
- 5 GM_L2_6 Astro.1           10059      0.0740          0.783
- 6 GM_L2_6 Astro.2            9182      0.0675          0.638
- 7 GM_L2_6 Astro.3             329      0.00242         0.465
- 8 GM_L2_6 Astro.5           16124      0.119           0.550
- 9 GM_L2_6 Micro.2            4134      0.0304          0.478
-10 GM_L2_6 Micro.5            6071      0.0446          0.547
-11 GM_L2_6 OPC.1                21      0.000154        0.84 
-12 GM_L2_6 OPC.2              4571      0.0336          0.613
-13 GM_L2_6 OPC.4               801      0.00589         0.464
-14 GM_L2_6 OPC.5              5469      0.0402          0.680
-15 GM_L2_6 Excit.L2          10821      0.0796          0.944
-16 GM_L2_6 Excit.L2_5.1       4185      0.0308          0.853
-17 GM_L2_6 Excit.L2_5.2       2976      0.0219          0.900
-18 GM_L2_6 Excit.L5.1         3466      0.0255          0.924
-19 GM_L2_6 Excit.L5.2         1236      0.00909         0.929
-20 GM_L2_6 Excit.L5_6_NP       270      0.00199         0.918
-21 GM_L2_6 Excit.L6_CT        1216      0.00894         0.870
-22 GM_L2_6 Excit.L6b          1169      0.00860         0.821
-23 GM_L2_6 Inhib.Chandelier    655      0.00482         0.857
-24 GM_L2_6 Inhib.Lamp5_Lhx6   1809      0.0133          0.702
-25 GM_L2_6 Inhib.Pax6          555      0.00408         0.770
-26 GM_L2_6 Inhib.Pvalb        2315      0.0170          0.847
-27 GM_L2_6 Inhib.Sst          1528      0.0112          0.825
-28 GM_L2_6 Inhib.Vip          5276      0.0388          0.853
-29 WM      Astro.4            2928      0.0309          0.440
-30 WM      Micro.1             104      0.00110         0.743
-31 WM      Micro.3             782      0.00824         0.632
-32 WM      Micro.4              68      0.000717        0.591
-33 WM      OPC.3                 6      0.0000632       0.5  
+ 5 GM_L1   Astro.4            2946      0.0725          0.442
+ 6 GM_L1   Inhib.Pax6          358      0.00880         0.497
+ 7 GM_L2_5 Astro.1            7096      0.0725          0.552
+ 8 GM_L2_5 Astro.2            6183      0.0632          0.430
+ 9 GM_L2_5 Astro.5           11365      0.116           0.387
+10 GM_L2_5 Micro.2            3084      0.0315          0.356
+11 GM_L2_5 Micro.5            4396      0.0449          0.396
+12 GM_L2_5 OPC.1                17      0.000174        0.68 
+13 GM_L2_5 OPC.2              3201      0.0327          0.429
+14 GM_L2_5 OPC.5              3912      0.0400          0.487
+15 GM_L2_5 Excit.L2          10348      0.106           0.903
+16 GM_L2_5 Excit.L2_5.1       3307      0.0338          0.674
+17 GM_L2_5 Excit.L2_5.2       2937      0.0300          0.888
+18 GM_L2_5 Excit.L5.1         3035      0.0310          0.809
+19 GM_L2_5 Excit.L5.2         1034      0.0106          0.777
+20 GM_L2_5 Excit.L5_6_NP       203      0.00208         0.690
+21 GM_L2_5 Inhib.Chandelier    517      0.00528         0.677
+22 GM_L2_5 Inhib.Lamp5_Lhx6   1193      0.0122          0.463
+23 GM_L2_5 Inhib.Pvalb        1961      0.0200          0.717
+24 GM_L2_5 Inhib.Sst          1287      0.0132          0.695
+25 GM_L2_5 Inhib.Vip          2988      0.0305          0.483
+26 GM_deep Excit.L6_CT        1088      0.0492          0.778
+27 GM_deep Excit.L6b          1107      0.0501          0.777
+28 WM      Astro.3             257      0.00271         0.363
+29 WM      Micro.1             104      0.00110         0.743
+30 WM      Micro.3             782      0.00824         0.632
+31 WM      Micro.4              68      0.000717        0.591
+32 WM      OPC.3                 6      0.0000632       0.5  
+33 WM      OPC.4               590      0.00622         0.342
 34 WM      Oligo.1            7369      0.0777          0.742
 35 WM      Oligo.2            7814      0.0823          0.837
 36 WM      Oligo.3           27261      0.287           0.519
 37 WM      Oligo.4           19541      0.206           0.672
 38 WM      Oligo.5            1371      0.0144          0.666
-# A tibble: 4 × 5
+# A tibble: 5 × 5
   region  cell_type_anno n_cell prop_cell_type prop_region
   <fct>   <fct>           <int>          <dbl>       <dbl>
 1 WM      Oligo.3         27261         0.287       0.519 
-2 GM_L2_6 Oligo.3         19382         0.143       0.369 
-3 Vasc    Oligo.3          2984         0.0638      0.0568
-4 GM_L1   Oligo.3          2928         0.119       0.0557
+2 GM_L2_5 Oligo.3         12576         0.129       0.239 
+3 GM_deep Oligo.3          5814         0.263       0.111 
+4 GM_L1   Oligo.3          3920         0.0964      0.0746
+5 Vasc    Oligo.3          2984         0.0638      0.0568
 [1] TRUE
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-08-27 09:17:08 EDT"
+[1] "2026-08-27 18:21:58 EDT"
    user  system elapsed 
-172.564   9.689 217.650 
+349.181  14.918 401.521 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.3 Patched (2026-03-11 r90451)
@@ -842,4 +828,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Aug 27 09:17:09 AM EDT 2026
+Thu Aug 27 06:22:00 PM EDT 2026
