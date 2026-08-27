@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Aug 27 06:29:15 PM EDT 2026
+Thu Aug 27 06:40:15 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35329121
-Job name: 14_xenium_pseudobulk_model_register
-Node name: compute-105
+Job id: 35340603
+Job name: 15_xenium_vis
+Node name: compute-150
 Task id: 
 Loading conda_R/4.5.x
 
@@ -14,7 +14,7 @@ Currently Loaded Modules:
 
  
 
-here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SpatialExperiment
 Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
@@ -100,6 +100,8 @@ The following objects are masked from ‘package:matrixStats’:
 
     anyMissing, rowMedians
 
+qs2 0.2.2
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
@@ -123,69 +125,28 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-qs2 0.2.2
-2026-08-27 18:29:40.46481 - load data from: spe_xenium_bansky.qs2
-class: SpatialExperiment 
-dim: 366 447183 
-metadata(19): Samples Samples ... region_colors SpX_colors
-assays(6): counts nucleus_normcounts ... H0 H1
-rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
-rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
-colnames(447183): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
-  Br5854_oiphphbd-1 Br5854_ojaapmlh-1
-colData names(82): Sample Barcode ... cell_type_broad region
-reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
-mainExpName: NULL
-altExpNames(0):
-spatialCoords names(2) : x_centroid y_centroid
-imgData names(1): sample_id
-ncells: 447183
-2026-08-27 18:30:33.859303 - Running Spatial Registration on: xSpD
-2026-08-27 18:30:34.278366 make pseudobulk object
-2026-08-27 18:30:49.23314 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2026-08-27 18:30:49.354059 drop lowly expressed genes
-2026-08-27 18:30:49.593382 normalize expression
-2026-08-27 18:30:49.948182 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-xSpD.rds
-2026-08-27 18:30:50.063155 create model matrix
-2026-08-27 18:30:50.26341 run duplicateCorrelation()
-2026-08-27 18:30:51.242638 The estimated correlation is: 0.317469137706628
-2026-08-27 18:30:51.246835 computing enrichment statistics
-2026-08-27 18:30:53.826907 extract and reformat enrichment results
-2026-08-27 18:30:53.862772 running the baseline pairwise model
-2026-08-27 18:30:53.896345 computing pairwise statistics
-2026-08-27 18:30:54.147945 computing F-statistics
-2026-08-27 18:30:54.211446 - Saving Data
-class: SpatialExperiment 
-dim: 366 176 
-metadata(19): Samples Samples ... region_colors SpX_colors
-assays(2): counts logcounts
-rownames(366): ENSG00000181409 ENSG00000141338 ... ENSG00000188818
-  ENSG00000184307
-rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
-colnames(176): Br1039_xVasc_mural Br1556_xVasc_mural ... Br6098_xWMd
-  Br6538_xWMd
-colData names(87): Sample Barcode ... ncells pseudo_sum_umi
-reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
-mainExpName: NULL
-altExpNames(0):
-spatialCoords names(0) :
-imgData names(0):
+2026-08-27 18:40:35.76012 - Load SPE data
 Loading objects:
-  SpD_colors
-null device 
-          1 
-[[1]]
-
-[[2]]
-
-[[3]]
-
-[[4]]
-
-[[5]]
-
-[[6]]
-
-[[7]]
-/var/spool/slurm/d/job35329121/slurm_script: line 31: 2558732 Killed                  Rscript 14_xenium_pseudobulk_model_register.R --var xSpD
-slurmstepd: error: Detected 1 oom-kill event(s) in StepId=35329121.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.
+  marker_stats
+Error in `filter()`:
+ℹ In argument: `grepl("WM", SpD)`.
+ℹ In group 1: `vSpD = vVasc`.
+Caused by error in `h()`:
+! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'SpD' not found
+Backtrace:
+     ▆
+  1. ├─dplyr::filter(marker_stats_top, grepl("WM", SpD))
+  2. ├─dplyr:::filter.data.frame(marker_stats_top, grepl("WM", SpD))
+  3. │ └─dplyr:::filter_impl(...)
+  4. │   └─dplyr:::filter_rows(...)
+  5. │     └─dplyr:::filter_eval(...)
+  6. │       ├─base::withCallingHandlers(...)
+  7. │       └─mask$eval_all_filter(dots_expanded, invert, env_filter)
+  8. │         └─dplyr (local) eval()
+  9. ├─BiocGenerics::grepl("WM", SpD)
+ 10. ├─base::.handleSimpleError(`<fn>`, "object 'SpD' not found", base::quote(NULL))
+ 11. │ └─base (local) h(simpleError(msg, call))
+ 12. └─base::.handleSimpleError(...)
+ 13.   └─dplyr (local) h(simpleError(msg, call))
+ 14.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+Execution halted
