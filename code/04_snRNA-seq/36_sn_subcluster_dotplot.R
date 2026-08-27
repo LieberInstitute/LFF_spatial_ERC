@@ -494,6 +494,59 @@ sce[, sce$cell_type_broad == "Inhib"]|>
     )
 dev.off()
 
+#### Excit subtypes ####
+excit_annotation_marker <- read_csv(here("external-data", "Claude2026", "ERC_excit_annotation_marker_genes", "ERC_excit_annotation_marker_genes.csv")) |>
+    filter(gene %in% rownames(sce))
+    
+excit_annotation_marker |> count(annotation)
+
+rowData(sce)$excit_anno_marker <- NULL
+rowData(sce)$excit_anno_marker <- excit_annotation_marker$annotation[match(rownames(sce), excit_annotation_marker$gene)] 
+table(rowData(sce)$excit_anno_marker)
+
+excit_anno_colors <- c(
+    "Pan-excitatory"     = "#a67254",
+    "Upper layer"        = "#cd1e1c",
+    "L2 CALB1+"          = "#a94500",
+    "L2 RELN+"           = "#e4c35e",
+    "L5a/Va output"      = "#878200",
+    "L5b/Vb feedback"    = "#91d950",
+    "Deep layer (L5/6)"  = "#01ba58",
+    "L5/6 NP"            = "#85abff",
+    "L6 CT"              = "#d750d2",
+    "L6b subplate"       = "#ff5c84"
+)
+
+
+pdf(here(plot_dir, "sn_subtype_Excit_dotplot_lit_markers.pdf"), width = 5)
+
+sce[, sce$cell_type_broad == "Excit"]  |>
+    scDotPlot(features = excit_annotation_marker$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "excit_anno_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "excit_anno_marker" = excit_anno_colors
+                                ),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+sce[, sce$cell_type_broad == "Excit"]  |>
+    scDotPlot(features = excit_annotation_marker$gene,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              featureAnno = "excit_anno_marker",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno,
+                                "excit_anno_marker" = excit_anno_colors
+                                ),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+dev.off()
+
+
 #### Micro sub-types ####
 
 lit_markers |> filter(cell_type_broad %in% c("Micro", "Macro"))
