@@ -82,15 +82,15 @@ table(spe$cell_type_broad)
 #### Annotate Regions ####
 
 region_lookup <- c(
-    "Vasc"     = "Vasc",
-    "Vasc.im"  = "Vasc",
-    "Vasc.adj" = "Vasc",
+    "Vasc_mural"     = "Vasc",
+    "Vasc_im"  = "Vasc",
+    "Vasc_adj" = "Vasc",
     "GL"       = "GM_L1",
-    "L2"       = "GM_L2_6",
-    "Inhib"    = "GM_L2_6",
-    "LD"       = "GM_L2_6",
-    "L5"       = "GM_L2_6",
-    "L6"       = "GM_L2_6",
+    "L1_inhib" = "GM_L1",
+    "L2"       = "GM_L2_5",
+    "LD_glia"  = "GM_L2_5",
+    "L5"       = "GM_L2_5",
+    "L6"       = "GM_deep",
     "WMuf"     = "WM",
     "WMd"      = "WM"
 )
@@ -101,7 +101,8 @@ table(spe$xSpD, spe$region)
 
 region_colors = c('Vasc' = "#E05AD2",
                   'GM_L1' = "#67a75f",
-                  'GM_L2_6' = "#3446BD",
+                  'GM_L2_5' = "#3446BD",
+                  'GM_deep' = "#40DAF2",
                   'WM'= "gray")
 
 metadata(spe)$region_colors <- region_colors
