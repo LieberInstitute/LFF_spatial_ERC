@@ -100,8 +100,8 @@ spe$region <- factor(region_lookup[spe$xSpD_anno], levels = c("Vasc", "GM_L1", "
 table(spe$xSpD, spe$region)
 
 region_colors = c('Vasc' = "#E05AD2",
-                  'GM_L1' = "#3446BD",
-                  'GM_L2_6' = "#67a75f",
+                  'GM_L1' = "#67a75f",
+                  'GM_L2_6' = "#3446BD",
                   'WM'= "gray")
 
 metadata(spe)$region_colors <- region_colors
