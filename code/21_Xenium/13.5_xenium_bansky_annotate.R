@@ -26,91 +26,78 @@ spe <- qs_read(here(data_dir, "spe_xenium_bansky_prelim.qs2"))
 
 message("n cells: ", ncol(spe))
 
-cluster_colors <- c("#f62062",
-                    "#f45e28",
-                    "#cf9800",
-                    "#608d00",
-                    "#01e090",
-                    "#3ed9e6",
-                    "#0064ca",
-                    "#9215a3",
-                    "#ff8ee2",
-                    "black",
-                    "grey",
-                    "brown")
-
 #### Annotate bansky clus ####
 
-SpX_colors = c('Vasc~SpX3' = "#E05AD2",
-               'L1a~SpX6' = "#9AA7FE",
-               'L1b~SpX7' = "#0220DE",
-               'L2.3~SpX4' = "#FEAF16",
-               'Inhib~SpX5' = "#C82100",
-               'L5~SpX1' = "#16FF32",
-               'L6~SpX9' = "#178C6D",
-               'WMtz~SpX8' = "grey",
-               'WM~SpX2'= "#581009")
+load(here("processed-data","SpX_colors.Rdata"), verbose = TRUE)
 
-cluster_anno <- readxl::read_xlsx(here("processed-data", "21_Xenium", "Bansky_cluster_notes.xlsx")) |>
-    filter(!grepl("uf", Visium)) |>
-    mutate(SpX = factor(paste0(Visium , "~SpX", Xenium_k9), levels = names(SpX_colors)))
+#### Annotate bansky clus (k11) ####
+## banksy_clustering_annotation_k11_summary.xlsx was built against the
+## already-relabeled clust_HARMONY_kmeans11 values ("xSp11D01" etc.), so this
+## one matches directly, unlike the k9/SpX crosswalk above
+xSpD_anno_table <- readxl::read_xlsx(here(
+    "processed-data", "21_Xenium", "13.1_xenium_compare_bansky_clusters", "banksy_clustering_annotation_k11_summary.xlsx"
+)) |>
+    mutate(xSpD = fct_reorder(paste0("x", anno), order),
+           xSpD_k11 = fct_reorder(paste0(anno, "~", cluster), order))
 
-save(SpX_colors, file = here("processed-data", "SpX_colors.Rdata"))
+spe$xSpD <- xSpD_anno_table$xSpD[match(spe$clust_HARMONY_kmeans11, xSpD_anno_table$cluster)]
+spe$xSpD_k11 <- xSpD_anno_table$xSpD[match(spe$clust_HARMONY_kmeans11, xSpD_anno_table$cluster)]
 
-# load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
-# SpD_colors
-# Vasc~Sp09D08    L1~Sp09D05  L2.3~Sp09D01    LD~Sp09D02 Inhib~Sp09D09    L5~Sp09D03    L6~Sp09D04 WM.uf~Sp09D07
-# "#E05AD2"     "#0220DE"     "#FEAF16"     "#00BCF9"     "#C82100"     "#16FF32"     "#178C6D"     "#E4E1E3"
-# WM~Sp09D06
-# "#581009"
+table(spe$xSpD, spe$clust_HARMONY_kmeans11)
+stopifnot(!anyNA(spe$xSpD))
 
-spe$SpX <- cluster_anno$SpX[match(spe$clust_HARMONY_kmeans9, cluster_anno$Xenium_k9)]
-
-table(spe$SpX, spe$clust_HARMONY_kmeans9)
+## plain domain name (no cluster id), used for plots/heatmaps/color-matching -
+## same role vSpD_anno plays alongside vSpD in the Visium scripts
+spe$xSpD_anno <- xSpD_anno_table$anno[match(spe$clust_HARMONY_kmeans11, xSpD_anno_table$cluster)]
+stopifnot(!anyNA(spe$xSpD_anno))
 
 cluster_data <- as.data.frame(colData(spe)[,c("sample_id", "Barcode",
                                               "clust_HARMONY_kmeans9",
                                               "clust_HARMONY_kmeans10",
                                               "clust_HARMONY_kmeans11",
                                               "clust_HARMONY_kmeans12",
-                                              "SpX")])
+                                              "xSpD",
+                                              "xSpD_k11")])
 write.csv(cluster_data, file = here(data_dir, "Xenium_bansky_cluster_data.csv"))
 
-#### Add RCTD data ###
-
-message(Sys.time(), "- Load rctd data")
-rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD","rctd_results_xenium.qs2"))
-
-rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
-
-identical(colnames(spe), rownames(rctd_data@results$results_df))
+#### Cell type composition (RCTD label transfer) ####
+## Loaded early because cell-type composition feeds into the annotation
+message(Sys.time(), " - Load RCTD data")
+rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD", "rctd_results_xenium.qs2"))
 
 spe$cell_id <- colnames(spe)
-colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
-
-colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
+colData(spe) <- cbind(colData(spe), rctd_data@results$results_df[colnames(spe), ])
 
 spe$cell_type_anno <- spe$first_type
-spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+spe$cell_type_broad <- factor(
+    gsub("\\..*?$", "", spe$cell_type_anno),
+    levels = c("Astro", "Macro", "Micro", "Oligo", "OPC", "Vasc", "Excit", "Inhib")
+)
+
+table(spe$cell_type_anno)
 table(spe$cell_type_broad)
 
-table(spe$SpX, spe$cell_type_broad)
-table(spe$SpX, spe$spot_class)
+
 
 #### Annotate Regions ####
 
-region_tb <- list("Vasc"= c("Vasc~SpX3"),
-                  "GM_L1"= c("L1a~SpX6", "L1b~SpX7"),
-                  "GM_L2_6"= c("L2.3~SpX4", "Inhib~SpX5", "L5~SpX1", "L6~SpX9"),
-                  "WM"= c('WMtz~SpX8', 'WM~SpX2'))|>
-    enframe(name="group", value="cluster") |>
-    unnest(cluster) |>
-    transmute(region = factor(group, levels = c("Vasc", "GM_L1", "GM_L2_6", "WM")), 
-              SpX = cluster)
+region_lookup <- c(
+    "Vasc"     = "Vasc",
+    "Vasc.im"  = "Vasc",
+    "Vasc.adj" = "Vasc",
+    "GL"       = "GM_L1",
+    "L2"       = "GM_L2_6",
+    "Inhib"    = "GM_L2_6",
+    "LD"       = "GM_L2_6",
+    "L5"       = "GM_L2_6",
+    "L6"       = "GM_L2_6",
+    "WMuf"     = "WM",
+    "WMd"      = "WM"
+)
 
-spe$region <- region_tb$region[match(spe$SpX, region_tb$SpX)]
+spe$region <- factor(region_lookup[spe$xSpD_anno], levels = c("Vasc", "GM_L1", "GM_L2_6", "WM"))
 
-table(spe$SpX, spe$region)
+table(spe$xSpD, spe$region)
 
 region_colors = c('Vasc' = "#E05AD2",
                   'GM_L1' = "#3446BD",
@@ -123,25 +110,22 @@ metadata(spe)$region_colors <- region_colors
 message(Sys.time(), " - Saving SPE object")
 
 metadata(spe)$SpX_colors <- SpX_colors
+metadata(spe)$xSpD_colors <- xSpD_colors
 
 qs2::qs_save(spe, here(data_dir, "spe_xenium_bansky.qs2"))
 
 # spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2"))
 
-#### Plot Vis clus SpX ####
-
-# pdf(here(plot_dir, "Bansky_k9_cluster_v_cell_type_broad.pdf"))
-# ComplexHeatmap::Heatmap(table(spe$clust_HARMONY_kmeans9, spe$cell_type_broad))
-# dev.off()
+#### Plot Vis clus xSpD ####
 
 map(unique(spe$BrNum), function(samp){
     vis_clus_class <- spatialLIBD::vis_clus(spe,
                                             sampleid = samp,
-                                            clustervar = "SpX",
+                                            clustervar = "xSpD",
                                             datatype = "Xenium",
                                             point_size = 1.5,
                                             # alpha = 0.5,
-                                            colors = SpX_colors,
+                                            colors = xSpD_colors,
                                             guide_point_size = 3)
     
     ggsave(vis_clus_class, filename = here(plot_dir, sprintf("Xenium_SpX_%s.png", samp)), width = 12)
@@ -166,7 +150,7 @@ map(unique(spe$BrNum), function(samp){
 source(here("code", "utils", "my_plot_reduced_dim.R"))
 
 
-walk2(c("clust_HARMONY_kmeans9","clust_HARMONY_kmeans12", "SpX"), list(cluster_colors,cluster_colors, SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
+walk2(c("clust_HARMONY_kmeans9","clust_HARMONY_kmeans12", "xSpD_anno"), list(cluster_colors,cluster_colors, xSpD_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xenium", dimred = "UMAP_HARMONY", my_var = .x, var_type = "cat", color_pal = .y))
 
 
 #### SpD gene expression ####
@@ -185,7 +169,6 @@ spd_marker_list <- map(rafalib::splitit(marker_stats_top$SpD), ~marker_stats_top
 spd_marker_list <- spd_marker_list[map_int(spd_marker_list, length) > 0]
 
 map(spd_marker_list, ~all(.x %in% rownames(spe)))
-map(spd_marker_list, ~all(.x %in% rownames(spe)))
 
 DeconvoBuddies::plot_marker_express_List(sce = spe, 
                                          spd_marker_list, 
@@ -196,24 +179,24 @@ DeconvoBuddies::plot_marker_express_List(sce = spe,
 
 DeconvoBuddies::plot_marker_express_List(sce = spe, 
                                          spd_marker_list, 
-                                         color_pal = SpX_colors,
-                                         cellType_col = "SpX",
-                                         pdf = here(plot_dir, "xenium_bansky_SpX_SpD_markers.pdf"),
+                                         color_pal = xSpD_colors,
+                                         cellType_col = "xSpD_anno",
+                                         pdf = here(plot_dir, "xenium_bansky_xSpD_SpD_markers.pdf"),
                                          gene_name_col = "gene_name")
 
 ## APOE expression
 spx_APOE <- DeconvoBuddies::plot_gene_express(sce = spe, 
                                   genes = "APOE",
-                                  category = "SpX",
-                                  color_pal = SpX_colors
+                                  category = "xSpD_anno",
+                                  color_pal = xSpD_colors
                                   )
 
-ggsave(spx_APOE, filename = here(plot_dir, "xenium_bansky_SpX_APOE.png"))
+ggsave(spx_APOE, filename = here(plot_dir, "xenium_bansky_xSpD_APOE.png"))
 
-apoe_mean <- as.data.frame(map_dbl(rafalib::splitit(spe$SpX), ~mean(logcounts(spe)["APOE",.x])))
+apoe_mean <- as.data.frame(map_dbl(rafalib::splitit(spe$xSpD_anno), ~mean(logcounts(spe)["APOE",.x])))
 colnames(apoe_mean) <- "APOE_mean"
 
-write.csv(apoe_mean, file = here(data_dir, "Xenium_SpX_APOE_mean_logcount.csv"))
+write.csv(apoe_mean, file = here(data_dir, "Xenium_xSpD_APOE_mean_logcount.csv"))
 
 #### scDot plots ####
 
@@ -237,14 +220,14 @@ spe |>
               groupLegends = FALSE)
 dev.off()
 
-pdf(here(plot_dir, "Xenium_bansky_SpX_dotplot_SpD_markers.pdf"))
+pdf(here(plot_dir, "Xenium_bansky_xSpD_dotplot_SpD_markers.pdf"))
 spe |>
     scDotPlot(features = marker_stats_top$gene,
-              group = "SpX",
-              groupAnno = "SpX",
+              group = "xSpD_anno",
+              groupAnno = "xSpD_anno",
               featureAnno = "SpD_marker",
               scale = TRUE,
-              annoColors = list(SpX = SpX_colors,
+              annoColors = list(xSpD_anno = xSpD_colors,
                                 SpD_marker = SpD_colors),
               clusterRows = FALSE,
               clusterColumns = TRUE,
@@ -252,138 +235,137 @@ spe |>
 
 spe |>
     scDotPlot(features = marker_stats_top$gene,
-              group = "SpX",
-              groupAnno = "SpX",
+              group = "xSpD_anno",
+              groupAnno = "xSpD_anno",
               featureAnno = "SpD_marker",
               scale = TRUE,
-              annoColors = list(SpX = SpX_colors,
+              annoColors = list(xSpD_anno = xSpD_colors,
                                 SpD_marker = SpD_colors),
               clusterRows = FALSE,
               clusterColumns = FALSE,
               groupLegends = FALSE)
 dev.off()
 
-#### Cell Type vs. SpX heatmap ####
-library("ComplexHeatmap")
+#### Cell Type vs. xSpD heatmap ####
 
 load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
-cell_v_SpX <- table(spe[, spe$spot_class == "singlet"]$SpX, spe[, spe$spot_class == "singlet"]$cell_type_anno)
+cell_v_xSpD <- table(spe[, spe$spot_class == "singlet"]$xSpD, spe[, spe$spot_class == "singlet"]$cell_type_anno)
 
-## proportion cell type (SpX rows sum to 1)
-cell_prop_v_SpX <- sweep(cell_v_SpX, 1, rowSums(cell_v_SpX), FUN = "/")
-rowSums(cell_prop_v_SpX)
+## proportion cell type (xSpD rows sum to 1)
+cell_prop_v_xSpD <- sweep(cell_v_xSpD, 1, rowSums(cell_v_xSpD), FUN = "/")
+rowSums(cell_prop_v_xSpD)
 
-## proportion SpX (cell type cols sum to 1)
-cell_v_SpX_prop <- sweep(cell_v_SpX, 2, colSums(cell_v_SpX), FUN = "/")
-colSums(cell_v_SpX_prop)
+## proportion xSpD (cell type cols sum to 1)
+cell_v_xSpD_prop <- sweep(cell_v_xSpD, 2, colSums(cell_v_xSpD), FUN = "/")
+colSums(cell_v_xSpD_prop)
 
 ## save & order proportion data 
 
-cell_v_SpX_prop_long <- cell_v_SpX |> 
+cell_v_xSpD_prop_long <- cell_v_xSpD |> 
     reshape2::melt() |>
-    rename(SpX = Var1, cell_type_anno = Var2, n_cell = value) |>
-    left_join(cell_prop_v_SpX |> 
+    rename(xSpD = Var1, cell_type_anno = Var2, n_cell = value) |>
+    left_join(cell_prop_v_xSpD |> 
                   reshape2::melt() |>
-                  rename(SpX = Var1, cell_type_anno = Var2, prop_cell_type = value)) |>
-    left_join(cell_v_SpX_prop |> 
+                  rename(xSpD = Var1, cell_type_anno = Var2, prop_cell_type = value)) |>
+    left_join(cell_v_xSpD_prop |> 
                   reshape2::melt() |>
-                  rename(SpX = Var1, cell_type_anno = Var2, prop_SpX = value)) |>
+                  rename(xSpD = Var1, cell_type_anno = Var2, prop_xSpD = value)) |>
     as_tibble()
 
-write.csv(cell_v_SpX_prop_long, file = here(data_dir, "cell_v_SpX_prop_long.csv"))
+write.csv(cell_v_xSpD_prop_long, file = here(data_dir, "cell_v_xSpD_prop_long.csv"))
 
-cell_v_SpX_max <- cell_v_SpX_prop_long |> 
+cell_v_xSpD_max <- cell_v_xSpD_prop_long |> 
     group_by(cell_type_anno) |>
     slice_max(n_cell) |> 
-    arrange(SpX, cell_type_anno) |>
+    arrange(xSpD, cell_type_anno) |>
     print(n= 38)
 
 
-cell_v_SpX_prop_long |> 
+cell_v_xSpD_prop_long |> 
     filter(cell_type_anno == "Oligo.3") |>
     arrange(-n_cell)
 
-## reorder cell types by max SpX
-cell_v_SpX <- cell_v_SpX[, cell_v_SpX_max$cell_type_anno]
-cell_prop_v_SpX <- cell_prop_v_SpX[, cell_v_SpX_max$cell_type_anno]
-cell_v_SpX_prop <- cell_v_SpX_prop[, cell_v_SpX_max$cell_type_anno]
+## reorder cell types by max xSpD
+cell_v_xSpD <- cell_v_xSpD[, cell_v_xSpD_max$cell_type_anno]
+cell_prop_v_xSpD <- cell_prop_v_xSpD[, cell_v_xSpD_max$cell_type_anno]
+cell_v_xSpD_prop <- cell_v_xSpD_prop[, cell_v_xSpD_max$cell_type_anno]
 
 ## create annotations 
-SpX_row_ha <- rowAnnotation(
-    SpX = rownames(cell_v_SpX),
-    col = list(SpX = SpX_colors),
+xSpD_row_ha <- rowAnnotation(
+    xSpD = rownames(cell_v_xSpD),
+    col = list(xSpD = xSpD_colors),
     show_legend = FALSE
 )
 
-all(colnames(cell_v_SpX) %in% names(cell_type_colors$anno))
+all(colnames(cell_v_xSpD) %in% names(cell_type_colors$anno))
 
 cell_type_col_ha <- HeatmapAnnotation(
-    cell_type = colnames(cell_v_SpX),
+    cell_type = colnames(cell_v_xSpD),
     col = list(cell_type = cell_type_colors$anno),
     show_legend = FALSE
 )
 
 
 ## PLOT HEATMAPS
-pdf(here(plot_dir, "Xenium_bansky_SpX_v_cell_type_heatmap.pdf"), width = 10)
+pdf(here(plot_dir, "Xenium_bansky_xSpD_v_cell_type_heatmap.pdf"), width = 10)
 
 ## counts
-ComplexHeatmap::Heatmap(cell_v_SpX,
+ComplexHeatmap::Heatmap(cell_v_xSpD,
                         name = "n singlet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha, 
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
-ComplexHeatmap::Heatmap(cell_v_SpX,
+ComplexHeatmap::Heatmap(cell_v_xSpD,
                         name = "n singlet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = FALSE,
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha, 
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
-## proportion cell type (SpX row sum to 1)
-ComplexHeatmap::Heatmap(cell_prop_v_SpX,
+## proportion cell type (xSpD row sum to 1)
+ComplexHeatmap::Heatmap(cell_prop_v_xSpD,
                         name = "prop cell type\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = FALSE,
-                        cluster_rows = TRUE,  ## cluster SpX
-                        left_annotation = SpX_row_ha, 
+                        cluster_rows = TRUE,  ## cluster xSpD
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
-ComplexHeatmap::Heatmap(cell_prop_v_SpX,
+ComplexHeatmap::Heatmap(cell_prop_v_xSpD,
                         name = "prop cell type\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = TRUE, ## Clsuter cell types
-                        cluster_rows = TRUE,  ## cluster SpX
-                        left_annotation = SpX_row_ha, 
+                        cluster_rows = TRUE,  ## cluster xSpD
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
-ComplexHeatmap::Heatmap(cell_prop_v_SpX,
+ComplexHeatmap::Heatmap(cell_prop_v_xSpD,
                         name = "prop cell type\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = FALSE,
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha, 
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
-## proportion SpX (cell type cols sum to 1)
-ComplexHeatmap::Heatmap(cell_v_SpX_prop,
-                        name = "prop SpX\nsinglet cells",
+## proportion xSpD (cell type cols sum to 1)
+ComplexHeatmap::Heatmap(cell_v_xSpD_prop,
+                        name = "prop xSpD\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = TRUE,
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha, 
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 
-ComplexHeatmap::Heatmap(cell_v_SpX_prop,
-                        name = "prop SpX\nsinglet cells",
+ComplexHeatmap::Heatmap(cell_v_xSpD_prop,
+                        name = "prop xSpD\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         cluster_columns = FALSE,
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha, 
+                        left_annotation = xSpD_row_ha, 
                         bottom_annotation = cell_type_col_ha)
 dev.off()
 
@@ -394,26 +376,26 @@ dev.off()
 # load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_cluster","sn_subcluster_hierarchical_cluster.Rdata"), verbose = TRUE)
 
 ## PLOT HEATMAPS
-pdf(here(plot_dir, "Xenium_bansky_SpX_v_cell_type_heatmap_broad.pdf"), width = 10)
+pdf(here(plot_dir, "Xenium_bansky_xSpD_v_cell_type_heatmap_broad.pdf"), width = 10)
 
-## proportion SpX (cell type cols sum to 1)
-ComplexHeatmap::Heatmap(cell_v_SpX_prop,
-                        name = "prop SpX\nsinglet cells",
+## proportion xSpD (cell type cols sum to 1)
+ComplexHeatmap::Heatmap(cell_v_xSpD_prop,
+                        name = "prop xSpD\nsinglet cells",
                         col = c("black", viridisLite::plasma(100)),
                         # cluster_columns = FALSE,
-                        column_split = gsub("\\..*", "", colnames(cell_v_SpX_prop)),
-                        # cluster_columns = cluster_within_group(cell_v_SpX_prop, gsub("\\..*", "", colnames(cell_v_SpX_prop))),
+                        column_split = gsub("\\..*", "", colnames(cell_v_xSpD_prop)),
+                        # cluster_columns = cluster_within_group(cell_v_xSpD_prop, gsub("\\..*", "", colnames(cell_v_xSpD_prop))),
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha,
+                        left_annotation = xSpD_row_ha,
                         bottom_annotation = cell_type_col_ha
                         )
 
-ComplexHeatmap::Heatmap(cell_v_SpX,
+ComplexHeatmap::Heatmap(cell_v_xSpD,
                         name = "n singlet cells",
                         col = c("black", viridisLite::plasma(100)),
-                        column_split = gsub("\\..*", "", colnames(cell_v_SpX)),
+                        column_split = gsub("\\..*", "", colnames(cell_v_xSpD)),
                         cluster_rows = FALSE, 
-                        left_annotation = SpX_row_ha,
+                        left_annotation = xSpD_row_ha,
                         bottom_annotation = cell_type_col_ha
                         )
 dev.off()
