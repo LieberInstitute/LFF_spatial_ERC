@@ -1,17 +1,17 @@
 **** Job starts ****
-Mon Jun 15 09:57:14 AM EDT 2026
+Thu Aug 27 09:42:13 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32885975
+Job id: 35234827
 Job name: 14_xenium_pseudobulk_model_register
-Node name: compute-140
+Node name: compute-127
 Task id: 
-Unloading conda_R/4.5
-Loading conda_R/4.5
+Unloading conda_R/4.5.x
+Loading conda_R/4.5.x
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5.x
 
  
 
@@ -106,7 +106,7 @@ The following objects are masked from ‘package:matrixStats’:
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
 ✔ ggplot2   4.0.3     ✔ tibble    3.3.1
 ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
-✔ purrr     1.2.1     
+✔ purrr     1.2.2     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ lubridate::%within%() masks IRanges::%within%()
 ✖ dplyr::collapse()     masks IRanges::collapse()
@@ -124,81 +124,56 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-qs2 0.2.1
-2026-06-15 09:57:31.058075 - load data from: spe_xenium_cell_types.qs2
+qs2 0.2.2
+2026-08-27 09:42:31.114746 - load data from: spe_xenium_bansky.qs2
 class: SpatialExperiment 
-dim: 366 302279 
-metadata(16): Samples Samples ... Samples Samples
-assays(4): counts nucleus_normcounts cell_normcounts logcounts
+dim: 366 447183 
+metadata(19): Samples Samples ... region_colors SpX_colors
+assays(6): counts nucleus_normcounts ... H0 H1
 rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
 rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
-colnames(302279): Br1039_aaaaepee-1 Br1039_aaagdfnc-1 ...
+colnames(447183): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
   Br5854_oiphphbd-1 Br5854_ojaapmlh-1
-colData names(74): Sample Barcode ... cell_type_anno cell_type_broad
-reducedDimNames(3): PCA TSNE UMAP
+colData names(82): Sample Barcode ... cell_type_broad region
+reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
 mainExpName: NULL
 altExpNames(0):
 spatialCoords names(2) : x_centroid y_centroid
 imgData names(1): sample_id
-ncells: 302279
-2026-06-15 09:57:43.595669 - Running Spatial Registration on: cell_type_anno
-2026-06-15 09:57:43.820722 make pseudobulk object
-2026-06-15 09:57:54.532364 dropping 50 pseudo-bulked samples that are below 'min_ncells'.
-2026-06-15 09:57:54.613477 drop lowly expressed genes
-2026-06-15 09:57:54.770243 normalize expression
-2026-06-15 09:57:55.154692 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-cell_type_anno.rds
-2026-06-15 09:57:55.380085 create model matrix
-2026-06-15 09:57:55.487522 run duplicateCorrelation()
-2026-06-15 09:57:59.54495 The estimated correlation is: 0.105985111617306
-2026-06-15 09:57:59.548471 computing enrichment statistics
-2026-06-15 09:58:07.331731 extract and reformat enrichment results
-2026-06-15 09:58:07.361481 running the baseline pairwise model
-2026-06-15 09:58:07.508328 computing pairwise statistics
-2026-06-15 09:58:08.434707 computing F-statistics
-2026-06-15 09:58:08.603746 - Saving Data
+ncells: 447183
+2026-08-27 09:43:19.252829 - Running Spatial Registration on: xSpD
+2026-08-27 09:43:19.585669 make pseudobulk object
+2026-08-27 09:43:30.017428 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2026-08-27 09:43:30.206437 drop lowly expressed genes
+2026-08-27 09:43:30.347602 normalize expression
+2026-08-27 09:43:30.584342 saving sce_pseudo to /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/14_xenium_pseudobulk_model_register/spe_xenium_pseudobulk-xSpD.rds
+2026-08-27 09:43:30.669556 create model matrix
+2026-08-27 09:43:30.797925 run duplicateCorrelation()
+2026-08-27 09:43:31.40643 The estimated correlation is: 0.317469137706628
+2026-08-27 09:43:31.409357 computing enrichment statistics
+2026-08-27 09:43:32.948882 extract and reformat enrichment results
+2026-08-27 09:43:32.97026 running the baseline pairwise model
+2026-08-27 09:43:32.991528 computing pairwise statistics
+2026-08-27 09:43:33.147015 computing F-statistics
+2026-08-27 09:43:33.197283 - Saving Data
 class: SpatialExperiment 
-dim: 366 528 
-metadata(16): Samples Samples ... Samples Samples
+dim: 366 176 
+metadata(19): Samples Samples ... region_colors SpX_colors
 assays(2): counts logcounts
 rownames(366): ENSG00000181409 ENSG00000141338 ... ENSG00000188818
   ENSG00000184307
 rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
-colnames(528): Br1039_Astro.1 Br1556_Astro.1 ... Br6098_Inhib.Vip
-  Br6538_Inhib.Vip
-colData names(79): Sample Barcode ... ncells pseudo_sum_umi
-reducedDimNames(3): PCA TSNE UMAP
+colnames(176): Br1039_xVasc Br1556_xVasc ... Br6098_xWMd Br6538_xWMd
+colData names(87): Sample Barcode ... ncells pseudo_sum_umi
+reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
 mainExpName: NULL
 altExpNames(0):
 spatialCoords names(0) :
 imgData names(0):
 Loading objects:
-  cell_type_colors
+  SpD_colors
 null device 
           1 
-Error in `purrr::map()`:
-ℹ In index: 2.
-Caused by error in `plot_gene_express()`:
-! any(genes %in% rownames(sce)) is not TRUE
-Backtrace:
-     ▆
-  1. ├─DeconvoBuddies::plot_marker_express_ALL(...)
-  2. │ └─purrr::map(...)
-  3. │   └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
-  4. │     ├─purrr:::with_indexed_errors(...)
-  5. │     │ └─base::withCallingHandlers(...)
-  6. │     ├─purrr:::call_with_cleanup(...)
-  7. │     └─DeconvoBuddies (local) .f(.x[[i]], ...)
-  8. │       └─DeconvoBuddies::plot_marker_express(...)
-  9. │         └─DeconvoBuddies::plot_gene_express(...)
- 10. │           └─base::stopifnot(any(genes %in% rownames(sce)))
- 11. │             └─base::stop(simpleError(msg, call = if (p <- sys.parent(1L)) sys.call(p)))
- 12. └─purrr (local) `<fn>`(`<smplErrr>`)
- 13.   └─cli::cli_abort(...)
- 14.     └─rlang::abort(...)
-Warning messages:
-1: In DeconvoBuddies::plot_marker_express_ALL(sce = spe, stats = top_DEGs,  :
+Error in DeconvoBuddies::plot_marker_express_ALL(sce = spe, stats = top_DEGs,  : 
   Stats is missing cell types, check you're using the correct marker stats data and cellType_col
-missing:Micro.5, OPC.1, OPC.3
-2: In plot_marker_express(sce = sce, stats = stats, cell_type = .x,  :
-  genes from gene_col don't match rownames(sce), be sure to supply the correct column from stats
 Execution halted

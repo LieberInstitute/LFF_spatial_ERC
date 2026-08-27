@@ -1,0 +1,845 @@
+**** Job starts ****
+Thu Aug 27 09:13:30 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 35234584
+Job name: 13.5_xenium_bansky_annotate
+Node name: compute-160
+Task id: 
+Loading conda_R/4.5.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5.x
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+qs2 0.2.2
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.26.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+2026-08-27 09:13:46.924367 - Load prelim spe data
+n cells: 447183
+Loading objects:
+  SpX_colors
+           
+            xSp11D01 xSp11D02 xSp11D03 xSp11D04 xSp11D05 xSp11D06 xSp11D07
+  xVasc            0        0        0        0        0        0        0
+  xVasc.im         0        0        0        0        0    19987        0
+  xGL              0        0        0        0        0        0    32827
+  xL2              0        0        0    39408        0        0        0
+  xInhib           0    24551        0        0        0        0        0
+  xLD              0        0        0        0    69150        0        0
+  xVasc.adj        0        0        0        0        0        0        0
+  xL5          56424        0        0        0        0        0        0
+  xL6              0        0        0        0        0        0        0
+  xWMuf            0        0    56971        0        0        0        0
+  xWMd             0        0        0        0        0        0        0
+           
+            xSp11D08 xSp11D09 xSp11D10 xSp11D11
+  xVasc        22751        0        0        0
+  xVasc.im         0        0        0        0
+  xGL              0        0        0        0
+  xL2              0        0        0        0
+  xInhib           0        0        0        0
+  xLD              0        0        0        0
+  xVasc.adj        0        0        0    22630
+  xL5              0        0        0        0
+  xL6              0    39849        0        0
+  xWMuf            0        0        0        0
+  xWMd             0        0    62635        0
+2026-08-27 09:14:41.993673 - Load RCTD data
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           15082            18048              941             8485 
+         Astro.5            Macro          Micro.1          Micro.2 
+           42241             6278              286            14691 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+            2372              344            18085              118 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+           11843               32             3799            11403 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+           16805            11905            62780            37828 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+            3569            36136            26970             8893 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+           21943            10057             6593             8208 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+            2341              982             5038             4970 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+            1444             5266             1706             5240 
+       Inhib.Sst        Inhib.Vip 
+            4646             9815 
+
+ Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib 
+ 84797   6278  35778 132887  27195  71999  60132  28117 
+           
+             Vasc GM_L1 GM_L2_6    WM
+  xVasc     22751     0       0     0
+  xVasc.im  19987     0       0     0
+  xGL           0 32827       0     0
+  xL2           0     0   39408     0
+  xInhib        0     0   24551     0
+  xLD           0     0   69150     0
+  xVasc.adj 22630     0       0     0
+  xL5           0     0   56424     0
+  xL6           0     0   39849     0
+  xWMuf         0     0       0 56971
+  xWMd          0     0       0 62635
+2026-08-27 09:14:50.985476 - Saving SPE object
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br1039.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br1556.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5367.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5599.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br1706.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5415.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5941.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br6538.png"
+
+[[9]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br2582.png"
+
+[[10]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5426.png"
+
+[[11]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5517.png"
+
+[[12]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br6098.png"
+
+[[13]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5161.png"
+
+[[14]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5460.png"
+
+[[15]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5634.png"
+
+[[16]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_SpX_Br5854.png"
+
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+[[1]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br1039.png"
+
+[[2]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br1556.png"
+
+[[3]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5367.png"
+
+[[4]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5599.png"
+
+[[5]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br1706.png"
+
+[[6]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5415.png"
+
+[[7]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5941.png"
+
+[[8]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br6538.png"
+
+[[9]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br2582.png"
+
+[[10]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5426.png"
+
+[[11]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5517.png"
+
+[[12]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br6098.png"
+
+[[13]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5161.png"
+
+[[14]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5460.png"
+
+[[15]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5634.png"
+
+[[16]]
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/13_xenium_bansky_embedding/Xenium_region_Br5854.png"
+
+ERC_xenium_UMAP_HARMONY_cat-xSpD.png - Saving 7 x 7 in image
+Loading objects:
+  marker_stats
+$`Vasc~Sp09D08`
+[1] TRUE
+
+$`L1~Sp09D05`
+[1] TRUE
+
+$`L2.3~Sp09D01`
+[1] TRUE
+
+$`LD~Sp09D02`
+[1] TRUE
+
+$`Inhib~Sp09D09`
+[1] TRUE
+
+$`L5~Sp09D03`
+[1] TRUE
+
+$`L6~Sp09D04`
+[1] TRUE
+
+$`WM~Sp09D06`
+[1] TRUE
+
+$`Vasc~Sp09D08`
+
+$`L1~Sp09D05`
+
+$`L2.3~Sp09D01`
+
+$`LD~Sp09D02`
+
+$`Inhib~Sp09D09`
+
+$`L5~Sp09D03`
+
+$`L6~Sp09D04`
+
+$`WM~Sp09D06`
+
+null device 
+          1 
+Saving 7 x 7 in image
+Loading objects:
+  SpD_colors
+
+ Vasc~Sp09D08    L1~Sp09D05  L2.3~Sp09D01    LD~Sp09D02 Inhib~Sp09D09 
+            1             5             5             2             5 
+   L5~Sp09D03    L6~Sp09D04 WM.uf~Sp09D07    WM~Sp09D06 
+            5             2             0             5 
+Warning messages:
+1: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+2: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+3: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+4: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+Warning messages:
+1: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+2: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+3: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+4: No shared levels found between `names(values)` of the manual scale and the
+data's fill values. 
+null device 
+          1 
+Loading objects:
+  cell_type_colors
+    xVasc  xVasc.im       xGL       xL2    xInhib       xLD xVasc.adj       xL5 
+        1         1         1         1         1         1         1         1 
+      xL6     xWMuf      xWMd 
+        1         1         1 
+         Astro.1          Astro.2          Astro.3          Astro.4 
+               1                1                1                1 
+         Astro.5            Macro          Micro.1          Micro.2 
+               1                1                1                1 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+               1                1                1                1 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+               1                1                1                1 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+               1                1                1                1 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+               1                1                1                1 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+               1                1                1                1 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+               1                1                1                1 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+               1                1                1                1 
+       Inhib.Sst        Inhib.Vip 
+               1                1 
+Joining with `by = join_by(xSpD, cell_type_anno)`
+Joining with `by = join_by(xSpD, cell_type_anno)`
+# A tibble: 39 × 5
+# Groups:   cell_type_anno [38]
+   xSpD     cell_type_anno   n_cell prop_cell_type prop_xSpD
+   <fct>    <fct>             <int>          <dbl>     <dbl>
+ 1 xVasc    Vasc.Endo          7021      0.361         0.259
+ 2 xVasc    Vasc.PC            9226      0.475         0.461
+ 3 xVasc.im Macro              1292      0.108         0.672
+ 4 xVasc.im Vasc.VLMC          2890      0.241         0.569
+ 5 xGL      Astro.4            2899      0.118         0.435
+ 6 xL2      OPC.1                 6      0.000281      0.24 
+ 7 xL2      Excit.L2           6907      0.324         0.603
+ 8 xInhib   Inhib.Pax6          283      0.0176        0.393
+ 9 xInhib   Inhib.Vip          2146      0.134         0.347
+10 xLD      Astro.1            4103      0.0890        0.319
+11 xLD      Astro.2            3864      0.0838        0.269
+12 xLD      Astro.5            7531      0.163         0.257
+13 xLD      Micro.2            2001      0.0434        0.231
+14 xLD      Micro.5            2674      0.0580        0.241
+15 xLD      OPC.2              1474      0.0320        0.198
+16 xLD      OPC.5              1912      0.0415        0.238
+17 xL5      OPC.1                 6      0.000198      0.24 
+18 xL5      Excit.L2_5.1       1231      0.0405        0.251
+19 xL5      Excit.L2_5.2       2372      0.0781        0.717
+20 xL5      Excit.L5.1         2600      0.0856        0.693
+21 xL5      Excit.L5.2          503      0.0166        0.378
+22 xL5      Excit.L5_6_NP       169      0.00556       0.575
+23 xL5      Inhib.Chandelier    252      0.00830       0.330
+24 xL5      Inhib.Lamp5_Lhx6    495      0.0163        0.192
+25 xL5      Inhib.Pvalb        1299      0.0428        0.475
+26 xL5      Inhib.Sst           676      0.0223        0.365
+27 xL6      Excit.L6_CT        1088      0.0492        0.778
+28 xL6      Excit.L6b          1107      0.0501        0.777
+29 xWMuf    Astro.3             166      0.00396       0.234
+30 xWMuf    Oligo.3           13936      0.333         0.265
+31 xWMd     Micro.1              96      0.00181       0.686
+32 xWMd     Micro.3             658      0.0124        0.532
+33 xWMd     Micro.4              51      0.000962      0.443
+34 xWMd     OPC.3                 5      0.0000943     0.417
+35 xWMd     OPC.4               364      0.00687       0.211
+36 xWMd     Oligo.1            5727      0.108         0.577
+37 xWMd     Oligo.2            6915      0.130         0.741
+38 xWMd     Oligo.4           13780      0.260         0.474
+# ℹ 1 more row
+# A tibble: 11 × 5
+   xSpD      cell_type_anno n_cell prop_cell_type prop_xSpD
+   <fct>     <fct>           <int>          <dbl>     <dbl>
+ 1 xWMuf     Oligo.3         13936         0.333    0.265  
+ 2 xWMd      Oligo.3         13325         0.251    0.254  
+ 3 xLD       Oligo.3          7360         0.160    0.140  
+ 4 xL6       Oligo.3          5814         0.263    0.111  
+ 5 xL5       Oligo.3          4411         0.145    0.0839 
+ 6 xGL       Oligo.3          2928         0.119    0.0557 
+ 7 xVasc.adj Oligo.3          2114         0.138    0.0402 
+ 8 xInhib    Oligo.3           992         0.0618   0.0189 
+ 9 xL2       Oligo.3           805         0.0377   0.0153 
+10 xVasc.im  Oligo.3           595         0.0495   0.0113 
+11 xVasc     Oligo.3           275         0.0141   0.00523
+[1] TRUE
+null device 
+          1 
+null device 
+          1 
+   Vasc   GM_L1 GM_L2_6      WM 
+      1       1       1       1 
+         Astro.1          Astro.2          Astro.3          Astro.4 
+               1                1                1                1 
+         Astro.5            Macro          Micro.1          Micro.2 
+               1                1                1                1 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+               1                1                1                1 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+               1                1                1                1 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+               1                1                1                1 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+               1                1                1                1 
+        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+               1                1                1                1 
+      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+               1                1                1                1 
+Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+               1                1                1                1 
+       Inhib.Sst        Inhib.Vip 
+               1                1 
+Joining with `by = join_by(region, cell_type_anno)`
+Joining with `by = join_by(region, cell_type_anno)`
+# A tibble: 38 × 5
+# Groups:   cell_type_anno [38]
+   region  cell_type_anno   n_cell prop_cell_type prop_region
+   <fct>   <fct>             <int>          <dbl>       <dbl>
+ 1 Vasc    Macro              1676      0.0358          0.872
+ 2 Vasc    Vasc.Endo         12648      0.270           0.466
+ 3 Vasc    Vasc.PC           14331      0.306           0.716
+ 4 Vasc    Vasc.VLMC          4791      0.102           0.944
+ 5 GM_L2_6 Astro.1           10059      0.0740          0.783
+ 6 GM_L2_6 Astro.2            9182      0.0675          0.638
+ 7 GM_L2_6 Astro.3             329      0.00242         0.465
+ 8 GM_L2_6 Astro.5           16124      0.119           0.550
+ 9 GM_L2_6 Micro.2            4134      0.0304          0.478
+10 GM_L2_6 Micro.5            6071      0.0446          0.547
+11 GM_L2_6 OPC.1                21      0.000154        0.84 
+12 GM_L2_6 OPC.2              4571      0.0336          0.613
+13 GM_L2_6 OPC.4               801      0.00589         0.464
+14 GM_L2_6 OPC.5              5469      0.0402          0.680
+15 GM_L2_6 Excit.L2          10821      0.0796          0.944
+16 GM_L2_6 Excit.L2_5.1       4185      0.0308          0.853
+17 GM_L2_6 Excit.L2_5.2       2976      0.0219          0.900
+18 GM_L2_6 Excit.L5.1         3466      0.0255          0.924
+19 GM_L2_6 Excit.L5.2         1236      0.00909         0.929
+20 GM_L2_6 Excit.L5_6_NP       270      0.00199         0.918
+21 GM_L2_6 Excit.L6_CT        1216      0.00894         0.870
+22 GM_L2_6 Excit.L6b          1169      0.00860         0.821
+23 GM_L2_6 Inhib.Chandelier    655      0.00482         0.857
+24 GM_L2_6 Inhib.Lamp5_Lhx6   1809      0.0133          0.702
+25 GM_L2_6 Inhib.Pax6          555      0.00408         0.770
+26 GM_L2_6 Inhib.Pvalb        2315      0.0170          0.847
+27 GM_L2_6 Inhib.Sst          1528      0.0112          0.825
+28 GM_L2_6 Inhib.Vip          5276      0.0388          0.853
+29 WM      Astro.4            2928      0.0309          0.440
+30 WM      Micro.1             104      0.00110         0.743
+31 WM      Micro.3             782      0.00824         0.632
+32 WM      Micro.4              68      0.000717        0.591
+33 WM      OPC.3                 6      0.0000632       0.5  
+34 WM      Oligo.1            7369      0.0777          0.742
+35 WM      Oligo.2            7814      0.0823          0.837
+36 WM      Oligo.3           27261      0.287           0.519
+37 WM      Oligo.4           19541      0.206           0.672
+38 WM      Oligo.5            1371      0.0144          0.666
+# A tibble: 4 × 5
+  region  cell_type_anno n_cell prop_cell_type prop_region
+  <fct>   <fct>           <int>          <dbl>       <dbl>
+1 WM      Oligo.3         27261         0.287       0.519 
+2 GM_L2_6 Oligo.3         19382         0.143       0.369 
+3 Vasc    Oligo.3          2984         0.0638      0.0568
+4 GM_L1   Oligo.3          2928         0.119       0.0557
+[1] TRUE
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2026-08-27 09:17:08 EDT"
+   user  system elapsed 
+172.564   9.689 217.650 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.3 Patched (2026-03-11 r90451)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-08-27
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5.x/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
+ AnnotationDbi          1.72.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ AnnotationHub          4.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ ape                    5.8-1     2024-12-16 [1] CRAN (R 4.5.3)
+ aplot                  0.3.1     2026-07-07 [1] CRAN (R 4.5.3)
+ attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
+ beachmat               2.26.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
+ benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
+ benchmarkmeData        2.0.0     2026-01-19 [2] CRAN (R 4.5.2)
+ Biobase              * 2.70.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocFileCache          3.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocGenerics         * 0.56.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocIO                 1.20.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocManager            1.30.27   2025-11-14 [2] CRAN (R 4.5.2)
+ BiocNeighbors          2.4.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocParallel           1.44.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocSingular           1.26.1    2025-11-17 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocVersion            3.22.0    2025-04-15 [2] Bioconductor 3.22 (R 4.5.0)
+ Biostrings             2.78.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.4     2026-08-20 [2] CRAN (R 4.5.3)
+ bitops                 1.1-0     2026-07-30 [2] CRAN (R 4.5.3)
+ blob                   1.3.0     2026-01-14 [2] CRAN (R 4.5.2)
+ bluster                1.20.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ bslib                  0.12.0    2026-08-04 [2] CRAN (R 4.5.3)
+ cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
+ Cairo                  1.7-0     2025-10-29 [2] CRAN (R 4.5.2)
+ cellranger             1.1.0     2016-07-27 [2] CRAN (R 4.5.0)
+ cigarillo              1.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ circlize               0.4.18    2026-04-04 [2] CRAN (R 4.5.3)
+ cli                    3.6.6     2026-04-09 [2] CRAN (R 4.5.3)
+ clue                   0.3-68    2026-03-26 [2] CRAN (R 4.5.3)
+ cluster                2.1.8.2   2026-02-05 [3] CRAN (R 4.5.3)
+ codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.3)
+ colorspace             2.1-3     2026-07-12 [2] CRAN (R 4.5.3)
+ ComplexHeatmap       * 2.26.1    2026-02-03 [2] Bioconductor 3.22 (R 4.5.2)
+ config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0     2025-07-07 [2] CRAN (R 4.5.1)
+ crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
+ curl                   8.0.0     2026-08-25 [2] CRAN (R 4.5.3)
+ data.table             1.18.6.1  2026-08-24 [2] CRAN (R 4.5.3)
+ DBI                    1.3.0     2026-02-25 [2] CRAN (R 4.5.2)
+ dbplyr                 2.6.0     2026-06-17 [2] CRAN (R 4.5.3)
+ DeconvoBuddies         1.2.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.3)
+ DelayedArray           0.36.1    2026-03-31 [2] Bioconductor 3.22 (R 4.5.3)
+ DelayedMatrixStats     1.32.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ deldir                 2.0-4     2024-02-28 [2] CRAN (R 4.5.0)
+ dichromat              2.0-1     2026-07-22 [2] CRAN (R 4.5.3)
+ digest                 0.6.39    2025-11-19 [2] CRAN (R 4.5.2)
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
+ dotCall64              1.2       2024-10-04 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1     2026-04-03 [2] CRAN (R 4.5.3)
+ dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.5.0)
+ DT                     0.34.0    2025-09-02 [2] CRAN (R 4.5.1)
+ edgeR                  4.8.2     2025-12-25 [2] Bioconductor 3.22 (R 4.5.2)
+ ExperimentHub          3.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
+ fastDummies            1.7.6     2026-04-22 [2] CRAN (R 4.5.3)
+ fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
+ fitdistrplus           1.2-6     2026-01-24 [2] CRAN (R 4.5.2)
+ fontBitstreamVera      0.1.1     2017-02-01 [1] CRAN (R 4.5.3)
+ fontLiberation         0.1.0     2016-10-15 [1] CRAN (R 4.5.3)
+ fontquiver             0.2.1     2017-02-01 [1] CRAN (R 4.5.3)
+ forcats              * 1.0.1     2025-09-25 [2] CRAN (R 4.5.1)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
+ fs                     2.1.0     2026-04-18 [2] CRAN (R 4.5.3)
+ future                 1.75.0    2026-07-20 [2] CRAN (R 4.5.3)
+ future.apply           1.20.2    2026-02-20 [2] CRAN (R 4.5.2)
+ gdtools                0.5.1     2026-05-25 [1] CRAN (R 4.5.3)
+ generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicAlignments      1.46.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ GenomicRanges        * 1.62.1    2025-12-08 [2] Bioconductor 3.22 (R 4.5.2)
+ GetoptLong             1.1.1     2026-04-08 [2] CRAN (R 4.5.3)
+ ggbeeswarm             0.7.3     2025-11-29 [2] CRAN (R 4.5.2)
+ ggfun                  0.2.1     2026-07-02 [2] CRAN (R 4.5.3)
+ ggiraph                0.9.6     2026-02-21 [1] CRAN (R 4.5.3)
+ ggplot2              * 4.0.3     2026-04-22 [2] CRAN (R 4.5.3)
+ ggplotify              0.1.3     2025-09-20 [1] CRAN (R 4.5.3)
+ ggrepel                0.9.8     2026-03-17 [2] CRAN (R 4.5.3)
+ ggridges               0.5.7     2025-08-27 [2] CRAN (R 4.5.1)
+ ggsci                  5.2.0     2026-07-30 [2] CRAN (R 4.5.3)
+ ggtree                 4.0.5     2026-03-17 [1] Bioconductor 3.22 (R 4.5.3)
+ GlobalOptions          0.1.4     2026-04-08 [2] CRAN (R 4.5.3)
+ globals                0.19.1    2026-03-13 [2] CRAN (R 4.5.3)
+ glue                   1.8.1     2026-04-17 [2] CRAN (R 4.5.3)
+ goftest                1.2-3     2021-10-07 [2] CRAN (R 4.5.0)
+ golem                  1.0.1     2026-07-07 [2] CRAN (R 4.5.3)
+ gridExtra              2.3.1     2026-06-25 [2] CRAN (R 4.5.3)
+ gridGraphics           0.5-1     2020-12-13 [1] CRAN (R 4.5.3)
+ gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2     2025-09-15 [2] CRAN (R 4.5.1)
+ hms                    1.1.4     2025-10-17 [2] CRAN (R 4.5.1)
+ htmltools              0.5.9     2025-12-04 [2] CRAN (R 4.5.2)
+ htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv                 1.6.17    2026-03-18 [2] CRAN (R 4.5.3)
+ httr                   1.4.8     2026-02-13 [2] CRAN (R 4.5.2)
+ httr2                  1.3.0     2026-07-13 [2] CRAN (R 4.5.3)
+ ica                    1.0-3     2022-07-08 [2] CRAN (R 4.5.0)
+ igraph                 2.3.3     2026-06-26 [2] CRAN (R 4.5.3)
+ IRanges              * 2.44.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ irlba                  2.3.7     2026-01-30 [2] CRAN (R 4.5.2)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
+ jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGREST               1.50.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ KernSmooth             2.23-26   2025-01-01 [3] CRAN (R 4.5.3)
+ labeling               0.4.3     2023-08-29 [2] CRAN (R 4.5.0)
+ later                  1.4.8     2026-03-05 [2] CRAN (R 4.5.3)
+ lattice                0.22-9    2026-02-09 [3] CRAN (R 4.5.3)
+ lazyeval               0.2.3     2026-04-04 [2] CRAN (R 4.5.3)
+ lifecycle              1.0.5     2026-01-08 [2] CRAN (R 4.5.2)
+ limma                  3.66.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ listenv                1.0.0     2026-06-22 [2] CRAN (R 4.5.3)
+ lmtest                 0.9-40    2022-03-21 [2] CRAN (R 4.5.0)
+ locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.5     2026-02-04 [2] CRAN (R 4.5.2)
+ magick                 2.9.1     2026-02-28 [2] CRAN (R 4.5.2)
+ magrittr               2.0.5     2026-04-04 [2] CRAN (R 4.5.3)
+ MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.5.3)
+ Matrix                 1.7-4     2025-08-28 [3] CRAN (R 4.5.3)
+ MatrixGenerics       * 1.22.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
+ metapod                1.18.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
+ miniUI                 0.1.2     2025-04-17 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168   2025-03-31 [3] CRAN (R 4.5.3)
+ otel                   0.2.0     2025-08-29 [2] CRAN (R 4.5.2)
+ paletteer              1.7.0     2026-01-08 [2] CRAN (R 4.5.2)
+ parallelly             1.48.0    2026-06-29 [2] CRAN (R 4.5.3)
+ patchwork              1.3.2     2025-08-25 [2] CRAN (R 4.5.1)
+ pbapply                1.7-4     2025-07-20 [2] CRAN (R 4.5.1)
+ pillar                 1.11.1    2025-09-17 [2] CRAN (R 4.5.1)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
+ plotly                 4.12.1    2026-07-22 [2] CRAN (R 4.5.3)
+ plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-9     2026-03-15 [2] CRAN (R 4.5.3)
+ polyclip               1.10-7    2024-07-23 [2] CRAN (R 4.5.0)
+ progressr              1.0.0     2026-07-04 [2] CRAN (R 4.5.3)
+ promises               1.5.0     2025-11-01 [2] CRAN (R 4.5.2)
+ purrr                * 1.2.2     2026-04-10 [2] CRAN (R 4.5.3)
+ qs2                  * 0.2.2     2026-06-03 [1] CRAN (R 4.5.3)
+ R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
+ rafalib                1.0.4     2025-04-08 [1] CRAN (R 4.5.3)
+ ragg                   1.5.2     2026-03-23 [2] CRAN (R 4.5.3)
+ RANN                   2.6.3     2026-08-24 [2] CRAN (R 4.5.3)
+ rappdirs               0.3.4     2026-01-17 [2] CRAN (R 4.5.2)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.2     2026-07-05 [2] CRAN (R 4.5.3)
+ RcppAnnoy              0.0.23    2026-01-12 [2] CRAN (R 4.5.2)
+ RcppHNSW               0.7.0     2026-05-26 [2] CRAN (R 4.5.3)
+ RcppParallel           6.2.1     2026-08-27 [2] CRAN (R 4.5.3)
+ RCurl                  1.98-1.20 2026-08-21 [2] CRAN (R 4.5.3)
+ readr                * 2.2.0     2026-02-19 [2] CRAN (R 4.5.2)
+ readxl                 1.5.0     2026-05-16 [2] CRAN (R 4.5.3)
+ rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
+ reshape2               1.4.5     2025-11-12 [2] CRAN (R 4.5.2)
+ restfulr               0.0.17    2026-06-11 [2] CRAN (R 4.5.3)
+ reticulate             1.46.0    2026-04-09 [2] CRAN (R 4.5.3)
+ rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.3.0     2026-07-05 [2] CRAN (R 4.5.3)
+ ROCR                   1.0-12    2026-01-23 [2] CRAN (R 4.5.2)
+ rprojroot              2.1.1     2025-08-26 [2] CRAN (R 4.5.1)
+ Rsamtools              2.26.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ RSpectra               0.16-2    2024-07-18 [2] CRAN (R 4.5.0)
+ RSQLite                3.53.3    2026-06-30 [2] CRAN (R 4.5.3)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
+ rtracklayer            1.70.1    2025-12-22 [2] Bioconductor 3.22 (R 4.5.2)
+ Rtsne                  0.17      2023-12-07 [2] CRAN (R 4.5.0)
+ S4Arrays               1.10.1    2025-12-01 [2] Bioconductor 3.22 (R 4.5.2)
+ S4Vectors            * 0.49.1-1  2026-04-05 [2] Bioconductor 3.23 (R 4.5.3)
+ S7                     0.2.2     2026-04-22 [2] CRAN (R 4.5.3)
+ sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
+ ScaledMatrix           1.18.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
+ scater                 1.38.1    2026-03-20 [2] Bioconductor 3.22 (R 4.5.3)
+ scattermore            1.2       2023-06-12 [2] CRAN (R 4.5.0)
+ scDotPlot            * 1.4.0     2025-10-30 [1] Bioconductor 3.22 (R 4.5.3)
+ scran                  1.38.1    2026-02-25 [2] Bioconductor 3.22 (R 4.5.2)
+ sctransform            0.4.3     2026-01-10 [2] CRAN (R 4.5.2)
+ scuttle                1.20.0    2025-10-30 [2] Bioconductor 3.22 (R 4.5.2)
+ Seqinfo              * 1.0.0     2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ sessioninfo          * 1.2.4     2026-06-04 [2] CRAN (R 4.5.3)
+ Seurat                 5.5.1     2026-06-26 [2] CRAN (R 4.5.3)
+ SeuratObject           5.4.0     2026-04-11 [2] CRAN (R 4.5.3)
+ shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
+ shiny                  1.14.0    2026-06-21 [2] CRAN (R 4.5.3)
+ shinyWidgets           0.9.1     2026-03-09 [2] CRAN (R 4.5.3)
+ SingleCellExperiment * 1.32.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ sp                     2.2-3     2026-07-19 [2] CRAN (R 4.5.3)
+ spam                   2.11-4    2026-05-29 [2] CRAN (R 4.5.3)
+ SparseArray            1.10.10   2026-03-30 [2] Bioconductor 3.22 (R 4.5.3)
+ sparseMatrixStats      1.22.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ SpatialExperiment    * 1.20.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ spatialLIBD          * 1.25.2    2026-08-13 [1] Github (LieberInstitute/spatialLIBD@94b68c6)
+ spatstat.data          3.1-9     2025-10-18 [2] CRAN (R 4.5.1)
+ spatstat.explore       3.8-2     2026-07-27 [2] CRAN (R 4.5.3)
+ spatstat.geom          3.8-2     2026-07-24 [2] CRAN (R 4.5.3)
+ spatstat.random        3.5-1     2026-07-27 [2] CRAN (R 4.5.3)
+ spatstat.sparse        3.2-0     2026-05-21 [2] CRAN (R 4.5.3)
+ spatstat.univar        3.2-0     2026-05-18 [2] CRAN (R 4.5.3)
+ spatstat.utils         3.2-4     2026-07-16 [2] CRAN (R 4.5.3)
+ statmod                1.5.2     2026-05-17 [2] CRAN (R 4.5.3)
+ stringfish             0.19.2    2026-08-04 [1] CRAN (R 4.5.3)
+ stringi                1.8.9     2026-08-04 [2] CRAN (R 4.5.3)
+ stringr              * 1.6.0     2025-11-04 [2] CRAN (R 4.5.2)
+ SummarizedExperiment * 1.40.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ survival               3.8-6     2026-01-16 [3] CRAN (R 4.5.3)
+ systemfonts            1.3.2     2026-03-05 [2] CRAN (R 4.5.3)
+ tensor                 1.5.1     2025-06-17 [2] CRAN (R 4.5.1)
+ textshaping            1.0.5     2026-03-06 [2] CRAN (R 4.5.3)
+ tibble               * 3.3.1     2026-01-11 [2] CRAN (R 4.5.2)
+ tidyr                * 1.3.2     2025-12-19 [2] CRAN (R 4.5.2)
+ tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
+ tidytree               0.4.8     2026-07-02 [1] CRAN (R 4.5.3)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0     2026-01-29 [2] CRAN (R 4.5.2)
+ treeio                 1.34.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.3)
+ tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6     2025-06-08 [2] CRAN (R 4.5.1)
+ uwot                   0.2.4     2025-11-10 [2] CRAN (R 4.5.2)
+ vctrs                  0.7.3     2026-04-11 [2] CRAN (R 4.5.3)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3     2026-02-04 [2] CRAN (R 4.5.2)
+ withr                  3.0.3     2026-06-19 [2] CRAN (R 4.5.3)
+ XML                    3.99-0.24 2026-08-21 [2] CRAN (R 4.5.3)
+ xtable                 1.8-8     2026-02-22 [2] CRAN (R 4.5.2)
+ XVector                0.50.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ yaml                   2.3.12    2025-12-10 [2] CRAN (R 4.5.2)
+ yulab.utils            0.2.4     2026-02-02 [2] CRAN (R 4.5.2)
+ zoo                    1.9-0     2026-07-31 [2] CRAN (R 4.5.3)
+
+ [1] /users/lhuuki/R/4.5.x
+ [2] /jhpce/shared/community/core/conda_R/4.5.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5.x/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Aug 27 09:17:09 AM EDT 2026
