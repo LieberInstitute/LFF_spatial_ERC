@@ -167,6 +167,19 @@ ggsave(visium_row, filename = here(plot_dir, "vis_SpD_rep_sections.png"), width 
 xen_vis_rep_grid <- visium_row / xenium_row
 ggsave(xen_vis_rep_grid, filename = here(plot_dir, "vis_SpD_SpX_rep_sections.png"), width = 18, height = 9)
 
+## plot APOE in both Xenium and Visium
+rownames(spe) <- rowData(spe)$gene_name
+APOE_v_xSpD <- DeconvoBuddies::plot_gene_express(spe_pb, genes = "APOE", category = "xSpD", color_pal = metadata(spe)$SpX_colors)
+
+ggsave(APOE_v_xSpD, filename = here(plot_dir, "ERC_Xenium_SpD_express_violin_APOE.png"), height = 4, width = 6)
+
+
+rownames(spe_vis) <- rowData(spe_vis)$gene_name
+APOE_v_vSpD <- DeconvoBuddies::plot_gene_express(spe_vis, genes = "APOE", category = "vSpD", color_pal = metadata(spe_vis)$SpD_colors)
+
+
+ggsave(APOE_v_vSpD + APOE_v_vSpD, filename = here(plot_dir, "ERC_both_SpD_express_violin_APOE.png"), height = 4, width = 6)
+
 # slurmjobs::job_single('15_xenium_vis', create_shell = TRUE, memory = '50G', command = "Rscript 15_xenium_vis.R")
 
 ## Reproducibility information
