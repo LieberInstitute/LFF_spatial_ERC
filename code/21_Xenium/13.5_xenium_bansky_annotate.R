@@ -155,17 +155,17 @@ walk2(c("xSpD"), list(SpX_colors),  ~my_plot_reduced_dim(spe, prefix = "ERC_xeni
 
 #### SpD gene expression ####
 
-load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_SpD.Rdata"), verbose = TRUE)
+load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_vSpD.Rdata"), verbose = TRUE)
 
 marker_stats_top <- marker_stats |>
     filter(gene %in% rownames(spe), MeanRatio >1) |>
     group_by(cellType.target) |>
     arrange(MeanRatio.rank) |>
     slice(1:5) |>
-    select(gene, MeanRatio.rank, SpD = cellType.target) |>
-    arrange(SpD)
+    select(gene, MeanRatio.rank, vSpD = cellType.target) |>
+    arrange(vSpD)
 
-spd_marker_list <- map(rafalib::splitit(marker_stats_top$SpD), ~marker_stats_top$gene[.x])
+spd_marker_list <- map(rafalib::splitit(marker_stats_top$vSpD), ~marker_stats_top$gene[.x])
 spd_marker_list <- spd_marker_list[map_int(spd_marker_list, length) > 0]
 
 map(spd_marker_list, ~all(.x %in% rownames(spe)))
@@ -195,9 +195,9 @@ write.csv(apoe_mean, file = here(data_dir, "Xenium_xSpD_APOE_mean_logcount.csv")
 
 load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
-rowData(spe)$SpD_marker <- NULL
-rowData(spe)$SpD_marker <- marker_stats_top$SpD[match(rownames(spe), marker_stats_top$gene)] 
-table(rowData(spe)$SpD_marker)
+rowData(spe)$vSpD_marker <- NULL
+rowData(spe)$vSpD_marker <- marker_stats_top$vSpD[match(rownames(spe), marker_stats_top$gene)] 
+table(rowData(spe)$vSpD_marker)
 
 
 pdf(here(plot_dir, "Xenium_bansky_xSpD_dotplot_SpD_markers.pdf"))
@@ -205,10 +205,21 @@ spe |>
     scDotPlot(features = marker_stats_top$gene,
               group = "xSpD",
               groupAnno = "xSpD",
-              featureAnno = "SpD_marker",
+              featureAnno = "vSpD_marker",
               scale = TRUE,
-              annoColors = list(xSpD_anno = SpX_colors,
-                                SpD_marker = SpD_colors),
+              annoColors = list(xSpD = SpX_colors,
+                                vSpD_marker = SpD_colors),
+              clusterRows = FALSE,
+              clusterColumns = FALSE,
+              groupLegends = FALSE)
+spe |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "xSpD",
+              groupAnno = "xSpD",
+              featureAnno = "vSpD_marker",
+              scale = TRUE,
+              annoColors = list(xSpD = SpX_colors,
+                                vSpD_marker = SpD_colors),
               clusterRows = FALSE,
               clusterColumns = TRUE,
               groupLegends = FALSE)
@@ -217,13 +228,15 @@ spe |>
     scDotPlot(features = marker_stats_top$gene,
               group = "xSpD",
               groupAnno = "xSpD",
-              featureAnno = "SpD_marker",
+              featureAnno = "vSpD_marker",
               scale = TRUE,
-              annoColors = list(xSpD_anno = SpX_colors,
-                                SpD_marker = SpD_colors),
-              clusterRows = FALSE,
-              clusterColumns = FALSE,
+              annoColors = list(xSpD = SpX_colors,
+                                vSpD_marker = SpD_colors),
+              clusterRows = TRUE,
+              clusterColumns = TRUE,
               groupLegends = FALSE)
+
+
 dev.off()
 
 #### Cell Type vs. xSpD heatmap ####
