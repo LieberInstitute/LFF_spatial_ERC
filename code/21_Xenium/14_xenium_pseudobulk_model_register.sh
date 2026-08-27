@@ -21,14 +21,14 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.5
+module load conda_R/4.5.x
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 14_xenium_pseudobulk_model_register.R --var cell_type_anno
-Rscript 14_xenium_pseudobulk_model_register.R --var SpX
+# Rscript 14_xenium_pseudobulk_model_register.R --var cell_type_anno
+Rscript 14_xenium_pseudobulk_model_register.R --var xSpD
 
 echo "**** Job ends ****"
 date

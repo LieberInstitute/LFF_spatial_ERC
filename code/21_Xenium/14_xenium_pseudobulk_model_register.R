@@ -14,11 +14,11 @@ library("getopt")
 
 # Import command-line parameters
 scec <- matrix(
-    c("var", "v", "1", "character", "registration variable"),
+    c("var", "v", "append", "character", "registration variable"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
-# opt$var <- "SpX"
+# opt$var <- "xSpD"
 
 data_dir <- here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -28,7 +28,7 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load data ####
 
-if(opt$var == "SpX"){
+if(opt$var == "xSpD"){
     ## load SpX version of spe (NOT filtered to singlets)
     spe_fn <- here("processed-data", "21_Xenium", "13_xenium_bansky_embedding","spe_xenium_bansky.qs2")
 } else if(opt$var == "cell_type_anno"){
@@ -49,14 +49,6 @@ message("ncells: ", ncol(spe))
 spe$APOE_syn <- gsub("/", ".", spe$APOE)
 
 var_reg <- opt$var
-if(opt$var == "SpX"){
-    
-    ## add syntacticly valid version of SpX
-    spe$SpX_syn <- gsub("~", "_", spe$SpX)
-    table(spe$SpX_syn)
-    
-    var_reg <- "SpX_syn"
-} 
 
 #### Run Spatial Registration Function ####
 message(Sys.time(), " - Running Spatial Registration on: ", var_reg)
@@ -73,8 +65,6 @@ modeling_results <-registration_wrapper(
     pseudobulk_rds_file = here(data_dir, sprintf("spe_xenium_pseudobulk-%s.rds", opt$var))
 )
 
-if(opt$var == "SpX") colnames(modeling_results$enrichment) <- gsub("_Sp", "~Sp", colnames(modeling_results$enrichment))
-
 message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, sprintf("xenium_modeling_results-%s.rds", opt$var)))
 
@@ -89,13 +79,12 @@ top_DEGs <- sig_genes_extract(n = 10,
                               sce_layer = spe_pb,
                               gene_name = "gene_name") 
 
-if(opt$var == "SpX") top_DEGs$test <- gsub("_", "~", top_DEGs$test)
 
 write.csv(top_DEGs, file = here(data_dir, sprintf("xenium_enrichment_modeling_%s_top100.csv", opt$var)), row.names = FALSE)
 # top_DEGs <- read.csv(here(data_dir, sprintf("xenium_enrichment_modeling_%s_top100.csv", opt$var)))
 
 
-if(opt$var == "SpX"){
+if(opt$var == "xSpD"){
     ref_name <- "Visium_SpD"
     
     #### Register to Visium SpD ####
@@ -169,7 +158,7 @@ dev.off()
 
 rownames(spe) <- rowData(spe)$gene_name
 
-if(opt$var == "SpX"){
+if(opt$var == "xSpD"){
     
     top_DEGs <- top_DEGs |> 
         mutate(test = factor(test, levels(spe_pb$SpX)),
@@ -189,7 +178,7 @@ if(opt$var == "SpX"){
                                         anno_col = "anno",
                                         color_pal = metadata(spe)$SpX_colors,
                                         gene_col = "gene",
-                                        cellType_col = "SpX",
+                                        cellType_col = "xSpD",
                                         pdf = here(plot_dir, "xenium_SpX_topEnrich_violin_express.pdf"))
     
     
@@ -201,8 +190,8 @@ if(opt$var == "SpX"){
     
     spe |>
         scDotPlot(features = top_DEGs$gene,
-                  group = "SpX",
-                  groupAnno = "SpX",
+                  group = "xSpD",
+                  groupAnno = "xSpD",
                   featureAnno = "SpX_marker",
                   scale = TRUE,
                   annoColors = list(SpX = metadata(spe)$SpX_colors,
@@ -213,8 +202,8 @@ if(opt$var == "SpX"){
     
     spe |>
         scDotPlot(features = top_DEGs$gene,
-                  group = "SpX",
-                  groupAnno = "SpX",
+                  group = "xSpD",
+                  groupAnno = "xSpD",
                   featureAnno = "SpX_marker",
                   scale = TRUE,
                   annoColors = list(SpX = metadata(spe)$SpX_colors,
@@ -229,8 +218,8 @@ if(opt$var == "SpX"){
     pdf(here(plot_dir, "xenium_SpX_topEnrich_dotplot_top5.pdf"))
     spe |>
         scDotPlot(features = top_DEGs |> filter(top <=5) |> pull(gene),
-                  group = "SpX",
-                  groupAnno = "SpX",
+                  group = "xSpD",
+                  groupAnno = "xSpD",
                   featureAnno = "SpX_marker",
                   scale = TRUE,
                   annoColors = list(SpX = metadata(spe)$SpX_colors,
@@ -310,9 +299,9 @@ library(DeconvoBuddies)
 
 rownames(spe_pb) <- rowData(spe_pb)$gene_name
 
-if(opt$var == "SpX"){
+if(opt$var == "xSpD"){
 
-    APOE_v_SpX <- plot_gene_express(spe_pb, genes = "APOE", category = "SpX", plot_type = 'boxplot', plot_points = TRUE, color_pal = metadata(spe_pb)$SpX_colors)
+    APOE_v_SpX <- plot_gene_express(spe_pb, genes = "APOE", category = "xSpD", plot_type = 'boxplot', plot_points = TRUE, color_pal = metadata(spe_pb)$SpX_colors)
     ggsave(APOE_v_SpX, filename = here(plot_dir, "expression_APOE_v_SpX.png"))
     
 } else if(opt$var == "cell_type_anno") {
