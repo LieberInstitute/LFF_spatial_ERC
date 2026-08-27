@@ -116,7 +116,7 @@ clr_boxplot_APOE <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~SpD) +
+    facet_wrap(~vSpD) +
     scale_fill_manual(values = APOE_genotype_colors) +
     theme_bw()
 
@@ -127,7 +127,7 @@ clr_boxplot_APOE_carrier <- clr_prop_long |>
     geom_boxplot(outlier.shape = NA) +
     # geom_jitter(aes(color = error), width = .1) +
     geom_jitter(width = .1) +
-    facet_wrap(~SpD, nrow = 1) +
+    facet_wrap(~vSpD, nrow = 1) +
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw() +
     theme(legend.position = "None")
@@ -138,7 +138,7 @@ clr_boxplot_Visium_slide <- clr_prop_long |>
     ggplot(aes(x = Visium_slide, y = CLR, fill = Visium_slide)) +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~SpD) +
+    facet_wrap(~vSpD) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
