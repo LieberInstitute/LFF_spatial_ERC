@@ -169,7 +169,7 @@ ggsave(xen_vis_rep_grid, filename = here(plot_dir, "vis_SpD_SpX_rep_sections.png
 
 ## plot APOE in both Xenium and Visium
 rownames(spe) <- rowData(spe)$gene_name
-APOE_v_xSpD <- DeconvoBuddies::plot_gene_express(spe_pb, genes = "APOE", category = "xSpD", color_pal = metadata(spe)$SpX_colors)
+APOE_v_xSpD <- DeconvoBuddies::plot_gene_express(spe, genes = "APOE", category = "xSpD", color_pal = metadata(spe)$SpX_colors)
 
 ggsave(APOE_v_xSpD, filename = here(plot_dir, "ERC_Xenium_SpD_express_violin_APOE.png"), height = 4, width = 6)
 
@@ -178,7 +178,35 @@ rownames(spe_vis) <- rowData(spe_vis)$gene_name
 APOE_v_vSpD <- DeconvoBuddies::plot_gene_express(spe_vis, genes = "APOE", category = "vSpD", color_pal = metadata(spe_vis)$SpD_colors)
 
 
-ggsave(APOE_v_vSpD + APOE_v_vSpD, filename = here(plot_dir, "ERC_both_SpD_express_violin_APOE.png"), height = 4, width = 6)
+ggsave(APOE_v_vSpD + APOE_v_xSpD, filename = here(plot_dir, "ERC_both_SpD_express_violin_APOE.png"), height = 4, width = 6)
+
+all_SpD_colors <- c(metadata(spe)$SpX_colors, metadata(spe_vis)$SpD_colors)
+
+APOE_express <- bind_rows(tibble(APOE_express = logcounts(spe)["APOE",],
+                                SpD = as.character(spe$xSpD),
+                                datatype = "Xenium"),
+                         tibble(APOE_express = logcounts(spe_vis)["APOE",],
+                                SpD = as.character(spe_vis$vSpD),
+                                datatype = "Visium")) |>
+    mutate(SpD = factor(SpD, levels = names(all_SpD_colors)))
+
+APOE_v_both_spd <- APOE_express |> 
+    ggplot(aes(x = SpD, y = APOE_express, fill = SpD)) +
+    geom_violin() +
+    stat_summary(
+        fun = median, 
+        geom = "crossbar", 
+        width = 0.5, 
+        color = "black", 
+        linewidth = 0.5)+
+    facet_wrap(~datatype, scales = "free_x") +
+    scale_fill_manual(values = all_SpD_colors) +
+    theme_bw() +
+    labs(y = "APOE expression (logcounts)") +
+    theme(legend.position = "None", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
+
+ggsave(APOE_v_both_spd, filename = here(plot_dir, "ERC_both_SpD_express_violin_APOE_v2.png"), height = 4, width = 6)
+
 
 # slurmjobs::job_single('15_xenium_vis', create_shell = TRUE, memory = '50G', command = "Rscript 15_xenium_vis.R")
 
