@@ -201,20 +201,38 @@ cell_type_colors_anno = c(Astro.1 = "#228B22",
                           Vasc.Endo = "#FF56AF",
                           Vasc.PC = "#DE289E",
                           Vasc.VLMC = "#DA5FE8", 
-                          Excit.L2="#4169E1",
-                          Excit.L2_5.1="#1E90FF",
-                          Excit.L2_5.2="#4682B4",
-                          Excit.L5.1 = "#87CEEB",
-                          Excit.L5.2="#212197",
-                          Excit.L5_6_NP="#6495ED",
-                          Excit.L6_CT="#0099CC",
-                          Excit.L6b="#2E2EFF",
-                          Inhib.Pax6="#DC143C",
-                          Inhib.Lamp5_Lhx6="#B22222",
-                          Inhib.Pvalb="#CD5C5C",
-                          Inhib.Vip="#F08080",
-                          Inhib.Chandelier="#E83E38",
-                          Inhib.Sst="#8B0000")
+                          # Excitatory -- blue gradient by depth: darker = superficial (L2), lighter = deep (L6)
+                          Excit.L2          = "#120788",  # anchored to vL2, pushed darker/more violet
+                          Excit.L2_5.mix    = "#386E94",  # muted steel, deliberately desaturated to separate from L2
+                          Excit.L5.RELN     = "#909CDF",  # = vL5a, unchanged (this cluster registers there)
+                          Excit.L2_5.RELN   = "#452BAB",  # from original Excit.L5.2 indigo, most saturated/violet
+                          Excit.L5.RORB     = "#0087F5",  # = vL5b, unchanged (this cluster registers there)
+                          Excit.L5_6.NP     = "#5F8DE3",  # from original Excit.L5_6_NP cornflower
+                          Excit.L6.CT       = "#36BDE2",  # from original Excit.L6_CT cyan-blue
+                          Excit.L6b         = "#74D5E7",  # anchored to vL6, lightened for the deepest domain
+                          # Inhibitory -- unchanged hex, updated labels/capitalization only
+                          Inhib.HTR3A       = "#DC143C",
+                          Inhib.LAMP5_LHX6  = "#B22222",
+                          Inhib.PVALB       = "#CD5C5C",
+                          Inhib.VIP         = "#F08080",
+                          Inhib.Chandelier  = "#E83E38",
+                          Inhib.SST         = "#8B0000")
+
+## pre-print neuron colors
+# Excit.L2="#4169E1",
+# Excit.L2_5.1="#1E90FF",
+# Excit.L2_5.2="#4682B4",
+# Excit.L5.1 = "#87CEEB",
+# Excit.L5.2="#212197",
+# Excit.L5_6_NP="#6495ED",
+# Excit.L6_CT="#0099CC",
+# Excit.L6b="#2E2EFF",
+# Inhib.Pax6="#DC143C",
+# Inhib.Lamp5_Lhx6="#B22222",
+# Inhib.Pvalb="#CD5C5C",
+# Inhib.Vip="#F08080",
+# Inhib.Chandelier="#E83E38",
+# Inhib.Sst="#8B0000"
 
 pdf(here(plot_dir, "ERC_cell_type_colors_anno.pdf"), height = 15, width = 11)
 test_pallet_plots(cell_type_colors_anno, "Cell Colors Anno: ERC")
