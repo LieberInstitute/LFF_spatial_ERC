@@ -50,6 +50,22 @@ modeling_results <-registration_wrapper(
 message(Sys.time(), " - Saving Data")
 saveRDS(modeling_results, file = here(data_dir, sprintf("sce_subcluster_modeling_results-%s.rds", cluster_var)))
 
+# modeling_results <- readRDS(here(data_dir, sprintf("sce_subcluster_modeling_results-%s.rds", cluster_var)))
+
+#### Export top genes ####
+
+sce_pb <- readRDS(here(data_dir, sprintf("sce_subcluster_pseudobulk-%s.rds", cluster_var)))
+
+
+top_enrich_genes <- sig_genes_extract(
+    modeling_results = modeling_results,
+    sce_layer = sce_pb,
+    n = 200,
+    model_type = "enrichment"
+)
+
+write.csv(top_enrich_genes, file = here(data_dir, sprintf("top_enrich_genes-%s.csv", cluster_var)))
+    
 # slurmjobs::job_single('29_sn_subcluster_model_pseudobulk', create_shell = TRUE, memory = '100G', command = "Rscript 29_sn_subcluster_model_pseudobulk.R --cluster 'cell_type_anno'")
 
 ## Reproducibility information

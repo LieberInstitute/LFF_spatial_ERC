@@ -51,11 +51,11 @@ marker_stats_MeanRatio <- get_mean_ratio(
 save(marker_stats_MeanRatio, file = here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", cluster)))
 # load(here(data_dir, sprintf("marker_stats_MeanRatio_%s.Rdata", cluster)))
 
-#### export top 10 ####
+#### export top MR genes ####
 marker_stats_MeanRatio |> 
     arrange(cellType.target) |>
-    filter(MeanRatio > 1, MeanRatio.rank <= 10) |>
-    write.csv(here(data_dir, sprintf("sn_MeanRatio_top10_%s.csv", celltype)), row.names = FALSE)
+    filter(MeanRatio.rank <= 50) |>
+    write.csv(here(data_dir, sprintf("sn_top_MeanRatio_%s.csv", cluster)), row.names = FALSE)
 
 
 #### plot hockey stick plots & top markers ####
