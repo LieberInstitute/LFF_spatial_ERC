@@ -204,8 +204,8 @@ cell_type_colors_anno = c(Astro.1 = "#228B22",
                           # Excitatory -- blue gradient by depth: darker = superficial (L2), lighter = deep (L6)
                           Excit.L2          = "#120788",  # anchored to vL2, pushed darker/more violet
                           Excit.L2_5.mix    = "#386E94",  # muted steel, deliberately desaturated to separate from L2
-                          Excit.L5.RELN     = "#909CDF",  # = vL5a, unchanged (this cluster registers there)
                           Excit.L2_5.RELN   = "#452BAB",  # from original Excit.L5.2 indigo, most saturated/violet
+                          Excit.L5.RELN     = "#909CDF",  # = vL5a, unchanged (this cluster registers there)
                           Excit.L5.RORB     = "#0087F5",  # = vL5b, unchanged (this cluster registers there)
                           Excit.L5_6.NP     = "#5F8DE3",  # from original Excit.L5_6_NP cornflower
                           Excit.L6.CT       = "#36BDE2",  # from original Excit.L6_CT cyan-blue

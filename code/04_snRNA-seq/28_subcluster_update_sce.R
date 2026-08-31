@@ -8,9 +8,6 @@ library("HDF5Array")
 library("here")
 library("sessioninfo")
 library("DeconvoBuddies")
-library("ComplexHeatmap")
-library("bluster")
-library("dendextend")
 library("readxl")
 
 ## source reduced dims function
@@ -78,6 +75,9 @@ sce$cell_type_broad <- as.character(sce$cell_type_broad)
 ## read in sub-cluster annotations
 subcluster_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27_sn_gila_check","ERCsn_glia_subcluster_info_anno.xlsx"))
 
+## update neuron annotations in review (Aug 2026)
+subcluster_neuron_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27.5_sn_neuron_check","ERC_neuron_subcluster_details_annotated.xlsx"))
+
 table(subcluster_anno$cell_type_anno, subcluster_anno$cell_type_broad)
 
 anno_table <- subcluster_anno |> 
@@ -95,6 +95,25 @@ sce[,sce$cell_type_class == "glia"]$cell_type_broad <- anno_table$cell_type_broa
 sce[,sce$cell_type_class == "glia"]$cell_type_anno <- anno_table$cell_type_anno
 ## Update passALL_metricQC
 sce[,sce$cell_type_class == "glia"]$passALL_metricQC <- anno_table$passALL_metricQC
+
+## apply the updated neuron annotations (in review, Aug 2026), same
+## structure as the glia update above, but keyed on cell_type_anno itself
+## (matching sce$cell_type_anno_r1) rather than a raw cell_type_k10 subcluster
+## id - so cell_type_anno names are unchanged for neurons; this table updates
+## cell_type_broad and passALL_metricQC for the existing names
+anno_table_neuron <- subcluster_neuron_anno |>
+    select(cell_type_anno, cell_type_broad, passALL_metricQC) |>
+    column_to_rownames("cell_type_anno")
+
+anno_table_neuron <- anno_table_neuron[sce[,sce$cell_type_class == "neuron"]$cell_type_anno_r1,]
+dim(anno_table_neuron)
+head(anno_table_neuron)
+
+nrow(anno_table_neuron) == ncol(sce[,sce$cell_type_class == "neuron"])
+stopifnot(!anyNA(anno_table_neuron$cell_type_broad))
+
+sce[,sce$cell_type_class == "neuron"]$cell_type_broad <- anno_table_neuron$cell_type_broad
+sce[,sce$cell_type_class == "neuron"]$passALL_metricQC <- anno_table_neuron$passALL_metricQC
 
 table(sce$cell_type_broad, sce$cell_type_broad_r1)
 table(sce$cell_type_anno, sce$cell_type_anno_r1)
@@ -246,7 +265,7 @@ message(Sys.time(), " - Plot marker genes")
 ## read in marker genes from lit
 lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
     mutate(in_data = gene_name %in% rowData(sce)$Symbol,
-           cell_type_broad = factor(cell_type_broad, levels = levels(anno_table$cell_type_broad))) |>
+           cell_type_broad = factor(cell_type_broad, levels = levels(sce$cell_type_broad))) |>
     arrange(cell_type_broad)
 
 ## missing from our data
@@ -408,12 +427,12 @@ message(Sys.time(), " - Save annotated sce")
 # save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
 saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC_subcluster"), replace=TRUE)
 
-# slurmjobs::job_single('28_subcluster_update_sce', create_shell = TRUE, memory = '10G', command = "28_subcluster_update_sce.R")
+# slurmjobs::job_single('28_subcluster_update_sce', create_shell = TRUE, memory = '10G', command = "Rscript 28_subcluster_update_sce.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
-session_info()
+sessioninfo::session_info()
 
