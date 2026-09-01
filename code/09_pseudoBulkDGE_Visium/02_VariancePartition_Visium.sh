@@ -1,17 +1,17 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=5G
+#SBATCH --mem=25G
 #SBATCH --job-name=02_VariancePartition_Visium
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-9%20
+#SBATCH --array=1-11%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_spd=(Vasc_Sp09D08 L1_Sp09D05 L2.3_Sp09D01 LD_Sp09D02 Inhib_Sp09D09 L5_Sp09D03 L6_Sp09D04 WM.uf_Sp09D07 WM_Sp09D06)
-spd=${all_spd[$(( $SLURM_ARRAY_TASK_ID / 1 % 9 ))]}
+all_spd=(vVasc vL1 vL2 vInhib vLD vL5a vL5b vL6 vWMuf vWMpv vWMd)
+spd=${all_spd[$(( $SLURM_ARRAY_TASK_ID / 1 % 11 ))]}
 
 ## Explicitly pipe script output to a log
 log_path=logs/02_VariancePartition_Visium_${spd}_${SLURM_ARRAY_TASK_ID}.txt
@@ -30,7 +30,7 @@ echo "Node name: ${HOSTNAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.4.x
+module load conda_R/4.5
 
 ## List current modules for reproducibility
 module list
