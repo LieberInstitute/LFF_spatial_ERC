@@ -61,14 +61,16 @@ cluster_data <- as.data.frame(colData(spe)[,c("sample_id", "Barcode",
 write.csv(cluster_data, file = here(data_dir, "Xenium_bansky_cluster_data.csv"))
 
 #### Cell type composition (RCTD label transfer) ####
-## Loaded early because cell-type composition feeds into the annotation
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
+
 message(Sys.time(), " - Load RCTD data")
 rctd_data <- qs_read(here("processed-data", "21_Xenium", "09_xenium_label_transfer_RCTD", "rctd_results_xenium.qs2"))
 
 spe$cell_id <- colnames(spe)
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df[colnames(spe), ])
 
-spe$cell_type_anno <- spe$first_type
+spe$cell_type_anno <- as.character(spe$first_type)
+
 spe$cell_type_broad <- factor(
     gsub("\\..*?$", "", spe$cell_type_anno),
     levels = c("Astro", "Macro", "Micro", "Oligo", "OPC", "Vasc", "Excit", "Inhib")
@@ -77,7 +79,21 @@ spe$cell_type_broad <- factor(
 table(spe$cell_type_anno)
 table(spe$cell_type_broad)
 
+spe$cell_type_class <- ifelse(grepl("Excit|Inhib", spe$cell_type_broad), "neuron", "glia")
 
+subcluster_neuron_anno <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "27.5_sn_neuron_check","ERC_neuron_subcluster_details_annotated.xlsx"))
+
+anno_table_neuron <- subcluster_neuron_anno |>
+    select(cell_type_anno_preprint = cell_type_anno, 
+           cell_type_broad, 
+           cell_type_anno = cell_type_update) |>
+    column_to_rownames("cell_type_anno_preprint")
+
+spe[,spe$cell_type_class == "neuron"]$cell_type_anno <- anno_table_neuron[as.character(spe[,spe$cell_type_class == "neuron"]$cell_type_anno),"cell_type_anno"]
+
+# table(spe[,spe$cell_type_class == "neuron"]$first_type, spe[,spe$cell_type_class == "neuron"]$cell_type_anno)
+
+spe$cell_type_anno <- factor(spe$cell_type_anno, levels = names(cell_type_colors$anno))
 
 #### Annotate Regions ####
 
@@ -242,7 +258,6 @@ dev.off()
 
 #### Cell Type vs. xSpD heatmap ####
 
-load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
 cell_v_xSpD <- table(spe[, spe$spot_class == "singlet"]$xSpD, spe[, spe$spot_class == "singlet"]$cell_type_anno)
 
