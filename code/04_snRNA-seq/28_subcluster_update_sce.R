@@ -33,8 +33,8 @@ load(here("processed-data","00_project_prep", "04_ancestry_check", "sample_ances
 
 samples_ancestry <- samples_ancestry |> column_to_rownames("BrNum")
 
-sce$Anc_Afr <- samples_ancestry[sce$sample_id, "Afr"]
-sce$Anc_Eur <- samples_ancestry[sce$sample_id, "Eur"]
+sce$Anc_Afr <- samples_ancestry[sce$sample_id, "YRI"]
+sce$Anc_Eur <- samples_ancestry[sce$sample_id, "CEU"]
 
 #### Add glia sub-clustering data ####
 
@@ -253,6 +253,8 @@ sce$cell_type_anno <- factor(sce$cell_type_anno, levels = cell_type_level_tb$cel
 
 levels(sce$cell_type_anno)
 pd <- as.data.frame(colData(sce))
+
+colnames(pd)
 
 #### plot on UMAP + TSNE ####
 message(Sys.time(), " - Plot UMAP + TSNE")
