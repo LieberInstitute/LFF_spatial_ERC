@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 #SBATCH -p shared
 #SBATCH --mem=10G
 #SBATCH --job-name=02_GO_analysis

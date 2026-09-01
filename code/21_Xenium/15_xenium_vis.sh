@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 #SBATCH -p shared
 #SBATCH --mem=50G
 #SBATCH --job-name=15_xenium_vis
