@@ -38,7 +38,7 @@ message(Sys.time(), " - Done pseudobulk")
 message(sprintf("nrow: %d, ncol: %d", nrow(spe_pseudo), ncol(spe_pseudo)))
 
 ## Check SpD frequency
-table(spe_pseudo$APOE_carrier, spe_pseudo$SpD)
+table(spe_pseudo$APOE_carrier, spe_pseudo$vSpD)
 
 #### Additional edits ####
 ## drop all NA cols
@@ -66,6 +66,7 @@ table(spe_pseudo$APOE_E4E4)
 spe_pseudo$nspots <- spe_pseudo$ncells
 
 #### Add PCAs ####
+message(Sys.time(), " - Run pseudobulk PCA")
 reducedDims(spe_pseudo) <- NULL
 
 spe_pseudo <- scater::runPCA(spe_pseudo, 
