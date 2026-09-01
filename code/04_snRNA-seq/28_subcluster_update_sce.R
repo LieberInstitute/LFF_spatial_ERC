@@ -65,18 +65,17 @@ table(sce$glia_subcluster, sce$cell_type_class)
 
 #### Update cell_type_anno ####
 
-sce$cell_type_anno_r1 <- sce$cell_type_anno
-sce$cell_type_broad_r1 <- sce$cell_type_broad
-
 ## unfactor
 sce$cell_type_anno <- as.character(sce$cell_type_anno)
 sce$cell_type_broad <- as.character(sce$cell_type_broad)
 
+#stash round 1 annotations
+sce$cell_type_anno_r1 <- sce$cell_type_anno
+sce$cell_type_broad_r1 <- sce$cell_type_broad
+
+
 ## read in sub-cluster annotations
 subcluster_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27_sn_gila_check","ERCsn_glia_subcluster_info_anno.xlsx"))
-
-## update neuron annotations in review (Aug 2026)
-subcluster_neuron_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27.5_sn_neuron_check","ERC_neuron_subcluster_details_annotated.xlsx"))
 
 table(subcluster_anno$cell_type_anno, subcluster_anno$cell_type_broad)
 
@@ -96,14 +95,18 @@ sce[,sce$cell_type_class == "glia"]$cell_type_anno <- anno_table$cell_type_anno
 ## Update passALL_metricQC
 sce[,sce$cell_type_class == "glia"]$passALL_metricQC <- anno_table$passALL_metricQC
 
-## apply the updated neuron annotations (in review, Aug 2026), same
-## structure as the glia update above, but keyed on cell_type_anno itself
-## (matching sce$cell_type_anno_r1) rather than a raw cell_type_k10 subcluster
-## id - so cell_type_anno names are unchanged for neurons; this table updates
-## cell_type_broad and passALL_metricQC for the existing names
+## apply the updated neuron annotations (in review, Aug 2026)
+## same structure as the glia update above, but keyed on cell_type_anno itself
+subcluster_neuron_anno <- read_excel(here("processed-data", "04_snRNA-seq", "27.5_sn_neuron_check","ERC_neuron_subcluster_details_annotated.xlsx"))
+
 anno_table_neuron <- subcluster_neuron_anno |>
-    select(cell_type_anno, cell_type_broad, passALL_metricQC) |>
-    column_to_rownames("cell_type_anno")
+    select(cell_type_anno_preprint = cell_type_anno, cell_type_broad, cell_type_anno = cell_type_update, passALL_metricQC) |>
+    column_to_rownames("cell_type_anno_preprint")
+
+current_neuron_levels <- unique(sce[,sce$cell_type_class == "neuron"]$cell_type_anno_r1)
+
+setequal(current_neuron_levels, rownames(anno_table_neuron))
+# current_neuron_levels[!current_neuron_levels %in% rownames(anno_table_neuron)]
 
 anno_table_neuron <- anno_table_neuron[sce[,sce$cell_type_class == "neuron"]$cell_type_anno_r1,]
 dim(anno_table_neuron)
@@ -112,8 +115,13 @@ head(anno_table_neuron)
 nrow(anno_table_neuron) == ncol(sce[,sce$cell_type_class == "neuron"])
 stopifnot(!anyNA(anno_table_neuron$cell_type_broad))
 
+sce[,sce$cell_type_class == "neuron"]$cell_type_anno <- anno_table_neuron$cell_type_anno
 sce[,sce$cell_type_class == "neuron"]$cell_type_broad <- anno_table_neuron$cell_type_broad
 sce[,sce$cell_type_class == "neuron"]$passALL_metricQC <- anno_table_neuron$passALL_metricQC
+
+# ## Fix Pax6/HTR3A broad cell type 
+# sce$cell_type_broad[sce$cell_type_anno == "Inhib.HTR3A"] <- "Inhib"
+# 
 
 table(sce$cell_type_broad, sce$cell_type_broad_r1)
 table(sce$cell_type_anno, sce$cell_type_anno_r1)
@@ -122,10 +130,14 @@ table(sce$passALL_metricQC)
 # FALSE   TRUE 
 # 2717 122966
 
-## Fix Pax6 broad cell type 
-sce$cell_type_broad[sce$cell_type_anno == "Inhib.Pax6"] <- "Inhib"
 
 table(sce$cell_type_anno, sce$cell_type_broad)
+
+#### Update factors & define colors for fine cell types ####
+
+# load colors
+load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
+
 
 ## update factors
 cell_type_levels_broad <- colData(sce) |>
@@ -139,15 +151,11 @@ sce$cell_type_broad <- factor(sce$cell_type_broad, levels =  cell_type_levels_br
 cell_type_level_tb <- colData(sce) |>
     as.data.frame() |> 
     count(cell_type_class, cell_type_broad, cell_type_anno) |>
-    filter(!grepl("QC|ambig", cell_type_anno)) |>
-    arrange(cell_type_broad) 
+    filter(!grepl("QC|ambig", cell_type_anno))  |>
+    mutate(cell_type_anno = factor(cell_type_anno, names(cell_type_colors$anno))) |>
+    arrange(cell_type_broad, cell_type_anno) 
 
 # cat(cell_type_level_tb$cell_type_anno, sep = "\n")
-
-#### Define colors for fine cell types ####
-
-# load colors
-load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbose = TRUE)
 
 
 #### summary by cluster ####
@@ -264,7 +272,7 @@ message(Sys.time(), " - Plot marker genes")
 
 ## read in marker genes from lit
 lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
-    mutate(in_data = gene_name %in% rowData(sce)$Symbol,
+    mutate(in_data = gene_name %in% rowData(sce)$gene_name,
            cell_type_broad = factor(cell_type_broad, levels = levels(sce$cell_type_broad))) |>
     arrange(cell_type_broad)
 
@@ -288,8 +296,7 @@ plot_marker_express_List(sce,
                          pdf_fn = here(plot_dir, "ERC_sn_sctype_lit_markers.pdf"),
                          cellType_col = "cell_type_anno",
                          gene_name_col = "gene_name",
-                         color_pal = cell_type_colors$anno,
-)
+                         color_pal = cell_type_colors$anno)
 
 
 ####  Cell Type Proportions ####
