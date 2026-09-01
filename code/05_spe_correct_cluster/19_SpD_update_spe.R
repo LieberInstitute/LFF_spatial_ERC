@@ -155,7 +155,8 @@ walk(apoe_anc$sample_id, function(s){
         sampleid = s,
         clustervar = "vSpD",
         colors = SpD_colors,
-        point_size = 1.3
+        point_size = 1.7,
+        guide_point_size = 3
     )
     ggsave(vc, filename = here(plot_dir_sample, sprintf("ERC_vSpD_%s.png", s)))
 })
