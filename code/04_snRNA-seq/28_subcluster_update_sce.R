@@ -267,37 +267,6 @@ walk(c("UMAP", "TSNE"),
                           color_pal = cell_type_colors$anno,
                           suffix = "sctype"))
 
-#### plot marker genes ####
-message(Sys.time(), " - Plot marker genes")
-
-## read in marker genes from lit
-lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
-    mutate(in_data = gene_name %in% rowData(sce)$gene_name,
-           cell_type_broad = factor(cell_type_broad, levels = levels(sce$cell_type_broad))) |>
-    arrange(cell_type_broad)
-
-## missing from our data
-lit_markers |> filter(!in_data)
-# gene_name cell_type          n_studies studies                  cell_type_broad in_data
-# <chr>     <chr>                  <dbl> <chr>                    <chr>           <lgl>  
-# 1 CEMP      Fibroblast                 1 Davila-Velderrain et al. Endo            FALSE  
-# 2 GR1A1     Glutamate receptor         1 Grubman et al.           Excit           FALSE  
-# 3 PDCH15    OPC                        1 Grubman et al.           OPC             FALSE 
-
-lit_markers <- lit_markers |> filter(in_data)
-
-lit_markers_list <- map(splitit(lit_markers$cell_type), ~lit_markers$gene_name[.x])
-
-lit_marker_order <- lit_markers |> count(cell_type_broad, cell_type) |> pull(cell_type)
-lit_markers_list <- lit_markers_list[lit_marker_order]
-
-plot_marker_express_List(sce, 
-                         lit_markers_list, 
-                         pdf_fn = here(plot_dir, "ERC_sn_sctype_lit_markers.pdf"),
-                         cellType_col = "cell_type_anno",
-                         gene_name_col = "gene_name",
-                         color_pal = cell_type_colors$anno)
-
 
 ####  Cell Type Proportions ####
 cell_class_proportions <- pd |>
@@ -433,6 +402,38 @@ message(Sys.time(), " - Save annotated sce")
 
 # save(sce, file = here("processed-data", "spe_objects", "sce_ERC.Rdata"))
 saveHDF5SummarizedExperiment(sce, dir = here("processed-data", "sce_objects", "sce_ERC_subcluster"), replace=TRUE)
+
+
+#### plot marker genes ####
+message(Sys.time(), " - Plot marker genes")
+
+## read in marker genes from lit
+lit_markers <- read_csv(here("processed-data","04_snRNA-seq", "00_lit_marker_genes", "lit_marker_summary.csv")) |>
+    mutate(in_data = gene_name %in% rowData(sce)$gene_name,
+           cell_type_broad = factor(cell_type_broad, levels = levels(sce$cell_type_broad))) |>
+    arrange(cell_type_broad)
+
+## missing from our data
+lit_markers |> filter(!in_data)
+# gene_name cell_type          n_studies studies                  cell_type_broad in_data
+# <chr>     <chr>                  <dbl> <chr>                    <chr>           <lgl>  
+# 1 CEMP      Fibroblast                 1 Davila-Velderrain et al. Endo            FALSE  
+# 2 GR1A1     Glutamate receptor         1 Grubman et al.           Excit           FALSE  
+# 3 PDCH15    OPC                        1 Grubman et al.           OPC             FALSE 
+
+lit_markers <- lit_markers |> filter(in_data)
+
+lit_markers_list <- map(splitit(lit_markers$cell_type), ~lit_markers$gene_name[.x])
+
+lit_marker_order <- lit_markers |> count(cell_type_broad, cell_type) |> pull(cell_type)
+lit_markers_list <- lit_markers_list[lit_marker_order]
+
+plot_marker_express_List(sce, 
+                         lit_markers_list, 
+                         pdf_fn = here(plot_dir, "ERC_sn_sctype_lit_markers.pdf"),
+                         cellType_col = "cell_type_anno",
+                         gene_name_col = "gene_name",
+                         color_pal = cell_type_colors$anno)
 
 # slurmjobs::job_single('28_subcluster_update_sce', create_shell = TRUE, memory = '10G', command = "Rscript 28_subcluster_update_sce.R")
 
