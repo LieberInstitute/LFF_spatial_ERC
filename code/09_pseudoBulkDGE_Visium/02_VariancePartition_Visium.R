@@ -24,14 +24,14 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
-# opt <- list(spd = "Vasc_Sp09D08")
+# opt <- list(spd = "vVasc")
 
 #### Load the data ####
 spe_pb <- readRDS(here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
-stopifnot(opt$spd %in% levels(spe_pb$SpD_syn))
+stopifnot(opt$spd %in% levels(spe_pb$vSpD))
 
 ## subset 
-spe_pb <- spe_pb[,spe_pb$SpD_syn == opt$spd]
+spe_pb <- spe_pb[,spe_pb$vSpD == opt$spd]
 message(sprintf("Subset to %s - %i spots", opt$spd, nrow(spe_pb)))
 
 ## add E4/E4 variable
@@ -82,7 +82,7 @@ varPart_summary <- map2_dfr(my_forms, names(my_forms), function(form, form_name)
         rownames_to_column("metric") |>
         pivot_longer(!metric) |>
         mutate(form = form_name,
-               SpD = opt$spd)
+               vSpD = opt$spd)
     
     vp <- sortCols(varPart)
     
@@ -97,10 +97,10 @@ write_csv(varPart_summary, file = here(data_dir, sprintf("Visium_varPart_summary
 
 # slurmjobs::job_single('02_VariancePartition_Visium', create_shell = TRUE, memory = '25G', command = "Rscript 02_VariancePartition_Visium.R")
 
-# slurmjobs::job_loop(loops = list(spd = levels(spe_pb$SpD_syn)),
-#                     name = "02_VariancePartition_Visium",
-#                     create_shell = TRUE,
-#                     create_script = FALSE)
+slurmjobs::job_loop(loops = list(spd = levels(spe_pb$vSpD)),
+                    name = "02_VariancePartition_Visium",
+                    create_shell = TRUE,
+                    create_script = FALSE)
 
 ## Reproducibility information
 print("Reproducibility information:")
