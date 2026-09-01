@@ -48,97 +48,97 @@ if(opt$datatype == "sn_broad"){
 
 #### pseudobulkDGE data ####
 
-pseudobulkDGE_fn <- list(sn_broad = here("processed-data", "08_pseudoBulkDGE_sn", "05_pseudoBulkDGE_sn_broad", "sn_pseudoBulkDGE.rds"),
-                          Visium = here("processed-data", "09_pseudoBulkDGE_Visium", "03_pseudoBulkDGE_Visium", "Visium_pseudoBulkDGE.rds"))
-
-pseudobulkDGE_fn <- pseudobulkDGE_fn[[opt$datatype]]
-
-stopifnot(file.exists(pseudobulkDGE_fn))
-
-## load main mod data
-pseudobulkDGE_data <- readRDS(pseudobulkDGE_fn)[c("carrier", "APOE", "E4E4", "carrier_i", "APOE_i", "E4E4_i")]
-## fix names
-names(pseudobulkDGE_data) <- main_mods
-
-pseudobulkDGE_data$carrier$Astro
-
-edit_pseudobulkDEG_data <- function(df_list){
-    
-    cluster_names <- names(df_list)
-    
-    df_combined <- map2_dfr(df_list, cluster_names, function(df, cluster){
-        df2 <- df |>
-            as.data.frame() |>
-            dplyr::select(gene_name,
-                          gene_id,
-                          pbDGE_logFC = logFC,
-                          pbDGE_AveExpr = AveExpr,
-                          pbDGE_t = t,
-                          pbDGE_P.Value = P.Value,
-                          pbDGE_adj.P.Val = adj.P.Val,
-                          pbDGE_B = B) |>
-            mutate(cluster = cluster) |>
-            as_tibble()
-        return(df2)
-    })
-    return(df_combined)
-}
-
-## edit select data
-pseudobulkDGE_data_select <- pseudobulkDGE_data[c("carrier", "e4e4")]
-pseudobulkDGE_data_tb <- map(pseudobulkDGE_data_select, edit_pseudobulkDEG_data)
-
-map(pseudobulkDGE_data_tb, ~.x |> filter(pbDGE_adj.P.Val < 0.2) |> count(cluster))
-map(pseudobulkDGE_data_tb, ~.x |> filter(pbDGE_adj.P.Val < 0.2))
-
-## datatype - mod
-pseudobulkDGE_data_tb$carrier
-    
-#### dreamlet data ####
-dreamlet_fn <- list(sn_broad = here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"),
-                         Visium = here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visium_TopTables.Rdata"))
-
-dreamlet_fn <- dreamlet_fn[[opt$datatype]]
-stopifnot(file.exists(dreamlet_fn))
-
-dreamlet_data <- get(load(dreamlet_fn))
-
-names(dreamlet_data)
-
-head(dreamlet_data$carrier)
-
-if(opt$datatype == "sn_broad"){
-    dreamlet_data_tb <- map(dreamlet_data[c("carrier", "e4e4")],
-                            ~.x |>
-                                as.data.frame() |>
-                                as_tibble() |>
-                                dplyr::select(gene_name = ID,
-                                              cluster = assay,
-                                              dream_logFC = logFC,
-                                              dream_AveExpr = AveExpr,
-                                              dream_t = t,
-                                              dream_P.Value = P.Value,
-                                              dream_adj.P.Val = adj.P.Val.cell_type,
-                                              dream_B = B))
-} else if(opt$datatype == "Visium"){
-    dreamlet_data_tb <- map(dreamlet_data[c("carrier", "e4e4")],
-                                   ~.x |>
-                                       as.data.frame() |>
-                                       as_tibble() |>
-                                       dplyr::select(gene_name = ID,
-                                                     cluster = assay,
-                                                     dream_logFC = logFC,
-                                                     dream_AveExpr = AveExpr,
-                                                     dream_t = t,
-                                                     dream_P.Value = P.Value,
-                                                     dream_adj.P.Val = adj.P.Val.SpD,
-                                                     dream_B = B))
-}
-
-map(dreamlet_data_tb, colnames)
-
-map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2) |> count(cluster))
-map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2))
+# pseudobulkDGE_fn <- list(sn_broad = here("processed-data", "08_pseudoBulkDGE_sn", "05_pseudoBulkDGE_sn_broad", "sn_pseudoBulkDGE.rds"),
+#                           Visium = here("processed-data", "09_pseudoBulkDGE_Visium", "03_pseudoBulkDGE_Visium", "Visium_pseudoBulkDGE.rds"))
+# 
+# pseudobulkDGE_fn <- pseudobulkDGE_fn[[opt$datatype]]
+# 
+# stopifnot(file.exists(pseudobulkDGE_fn))
+# 
+# ## load main mod data
+# pseudobulkDGE_data <- readRDS(pseudobulkDGE_fn)[c("carrier", "APOE", "E4E4", "carrier_i", "APOE_i", "E4E4_i")]
+# ## fix names
+# names(pseudobulkDGE_data) <- main_mods
+# 
+# # pseudobulkDGE_data$carrier$Astro
+# 
+# edit_pseudobulkDEG_data <- function(df_list){
+#     
+#     cluster_names <- names(df_list)
+#     
+#     df_combined <- map2_dfr(df_list, cluster_names, function(df, cluster){
+#         df2 <- df |>
+#             as.data.frame() |>
+#             dplyr::select(gene_name,
+#                           gene_id,
+#                           pbDGE_logFC = logFC,
+#                           pbDGE_AveExpr = AveExpr,
+#                           pbDGE_t = t,
+#                           pbDGE_P.Value = P.Value,
+#                           pbDGE_adj.P.Val = adj.P.Val,
+#                           pbDGE_B = B) |>
+#             mutate(cluster = cluster) |>
+#             as_tibble()
+#         return(df2)
+#     })
+#     return(df_combined)
+# }
+# 
+# ## edit select data
+# pseudobulkDGE_data_select <- pseudobulkDGE_data[c("carrier", "e4e4")]
+# pseudobulkDGE_data_tb <- map(pseudobulkDGE_data_select, edit_pseudobulkDEG_data)
+# 
+# map(pseudobulkDGE_data_tb, ~.x |> filter(pbDGE_adj.P.Val < 0.2) |> count(cluster))
+# map(pseudobulkDGE_data_tb, ~.x |> filter(pbDGE_adj.P.Val < 0.2))
+# 
+# ## datatype - mod
+# pseudobulkDGE_data_tb$carrier
+#     
+# #### dreamlet data ####
+# dreamlet_fn <- list(sn_broad = here("processed-data", "10_dreamlet_sn", "05_compile_dreamlet_sn", "dreamlet_sn_TopTables.Rdata"),
+#                          Visium = here("processed-data", "11_dreamlet_Visium", "05_compile_dreamlet_Visium", "dreamlet_Visium_TopTables.Rdata"))
+# 
+# dreamlet_fn <- dreamlet_fn[[opt$datatype]]
+# stopifnot(file.exists(dreamlet_fn))
+# 
+# dreamlet_data <- get(load(dreamlet_fn))
+# 
+# names(dreamlet_data)
+# 
+# head(dreamlet_data$carrier)
+# 
+# if(opt$datatype == "sn_broad"){
+#     dreamlet_data_tb <- map(dreamlet_data[c("carrier", "e4e4")],
+#                             ~.x |>
+#                                 as.data.frame() |>
+#                                 as_tibble() |>
+#                                 dplyr::select(gene_name = ID,
+#                                               cluster = assay,
+#                                               dream_logFC = logFC,
+#                                               dream_AveExpr = AveExpr,
+#                                               dream_t = t,
+#                                               dream_P.Value = P.Value,
+#                                               dream_adj.P.Val = adj.P.Val.cell_type,
+#                                               dream_B = B))
+# } else if(opt$datatype == "Visium"){
+#     dreamlet_data_tb <- map(dreamlet_data[c("carrier", "e4e4")],
+#                                    ~.x |>
+#                                        as.data.frame() |>
+#                                        as_tibble() |>
+#                                        dplyr::select(gene_name = ID,
+#                                                      cluster = assay,
+#                                                      dream_logFC = logFC,
+#                                                      dream_AveExpr = AveExpr,
+#                                                      dream_t = t,
+#                                                      dream_P.Value = P.Value,
+#                                                      dream_adj.P.Val = adj.P.Val.SpD,
+#                                                      dream_B = B))
+# }
+# 
+# map(dreamlet_data_tb, colnames)
+# 
+# map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2) |> count(cluster))
+# map(dreamlet_data_tb, ~.x |> filter(dream_adj.P.Val < 0.2))
 
 #### voomLmFit data ####
 
@@ -201,7 +201,7 @@ vlmf_model_summary_bar <- vlmf_model_summary |>
 ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar.png", opt$datatype)))
 
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
-    select(-n_FDR05) |>
+    select(-n_FDR05, -n_genes) |>
     mutate(nDown = -1*nDown) |>
     pivot_longer(!c(cluster, mod), names_to = "reg", values_to = "n_genes") |>
     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
@@ -211,7 +211,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     geom_text(aes(label = abs(n_genes))) +
     facet_wrap(~mod, ncol = 1) +
     theme_bw() +
-    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "FDR < 0.05") +
+    labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "carrier model, FDR < 0.05") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ## poster version
@@ -257,9 +257,10 @@ walk(c("E4E4", "carrier"), ~custom_volcano(data = vlmf_data_tb[[.x]] |> filter(g
 
 #### Add other data to vlmf data ####
 
-carrier_data <- vlmf_data_tb$carrier |>
-    left_join(pseudobulkDGE_data_tb$carrier)|>
-    left_join(dreamlet_data_tb$carrier)
+carrier_data <- vlmf_data_tb$carrier 
+
+# left_join(pseudobulkDGE_data_tb$carrier)|>
+#     left_join(dreamlet_data_tb$carrier)
 
 colnames(carrier_data)
 
@@ -272,17 +273,17 @@ write.csv(carrier_data, file = here(data_dir, sprintf("DGE_results_carrier_%s.cs
 # carrier_data <- readRDS(here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
 
 #### compare t-stats ####
-source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
+# source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 
-## compare t-stats
-compare_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
-compare_stats_scatter(carrier_data, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-compare_stats_scatter(carrier_data, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-
-## compare logFC
-compare_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", model_name = "carrier")
-compare_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
-compare_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# ## compare t-stats
+# compare_stats_scatter(carrier_data, mX= "dream", mY="pbDGE", model_name = "carrier")
+# compare_stats_scatter(carrier_data, mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# compare_stats_scatter(carrier_data, mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# 
+# ## compare logFC
+# compare_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="pbDGE", model_name = "carrier")
+# compare_stats_scatter(carrier_data, stat = "logFC", mX= "dream", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
+# compare_stats_scatter(carrier_data, stat = "logFC", mX= "pbDGE", mY="vlmf", model_name = "carrier", FDR_cut_mY = 0.05)
 
 
 #### compare stats cluster vs. cluster 
