@@ -203,6 +203,15 @@ walk(c("UMAP", "TSNE"),
                           var_type = "cat",
                           dimred = .x,
                           my_var = "cell_type_anno",
+                          color_pal = cell_type_colors$anno,
+                          void = TRUE))
+
+walk(c("UMAP", "TSNE"),
+     ~my_plot_reduced_dim(sce,
+                          prefix = "ERC_sn_subcluster",
+                          var_type = "cat",
+                          dimred = .x,
+                          my_var = "cell_type_anno",
                           facet = TRUE,
                           color_pal = cell_type_colors$anno))
 
@@ -297,6 +306,14 @@ sum_by_cell_type_carrier <- pd |>
 ggsave(sum_by_cell_type_carrier, filename = here(plot_dir, "ERC_sn_subtype_sum_boxplot_APOE_carrier.png"))
 
 
-    
+# slurmjobs::job_single('33_sn_subcluster_summary', create_shell = TRUE, memory = '25G', command = "Rscript 33_sn_subcluster_summary.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
+
 
 
