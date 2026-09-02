@@ -1,13 +1,17 @@
 **** Job starts ****
-Wed May 27 10:49:48 AM EDT 2026
+Tue Sep  1 10:09:02 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 32207637
+Job id: 35464163
 Job name: 10_xenium_cell_types
-Node name: compute-129
+Node name: compute-053
 Task id: 
-Unloading conda_R/4.5
+Unloading conda_R/4.5.x
 Loading conda_R/4.5
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5.x => conda_R/4.5
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -135,8 +139,8 @@ Loading objects:
   APOE_carrier_colors_dark
   sample_colors
   APOE_carrier_anc_colors
-2026-05-27 10:50:07.029018- Load xenium data
-2026-05-27 10:50:22.131722- Load rctd data
+2026-09-01 22:09:55.253329- Load xenium data
+2026-09-01 22:10:42.740155- Load rctd data
 [1] "results_df"      "weights"         "weights_doublet" "score_mat"      
 [5] "singlet_scores" 
                        spot_class first_type second_type first_class
@@ -156,12 +160,32 @@ Br1039_aaamomng-1        FALSE 194.25099      226.9972     TRUE         TRUE
 [1] 3124
 [1] TRUE
 Loading required namespace: spacexr
-[1] TRUE
 
- Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib 
- 84797   6278  35778 132887  27195  71999  60132  28117 
-2026-05-27 10:50:34.779795 - Saving singlet only SPE object
-2026-05-27 10:50:45.6248Load and add RCTD results
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           15082            18048              941             8485 
+         Astro.5         Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN 
+           42241            21943            10057             2341 
+   Excit.L5_6.NP    Excit.L5.RELN    Excit.L5.RORB      Excit.L6.CT 
+             982             6593             8208             5038 
+       Excit.L6b Inhib.Chandelier      Inhib.HTR3A Inhib.LAMP5_LHX6 
+            4970             1444             1706             5266 
+     Inhib.PVALB        Inhib.SST        Inhib.VIP            Macro 
+            5240             4646             9815             6278 
+         Micro.1          Micro.2          Micro.3          Micro.4 
+             286            14691             2372              344 
+         Micro.5          Oligo.1          Oligo.2          Oligo.3 
+           18085            16805            11905            62780 
+         Oligo.4          Oligo.5            OPC.1            OPC.2 
+           37828             3569              118            11843 
+           OPC.3            OPC.4            OPC.5        Vasc.Endo 
+              32             3799            11403            36136 
+         Vasc.PC        Vasc.VLMC 
+           26970             8893 
+
+ Astro  Macro  Micro    OPC  Oligo   Vasc  Excit  Inhib 
+ 84797   6278  35778  27195 132887  71999  60132  28117 
+2026-09-01 22:11:18.960434 - Saving singlet only SPE object
+2026-09-01 22:11:56.291212Load and add RCTD results
        
          FALSE
   FALSE 447183
@@ -171,24 +195,24 @@ Loading required namespace: spacexr
 
          Astro.1          Astro.2          Astro.3          Astro.4 
            15082            18048              941             8485 
-         Astro.5            Macro          Micro.1          Micro.2 
-           42241             6278              286            14691 
-         Micro.3          Micro.4          Micro.5            OPC.1 
-            2372              344            18085              118 
-           OPC.2            OPC.3            OPC.4            OPC.5 
-           11843               32             3799            11403 
-         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
-           16805            11905            62780            37828 
-         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
-            3569            36136            26970             8893 
-        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
-           21943            10057             6593             8208 
-      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
-            2341              982             5038             4970 
-Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
-            1444             5266             1706             5240 
-       Inhib.Sst        Inhib.Vip 
-            4646             9815 
+         Astro.5         Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN 
+           42241            21943            10057             2341 
+   Excit.L5_6.NP    Excit.L5.RELN    Excit.L5.RORB      Excit.L6.CT 
+             982             6593             8208             5038 
+       Excit.L6b Inhib.Chandelier      Inhib.HTR3A Inhib.LAMP5_LHX6 
+            4970             1444             1706             5266 
+     Inhib.PVALB        Inhib.SST        Inhib.VIP            Macro 
+            5240             4646             9815             6278 
+         Micro.1          Micro.2          Micro.3          Micro.4 
+             286            14691             2372              344 
+         Micro.5          Oligo.1          Oligo.2          Oligo.3 
+           18085            16805            11905            62780 
+         Oligo.4          Oligo.5            OPC.1            OPC.2 
+           37828             3569              118            11843 
+           OPC.3            OPC.4            OPC.5        Vasc.Endo 
+              32             3799            11403            36136 
+         Vasc.PC        Vasc.VLMC 
+           26970             8893 
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 `summarise()` has regrouped the output.
@@ -204,18 +228,18 @@ Saving 7 x 7 in image
 2 doublet_certain   second_type 121612
 3 doublet_uncertain first_type   17830
 # A tibble: 76 × 3
-   type       cell_type_anno     n
-   <chr>      <fct>          <int>
- 1 first_type Astro.1         2160
- 2 first_type Astro.2         3372
- 3 first_type Astro.3          226
- 4 first_type Astro.4         1313
- 5 first_type Astro.5         9209
- 6 first_type Macro           3630
- 7 first_type Micro.1          132
- 8 first_type Micro.2         5091
- 9 first_type Micro.3         1049
-10 first_type Micro.4          216
+   type       cell_type_anno      n
+   <chr>      <fct>           <int>
+ 1 first_type Astro.1          2160
+ 2 first_type Astro.2          3372
+ 3 first_type Astro.3           226
+ 4 first_type Astro.4          1313
+ 5 first_type Astro.5          9209
+ 6 first_type Excit.L2         9218
+ 7 first_type Excit.L2_5.mix   3663
+ 8 first_type Excit.L2_5.RELN   931
+ 9 first_type Excit.L5_6.NP     546
+10 first_type Excit.L5.RELN    2736
 # ℹ 66 more rows
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by barcode and sample_id.
@@ -224,42 +248,42 @@ Saving 7 x 7 in image
 ℹ Use `summarise(.by = c(barcode, sample_id))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
 # A tibble: 604 × 2
-   doublet                  n
-   <chr>                <int>
- 1 Macro-Vasc.VLMC       4156
- 2 Astro.5-Excit.L2      3439
- 3 Astro.5-Micro.5       3257
- 4 Astro.2-Excit.L2      2713
- 5 Macro-Vasc.PC         2640
- 6 Astro.5-Excit.L2_5.1  2281
- 7 Astro.5-Vasc.Endo     2261
- 8 Astro.5-Micro.2       2248
- 9 Astro.5-Oligo.4       2070
-10 Astro.5-Oligo.3       1698
-11 Oligo.3-Excit.L6_CT   1612
-12 Oligo.3-Excit.L6b     1605
-13 Oligo.3-Excit.L2_5.1  1530
-14 Oligo.1-Excit.L2      1464
-15 Astro.5-Excit.L5.1    1395
-16 Astro.5-Inhib.Vip     1384
-17 Astro.5-Excit.L2_5.2  1314
-18 Astro.5-Oligo.1       1256
-19 Astro.1-Excit.L2      1103
-20 Astro.2-Excit.L5.1    1089
+   doublet                    n
+   <chr>                  <int>
+ 1 Macro-Vasc.VLMC         4156
+ 2 Astro.5-Excit.L2        3439
+ 3 Astro.5-Micro.5         3257
+ 4 Astro.2-Excit.L2        2713
+ 5 Macro-Vasc.PC           2640
+ 6 Astro.5-Excit.L2_5.mix  2281
+ 7 Astro.5-Vasc.Endo       2261
+ 8 Astro.5-Micro.2         2248
+ 9 Astro.5-Oligo.4         2070
+10 Astro.5-Oligo.3         1698
+11 Excit.L6.CT-Oligo.3     1612
+12 Excit.L6b-Oligo.3       1605
+13 Excit.L2_5.mix-Oligo.3  1530
+14 Excit.L2-Oligo.1        1464
+15 Astro.5-Excit.L5.RORB   1395
+16 Astro.5-Inhib.VIP       1384
+17 Astro.5-Excit.L5.RELN   1314
+18 Astro.5-Oligo.1         1256
+19 Astro.1-Excit.L2        1103
+20 Astro.2-Excit.L5.RORB   1089
 # ℹ 584 more rows
 # A tibble: 34 × 2
-   doublet                  n
-   <chr>                <int>
- 1 Astro.5-Oligo.3       1698
- 2 Oligo.3-Excit.L6_CT   1612
- 3 Oligo.3-Excit.L6b     1605
- 4 Oligo.3-Excit.L2_5.1  1530
- 5 Oligo.3-Excit.L2_5.2  1020
- 6 Oligo.3-Excit.L2       938
- 7 Oligo.3-Excit.L5.1     863
- 8 Oligo.3-Vasc.Endo      825
- 9 Oligo.3-Inhib.Sst      691
-10 Micro.5-Oligo.3        516
+   doublet                    n
+   <chr>                  <int>
+ 1 Astro.5-Oligo.3         1698
+ 2 Excit.L6.CT-Oligo.3     1612
+ 3 Excit.L6b-Oligo.3       1605
+ 4 Excit.L2_5.mix-Oligo.3  1530
+ 5 Excit.L5.RELN-Oligo.3   1020
+ 6 Excit.L2-Oligo.3         938
+ 7 Excit.L5.RORB-Oligo.3    863
+ 8 Oligo.3-Vasc.Endo        825
+ 9 Inhib.SST-Oligo.3        691
+10 Micro.5-Oligo.3          516
 # ℹ 24 more rows
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by sample_id, spot_class, type, and
@@ -282,7 +306,7 @@ Saving 7 x 7 in image
   grouping (`?dplyr::dplyr_by`) instead.
 Saving 9 x 7 in image
 Saving 9 x 7 in image
-2026-05-27 10:50:56.748994Check SingleR results
+2026-09-01 22:12:36.468429Check SingleR results
 [1] 450307      4
 DataFrame with 6 rows and 4 columns
                                              scores      labels delta.next
@@ -303,11 +327,11 @@ Br1039_aaalplmo-1       Astro.2
 Br1039_aaamomng-1       Oligo.1
 [1] TRUE
 
- Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib 
- 87293   6396  27981 124663  25641  76377  69451  29381 
+ Astro  Macro  Micro    OPC  Oligo   Vasc  Excit  Inhib 
+ 87293   6396  27981  25641 124663  76377  69451  29381 
     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 0.000000 0.005579 0.016613 0.056801 0.075772 1.355408 
-2026-05-27 10:50:59.800588 - Check quality metrics
+2026-09-01 22:12:43.213167 - Check quality metrics
 # A tibble: 12 × 4
    spot_class      summary stat       value
    <fct>           <chr>   <chr>      <dbl>
@@ -332,25 +356,21 @@ Saving 7 x 7 in image
 Warning message:
 <ggplot> %+% x was deprecated in ggplot2 4.0.0.
 ℹ Please use <ggplot> + x instead. 
-2026-05-27 10:52:01.454522 - Comapre RCTD and SingleR calls
+2026-09-01 22:16:14.33499 - Comapre RCTD and SingleR calls
        
         reject singlet doublet_certain doublet_uncertain
   FALSE   4584  164918           55295              7348
   TRUE     878  137361           66317             10482
        
-        reject singlet doublet_certain doublet_uncertain
-  FALSE   4584  164918           55295              7348
-  TRUE     878  137361           66317             10482
-       
-         Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib
-  Astro  77189     72   3464   4926    989    257    262    134
-  Macro    268   5191    156     46      0    734      0      1
-  Micro    470    117  26938    275      7    136     33      5
-  Oligo   2229     69   1674 119682    315    189    355    150
-  OPC      321      2    157    665  24406     24     40     26
-  Vasc    1755    806   1212   1966    109  70421     79     29
-  Excit   2029     18   1922   4592   1152    200  59233    305
-  Inhib    536      3    255    735    217     38    130  27467
+         Astro  Macro  Micro    OPC  Oligo   Vasc  Excit  Inhib
+  Astro  77189     72   3464    989   4926    257    262    134
+  Macro    268   5191    156      0     46    734      0      1
+  Micro    470    117  26938      7    275    136     33      5
+  OPC      321      2    157  24406    665     24     40     26
+  Oligo   2229     69   1674    315 119682    189    355    150
+  Vasc    1755    806   1212    109   1966  70421     79     29
+  Excit   2029     18   1922   1152   4592    200  59233    305
+  Inhib    536      3    255    217    735     38    130  27467
        
         reject singlet doublet_certain doublet_uncertain
   FALSE   3497   12072           18405              2682
@@ -361,7 +381,7 @@ Warning message:
 [4] "doublet_uncertain"
 null device 
           1 
-2026-05-27 10:52:17.445135 - plot Reduced dims
+2026-09-01 22:17:16.488894 - plot Reduced dims
 ERC_xenium_TSNE_cat-first_type.png - Saving 7 x 7 in image
 ERC_xenium_TSNE_cat-second_type.png - Saving 7 x 7 in image
 ERC_xenium_TSNE_cat-singleR_label.png - Saving 7 x 7 in image
@@ -375,28 +395,28 @@ ERC_xenium_TSNE_cat-spot_class_facet-TRUE.png - Saving 7 x 7 in image
 ERC_xenium_UMAP_cat-spot_class.png - Saving 7 x 7 in image
 ERC_xenium_UMAP_cat-spot_class_facet-TRUE.png - Saving 7 x 7 in image
 # A tibble: 1,135 × 3
-   first_type   second_type      n
-   <fct>        <fct>        <int>
- 1 Excit.L2     Astro.5       2796
- 2 Vasc.VLMC    Macro         2428
- 3 Micro.5      Astro.5       2295
- 4 Excit.L2     Astro.2       2222
- 5 Macro        Vasc.VLMC     1728
- 6 Micro.2      Astro.5       1672
- 7 Vasc.Endo    Astro.5       1662
- 8 Oligo.4      Astro.5       1560
- 9 Vasc.PC      Macro         1519
-10 Excit.L2_5.1 Astro.5       1248
-11 Inhib.Vip    Astro.5       1191
-12 Macro        Vasc.PC       1121
-13 Oligo.3      Astro.5       1042
-14 Astro.5      Excit.L2_5.1  1033
-15 Excit.L5.1   Astro.5       1028
-16 Oligo.3      Excit.L6b      969
-17 Astro.5      Micro.5        962
-18 Oligo.1      Astro.5        939
-19 Oligo.3      Excit.L2_5.1   917
-20 Excit.L2_5.2 Astro.5        908
+   first_type     second_type        n
+   <fct>          <fct>          <int>
+ 1 Excit.L2       Astro.5         2796
+ 2 Vasc.VLMC      Macro           2428
+ 3 Micro.5        Astro.5         2295
+ 4 Excit.L2       Astro.2         2222
+ 5 Macro          Vasc.VLMC       1728
+ 6 Micro.2        Astro.5         1672
+ 7 Vasc.Endo      Astro.5         1662
+ 8 Oligo.4        Astro.5         1560
+ 9 Vasc.PC        Macro           1519
+10 Excit.L2_5.mix Astro.5         1248
+11 Inhib.VIP      Astro.5         1191
+12 Macro          Vasc.PC         1121
+13 Oligo.3        Astro.5         1042
+14 Astro.5        Excit.L2_5.mix  1033
+15 Excit.L5.RORB  Astro.5         1028
+16 Oligo.3        Excit.L6b        969
+17 Astro.5        Micro.5          962
+18 Oligo.1        Astro.5          939
+19 Oligo.3        Excit.L2_5.mix   917
+20 Excit.L5.RELN  Astro.5          908
 # ℹ 1,115 more rows
 # A tibble: 2 × 3
   astro5_involved total_doub   pct
@@ -404,21 +424,21 @@ ERC_xenium_UMAP_cat-spot_class_facet-TRUE.png - Saving 7 x 7 in image
 1 FALSE                88992 0.732
 2 TRUE                 32620 0.268
 # A tibble: 34 × 3
-   first_type second_type      n
-   <fct>      <fct>        <int>
- 1 Oligo.3    Astro.5       1042
- 2 Oligo.3    Excit.L6b      969
- 3 Oligo.3    Excit.L2_5.1   917
- 4 Oligo.3    Excit.L6_CT    755
- 5 Oligo.3    Excit.L2       689
- 6 Oligo.3    Excit.L2_5.2   599
- 7 Oligo.3    Excit.L5.1     540
- 8 Oligo.3    Vasc.Endo      392
- 9 Oligo.3    Inhib.Sst      370
-10 Oligo.3    Micro.5        272
+   first_type second_type        n
+   <fct>      <fct>          <int>
+ 1 Oligo.3    Astro.5         1042
+ 2 Oligo.3    Excit.L6b        969
+ 3 Oligo.3    Excit.L2_5.mix   917
+ 4 Oligo.3    Excit.L6.CT      755
+ 5 Oligo.3    Excit.L2         689
+ 6 Oligo.3    Excit.L5.RELN    599
+ 7 Oligo.3    Excit.L5.RORB    540
+ 8 Oligo.3    Vasc.Endo        392
+ 9 Oligo.3    Inhib.SST        370
+10 Oligo.3    Micro.5          272
 # ℹ 24 more rows
 Saving 7 x 7 in image
-2026-05-27 10:53:13.923864 - Spatial plots
+2026-09-01 22:20:46.026765 - Spatial plots
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
@@ -435,7 +455,39 @@ Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
-2026-05-27 10:53:59.04553 - Marker Gene Expression
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+2026-09-01 22:25:59.386164 - Marker Gene Expression
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by target_broad and gene_name.
 ℹ Output is grouped by target_broad.
@@ -551,24 +603,6 @@ $Inhib
 
 null device 
           1 
-$Astro
-
-$Oligo
-
-$OPC
-
-$Micro
-
-$Macro
-
-$Vasc
-
-$Excit
-
-$Inhib
-
-null device 
-          1 
 $OPC
 
 $Oligo
@@ -606,7 +640,7 @@ $Oligo.2
 null device 
           1 
 There were 22 warnings (use warnings() to see them)
-2026-05-27 10:57:44.153381 - scDot plots
+2026-09-01 22:35:01.322234 - scDot plots
 [1] FALSE
 
 Astro Excit Inhib Macro Micro Oligo   OPC  Vasc 
@@ -621,9 +655,9 @@ null device
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-05-27 10:57:52 EDT"
-   user  system elapsed 
-459.830  14.743 482.184 
+[1] "2026-09-01 22:35:25 EDT"
+    user   system  elapsed 
+1448.797  118.774 1580.879 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -634,7 +668,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-05-27
+ date     2026-09-01
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -684,9 +718,9 @@ null device
  data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
  DBI                    1.3.0     2026-02-25 [1] CRAN (R 4.5.0)
  dbplyr                 2.5.2     2026-02-13 [1] CRAN (R 4.5.0)
- DeconvoBuddies       * 1.2.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ DeconvoBuddies       * 1.3.4     2026-06-15 [1] Github (LieberInstitute/DeconvoBuddies@516b1fd)
  DelayedArray           0.36.1    2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
- DelayedMatrixStats     1.30.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ DelayedMatrixStats     1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  deldir                 2.0-4     2024-02-28 [2] CRAN (R 4.5.0)
  dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
  digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
@@ -710,7 +744,7 @@ null device
  fs                     2.1.0     2026-04-18 [1] CRAN (R 4.5.0)
  future                 1.70.0    2026-03-14 [1] CRAN (R 4.5.0)
  future.apply           1.20.2    2026-02-20 [1] CRAN (R 4.5.0)
- gdtools                0.5.0     2026-02-09 [1] CRAN (R 4.5.0)
+ gdtools                0.5.1     2026-05-25 [1] CRAN (R 4.5.0)
  generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
  GenomicAlignments      1.46.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  GenomicRanges        * 1.62.1    2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
@@ -796,12 +830,12 @@ null device
  RcppAnnoy              0.0.23    2026-01-12 [1] CRAN (R 4.5.0)
  RcppHNSW               0.6.0     2024-02-04 [2] CRAN (R 4.5.0)
  RcppParallel           5.1.11-2  2026-03-05 [1] CRAN (R 4.5.0)
- RCurl                  1.98-1.18 2026-03-21 [1] CRAN (R 4.5.0)
+ RCurl                  1.98-1.19 2026-06-03 [1] CRAN (R 4.5.0)
  readr                * 2.2.0     2026-02-19 [1] CRAN (R 4.5.0)
  readxl                 1.4.5     2025-03-07 [2] CRAN (R 4.5.0)
  rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
  reshape2               1.4.5     2025-11-12 [1] CRAN (R 4.5.0)
- restfulr               0.0.16    2025-06-27 [1] CRAN (R 4.5.0)
+ restfulr               0.0.17    2026-06-11 [1] CRAN (R 4.5.0)
  reticulate             1.45.0    2026-02-13 [1] CRAN (R 4.5.0)
  rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
  rlang                  1.2.0     2026-04-06 [1] CRAN (R 4.5.0)
@@ -826,7 +860,7 @@ null device
  sctransform            0.4.3     2026-01-10 [1] CRAN (R 4.5.0)
  scuttle                1.20.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
  Seqinfo              * 1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
- sessioninfo          * 1.2.3     2025-02-05 [2] CRAN (R 4.5.0)
+ sessioninfo          * 1.2.4     2026-06-04 [1] CRAN (R 4.5.0)
  Seurat                 5.5.0     2026-04-22 [1] CRAN (R 4.5.0)
  SeuratObject           5.4.0     2026-04-11 [1] CRAN (R 4.5.0)
  shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
@@ -835,16 +869,16 @@ null device
  SingleCellExperiment * 1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  sp                     2.2-1     2026-02-13 [1] CRAN (R 4.5.0)
  spacexr                2.2.1     2026-04-30 [1] Github (dmcable/spacexr@9f5dc33)
- spam                   2.11-3    2026-01-08 [1] CRAN (R 4.5.0)
+ spam                   2.11-4    2026-05-29 [1] CRAN (R 4.5.0)
  SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
- sparseMatrixStats      1.20.0    2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sparseMatrixStats      1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  SpatialExperiment    * 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  spatialLIBD          * 1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
  spatstat.data          3.1-9     2025-10-18 [1] CRAN (R 4.5.0)
- spatstat.explore       3.8-0     2026-03-22 [1] CRAN (R 4.5.0)
- spatstat.geom          3.7-3     2026-03-23 [1] CRAN (R 4.5.0)
- spatstat.random        3.4-5     2026-03-22 [1] CRAN (R 4.5.0)
- spatstat.sparse        3.1-0     2024-06-21 [2] CRAN (R 4.5.0)
+ spatstat.explore       3.8-1     2026-05-24 [1] CRAN (R 4.5.0)
+ spatstat.geom          3.8-1     2026-05-23 [1] CRAN (R 4.5.0)
+ spatstat.random        3.5-0     2026-05-24 [1] CRAN (R 4.5.0)
+ spatstat.sparse        3.2-0     2026-05-21 [1] CRAN (R 4.5.0)
  spatstat.univar        3.2-0     2026-05-18 [1] CRAN (R 4.5.0)
  spatstat.utils         3.2-3     2026-05-10 [1] CRAN (R 4.5.0)
  statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
@@ -886,4 +920,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed May 27 10:57:53 AM EDT 2026
+Tue Sep  1 10:35:28 PM EDT 2026

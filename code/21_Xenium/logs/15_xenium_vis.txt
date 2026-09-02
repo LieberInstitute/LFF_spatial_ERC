@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Aug 27 06:40:15 PM EDT 2026
+Thu Aug 27 07:45:45 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35340603
+Job id: 35363895
 Job name: 15_xenium_vis
-Node name: compute-150
+Node name: compute-144
 Task id: 
 Loading conda_R/4.5.x
 
@@ -125,28 +125,80 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-08-27 18:40:35.76012 - Load SPE data
+2026-08-27 19:45:59.653686 - Load SPE data
 Loading objects:
   marker_stats
-Error in `filter()`:
-ℹ In argument: `grepl("WM", SpD)`.
-ℹ In group 1: `vSpD = vVasc`.
-Caused by error in `h()`:
-! error in evaluating the argument 'x' in selecting a method for function 'grepl': object 'SpD' not found
-Backtrace:
-     ▆
-  1. ├─dplyr::filter(marker_stats_top, grepl("WM", SpD))
-  2. ├─dplyr:::filter.data.frame(marker_stats_top, grepl("WM", SpD))
-  3. │ └─dplyr:::filter_impl(...)
-  4. │   └─dplyr:::filter_rows(...)
-  5. │     └─dplyr:::filter_eval(...)
-  6. │       ├─base::withCallingHandlers(...)
-  7. │       └─mask$eval_all_filter(dots_expanded, invert, env_filter)
-  8. │         └─dplyr (local) eval()
-  9. ├─BiocGenerics::grepl("WM", SpD)
- 10. ├─base::.handleSimpleError(`<fn>`, "object 'SpD' not found", base::quote(NULL))
- 11. │ └─base (local) h(simpleError(msg, call))
- 12. └─base::.handleSimpleError(...)
- 13.   └─dplyr (local) h(simpleError(msg, call))
- 14.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+# A tibble: 5 × 3
+# Groups:   vSpD [1]
+  gene    MeanRatio.rank vSpD 
+  <chr>            <int> <fct>
+1 CLDN11               1 vWMd 
+2 MAG                  3 vWMd 
+3 CNTN2               11 vWMd 
+4 MAL                 12 vWMd 
+5 SELENOP             16 vWMd 
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+Saving 12 x 7 in image
+[[1]]
+ [1] "Br1039" "Br1556" "Br5367" "Br5599" "Br1706" "Br5415" "Br5941" "Br6538"
+ [9] "Br2582" "Br5426" "Br5517" "Br6098" "Br5161" "Br5460" "Br5634" "Br5854"
+
+[[2]]
+ [1] "Br1039" "Br1556" "Br5367" "Br5599" "Br1706" "Br5415" "Br5941" "Br6538"
+ [9] "Br2582" "Br5426" "Br5517" "Br6098" "Br5161" "Br5460" "Br5634" "Br5854"
+
+[[3]]
+ [1] "Br1039" "Br1556" "Br5367" "Br5599" "Br1706" "Br5415" "Br5941" "Br6538"
+ [9] "Br2582" "Br5426" "Br5517" "Br6098" "Br5161" "Br5460" "Br5634" "Br5854"
+
+[1] "/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/plots/21_Xenium/15_xenium_vis/xenium_orient_test_SpX.pdf"
+Saving 7 x 7 in image
+2026-08-27 19:48:29.401717 - Load HDF5 SPE
+Error: object 'spe_pb' not found
 Execution halted

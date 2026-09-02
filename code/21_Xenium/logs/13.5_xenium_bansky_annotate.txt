@@ -3,12 +3,12 @@ Loading LIBD SLURM module for ruby/3.2.2
 Loading LIBD SLURM module for rmate/1.5.10
 Loading LIBD SLURM module for ruby/3.2.2
 **** Job starts ****
-Tue Sep  1 06:35:57 PM EDT 2026
+Tue Sep  1 09:42:21 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35461094
+Job id: 35463705
 Job name: 13.5_xenium_bansky_annotate
-Node name: compute-169.cm.cluster
+Node name: compute-168.cm.cluster
 Task id: 
 Unloading conda_R/4.5.x
 Loading conda_R/4.5.x
@@ -149,7 +149,7 @@ This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 
-2026-09-01 18:36:15.288887 - Load prelim spe data
+2026-09-01 21:42:38.53265 - Load prelim spe data
 n cells: 447183
 Loading objects:
   SpX_colors
@@ -181,7 +181,7 @@ Loading objects:
   xWMd               0        0    62635        0
 Loading objects:
   cell_type_colors
-2026-09-01 18:37:18.616633 - Load RCTD data
+2026-09-01 21:43:05.834658 - Load RCTD data
 
          Astro.1          Astro.2          Astro.3          Astro.4 
            15082            18048              941             8485 
@@ -204,8 +204,48 @@ Loading objects:
          Vasc.PC        Vasc.VLMC 
            26970             8893 
 
- Astro  Macro  Micro  Oligo    OPC   Vasc  Excit  Inhib 
- 84797   6278  35778 132887  27195  71999  60132  28117 
+ Astro  Macro  Micro    OPC  Oligo   Vasc  Excit  Inhib 
+ 84797   6278  35778  27195 132887  71999  60132  28117 
+                  
+                   Astro Macro Micro   OPC Oligo  Vasc Excit Inhib
+  Astro.1          15082     0     0     0     0     0     0     0
+  Astro.2          18048     0     0     0     0     0     0     0
+  Astro.3            941     0     0     0     0     0     0     0
+  Astro.4           8485     0     0     0     0     0     0     0
+  Astro.5          42241     0     0     0     0     0     0     0
+  Macro                0  6278     0     0     0     0     0     0
+  Micro.1              0     0   286     0     0     0     0     0
+  Micro.2              0     0 14691     0     0     0     0     0
+  Micro.3              0     0  2372     0     0     0     0     0
+  Micro.4              0     0   344     0     0     0     0     0
+  Micro.5              0     0 18085     0     0     0     0     0
+  OPC.1                0     0     0   118     0     0     0     0
+  OPC.2                0     0     0 11843     0     0     0     0
+  OPC.3                0     0     0    32     0     0     0     0
+  OPC.4                0     0     0  3799     0     0     0     0
+  OPC.5                0     0     0 11403     0     0     0     0
+  Oligo.1              0     0     0     0 16805     0     0     0
+  Oligo.2              0     0     0     0 11905     0     0     0
+  Oligo.3              0     0     0     0 62780     0     0     0
+  Oligo.4              0     0     0     0 37828     0     0     0
+  Oligo.5              0     0     0     0  3569     0     0     0
+  Vasc.Endo            0     0     0     0     0 36136     0     0
+  Vasc.PC              0     0     0     0     0 26970     0     0
+  Vasc.VLMC            0     0     0     0     0  8893     0     0
+  Excit.L2             0     0     0     0     0     0 21943     0
+  Excit.L2_5.mix       0     0     0     0     0     0 10057     0
+  Excit.L2_5.RELN      0     0     0     0     0     0  2341     0
+  Excit.L5.RELN        0     0     0     0     0     0  6593     0
+  Excit.L5.RORB        0     0     0     0     0     0  8208     0
+  Excit.L5_6.NP        0     0     0     0     0     0   982     0
+  Excit.L6.CT          0     0     0     0     0     0  5038     0
+  Excit.L6b            0     0     0     0     0     0  4970     0
+  Inhib.HTR3A          0     0     0     0     0     0     0  1706
+  Inhib.LAMP5_LHX6     0     0     0     0     0     0     0  5266
+  Inhib.PVALB          0     0     0     0     0     0     0  5240
+  Inhib.VIP            0     0     0     0     0     0     0  9815
+  Inhib.Chandelier     0     0     0     0     0     0     0  1444
+  Inhib.SST            0     0     0     0     0     0     0  4646
              
                Vasc GM_L1 GM_L2_5 GM_deep    WM
   xVasc_mural 22751     0       0       0     0
@@ -219,7 +259,7 @@ Loading objects:
   xL6             0     0       0   39849     0
   xWMuf           0     0       0       0 56971
   xWMd            0     0       0       0 62635
-2026-09-01 18:37:44.449974 - Saving SPE object
+2026-09-01 21:43:29.234023 - Saving SPE object
 Saving 12 x 7 in image
 Saving 12 x 7 in image
 Saving 12 x 7 in image
@@ -432,49 +472,8 @@ Inhib.Chandelier        Inhib.SST
                1                1 
 Joining with `by = join_by(xSpD, cell_type_anno)`
 Joining with `by = join_by(xSpD, cell_type_anno)`
-# A tibble: 39 × 5
-# Groups:   cell_type_anno [38]
-   xSpD        cell_type_anno   n_cell prop_cell_type prop_xSpD
-   <fct>       <fct>             <int>          <dbl>     <dbl>
- 1 xVasc_mural Vasc.Endo          7021      0.361         0.259
- 2 xVasc_mural Vasc.PC            9226      0.475         0.461
- 3 xVasc_im    Macro              1292      0.108         0.672
- 4 xVasc_im    Vasc.VLMC          2890      0.241         0.569
- 5 xGL         Astro.4            2899      0.118         0.435
- 6 xL2         OPC.1                 6      0.000281      0.24 
- 7 xL2         Excit.L2           6907      0.324         0.603
- 8 xL1_inhib   Inhib.HTR3A         283      0.0176        0.393
- 9 xL1_inhib   Inhib.VIP          2146      0.134         0.347
-10 xLD_glia    Astro.1            4103      0.0890        0.319
-11 xLD_glia    Astro.2            3864      0.0838        0.269
-12 xLD_glia    Astro.5            7531      0.163         0.257
-13 xLD_glia    Micro.2            2001      0.0434        0.231
-14 xLD_glia    Micro.5            2674      0.0580        0.241
-15 xLD_glia    OPC.2              1474      0.0320        0.198
-16 xLD_glia    OPC.5              1912      0.0415        0.238
-17 xL5         OPC.1                 6      0.000198      0.24 
-18 xL5         Excit.L2_5.mix     1231      0.0405        0.251
-19 xL5         Excit.L2_5.RELN     503      0.0166        0.378
-20 xL5         Excit.L5.RELN      2372      0.0781        0.717
-21 xL5         Excit.L5.RORB      2600      0.0856        0.693
-22 xL5         Excit.L5_6.NP       169      0.00556       0.575
-23 xL5         Inhib.LAMP5_LHX6    495      0.0163        0.192
-24 xL5         Inhib.PVALB        1299      0.0428        0.475
-25 xL5         Inhib.Chandelier    252      0.00830       0.330
-26 xL5         Inhib.SST           676      0.0223        0.365
-27 xL6         Excit.L6.CT        1088      0.0492        0.778
-28 xL6         Excit.L6b          1107      0.0501        0.777
-29 xWMuf       Astro.3             166      0.00396       0.234
-30 xWMuf       Oligo.3           13936      0.333         0.265
-31 xWMd        Micro.1              96      0.00181       0.686
-32 xWMd        Micro.3             658      0.0124        0.532
-33 xWMd        Micro.4              51      0.000962      0.443
-34 xWMd        OPC.3                 5      0.0000943     0.417
-35 xWMd        OPC.4               364      0.00687       0.211
-36 xWMd        Oligo.1            5727      0.108         0.577
-37 xWMd        Oligo.2            6915      0.130         0.741
-38 xWMd        Oligo.4           13780      0.260         0.474
-# ℹ 1 more row
+[1] TRUE
+[1] FALSE
 # A tibble: 11 × 5
    xSpD        cell_type_anno n_cell prop_cell_type prop_xSpD
    <fct>       <fct>           <int>          <dbl>     <dbl>
@@ -572,9 +571,9 @@ Joining with `by = join_by(region, cell_type_anno)`
 null device 
           1 
 [1] "Reproducibility information:"
-[1] "2026-09-01 18:40:01 EDT"
+[1] "2026-09-01 21:45:47 EDT"
    user  system elapsed 
-186.722  11.257 242.678 
+186.755  10.722 205.814 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.3 Patched (2026-03-11 r90451)
@@ -833,4 +832,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Sep  1 06:40:02 PM EDT 2026
+Tue Sep  1 09:45:49 PM EDT 2026
