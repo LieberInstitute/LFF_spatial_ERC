@@ -25,7 +25,8 @@ my_plot_reduced_dim <- function(spe,
                                 plot_dir_rd = plot_dir,
                                 verbose = TRUE,
                                 add_label = FALSE,
-                                NA_gray = FALSE){
+                                NA_gray = FALSE,
+                                void = FALSE){
     
     rd_x = paste0(dimred, ".1")
     rd_y = paste0(dimred, ".2")
@@ -99,6 +100,11 @@ my_plot_reduced_dim <- function(spe,
         rd_plot <- rd_plot + geom_text(data = rd_mean, aes(x = m_x, y = m_y, label = cat),
                                        color = "black")
         
+    }
+    
+    if(void){
+        rd_plot <- rd_plot + theme_void()
+        suffix <- paste0(suffix, "void", collapse = "_")
     }
     
     if(save_plot){
