@@ -253,4 +253,11 @@ ComplexHeatmap::draw(RoE_ht)
 
 dev.off()
 
+# slurmjobs::job_single('22_xenium_ct_SpX_RoE', create_shell = TRUE, memory = '50G', command = "Rscript 22_xenium_ct_SpX_RoE")
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
