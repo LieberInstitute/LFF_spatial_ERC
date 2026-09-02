@@ -40,7 +40,37 @@ all(colnames(spe) %in% rownames(rctd_data@results$results_df))
 
 rctd_data@results$results_df <- rctd_data@results$results_df[colnames(spe),]
 
-identical(colnames(spe), rownames(rctd_data@results$results_df))
+stopifnot(identical(colnames(spe), rownames(rctd_data@results$results_df)))
+
+## update neuron subtype names in review (Aug 2026)
+subcluster_neuron_anno <- readxl::read_excel(here("processed-data", "04_snRNA-seq", "27.5_sn_neuron_check","ERC_neuron_subcluster_details_annotated.xlsx"))
+
+anno_table_neuron <- subcluster_neuron_anno |>
+    select(cell_type_anno_preprint = cell_type_anno,
+           cell_type_broad,
+           cell_type_anno = cell_type_update) |>
+    column_to_rownames("cell_type_anno_preprint")
+
+#' Relabel Excit/Inhib entries of a (possibly factor) vector using
+#' anno_table_neuron, leaving everything else (glia labels, NA) untouched.
+#' Used for both RCTD (first_type/second_type) and SingleR labels below, so
+#' both stay consistent with each other and with spe$cell_type_anno.
+relabel_neuron <- function(x, anno_table_neuron) {
+    was_factor <- is.factor(x)
+    x <- as.character(x)
+
+    is_neuron <- !is.na(x) & grepl("^(Excit|Inhib)", x)
+    stopifnot(all(x[is_neuron] %in% rownames(anno_table_neuron)))
+
+    x[is_neuron] <- anno_table_neuron[x[is_neuron], "cell_type_anno"]
+    if (was_factor) factor(x) else x
+}
+
+## relabel directly on the RCTD results - spe$first_type/second_type (via
+## cbind below) and every downstream summary built from rctd_data in this
+## script inherit the update automatically, rather than patching each one
+rctd_data@results$results_df$first_type <- relabel_neuron(rctd_data@results$results_df$first_type, anno_table_neuron)
+rctd_data@results$results_df$second_type <- relabel_neuron(rctd_data@results$results_df$second_type, anno_table_neuron)
 
 spe$cell_id <- colnames(spe)
 colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
@@ -48,28 +78,20 @@ colData(spe) <- cbind(colData(spe), rctd_data@results$results_df)
 ## Define typical cell type columns
 
 spe$cell_type_anno <- spe$first_type
-spe$cell_type_broad <- factor(gsub("\\..*?$", "", spe$cell_type_anno), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+spe$cell_type_broad <- factor(
+    gsub("\\..*?$", "", spe$cell_type_anno),
+    levels = c("Astro", "Macro", "Micro", "OPC", "Oligo",  "Vasc", "Excit", "Inhib")
+)
+
+table(spe$cell_type_anno)
 table(spe$cell_type_broad)
+
+spe$cell_type_class <- ifelse(grepl("Excit|Inhib", spe$cell_type_broad), "neuron", "glia")
 
 #### Save SPE with additional data ####
 message(Sys.time(), " - Saving singlet only SPE object")
 
 spe_singlet <- spe[, spe$spot_class == "singlet"]
-
-## Add bansky clusters
-cluster_data <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_bansky_cluster_data.csv"))
-SpX_colors = c('Vasc~SpX3' = "#E05AD2",
-               'L1~SpX6' = "#9AA7FE",
-               'L1~SpX7' = "#0220DE",
-               'L2.3~SpX4' = "#FEAF16",
-               'Inhib~SpX5' = "#C82100",
-               'L5~SpX1' = "#16FF32",
-               'L6~SpX9' = "#178C6D",
-               'WMtz~SpX8' = "grey",
-               'WM~SpX2'= "#581009")
-
-spe_singlet$SpX <- factor(cluster_data[colnames(spe_singlet),]$SpX, levels = names(SpX_colors))
-metadata(spe)$SpX_colors <- SpX_colors
 
 qs2::qs_save(spe_singlet, here(data_dir, "spe_xenium_cell_types.qs2"))
 
@@ -107,7 +129,7 @@ table(rctd_data@results$results_df$first_type)
 # 5247             4651             9845 
 
 ## spot class summary
-rcdt_results_class_summary <- rctd_data@results$results_df |> 
+rctd_results_class_summary <- rctd_data@results$results_df |> 
     rownames_to_column("barcode") |>
     mutate(sample_id = gsub("_.*", "", barcode)) |>
     count(sample_id, spot_class) |>
@@ -115,7 +137,7 @@ rcdt_results_class_summary <- rctd_data@results$results_df |>
     mutate(prop = n/sum(n))
 
 ## spot class summary plots
-rctd_class_bar_plot <- rcdt_results_class_summary |>
+rctd_class_bar_plot <- rctd_results_class_summary |>
     ggplot(aes(x = sample_id, y = n, fill = spot_class)) +
     geom_col() +
     theme_bw() +
@@ -123,7 +145,7 @@ rctd_class_bar_plot <- rcdt_results_class_summary |>
 
 ggsave(rctd_class_bar_plot, filename = here(plot_dir, "xenium_rctd_class_bar_plot.png"))
 
-rctd_class_prop_bar_plot <- rcdt_results_class_summary |>
+rctd_class_prop_bar_plot <- rctd_results_class_summary |>
     ggplot(aes(x = sample_id, y = prop, fill = spot_class)) +
     geom_col() +
     theme_bw() +
@@ -132,7 +154,7 @@ rctd_class_prop_bar_plot <- rcdt_results_class_summary |>
 ggsave(rctd_class_prop_bar_plot, filename = here(plot_dir, "xenium_rctd_class_prop_bar_plot.png"))
 
 ## cell type summary 
-rcdt_results_singlets_summary <- rctd_data@results$results_df |> 
+rctd_results_singlets_summary <- rctd_data@results$results_df |> 
     rownames_to_column("barcode") |>
     filter(spot_class == "singlet") |>
     mutate(sample_id = gsub("_.*", "", barcode)) |>
@@ -142,7 +164,7 @@ rcdt_results_singlets_summary <- rctd_data@results$results_df |>
     mutate(xenium_singlet_prop = xenium_n/sum(xenium_n),
            type = "first_type")
 
-rcdt_results_doublets <- rctd_data@results$results_df |> 
+rctd_results_doublets <- rctd_data@results$results_df |> 
     rownames_to_column("barcode") |>
     filter(spot_class == "doublet_certain") |>
     mutate(sample_id = gsub("_.*", "", barcode)) |>
@@ -155,14 +177,14 @@ rcdt_results_doublets <- rctd_data@results$results_df |>
                          type = "first_type") |>
                   select(barcode, spot_class, sample_id, type,  cell_type_anno = first_type))
 
-rcdt_results_doublets |> count(spot_class, type)
+rctd_results_doublets |> count(spot_class, type)
 
 
-rcdt_results_doublets |> 
+rctd_results_doublets |> 
     filter(spot_class == "doublet_certain") |>
     count(type, cell_type_anno)
 
-doublet_combos <- rcdt_results_doublets |> 
+doublet_combos <- rctd_results_doublets |> 
     filter(spot_class == "doublet_certain") |>
     group_by(barcode, sample_id) |> 
     summarise(doublet = paste0(sort(cell_type_anno), collapse = "-")) |>
@@ -181,22 +203,22 @@ doublet_combos |> filter(grepl("Oligo.3", doublet)) |> arrange(-n)
 # 4 Oligo.3-Excit.L2_5.1  1546
 # 5 Oligo.3-Excit.L2_5.2  1022
 
-rcdt_results_doublets_summary <- rcdt_results_doublets |>    
+rctd_results_doublets_summary <- rctd_results_doublets |>    
     group_by(sample_id, spot_class, type, cell_type_anno) |>
     summarise(xenium_n = n())  |>
     group_by(sample_id) |>
     mutate(xenium_doublet_prop = xenium_n/sum(xenium_n))
 
-rcdt_results_summary <- rcdt_results_singlets_summary |> 
-    bind_rows(rcdt_results_doublets_summary)  |>
+rctd_results_summary <- rctd_results_singlets_summary |> 
+    bind_rows(rctd_results_doublets_summary)  |>
     group_by(sample_id, cell_type_anno) |>
     summarise(xenium_n = sum(xenium_n)) |>
     group_by(sample_id) |>
     mutate(xenium_prop = xenium_n/sum(xenium_n))
 
 
-cell_type_class_summary <- rcdt_results_singlets_summary |> 
-    bind_rows(rcdt_results_doublets_summary) |>
+cell_type_class_summary <- rctd_results_singlets_summary |> 
+    bind_rows(rctd_results_doublets_summary) |>
     group_by(cell_type_anno, spot_class, type) |>
     summarise(xenium_n = sum(xenium_n)) |>
     group_by(cell_type_anno) |> 
@@ -230,9 +252,14 @@ head(singleR_results)
 singleR_results <- singleR_results[colnames(spe), ]
 identical(rownames(singleR_results), colnames(spe))
 
+## relabel neuron subtypes here too - singleR_label gets releveled against
+## spe$first_type's (already-updated) levels just below, so without this an
+## old-named neuron label would silently become NA
+singleR_results$labels <- relabel_neuron(singleR_results$labels, anno_table_neuron)
+
 ## cell types
 spe$singleR_label <- factor(singleR_results$labels, levels = levels(spe$first_type))
-spe$singleR_label_broad <- factor(gsub("\\..*?$", "", spe$singleR_label), levels = c("Astro", "Macro", "Micro","Oligo", "OPC","Vasc","Excit","Inhib"))
+spe$singleR_label_broad <- factor(gsub("\\..*?$", "", spe$singleR_label), levels = c("Astro", "Macro", "Micro", "OPC", "Oligo", "Vasc","Excit","Inhib"))
 table(spe$singleR_label_broad)
 
 spe$singleR_delta <- singleR_results$delta.next
@@ -279,8 +306,6 @@ ggsave(delta_distibution, filename = here(plot_dir, "singleR_delta_distibution.p
 
 ## compare cell type calls ####
 message(Sys.time(), " - Comapre RCTD and SingleR calls")
-
-table(singleR_results$labels == spe$first_type, spe$spot_class)
 
 table(singleR_results$labels == spe$first_type, spe$spot_class)
 
@@ -484,16 +509,7 @@ broad_markers <- list(
 plot_marker_express_List(
     spe[, spe$spot_class == "singlet"],
     gene_list = broad_markers,
-    pdf_fn = here(plot_dir, "xenium_rcdt_singlets_broad_marker_expres_violin.pdf"),
-    cellType_col = "first_type",
-    gene_name_col = "gene_name",
-    color_pal = cell_type_colors$anno
-)
-
-plot_marker_express_List(
-    spe[, spe$spot_class == "singlet"],
-    gene_list = broad_markers,
-    pdf_fn = here(plot_dir, "xenium_rcdt_singlets_broad_marker_expres_violin.pdf"),
+    pdf_fn = here(plot_dir, "xenium_rctd_singlets_broad_marker_expres_violin.pdf"),
     cellType_col = "first_type",
     gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
@@ -525,7 +541,7 @@ erc_oligo_key_genes <- map(erc_oligo_key_genes, ~.x[.x %in% rownames(spe)])
 plot_marker_express_List(
     spe[, spe$spot_class == "singlet" & grepl("Oligo|OPC", spe$first_type)],
     gene_list = erc_oligo_key_genes,
-    pdf_fn = here(plot_dir, "xenium_rcdt_singlets_Oligo_marker_expres_violin.pdf"),
+    pdf_fn = here(plot_dir, "xenium_rctd_singlets_Oligo_marker_expres_violin.pdf"),
     cellType_col = "first_type",
     gene_name_col = "gene_name",
     color_pal = cell_type_colors$anno
