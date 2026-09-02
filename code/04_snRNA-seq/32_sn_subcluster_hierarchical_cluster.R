@@ -40,7 +40,7 @@ load(here("processed-data","00_project_prep","cell_type_colors.V2.Rdata"), verbo
 broad_clus = cutree(dend, 7)
 
 # Print for future reference
-pdf(here(plot_dir, "sn_subcluster_dend.pdf"), height = 4)
+pdf(here(plot_dir, "sn_subcluster_dend.pdf"), height = 5)
 par(cex = 0.6, font = 2)
 
 ## cell type colors on leaves & branches
