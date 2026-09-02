@@ -27,7 +27,7 @@ module load conda_R/4.5.x
 module list
 
 ## Edit with your job command
-Rscript 22_xenium_ct_SpX_RoE
+Rscript 22_xenium_ct_SpX_RoE.R
 
 echo "**** Job ends ****"
 date
