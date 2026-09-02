@@ -135,7 +135,7 @@ Gene %in% rownames(spe)
 load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_vSpD.Rdata"), verbose = TRUE)
 
 marker_stats_top <- marker_stats |>
-    filter(MeanRatio.rank <= 5, MeanRatio >1) |>
+    filter(MeanRatio.rank <= 6, MeanRatio >1) |>
     select(gene, MeanRatio.rank, vSpD = cellType.target) |>
     mutate(vSpD = factor(vSpD, levels = spd_levels)) |>
     arrange(vSpD)
@@ -146,7 +146,7 @@ rowData(spe)$vSpD_Marker <- NULL
 rowData(spe)$vSpD_Marker <- marker_stats_top$vSpD[match(rownames(spe), marker_stats_top$gene)] 
 table(rowData(spe)$vSpD_Marker)
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 7)
+pdf(here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 8)
 spe |>
     scDotPlot(features = marker_stats_top$gene,
               group = "vSpD",
