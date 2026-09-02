@@ -12,8 +12,6 @@ library("spatialLIBD")
 library("ComplexHeatmap")
 library("circlize")
 
-
-
 plot_dir <- here("plots", "21_Xenium", "22_xenium_ct_SpX_RoE")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
@@ -32,27 +30,27 @@ table(spe$cell_type_anno == "Oligo.3")
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
 SpX_colors <- metadata(spe)$SpX_colors
 
-cell_v_SpX <- table(SpX = spe$SpX, cell_type_anno = spe$cell_type_anno)
+cell_v_xSpD <- table(xSpD = spe$xSpD, cell_type_anno = spe$cell_type_anno)
 
 #### Ro/e enrichment ####
 ## Ratio of observed to expected cell frequency (Zhang et al. 2018 Nature;
 ## Guo et al. 2018 Nat Med). Ro/e = 1 means a cell type is distributed across
-## SpX domains exactly in proportion to each domain's overall size (i.e. no
+## xSpD domains exactly in proportion to each domain's overall size (i.e. no
 ## spatial preference); Ro/e > 1 = enriched, Ro/e < 1 = depleted.
 ##
 ## chisq.test()$expected conveniently returns exactly this null expectation
 ## (row_total * col_total / grand_total), so we reuse it rather than
 ## calculating domain size shares by hand.
 
-message(Sys.time(), " - Compute Ro/e for cell_type_anno x SpX")
-chisq_result <- chisq.test(cell_v_SpX)
+message(Sys.time(), " - Compute Ro/e for cell_type_anno x xSpD")
+chisq_result <- chisq.test(cell_v_xSpD)
 # NOTE: chisq.test may warn "approximation may be incorrect" for rare cell
 # types with very low expected counts (e.g. OPC.1/OPC.3) - this only affects
 # the overall test statistic, not the expected counts used below.
 
 RoE_cutoff <- 1.5 # fold-change threshold for calling enrichment/depletion
 
-cell_v_SpX_RoE <- as.data.frame(cell_v_SpX) |>
+cell_v_xSpD_RoE <- as.data.frame(cell_v_xSpD) |>
   as_tibble() |>
   rename(n_cell = Freq) |>
   mutate(
@@ -69,15 +67,15 @@ cell_v_SpX_RoE <- as.data.frame(cell_v_SpX) |>
     )
   ) |>
   group_by(cell_type_anno) |>
-  mutate(prop_SpX = n_cell / sum(n_cell)) |> # density: this cell type's cells, split across domains (sums to 1 per cell type)
-  group_by(SpX) |>
+  mutate(prop_xSpD = n_cell / sum(n_cell)) |> # density: this cell type's cells, split across domains (sums to 1 per cell type)
+  group_by(xSpD) |>
   mutate(prop_cell_type = n_cell / sum(n_cell)) |> # composition: this domain's cells, split across cell types (sums to 1 per domain)
   ungroup() |>
   arrange(cell_type_anno, desc(RoE))
 
 message(
-  Sys.time(), " - N cell type x SpX pairs enriched (RoE >= ", RoE_cutoff, "): ",
-  sum(cell_v_SpX_RoE$enrichment == "enriched")
+  Sys.time(), " - N cell type x xSpD pairs enriched (RoE >= ", RoE_cutoff, "): ",
+  sum(cell_v_xSpD_RoE$enrichment == "enriched")
 )
 
 ## IMPORTANT CAVEAT: std_resid/chisq p-values assume independent cells, which
@@ -94,7 +92,7 @@ message(Sys.time(), " - Compute per-donor Ro/e")
 
 donor_tab <- table(
   sample_id = spe$sample_id,
-  SpX = spe$SpX,
+  xSpD = spe$xSpD,
   cell_type_anno = spe$cell_type_anno
 )
 
@@ -117,7 +115,7 @@ donor_RoE <- map_dfr(dimnames(donor_tab)$sample_id, function(id) {
     )
 })
 
-#### One-sample test per cell type x SpX, across donors ####
+#### One-sample test per cell type x xSpD, across donors ####
 ## H0: mean log2(RoE) across donors = 0 (no consistent enrichment/depletion).
 ## Pairs with fewer than min_n_donor contributing donors are left untested
 ## (NA) rather than given an unreliable p-value from too few observations.
@@ -125,7 +123,7 @@ donor_RoE <- map_dfr(dimnames(donor_tab)$sample_id, function(id) {
 min_n_donor <- 5
 
 donor_RoE_test <- donor_RoE |>
-  group_by(cell_type_anno, SpX) |>
+  group_by(cell_type_anno, xSpD) |>
   summarize(
     n_donor = n(),
     mean_log2_RoE = mean(log2_RoE),
@@ -135,72 +133,72 @@ donor_RoE_test <- donor_RoE |>
   mutate(padj = p.adjust(p_value, method = "BH"))
 
 message(
-  Sys.time(), " - N cell type x SpX pairs with padj < 0.05 (by-donor test): ",
+  Sys.time(), " - N cell type x xSpD pairs with padj < 0.05 (by-donor test): ",
   sum(donor_RoE_test$padj < 0.05, na.rm = TRUE)
 )
 
 ## join by-donor test results back into the pooled table
-cell_v_SpX_RoE <- cell_v_SpX_RoE |>
-  left_join(donor_RoE_test, by = c("cell_type_anno", "SpX")) |>
+cell_v_xSpD_RoE <- cell_v_xSpD_RoE |>
+  left_join(donor_RoE_test, by = c("cell_type_anno", "xSpD")) |>
   mutate(sig_by_donor = !is.na(padj) & padj < 0.05)
 
 #### Primary domain per cell type ####
-## One row per cell_type_anno: the SpX domain with the strongest Ro/e
+## One row per cell_type_anno: the xSpD domain with the strongest Ro/e
 
-primary_domain_tab <- cell_v_SpX_RoE |>
+primary_domain_tab <- cell_v_xSpD_RoE |>
   group_by(cell_type_anno) |>
   slice_max(RoE, n = 1, with_ties = FALSE) |>
   ungroup() |>
-  select(cell_type_anno, primary_SpX = SpX, RoE, prop_SpX, enrichment, n_donor, padj, sig_by_donor)
+  select(cell_type_anno, primary_xSpD = xSpD, RoE, prop_xSpD, enrichment, n_donor, padj, sig_by_donor)
 
 #### Save results ####
 
-write_csv(cell_v_SpX_RoE, file.path(data_dir, "cell_v_SpX_RoE.csv"))
-write_csv(primary_domain_tab, file.path(data_dir, "cell_type_primary_SpX.csv"))
-qs_save(cell_v_SpX_RoE, file.path(data_dir, "cell_v_SpX_RoE.qs2"))
+write_csv(cell_v_xSpD_RoE, file.path(data_dir, "cell_v_xSpD_RoE.csv"))
+write_csv(primary_domain_tab, file.path(data_dir, "cell_type_primary_xSpD.csv"))
+qs_save(cell_v_xSpD_RoE, file.path(data_dir, "cell_v_xSpD_RoE.qs2"))
 
-#### Heatmap of cell type x SpX: counts, density, and Ro/e enrichment ####
-## Row/column annotations (SpX colors, fine cell_type colors) and the broad
+#### Heatmap of cell type x xSpD: counts, density, and Ro/e enrichment ####
+## Row/column annotations (xSpD colors, fine cell_type colors) and the broad
 ## cell type column split (stripping ".N" suffix) are shared across all
 ## three heatmaps so they line up directly for comparison.
 
-stopifnot(all(colnames(cell_v_SpX) %in% names(cell_type_colors$anno)))
-stopifnot(all(rownames(cell_v_SpX) %in% names(SpX_colors)))
+stopifnot(all(colnames(cell_v_xSpD) %in% names(cell_type_colors$anno)))
+stopifnot(all(rownames(cell_v_xSpD) %in% names(SpX_colors)))
 
-## density: proportion of each cell type's cells across SpX domains (columns sum to 1)
-cell_v_SpX_prop <- prop.table(cell_v_SpX, margin = 2)
+## density: proportion of each cell type's cells across xSpD domains (columns sum to 1)
+cell_v_xSpD_prop <- prop.table(cell_v_xSpD, margin = 2)
 
-## long -> wide Ro/e matrix, ordered to match the original cell_v_SpX dimnames
+## long -> wide Ro/e matrix, ordered to match the original cell_v_xSpD dimnames
 ## so annotation colors line up correctly
-log2_RoE_mat <- cell_v_SpX_RoE |>
-  select(SpX, cell_type_anno, log2_RoE) |>
+log2_RoE_mat <- cell_v_xSpD_RoE |>
+  select(xSpD, cell_type_anno, log2_RoE) |>
   pivot_wider(names_from = cell_type_anno, values_from = log2_RoE) |>
-  column_to_rownames("SpX") |>
+  column_to_rownames("xSpD") |>
   as.matrix()
-log2_RoE_mat <- log2_RoE_mat[rownames(cell_v_SpX), colnames(cell_v_SpX)]
+log2_RoE_mat <- log2_RoE_mat[rownames(cell_v_xSpD), colnames(cell_v_xSpD)]
 
 ## asterisk = enriched (pooled RoE >= cutoff) AND significant across donors
-sig_mat <- cell_v_SpX_RoE |>
+sig_mat <- cell_v_xSpD_RoE |>
   mutate(sig_mark = if_else(enrichment == "enriched" & sig_by_donor, "*", "")) |>
-  select(SpX, cell_type_anno, sig_mark) |>
+  select(xSpD, cell_type_anno, sig_mark) |>
   pivot_wider(names_from = cell_type_anno, values_from = sig_mark) |>
-  column_to_rownames("SpX") |>
+  column_to_rownames("xSpD") |>
   as.matrix()
-sig_mat <- sig_mat[rownames(cell_v_SpX), colnames(cell_v_SpX)]
+sig_mat <- sig_mat[rownames(cell_v_xSpD), colnames(cell_v_xSpD)]
 
 ## diverging color scale for Ro/e, centered at log2(RoE) = 0
 RoE_max <- max(abs(log2_RoE_mat), na.rm = TRUE)
 RoE_col_fun <- circlize::colorRamp2(c(-RoE_max, 0, RoE_max), c("steelblue", "white", "firebrick"))
 
 ## create annotations (shared across all three heatmaps - dimensions match)
-SpX_row_ha <- rowAnnotation(
-  SpX = rownames(cell_v_SpX),
-  col = list(SpX = SpX_colors),
+xSpD_row_ha <- rowAnnotation(
+  xSpD = rownames(cell_v_xSpD),
+  col = list(xSpD = SpX_colors),
   show_legend = FALSE
 )
 
 cell_type_col_ha <- HeatmapAnnotation(
-  cell_type = colnames(cell_v_SpX),
+  cell_type = colnames(cell_v_xSpD),
   col = list(cell_type = cell_type_colors$anno),
   show_legend = FALSE
 )
@@ -211,25 +209,25 @@ sig_legend <- ComplexHeatmap::Legend(
 )
 
 ## PLOT HEATMAPS
-pdf(here(plot_dir, "Xenium_bansky_SpX_v_cell_type_heatmap_broad.pdf"), width = 10)
+pdf(here(plot_dir, "Xenium_bansky_xSpD_v_cell_type_heatmap_broad.pdf"), width = 10)
 
 ## raw counts
-ComplexHeatmap::Heatmap(cell_v_SpX,
+ComplexHeatmap::Heatmap(cell_v_xSpD,
   name = "n singlet cells",
   col = c("black", viridisLite::plasma(100)),
-  column_split = gsub("\\..*", "", colnames(cell_v_SpX)),
+  column_split = gsub("\\..*", "", colnames(cell_v_xSpD)),
   cluster_rows = FALSE,
-  left_annotation = SpX_row_ha,
+  left_annotation = xSpD_row_ha,
   bottom_annotation = cell_type_col_ha
 )
 
-## density (proportion SpX, cell type cols sum to 1)
-ComplexHeatmap::Heatmap(cell_v_SpX_prop,
-  name = "prop SpX\nsinglet cells",
+## density (proportion xSpD, cell type cols sum to 1)
+ComplexHeatmap::Heatmap(cell_v_xSpD_prop,
+  name = "prop xSpD\nsinglet cells",
   col = c("black", viridisLite::plasma(100)),
-  column_split = gsub("\\..*", "", colnames(cell_v_SpX_prop)),
+  column_split = gsub("\\..*", "", colnames(cell_v_xSpD_prop)),
   cluster_rows = FALSE,
-  left_annotation = SpX_row_ha,
+  left_annotation = xSpD_row_ha,
   bottom_annotation = cell_type_col_ha,
   cell_fun = function(j, i, x, y, width, height, fill) {
       grid::grid.text(sig_mat[i, j], x, y, gp = grid::gpar(fontsize = 10))
@@ -242,7 +240,7 @@ RoE_ht <- ComplexHeatmap::Heatmap(log2_RoE_mat,
   col = RoE_col_fun,
   column_split = gsub("\\..*", "", colnames(log2_RoE_mat)),
   cluster_rows = FALSE,
-  left_annotation = SpX_row_ha,
+  left_annotation = xSpD_row_ha,
   bottom_annotation = cell_type_col_ha,
   cell_fun = function(j, i, x, y, width, height, fill) {
     grid::grid.text(sig_mat[i, j], x, y, gp = grid::gpar(fontsize = 10))
@@ -253,7 +251,7 @@ ComplexHeatmap::draw(RoE_ht)
 
 dev.off()
 
-# slurmjobs::job_single('22_xenium_ct_SpX_RoE', create_shell = TRUE, memory = '50G', command = "Rscript 22_xenium_ct_SpX_RoE")
+# slurmjobs::job_single('22_xenium_ct_xSpD_RoE', create_shell = TRUE, memory = '50G', command = "Rscript 22_xenium_ct_xSpD_RoE")
 
 ## Reproducibility information
 print("Reproducibility information:")
