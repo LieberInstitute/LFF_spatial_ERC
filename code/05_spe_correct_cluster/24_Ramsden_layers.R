@@ -9,7 +9,7 @@ library("readxl")
 library("jaffelab")
 library("org.Hs.eg.db")
 library("org.Mm.eg.db")
-library("Orthology.eg.db")
+library("babelgene")
 library("tidyverse")
 
 ## set up dirs
@@ -26,7 +26,7 @@ ramsden_sheets <- c("L2only", "L3only", "L5only","LayerPatternedLayer5a6all",'La
 names(ramsden_sheets) <- ramsden_sheets
 ramsden_data <- map_dfr(ramsden_sheets, ~read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = .x) |> mutate(Vis = .x) |> filter(Entrez  != "0"))
 
-ramsden_data |> count(Vis)
+ramsden_data |> dplyr::count(Vis)
 
 ## All Gene sheet
 ramsden_data_all <- read_excel(here("external-data", "Ramsden2015", "pcbi.1004032.s011.xls"), sheet = "AllGene")
@@ -41,15 +41,30 @@ map_int(ramsden_data_list, length)
 ## all the same as individual lists? - Yes
 # map2_lgl(ramsden_data, names(ramsden_data), ~setequal(.x$Name, ramsden_data_all |> dplyr::filter(Vis == .y) |> dplyr::pull(Name)))
 
-## look up emsembl w/ entrez
+## look up ensembl w/ entrez
+## Orthology.eg.db was built on NCBI's HomoloGene/Gene Orthology data, which
+## NCBI discontinued - the package was later pulled from Bioconductor as a
+## result, not just an R-version issue. babelgene is an actively-maintained
+## replacement, but it maps by gene *symbol* rather than Entrez id directly,
+## so this chains: mouse Entrez -> mouse Symbol -> human Symbol (ortholog) ->
+## human Ensembl. Function's input/output shape is unchanged from before.
 mouse_entrez_to_human <- function(mouse_entrez){
     mouse_entrez <- mouse_entrez[mouse_entrez != "0"]
-    mapped <- AnnotationDbi::select(Orthology.eg.db, mouse_entrez, "Homo_sapiens","Mus_musculus")
-    hu_ensembl <- AnnotationDbi::select(org.Hs.eg.db, as.character(mapped[,2]), "ENSEMBL","ENTREZID")
+
+    ## mouse Entrez -> mouse Symbol
+    mouse_symbol <- AnnotationDbi::select(org.Mm.eg.db, mouse_entrez, "SYMBOL", "ENTREZID") |>
+        filter(!is.na(SYMBOL))
+
+    ## mouse Symbol -> human Symbol (ortholog mapping)
+    orth <- babelgene::orthologs(genes = mouse_symbol$SYMBOL, species = "mouse", human = FALSE)
+
+    ## human Symbol -> human Ensembl
+    hu_ensembl <- AnnotationDbi::select(org.Hs.eg.db, unique(orth$human_symbol), "ENSEMBL", "SYMBOL")
+
     return(hu_ensembl)
 }
 #test
-# mouse_entrez_to_human(c("66643", "16498"))
+mouse_entrez_to_human(c("66643", "16498"))
 
 ramsden_data_list_entrez <- map(splitit(ramsden_data$Vis), ~ramsden_data$Entrez[.x])
 ramsden_data_human <- map(ramsden_data_list_entrez, ~mouse_entrez_to_human(.x))
@@ -135,3 +150,12 @@ gene_set_enrichment_plot(enrichment = ramsden_enrichment_only,
                          model_colors = SpD_colors
 )
 dev.off()
+
+# slurmjobs::job_single('24_Ramsden_layers', create_shell = TRUE, memory = '5G', command = "Rscript 24_Ramsden_layers.R")
+
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
