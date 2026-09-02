@@ -73,7 +73,7 @@ spe$cell_type_anno <- as.character(spe$first_type)
 
 spe$cell_type_broad <- factor(
     gsub("\\..*?$", "", spe$cell_type_anno),
-    levels = c("Astro", "Macro", "Micro", "Oligo", "OPC", "Vasc", "Excit", "Inhib")
+    levels = c("Astro", "Macro", "Micro", "OPC", "Oligo",  "Vasc", "Excit", "Inhib")
 )
 
 table(spe$cell_type_anno)
@@ -95,10 +95,12 @@ spe[,spe$cell_type_class == "neuron"]$cell_type_anno <- anno_table_neuron[as.cha
 
 spe$cell_type_anno <- factor(spe$cell_type_anno, levels = names(cell_type_colors$anno))
 
+table(spe$cell_type_anno,spe$cell_type_broad)
+
 #### Annotate Regions ####
 
 region_lookup <- c(
-    "Vasc_mural"     = "Vasc",
+    "Vasc_mural"= "Vasc",
     "Vasc_im"  = "Vasc",
     "Vasc_adj" = "Vasc",
     "GL"       = "GM_L1",
@@ -286,10 +288,11 @@ write.csv(cell_v_xSpD_prop_long, file = here(data_dir, "cell_v_xSpD_prop_long.cs
 
 cell_v_xSpD_max <- cell_v_xSpD_prop_long |> 
     group_by(cell_type_anno) |>
-    slice_max(n_cell) |> 
-    arrange(xSpD, cell_type_anno) |>
-    print(n= 38)
+    slice_max(n_cell, with_ties = FALSE) |> 
+    arrange(xSpD, cell_type_anno) 
 
+nrow(cell_v_xSpD_max) == length(levels(spe$cell_type_anno))
+any(duplicated(cell_v_xSpD_max$cell_type_anno))
 
 cell_v_xSpD_prop_long |> 
     filter(cell_type_anno == "Oligo.3") |>
