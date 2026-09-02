@@ -1,13 +1,17 @@
 **** Job starts ****
-Thu Jul 24 01:18:01 PM EDT 2025
+Tue Sep  1 07:05:32 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 20383757
+Job id: 35461577
 Job name: 02_GO_analysis
-Node name: compute-169
+Node name: compute-156.cm.cluster
 Task id: 2
-Unloading conda_R/4.5
+Unloading conda_R/4.5.x
 Loading conda_R/4.5
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5.x => conda_R/4.5
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -16,11 +20,11 @@ Currently Loaded Modules:
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.4     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -122,14 +126,13 @@ The following object is masked from ‘package:dplyr’:
 
 
 
-clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+clusterProfiler v4.18.4 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141
+S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
+W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
+multiomics data. Nature Protocols. 2024, 19(11):3292-3320
 
 Attaching package: ‘clusterProfiler’
 
@@ -153,303 +156,284 @@ The following object is masked from ‘package:stats’:
 
     filter
 
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.26.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading objects:
+  SpD_colors
 [1] TRUE
-# A tibble: 9 × 2
-  cluster           n
-  <chr>         <int>
-1 Inhib~Sp09D09 12722
-2 L1~Sp09D05    12076
-3 L2.3~Sp09D01  14006
-4 L5~Sp09D03    14322
-5 L6~Sp09D04    14466
-6 LD~Sp09D02    15529
-7 Vasc~Sp09D08   9014
-8 WM.uf~Sp09D07  3588
-9 WM~Sp09D06     9998
-# A tibble: 6 × 32
-  data_type cluster   contrast seqnames  start    end  width strand source type 
-  <chr>     <chr>     <chr>    <fct>     <int>  <int>  <int> <fct>  <fct>  <fct>
-1 Visium    Inhib~Sp… carrier  chr2     1.90e8 1.90e8  28096 +      HAVANA gene 
-2 Visium    Inhib~Sp… carrier  chr15    9.10e7 9.10e7  29590 -      HAVANA gene 
-3 Visium    Inhib~Sp… carrier  chr3     1.81e8 1.82e8 847119 +      HAVANA gene 
-4 Visium    Inhib~Sp… carrier  chr7     9.86e7 9.86e7  12585 +      HAVANA gene 
-5 Visium    Inhib~Sp… carrier  chr4     1.15e8 1.15e8  79456 +      HAVANA gene 
-6 Visium    Inhib~Sp… carrier  chr1     1.20e8 1.20e8   1570 -      HAVANA gene 
-# ℹ 22 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
-#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
-#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>, pbDGE_logFC <dbl>,
-#   pbDGE_AveExpr <dbl>, pbDGE_t <dbl>, pbDGE_P.Value <dbl>,
-#   pbDGE_adj.P.Val <dbl>, pbDGE_B <dbl>, dream_logFC <dbl>,
-#   dream_AveExpr <dbl>, dream_t <dbl>, dream_P.Value <dbl>,
-#   dream_adj.P.Val <dbl>, dream_B <dbl>
-# A tibble: 6 × 2
-  cluster           n
-  <chr>         <int>
-1 Inhib~Sp09D09     2
-2 L1~Sp09D05        1
-3 L5~Sp09D03        3
-4 L6~Sp09D04       16
-5 Vasc~Sp09D08     30
-6 WM.uf~Sp09D07    21
+# A tibble: 11 × 2
+   cluster     n
+   <fct>   <int>
+ 1 vVasc    7215
+ 2 vL1     12169
+ 3 vL2     14315
+ 4 vInhib   8653
+ 5 vLD     14020
+ 6 vL5a    14441
+ 7 vL5b    13430
+ 8 vL6     13237
+ 9 vWMuf    3418
+10 vWMpv    8248
+11 vWMd     6255
+# A tibble: 6 × 21
+  data_type cluster contrast seqnames    start    end  width strand source type 
+  <chr>     <fct>   <chr>    <fct>       <int>  <int>  <int> <fct>  <fct>  <fct>
+1 Visium    vInhib  carrier  chr9       1.30e8 1.30e8  64900 +      HAVANA gene 
+2 Visium    vInhib  carrier  chr3       1.81e8 1.82e8 847119 +      HAVANA gene 
+3 Visium    vInhib  carrier  chr4       1.15e8 1.15e8  79456 +      HAVANA gene 
+4 Visium    vInhib  carrier  chr7       9.86e7 9.86e7  12585 +      HAVANA gene 
+5 Visium    vInhib  carrier  chr5       1.50e8 1.50e8  70801 -      HAVANA gene 
+6 Visium    vInhib  carrier  chr2       5.62e7 5.64e7 202183 +      HAVANA gene 
+# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, gene_search <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>,
+#   vlmf_t <dbl>, vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>
+# A tibble: 5 × 2
+  cluster     n
+  <fct>   <int>
+1 vVasc       7
+2 vL5a      135
+3 vL6        12
+4 vWMuf      26
+5 vWMd        1
 'select()' returned 1:many mapping between keys and columns
 Warning message:
 In bitr(DE_data$gene_id, fromType = "ENSEMBL", toType = "ENTREZID",  :
-  6.06% of input gene IDs are fail to map...
+  5.26% of input gene IDs are fail to map...
 Storing counts in `nn`, as `n` already present in input
 ℹ Use `name = "new_name"` to pick a new name.
   n    nn
-1 1 14734
-2 2   171
-3 3    14
-4 4     1
+1 1 14231
+2 2   157
+3 3    11
+# A tibble: 11 × 2
+   cluster     n
+   <fct>   <int>
+ 1 vVasc    7222
+ 2 vL1     12052
+ 3 vL2     13841
+ 4 vInhib   8647
+ 5 vLD     13648
+ 6 vL5a    13953
+ 7 vL5b    13133
+ 8 vL6     12984
+ 9 vWMuf    3417
+10 vWMpv    8238
+11 vWMd     6247
 # A tibble: 9 × 2
-  cluster           n
-  <chr>         <int>
-1 Inhib~Sp09D09 12527
-2 L1~Sp09D05    11976
-3 L2.3~Sp09D01  13579
-4 L5~Sp09D03    13860
-5 L6~Sp09D04    13990
-6 LD~Sp09D02    14857
-7 Vasc~Sp09D08   9010
-8 WM.uf~Sp09D07  3586
-9 WM~Sp09D06     9949
-# A tibble: 9 × 2
-  DE_class_cluster       n
-  <chr>              <int>
-1 Inhib~Sp09D09_down     2
-2 L1~Sp09D05_down        1
-3 L5~Sp09D03_up          3
-4 L6~Sp09D04_down        5
-5 L6~Sp09D04_up          9
-6 Vasc~Sp09D08_down     21
-7 Vasc~Sp09D08_up        8
-8 WM-uf~Sp09D07_down    19
-9 WM-uf~Sp09D07_up       2
-[1] 15096
-     DE_class_cluster ONTOLOGY  n
-1  Inhib~Sp09D09_down       CC  8
-2  Inhib~Sp09D09_down       MF  7
-3       L5~Sp09D03_up       BP  4
-4       L5~Sp09D03_up       MF  6
-5     L6~Sp09D04_down       BP 15
-6   Vasc~Sp09D08_down       BP  9
-7   Vasc~Sp09D08_down       MF  4
-8  WM-uf~Sp09D07_down       BP 11
-9    WM-uf~Sp09D07_up       BP 86
-10   WM-uf~Sp09D07_up       CC 18
-11   WM-uf~Sp09D07_up       MF  4
+  DE_class_cluster     n
+  <chr>            <int>
+1 vL5a_down           47
+2 vL5a_up             86
+3 vL6_down             5
+4 vL6_up               6
+5 vVasc_down           4
+6 vVasc_up             3
+7 vWMd_down            1
+8 vWMuf_down          23
+9 vWMuf_up             3
+[1] 14560
+   DE_class_cluster ONTOLOGY  n
+1         vL5a_down       BP  1
+2         vL5a_down       CC  4
+3         vL5a_down       MF  9
+4           vL5a_up       CC 10
+5           vL5a_up       MF 13
+6          vL6_down       MF  4
+7            vL6_up       BP 20
+8            vL6_up       MF  5
+9        vVasc_down       BP  6
+10       vVasc_down       MF 12
+11         vVasc_up       CC 16
+12        vWMd_down       BP 33
+13        vWMd_down       CC  3
+14        vWMd_down       MF 14
+15       vWMuf_down       BP  3
+16         vWMuf_up       CC 15
+17         vWMuf_up       MF  1
 null device 
           1 
-2025-07-24 13:19:44.946953 - CC
---Inhib~Sp09D09_down (8)--
+null device 
+          1 
+null device 
+          1 
+2026-09-01 19:07:13.437551 - CC
+--vL5a_down (4)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_up (18)--
+--vL5a_up (10)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-07-24 13:19:55.911227 - BP
---L6~Sp09D04_down (15)--
+--vVasc_up (16)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Vasc~Sp09D08_down (9)--
+--vWMuf_up (15)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_down (11)--
+2026-09-01 19:07:32.542639 - BP
+--vL5a_down (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+--vL6_up (20)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---WM-uf~Sp09D07_up (86)--
+--vVasc_down (6)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-07-24 13:22:00.711462 - MF
---L5~Sp09D03_up (6)--
+--vWMuf_down (3)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Vasc~Sp09D08_down (4)--
+2026-09-01 19:08:44.035708 - MF
+--vL5a_down (9)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
+--vL5a_up (13)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--vL6_down (4)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--vL6_up (5)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--vVasc_down (12)--
+preparing gene to GO mapping data...
+preparing IC data...
+'select()' returned 1:many mapping between keys and columns
+--vWMuf_up (1)--
+preparing gene to GO mapping data...
+preparing IC data...
+Error in hclust(as.dist(1 - simMatrix)) : 
+  must have n >= 2 objects to cluster
+In addition: Warning message:
+In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
+  Removed 1 terms without IC information in orgdb for MF
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+Error in treemap::treemap(reducedTerms, index = c("parentTerm", "term"),  : 
+  Object <dtf> is not a data.frame
+null device 
+          1 
 $CC
-$CC$`Inhib~Sp09D09_down`
-[1] 10
-
-$CC$`WM-uf~Sp09D07_up`
-[1] 10
-
+                            parentTerm n
+1                    ISWI-type complex 9
+2                 axon initial segment 8
+3                   asymmetric synapse 6
+4                    dendrite terminus 4
+5 eukaryotic 48S preinitiation complex 3
+6                     fibrillar center 3
 
 $BP
-$BP$`L5~Sp09D03_up`
-[1] 0
-
-$BP$`L6~Sp09D04_down`
-[1] 10
-
-$BP$`Vasc~Sp09D08_down`
-[1] 10
-
-$BP$`WM-uf~Sp09D07_down`
-[1] 10
-
-$BP$`WM-uf~Sp09D07_up`
-[1] 10
-
+                                               parentTerm n
+1                         adaptation of signaling pathway 5
+2          amyloid precursor protein biosynthetic process 4
+3                       sphingolipid biosynthetic process 4
+4                              synaptic membrane adhesion 4
+5 G protein-coupled purinergic receptor signaling pathway 3
+6                                             myelination 3
 
 $MF
-$MF$`Inhib~Sp09D09_down`
-[1] 0
+                                              parentTerm n
+1 calcium-dependent cysteine-type endopeptidase activity 8
+2                            adrenergic receptor binding 4
+3              heparan sulfate sulfotransferase activity 4
+4                     calcium channel regulator activity 3
+5                       endopeptidase inhibitor activity 3
+6           G protein-coupled glutamate receptor binding 2
 
-$MF$`L5~Sp09D03_up`
-[1] 10
+$CC
+                term n
+1 neuronal cell body 2
+2     ATPase complex 1
+3   CHD-type complex 1
+4   ESC/E(Z) complex 1
+5  ISWI-type complex 1
+6       NuRD complex 1
 
-$MF$`Vasc~Sp09D08_down`
-[1] 10
+$BP
+                                                     term n
+1  G protein-coupled adenosine receptor signaling pathway 1
+2 G protein-coupled purinergic receptor signaling pathway 1
+3              G protein-coupled receptor internalization 1
+4                         adaptation of signaling pathway 1
+5          amyloid precursor protein biosynthetic process 1
+6                                       axon ensheathment 1
 
-$MF$`WM-uf~Sp09D07_up`
-[1] 0
+$MF
+                                          term n
+1 G protein-coupled glutamate receptor binding 2
+2                   glutamate receptor binding 2
+3           G protein-coupled receptor binding 1
+4                           PDZ domain binding 1
+5                  adrenergic receptor binding 1
+6                     alkali metal ion binding 1
 
-
-$`Inhib~Sp09D09_down`
-$`Inhib~Sp09D09_down`$CC
-[1] 10
-
-$`Inhib~Sp09D09_down`$BP
-[1] 0
-
-$`Inhib~Sp09D09_down`$MF
-[1] 0
-
-
-$`L5~Sp09D03_up`
-$`L5~Sp09D03_up`$CC
-[1] 0
-
-$`L5~Sp09D03_up`$BP
-[1] 0
-
-$`L5~Sp09D03_up`$MF
-[1] 10
-
-
-$`L6~Sp09D04_down`
-$`L6~Sp09D04_down`$CC
-[1] 0
-
-$`L6~Sp09D04_down`$BP
-[1] 10
-
-$`L6~Sp09D04_down`$MF
-[1] 0
-
-
-$`Vasc~Sp09D08_down`
-$`Vasc~Sp09D08_down`$CC
-[1] 0
-
-$`Vasc~Sp09D08_down`$BP
-[1] 10
-
-$`Vasc~Sp09D08_down`$MF
-[1] 10
-
-
-$`WM-uf~Sp09D07_down`
-$`WM-uf~Sp09D07_down`$CC
-[1] 0
-
-$`WM-uf~Sp09D07_down`$BP
-[1] 10
-
-$`WM-uf~Sp09D07_down`$MF
-[1] 0
-
-
-$`WM-uf~Sp09D07_up`
-$`WM-uf~Sp09D07_up`$CC
-[1] 10
-
-$`WM-uf~Sp09D07_up`$BP
-[1] 10
-
-$`WM-uf~Sp09D07_up`$MF
-[1] 0
-
-
-$`Inhib~Sp09D09_down`
-$`Inhib~Sp09D09_down`$CC
-[1] FALSE
-
-$`Inhib~Sp09D09_down`$BP
-[1] TRUE
-
-$`Inhib~Sp09D09_down`$MF
-[1] TRUE
-
-
-$`L5~Sp09D03_up`
-$`L5~Sp09D03_up`$CC
-[1] TRUE
-
-$`L5~Sp09D03_up`$BP
-[1] TRUE
-
-$`L5~Sp09D03_up`$MF
-[1] FALSE
-
-
-$`L6~Sp09D04_down`
-$`L6~Sp09D04_down`$CC
-[1] TRUE
-
-$`L6~Sp09D04_down`$BP
-[1] FALSE
-
-$`L6~Sp09D04_down`$MF
-[1] TRUE
-
-
-$`Vasc~Sp09D08_down`
-$`Vasc~Sp09D08_down`$CC
-[1] TRUE
-
-$`Vasc~Sp09D08_down`$BP
-[1] FALSE
-
-$`Vasc~Sp09D08_down`$MF
-[1] FALSE
-
-
-$`WM-uf~Sp09D07_down`
-$`WM-uf~Sp09D07_down`$CC
-[1] TRUE
-
-$`WM-uf~Sp09D07_down`$BP
-[1] FALSE
-
-$`WM-uf~Sp09D07_down`$MF
-[1] TRUE
-
-
-$`WM-uf~Sp09D07_up`
-$`WM-uf~Sp09D07_up`$CC
-[1] FALSE
-
-$`WM-uf~Sp09D07_up`$BP
-[1] FALSE
-
-$`WM-uf~Sp09D07_up`$MF
-[1] TRUE
-
-
-null device 
-          1 
-Error in parse_file_or_name(name, should_exist = FALSE, r_ok = TRUE) : 
-  02_GO_analysis.sh already exists
-Calls: <Anonymous> -> parse_file_or_name
+  Cluster DE_class_cluster         ID                               Description
+1 vL5a_up          vL5a_up GO:0032279                        asymmetric synapse
+2 vL5a_up          vL5a_up GO:0098984                  neuron to neuron synapse
+3 vL5a_up          vL5a_up GO:0014069                      postsynaptic density
+4 vL5a_up          vL5a_up GO:0099572               postsynaptic specialization
+5 vL5a_up          vL5a_up GO:0005509                       calcium ion binding
+6 vL5a_up          vL5a_up GO:0004888 transmembrane signaling receptor activity
+  GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue
+1     11/77 367/13103 0.02997275       5.100428 6.125680 9.133903e-06
+2     11/77 402/13103 0.02736318       4.656361 5.724687 2.139505e-05
+3     10/77 351/13103 0.02849003       4.848115 5.618509 3.725011e-05
+4     10/77 382/13103 0.02617801       4.454681 5.268509 7.585057e-05
+5     10/75 467/12931 0.02141328       3.691934 4.525548 3.461758e-04
+6     10/75 478/12931 0.02092050       3.606974 4.435990 4.161401e-04
+     p.adjust      qvalue
+1 0.001233781 0.001111041
+2 0.001233781 0.001111041
+3 0.001611067 0.001450794
+4 0.002624430 0.002363344
+5 0.017121192 0.015456632
+6 0.017121192 0.015456632
+                                                             geneID Count
+1    CAMK2A/NCS1/FYN/DTNB/AKAP5/PSD/PLXNA4/ARHGAP32/BSN/SYNPO/ADCY1    11
+2    CAMK2A/NCS1/FYN/DTNB/AKAP5/PSD/PLXNA4/ARHGAP32/BSN/SYNPO/ADCY1    11
+3           CAMK2A/NCS1/FYN/DTNB/AKAP5/PSD/ARHGAP32/BSN/SYNPO/ADCY1    10
+4           CAMK2A/NCS1/FYN/DTNB/AKAP5/PSD/ARHGAP32/BSN/SYNPO/ADCY1    10
+5   SLC25A23/CDH22/NCS1/FBLN2/HPCAL4/FSTL4/CDH9/PCDH19/PLCH2/CAMKK2    10
+6 TNFRSF1A/NPY2R/ADRA1B/NRXN3/NRXN2/GABRD/GLRA3/PLXNA4/EPHA10/ADRB1    10
+  ONTOLOGY
+1       CC
+2       CC
+3       CC
+4       CC
+5       MF
+6       MF
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'table' in selecting a method for function '%in%': object 'go_terms_myelination' not found
+Calls: %in% -> .handleSimpleError -> h
 Execution halted
