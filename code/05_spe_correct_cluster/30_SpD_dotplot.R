@@ -11,6 +11,9 @@ library("tidyverse")
 plot_dir <- here("plots", "05_spe_correct_cluster", "30_SpD_dotplot")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
+data_dir <- here("processed-data", "05_spe_correct_cluster", "30_SpD_dotplot")
+if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
+
 #### Load data ####
 message(Sys.time(), " - Load HDF5 SPE")
 spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
