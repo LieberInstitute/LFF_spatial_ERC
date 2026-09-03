@@ -164,6 +164,63 @@ spe |>
 dev.off()
 
 
+#### Enrichment Data ####
+erc_modeling_top <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "All_modeling_SpD_top100.csv"))
+
+erc_modeling_top |> filter(test == "vL5a-vL5b", fdr < 0.01) |> arrange(-logFC) |> print(n = 30)
+erc_modeling_top |> filter(test == "vL5b-vL5a", fdr < 0.01) |> arrange(-logFC)
+
+enrichment_top <- erc_modeling_top |>
+    filter(model_type == "enrichment", top <=5) |>
+    select(gene, top, vSpD = test) |>
+    mutate(vSpD = factor(vSpD, levels = spd_levels)) |>
+    arrange(vSpD)
+
+enrichment_top |> count(vSpD)
+
+rowData(spe)$vSpD_enrich <- NULL
+rowData(spe)$vSpD_enrich <- enrichment_top$vSpD[match(rownames(spe), enrichment_top$gene)] 
+table(rowData(spe)$vSpD_enrich)
+
+pdf(here(plot_dir, "Visium_SpD_dotplot_enrichment.pdf"), width = 7, height = 8)
+spe |>
+    scDotPlot(features = marker_stats_top$gene,
+              group = "vSpD",
+              groupAnno = "vSpD",
+              featureAnno = "vSpD_enrich",
+              scale = TRUE,
+              annoColors = list("vSpD" = SpD_colors,
+                                "vSpD_enrich" = SpD_colors),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+#### Key genes ####
+
+erc_SpD_key <- read_csv(here(data_dir, "vSpD_key_genes_long.csv"))
+
+rowData(spe)$vSpD_genes <- NULL
+rowData(spe)$vSpD_genes <- erc_SpD_key$domain[match(rownames(spe), erc_SpD_key$gene)] 
+table(rowData(spe)$vSpD_genes)
+
+pdf(here(plot_dir, "Visium_SpD_dotplot_key_genes.pdf"), width = 7, height = 5)
+spe |>
+    scDotPlot(features = erc_SpD_key$gene,
+              group = "vSpD",
+              groupAnno = "vSpD",
+              featureAnno = "vSpD_genes",
+              scale = TRUE,
+              annoColors = list("vSpD" = SpD_colors,
+                                "vSpD_genes" = c(SpD_colors, lit = "black")),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+dev.off()
+
+
+#### L5 pairwise data ####
+
 # slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
 
 #### Reproducibility information ####
