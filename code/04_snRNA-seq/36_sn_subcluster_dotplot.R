@@ -43,8 +43,7 @@ rowData(sce)$sex_check <- sex_check_tb$sex_check[match(rownames(sce), sex_check_
 table(rowData(sce)$sex_check)
 
 
-pdf(here(plot_dir, sprintf("sn_sample_dotplot_Sex_genes.pdf")))
-sce |>
+dotplot_sex_genes <- sce |>
     scDotPlot(features = unlist(sex_check),
               group = "sample_id",
               groupAnno = "Sex",
@@ -54,7 +53,9 @@ sce |>
               clusterRows = FALSE,
               groupLegends = FALSE
               )
-dev.off()
+
+ggsave(dotplot_sex_genes, filename = here(plot_dir, "sn_sample_dotplot_Sex_genes.pdf"))
+ggsave(dotplot_sex_genes, filename = here(plot_dir, "sn_sample_dotplot_Sex_genes.png"))
 
 
 #### risk gene dot plot ####
@@ -65,8 +66,7 @@ AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD
 nrow(AD_risk)
 
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_AD_risk.pdf")), height = 7)
-sce |>
+dotplot_AD_risk <- sce |>
     scDotPlot(features = unique(AD_risk$symbol),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -76,7 +76,11 @@ sce |>
               clusterRows = TRUE,
               groupLegends = FALSE
     )
-sce |>
+
+ggsave(dotplot_AD_risk, filename = here(plot_dir, "sn_cell_type_anno_dotplot_AD_risk.pdf"), height = 7)
+ggsave(dotplot_AD_risk, filename = here(plot_dir, "sn_cell_type_anno_dotplot_AD_risk.png"), height = 7)
+
+dotplot_AD_risk_logCounts <- sce |>
     scDotPlot(features = unique(AD_risk$symbol),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -86,7 +90,9 @@ sce |>
               clusterRows = TRUE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_AD_risk_logCounts, filename = here(plot_dir, "sn_cell_type_anno_dotplot_AD_risk_logCounts.pdf"), height = 7)
+ggsave(dotplot_AD_risk_logCounts, filename = here(plot_dir, "sn_cell_type_anno_dotplot_AD_risk_logCounts.png"), height = 7)
 
 #### lit marker dot plot ####
 
@@ -111,8 +117,7 @@ rowData(sce)$LitMarker <- lit_markers$cell_type_broad[match(rownames(sce), lit_m
 table(rowData(sce)$LitMarker)
 
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_lit_genes.pdf")), height = 10, width = 12)
-sce |>
+dotplot_lit_genes <- sce |>
     scDotPlot(features = unique(lit_markers$gene_name),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -123,7 +128,9 @@ sce |>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_lit_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplot_lit_genes.pdf"), height = 10, width = 12)
+ggsave(dotplot_lit_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplot_lit_genes.png"), height = 10, width = 12)
 
 
 #### Global Enrichment Dot plot ####
@@ -140,8 +147,7 @@ rowData(sce)$GlobalEnrich <- NULL
 rowData(sce)$GlobalEnrich <- enrichment_stats_top_unique$cell_type_anno[match(rownames(sce), enrichment_stats_top_unique$ensembl)] 
 table(rowData(sce)$GlobalEnrich)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes.pdf")), height = 14, width = 10)
-sce |>
+dotplot_Enrich_genes <- sce |>
     scDotPlot(features = enrichment_stats_top_unique$ensembl,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -153,7 +159,9 @@ sce |>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_Enrich_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Enrich_genes.pdf"), height = 14, width = 10)
+ggsave(dotplot_Enrich_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Enrich_genes.png"), height = 14, width = 10)
 
 
 #### Mean Ratio Dot plot ####
@@ -170,8 +178,7 @@ rowData(sce)$MeanRatio <- NULL
 rowData(sce)$MeanRatio <- marker_stats_top$cellType.target[match(rownames(sce), marker_stats_top$gene)] 
 table(rowData(sce)$MeanRatio)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_MeanRatio_genes.pdf")), height = 14, width = 10)
-sce |>
+dotplot_MeanRatio_genes <- sce |>
     scDotPlot(features = marker_stats_top$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -183,13 +190,14 @@ sce |>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_MeanRatio_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplot_MeanRatio_genes.pdf"), height = 14, width = 10)
+ggsave(dotplot_MeanRatio_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplot_MeanRatio_genes.png"), height = 14, width = 10)
 
 
 #### Oligo Enrich genes ####
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.pdf")), height = 5, width = 10)
-sce |>
+dotplot_Enrich_genes_Oligo.3 <- sce |>
     scDotPlot(features = enrichment_stats_top |> filter(cell_type_anno == "Oligo.03") |> pull(ensembl),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -200,7 +208,9 @@ sce |>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_Enrich_genes_Oligo.3, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.pdf"), height = 5, width = 10)
+ggsave(dotplot_Enrich_genes_Oligo.3, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Enrich_genes_Oligo.3.png"), height = 5, width = 10)
 
 
 #### MeanRatio dot plots ####
@@ -208,8 +218,7 @@ rowData(sce)$Marker <- NULL
 rowData(sce)$Marker <- top_MeanRatio_genes$cellType.target[match(rownames(sce), enrichment_stats_top$ensembl)] 
 table(rowData(sce)$Marker)
 
-pdf(here(plot_dir, sprintf("sn_subtype_%s_dotplot_MeanRatio.pdf", celltype)))
-sce |>
+dotplot_subtype_MeanRatio <- sce |>
     scDotPlot(features = top_MeanRatio_genes$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -219,7 +228,9 @@ sce |>
                                 "Marker" = cell_type_colors$anno),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_subtype_MeanRatio, filename = here(plot_dir, sprintf("sn_subtype_%s_dotplot_MeanRatio.pdf", celltype)))
+ggsave(dotplot_subtype_MeanRatio, filename = here(plot_dir, sprintf("sn_subtype_%s_dotplot_MeanRatio.png", celltype)))
 
 #### Oligo OPC marker genes ####
 
@@ -278,8 +289,7 @@ oligo_lineage_markers <- olig_marker_genes_lit |>
     arrange(Category_short) |>
     pull(Gene) 
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors.pdf"))
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+dotplot_OligoOPC5_lineage <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -289,10 +299,11 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors_exp.pdf"))
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+ggsave(dotplot_OligoOPC5_lineage, filename = here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors.pdf"))
+ggsave(dotplot_OligoOPC5_lineage, filename = here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors.png"))
+
+dotplot_OligoOPC5_lineage_exp <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -302,10 +313,11 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors.pdf"))
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
+ggsave(dotplot_OligoOPC5_lineage_exp, filename = here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors_exp.pdf"))
+ggsave(dotplot_OligoOPC5_lineage_exp, filename = here(plot_dir, "sn_subtype_OligoOPC5_lineage_dotplot_lit_alt_colors_exp.png"))
+
+dotplot_OligoOPC_lineage <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -314,10 +326,11 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors_exp.pdf"))
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
+ggsave(dotplot_OligoOPC_lineage, filename = here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors.pdf"))
+ggsave(dotplot_OligoOPC_lineage, filename = here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors.png"))
+
+dotplot_OligoOPC_lineage_exp <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
     scDotPlot(features = oligo_lineage_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -326,7 +339,9 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_OligoOPC_lineage_exp, filename = here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors_exp.pdf"))
+ggsave(dotplot_OligoOPC_lineage_exp, filename = here(plot_dir, "sn_subtype_OligoOPC_lineage_dotplot_lit_alt_colors_exp.png"))
 
 
 ## Oligo disease associated genes 
@@ -336,8 +351,7 @@ oligo_disease_assoc_markers <- olig_marker_genes_lit |>
     pull(Gene) 
 
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors.pdf"), height = 6)
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+dotplot_OligoOPC5_disease <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_disease_assoc_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -347,10 +361,11 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors_exp.pdf"), height = 6)
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+ggsave(dotplot_OligoOPC5_disease, filename = here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors.pdf"), height = 6)
+ggsave(dotplot_OligoOPC5_disease, filename = here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors.png"), height = 6)
+
+dotplot_OligoOPC5_disease_exp <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
     scDotPlot(features = oligo_disease_assoc_markers,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -360,14 +375,15 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_OligoOPC5_disease_exp, filename = here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors_exp.pdf"), height = 6)
+ggsave(dotplot_OligoOPC5_disease_exp, filename = here(plot_dir, "sn_subtype_OligoOPC5_disease_dotplot_lit_alt_colors_exp.png"), height = 6)
 
 ## Genes of interest from Bernie Jun 26, 2026
 oligo_explore_genes <- c("FGFR3", "PLPP3", "NTSR2", "RYR3") 
 all(oligo_explore_genes %in% rownames(sce))
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC_dotplot_explore.pdf"), width = 5)
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
+dotplot_OligoOPC_explore <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
     scDotPlot(features = oligo_explore_genes,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -376,7 +392,9 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC"] |>
               annoColors = list("cell_type_anno" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_OligoOPC_explore, filename = here(plot_dir, "sn_subtype_OligoOPC_dotplot_explore.pdf"), width = 5)
+ggsave(dotplot_OligoOPC_explore, filename = here(plot_dir, "sn_subtype_OligoOPC_dotplot_explore.png"), width = 5)
 
 ## Oligo Enrichment genes w/ OPC.5 outgroup
 
@@ -387,9 +405,7 @@ rowData(sce)$oligo_enrich_marker <- NULL
 rowData(sce)$oligo_enrich_marker <- oligo_enrichment_genes$test[match(rownames(sce), oligo_enrichment_genes$gene)] 
 table(rowData(sce)$oligo_enrich_marker)
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment_alt_colors.pdf"), width = 5)
-# pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment.pdf"), width = 5)
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC.5"]  |>
+dotplot_OligoOPC5_enrichment <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC.5"]  |>
     scDotPlot(features = oligo_enrichment_genes$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -401,11 +417,12 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_broad == "OPC.5"]  |>
                                 "oligo_enrich_marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_OligoOPC5_enrichment, filename = here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment_alt_colors.pdf"), width = 5)
+ggsave(dotplot_OligoOPC5_enrichment, filename = here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment_alt_colors.png"), width = 5)
 
 ## Oligo markers in ALL cell types
-pdf(here(plot_dir, "sn_subtype_dotplot_OligoEnrichment.pdf"), width = 12, height = 9)
-sce |>
+dotplot_OligoEnrichment_all <- sce |>
     scDotPlot(features = oligo_enrichment_genes$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -415,15 +432,15 @@ sce |>
                                 "oligo_enrich_marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_OligoEnrichment_all, filename = here(plot_dir, "sn_subtype_dotplot_OligoEnrichment.pdf"), width = 12, height = 9)
+ggsave(dotplot_OligoEnrichment_all, filename = here(plot_dir, "sn_subtype_dotplot_OligoEnrichment.png"), width = 12, height = 9)
 
 ## top 5 genes
 
 oligo_enrichment_genes |> filter(top <=5) |> pull(gene)
 
-pdf(here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment5_alt_colors.pdf"), width = 5, height =5)
-
-sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
+dotplot_OligoOPC5_enrichment5 <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
     scDotPlot(features = oligo_enrichment_genes |> filter(top <=5) |> pull(gene),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -433,7 +450,9 @@ sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"]  |>
                                 "oligo_enrich_marker" = Oligo_OPC_colors),
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_OligoOPC5_enrichment5, filename = here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment5_alt_colors.pdf"), width = 5, height = 5)
+ggsave(dotplot_OligoOPC5_enrichment5, filename = here(plot_dir, "sn_subtype_OligoOPC5_dotplot_enrichment5_alt_colors.png"), width = 5, height = 5)
 
 #### Oligo OPC gene list dotplots ####
 
@@ -446,9 +465,9 @@ map_int(Blanchard_gene_list, length)
 
 plot_OligoOPC_dotplot <- function(gene_list, name){
     
-    pdf(here(plot_dir, sprintf("sn_subtype_OligoOPC5_dotplot_%s_alt_colors.pdf", name)), width = 5, height = (length(gene_list)/3) + 1)
+    dotplot_height <- (length(gene_list)/3) + 1
     
-    print(sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
+    dotplot_OligoOPC5 <- sce[, sce$cell_type_broad == "Oligo" | sce$cell_type_anno == "OPC.5"] |>
         scDotPlot(features = gene_list,
                   group = "cell_type_anno",
                   groupAnno = "cell_type_anno",
@@ -457,9 +476,10 @@ plot_OligoOPC_dotplot <- function(gene_list, name){
                   # annoColors = list("cell_type_anno" = cell_type_colors$anno),
                   annoColors = list("cell_type_anno" = Oligo_OPC_colors),
                   clusterRows = TRUE,
-                  groupLegends = FALSE))
+                  groupLegends = FALSE)
     
-    dev.off()
+    ggsave(dotplot_OligoOPC5, filename = here(plot_dir, sprintf("sn_subtype_OligoOPC5_dotplot_%s_alt_colors.pdf", name)), width = 5, height = dotplot_height)
+    ggsave(dotplot_OligoOPC5, filename = here(plot_dir, sprintf("sn_subtype_OligoOPC5_dotplot_%s_alt_colors.png", name)), width = 5, height = dotplot_height)
 }
 
 map2(Blanchard_gene_list, names(Blanchard_gene_list), ~plot_OligoOPC_dotplot(.x, .y))
@@ -469,8 +489,7 @@ map2(Blanchard_gene_list, names(Blanchard_gene_list), ~plot_OligoOPC_dotplot(.x,
 
 lit_markers |> filter(cell_type_broad == "Inhib")
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Inhib_logCounts.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Inhib"]|>
+dotplot_Inhib_logCounts <- sce[, sce$cell_type_broad == "Inhib"]|>
     scDotPlot(features = c(unique(lit_markers |> dplyr::filter(cell_type_broad == "Inhib") |> pull(gene_name)), "PAX6"),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -480,9 +499,11 @@ sce[, sce$cell_type_broad == "Inhib"]|>
                # clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
 
-sce[, sce$cell_type_broad == "Inhib"]|>
+ggsave(dotplot_Inhib_logCounts, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Inhib_logCounts.pdf"), height = 5, width = 5)
+ggsave(dotplot_Inhib_logCounts, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Inhib_logCounts.png"), height = 5, width = 5)
+
+dotplot_Inhib <- sce[, sce$cell_type_broad == "Inhib"]|>
     scDotPlot(features = c(unique(lit_markers |> dplyr::filter(cell_type_broad == "Inhib") |> pull(gene_name)), "PAX6"),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -492,7 +513,9 @@ sce[, sce$cell_type_broad == "Inhib"]|>
                # clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_Inhib, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Inhib.pdf"), height = 5, width = 5)
+ggsave(dotplot_Inhib, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Inhib.png"), height = 5, width = 5)
 
 #### Excit subtypes ####
 excit_annotation_marker <- read_csv(here("external-data", "Claude2026", "ERC_excit_annotation_marker_genes", "ERC_excit_annotation_marker_genes.csv")) |>
@@ -518,9 +541,7 @@ excit_anno_colors <- c(
 )
 
 
-pdf(here(plot_dir, "sn_subtype_Excit_dotplot_lit_markers.pdf"), width = 5)
-
-sce[, sce$cell_type_broad == "Excit"]  |>
+dotplot_Excit_lit_markers <- sce[, sce$cell_type_broad == "Excit"]  |>
     scDotPlot(features = excit_annotation_marker$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -532,7 +553,10 @@ sce[, sce$cell_type_broad == "Excit"]  |>
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-sce[, sce$cell_type_broad == "Excit"]  |>
+ggsave(dotplot_Excit_lit_markers, filename = here(plot_dir, "sn_subtype_Excit_dotplot_lit_markers.pdf"), width = 5)
+ggsave(dotplot_Excit_lit_markers, filename = here(plot_dir, "sn_subtype_Excit_dotplot_lit_markers.png"), width = 5)
+
+dotplot_Excit_lit_markers_clustered <- sce[, sce$cell_type_broad == "Excit"]  |>
     scDotPlot(features = excit_annotation_marker$gene,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -544,7 +568,8 @@ sce[, sce$cell_type_broad == "Excit"]  |>
               clusterRows = TRUE,
               groupLegends = FALSE)
 
-dev.off()
+ggsave(dotplot_Excit_lit_markers_clustered, filename = here(plot_dir, "sn_subtype_Excit_dotplot_lit_markers_clustered.pdf"), width = 5)
+ggsave(dotplot_Excit_lit_markers_clustered, filename = here(plot_dir, "sn_subtype_Excit_dotplot_lit_markers_clustered.png"), width = 5)
 
 
 #### Micro sub-types ####
@@ -561,8 +586,7 @@ lit_markers |> filter(cell_type_broad %in% c("Micro", "Macro"))
 micro_lit_markers <- c("C1QB", "CSF1R", "CX3CR1", "HLA-DRA", "APOE", "TREM2", "CD33")
 micro_lit_markers2 <- micro_lit_markers[micro_lit_markers %in% rownames(sce)]
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Micro.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
+dotplot_Micro <- sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
     scDotPlot(features = micro_lit_markers2,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -572,10 +596,11 @@ sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Micro_logCounts.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
+ggsave(dotplot_Micro, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Micro.pdf"), height = 5, width = 5)
+ggsave(dotplot_Micro, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Micro.png"), height = 5, width = 5)
+
+dotplot_Micro_logCounts <- sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
     scDotPlot(features = micro_lit_markers2,
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -585,7 +610,9 @@ sce[, sce$cell_type_broad == "Micro" | sce$cell_type_broad == "Macro"]|>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_Micro_logCounts, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Micro_logCounts.pdf"), height = 5, width = 5)
+ggsave(dotplot_Micro_logCounts, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Micro_logCounts.png"), height = 5, width = 5)
 
 #### Astro sub-types ####
 
@@ -614,8 +641,7 @@ rowData(sce)$astro_marker <- NULL
 rowData(sce)$astro_marker <- names(Astro_lit_markers)[match(rownames(sce), Astro_lit_markers)] 
 table(rowData(sce)$astro_marker)
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_logCount.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Astro"]|>
+dotplot_Astro_logCount <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -625,10 +651,11 @@ sce[, sce$cell_type_broad == "Astro"]|>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Astro"]|>
+ggsave(dotplot_Astro_logCount, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_logCount.pdf"), height = 5, width = 5)
+ggsave(dotplot_Astro_logCount, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_logCount.png"), height = 5, width = 5)
+
+dotplot_Astro <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -638,10 +665,11 @@ sce[, sce$cell_type_broad == "Astro"]|>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_disease_logCount.pdf")), height = 5, width = 5)
-sce[, sce$cell_type_broad == "Astro"]|>
+ggsave(dotplot_Astro, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro.pdf"), height = 5, width = 5)
+ggsave(dotplot_Astro, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro.png"), height = 5, width = 5)
+
+dotplot_Astro_disease_logCount <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_lit_markers[!grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -652,7 +680,10 @@ sce[, sce$cell_type_broad == "Astro"]|>
               groupLegends = FALSE
     )
 
-sce[, sce$cell_type_broad == "Astro"]|>
+ggsave(dotplot_Astro_disease_logCount, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_disease_logCount.pdf"), height = 5, width = 5)
+ggsave(dotplot_Astro_disease_logCount, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_disease_logCount.png"), height = 5, width = 5)
+
+dotplot_Astro_disease <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_lit_markers[grepl("reactive|risk", names(Astro_lit_markers))],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -662,7 +693,9 @@ sce[, sce$cell_type_broad == "Astro"]|>
               clusterRows = FALSE,
               groupLegends = FALSE
     )
-dev.off()
+
+ggsave(dotplot_Astro_disease, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_disease.pdf"), height = 5, width = 5)
+ggsave(dotplot_Astro_disease, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_disease.png"), height = 5, width = 5)
 
 Astro_explore_genes <- read_csv(here(data_dir, "astrocyte_marker_genes_claude.csv")) |>
     select(-ERC_specific_notes) |>
@@ -691,9 +724,7 @@ test <- sce[, sce$cell_type_broad == "Astro"]|>
 p_build <- ggplot_build(test)
 
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_explore.pdf")))
-
-sce[, sce$cell_type_broad == "Astro"]|>
+dotplot_Astro_explore_none <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_explore_genes|> filter(contamination_risk == "none") |> pull(gene),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -704,7 +735,10 @@ sce[, sce$cell_type_broad == "Astro"]|>
               groupLegends = FALSE
     )
 
-sce[, sce$cell_type_broad == "Astro"]|>
+ggsave(dotplot_Astro_explore_none, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_explore_none.pdf"))
+ggsave(dotplot_Astro_explore_none, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_explore_none.png"))
+
+dotplot_Astro_explore_risk <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = Astro_explore_genes |> filter(contamination_risk != "none") |> pull(gene),
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -715,7 +749,8 @@ sce[, sce$cell_type_broad == "Astro"]|>
               groupLegends = FALSE
     )
 
-dev.off()
+ggsave(dotplot_Astro_explore_risk, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_explore_risk.pdf"))
+ggsave(dotplot_Astro_explore_risk, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_explore_risk.png"))
 
 # Allen brain atlas Astros 
 # WIF1+ — grey matter astrocytes
@@ -729,9 +764,7 @@ astro_genes2 <- c("GFAP", "ITGB4", "ANGPTL4", "SLC1A2", "WIF1", "TNC", "LMO2",
 all(astro_genes2 %in% rownames(sce))
 astro_genes2 %in% Astro_explore_genes$gene
 
-pdf(here(plot_dir, sprintf("sn_cell_type_anno_dotplot_Astro_explore2.pdf")))
-
-sce[, sce$cell_type_broad == "Astro"]|>
+dotplot_Astro_explore2 <- sce[, sce$cell_type_broad == "Astro"]|>
     scDotPlot(features = astro_genes2[astro_genes2 %in% rownames(sce)],
               group = "cell_type_anno",
               groupAnno = "cell_type_anno",
@@ -742,7 +775,8 @@ sce[, sce$cell_type_broad == "Astro"]|>
               groupLegends = FALSE
     )
 
-dev.off()
+ggsave(dotplot_Astro_explore2, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_explore2.pdf"))
+ggsave(dotplot_Astro_explore2, filename = here(plot_dir, "sn_cell_type_anno_dotplot_Astro_explore2.png"))
 
 # slurmjobs::job_single('36_sn_subcluster_dotplot', create_shell = TRUE, memory = '10G', command = "Rscript 36_sn_subcluster_dotplot.R")
 
