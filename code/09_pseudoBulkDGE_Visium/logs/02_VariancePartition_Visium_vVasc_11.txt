@@ -182,3 +182,33 @@ filter genes:0
 Saving 7 x 7 in image
 2026-09-01 20:37:05.517263 - VarPart: carrier_i
 filter genes:0
+Saving 7 x 7 in image
+2026-09-01 21:22:23.402182 - VarPart: apoe_i
+filter genes:0
+Saving 7 x 7 in image
+2026-09-01 22:08:54.819032 - VarPart: e4e4_i
+filter genes:0
+Saving 7 x 7 in image
+Warning messages:
+1: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 7193 responses.
+  See errors with attr(., 'errors')
+2: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 7192 responses.
+  See errors with attr(., 'errors')
+3: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 7192 responses.
+  See errors with attr(., 'errors')
+4: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 7192 responses.
+  See errors with attr(., 'errors')
+5: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 7192 responses.
+  See errors with attr(., 'errors')
+6: In .fitExtractVarPartModel(exprObj, formula, data, REML = REML,  :
+  Model failed for 7264 responses.
+  See errors with attr(., 'errors')
+Error in parse_file_or_name(name, should_exist = FALSE, r_ok = TRUE) : 
+  02_VariancePartition_Visium.sh already exists
+Calls: <Anonymous> -> parse_file_or_name
+Execution halted

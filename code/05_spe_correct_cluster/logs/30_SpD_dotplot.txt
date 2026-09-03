@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Aug 25 04:21:23 PM EDT 2026
+Wed Sep  2 11:03:52 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35159914
+Job id: 35489450
 Job name: 30_SpD_dotplot
-Node name: compute-150
+Node name: compute-161
 Task id: 
 Unloading conda_R/4.5.x
 Loading conda_R/4.5
@@ -169,7 +169,7 @@ The following object is masked from ‘package:rhdf5’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-08-25 16:21:36.98174 - Load HDF5 SPE
+2026-09-02 23:04:04.170288 - Load HDF5 SPE
 Loading required namespace: SpatialExperiment
 class: SpatialExperiment 
 dim: 30494 122202 
@@ -197,8 +197,7 @@ Loading objects:
 
 female   male 
      4      9 
-null device 
-          1 
+Saving 7 x 7 in image
 Rows: 57 Columns: 4
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -214,16 +213,84 @@ dbl (1): n_studies
              4              2              3              5              7 
 Para-subiculum           Vasc             WM 
              3              1              5 
-null device 
-          1 
-null device 
-          1 
-null device 
-          1 
+Saving 7 x 7 in image
+Saving 7 x 7 in image
 [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
 Loading objects:
   marker_stats
 # A tibble: 10 × 2
+   vSpD       n
+   <fct>  <int>
+ 1 vVasc      6
+ 2 vL1        6
+ 3 vL2        6
+ 4 vInhib     6
+ 5 vLD        6
+ 6 vL5a       6
+ 7 vL5b       6
+ 8 vL6        6
+ 9 vWMpv      6
+10 vWMd       6
+
+ vVasc    vL1    vL2 vInhib    vLD   vL5a   vL5b    vL6  vWMuf  vWMpv   vWMd 
+     6      6      6      6      6      6      6      6      0      6      6 
+Rows: 12200 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): model_type, test, gene, ensembl
+dbl (6): top, stat, pval, fdr, gene_index, logFC
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+# A tibble: 43 × 10
+     top model_type test   gene   stat     pval     fdr gene_index logFC ensembl
+   <dbl> <chr>      <chr>  <chr> <dbl>    <dbl>   <dbl>      <dbl> <dbl> <chr>  
+ 1     2 pairwise   vL5a-… MET    6.65 1.24e-10 2.68e-7       4587 2.31  ENSG00…
+ 2     4 pairwise   vL5a-… COL5…  6.51 2.88e-10 4.80e-7       1742 2.19  ENSG00…
+ 3    10 pairwise   vL5a-… CUX2   5.29 2.29e- 7 1.40e-4       7259 1.87  ENSG00…
+ 4     7 pairwise   vL5a-… CBLN4  5.41 1.21e- 7 9.37e-5      10753 1.78  ENSG00…
+ 5     5 pairwise   vL5a-… GPR6   5.87 1.10e- 8 9.89e-6       3995 1.75  ENSG00…
+ 6     6 pairwise   vL5a-… GPR88  5.67 3.13e- 8 2.60e-5        574 1.74  ENSG00…
+ 7    20 pairwise   vL5a-… CNTN5  4.76 2.91e- 6 8.93e-4       6636 1.73  ENSG00…
+ 8    25 pairwise   vL5a-… CART…  4.52 8.85e- 6 2.15e-3       3185 1.72  ENSG00…
+ 9    12 pairwise   vL5a-… CNGB1  5.19 3.81e- 7 2.01e-4       8705 1.67  ENSG00…
+10    24 pairwise   vL5a-… LINC…  4.53 8.18e- 6 2.03e-3       7372 1.64  ENSG00…
+11    14 pairwise   vL5a-… PRAG1  5.03 8.08e- 7 3.47e-4       4746 1.63  ENSG00…
+12    19 pairwise   vL5a-… NEUR…  4.77 2.81e- 6 8.93e-4       1730 1.62  ENSG00…
+13     8 pairwise   vL5a-… CALB1  5.35 1.65e- 7 1.20e-4       4979 1.57  ENSG00…
+14    37 pairwise   vL5a-… SYND…  4.19 3.61e- 5 6.00e-3       7858 1.50  ENSG00…
+15    28 pairwise   vL5a-… LINC…  4.42 1.32e- 5 2.78e-3       4539 1.48  ENSG00…
+16    27 pairwise   vL5a-… RASG…  4.46 1.15e- 5 2.57e-3       2817 1.47  ENSG00…
+17    29 pairwise   vL5a-… SLC1…  4.33 2.00e- 5 3.81e-3       6229 1.44  ENSG00…
+18    32 pairwise   vL5a-… AC11…  4.26 2.63e- 5 4.72e-3       3191 1.42  ENSG00…
+19    42 pairwise   vL5a-… GRB14  4.03 6.85e- 5 9.69e-3       1672 1.33  ENSG00…
+20    40 pairwise   vL5a-… TMEM…  4.09 5.41e- 5 8.08e-3       4054 1.18  ENSG00…
+21    31 pairwise   vL5a-… VLDLR  4.27 2.57e- 5 4.72e-3       5160 1.15  ENSG00…
+22    39 pairwise   vL5a-… PCDH8  4.10 5.17e- 5 7.83e-3       7521 1.14  ENSG00…
+23    22 pairwise   vL5a-… RCN1   4.56 7.16e- 6 1.90e-3       6249 1.08  ENSG00…
+24     1 pairwise   vL5a-… HOPX   6.79 5.32e-11 2.68e-7       2774 1.03  ENSG00…
+25    43 pairwise   vL5a-… RASG…  4.03 6.90e- 5 9.69e-3       3227 0.956 ENSG00…
+26    21 pairwise   vL5a-… GNAL   4.76 2.91e- 6 8.93e-4       9616 0.924 ENSG00…
+27    41 pairwise   vL5a-… ITPKA  4.07 6.00e- 5 8.73e-3       8078 0.904 ENSG00…
+28    38 pairwise   vL5a-… NECA…  4.18 3.77e- 5 6.10e-3       8840 0.881 ENSG00…
+29     3 pairwise   vL5a-… PRKCA  6.63 1.38e-10 2.68e-7       9414 0.732 ENSG00…
+30     9 pairwise   vL5a-… CAMK…  5.31 2.01e- 7 1.30e-4       2553 0.710 ENSG00…
+# ℹ 13 more rows
+# A tibble: 40 × 10
+     top model_type test  gene   stat     pval     fdr gene_index  logFC ensembl
+   <dbl> <chr>      <chr> <chr> <dbl>    <dbl>   <dbl>      <dbl>  <dbl> <chr>  
+ 1    34 pairwise   vL5b… TPPP   4.18 3.77e- 5 6.10e-3       3037 -0.355 ENSG00…
+ 2    25 pairwise   vL5b… SCD    4.47 1.06e- 5 2.43e-3       5951 -0.481 ENSG00…
+ 3    35 pairwise   vL5b… SNCA   4.16 4.07e- 5 6.49e-3       2849 -0.523 ENSG00…
+ 4    19 pairwise   vL5b… PNMA…  4.69 4.05e- 6 1.18e-3      10322 -0.537 ENSG00…
+ 5    18 pairwise   vL5b… DPYS…  4.72 3.46e- 6 1.03e-3       3425 -0.541 ENSG00…
+ 6     4 pairwise   vL5b… SH3B…  6.37 6.38e-10 9.25e-7        213 -0.557 ENSG00…
+ 7    32 pairwise   vL5b… IFI6   4.37 1.70e- 5 3.30e-3        230 -0.571 ENSG00…
+ 8    30 pairwise   vL5b… ZEB2   4.39 1.54e- 5 3.07e-3       1633 -0.579 ENSG00…
+ 9     6 pairwise   vL5b… SSBP3  6.33 8.22e-10 9.57e-7        443 -0.603 ENSG00…
+10    29 pairwise   vL5b… LMO3   4.40 1.45e- 5 2.96e-3       6874 -0.622 ENSG00…
+# ℹ 30 more rows
+# A tibble: 11 × 2
    vSpD       n
    <fct>  <int>
  1 vVasc      5
@@ -234,17 +301,28 @@ Loading objects:
  6 vL5a       5
  7 vL5b       5
  8 vL6        5
- 9 vWMpv      5
-10 vWMd       5
+ 9 vWMuf      5
+10 vWMpv      5
+11 vWMd       5
 
  vVasc    vL1    vL2 vInhib    vLD   vL5a   vL5b    vL6  vWMuf  vWMpv   vWMd 
-     5      5      5      5      5      5      5      5      0      5      5 
-null device 
-          1 
+     5      5      5      5      5      5      5      5      5      5      5 
+Rows: 19 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): domain, gene, source_type, note
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+   lit vInhib    vL1    vL2   vL5a   vL5b    vL6    vLD  vVasc   vWMd  vWMpv 
+     5      2      1      1      2      2      1      1      1      1      1 
+ vWMuf 
+     1 
 [1] "Reproducibility information:"
-[1] "2026-08-25 16:27:11 EDT"
+[1] "2026-09-02 23:08:26 EDT"
    user  system elapsed 
-291.658   5.928 347.460 
+230.181   5.130 272.842 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -255,7 +333,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-08-25
+ date     2026-09-02
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -359,6 +437,7 @@ null device
  promises               1.5.0    2025-11-01 [1] CRAN (R 4.5.0)
  purrr                * 1.2.1    2026-01-09 [1] CRAN (R 4.5.0)
  R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ ragg                   1.5.2    2026-03-23 [1] CRAN (R 4.5.0)
  RANN                   2.6.2    2024-08-25 [2] CRAN (R 4.5.0)
  rappdirs               0.3.4    2026-01-17 [1] CRAN (R 4.5.0)
  RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
@@ -411,6 +490,7 @@ null device
  survival               3.8-3    2024-12-17 [3] CRAN (R 4.5.0)
  systemfonts            1.3.2    2026-03-05 [1] CRAN (R 4.5.0)
  tensor                 1.5.1    2025-06-17 [1] CRAN (R 4.5.0)
+ textshaping            1.0.5    2026-03-06 [1] CRAN (R 4.5.0)
  tibble               * 3.3.1    2026-01-11 [1] CRAN (R 4.5.0)
  tidyr                * 1.3.2    2025-12-19 [1] CRAN (R 4.5.0)
  tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
@@ -439,4 +519,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Aug 25 04:27:12 PM EDT 2026
+Wed Sep  2 11:08:27 PM EDT 2026
