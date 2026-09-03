@@ -212,31 +212,27 @@ ggsave(dotplot_enrichment, filename = here(plot_dir, "Xenium_xSpD_dotplot_enrich
 ggsave(dotplot_enrichment, filename = here(plot_dir, "Xenium_xSpD_dotplot_enrichment.png"), width = 7, height = 8)
 
 #### Key genes ####
-## TODO: no curated xSpD key-gene list exists yet (the Visium
-## vSpD_key_genes_long.csv domain names/notes don't map onto the xSpD
-## clusters). Build an `xSpD_key_genes_long.csv` (columns: domain, gene,
-## source_type, note) in `data_dir` and uncomment below once available.
 
-# erc_xSpD_key <- read_csv(here(data_dir, "xSpD_key_genes_long.csv"))
-#
-# rowData(spe)$xSpD_genes <- NULL
-# rowData(spe)$xSpD_genes <- erc_xSpD_key$domain[match(rownames(spe), erc_xSpD_key$gene)]
-# table(rowData(spe)$xSpD_genes)
-#
-# dotplot_key_genes <- spe |>
-#     scDotPlot(features = erc_xSpD_key$gene,
-#               group = "xSpD",
-#               groupAnno = "xSpD",
-#               featureAnno = "xSpD_genes",
-#               scale = TRUE,
-#               annoColors = list("xSpD" = SpX_colors,
-#                                 "xSpD_genes" = c(SpX_colors, lit = "black")),
-#               clusterColumns = FALSE,
-#               clusterRows = FALSE,
-#               groupLegends = FALSE)
-#
-# ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.pdf"), width = 5, height = 7)
-# ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.png"), width = 5, height = 7)
+erc_xSpD_key <- read_csv(here(data_dir, "xSpD_key_genes_long.csv"))
+
+rowData(spe)$xSpD_genes <- NULL
+rowData(spe)$xSpD_genes <- erc_xSpD_key$domain[match(rownames(spe), erc_xSpD_key$gene)]
+table(rowData(spe)$xSpD_genes)
+
+dotplot_key_genes <- spe |>
+    scDotPlot(features = erc_xSpD_key$gene,
+              group = "xSpD",
+              groupAnno = "xSpD",
+              featureAnno = "xSpD_genes",
+              scale = TRUE,
+              annoColors = list("xSpD" = SpX_colors,
+                                "xSpD_genes" = c(SpX_colors, lit = "black")),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.pdf"), width = 5, height = 7)
+ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.png"), width = 5, height = 7)
 
 
 # slurmjobs::job_single('23_Xenium_expression_dotplots', create_shell = TRUE, memory = '10G', command = "Rscript 23_Xenium_expression_dotplots.R")
