@@ -9,7 +9,10 @@ compare_contrast_stats <- function(dge_tb,
                                    width = 10,
                                    contrast_1,
                                    contrast_2,
-                                   bottom_label = FALSE){
+                                   bottom_label = FALSE,
+                                   text = TRUE,
+                                   save = TRUE,
+                                   my_text_size = 3){
     
     ## define vars
     m_stat <- paste0(m, "_", stat)
@@ -72,22 +75,26 @@ compare_contrast_stats <- function(dge_tb,
             )
     }
         
-    if(risk){
-        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = 3, max.overlaps = 30, force = 10, force_pull = 10)
+    if(!text){
+        plot_fn = sprintf("ancestry_%s_stat_scatter_%s_noText.png", datatype, stat)
+    } else if(risk){
+        stat_scatter <- stat_scatter + geom_text_repel(aes(label = gene_name), size = my_text_size, max.overlaps = 30, force = 10, force_pull = 10)
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s_risk.png", datatype, stat)
     } else {
         stat_scatter <- stat_scatter +
             geom_text_repel(
                 aes(label = ifelse((DE_class != "None") & (!grepl('^ENSG', gene_name)), gene_name, "")),
-                size = 3, max.overlaps = 30, force = 3, force_pull = 2
+                size = my_text_size, max.overlaps = 30, force = 3, force_pull = 2
             )
         plot_fn = sprintf("ancestry_%s_stat_scatter_%s.png", datatype, stat)
     }
     
-    
-    ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = height, width = width)
-    
-    return(cor)
+    if(save){
+        ggsave(stat_scatter, filename = here(plot_dir, plot_fn), height = height, width = width)
+        return(cor)
+    } else {
+        return(stat_scatter)
+    }
 }
 
 
