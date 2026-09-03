@@ -221,14 +221,14 @@ source(here("code", "13_compile_DGE", "compare_stats_scatter.R"))
 if(datatype == "Visium"){
     
     if (contrast == "ancestry"){
-        compare_contrast_stats(dge_data_contrast |> filter(cluster == "WM.uf~Sp09D07"), 
-                            datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
+        compare_contrast_stats(dge_data_contrast |> filter(cluster == "vWMuf"), 
+                            datatype = sprintf("%s_%s_%s",contrast, datatype, "vWMuf"),
                             height = 6, width = 5,
                             contrast_1 = contrast_1,
                             contrast_2 = contrast_2)
     } else {
-        compare_contrast_stats(dge_data_contrast |> filter(cluster == "WM.uf~Sp09D07"), 
-                            datatype = sprintf("%s_%s_%s",contrast, datatype, "WM.uf"),
+        compare_contrast_stats(dge_data_contrast |> filter(cluster == "vWMuf"), 
+                            datatype = sprintf("%s_%s_%s",contrast, datatype, "vWMuf"),
                             height = 6, width = 5,
                             contrast_1 = contrast_1,
                             contrast_2 = contrast_2,

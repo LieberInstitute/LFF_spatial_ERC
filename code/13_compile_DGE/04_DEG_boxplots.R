@@ -37,7 +37,7 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 #### Load pseudobulk data ####
 if(opt$datatype == "Visium"){
     pb_fn <- here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS")
-    cluster_var <- "SpD"
+    cluster_var <- "vSpD"
 } else if(opt$datatype == "sn_broad"){
     pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS")
     cluster_var <- "cell_type_broad"
@@ -226,12 +226,12 @@ if(opt$datatype == "sn_broad"){
 } else if(opt$datatype == "Visium"){
     
     #Oligo
-    boxplots_klk6 <- map(c("Vasc~Sp09D08", "WM.uf~Sp09D07"), function(spd){
+    boxplots_klk6 <- map(c("vVasc", "vWMuf"), function(spd){
         dge_plot <- plot_DEG_express(
             sce = sce_pb,
             stats = DE_data,
             gene = "KLK6",
-            cluster_col = "SpD",
+            cluster_col = "vSpD",
             clus = spd,
             gene_col = "gene_name",
             color_pal = APOE_carrier_colors,
@@ -349,7 +349,7 @@ anc_single_gene <- function(gene_list,
 
 if(opt$datatype == "Visium"){
   #### Visium plots ###
-    anc_single_gene(gene_list = list(`WM_Sp09D06` = c("PEX14")))
+    anc_single_gene(gene_list = list(`vWMd` = c("PEX14")))
     
 } else if(opt$datatype == "sn_broad"){
     #### sn broad ####
