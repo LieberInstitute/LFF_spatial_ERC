@@ -28,9 +28,9 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 # Extract the relevant columns from the data
 pd <- as.data.frame(colData(spe_pb))
 
-table(spe_pb$SpD)
+table(spe_pb$vSpD)
 
-spd_tab <- pd |> count(SpD_syn, SpD) |> select(-n)
+# spd_tab <- pd |> count(vSpD, SpD) |> select(-n)
 
 #### t-test variables ####
 
@@ -42,11 +42,11 @@ summary(pd[,test_variables])
 var_t_test <- map(test_variables, function(test_var){
     
     y_position <- pd |>
-        group_by(SpD) |>
+        group_by(vSpD) |>
         summarise(y.position = max(!!sym(test_var)) + .05*max(!!sym(test_var)))
     
     var_t_test <- pd |>
-        do(compare_means(!!sym(test_var) ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "SpD")) |>
+        do(compare_means(!!sym(test_var) ~ APOE_carrier, data = ., method = "t.test", p.adjust.method = "fdr", group.by = "vSpD")) |>
         ungroup() |>
         mutate(p.signif.fdr = case_when(p.adj < 0.005 ~ "***",
                                         p.adj < 0.01 ~"**",
@@ -62,7 +62,7 @@ var_t_test <- map(test_variables, function(test_var){
         geom_boxplot(aes(y = !!sym(test_var), x = APOE_carrier, fill = APOE_carrier), outlier.shape = NA) +
         geom_point(aes(y = !!sym(test_var), x = APOE_carrier, fill = APOE_carrier)) +
         geom_text(data = var_t_test, aes(label = fdr_anno, x = 1, y = y.position))+
-        facet_wrap(~SpD, scales = "free_y") +
+        facet_wrap(~vSpD, scales = "free_y") +
         scale_fill_manual(values = APOE_carrier_colors) +
         theme_bw() 
     
@@ -77,7 +77,7 @@ map(var_t_test, ~.x|> filter(p.adj < 0.05))
 #### Explore quality metrics ####
 
 scater_umi_v_chrM <- pd |> 
-    ggplot(aes(x = pseudo_sum_umi, y = pseudo_expr_chrM, color = SpD)) +
+    ggplot(aes(x = pseudo_sum_umi, y = pseudo_expr_chrM, color = vSpD)) +
     geom_point() +
     theme_bw() +
     scale_color_manual(values = SpD_colors)
@@ -85,7 +85,7 @@ scater_umi_v_chrM <- pd |>
 ggsave(scater_umi_v_chrM, filename = here(plot_dir, "spe_pb_scater_umi_v_chrM.png"))
 
 scater_umi_v_chrM_ratio <- pd |> 
-    ggplot(aes(x = pseudo_sum_umi, y = pseudo_expr_chrM_ratio, color = SpD)) +
+    ggplot(aes(x = pseudo_sum_umi, y = pseudo_expr_chrM_ratio, color = vSpD)) +
     geom_point() +
     theme_bw() +
     scale_color_manual(values = SpD_colors)
@@ -93,7 +93,7 @@ scater_umi_v_chrM_ratio <- pd |>
 ggsave(scater_umi_v_chrM_ratio, filename = here(plot_dir, "spe_pb_scater_umi_v_chrM_ratio.png"))
 
 scater_ncells_v_umi <- pd |> 
-    ggplot(aes(x = ncells, y = pseudo_sum_umi, color = SpD)) +
+    ggplot(aes(x = ncells, y = pseudo_sum_umi, color = vSpD)) +
     geom_point() +
     theme_bw() +
     scale_color_manual(values = SpD_colors)
@@ -101,7 +101,7 @@ scater_ncells_v_umi <- pd |>
 ggsave(scater_ncells_v_umi, filename = here(plot_dir, "spe_pb_scater_ncells_v_umi.png"))
 
 scater_ncells_v_chrM_ratio <- pd |> 
-    ggplot(aes(x = ncells, y = pseudo_expr_chrM_ratio, color = SpD)) +
+    ggplot(aes(x = ncells, y = pseudo_expr_chrM_ratio, color = vSpD)) +
     geom_point() +
     theme_bw() +
     scale_color_manual(values = SpD_colors)
@@ -109,14 +109,14 @@ scater_ncells_v_chrM_ratio <- pd |>
 ggsave(scater_ncells_v_chrM_ratio, filename = here(plot_dir, "spe_pb_scater_ncells_v_chrM_ratio.png"))
 
 pd |> 
-    group_by(SpD) |>
+    group_by(vSpD) |>
     summarise(cor_cell_umi = cor(ncells, pseudo_sum_umi),
               cor_cell_chrM = cor(ncells, pseudo_expr_chrM_ratio),
               cor_umi_chrM = cor(pseudo_sum_umi, pseudo_expr_chrM_ratio))
 
 ggpair_plot <- ggpairs(pd, 
                        columns = c("ncells", "pseudo_sum_umi","pseudo_expr_chrM","pseudo_expr_chrM_ratio"), 
-                       aes(colour = SpD)) +
+                       aes(colour = vSpD)) +
     scale_color_manual(values = SpD_colors) +
     scale_fill_manual(values = SpD_colors) +
     theme_bw()
@@ -128,7 +128,7 @@ ggsave(ggpair_plot, filename = here(plot_dir, "spe_pb_ggpair_quality_metrics.png
 #### Variance Partition data ####
 varPart_summary <- map_dfr(list.files(here("processed-data", "09_pseudoBulkDGE_Visium", "02_VariancePartition_Visium"), full.names = TRUE),
                               read.csv) |>
-    rename(SpD_syn = SpD) |> 
+    rename(vSpD = SpD) |> 
     left_join(spd_tab) 
 
 any(is.na(varPart_summary$SpD))
