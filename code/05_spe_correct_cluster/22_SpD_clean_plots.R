@@ -460,6 +460,48 @@ sig_genes_SpD |>
     group_by(gene) |>
     slice_min(fdr)
 
+#### L5a vs L5b pairwise volcano plot ####
+## Full (non-truncated) pairwise stats for every gene, unlike the top-100-only
+## enrichment/pairwise CSVs
+erc_modeling_full <- readRDS(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "modeling_results-SpD.rds"))
+
+## pairwise stats are wide (one row per gene, one column set per contrast);
+## only one direction (vL5a-vL5b) is stored, with logFC on a fixed
+## vL5a - vL5b scale, so no need to combine directions like with the top100 csv
+L5_pairwise <- erc_modeling_full$pairwise |>
+    as.data.frame() |>
+    select(gene, ensembl,
+           t_stat = `t_stat_vL5a-vL5b`,
+           pval = `p_value_vL5a-vL5b`,
+           fdr = `fdr_vL5a-vL5b`,
+           logFC = `logFC_vL5a-vL5b`) |>
+    mutate(direction = case_when(fdr > 0.05 ~"None",
+                                 logFC > 0 ~"Up in vL5a",
+                                 TRUE ~"Up in vL5b"))
+
+L5_pairwise |> count(direction)
+
+L5_volcano <- L5_pairwise |>
+    ggplot(aes(x = logFC, y = -log10(pval), color = direction)) +
+    geom_point(alpha = 0.7) +
+    geom_text_repel(
+        data = L5_pairwise |> slice_min(fdr, n = 15),
+        aes(label = gene),
+        size = 3,
+        max.overlaps = 20,
+        show.legend = FALSE
+    ) +
+    scale_color_manual(values = c("None" ="grey",
+                                  "Up in vL5a" = SpD_colors[["vL5a"]],
+                                  "Up in vL5b" = SpD_colors[["vL5b"]])) +
+    labs(x = "logFC (vL5a - vL5b)",
+         y = expression(-log[10](p*"-"*value)),
+         color = NULL,
+         title = "Top pairwise markers: vL5a vs vL5b") +
+    theme_bw()
+
+ggsave(L5_volcano, filename = here(plot_dir, "L5_sublayer_pairwise_volcano.png"), height = 6, width = 7)
+
 
 L5_sublayer_express <- plot_gene_express(
     spe,
@@ -470,6 +512,17 @@ L5_sublayer_express <- plot_gene_express(
 )
 
 ggsave(L5_sublayer_express, filename = here(plot_dir, "L5_sublayer_expression.png"), height = 8, width = 3)
+
+top_pairwise_genes <- L5_pairwise |> 
+    filter(direction != "None") |> 
+    group_by(direction) |>
+    slice_min(order_by = `pval`, n = 25)
+    
+write_csv(top_pairwise_genes, file = here(data_dir, "vL5_top_pairwise_genes.csv"))
+
+L5_pairwise |> filter(gene == "RELN")
+# gene         ensembl   t_stat         pval        fdr   logFC  direction
+# ENSG00000189056 RELN ENSG00000189056 3.440037 0.0006580344 0.04850713 1.16895 Up in vL5a
 
 L5_sublayer_express_pb <- plot_gene_express(
     spe_pb,
