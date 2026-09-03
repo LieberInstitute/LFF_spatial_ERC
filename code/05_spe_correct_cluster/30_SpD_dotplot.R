@@ -204,8 +204,7 @@ rowData(spe)$vSpD_genes <- NULL
 rowData(spe)$vSpD_genes <- erc_SpD_key$domain[match(rownames(spe), erc_SpD_key$gene)] 
 table(rowData(spe)$vSpD_genes)
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_key_genes.pdf"), width = 7, height = 5)
-spe |>
+dotplot_key_genes <- spe |>
     scDotPlot(features = erc_SpD_key$gene,
               group = "vSpD",
               groupAnno = "vSpD",
@@ -216,7 +215,9 @@ spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.pdf"), width = 5, height = 7)
+ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.png"), width = 5, height = 7)
 
 
 #### L5 pairwise data ####
