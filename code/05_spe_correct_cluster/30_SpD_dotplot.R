@@ -43,8 +43,7 @@ rowData(spe)$sex_check <- sex_check_tb$sex_check[match(rownames(spe), sex_check_
 table(rowData(spe)$sex_check)
 
 
-pdf(here(plot_dir, sprintf("Visium_sample_dotplot_Sex_genes.pdf")))
-spe |>
+dotplot_sex_genes <- spe |>
     scDotPlot(features = unlist(sex_check),
               group = "sample_id",
               groupAnno = "Sex",
@@ -54,7 +53,8 @@ spe |>
               clusterRows = FALSE,
               groupLegends = FALSE
               )
-dev.off()
+
+ggsave(dotplot_sex_genes, filename = here(plot_dir, "Visium_sample_dotplot_Sex_genes.pdf"))
 
 #### Lit Dotplots ####
 
@@ -80,8 +80,7 @@ layer_colors <- c(Vasc = '#FF99C0',
                   `Para-subiculum` = "brown",
                   Interneuron = "red")
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers.pdf"))
-spe |>
+dotplot_lit_markers <- spe |>
     scDotPlot(features = lit_markers$gene_name,
               group = "vSpD",
               groupAnno = "vSpD",
@@ -92,12 +91,13 @@ spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_lit_markers, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers.pdf"))
+ggsave(dotplot_lit_markers, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers.png"))
 
 key_ramsden_markers <- c("NXPH4", "FEZF2", "ETV1", "DCC", "RELN", "WFS1")
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden.pdf"), width = 4, height = 6)
-spe |>
+dotplot_lit_markers_ramsden <- spe |>
     scDotPlot(features = key_ramsden_markers,
               group = "vSpD",
               groupAnno = "vSpD",
@@ -108,10 +108,10 @@ spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 7, height = 7)
-spe |>
+ggsave(dotplot_lit_markers_ramsden, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden.pdf"), width = 4, height = 6)
+
+dotplot_lit_markers_ramsden_all <- spe |>
     scDotPlot(features = lit_markers |> filter(grepl("Ramsden", studies)) |> pull(gene_name),
               group = "vSpD",
               groupAnno = "vSpD",
@@ -122,7 +122,8 @@ spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_lit_markers_ramsden_all, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 7, height = 7)
 
 
 
@@ -149,8 +150,7 @@ rowData(spe)$vSpD_Marker <- NULL
 rowData(spe)$vSpD_Marker <- marker_stats_top$vSpD[match(rownames(spe), marker_stats_top$gene)] 
 table(rowData(spe)$vSpD_Marker)
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 8)
-spe |>
+dotplot_mean_ratio <- spe |>
     scDotPlot(features = marker_stats_top$gene,
               group = "vSpD",
               groupAnno = "vSpD",
@@ -161,7 +161,9 @@ spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 8)
+ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Visium_SpD_dotplot_MeanRatio.png"), width = 7, height = 8)
 
 
 #### Enrichment Data ####
@@ -182,8 +184,7 @@ rowData(spe)$vSpD_enrich <- NULL
 rowData(spe)$vSpD_enrich <- enrichment_top$vSpD[match(rownames(spe), enrichment_top$gene)] 
 table(rowData(spe)$vSpD_enrich)
 
-pdf(here(plot_dir, "Visium_SpD_dotplot_enrichment.pdf"), width = 7, height = 8)
-spe |>
+dotplot_enrichment <- spe |>
     scDotPlot(features = marker_stats_top$gene,
               group = "vSpD",
               groupAnno = "vSpD",
@@ -194,7 +195,9 @@ spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
-dev.off()
+
+ggsave(dotplot_enrichment, filename = here(plot_dir, "Visium_SpD_dotplot_enrichment.pdf"), width = 7, height = 8)
+ggsave(dotplot_enrichment, filename = here(plot_dir, "Visium_SpD_dotplot_enrichment.png"), width = 7, height = 8)
 
 #### Key genes ####
 
@@ -219,8 +222,6 @@ dotplot_key_genes <- spe |>
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.pdf"), width = 5, height = 7)
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.png"), width = 5, height = 7)
 
-
-#### L5 pairwise data ####
 
 # slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
 
