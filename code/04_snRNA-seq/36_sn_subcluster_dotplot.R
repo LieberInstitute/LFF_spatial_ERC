@@ -744,4 +744,11 @@ sce[, sce$cell_type_broad == "Astro"]|>
 
 dev.off()
 
+# slurmjobs::job_single('36_sn_subcluster_dotplot', create_shell = TRUE, memory = '10G', command = "Rscript 36_sn_subcluster_dotplot.R")
 
+#### Reproducibility information ####
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
