@@ -47,6 +47,20 @@ top_DEGs <- sig_genes_extract(n = 100,
 
 write.csv(top_DEGs, file = here(data_dir, "enrichment_modeling_SpD_top100.csv"), row.names = FALSE)
 
+
+spe_pb$spatialLIBD <- 'SpDv'
+
+rowData(spe)$gene_search <- paste0(rowData(sce)$gene_name, "; ", rowData(sce)$gene_id)
+
+sig_genes_all <- spatialLIBD::sig_genes_extract_all(
+    modeling_results = modeling_results,
+    sce_layer = spe_pb,
+    n = 100
+)
+
+write.csv(sig_genes_all[,1:10], file = here(data_dir, "All_modeling_SpD_top100.csv"), row.names = FALSE)
+
+
 # slurmjobs::job_single('20_model_pseudobulk_anno', create_shell = TRUE, memory = '100G', command = "Rscript 20_model_pseudobulk_anno.R")
 
 ## Reproducibility information

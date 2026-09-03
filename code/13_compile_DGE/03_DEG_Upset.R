@@ -68,6 +68,13 @@ print(upset(fromList(c(DEGs_signif_list$sn_broad, DEGs_signif_list$Visium)),
             nsets = 10))
 dev.off()
 
+## visium vs. single cell fine
+
+pdf(here(plot_dir, "DEG_Upset_Visium-sn_fine.pdf"))
+print(upset(fromList(c(DEGs_signif_list$Visium, DEGs_signif_list$sn_fine)),
+            nsets = 10))
+dev.off()
+
 ## single cell broad vs. fine
 
 pdf(here(plot_dir, "DEG_Upset_sn_broad_v_fine.pdf"))
@@ -85,23 +92,30 @@ dev.off()
 
 
 
-common_WMuf_Vasc <- intersect(DEGs_signif_list$Visium$`WM.uf~Sp09D07`, DEGs_signif_list$Visium$`Vasc~Sp09D08`)
+common_WMuf_Vasc <- intersect(DEGs_signif_list$Visium$vWMuf, DEGs_signif_list$Visium$vVasc)
 
 DEGs_signif$Visium |> 
     filter(gene_id %in% common_WMuf_Vasc) |> 
     select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val)
 
-# cluster       gene_name vlmf_logFC vlmf_adj.P.Val
-# <chr>         <chr>          <dbl>          <dbl>
-# 1 Vasc~Sp09D08  KLK6          -1.89          0.0152
-# 2 Vasc~Sp09D08  CFL2          -0.656         0.0337
-# 3 Vasc~Sp09D08  ELOVL1        -1.01          0.0337
-# 4 WM.uf~Sp09D07 KLK6          -1.82          0.0279
-# 5 WM.uf~Sp09D07 CFL2          -0.952         0.0363
-# 6 WM.uf~Sp09D07 ELOVL1        -1.39          0.0438
+# cluster gene_name vlmf_logFC vlmf_adj.P.Val
+# <fct>   <chr>          <dbl>          <dbl>
+# 1 vVasc   ELOVL1         -1.14         0.0377
+# 2 vVasc   KLK6           -1.54         0.0377
+# 3 vWMuf   KLK6           -1.69         0.0469
+# 4 vWMuf   ELOVL1         -1.31         0.0469
 
 DEGs_signif$Visium |> 
-    filter(gene_name == "KLK6")
+    filter(gene_name == "KLK6") |> 
+    select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val)
+
+
+DEGs_signif$Visium |> 
+    filter(vlmf_adj.P.Val < 0.05) |>
+    filter(cluster == "vL5a") |> 
+    select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val) |>
+    print(n = 40)
+    
 
 #### combined bar plots ####
 
