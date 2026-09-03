@@ -163,7 +163,7 @@ load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 #### Load pseudobulk data ####
 if(datatype == "Visium"){
   pb_fn <- here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS")
-  cluster_var <- "SpD"
+  cluster_var <- "vSpD"
 } else if(datatype == "sn_broad"){
   pb_fn <- here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn","sce_pseudo_DGE-cell_type_broad.RDS")
   cluster_var <- "cell_type_broad"
