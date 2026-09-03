@@ -1,60 +1,61 @@
 ## Louise Huuki-Myers, July 2025
 ## Make dotplots of select gene sets
+## Adapted from 05_spe_correct_cluster/30_SpD_dotplot.R for Xenium xSpD data
 
 library("here")
 library("sessioninfo")
 library("SingleCellExperiment")
-library("HDF5Array")
+library("qs2")
 library("scDotPlot")
 library("tidyverse")
 
-plot_dir <- here("plots", "05_spe_correct_cluster", "30_SpD_dotplot")
+plot_dir <- here("plots", "21_Xenium", "23_Xenium_expression_dotplots")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 
-data_dir <- here("processed-data", "05_spe_correct_cluster", "30_SpD_dotplot")
+data_dir <- here("processed-data", "21_Xenium", "23_Xenium_expression_dotplots")
 if(!dir.exists(data_dir)) dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
 #### Load data ####
-message(Sys.time(), " - Load HDF5 SPE")
-spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
+message(Sys.time(), " - Load Xenium SPE")
+## xSpD version of spe, NOT filtered to singlets (matches 14_xenium_pseudobulk_model_register.R)
+spe <- qs_read(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "spe_xenium_bansky.qs2"))
 spe
 
 rownames(spe) <- rowData(spe)$gene_name
 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
-# load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
-SpD_colors <- metadata(spe)$SpD_colors
+SpX_colors <- metadata(spe)$SpX_colors
 
-spd_levels <- levels(spe$vSpD)
+spx_levels <- levels(spe$xSpD)
 
-#### Sex gene dot plot ####
-sex_check <- list(male = c("SRY", "RPS4Y1", "RPS4Y2", "DDX3Y", "KDM5D", "UTY", "ZFY", "EIF1AY", "USP9Y", "TSPY1"),
-                  female = c("XIST", "TSIX", "KDM6A", "EIF2S3X", "RPS4X"))
-
-sex_check <- map(sex_check, ~.x[.x %in% rownames(spe)])
-
-sex_check_tb <- tibble(gene = unlist(sex_check), 
-                       sex_check = unlist(map2(names(sex_check), sex_check, ~rep(.x, length(.y)))))
-
-# Autosomal, Hormone-Responsive
-# "FOXP3", "ESR1", "AR", "TSHR", "PRLR"
-
-rowData(spe)$sex_check <- sex_check_tb$sex_check[match(rownames(spe), sex_check_tb$gene)] 
-table(rowData(spe)$sex_check)
-
-
-dotplot_sex_genes <- spe |>
-    scDotPlot(features = unlist(sex_check),
-              group = "sample_id",
-              groupAnno = "Sex",
-              featureAnno = "sex_check",
-              scale = TRUE,
-              annoColors = list("Sex" = sex_colors),
-              clusterRows = FALSE,
-              groupLegends = FALSE
-              )
-
-ggsave(dotplot_sex_genes, filename = here(plot_dir, "Visium_sample_dotplot_Sex_genes.pdf"))
+# #### Sex gene dot plot ####
+# sex_check <- list(male = c("SRY", "RPS4Y1", "RPS4Y2", "DDX3Y", "KDM5D", "UTY", "ZFY", "EIF1AY", "USP9Y", "TSPY1"),
+#                   female = c("XIST", "TSIX", "KDM6A", "EIF2S3X", "RPS4X"))
+# 
+# sex_check <- map(sex_check, ~.x[.x %in% rownames(spe)])
+# 
+# sex_check_tb <- tibble(gene = unlist(sex_check), 
+#                        sex_check = unlist(map2(names(sex_check), sex_check, ~rep(.x, length(.y)))))
+# 
+# # Autosomal, Hormone-Responsive
+# # "FOXP3", "ESR1", "AR", "TSHR", "PRLR"
+# 
+# rowData(spe)$sex_check <- sex_check_tb$sex_check[match(rownames(spe), sex_check_tb$gene)] 
+# table(rowData(spe)$sex_check)
+# 
+# 
+# dotplot_sex_genes <- spe |>
+#     scDotPlot(features = unlist(sex_check),
+#               group = "sample_id",
+#               groupAnno = "Sex",
+#               featureAnno = "sex_check",
+#               scale = TRUE,
+#               annoColors = list("Sex" = sex_colors),
+#               clusterRows = FALSE,
+#               groupLegends = FALSE
+#               )
+# 
+# ggsave(dotplot_sex_genes, filename = here(plot_dir, "Xenium_sample_dotplot_Sex_genes.pdf"))
 
 #### Lit Dotplots ####
 
@@ -82,53 +83,54 @@ layer_colors <- c(Vasc = '#FF99C0',
 
 dotplot_lit_markers <- spe |>
     scDotPlot(features = lit_markers$gene_name,
-              group = "vSpD",
-              groupAnno = "vSpD",
+              group = "xSpD",
+              groupAnno = "xSpD",
               featureAnno = "LitMarker",
               scale = TRUE,
-              annoColors = list("vSpD" = SpD_colors,
+              annoColors = list("xSpD" = SpX_colors,
                                 LitMarker = layer_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-ggsave(dotplot_lit_markers, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers.pdf"))
-ggsave(dotplot_lit_markers, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers.png"))
+ggsave(dotplot_lit_markers, filename = here(plot_dir, "Xenium_xSpD_dotplot_LitMarkers.pdf"))
+ggsave(dotplot_lit_markers, filename = here(plot_dir, "Xenium_xSpD_dotplot_LitMarkers.png"))
 
+## limit to genes present on the Xenium panel (custom, targeted panel - unlike whole-transcriptome Visium)
 key_ramsden_markers <- c("NXPH4", "FEZF2", "ETV1", "DCC", "RELN", "WFS1")
+key_ramsden_markers <- key_ramsden_markers[key_ramsden_markers %in% rownames(spe)]
 
 dotplot_lit_markers_ramsden <- spe |>
     scDotPlot(features = key_ramsden_markers,
-              group = "vSpD",
-              groupAnno = "vSpD",
+              group = "xSpD",
+              groupAnno = "xSpD",
               featureAnno = "LitMarker",
               scale = TRUE,
-              annoColors = list("vSpD" = SpD_colors,
+              annoColors = list("xSpD" = SpX_colors,
                                 LitMarker = layer_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-ggsave(dotplot_lit_markers_ramsden, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden.pdf"), width = 4, height = 6)
+ggsave(dotplot_lit_markers_ramsden, filename = here(plot_dir, "Xenium_xSpD_dotplot_LitMarkers_Ramsden.pdf"), width = 4, height = 6)
 
 dotplot_lit_markers_ramsden_all <- spe |>
     scDotPlot(features = lit_markers |> filter(grepl("Ramsden", studies)) |> pull(gene_name),
-              group = "vSpD",
-              groupAnno = "vSpD",
+              group = "xSpD",
+              groupAnno = "xSpD",
               featureAnno = "LitMarker",
               scale = TRUE,
-              annoColors = list("vSpD" = SpD_colors,
+              annoColors = list("xSpD" = SpX_colors,
                                 LitMarker = layer_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-ggsave(dotplot_lit_markers_ramsden_all, filename = here(plot_dir, "Visium_SpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 7, height = 7)
+ggsave(dotplot_lit_markers_ramsden_all, filename = here(plot_dir, "Xenium_xSpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 7, height = 7)
 
 
 
 ## Ramsden
-
 Ramsden_anno = c("L2", "L3", "LVa", "L5b", "L6", "Island")
 Gene = c("DCC", "KITL", "ETV1", "FEZF2", "NXPH4", "WFS1")
 
@@ -136,12 +138,22 @@ Gene %in% rownames(spe)
 
 
 #### MeanRatio dot plots ####
+## No Xenium-specific MeanRatio has been computed for xSpD; reuse the
+## Visium vSpD MeanRatio markers (validated cross-platform), restricted to
+## genes present on the Xenium panel - same approach used in
+## 13.5_xenium_bansky_annotate.R and 15_xenium_vis.R. Genes are grouped on the
+## x-axis by the Xenium xSpD domains, while featureAnno records which vSpD
+## (Visium) domain each gene is a top marker for.
 load(here("processed-data", "05_spe_correct_cluster", "27_SpD_MeanRatio", "marker_stats_MeanRatio_vSpD.Rdata"), verbose = TRUE)
+load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
 
 marker_stats_top <- marker_stats |>
-    filter(MeanRatio.rank <= 6, MeanRatio >1) |>
+    filter(gene %in% rownames(spe), MeanRatio > 1) |>
+    group_by(cellType.target) |>
+    arrange(MeanRatio.rank) |>
+    slice(1:6) |>
+    ungroup() |>
     select(gene, MeanRatio.rank, vSpD = cellType.target) |>
-    mutate(vSpD = factor(vSpD, levels = spd_levels)) |>
     arrange(vSpD)
 
 marker_stats_top |> count(vSpD)
@@ -152,78 +164,82 @@ table(rowData(spe)$vSpD_Marker)
 
 dotplot_mean_ratio <- spe |>
     scDotPlot(features = marker_stats_top$gene,
-              group = "vSpD",
-              groupAnno = "vSpD",
+              group = "xSpD",
+              groupAnno = "xSpD",
               featureAnno = "vSpD_Marker",
               scale = TRUE,
-              annoColors = list("vSpD" = SpD_colors,
+              annoColors = list("xSpD" = SpX_colors,
                                 "vSpD_Marker" = SpD_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Visium_SpD_dotplot_MeanRatio.pdf"), width = 7, height = 8)
-ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Visium_SpD_dotplot_MeanRatio.png"), width = 7, height = 8)
+ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Xenium_xSpD_dotplot_MeanRatio.pdf"), width = 7, height = 8)
+ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Xenium_xSpD_dotplot_MeanRatio.png"), width = 7, height = 8)
 
 
 #### Enrichment Data ####
-erc_modeling_top <- read_csv(here("processed-data", "05_spe_correct_cluster", "20_model_pseudobulk_anno", "All_modeling_SpD_top100.csv"))
-
-erc_modeling_top |> filter(test == "vL5a-vL5b", fdr < 0.01) |> arrange(-logFC) |> print(n = 30)
-erc_modeling_top |> filter(test == "vL5b-vL5a", fdr < 0.01) |> arrange(-logFC)
+## Use enrichment modeling run natively on Xenium xSpD clusters
+## (14_xenium_pseudobulk_model_register.R --var xSpD), so domain names/colors
+## line up directly with spe$xSpD / SpX_colors.
+erc_modeling_top <- read_csv(here("processed-data", "21_Xenium", "14_xenium_pseudobulk_model_register", "xenium_enrichment_modeling_xSpD_top100.csv"))
 
 enrichment_top <- erc_modeling_top |>
     filter(model_type == "enrichment", top <=5) |>
-    select(gene, top, vSpD = test) |>
-    mutate(vSpD = factor(vSpD, levels = spd_levels)) |>
-    arrange(vSpD)
+    select(gene, top, xSpD = test) |>
+    mutate(xSpD = factor(xSpD, levels = spx_levels)) |>
+    arrange(xSpD)
 
-enrichment_top |> count(vSpD)
+enrichment_top |> count(xSpD)
 
-rowData(spe)$vSpD_enrich <- NULL
-rowData(spe)$vSpD_enrich <- enrichment_top$vSpD[match(rownames(spe), enrichment_top$gene)] 
-table(rowData(spe)$vSpD_enrich)
+rowData(spe)$xSpD_enrich <- NULL
+rowData(spe)$xSpD_enrich <- enrichment_top$xSpD[match(rownames(spe), enrichment_top$gene)] 
+table(rowData(spe)$xSpD_enrich)
 
 dotplot_enrichment <- spe |>
-    scDotPlot(features = marker_stats_top$gene,
-              group = "vSpD",
-              groupAnno = "vSpD",
-              featureAnno = "vSpD_enrich",
+    scDotPlot(features = enrichment_top$gene,
+              group = "xSpD",
+              groupAnno = "xSpD",
+              featureAnno = "xSpD_enrich",
               scale = TRUE,
-              annoColors = list("vSpD" = SpD_colors,
-                                "vSpD_enrich" = SpD_colors),
+              annoColors = list("xSpD" = SpX_colors,
+                                "xSpD_enrich" = SpX_colors),
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-ggsave(dotplot_enrichment, filename = here(plot_dir, "Visium_SpD_dotplot_enrichment.pdf"), width = 7, height = 8)
-ggsave(dotplot_enrichment, filename = here(plot_dir, "Visium_SpD_dotplot_enrichment.png"), width = 7, height = 8)
+ggsave(dotplot_enrichment, filename = here(plot_dir, "Xenium_xSpD_dotplot_enrichment.pdf"), width = 7, height = 8)
+ggsave(dotplot_enrichment, filename = here(plot_dir, "Xenium_xSpD_dotplot_enrichment.png"), width = 7, height = 8)
 
 #### Key genes ####
+## TODO: no curated xSpD key-gene list exists yet (the Visium
+## vSpD_key_genes_long.csv domain names/notes don't map onto the xSpD
+## clusters). Build an `xSpD_key_genes_long.csv` (columns: domain, gene,
+## source_type, note) in `data_dir` and uncomment below once available.
 
-erc_SpD_key <- read_csv(here(data_dir, "vSpD_key_genes_long.csv"))
+# erc_xSpD_key <- read_csv(here(data_dir, "xSpD_key_genes_long.csv"))
+#
+# rowData(spe)$xSpD_genes <- NULL
+# rowData(spe)$xSpD_genes <- erc_xSpD_key$domain[match(rownames(spe), erc_xSpD_key$gene)]
+# table(rowData(spe)$xSpD_genes)
+#
+# dotplot_key_genes <- spe |>
+#     scDotPlot(features = erc_xSpD_key$gene,
+#               group = "xSpD",
+#               groupAnno = "xSpD",
+#               featureAnno = "xSpD_genes",
+#               scale = TRUE,
+#               annoColors = list("xSpD" = SpX_colors,
+#                                 "xSpD_genes" = c(SpX_colors, lit = "black")),
+#               clusterColumns = FALSE,
+#               clusterRows = FALSE,
+#               groupLegends = FALSE)
+#
+# ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.pdf"), width = 5, height = 7)
+# ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.png"), width = 5, height = 7)
 
-rowData(spe)$vSpD_genes <- NULL
-rowData(spe)$vSpD_genes <- erc_SpD_key$domain[match(rownames(spe), erc_SpD_key$gene)] 
-table(rowData(spe)$vSpD_genes)
 
-dotplot_key_genes <- spe |>
-    scDotPlot(features = erc_SpD_key$gene,
-              group = "vSpD",
-              groupAnno = "vSpD",
-              featureAnno = "vSpD_genes",
-              scale = TRUE,
-              annoColors = list("vSpD" = SpD_colors,
-                                "vSpD_genes" = c(SpD_colors, lit = "black")),
-              clusterColumns = FALSE,
-              clusterRows = FALSE,
-              groupLegends = FALSE)
-
-ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.pdf"), width = 5, height = 7)
-ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.png"), width = 5, height = 7)
-
-
-# slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
+# slurmjobs::job_single('23_Xenium_expression_dotplots', create_shell = TRUE, memory = '10G', command = "Rscript 23_Xenium_expression_dotplots.R")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
