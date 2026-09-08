@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Jun 25 07:25:52 AM EDT 2026
+Tue Sep  8 10:23:18 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33578203
+Job id: 35574606
 Job name: 19_xenium_pseudobulk_DE_prep_Oligo.3_Astro_SpX
-Node name: compute-175
+Node name: compute-129
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -153,46 +152,60 @@ $cluster
 
 attr(,"class")
 [1] "getopt"
-2026-06-25 07:26:05.367481 - load data from: spe_xenium_bansky.qs2
-            
-              Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
-  Vasc~SpX3  50546     0     0     0     0     0     0     0     0
-  L1a~SpX6       0 29369     0     0     0     0     0     0     0
-  L1b~SpX7       0     0 37807     0     0     0     0     0     0
-  L2.3~SpX4      0     0     0 38282     0     0     0     0     0
-  Inhib~SpX5     0     0     0     0 26918     0     0     0     0
-  L5~SpX1        0     0     0     0     0 85468     0     0     0
-  L6~SpX9        0     0     0     0     0     0 45822     0     0
-  WMtz~SpX8      0     0     0     0     0     0     0 64747     0
-  WM~SpX2        0     0     0     0     0     0     0     0 68224
+2026-09-08 10:23:31.868809 - load data from: spe_xenium_bansky.qs2
+
+xVasc_mural    xVasc_im         xGL         xL2   xL1_inhib    xLD_glia 
+      22751       19987       32827       39408       24551       69150 
+  xVasc_adj         xL5         xL6       xWMuf        xWMd 
+      22630       56424       39849       56971       62635 
 Loading objects:
   neighbor_df_details
 filter to Oligo.3, ncells: 52555
 
- nnA_far_APOE_high_Inhib    nnA_far_APOE_high_L1a    nnA_far_APOE_high_L1b 
-                     253                      265                      325 
-  nnA_far_APOE_high_L2.3     nnA_far_APOE_high_L5     nnA_far_APOE_high_L6 
-                     202                     2179                     2020 
-  nnA_far_APOE_high_Vasc     nnA_far_APOE_high_WM   nnA_far_APOE_high_WMtz 
-                     429                     4885                     3686 
-  nnA_far_APOE_low_Inhib     nnA_far_APOE_low_L1a     nnA_far_APOE_low_L1b 
-                     315                      381                      384 
-   nnA_far_APOE_low_L2.3      nnA_far_APOE_low_L5      nnA_far_APOE_low_L6 
-                     307                     1997                     1651 
-   nnA_far_APOE_low_Vasc      nnA_far_APOE_low_WM    nnA_far_APOE_low_WMtz 
-                     483                     3377                     3161 
-nnA_near_APOE_high_Inhib   nnA_near_APOE_high_L1a   nnA_near_APOE_high_L1b 
-                     285                      912                      746 
- nnA_near_APOE_high_L2.3    nnA_near_APOE_high_L5    nnA_near_APOE_high_L6 
-                      99                     1734                     1859 
- nnA_near_APOE_high_Vasc    nnA_near_APOE_high_WM  nnA_near_APOE_high_WMtz 
-                     218                     4076                     3606 
- nnA_near_APOE_low_Inhib    nnA_near_APOE_low_L1a    nnA_near_APOE_low_L1b 
-                     381                     1334                      831 
-  nnA_near_APOE_low_L2.3     nnA_near_APOE_low_L5     nnA_near_APOE_low_L6 
-                     144                     1722                     1598 
-  nnA_near_APOE_low_Vasc     nnA_near_APOE_low_WM   nnA_near_APOE_low_WMtz 
-                     340                     2876                     3494 
+         nnA_far_APOE_high_xGL    nnA_far_APOE_high_xL1_inhib 
+                           260                            169 
+         nnA_far_APOE_high_xL2          nnA_far_APOE_high_xL5 
+                           207                           1383 
+         nnA_far_APOE_high_xL6     nnA_far_APOE_high_xLD_glia 
+                          1640                           1698 
+   nnA_far_APOE_high_xVasc_adj     nnA_far_APOE_high_xVasc_im 
+                           680                            161 
+ nnA_far_APOE_high_xVasc_mural         nnA_far_APOE_high_xWMd 
+                            57                           4251 
+       nnA_far_APOE_high_xWMuf           nnA_far_APOE_low_xGL 
+                          3738                            375 
+    nnA_far_APOE_low_xL1_inhib           nnA_far_APOE_low_xL2 
+                           212                            327 
+          nnA_far_APOE_low_xL5           nnA_far_APOE_low_xL6 
+                          1223                           1378 
+     nnA_far_APOE_low_xLD_glia     nnA_far_APOE_low_xVasc_adj 
+                          1543                            657 
+     nnA_far_APOE_low_xVasc_im   nnA_far_APOE_low_xVasc_mural 
+                           186                             91 
+         nnA_far_APOE_low_xWMd         nnA_far_APOE_low_xWMuf 
+                          2980                           3084 
+        nnA_near_APOE_high_xGL   nnA_near_APOE_high_xL1_inhib 
+                           914                            246 
+        nnA_near_APOE_high_xL2         nnA_near_APOE_high_xL5 
+                           116                            934 
+        nnA_near_APOE_high_xL6    nnA_near_APOE_high_xLD_glia 
+                          1488                           1999 
+  nnA_near_APOE_high_xVasc_adj    nnA_near_APOE_high_xVasc_im 
+                           379                             91 
+nnA_near_APOE_high_xVasc_mural        nnA_near_APOE_high_xWMd 
+                            42                           3590 
+      nnA_near_APOE_high_xWMuf          nnA_near_APOE_low_xGL 
+                          3736                           1379 
+   nnA_near_APOE_low_xL1_inhib          nnA_near_APOE_low_xL2 
+                           365                            155 
+         nnA_near_APOE_low_xL5          nnA_near_APOE_low_xL6 
+                           871                           1308 
+    nnA_near_APOE_low_xLD_glia    nnA_near_APOE_low_xVasc_adj 
+                          2120                            398 
+    nnA_near_APOE_low_xVasc_im  nnA_near_APOE_low_xVasc_mural 
+                           157                             85 
+        nnA_near_APOE_low_xWMd        nnA_near_APOE_low_xWMuf 
+                          2504                           3378 
 check input: 
 
            reject           singlet   doublet_certain doublet_uncertain 
@@ -210,109 +223,157 @@ check input:
                0                0            52555                0 
          Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
                0                0                0                0 
-        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+        Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN    Excit.L5.RELN 
                0                0                0                0 
-      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+   Excit.L5.RORB    Excit.L5_6.NP      Excit.L6.CT        Excit.L6b 
                0                0                0                0 
-Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+     Inhib.HTR3A Inhib.LAMP5_LHX6      Inhib.PVALB        Inhib.VIP 
                0                0                0                0 
-       Inhib.Sst        Inhib.Vip 
+Inhib.Chandelier        Inhib.SST 
                0                0 
 
- nnA_far_APOE_high_Inhib    nnA_far_APOE_high_L1a    nnA_far_APOE_high_L1b 
-                     253                      265                      325 
-  nnA_far_APOE_high_L2.3     nnA_far_APOE_high_L5     nnA_far_APOE_high_L6 
-                     202                     2179                     2020 
-  nnA_far_APOE_high_Vasc     nnA_far_APOE_high_WM   nnA_far_APOE_high_WMtz 
-                     429                     4885                     3686 
-  nnA_far_APOE_low_Inhib     nnA_far_APOE_low_L1a     nnA_far_APOE_low_L1b 
-                     315                      381                      384 
-   nnA_far_APOE_low_L2.3      nnA_far_APOE_low_L5      nnA_far_APOE_low_L6 
-                     307                     1997                     1651 
-   nnA_far_APOE_low_Vasc      nnA_far_APOE_low_WM    nnA_far_APOE_low_WMtz 
-                     483                     3377                     3161 
-nnA_near_APOE_high_Inhib   nnA_near_APOE_high_L1a   nnA_near_APOE_high_L1b 
-                     285                      912                      746 
- nnA_near_APOE_high_L2.3    nnA_near_APOE_high_L5    nnA_near_APOE_high_L6 
-                      99                     1734                     1859 
- nnA_near_APOE_high_Vasc    nnA_near_APOE_high_WM  nnA_near_APOE_high_WMtz 
-                     218                     4076                     3606 
- nnA_near_APOE_low_Inhib    nnA_near_APOE_low_L1a    nnA_near_APOE_low_L1b 
-                     381                     1334                      831 
-  nnA_near_APOE_low_L2.3     nnA_near_APOE_low_L5     nnA_near_APOE_low_L6 
-                     144                     1722                     1598 
-  nnA_near_APOE_low_Vasc     nnA_near_APOE_low_WM   nnA_near_APOE_low_WMtz 
-                     340                     2876                     3494 
-2026-06-25 07:26:35.668213 - pseudobulk Oligo.3_Astro_SpX
-2026-06-25 07:26:35.716879 make pseudobulk object
-2026-06-25 07:26:42.50445 dropping 91 pseudo-bulked samples that are below 'min_ncells'.
-2026-06-25 07:26:42.553726 normalize expression
-2026-06-25 07:26:42.834809 - Done pseudobulk
-nrow: 366, ncol: 480
+         nnA_far_APOE_high_xGL    nnA_far_APOE_high_xL1_inhib 
+                           260                            169 
+         nnA_far_APOE_high_xL2          nnA_far_APOE_high_xL5 
+                           207                           1383 
+         nnA_far_APOE_high_xL6     nnA_far_APOE_high_xLD_glia 
+                          1640                           1698 
+   nnA_far_APOE_high_xVasc_adj     nnA_far_APOE_high_xVasc_im 
+                           680                            161 
+ nnA_far_APOE_high_xVasc_mural         nnA_far_APOE_high_xWMd 
+                            57                           4251 
+       nnA_far_APOE_high_xWMuf           nnA_far_APOE_low_xGL 
+                          3738                            375 
+    nnA_far_APOE_low_xL1_inhib           nnA_far_APOE_low_xL2 
+                           212                            327 
+          nnA_far_APOE_low_xL5           nnA_far_APOE_low_xL6 
+                          1223                           1378 
+     nnA_far_APOE_low_xLD_glia     nnA_far_APOE_low_xVasc_adj 
+                          1543                            657 
+     nnA_far_APOE_low_xVasc_im   nnA_far_APOE_low_xVasc_mural 
+                           186                             91 
+         nnA_far_APOE_low_xWMd         nnA_far_APOE_low_xWMuf 
+                          2980                           3084 
+        nnA_near_APOE_high_xGL   nnA_near_APOE_high_xL1_inhib 
+                           914                            246 
+        nnA_near_APOE_high_xL2         nnA_near_APOE_high_xL5 
+                           116                            934 
+        nnA_near_APOE_high_xL6    nnA_near_APOE_high_xLD_glia 
+                          1488                           1999 
+  nnA_near_APOE_high_xVasc_adj    nnA_near_APOE_high_xVasc_im 
+                           379                             91 
+nnA_near_APOE_high_xVasc_mural        nnA_near_APOE_high_xWMd 
+                            42                           3590 
+      nnA_near_APOE_high_xWMuf          nnA_near_APOE_low_xGL 
+                          3736                           1379 
+   nnA_near_APOE_low_xL1_inhib          nnA_near_APOE_low_xL2 
+                           365                            155 
+         nnA_near_APOE_low_xL5          nnA_near_APOE_low_xL6 
+                           871                           1308 
+    nnA_near_APOE_low_xLD_glia    nnA_near_APOE_low_xVasc_adj 
+                          2120                            398 
+    nnA_near_APOE_low_xVasc_im  nnA_near_APOE_low_xVasc_mural 
+                           157                             85 
+        nnA_near_APOE_low_xWMd        nnA_near_APOE_low_xWMuf 
+                          2504                           3378 
+2026-09-08 10:24:00.256627 - pseudobulk Oligo.3_Astro_SpX
+2026-09-08 10:24:00.302063 make pseudobulk object
+2026-09-08 10:24:08.244188 dropping 165 pseudo-bulked samples that are below 'min_ncells'.
+2026-09-08 10:24:08.297401 normalize expression
+2026-09-08 10:24:08.649089 - Done pseudobulk
+nrow: 366, ncol: 516
      
-      Astro Macro Micro Oligo OPC Vasc Excit Inhib
-  E2+     0     0     0   237   0    0     0     0
-  E4+     0     0     0   243   0    0     0     0
+      Astro Macro Micro OPC Oligo Vasc Excit Inhib
+  E2+     0     0     0   0   258    0     0     0
+  E4+     0     0     0   0   258    0     0     0
      
-      nnA_far_APOE_high_Inhib nnA_far_APOE_high_L1a nnA_far_APOE_high_L1b
-  E2+                       6                     5                     7
-  E4+                       5                     6                     7
+      nnA_far_APOE_high_xGL nnA_far_APOE_high_xL1_inhib nnA_far_APOE_high_xL2
+  E2+                     5                           5                     5
+  E4+                     4                           2                     5
      
-      nnA_far_APOE_high_L2.3 nnA_far_APOE_high_L5 nnA_far_APOE_high_L6
-  E2+                      5                    8                    8
-  E4+                      4                    8                    7
+      nnA_far_APOE_high_xL5 nnA_far_APOE_high_xL6 nnA_far_APOE_high_xLD_glia
+  E2+                     8                     8                          8
+  E4+                     7                     7                          8
      
-      nnA_far_APOE_high_Vasc nnA_far_APOE_high_WM nnA_far_APOE_high_WMtz
-  E2+                      5                    7                      8
-  E4+                      6                    7                      7
+      nnA_far_APOE_high_xVasc_adj nnA_far_APOE_high_xVasc_im
+  E2+                           6                          1
+  E4+                           7                          3
      
-      nnA_far_APOE_low_Inhib nnA_far_APOE_low_L1a nnA_far_APOE_low_L1b
-  E2+                      6                    6                    6
-  E4+                      6                    8                    6
+      nnA_far_APOE_high_xVasc_mural nnA_far_APOE_high_xWMd
+  E2+                             1                      7
+  E4+                             1                      7
      
-      nnA_far_APOE_low_L2.3 nnA_far_APOE_low_L5 nnA_far_APOE_low_L6
-  E2+                     3                   8                   8
-  E4+                     6                   8                   7
+      nnA_far_APOE_high_xWMuf nnA_far_APOE_low_xGL nnA_far_APOE_low_xL1_inhib
+  E2+                       8                    7                          5
+  E4+                       7                    6                          6
      
-      nnA_far_APOE_low_Vasc nnA_far_APOE_low_WM nnA_far_APOE_low_WMtz
-  E2+                     6                   8                     8
-  E4+                     7                   8                     8
+      nnA_far_APOE_low_xL2 nnA_far_APOE_low_xL5 nnA_far_APOE_low_xL6
+  E2+                    4                    8                    8
+  E4+                    6                    8                    7
      
-      nnA_near_APOE_high_Inhib nnA_near_APOE_high_L1a nnA_near_APOE_high_L1b
-  E2+                        6                      7                      7
-  E4+                        6                      7                      7
+      nnA_far_APOE_low_xLD_glia nnA_far_APOE_low_xVasc_adj
+  E2+                         8                          7
+  E4+                         8                          8
      
-      nnA_near_APOE_high_L2.3 nnA_near_APOE_high_L5 nnA_near_APOE_high_L6
-  E2+                       1                     8                     8
-  E4+                       1                     8                     7
+      nnA_far_APOE_low_xVasc_im nnA_far_APOE_low_xVasc_mural
+  E2+                         5                            0
+  E4+                         2                            2
      
-      nnA_near_APOE_high_Vasc nnA_near_APOE_high_WM nnA_near_APOE_high_WMtz
-  E2+                       3                     8                       8
-  E4+                       6                     7                       7
+      nnA_far_APOE_low_xWMd nnA_far_APOE_low_xWMuf nnA_near_APOE_high_xGL
+  E2+                     8                      8                      7
+  E4+                     8                      8                      6
      
-      nnA_near_APOE_low_Inhib nnA_near_APOE_low_L1a nnA_near_APOE_low_L1b
-  E2+                       7                     8                     8
-  E4+                       7                     8                     8
+      nnA_near_APOE_high_xL1_inhib nnA_near_APOE_high_xL2
+  E2+                            4                      0
+  E4+                            5                      2
      
-      nnA_near_APOE_low_L2.3 nnA_near_APOE_low_L5 nnA_near_APOE_low_L6
-  E2+                      2                    8                    8
-  E4+                      4                    8                    8
+      nnA_near_APOE_high_xL5 nnA_near_APOE_high_xL6 nnA_near_APOE_high_xLD_glia
+  E2+                      8                      8                           8
+  E4+                      7                      7                           8
      
-      nnA_near_APOE_low_Vasc nnA_near_APOE_low_WM nnA_near_APOE_low_WMtz
-  E2+                      6                    8                      8
-  E4+                      7                    8                      8
+      nnA_near_APOE_high_xVasc_adj nnA_near_APOE_high_xVasc_im
+  E2+                            6                           1
+  E4+                            7                           2
+     
+      nnA_near_APOE_high_xVasc_mural nnA_near_APOE_high_xWMd
+  E2+                              1                       8
+  E4+                              0                       7
+     
+      nnA_near_APOE_high_xWMuf nnA_near_APOE_low_xGL
+  E2+                        8                     8
+  E4+                        7                     8
+     
+      nnA_near_APOE_low_xL1_inhib nnA_near_APOE_low_xL2 nnA_near_APOE_low_xL5
+  E2+                           7                     3                     8
+  E4+                           7                     4                     8
+     
+      nnA_near_APOE_low_xL6 nnA_near_APOE_low_xLD_glia
+  E2+                     8                          8
+  E4+                     8                          8
+     
+      nnA_near_APOE_low_xVasc_adj nnA_near_APOE_low_xVasc_im
+  E2+                           7                          3
+  E4+                           7                          5
+     
+      nnA_near_APOE_low_xVasc_mural nnA_near_APOE_low_xWMd
+  E2+                             1                      8
+  E4+                             3                      7
+     
+      nnA_near_APOE_low_xWMuf
+  E2+                       8
+  E4+                       8
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by APOE_carrier and registration_variable.
 ℹ Output is grouped by APOE_carrier.
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(APOE_carrier, registration_variable))` for
   per-operation grouping (`?dplyr::dplyr_by`) instead.
-Too few samples in: nnA_near_APOE_high_L2.3
-2026-06-25 07:26:43.226956 - Save
+Too few samples in: nnA_far_APOE_high_xVasc_im, nnA_far_APOE_high_xVasc_mural, nnA_far_APOE_low_xVasc_mural, nnA_near_APOE_high_xL2, nnA_near_APOE_high_xVasc_im, nnA_near_APOE_high_xVasc_mural, nnA_near_APOE_low_xVasc_mural
+2026-09-08 10:24:09.031419 - Save data
 [1] "Reproducibility information:"
-[1] "2026-06-25 07:26:43 EDT"
+[1] "2026-09-08 10:24:09 EDT"
    user  system elapsed 
- 41.210   4.050  50.434 
+ 43.348   3.161  49.704 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -323,7 +384,7 @@ Too few samples in: nnA_near_APOE_high_L2.3
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-06-25
+ date     2026-09-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -482,4 +543,4 @@ Too few samples in: nnA_near_APOE_high_L2.3
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jun 25 07:26:43 AM EDT 2026
+Tue Sep  8 10:24:09 AM EDT 2026
