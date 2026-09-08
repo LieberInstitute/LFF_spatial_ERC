@@ -27,6 +27,7 @@ scec <- matrix(
 opt <- getopt(scec)
 print(opt)
 
+# opt$cluster <- "cell_type_anno"
 # opt$cluster <- "cell_type_anno_SpX"
 # opt$cluster <- "Oligo.3_Astro"
 # opt$cluster <- "Oligo.3_Astro_SpX"
@@ -39,21 +40,24 @@ spe <- qs_read(spe_fn)
 ## make APOE syntatic
 spe$APOE_syn <- gsub("/", ".", spe$APOE)
 
-## Simplify SpX
-
-spe$SpX_simple <- factor(gsub("~SpX[0-9]", "", spe$SpX), levels = c("Vasc", "L1a", "L1b", "L2.3", "Inhib", "L5", "L6", "WMtz", "WM"))
-table(spe$SpX, spe$SpX_simple)
+table(spe$xSpD)
 
 #### Input specific filtering & setup ####
-if(opt$cluster == "cell_type_anno_SpX"){
+if(opt$cluster == "cell_type_anno"){
+    
+    ## filter to Singlets
+    spe <- spe[,spe$spot_class == "singlet"]
+    message("filter to singlets ncells: ", ncol(spe))
+
+} if(opt$cluster == "cell_type_anno_SpX"){
     
     ## filter to Singlets
     spe <- spe[,spe$spot_class == "singlet"]
     message("filter to singlets ncells: ", ncol(spe))
     
-    spe$cell_type_anno_SpX <- paste0(spe$cell_type_anno, "_", spe$SpX_simple)
+    spe$cell_type_anno_SpX <- paste0(spe$cell_type_anno, "_", spe$xSpD)
     
-    message("cell type x SpX combindations: ", length(unique(spe$cell_type_anno_SpX)))
+    message("cell type x xSpD combindations: ", length(unique(spe$cell_type_anno_SpX)))
     
 } else if(opt$cluster == "Oligo.3_Astro"){ 
     
@@ -188,7 +192,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
     spe <- spe[,neighbor_df_details$reference_barcode]
     message("filter to Oligo.3, ncells: ", ncol(spe))
     
-    spe$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe$SpX_simple)
+    spe$Oligo.3_Astro_SpX <- paste0("nnA_", neighbor_df_details$dist_class, "_APOE_", neighbor_df_details$APOE_level, "_", spe$xSpD)
     table(spe$Oligo.3_Astro_SpX)
     
     
@@ -281,7 +285,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
     
     n_cells_tb <- colData(spe_pseudo) |>
         as.data.frame() |>
-        select(cell_type_anno_SpX, cell_type_anno, SpX, ncells) |>
+        select(cell_type_anno_SpX, cell_type_anno, xSpD, ncells) |>
         as_tibble()
     
     n_cells_tb |> 
