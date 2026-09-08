@@ -86,7 +86,7 @@ cluster_levels <- intersect(cluster_levels, cluster_levels2)
 
 all(cluster_levels %in% sce_pb[[cluster_var]])
 
-# plot_DEG_express(sce = sce_pb,
+# plot_DEG_express_top(sce = sce_pb,
 #                     stats = DE_data,
 #                     clus = "Astro",
 #                     n_genes = 10,
@@ -104,7 +104,7 @@ all(cluster_levels %in% sce_pb[[cluster_var]])
 table(sce_pb[[cluster_var]])
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+map(cluster_levels, ~plot_DEG_express_top(sce = sce_pb,
                                           stats = DE_data,
                                           clus = .x,
                                           n_genes = 10,
@@ -122,7 +122,7 @@ map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
 dev.off()
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+map(cluster_levels, ~plot_DEG_express_top(sce = sce_pb,
                                       stats = DE_data,
                                       clus = .x,
                                       n_genes = 10,
@@ -265,7 +265,7 @@ carrier_tau_colors <- c(`E2+ t-` = "#398A84",
                         `E4+ t+` = "#DD8A69")
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_taupathy_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+map(cluster_levels, ~plot_DEG_express_top(sce = sce_pb,
                                          stats = DE_data,
                                          clus = .x,
                                          n_genes = 10,
@@ -465,7 +465,7 @@ cluster_levels <- intersect(cluster_levels, cluster_levels2)
 
 
 pdf(here(plot_dir, sprintf("DEG_boxplots_interaction_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express(sce = sce_pb,
+map(cluster_levels, ~plot_DEG_express_top(sce = sce_pb,
                                       stats = DE_interaction_data,
                                       clus = .x,
                                       n_genes = 10,
