@@ -273,7 +273,7 @@ all_na <- sapply(colData(spe_pseudo), function(x)all(is.na(x)))
 colData(spe_pseudo) <- colData(spe_pseudo)[, names(all_na)[!all_na]]
 
 ## save 
-message(Sys.time(), " - Save")
+message(Sys.time(), " - Save data")
 saveRDS(spe_pseudo, file = here(data_dir, sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
 
 # spe_pseudo <- readRDS(here("processed-data", "21_Xenium", "19_xenium_pseudobulk_DE_prep", sprintf("spe_xenium_pseudo_DGE-%s.RDS", opt$cluster)))
@@ -293,7 +293,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
         count(ncells < 50)
     
     n_cell_boxplot <- n_cells_tb |>
-        ggplot(aes(x = SpX, y = ncells)) +
+        ggplot(aes(x = xSpD, y = ncells)) +
         geom_boxplot() +
         facet_wrap(~cell_type_anno) +
         ylim(0, 100)
@@ -304,7 +304,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
     min_cell_tile <- n_cells_tb |>
         group_by(SpX, cell_type_anno) |>
         slice_min(ncells) |>
-        ggplot(aes(x = SpX, y = cell_type_anno, fill = ncells)) +
+        ggplot(aes(x = xSpD, y = cell_type_anno, fill = ncells)) +
         geom_tile() +
         geom_text(aes(label = ncells, color = ncells < 50)) +
         theme_bw()  +
@@ -313,9 +313,9 @@ if(opt$cluster == "cell_type_anno_SpX"){
     ggsave(min_cell_tile, filename = here(plot_dir, "xenium_pseudobulk_min_cell_tile.png"))    
     
     median_cell_tile <- n_cells_tb |>
-        group_by(SpX, cell_type_anno) |>
+        group_by(xSpD, cell_type_anno) |>
         summarise(median_cells = median(ncells)) |>
-        ggplot(aes(x = SpX, y = cell_type_anno, fill = median_cells)) +
+        ggplot(aes(x = xSpD, y = cell_type_anno, fill = median_cells)) +
         geom_tile() +
         geom_text(aes(label = median_cells, color = median_cells < 50), size = 2) +
         theme_bw()  +
@@ -327,7 +327,7 @@ if(opt$cluster == "cell_type_anno_SpX"){
     n_cell_histo <- n_cells_tb |>
         ggplot(aes(x =  ncells)) +
         geom_histogram(binwidth = 25) +
-        facet_grid(cell_type_anno~SpX) +
+        facet_grid(cell_type_anno~xSpD) +
         ylim(0, 100)
     
     ggsave(n_cell_histo, filename = here(plot_dir, "xenium_pseudobulk_n_cell_histo_grid.png"), height = 25, width = 9)
