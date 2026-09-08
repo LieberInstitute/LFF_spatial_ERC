@@ -1,12 +1,11 @@
 **** Job starts ****
-Mon Aug  4 01:51:06 PM EDT 2025
+Tue Sep  8 09:35:47 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 21203278
+Job id: 35574340
 Job name: 09_compile_DGE_Sex
-Node name: compute-158
+Node name: compute-159
 Task id: 2
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -16,11 +15,11 @@ Currently Loaded Modules:
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.4     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -32,118 +31,119 @@ Registered S3 method overwritten by 'GGally':
 Loading objects:
   SpD_colors
 [1] "carrier_F" "carrier_M" "Sex_E2"    "Sex_E4"   
-[1] "Vasc~Sp09D08"  "L1~Sp09D05"    "L2.3~Sp09D01"  "LD~Sp09D02"   
-[5] "Inhib~Sp09D09" "L5~Sp09D03"    "L6~Sp09D04"    "WM.uf~Sp09D07"
-[9] "WM~Sp09D06"   
-# A tibble: 18 × 3
-   cluster       contrast      n
-   <fct>         <chr>     <int>
- 1 Vasc~Sp09D08  carrier_F  8710
- 2 Vasc~Sp09D08  carrier_M  8710
- 3 L1~Sp09D05    carrier_F 11180
- 4 L1~Sp09D05    carrier_M 11180
- 5 L2.3~Sp09D01  carrier_F 13502
- 6 L2.3~Sp09D01  carrier_M 13502
- 7 LD~Sp09D02    carrier_F 14517
- 8 LD~Sp09D02    carrier_M 14517
- 9 Inhib~Sp09D09 carrier_F 11751
-10 Inhib~Sp09D09 carrier_M 11751
-11 L5~Sp09D03    carrier_F 13855
-12 L5~Sp09D03    carrier_M 13855
-13 L6~Sp09D04    carrier_F 13384
-14 L6~Sp09D04    carrier_M 13384
-15 WM.uf~Sp09D07 carrier_F  3013
-16 WM.uf~Sp09D07 carrier_M  3013
-17 WM~Sp09D06    carrier_F  9093
-18 WM~Sp09D06    carrier_M  9093
-# A tibble: 2 × 3
-  cluster       contrast      n
-  <fct>         <chr>     <int>
-1 WM.uf~Sp09D07 carrier_M    91
-2 WM~Sp09D06    carrier_F     1
-# A tibble: 198,010 × 5
-   cluster       gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
-   <fct>         <chr>            <dbl>          <dbl>      <dbl>
- 1 WM.uf~Sp09D07 GPR37     0.0000000265      0.0000798     -2.25 
- 2 WM.uf~Sp09D07 TMEM144   0.00000192        0.00289       -1.66 
- 3 WM.uf~Sp09D07 EFEMP1    0.00000520        0.00523       -1.31 
- 4 WM.uf~Sp09D07 CLIC4     0.00000751        0.00566       -1.40 
- 5 WM.uf~Sp09D07 GPRC5B    0.0000168         0.00876       -0.897
- 6 WM.uf~Sp09D07 GLTP      0.0000185         0.00876       -1.19 
- 7 WM.uf~Sp09D07 PHGDH     0.0000203         0.00876       -1.08 
- 8 WM.uf~Sp09D07 CMTM5     0.0000328         0.00948       -1.50 
- 9 WM.uf~Sp09D07 SCARB2    0.0000352         0.00948       -0.787
-10 WM.uf~Sp09D07 TTYH2     0.0000357         0.00948       -1.28 
-# ℹ 198,000 more rows
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
-# A tibble: 18 × 5
-# Groups:   cluster [9]
-   cluster       contrast  n_FDR05   nUP nDown
-   <fct>         <chr>       <int> <int> <int>
- 1 Vasc~Sp09D08  carrier_F       0     0     0
- 2 Vasc~Sp09D08  carrier_M       0     0     0
- 3 L1~Sp09D05    carrier_F       0     0     0
- 4 L1~Sp09D05    carrier_M       0     0     0
- 5 L2.3~Sp09D01  carrier_F       0     0     0
- 6 L2.3~Sp09D01  carrier_M       0     0     0
- 7 LD~Sp09D02    carrier_F       0     0     0
- 8 LD~Sp09D02    carrier_M       0     0     0
- 9 Inhib~Sp09D09 carrier_F       0     0     0
-10 Inhib~Sp09D09 carrier_M       0     0     0
-11 L5~Sp09D03    carrier_F       0     0     0
-12 L5~Sp09D03    carrier_M       0     0     0
-13 L6~Sp09D04    carrier_F       0     0     0
-14 L6~Sp09D04    carrier_M       0     0     0
-15 WM.uf~Sp09D07 carrier_F       0     0     0
-16 WM.uf~Sp09D07 carrier_M      91    16    75
-17 WM~Sp09D06    carrier_F       1     1     0
-18 WM~Sp09D06    carrier_M       0     0     0
+ [1] "vVasc"  "vL1"    "vL2"    "vInhib" "vLD"    "vL5a"   "vL5b"   "vL6"   
+ [9] "vWMuf"  "vWMpv"  "vWMd"  
+# A tibble: 22 × 3
+   cluster contrast      n
+   <fct>   <chr>     <int>
+ 1 vVasc   carrier_F  6956
+ 2 vVasc   carrier_M  6956
+ 3 vL1     carrier_F 11278
+ 4 vL1     carrier_M 11278
+ 5 vL2     carrier_F 13802
+ 6 vL2     carrier_M 13802
+ 7 vInhib  carrier_F  8392
+ 8 vInhib  carrier_M  8392
+ 9 vLD     carrier_F 13112
+10 vLD     carrier_M 13112
+# ℹ 12 more rows
+# A tibble: 6 × 3
+  cluster contrast      n
+  <fct>   <chr>     <int>
+1 vL6     carrier_M     9
+2 vWMuf   carrier_F     1
+3 vWMuf   carrier_M    57
+4 vWMpv   carrier_M     1
+5 vWMd    carrier_F    11
+6 vWMd    carrier_M     1
+# A tibble: 218,948 × 5
+   cluster gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>            <dbl>          <dbl>      <dbl>
+ 1 vWMuf   EFEMP1    0.0000000400       0.000112     -1.44 
+ 2 vWMd    HYI       0.000000239        0.00144      -1.24 
+ 3 vWMpv   PDCD10    0.000000261        0.00197      -1.27 
+ 4 vWMuf   GPR37     0.00000147         0.00205      -1.85 
+ 5 vWMuf   SRSF3     0.00000111         0.00310       1.97 
+ 6 vWMuf   HADHB     0.00000686         0.00553      -1.04 
+ 7 vWMuf   CNTNAP4   0.00000822         0.00553      -1.17 
+ 8 vWMuf   TMEM144   0.00000990         0.00553      -1.55 
+ 9 vWMuf   JPH3      0.0000221          0.00821       0.886
+10 vWMuf   GPRC5B    0.0000256          0.00821      -0.919
+# ℹ 218,938 more rows
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 22 × 5
+# Groups:   cluster [11]
+   cluster contrast  n_FDR05   nUP nDown
+   <fct>   <chr>       <int> <int> <int>
+ 1 vVasc   carrier_F       0     0     0
+ 2 vVasc   carrier_M       0     0     0
+ 3 vL1     carrier_F       0     0     0
+ 4 vL1     carrier_M       0     0     0
+ 5 vL2     carrier_F       0     0     0
+ 6 vL2     carrier_M       0     0     0
+ 7 vInhib  carrier_F       0     0     0
+ 8 vInhib  carrier_M       0     0     0
+ 9 vLD     carrier_F       0     0     0
+10 vLD     carrier_M       0     0     0
+# ℹ 12 more rows
 Saving 7 x 7 in image
 Saving 7 x 7 in image
-There were 31 warnings (use warnings() to see them)
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
-# A tibble: 18 × 7
-   cluster       contrast     cor       p_val  p_val_adj signif anno     
-   <chr>         <chr>      <dbl>       <dbl>      <dbl> <chr>  <chr>    
- 1 Inhib~Sp09D09 carrier_F 0.0823 0.745       1          ""     cor=0.08 
- 2 Inhib~Sp09D09 carrier_M 0.881  0.00000142  0.0000256  "*"    cor=0.88*
- 3 L1~Sp09D05    carrier_F 0.655  0.00315     0.0567     ""     cor=0.66 
- 4 L1~Sp09D05    carrier_M 0.798  0.0000725   0.00130    "*"    cor=0.80*
- 5 L2.3~Sp09D01  carrier_F 0.490  0.0332      0.597      ""     cor=0.49 
- 6 L2.3~Sp09D01  carrier_M 0.865  0.00000175  0.0000315  "*"    cor=0.87*
- 7 L5~Sp09D03    carrier_F 0.157  0.521       1          ""     cor=0.16 
- 8 L5~Sp09D03    carrier_M 0.846  0.00000513  0.0000924  "*"    cor=0.85*
- 9 L6~Sp09D04    carrier_F 0.226  0.353       1          ""     cor=0.23 
-10 L6~Sp09D04    carrier_M 0.903  0.000000117 0.00000210 "*"    cor=0.90*
-11 LD~Sp09D02    carrier_F 0.475  0.0344      0.619      ""     cor=0.47 
-12 LD~Sp09D02    carrier_M 0.816  0.0000117   0.000211   "*"    cor=0.82*
-13 Vasc~Sp09D08  carrier_F 0.574  0.0200      0.360      ""     cor=0.57 
-14 Vasc~Sp09D08  carrier_M 0.644  0.00715     0.129      ""     cor=0.64 
-15 WM.uf~Sp09D07 carrier_F 0.323  0.333       1          ""     cor=0.32 
-16 WM.uf~Sp09D07 carrier_M 0.938  0.0000200   0.000359   "*"    cor=0.94*
-17 WM~Sp09D06    carrier_F 0.267  0.335       1          ""     cor=0.27 
-18 WM~Sp09D06    carrier_M 0.472  0.0759      1          ""     cor=0.47 
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 22 × 7
+   cluster contrast    cor       p_val p_val_adj signif anno     
+   <fct>   <chr>     <dbl>       <dbl>     <dbl> <chr>  <chr>    
+ 1 vVasc   carrier_F 0.612 0.0200      0.441     ""     cor=0.61 
+ 2 vVasc   carrier_M 0.621 0.0178      0.392     ""     cor=0.62 
+ 3 vL1     carrier_F 0.800 0.0000678   0.00149   "*"    cor=0.80*
+ 4 vL1     carrier_M 0.892 0.000000643 0.0000141 "*"    cor=0.89*
+ 5 vL2     carrier_F 0.553 0.0172      0.379     ""     cor=0.55 
+ 6 vL2     carrier_M 0.806 0.0000530   0.00117   "*"    cor=0.81*
+ 7 vInhib  carrier_F 0.646 0.00689     0.152     ""     cor=0.65 
+ 8 vInhib  carrier_M 0.802 0.000187    0.00411   "*"    cor=0.80*
+ 9 vLD     carrier_F 0.505 0.0327      0.720     ""     cor=0.50 
+10 vLD     carrier_M 0.857 0.00000552  0.000121  "*"    cor=0.86*
+# ℹ 12 more rows
 Warning messages:
-1: ggrepel: 77 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-2: Removed 84 rows containing missing values or values outside the scale range
+1: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+2: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+3: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+4: Removed 1144 rows containing missing values or values outside the scale range
 (`geom_point()`). 
-3: Removed 84 rows containing missing values or values outside the scale range
+5: Removed 1144 rows containing missing values or values outside the scale range
 (`geom_text_repel()`). 
-4: ggrepel: 8 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-5: ggrepel: 26 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-6: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-7: ggrepel: 9 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-8: ggrepel: 27 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-9: ggrepel: 89 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-10: ggrepel: 5 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+6: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+7: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+8: No shared levels found between `names(values)` of the manual scale and the
+data's colour values. 
+9: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+10: Removed 2 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
 [1] "Reproducibility information:"
-[1] "2025-08-04 13:51:53 EDT"
+[1] "2026-09-08 09:36:43 EDT"
    user  system elapsed 
- 44.979   0.537  46.595 
+ 50.395   0.575  55.094 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -154,56 +154,57 @@ Warning messages:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-08-04
+ date     2026-09-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
  package      * version date (UTC) lib source
- cli            3.6.5   2025-04-23 [2] CRAN (R 4.5.0)
+ cli            3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
  dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
- dplyr        * 1.1.4   2023-11-17 [2] CRAN (R 4.5.0)
+ dplyr        * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
  farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
- forcats      * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
  generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
- getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ getopt       * 1.21.1  2026-04-27 [1] CRAN (R 4.5.0)
  GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
- ggplot2      * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
- ggrepel      * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ ggplot2      * 4.0.3   2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel      * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
  ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
- glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ glue           1.8.1   2026-04-17 [1] CRAN (R 4.5.0)
  gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
- here         * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
- hms            1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
+ here         * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms            1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
  labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
- lifecycle      1.0.4   2023-11-07 [2] CRAN (R 4.5.0)
- lubridate    * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
- magrittr       2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
- pillar         1.11.0  2025-07-04 [1] CRAN (R 4.5.0)
+ lifecycle      1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate    * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magrittr       2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ pillar         1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
  pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
  plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
- purrr        * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
+ purrr        * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
  R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
- ragg           1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
+ ragg           1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
  RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp           1.1.0   2025-07-02 [1] CRAN (R 4.5.0)
- readr        * 2.1.5   2024-01-10 [2] CRAN (R 4.5.0)
- rlang          1.1.6   2025-04-11 [2] CRAN (R 4.5.0)
- rprojroot      2.0.4   2023-11-05 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr        * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ rlang          1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot      2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S7             0.2.2   2026-04-22 [1] CRAN (R 4.5.0)
  scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
- sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.4   2026-06-04 [1] CRAN (R 4.5.0)
  stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
- stringr      * 1.5.1   2023-11-14 [2] CRAN (R 4.5.0)
- systemfonts    1.2.3   2025-04-30 [2] CRAN (R 4.5.0)
- textshaping    1.0.1   2025-05-01 [2] CRAN (R 4.5.0)
- tibble       * 3.3.0   2025-06-08 [1] CRAN (R 4.5.0)
- tidyr        * 1.3.1   2024-01-24 [2] CRAN (R 4.5.0)
+ stringr      * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ systemfonts    1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping    1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble       * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
  tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
  tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
- timechange     0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
+ timechange     0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
  tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
  utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
- vctrs          0.6.5   2023-12-01 [2] CRAN (R 4.5.0)
+ vctrs          0.7.3   2026-04-11 [1] CRAN (R 4.5.0)
  withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
 
  [1] /users/lhuuki/R/4.5
@@ -213,4 +214,4 @@ Warning messages:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Aug  4 01:51:53 PM EDT 2025
+Tue Sep  8 09:36:43 AM EDT 2026

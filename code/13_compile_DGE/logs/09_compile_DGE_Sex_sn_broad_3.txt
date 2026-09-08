@@ -1,12 +1,11 @@
 **** Job starts ****
-Mon Aug  4 01:51:06 PM EDT 2025
+Tue Sep  8 09:35:48 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 21203276
+Job id: 35574338
 Job name: 09_compile_DGE_Sex
-Node name: compute-158
+Node name: compute-153
 Task id: 3
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -16,11 +15,11 @@ Currently Loaded Modules:
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.4     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -32,20 +31,20 @@ Registered S3 method overwritten by 'GGally':
 Loading objects:
   cell_type_colors
 [1] "carrier_F" "carrier_M" "Sex_E2"    "Sex_E4"   
-[1] "Astro" "Oligo" "OPC"   "Macro" "Micro" "Vasc"  "Excit" "Inhib" "Other"
+[1] "Astro" "Macro" "Micro" "Oligo" "OPC"   "Vasc"  "Excit" "Inhib" "Other"
 # A tibble: 16 × 3
    cluster contrast      n
    <fct>   <chr>     <int>
  1 Astro   carrier_F 17701
  2 Astro   carrier_M 17701
- 3 Oligo   carrier_F 20453
- 4 Oligo   carrier_M 20453
- 5 OPC     carrier_F 16641
- 6 OPC     carrier_M 16641
- 7 Macro   carrier_F  3530
- 8 Macro   carrier_M  3530
- 9 Micro   carrier_F 13832
-10 Micro   carrier_M 13832
+ 3 Macro   carrier_F  3530
+ 4 Macro   carrier_M  3530
+ 5 Micro   carrier_F 13832
+ 6 Micro   carrier_M 13832
+ 7 Oligo   carrier_F 20453
+ 8 Oligo   carrier_M 20453
+ 9 OPC     carrier_F 16641
+10 OPC     carrier_M 16641
 11 Vasc    carrier_F  9204
 12 Vasc    carrier_M  9204
 13 Excit   carrier_F 25934
@@ -55,10 +54,10 @@ Loading objects:
 # A tibble: 8 × 3
   cluster contrast      n
   <fct>   <chr>     <int>
-1 Oligo   carrier_M   747
-2 Macro   carrier_F     1
-3 Macro   carrier_M    13
-4 Micro   carrier_M     3
+1 Macro   carrier_F     1
+2 Macro   carrier_M    13
+3 Micro   carrier_M     3
+4 Oligo   carrier_M   747
 5 Vasc    carrier_M    31
 6 Excit   carrier_F     1
 7 Excit   carrier_M   183
@@ -77,22 +76,26 @@ Loading objects:
  9 Excit   LINC02490       0.00000230          0.00996       2.60
 10 Excit   ZNF697          0.00000280          0.0104        1.03
 # ℹ 255,290 more rows
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
 # A tibble: 16 × 5
 # Groups:   cluster [8]
    cluster contrast  n_FDR05   nUP nDown
    <fct>   <chr>       <int> <int> <int>
  1 Astro   carrier_F       0     0     0
  2 Astro   carrier_M       0     0     0
- 3 Oligo   carrier_F       0     0     0
- 4 Oligo   carrier_M     747   647   100
- 5 OPC     carrier_F       0     0     0
- 6 OPC     carrier_M       0     0     0
- 7 Macro   carrier_F       1     1     0
- 8 Macro   carrier_M      13     8     5
- 9 Micro   carrier_F       0     0     0
-10 Micro   carrier_M       3     0     3
+ 3 Macro   carrier_F       1     1     0
+ 4 Macro   carrier_M      13     8     5
+ 5 Micro   carrier_F       0     0     0
+ 6 Micro   carrier_M       3     0     3
+ 7 Oligo   carrier_F       0     0     0
+ 8 Oligo   carrier_M     747   647   100
+ 9 OPC     carrier_F       0     0     0
+10 OPC     carrier_M       0     0     0
 11 Vasc    carrier_F       0     0     0
 12 Vasc    carrier_M      31    11    20
 13 Excit   carrier_F       1     0     1
@@ -101,11 +104,18 @@ Loading objects:
 16 Inhib   carrier_M       7     0     7
 Saving 7 x 7 in image
 Saving 7 x 7 in image
-There were 28 warnings (use warnings() to see them)
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
 # A tibble: 16 × 7
    cluster contrast      cor         p_val    p_val_adj signif anno     
    <chr>   <chr>       <dbl>         <dbl>        <dbl> <chr>  <chr>    
@@ -125,11 +135,15 @@ There were 28 warnings (use warnings() to see them)
 14 Oligo   carrier_M  0.920  0.00000000357 0.0000000572 "*"    cor=0.92*
 15 Vasc    carrier_F -0.183  0.498         1            ""     cor=-0.18
 16 Vasc    carrier_M  0.851  0.0000297     0.000475     "*"    cor=0.85*
-There were 19 warnings (use warnings() to see them)
+Warning messages:
+1: Removed 1542 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 1542 rows containing missing values or values outside the scale range
+(`geom_text_repel()`). 
 [1] "Reproducibility information:"
-[1] "2025-08-04 13:52:16 EDT"
+[1] "2026-09-08 09:37:23 EDT"
    user  system elapsed 
- 67.394   0.736  69.269 
+ 92.357   0.853  94.953 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -140,56 +154,57 @@ There were 19 warnings (use warnings() to see them)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-08-04
+ date     2026-09-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
  package      * version date (UTC) lib source
- cli            3.6.5   2025-04-23 [2] CRAN (R 4.5.0)
+ cli            3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
  dichromat      2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
- dplyr        * 1.1.4   2023-11-17 [2] CRAN (R 4.5.0)
+ dplyr        * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
  farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
- forcats      * 1.0.0   2023-01-29 [2] CRAN (R 4.5.0)
+ forcats      * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
  generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
- getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ getopt       * 1.21.1  2026-04-27 [1] CRAN (R 4.5.0)
  GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
- ggplot2      * 3.5.2   2025-04-09 [2] CRAN (R 4.5.0)
- ggrepel      * 0.9.6   2024-09-07 [2] CRAN (R 4.5.0)
+ ggplot2      * 4.0.3   2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel      * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
  ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
- glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ glue           1.8.1   2026-04-17 [1] CRAN (R 4.5.0)
  gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
- here         * 1.0.1   2020-12-13 [2] CRAN (R 4.5.0)
- hms            1.1.3   2023-03-21 [2] CRAN (R 4.5.0)
+ here         * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms            1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
  labeling       0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
- lifecycle      1.0.4   2023-11-07 [2] CRAN (R 4.5.0)
- lubridate    * 1.9.4   2024-12-08 [2] CRAN (R 4.5.0)
- magrittr       2.0.3   2022-03-30 [2] CRAN (R 4.5.0)
- pillar         1.11.0  2025-07-04 [1] CRAN (R 4.5.0)
+ lifecycle      1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate    * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magrittr       2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ pillar         1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
  pkgconfig      2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
  plyr           1.8.9   2023-10-02 [2] CRAN (R 4.5.0)
- purrr        * 1.0.4   2025-02-05 [2] CRAN (R 4.5.0)
+ purrr        * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
  R6             2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
- ragg           1.4.0   2025-04-10 [2] CRAN (R 4.5.0)
+ ragg           1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
  RColorBrewer   1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
- Rcpp           1.1.0   2025-07-02 [1] CRAN (R 4.5.0)
- readr        * 2.1.5   2024-01-10 [2] CRAN (R 4.5.0)
- rlang          1.1.6   2025-04-11 [2] CRAN (R 4.5.0)
- rprojroot      2.0.4   2023-11-05 [2] CRAN (R 4.5.0)
+ Rcpp           1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr        * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ rlang          1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot      2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S7             0.2.2   2026-04-22 [1] CRAN (R 4.5.0)
  scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
- sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.4   2026-06-04 [1] CRAN (R 4.5.0)
  stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
- stringr      * 1.5.1   2023-11-14 [2] CRAN (R 4.5.0)
- systemfonts    1.2.3   2025-04-30 [2] CRAN (R 4.5.0)
- textshaping    1.0.1   2025-05-01 [2] CRAN (R 4.5.0)
- tibble       * 3.3.0   2025-06-08 [1] CRAN (R 4.5.0)
- tidyr        * 1.3.1   2024-01-24 [2] CRAN (R 4.5.0)
+ stringr      * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ systemfonts    1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping    1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble       * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr        * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
  tidyselect     1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
  tidyverse    * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
- timechange     0.3.0   2024-01-18 [2] CRAN (R 4.5.0)
+ timechange     0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
  tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
  utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
- vctrs          0.6.5   2023-12-01 [2] CRAN (R 4.5.0)
+ vctrs          0.7.3   2026-04-11 [1] CRAN (R 4.5.0)
  withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
 
  [1] /users/lhuuki/R/4.5
@@ -199,4 +214,4 @@ There were 19 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Aug  4 01:52:16 PM EDT 2025
+Tue Sep  8 09:37:23 AM EDT 2026
