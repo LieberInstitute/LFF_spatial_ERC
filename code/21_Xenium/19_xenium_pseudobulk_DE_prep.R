@@ -49,7 +49,7 @@ if(opt$cluster == "cell_type_anno"){
     spe <- spe[,spe$spot_class == "singlet"]
     message("filter to singlets ncells: ", ncol(spe))
 
-} if(opt$cluster == "cell_type_anno_SpX"){
+} else if(opt$cluster == "cell_type_anno_SpX"){
     
     ## filter to Singlets
     spe <- spe[,spe$spot_class == "singlet"]
