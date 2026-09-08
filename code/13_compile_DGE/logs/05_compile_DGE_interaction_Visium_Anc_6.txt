@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Apr 23 03:37:41 PM EDT 2026
+Tue Sep  8 09:38:42 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31036913
+Job id: 35574346
 Job name: 05_compile_DGE_interaction
-Node name: compute-120
+Node name: compute-169
 Task id: 6
 Loading conda_R/4.5
 
@@ -17,7 +17,7 @@ Currently Loaded Modules:
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
-✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
 ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
 ✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -30,77 +30,80 @@ Registered S3 method overwritten by 'GGally':
   +.gg   ggplot2
 Loading objects:
   SpD_colors
-[1] FALSE
-# A tibble: 9 × 2
-  cluster           n
-  <fct>         <int>
-1 Vasc~Sp09D08   9014
-2 L1~Sp09D05    11594
-3 L2.3~Sp09D01  14006
-4 LD~Sp09D02    15053
-5 Inhib~Sp09D09 12207
-6 L5~Sp09D03    14322
-7 L6~Sp09D04    13930
-8 WM.uf~Sp09D07  3172
-9 WM~Sp09D06     9409
-# A tibble: 2 × 2
-  cluster          n
-  <fct>        <int>
-1 Vasc~Sp09D08     2
-2 L5~Sp09D03       1
-# A tibble: 102,707 × 5
-   cluster      gene_name  vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
-   <fct>        <chr>             <dbl>          <dbl>      <dbl>
- 1 L5~Sp09D03   ABCC12       0.00000344         0.0492      -1.96
- 2 Vasc~Sp09D08 CYBB         0.00000984         0.0887       2.96
- 3 Vasc~Sp09D08 AC007952.4   0.0000206          0.0927       2.71
- 4 LD~Sp09D02   AC140125.2   0.00000884         0.133        2.66
- 5 L5~Sp09D03   AL513166.1   0.0000276          0.198       -2.58
- 6 L5~Sp09D03   ASAP3        0.0000543          0.259       -1.68
- 7 Vasc~Sp09D08 CFH          0.000218           0.323        2.30
- 8 Vasc~Sp09D08 SLC6A13      0.000142           0.323        3.29
- 9 Vasc~Sp09D08 HLA-F        0.000235           0.323        1.67
-10 Vasc~Sp09D08 C7           0.000195           0.323        2.53
-# ℹ 102,697 more rows
-# A tibble: 155 × 5
-   cluster      gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
-   <fct>        <chr>            <dbl>          <dbl>      <dbl>
- 1 Vasc~Sp09D08 CSF1R           0.0375          0.849      0.846
- 2 LD~Sp09D02   PSEN2           0.0849          0.907     -0.402
- 3 LD~Sp09D02   PLCD1           0.124           0.907     -0.382
- 4 LD~Sp09D02   SORL1           0.236           0.907      0.248
- 5 LD~Sp09D02   UNC13C          0.241           0.907      0.337
- 6 LD~Sp09D02   CSF1R           0.260           0.907      0.715
- 7 LD~Sp09D02   TM2D3           0.324           0.920      0.186
- 8 LD~Sp09D02   NOS3            0.327           0.922     -0.519
- 9 LD~Sp09D02   SORCS1          0.359           0.927      0.340
-10 LD~Sp09D02   APOE            0.444           0.932     -0.249
-# ℹ 145 more rows
+[1] TRUE
+# A tibble: 11 × 2
+   cluster     n
+   <fct>   <int>
+ 1 vVasc    7215
+ 2 vL1     11721
+ 3 vL2     14315
+ 4 vInhib   8653
+ 5 vLD     13581
+ 6 vL5a    13889
+ 7 vL5b    13430
+ 8 vL6     13237
+ 9 vWMuf    3021
+10 vWMpv    7568
+11 vWMd     6255
+# A tibble: 1 × 2
+  cluster     n
+  <fct>   <int>
+1 vVasc       2
+# A tibble: 112,885 × 5
+   cluster gene_name  vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>             <dbl>          <dbl>      <dbl>
+ 1 vVasc   CYBB         0.00000846         0.0611       3.16
+ 2 vVasc   ALOX5AP      0.0000190          0.0685       2.87
+ 3 vVasc   CFH          0.0000551          0.132        2.71
+ 4 vVasc   SLC6A13      0.000124           0.210        3.84
+ 5 vVasc   C7           0.000174           0.210        2.52
+ 6 vVasc   PLCB4        0.000175           0.210        2.27
+ 7 vVasc   OSBPL2       0.000222           0.220       -1.50
+ 8 vVasc   KCTD10       0.000296           0.220        1.54
+ 9 vVasc   MAF          0.000366           0.220        1.52
+10 vVasc   AC007952.4   0.000260           0.220        2.57
+# ℹ 112,875 more rows
+# A tibble: 178 × 5
+   cluster gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
+   <fct>   <chr>            <dbl>          <dbl>      <dbl>
+ 1 vVasc   CSF1R           0.0223          0.707      1.02 
+ 2 vL1     CSF1R           0.0878          0.729      1.07 
+ 3 vVasc   TM2D3           0.0745          0.791     -0.697
+ 4 vL1     GRN             0.185           0.803      0.251
+ 5 vL1     MT-ND1          0.195           0.804      0.180
+ 6 vVasc   ADAM10          0.123           0.839     -0.723
+ 7 vVasc   MT-ND1          0.219           0.876      0.183
+ 8 vL1     UNC13C          0.360           0.878     -0.403
+ 9 vL1     TM2D3           0.372           0.883      0.181
+10 vL1     VPS13C          0.401           0.891      0.226
+# ℹ 168 more rows
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by mod and cluster.
 ℹ Output is grouped by mod.
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(mod, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-# A tibble: 9 × 8
+# A tibble: 11 × 8
 # Groups:   mod [1]
-  mod             cluster       n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
-  <chr>           <fct>          <int>   <int> <int> <int>   <int>   <int>
-1 interaction Anc L5~Sp09D03     14322       1     0     1       1       2
-2 interaction Anc Vasc~Sp09D08    9014       0     0     0       2       2
-3 interaction Anc L1~Sp09D05     11594       0     0     0       0       0
-4 interaction Anc L2.3~Sp09D01   14006       0     0     0       0       0
-5 interaction Anc LD~Sp09D02     15053       0     0     0       0       1
-6 interaction Anc Inhib~Sp09D09  12207       0     0     0       0       0
-7 interaction Anc L6~Sp09D04     13930       0     0     0       0       0
-8 interaction Anc WM.uf~Sp09D07   3172       0     0     0       0       0
-9 interaction Anc WM~Sp09D06      9409       0     0     0       0       0
+   mod             cluster n_gene n_FDR05   nUP nDown n_FDR10 n_FDR20
+   <chr>           <fct>    <int>   <int> <int> <int>   <int>   <int>
+ 1 interaction Anc vVasc     7215       0     0     0       2       3
+ 2 interaction Anc vL1      11721       0     0     0       0       0
+ 3 interaction Anc vL2      14315       0     0     0       0       0
+ 4 interaction Anc vInhib    8653       0     0     0       0       0
+ 5 interaction Anc vLD      13581       0     0     0       0       0
+ 6 interaction Anc vL5a     13889       0     0     0       0       0
+ 7 interaction Anc vL5b     13430       0     0     0       0       0
+ 8 interaction Anc vL6      13237       0     0     0       0       0
+ 9 interaction Anc vWMuf     3021       0     0     0       0       0
+10 interaction Anc vWMpv     7568       0     0     0       0       0
+11 interaction Anc vWMd      6255       0     0     0       0       0
 Adding missing grouping variables: `mod`
 Saving 7 x 7 in image
 [1] "Reproducibility information:"
-[1] "2026-04-23 15:38:03 EDT"
+[1] "2026-09-08 09:39:03 EDT"
    user  system elapsed 
- 19.073   0.495  20.948 
+ 17.947   0.358  20.303 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -111,7 +114,7 @@ Saving 7 x 7 in image
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-04-23
+ date     2026-09-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -123,12 +126,12 @@ Saving 7 x 7 in image
  farver         2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
  forcats      * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
  generics       0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
- getopt       * 1.20.4  2023-10-01 [1] CRAN (R 4.5.0)
+ getopt       * 1.21.1  2026-04-27 [1] CRAN (R 4.5.0)
  GGally       * 2.2.1   2024-02-14 [2] CRAN (R 4.5.0)
- ggplot2      * 4.0.2   2026-02-03 [1] CRAN (R 4.5.0)
+ ggplot2      * 4.0.3   2026-04-22 [1] CRAN (R 4.5.0)
  ggrepel      * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
  ggstats        0.9.0   2025-03-10 [2] CRAN (R 4.5.0)
- glue           1.8.0   2024-09-30 [2] CRAN (R 4.5.0)
+ glue           1.8.1   2026-04-17 [1] CRAN (R 4.5.0)
  gtable         0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
  here         * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
  hms            1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
@@ -147,9 +150,9 @@ Saving 7 x 7 in image
  readr        * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
  rlang          1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
  rprojroot      2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
- S7             0.2.1   2025-11-14 [1] CRAN (R 4.5.0)
+ S7             0.2.2   2026-04-22 [1] CRAN (R 4.5.0)
  scales         1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
- sessioninfo  * 1.2.3   2025-02-05 [2] CRAN (R 4.5.0)
+ sessioninfo  * 1.2.4   2026-06-04 [1] CRAN (R 4.5.0)
  stringi        1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
  stringr      * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
  systemfonts    1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
@@ -161,7 +164,7 @@ Saving 7 x 7 in image
  timechange     0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
  tzdb           0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
  utf8           1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
- vctrs          0.7.2   2026-03-21 [1] CRAN (R 4.5.0)
+ vctrs          0.7.3   2026-04-11 [1] CRAN (R 4.5.0)
  withr          3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
 
  [1] /users/lhuuki/R/4.5
@@ -171,4 +174,4 @@ Saving 7 x 7 in image
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Apr 23 03:38:03 PM EDT 2026
+Tue Sep  8 09:39:03 AM EDT 2026
