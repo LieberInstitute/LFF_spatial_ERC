@@ -728,7 +728,7 @@ if(opt$datatype == "Xenium_cell_type_anno"){
     
     pi1_per_celltype |>
         left_join(validation_summary_cor) |> 
-        select(cluster, pi1, n_discovery, cor, cor_FDR05, n_signif_both_dir) |>
+        select(cluster, pi1, n_discovery, cor, cor_FDR05) |>
         mutate(
             replication_tier = case_when(
                 pi1 > 0.4  & cor_FDR05 > 0.3  ~ "Strong",
