@@ -109,7 +109,7 @@ custom_volcano <- function(data,
 walk(unique(dge_data$cluster), ~custom_volcano(dge_data, clus = .x))
 
 
-if(dataset == "sn_fine"){
+if(datatype == "sn_fine"){
     
     ## Oligo.3 no text
     vol_o3 <- custom_volcano(dge_data, clus = "Oligo.3", save = FALSE, text = FALSE) +
