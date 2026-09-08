@@ -1,12 +1,11 @@
 **** Job starts ****
-Mon Jul  6 01:16:01 PM EDT 2026
+Tue Sep  8 10:23:08 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33926109
+Job id: 35574605
 Job name: 19_xenium_pseudobulk_DE_prep_Oligo.3_Astro
-Node name: compute-147
+Node name: compute-175
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -153,18 +152,12 @@ $cluster
 
 attr(,"class")
 [1] "getopt"
-2026-07-06 13:16:14.960947 - load data from: spe_xenium_bansky.qs2
-            
-              Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
-  Vasc~SpX3  50546     0     0     0     0     0     0     0     0
-  L1a~SpX6       0 29369     0     0     0     0     0     0     0
-  L1b~SpX7       0     0 37807     0     0     0     0     0     0
-  L2.3~SpX4      0     0     0 38282     0     0     0     0     0
-  Inhib~SpX5     0     0     0     0 26918     0     0     0     0
-  L5~SpX1        0     0     0     0     0 85468     0     0     0
-  L6~SpX9        0     0     0     0     0     0 45822     0     0
-  WMtz~SpX8      0     0     0     0     0     0     0 64747     0
-  WM~SpX2        0     0     0     0     0     0     0     0 68224
+2026-09-08 10:23:20.481678 - load data from: spe_xenium_bansky.qs2
+
+xVasc_mural    xVasc_im         xGL         xL2   xL1_inhib    xLD_glia 
+      22751       19987       32827       39408       24551       69150 
+  xVasc_adj         xL5         xL6       xWMuf        xWMd 
+      22630       56424       39849       56971       62635 
 Loading objects:
   neighbor_df_details
 filter to Oligo.3, ncells: 52555
@@ -222,13 +215,13 @@ check input:
                0                0           262775                0 
          Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
                0                0                0                0 
-        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
+        Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN    Excit.L5.RELN 
                0                0                0                0 
-      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
+   Excit.L5.RORB    Excit.L5_6.NP      Excit.L6.CT        Excit.L6b 
                0                0                0                0 
-Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
+     Inhib.HTR3A Inhib.LAMP5_LHX6      Inhib.PVALB        Inhib.VIP 
                0                0                0                0 
-       Inhib.Sst        Inhib.Vip 
+Inhib.Chandelier        Inhib.SST 
                0                0 
 
             APOE_high APOE_high_nnA_Astro.1 APOE_high_nnA_Astro.2 
@@ -253,16 +246,16 @@ APOE_high_nnA_Astro.3 APOE_high_nnA_Astro.4 APOE_high_nnA_Astro.5
                 10852                   909                  7214 
            nn_Astro.5               nnA_far              nnA_near 
                 26148                 26300                 26255 
-2026-07-06 13:17:22.814825 - pseudobulk Oligo.3_Astro
-2026-07-06 13:17:23.117477 make pseudobulk object
-2026-07-06 13:17:52.541234 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
-2026-07-06 13:17:52.593866 normalize expression
-2026-07-06 13:17:52.943593 - Done pseudobulk
+2026-09-08 10:23:59.09456 - pseudobulk Oligo.3_Astro
+2026-09-08 10:23:59.392661 make pseudobulk object
+2026-09-08 10:24:25.075274 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
+2026-09-08 10:24:25.128747 normalize expression
+2026-09-08 10:24:25.459718 - Done pseudobulk
 nrow: 366, ncol: 495
      
-      Astro Macro Micro Oligo OPC Vasc Excit Inhib
-  E2+    72     0     0   180   0    0     0     0
-  E4+    67     0     0   176   0    0     0     0
+      Astro Macro Micro OPC Oligo Vasc Excit Inhib
+  E2+    72     0     0   0   180    0     0     0
+  E4+    67     0     0   0   176    0     0     0
      
       APOE_high APOE_high_nnA_Astro.1 APOE_high_nnA_Astro.2
   E2+         8                     8                     8
@@ -306,11 +299,11 @@ nrow: 366, ncol: 495
 ℹ Use `summarise(.by = c(APOE_carrier, registration_variable))` for
   per-operation grouping (`?dplyr::dplyr_by`) instead.
 Too few samples in: 
-2026-07-06 13:17:53.321555 - Save
+2026-09-08 10:24:25.817643 - Save data
 [1] "Reproducibility information:"
-[1] "2026-07-06 13:17:53 EDT"
+[1] "2026-09-08 10:24:26 EDT"
    user  system elapsed 
- 51.058   8.232 111.127 
+ 50.734   6.152  77.043 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -321,7 +314,7 @@ Too few samples in:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-07-06
+ date     2026-09-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -480,4 +473,4 @@ Too few samples in:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Jul  6 01:17:54 PM EDT 2026
+Tue Sep  8 10:24:26 AM EDT 2026

@@ -1,13 +1,17 @@
 **** Job starts ****
-Wed Jun 24 09:13:27 AM EDT 2026
+Tue Sep  8 10:09:04 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33502532
+Job id: 35574550
 Job name: 19_xenium_pseudobulk_DE_prep
-Node name: compute-168
+Node name: compute-169
 Task id: 
-Unloading conda_R/4.5
+Unloading conda_R/4.5.x
 Loading conda_R/4.5
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5.x => conda_R/4.5
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -153,75 +157,91 @@ $cluster
 
 attr(,"class")
 [1] "getopt"
-2026-06-24 09:13:40.402098 - load data from: spe_xenium_bansky.qs2
-            
-              Vasc   L1a   L1b  L2.3 Inhib    L5    L6  WMtz    WM
-  Vasc~SpX3  50546     0     0     0     0     0     0     0     0
-  L1a~SpX6       0 29369     0     0     0     0     0     0     0
-  L1b~SpX7       0     0 37807     0     0     0     0     0     0
-  L2.3~SpX4      0     0     0 38282     0     0     0     0     0
-  Inhib~SpX5     0     0     0     0 26918     0     0     0     0
-  L5~SpX1        0     0     0     0     0 85468     0     0     0
-  L6~SpX9        0     0     0     0     0     0 45822     0     0
-  WMtz~SpX8      0     0     0     0     0     0     0 64747     0
-  WM~SpX2        0     0     0     0     0     0     0     0 68224
+2026-09-08 10:09:18.050647 - load data from: spe_xenium_bansky.qs2
+
+xVasc_mural    xVasc_im         xGL         xL2   xL1_inhib    xLD_glia 
+      22751       19987       32827       39408       24551       69150 
+  xVasc_adj         xL5         xL6       xWMuf        xWMd 
+      22630       56424       39849       56971       62635 
+filter to singlets ncells: 302279
 check input: 
 
            reject           singlet   doublet_certain doublet_uncertain 
-             5462            302279            121612             17830 
+                0            302279                 0                 0 
 
          Astro.1          Astro.2          Astro.3          Astro.4 
-           15082            18048              941             8485 
+           12853            14382              708             6660 
          Astro.5            Macro          Micro.1          Micro.2 
-           42241             6278              286            14691 
+           29342             1922              140             8653 
          Micro.3          Micro.4          Micro.5            OPC.1 
-            2372              344            18085              118 
+            1238              115            11100               25 
            OPC.2            OPC.3            OPC.4            OPC.5 
-           11843               32             3799            11403 
+            7460               12             1726             8040 
          Oligo.1          Oligo.2          Oligo.3          Oligo.4 
-           16805            11905            62780            37828 
+            9934             9335            52555            29094 
          Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
-            3569            36136            26970             8893 
-        Excit.L2     Excit.L2_5.1     Excit.L2_5.2       Excit.L5.1 
-           21943            10057             6593             8208 
-      Excit.L5.2    Excit.L5_6_NP      Excit.L6_CT        Excit.L6b 
-            2341              982             5038             4970 
-Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6      Inhib.Pvalb 
-            1444             5266             1706             5240 
-       Inhib.Sst        Inhib.Vip 
-            4646             9815 
-2026-06-24 09:14:20.620591 - pseudobulk cell_type_anno
-2026-06-24 09:14:20.890389 make pseudobulk object
-2026-06-24 09:14:31.750762 dropping 52 pseudo-bulked samples that are below 'min_ncells'.
-2026-06-24 09:14:31.947552 normalize expression
-2026-06-24 09:14:32.268549 - Done pseudobulk
-nrow: 366, ncol: 545
+            2059            27136            20007             5076 
+        Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN    Excit.L5.RELN 
+           11459             4907             1331             3307 
+   Excit.L5.RORB    Excit.L5_6.NP      Excit.L6.CT        Excit.L6b 
+            3752              294             1398             1424 
+     Inhib.HTR3A Inhib.LAMP5_LHX6      Inhib.PVALB        Inhib.VIP 
+             721             2577             2734             6186 
+Inhib.Chandelier        Inhib.SST 
+             764             1853 
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+           12853            14382              708             6660 
+         Astro.5            Macro          Micro.1          Micro.2 
+           29342             1922              140             8653 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+            1238              115            11100               25 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+            7460               12             1726             8040 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+            9934             9335            52555            29094 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+            2059            27136            20007             5076 
+        Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN    Excit.L5.RELN 
+           11459             4907             1331             3307 
+   Excit.L5.RORB    Excit.L5_6.NP      Excit.L6.CT        Excit.L6b 
+            3752              294             1398             1424 
+     Inhib.HTR3A Inhib.LAMP5_LHX6      Inhib.PVALB        Inhib.VIP 
+             721             2577             2734             6186 
+Inhib.Chandelier        Inhib.SST 
+             764             1853 
+2026-09-08 10:09:44.357535 - pseudobulk cell_type_anno
+2026-09-08 10:09:44.580191 make pseudobulk object
+2026-09-08 10:09:55.02891 dropping 50 pseudo-bulked samples that are below 'min_ncells'.
+2026-09-08 10:09:55.092162 normalize expression
+2026-09-08 10:09:55.398978 - Done pseudobulk
+nrow: 366, ncol: 528
      
-      Astro Macro Micro Oligo OPC Vasc Excit Inhib
-  E2+    40     8    35    40  25   24    57    48
-  E4+    39     8    27    40  27   24    55    48
+      Astro Macro Micro OPC Oligo Vasc Excit Inhib
+  E2+    40     7    31  24    40   24    57    48
+  E4+    39     8    23  24    40   24    51    48
      
       Astro.1 Astro.2 Astro.3 Astro.4 Astro.5 Macro Micro.1 Micro.2 Micro.3
-  E2+       8       8       8       8       8     8       5       8       8
-  E4+       8       8       7       8       8     8       1       8       7
+  E2+       8       8       8       8       8     7       4       8       8
+  E4+       8       8       7       8       8     8       0       8       6
      
-      Micro.4 Micro.5 OPC.1 OPC.2 OPC.4 OPC.5 Oligo.1 Oligo.2 Oligo.3 Oligo.4
-  E2+       6       8     1     8     8     8       8       8       8       8
-  E4+       3       8     3     8     8     8       8       8       8       8
+      Micro.4 Micro.5 OPC.2 OPC.4 OPC.5 Oligo.1 Oligo.2 Oligo.3 Oligo.4 Oligo.5
+  E2+       3       8     8     8     8       8       8       8       8       8
+  E4+       1       8     8     8     8       8       8       8       8       8
      
-      Oligo.5 Vasc.Endo Vasc.PC Vasc.VLMC Excit.L2 Excit.L2_5.1 Excit.L2_5.2
-  E2+       8         8       8         8        8            8            7
-  E4+       8         8       8         8        8            8            7
+      Vasc.Endo Vasc.PC Vasc.VLMC Excit.L2 Excit.L2_5.mix Excit.L2_5.RELN
+  E2+         8       8         8        8              8               7
+  E4+         8       8         8        8              8               7
      
-      Excit.L5.1 Excit.L5.2 Excit.L5_6_NP Excit.L6_CT Excit.L6b
-  E2+          8          7             3           8         8
-  E4+          8          7             3           7         7
+      Excit.L5.RELN Excit.L5.RORB Excit.L5_6.NP Excit.L6.CT Excit.L6b
+  E2+             7             8             3           8         8
+  E4+             6             8             1           7         6
      
-      Inhib.Chandelier Inhib.Lamp5_Lhx6 Inhib.Pax6 Inhib.Pvalb Inhib.Sst
-  E2+                8                8          8           8         8
-  E4+                8                8          8           8         8
+      Inhib.HTR3A Inhib.LAMP5_LHX6 Inhib.PVALB Inhib.VIP Inhib.Chandelier
+  E2+           8                8           8         8                8
+  E4+           8                8           8         8                8
      
-      Inhib.Vip
+      Inhib.SST
   E2+         8
   E4+         8
 `summarise()` has regrouped the output.
@@ -230,7 +250,179 @@ nrow: 366, ncol: 545
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(APOE_carrier, registration_variable))` for
   per-operation grouping (`?dplyr::dplyr_by`) instead.
-Too few samples in: Micro.1, OPC.1
-2026-06-24 09:14:32.559768 - Save
+Too few samples in: Micro.1, Micro.4, Excit.L5_6.NP
+2026-09-08 10:09:55.735152 - Save
+[1] "Reproducibility information:"
+[1] "2026-09-08 10:09:55 EDT"
+   user  system elapsed 
+ 45.994   2.843  50.401 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-09-08
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
+ AnnotationDbi          1.72.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ AnnotationHub          4.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
+ beachmat               2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
+ benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
+ benchmarkmeData        2.0.0     2026-01-19 [1] CRAN (R 4.5.0)
+ Biobase              * 2.70.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocFileCache          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocIO                 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocManager            1.30.27   2025-11-14 [1] CRAN (R 4.5.0)
+ BiocNeighbors          2.4.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel           1.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocSingular           1.26.1    2025-11-17 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocVersion            3.22.0    2025-10-07 [1] Bioconductor 3.22 (R 4.5.0)
+ Biostrings             2.78.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2     2026-05-19 [1] CRAN (R 4.5.0)
+ bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
+ blob                   1.3.0     2026-01-14 [1] CRAN (R 4.5.0)
+ bslib                  0.11.0    2026-05-16 [1] CRAN (R 4.5.0)
+ cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
+ cigarillo              1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ circlize               0.4.18    2026-04-04 [1] CRAN (R 4.5.0)
+ cli                    3.6.6     2026-04-09 [1] CRAN (R 4.5.0)
+ clue                   0.3-68    2026-03-26 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-2     2025-09-22 [1] CRAN (R 4.5.0)
+ ComplexHeatmap         2.26.1    2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
+ config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
+ curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
+ data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
+ DBI                    1.3.0     2026-02-25 [1] CRAN (R 4.5.0)
+ dbplyr                 2.5.2     2026-02-13 [1] CRAN (R 4.5.0)
+ DelayedArray           0.36.1    2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1     2026-04-03 [1] CRAN (R 4.5.0)
+ DT                     0.34.0    2025-09-02 [1] CRAN (R 4.5.0)
+ edgeR                  4.8.2     2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
+ ExperimentHub          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicAlignments      1.46.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ GenomicRanges        * 1.62.1    2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1    2026-04-27 [1] CRAN (R 4.5.0)
+ GetoptLong             1.1.1     2026-04-08 [1] CRAN (R 4.5.0)
+ ggbeeswarm             0.7.3     2025-11-29 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3     2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.8     2026-03-17 [1] CRAN (R 4.5.0)
+ GlobalOptions          0.1.4     2026-04-08 [1] CRAN (R 4.5.0)
+ glue                   1.8.1     2026-04-17 [1] CRAN (R 4.5.0)
+ golem                  0.5.1     2024-08-27 [2] CRAN (R 4.5.0)
+ gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
+ gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2     2025-09-15 [1] CRAN (R 4.5.0)
+ htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv                 1.6.17    2026-03-18 [1] CRAN (R 4.5.0)
+ httr                   1.4.8     2026-02-13 [1] CRAN (R 4.5.0)
+ httr2                  1.2.2     2025-12-08 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ irlba                  2.3.7     2026-01-30 [1] CRAN (R 4.5.0)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
+ jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGREST               1.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ later                  1.4.5     2026-01-08 [1] CRAN (R 4.5.0)
+ lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.3     2026-04-04 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
+ limma                  3.66.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
+ magick                 2.9.1     2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5     2026-04-04 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
+ mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
+ otel                   0.2.0     2025-08-29 [1] CRAN (R 4.5.0)
+ paletteer              1.7.0     2026-01-08 [1] CRAN (R 4.5.0)
+ pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
+ plotly                 4.12.0    2026-01-24 [1] CRAN (R 4.5.0)
+ png                    0.1-9     2026-03-15 [1] CRAN (R 4.5.0)
+ promises               1.5.0     2025-11-01 [1] CRAN (R 4.5.0)
+ purrr                  1.2.1     2026-01-09 [1] CRAN (R 4.5.0)
+ qs2                  * 0.2.1     2026-05-04 [1] CRAN (R 4.5.0)
+ R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
+ rappdirs               0.3.4     2026-01-17 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1     2026-01-10 [1] CRAN (R 4.5.0)
+ RcppParallel           5.1.11-2  2026-03-05 [1] CRAN (R 4.5.0)
+ RCurl                  1.98-1.19 2026-06-03 [1] CRAN (R 4.5.0)
+ rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
+ restfulr               0.0.17    2026-06-11 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0     2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
+ Rsamtools              2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ RSQLite                2.4.5     2025-11-30 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
+ rtracklayer            1.70.1    2025-12-22 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Arrays               1.10.1    2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1    2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2     2026-04-22 [1] CRAN (R 4.5.0)
+ sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
+ ScaledMatrix           1.18.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
+ scater               * 1.38.1    2026-03-20 [1] Bioconductor 3.22 (R 4.5.0)
+ scuttle              * 1.20.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ Seqinfo              * 1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4     2026-06-04 [1] CRAN (R 4.5.0)
+ shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
+ shiny                  1.13.0    2026-02-20 [1] CRAN (R 4.5.0)
+ shinyWidgets           0.9.1     2026-03-09 [1] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment    * 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ spatialLIBD          * 1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
+ statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
+ stringfish             0.19.0    2026-04-21 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ tibble                 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                  1.3.2     2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
+ vctrs                  0.7.3     2026-04-11 [1] CRAN (R 4.5.0)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3     2026-02-04 [1] CRAN (R 4.5.0)
+ withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
+ XML                    3.99-0.22 2026-02-10 [1] CRAN (R 4.5.0)
+ xtable                 1.8-8     2026-02-22 [1] CRAN (R 4.5.0)
+ XVector                0.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ yaml                   2.3.12    2025-12-10 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jun 24 09:14:32 AM EDT 2026
+Tue Sep  8 10:09:56 AM EDT 2026

@@ -1,0 +1,213 @@
+**** Job starts ****
+Thu Sep  3 07:00:13 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 35497739
+Job name: 23_Xenium_expression_dotplots
+Node name: compute-169
+Task id: 
+Loading conda_R/4.5.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5.x
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+qs2 0.2.2
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+2026-09-03 07:00:23.405303 - Load Xenium SPE
+Loading required namespace: SpatialExperiment
+class: SpatialExperiment 
+dim: 366 447183 
+metadata(19): Samples Samples ... region_colors SpX_colors
+assays(6): counts nucleus_normcounts ... H0 H1
+rownames(366): AATK ABCA8 ... ZDHHC11 ZDHHC23
+rowData names(9): gene_id gene_name ... subsets_any_neg subsets_GEX
+colnames(447183): Br1039_aaaaabke-1 Br1039_aaaaepee-1 ...
+  Br5854_oiphphbd-1 Br5854_ojaapmlh-1
+colData names(83): Sample Barcode ... cell_type_class region
+reducedDimNames(6): PCA TSNE ... HARMONY UMAP_HARMONY
+mainExpName: NULL
+altExpNames(0):
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+  APOE_carrier_anc_colors
+Rows: 57 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): gene_name, Layer, studies
+dbl (1): n_studies
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+Interneuron      Layer1      Layer2      Layer4     Layer5b      Layer6 
+          1           1           3           2           1           2 
+         WM 
+          3 
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[1] FALSE FALSE FALSE FALSE FALSE FALSE
+Loading objects:
+  marker_stats
+Loading objects:
+  SpD_colors
+# A tibble: 9 × 2
+  vSpD       n
+  <fct>  <int>
+1 vVasc      1
+2 vL1        6
+3 vL2        6
+4 vInhib     6
+5 vLD        2
+6 vL5a       3
+7 vL5b       3
+8 vL6        2
+9 vWMd       6
+
+ vVasc    vL1    vL2 vInhib    vLD   vL5a   vL5b    vL6  vWMuf  vWMpv   vWMd 
+     1      6      6      6      2      3      3      2      0      0      6 
+Rows: 110 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): model_type, test, gene, ensembl
+dbl (6): top, stat, pval, fdr, gene_index, logFC
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+# A tibble: 11 × 2
+   xSpD            n
+   <fct>       <int>
+ 1 xVasc_mural     5
+ 2 xVasc_im        5
+ 3 xGL             5
+ 4 xL2             5
+ 5 xL1_inhib       5
+ 6 xLD_glia        5
+ 7 xVasc_adj       5
+ 8 xL5             5
+ 9 xL6             5
+10 xWMuf           5
+11 xWMd            5
+
+xVasc_mural    xVasc_im         xGL         xL2   xL1_inhib    xLD_glia 
+          5           5           5           5           5           4 
+  xVasc_adj         xL5         xL6       xWMuf        xWMd 
+          5           5           5           4           5 
+Error in `levels<-`(`*tmp*`, value = as.character(levels)) : 
+  factor level [29] is duplicated
+Calls: scDotPlot ... <Anonymous> -> %>% -> <Anonymous> -> .handle_features -> factor
+Execution halted
