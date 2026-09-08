@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Apr 23 03:37:41 PM EDT 2026
+Tue Sep  8 09:38:42 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 31036917
+Job id: 35574350
 Job name: 05_compile_DGE_interaction
-Node name: compute-119
+Node name: compute-169
 Task id: 4
 Loading conda_R/4.5
 
@@ -17,7 +17,7 @@ Currently Loaded Modules:
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
-✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
 ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
 ✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -70,15 +70,15 @@ Loading objects:
    cluster          gene_name vlmf_P.Value vlmf_adj.P.Val vlmf_logFC
    <fct>            <chr>            <dbl>          <dbl>      <dbl>
  1 Inhib.Chandelier UNC13C       0.0000530          0.271      5.88 
- 2 Excit.L2_5.2     SORCS1       0.00964            0.437      1.46 
+ 2 Excit.L5.RELN    SORCS1       0.00964            0.437      1.46 
  3 Vasc.Endo        UNC13C       0.00555            0.534      5.25 
  4 Vasc.Endo        VCP          0.0170             0.570     -1.13 
- 5 Excit.L2_5.2     PSEN2        0.0602             0.579      0.907
+ 5 Excit.L5.RELN    PSEN2        0.0602             0.579      0.907
  6 Vasc.Endo        PSEN1        0.0698             0.670     -0.914
  7 Oligo.3          UNC13C       0.0568             0.683      2.24 
  8 OPC.5            APP          0.0132             0.688      1.59 
- 9 Excit.L2_5.2     UNC13C       0.152              0.693      0.969
-10 Excit.L5.1       GRN          0.104              0.697     -0.909
+ 9 Excit.L5.RELN    UNC13C       0.152              0.693      0.969
+10 Excit.L5.RORB    GRN          0.104              0.697     -0.909
 # ℹ 497 more rows
 `summarise()` has regrouped the output.
 ℹ Summaries were computed grouped by mod and cluster.

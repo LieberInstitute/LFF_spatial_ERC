@@ -1,12 +1,11 @@
 **** Job starts ****
-Wed Jun 24 09:26:07 AM EDT 2026
+Tue Sep  8 11:27:48 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 33502540
+Job id: 35575037
 Job name: 06_Clusterwise_voomLmFit_Xenium_cell_type_anno_SpX
-Node name: compute-168
+Node name: compute-129
 Task id: 
-Unloading conda_R/4.5
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -161,1246 +160,1461 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::year()     masks data.table::year()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-06-24 09:26:13.30903 - Datatype = Xenium_cell_type_anno_SpX, loading '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/19_xenium_pseudobulk_DE_prep/spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS'
+2026-09-08 11:27:56.325289 - Datatype = Xenium_cell_type_anno_SpX, loading '/dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC/processed-data/21_Xenium/19_xenium_pseudobulk_DE_prep/spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS'
 Loading required namespace: SpatialExperiment
-[1]  366 2538
+[1]  366 2811
 
-         Astro.1_Inhib            Astro.1_L1a            Astro.1_L1b 
-                    16                     12                     16 
-          Astro.1_L2.3             Astro.1_L5             Astro.1_L6 
-                    16                     16                     14 
-          Astro.1_Vasc             Astro.1_WM           Astro.1_WMtz 
-                     5                      9                     16 
-         Astro.2_Inhib            Astro.2_L1a            Astro.2_L1b 
-                    16                     16                     16 
-          Astro.2_L2.3             Astro.2_L5             Astro.2_L6 
-                    16                     16                     16 
-          Astro.2_Vasc             Astro.2_WM           Astro.2_WMtz 
-                    12                     15                     16 
-            Astro.3_L6             Astro.3_WM            Astro.4_L1a 
-                     5                      5                     16 
-          Astro.4_Vasc             Astro.4_WM           Astro.4_WMtz 
-                    14                     15                      5 
-         Astro.5_Inhib            Astro.5_L1a            Astro.5_L1b 
-                    16                     16                     16 
-          Astro.5_L2.3             Astro.5_L5             Astro.5_L6 
-                    16                     16                     16 
-          Astro.5_Vasc             Astro.5_WM           Astro.5_WMtz 
-                    15                     16                     16 
-    Excit.L2_5.1_Inhib       Excit.L2_5.1_L1b      Excit.L2_5.1_L2.3 
-                     9                      9                     16 
-       Excit.L2_5.1_L5        Excit.L2_5.1_L6      Excit.L2_5.1_WMtz 
-                    16                     12                     12 
-      Excit.L2_5.2_L1b      Excit.L2_5.2_L2.3        Excit.L2_5.2_L5 
-                     5                      5                     13 
-     Excit.L2_5.2_WMtz         Excit.L2_Inhib           Excit.L2_L1b 
-                    11                     11                     12 
-         Excit.L2_L2.3            Excit.L2_L5            Excit.L2_L6 
-                    16                     16                      6 
-         Excit.L2_WMtz        Excit.L5.1_L2.3          Excit.L5.1_L5 
-                    11                      6                     16 
-         Excit.L5.1_L6        Excit.L5.1_WMtz       Excit.L5.2_Inhib 
-                    14                      7                     10 
-        Excit.L5.2_L1b        Excit.L5.2_L2.3          Excit.L5.2_L5 
-                     4                     11                     13 
-        Excit.L6_CT_L6           Excit.L6b_L6 Inhib.Chandelier_Inhib 
-                    15                     14                      6 
-   Inhib.Chandelier_L5 Inhib.Lamp5_Lhx6_Inhib   Inhib.Lamp5_Lhx6_L1a 
-                    13                     16                     11 
-  Inhib.Lamp5_Lhx6_L1b  Inhib.Lamp5_Lhx6_L2.3    Inhib.Lamp5_Lhx6_L5 
-                    15                     13                     16 
-   Inhib.Lamp5_Lhx6_L6    Inhib.Lamp5_Lhx6_WM  Inhib.Lamp5_Lhx6_WMtz 
-                    11                      6                     13 
-      Inhib.Pax6_Inhib         Inhib.Pax6_L1b      Inhib.Pvalb_Inhib 
-                    11                      8                     15 
-       Inhib.Pvalb_L1b       Inhib.Pvalb_L2.3         Inhib.Pvalb_L5 
-                     6                     13                     16 
-        Inhib.Pvalb_L6       Inhib.Pvalb_WMtz        Inhib.Sst_Inhib 
-                    14                     14                      9 
-         Inhib.Sst_L1b         Inhib.Sst_L2.3           Inhib.Sst_L5 
-                     5                     13                     16 
-          Inhib.Sst_L6         Inhib.Sst_WMtz        Inhib.Vip_Inhib 
-                     8                     12                     16 
-         Inhib.Vip_L1a          Inhib.Vip_L1b         Inhib.Vip_L2.3 
-                    11                     15                     16 
-          Inhib.Vip_L5           Inhib.Vip_L6         Inhib.Vip_WMtz 
-                    16                      8                     14 
-            Macro_Vasc          Micro.2_Inhib            Micro.2_L1a 
-                    15                     15                     16 
-           Micro.2_L1b           Micro.2_L2.3             Micro.2_L5 
-                    16                     14                     16 
-            Micro.2_L6           Micro.2_Vasc             Micro.2_WM 
-                    15                     15                     16 
-          Micro.2_WMtz            Micro.3_L1a             Micro.3_WM 
-                    16                      7                      8 
-          Micro.3_WMtz          Micro.5_Inhib            Micro.5_L1a 
-                     5                     16                     16 
-           Micro.5_L1b           Micro.5_L2.3             Micro.5_L5 
-                    16                     16                     16 
-            Micro.5_L6           Micro.5_Vasc             Micro.5_WM 
-                    15                     15                     15 
-          Micro.5_WMtz            Oligo.1_L1a            Oligo.1_L1b 
-                    16                     16                      8 
-            Oligo.1_L5             Oligo.1_L6           Oligo.1_Vasc 
-                    15                     14                      4 
-            Oligo.1_WM           Oligo.1_WMtz            Oligo.2_L1a 
-                    16                     16                     16 
-            Oligo.2_L5             Oligo.2_L6             Oligo.2_WM 
-                    11                     10                     16 
-          Oligo.2_WMtz          Oligo.3_Inhib            Oligo.3_L1a 
-                    15                     16                     16 
-           Oligo.3_L1b           Oligo.3_L2.3             Oligo.3_L5 
-                    16                     16                     16 
-            Oligo.3_L6           Oligo.3_Vasc             Oligo.3_WM 
-                    16                     15                     16 
-          Oligo.3_WMtz          Oligo.4_Inhib            Oligo.4_L1a 
-                    16                     15                     16 
-           Oligo.4_L1b           Oligo.4_L2.3             Oligo.4_L5 
-                    16                      8                     16 
-            Oligo.4_L6           Oligo.4_Vasc             Oligo.4_WM 
-                    15                     15                     16 
-          Oligo.4_WMtz             Oligo.5_L5             Oligo.5_L6 
-                    16                     12                      8 
-            Oligo.5_WM           Oligo.5_WMtz            OPC.2_Inhib 
-                    12                     13                     15 
-             OPC.2_L1a              OPC.2_L1b             OPC.2_L2.3 
-                    15                     16                     14 
-              OPC.2_L5               OPC.2_L6             OPC.2_Vasc 
-                    16                     14                      8 
-              OPC.2_WM             OPC.2_WMtz            OPC.4_Inhib 
-                    15                     16                      7 
-             OPC.4_L1a              OPC.4_L1b               OPC.4_L5 
-                    10                     12                     12 
-              OPC.4_L6               OPC.4_WM             OPC.4_WMtz 
-                     7                     13                     10 
-           OPC.5_Inhib              OPC.5_L1a              OPC.5_L1b 
-                    16                     12                     16 
-            OPC.5_L2.3               OPC.5_L5               OPC.5_L6 
-                    16                     16                     15 
-            OPC.5_Vasc               OPC.5_WM             OPC.5_WMtz 
-                     4                     13                     16 
-       Vasc.Endo_Inhib          Vasc.Endo_L1a          Vasc.Endo_L1b 
-                    16                     16                     16 
-        Vasc.Endo_L2.3           Vasc.Endo_L5           Vasc.Endo_L6 
-                    15                     16                     15 
-        Vasc.Endo_Vasc           Vasc.Endo_WM         Vasc.Endo_WMtz 
-                    16                     16                     16 
-         Vasc.PC_Inhib            Vasc.PC_L1a            Vasc.PC_L1b 
-                    16                     14                     16 
-          Vasc.PC_L2.3             Vasc.PC_L5             Vasc.PC_L6 
-                    13                     16                     15 
-          Vasc.PC_Vasc             Vasc.PC_WM           Vasc.PC_WMtz 
-                    16                     14                     16 
-        Vasc.VLMC_Vasc 
-                    15 
+               Astro.1_xGL          Astro.1_xL1_inhib 
+                        16                         16 
+               Astro.1_xL2                Astro.1_xL5 
+                        16                         16 
+               Astro.1_xL6           Astro.1_xLD_glia 
+                        13                         16 
+         Astro.1_xVasc_adj               Astro.1_xWMd 
+                        11                          8 
+             Astro.1_xWMuf                Astro.2_xGL 
+                        15                         16 
+         Astro.2_xL1_inhib                Astro.2_xL2 
+                        16                         16 
+               Astro.2_xL5                Astro.2_xL6 
+                        16                         15 
+          Astro.2_xLD_glia          Astro.2_xVasc_adj 
+                        16                         15 
+              Astro.2_xWMd              Astro.2_xWMuf 
+                        15                         16 
+               Astro.3_xL6               Astro.3_xWMd 
+                         6                          4 
+             Astro.3_xWMuf                Astro.4_xGL 
+                         8                         16 
+         Astro.4_xVasc_adj           Astro.4_xVasc_im 
+                         6                         13 
+       Astro.4_xVasc_mural               Astro.4_xWMd 
+                         6                         15 
+             Astro.4_xWMuf                Astro.5_xGL 
+                         7                         16 
+         Astro.5_xL1_inhib                Astro.5_xL2 
+                        16                         16 
+               Astro.5_xL5                Astro.5_xL6 
+                        16                         15 
+          Astro.5_xLD_glia          Astro.5_xVasc_adj 
+                        16                         16 
+          Astro.5_xVasc_im        Astro.5_xVasc_mural 
+                        14                         13 
+              Astro.5_xWMd              Astro.5_xWMuf 
+                        16                         16 
+        Excit.L2_5.mix_xL2         Excit.L2_5.mix_xL5 
+                        16                         16 
+        Excit.L2_5.mix_xL6    Excit.L2_5.mix_xLD_glia 
+                        14                         16 
+  Excit.L2_5.mix_xVasc_adj       Excit.L2_5.mix_xWMuf 
+                        10                          9 
+ Excit.L2_5.RELN_xL1_inhib        Excit.L2_5.RELN_xL2 
+                         8                         10 
+       Excit.L2_5.RELN_xL5   Excit.L2_5.RELN_xLD_glia 
+                        13                          8 
+        Excit.L2_xL1_inhib               Excit.L2_xL2 
+                         8                         16 
+              Excit.L2_xL5               Excit.L2_xL6 
+                        16                          6 
+         Excit.L2_xLD_glia         Excit.L2_xVasc_adj 
+                        15                         11 
+            Excit.L2_xWMuf          Excit.L5.RELN_xL5 
+                         9                         13 
+    Excit.L5.RELN_xLD_glia    Excit.L5.RELN_xVasc_adj 
+                        12                          5 
+       Excit.L5.RELN_xWMuf          Excit.L5.RORB_xL5 
+                         8                         16 
+         Excit.L5.RORB_xL6     Excit.L5.RORB_xLD_glia 
+                        12                         13 
+       Excit.L5.RORB_xWMuf            Excit.L6.CT_xL6 
+                         7                         15 
+             Excit.L6b_xL6            Excit.L6b_xWMuf 
+                        14                          8 
+      Inhib.Chandelier_xL5  Inhib.Chandelier_xLD_glia 
+                        14                          6 
+     Inhib.HTR3A_xL1_inhib            Inhib.HTR3A_xL2 
+                        13                          6 
+      Inhib.LAMP5_LHX6_xGL Inhib.LAMP5_LHX6_xL1_inhib 
+                        13                         14 
+      Inhib.LAMP5_LHX6_xL2       Inhib.LAMP5_LHX6_xL5 
+                        14                         16 
+      Inhib.LAMP5_LHX6_xL6  Inhib.LAMP5_LHX6_xLD_glia 
+                         8                         15 
+    Inhib.LAMP5_LHX6_xWMuf      Inhib.PVALB_xL1_inhib 
+                        12                          7 
+           Inhib.PVALB_xL2            Inhib.PVALB_xL5 
+                        13                         16 
+           Inhib.PVALB_xL6       Inhib.PVALB_xLD_glia 
+                        13                         16 
+         Inhib.PVALB_xWMuf              Inhib.SST_xL2 
+                        13                         13 
+             Inhib.SST_xL5              Inhib.SST_xL6 
+                        16                          5 
+        Inhib.SST_xLD_glia            Inhib.SST_xWMuf 
+                        14                         11 
+             Inhib.VIP_xGL        Inhib.VIP_xL1_inhib 
+                        14                         16 
+             Inhib.VIP_xL2              Inhib.VIP_xL5 
+                        16                         16 
+             Inhib.VIP_xL6         Inhib.VIP_xLD_glia 
+                         7                         14 
+       Inhib.VIP_xVasc_adj            Inhib.VIP_xWMuf 
+                        11                         14 
+            Macro_xVasc_im          Macro_xVasc_mural 
+                        14                          8 
+               Micro.2_xGL          Micro.2_xL1_inhib 
+                        15                         15 
+               Micro.2_xL2                Micro.2_xL5 
+                        14                         16 
+               Micro.2_xL6           Micro.2_xLD_glia 
+                        14                         16 
+         Micro.2_xVasc_adj           Micro.2_xVasc_im 
+                        16                         13 
+              Micro.2_xWMd              Micro.2_xWMuf 
+                        16                         16 
+               Micro.3_xGL               Micro.3_xWMd 
+                         7                          7 
+               Micro.5_xGL          Micro.5_xL1_inhib 
+                        16                         16 
+               Micro.5_xL2                Micro.5_xL5 
+                        16                         16 
+               Micro.5_xL6           Micro.5_xLD_glia 
+                        15                         16 
+         Micro.5_xVasc_adj           Micro.5_xVasc_im 
+                        16                         13 
+              Micro.5_xWMd              Micro.5_xWMuf 
+                        15                         16 
+               Oligo.1_xGL                Oligo.1_xL5 
+                        16                         15 
+               Oligo.1_xL6           Oligo.1_xLD_glia 
+                        13                         14 
+         Oligo.1_xVasc_adj               Oligo.1_xWMd 
+                         9                         16 
+             Oligo.1_xWMuf                Oligo.2_xGL 
+                        16                         16 
+               Oligo.2_xL5                Oligo.2_xL6 
+                         6                          7 
+          Oligo.2_xLD_glia          Oligo.2_xVasc_adj 
+                        10                          5 
+              Oligo.2_xWMd              Oligo.2_xWMuf 
+                        16                         14 
+               Oligo.3_xGL          Oligo.3_xL1_inhib 
+                        16                         16 
+               Oligo.3_xL2                Oligo.3_xL5 
+                        16                         16 
+               Oligo.3_xL6           Oligo.3_xLD_glia 
+                        16                         16 
+         Oligo.3_xVasc_adj           Oligo.3_xVasc_im 
+                        16                         14 
+       Oligo.3_xVasc_mural               Oligo.3_xWMd 
+                        11                         16 
+             Oligo.3_xWMuf                Oligo.4_xGL 
+                        16                         16 
+         Oligo.4_xL1_inhib                Oligo.4_xL2 
+                        15                          8 
+               Oligo.4_xL5                Oligo.4_xL6 
+                        16                         15 
+          Oligo.4_xLD_glia          Oligo.4_xVasc_adj 
+                        16                         16 
+          Oligo.4_xVasc_im        Oligo.4_xVasc_mural 
+                        11                          4 
+              Oligo.4_xWMd              Oligo.4_xWMuf 
+                        16                         16 
+               Oligo.5_xL5                Oligo.5_xL6 
+                         8                          6 
+          Oligo.5_xLD_glia               Oligo.5_xWMd 
+                         8                         12 
+             Oligo.5_xWMuf                  OPC.2_xGL 
+                        11                         14 
+           OPC.2_xL1_inhib                  OPC.2_xL2 
+                        16                         14 
+                 OPC.2_xL5                  OPC.2_xL6 
+                        16                         14 
+            OPC.2_xLD_glia            OPC.2_xVasc_adj 
+                        16                         16 
+                OPC.2_xWMd                OPC.2_xWMuf 
+                        13                         15 
+                 OPC.4_xGL            OPC.4_xL1_inhib 
+                         9                          9 
+                 OPC.4_xL5                  OPC.4_xL6 
+                         5                          5 
+            OPC.4_xLD_glia                 OPC.4_xWMd 
+                        12                         13 
+               OPC.4_xWMuf                  OPC.5_xGL 
+                        10                         13 
+           OPC.5_xL1_inhib                  OPC.5_xL2 
+                        16                         16 
+                 OPC.5_xL5                  OPC.5_xL6 
+                        16                         15 
+            OPC.5_xLD_glia            OPC.5_xVasc_adj 
+                        16                         14 
+                OPC.5_xWMd                OPC.5_xWMuf 
+                        11                         16 
+             Vasc.Endo_xGL        Vasc.Endo_xL1_inhib 
+                        16                         16 
+             Vasc.Endo_xL2              Vasc.Endo_xL5 
+                        16                         16 
+             Vasc.Endo_xL6         Vasc.Endo_xLD_glia 
+                        15                         16 
+       Vasc.Endo_xVasc_adj         Vasc.Endo_xVasc_im 
+                        16                         15 
+     Vasc.Endo_xVasc_mural             Vasc.Endo_xWMd 
+                        16                         16 
+           Vasc.Endo_xWMuf                Vasc.PC_xGL 
+                        16                         15 
+         Vasc.PC_xL1_inhib                Vasc.PC_xL2 
+                        16                         14 
+               Vasc.PC_xL5                Vasc.PC_xL6 
+                        16                         15 
+          Vasc.PC_xLD_glia          Vasc.PC_xVasc_adj 
+                        16                         16 
+          Vasc.PC_xVasc_im        Vasc.PC_xVasc_mural 
+                        15                         16 
+              Vasc.PC_xWMd              Vasc.PC_xWMuf 
+                        14                         16 
+       Vasc.VLMC_xVasc_adj         Vasc.VLMC_xVasc_im 
+                        11                         15 
+     Vasc.VLMC_xVasc_mural 
+                        15 
 
   E2   E4 
-1261 1277 
-2026-06-24 09:26:14.1536 - Loop voomlmFit by cluster
-2026-06-24 09:26:14.341112 - voomLmFit - cluster: Astro.1_Inhib, block= 'chip', ncol: 16, ngene: 250
-First sample weights (min/max) 0.501642/1.398478
-First intra-block correlation  0.04535008
-Final sample weights (min/max) 0.496906/1.390229
-Final intra-block correlation  0.04496197
+1395 1416 
+2026-09-08 11:27:57.2751 - Loop voomlmFit by cluster
+2026-09-08 11:27:57.523375 - voomLmFit - cluster: Astro.1_xGL, block= 'chip', ncol: 16, ngene: 169
+First sample weights (min/max) 0.6080987/1.6559615
+First intra-block correlation  0.04856436
+Final sample weights (min/max) 0.6173415/1.6610629
+Final intra-block correlation  0.0488547
 Done - Save data
-2026-06-24 09:26:14.976685 - voomLmFit - cluster: Astro.1_L1a, block= 'chip', ncol: 12, ngene: 139
-First sample weights (min/max) 0.5969463/1.4445999
-First intra-block correlation  0.1017843
-Final sample weights (min/max) 0.586163/1.459338
-Final intra-block correlation  0.1001402
+2026-09-08 11:27:58.15587 - voomLmFit - cluster: Astro.1_xL1_inhib, block= 'chip', ncol: 16, ngene: 243
+First sample weights (min/max) 0.5268185/1.4443594
+First intra-block correlation  0.02366615
+Final sample weights (min/max) 0.5268445/1.4554151
+Final intra-block correlation  0.02415745
 Done - Save data
-2026-06-24 09:26:15.391192 - voomLmFit - cluster: Astro.1_L1b, block= 'chip', ncol: 16, ngene: 265
-First sample weights (min/max) 0.5300735/1.7167948
-First intra-block correlation  0.04163205
-Final sample weights (min/max) 0.5287153/1.7129342
-Final intra-block correlation  0.04168417
+2026-09-08 11:27:58.904958 - voomLmFit - cluster: Astro.1_xL2, block= 'chip', ncol: 16, ngene: 255
+First sample weights (min/max) 0.6495366/1.7826280
+First intra-block correlation  0.05956103
+Final sample weights (min/max) 0.6448244/1.8076331
+Final intra-block correlation  0.05950569
 Done - Save data
-2026-06-24 09:26:16.062396 - voomLmFit - cluster: Astro.1_L2.3, block= 'chip', ncol: 16, ngene: 234
-First sample weights (min/max) 0.5785324/1.7285076
-First intra-block correlation  0.04223274
-Final sample weights (min/max) 0.5741562/1.7505983
-Final intra-block correlation  0.04177801
+2026-09-08 11:27:59.698202 - voomLmFit - cluster: Astro.1_xL5, block= 'chip', ncol: 16, ngene: 218
+First sample weights (min/max) 0.437255/1.399776
+First intra-block correlation  0.04686695
+Final sample weights (min/max) 0.4232706/1.4241370
+Final intra-block correlation  0.04631027
 Done - Save data
-2026-06-24 09:26:16.672286 - voomLmFit - cluster: Astro.1_L5, block= 'chip', ncol: 16, ngene: 270
-First sample weights (min/max) 0.4367122/1.6433669
-First intra-block correlation  0.020574
-Final sample weights (min/max) 0.4330624/1.6435857
-Final intra-block correlation  0.0204175
+2026-09-08 11:28:00.424052 - voomLmFit - cluster: Astro.1_xL6, block= 'chip', ncol: 13, ngene: 157
+First sample weights (min/max) 0.5237917/1.7747592
+First intra-block correlation  0.08641606
+Final sample weights (min/max) 0.5161535/1.7650637
+Final intra-block correlation  0.08747085
 Done - Save data
-2026-06-24 09:26:17.325014 - voomLmFit - cluster: Astro.1_L6, block= 'chip', ncol: 14, ngene: 167
-First sample weights (min/max) 0.4292397/1.6095273
-First intra-block correlation  0.01714346
-Final sample weights (min/max) 0.422138/1.603050
-Final intra-block correlation  0.01713155
+2026-09-08 11:28:01.02095 - voomLmFit - cluster: Astro.1_xLD_glia, block= 'chip', ncol: 16, ngene: 297
+First sample weights (min/max) 0.5828411/1.7994049
+First intra-block correlation  0.04177161
+Final sample weights (min/max) 0.5844536/1.7931288
+Final intra-block correlation  0.04126588
 Done - Save data
-2026-06-24 09:26:17.815042 - voomLmFit - cluster: Astro.1_Vasc, block= 'chip', ncol: 5, ngene: 120
+2026-09-08 11:28:01.878472 - voomLmFit - cluster: Astro.1_xVasc_adj, block= 'chip', ncol: 11, ngene: 175
+First sample weights (min/max) 0.591130/1.592229
+First intra-block correlation  0.05851148
+Final sample weights (min/max) 0.5986822/1.5834890
+Final intra-block correlation  0.05944866
+Done - Save data
+2026-09-08 11:28:02.497515 - voomLmFit - cluster: Astro.1_xWMd, block= 'chip', ncol: 8, ngene: 107
+First sample weights (min/max) 0.7067832/1.5816571
+First intra-block correlation  -0.03653698
+Final sample weights (min/max) 0.7092546/1.5895635
+Final intra-block correlation  -0.03889679
+Done - Save data
+2026-09-08 11:28:02.99036 - voomLmFit - cluster: Astro.1_xWMuf, block= 'chip', ncol: 15, ngene: 188
+First sample weights (min/max) 0.6669697/1.7188953
+First intra-block correlation  -0.01590426
+Final sample weights (min/max) 0.6685635/1.7082706
+Final intra-block correlation  -0.01593591
+Done - Save data
+2026-09-08 11:28:03.655958 - voomLmFit - cluster: Astro.2_xGL, block= 'chip', ncol: 16, ngene: 237
+First sample weights (min/max) 0.5630276/1.7144955
+First intra-block correlation  0.01860719
+Final sample weights (min/max) 0.5662457/1.6849195
+Final intra-block correlation  0.01886231
+Done - Save data
+2026-09-08 11:28:04.376104 - voomLmFit - cluster: Astro.2_xL1_inhib, block= 'chip', ncol: 16, ngene: 238
+First sample weights (min/max) 0.5757638/1.7262658
+First intra-block correlation  0.02890112
+Final sample weights (min/max) 0.5777257/1.7135659
+Final intra-block correlation  0.02881748
+Done - Save data
+2026-09-08 11:28:05.142905 - voomLmFit - cluster: Astro.2_xL2, block= 'chip', ncol: 16, ngene: 215
+First sample weights (min/max) 0.6388869/1.4425739
+First intra-block correlation  0.05556956
+Final sample weights (min/max) 0.6356603/1.4441343
+Final intra-block correlation  0.05537675
+Done - Save data
+2026-09-08 11:28:05.824306 - voomLmFit - cluster: Astro.2_xL5, block= 'chip', ncol: 16, ngene: 213
+First sample weights (min/max) 0.4883489/1.6928572
+First intra-block correlation  0.0120462
+Final sample weights (min/max) 0.478861/1.708013
+Final intra-block correlation  0.01234938
+Done - Save data
+2026-09-08 11:28:06.512355 - voomLmFit - cluster: Astro.2_xL6, block= 'chip', ncol: 15, ngene: 219
+First sample weights (min/max) 0.6951327/1.6804106
+First intra-block correlation  0.04801683
+Final sample weights (min/max) 0.6891923/1.6594724
+Final intra-block correlation  0.04770288
+Done - Save data
+2026-09-08 11:28:07.206803 - voomLmFit - cluster: Astro.2_xLD_glia, block= 'chip', ncol: 16, ngene: 301
+First sample weights (min/max) 0.4930174/1.7612494
+First intra-block correlation  0.01332062
+Final sample weights (min/max) 0.4949368/1.7621367
+Final intra-block correlation  0.01384411
+Done - Save data
+2026-09-08 11:28:08.060629 - voomLmFit - cluster: Astro.2_xVasc_adj, block= 'chip', ncol: 15, ngene: 167
+First sample weights (min/max) 0.4964808/1.6663324
+First intra-block correlation  -0.03030877
+Final sample weights (min/max) 0.5031735/1.6542862
+Final intra-block correlation  -0.03044279
+Done - Save data
+2026-09-08 11:28:08.660912 - voomLmFit - cluster: Astro.2_xWMd, block= 'chip', ncol: 15, ngene: 137
+First sample weights (min/max) 0.6899584/1.5118772
+First intra-block correlation  -0.02107345
+Final sample weights (min/max) 0.6906539/1.5105588
+Final intra-block correlation  -0.01935891
+Done - Save data
+2026-09-08 11:28:09.201354 - voomLmFit - cluster: Astro.2_xWMuf, block= 'chip', ncol: 16, ngene: 240
+First sample weights (min/max) 0.4450902/2.0639324
+First intra-block correlation  -0.002962517
+Final sample weights (min/max) 0.4580844/2.0240271
+Final intra-block correlation  -0.002544248
+Done - Save data
+2026-09-08 11:28:09.945424 - voomLmFit - cluster: Astro.3_xL6, block= 'chip', ncol: 6, ngene: 121
+First sample weights (min/max) 0.948073/1.071854
+Final sample weights (min/max) 0.9479049/1.0714930
+Done - Save data
+2026-09-08 11:28:10.181907 - voomLmFit - cluster: Astro.3_xWMd, block= 'chip', ncol: 4, ngene: 110
+2026-09-08 11:28:10.374795 - voomLmFit - cluster: Astro.3_xWMuf, block= 'chip', ncol: 8, ngene: 115
+First sample weights (min/max) 0.877155/1.123976
+First intra-block correlation  0.4399432
+Final sample weights (min/max) 0.8748562/1.1104310
+Final intra-block correlation  0.4181703
+Done - Save data
+2026-09-08 11:28:10.894148 - voomLmFit - cluster: Astro.4_xGL, block= 'chip', ncol: 16, ngene: 249
+First sample weights (min/max) 0.1516342/1.8633198
+First intra-block correlation  -0.03418533
+Final sample weights (min/max) 0.1406085/1.8243790
+Final intra-block correlation  -0.03366691
+Done - Save data
+2026-09-08 11:28:11.685593 - voomLmFit - cluster: Astro.4_xVasc_adj, block= 'chip', ncol: 6, ngene: 100
+First sample weights (min/max) 0.8323336/1.2411155
+Final sample weights (min/max) 0.8320052/1.2386462
+Done - Save data
+2026-09-08 11:28:11.914328 - voomLmFit - cluster: Astro.4_xVasc_im, block= 'chip', ncol: 13, ngene: 119
+First sample weights (min/max) 0.7362942/1.3374061
+First intra-block correlation  -0.06406937
+Final sample weights (min/max) 0.7398088/1.3331492
+Final intra-block correlation  -0.06525456
+Done - Save data
+2026-09-08 11:28:12.424013 - voomLmFit - cluster: Astro.4_xVasc_mural, block= 'chip', ncol: 6, ngene: 111
+First sample weights (min/max) 0.8345708/1.0794144
+Final sample weights (min/max) 0.8320456/1.0794666
+Done - Save data
+2026-09-08 11:28:12.667546 - voomLmFit - cluster: Astro.4_xWMd, block= 'chip', ncol: 15, ngene: 236
+First sample weights (min/max) 0.6196879/1.4154513
+First intra-block correlation  0.03444373
+Final sample weights (min/max) 0.6243492/1.4235535
+Final intra-block correlation  0.03421883
+Done - Save data
+2026-09-08 11:28:13.417213 - voomLmFit - cluster: Astro.4_xWMuf, block= 'chip', ncol: 7, ngene: 143
+First sample weights (min/max) 0.7733526/1.1842317
+First intra-block correlation  0.6659234
+Final sample weights (min/max) 0.7753947/1.1894563
+Final intra-block correlation  0.6793789
+Done - Save data
+2026-09-08 11:28:14.031042 - voomLmFit - cluster: Astro.5_xGL, block= 'chip', ncol: 16, ngene: 306
+First sample weights (min/max) 0.5928791/1.9044278
+First intra-block correlation  0.02926551
+Final sample weights (min/max) 0.600515/1.924540
+Final intra-block correlation  0.02939287
+Done - Save data
+2026-09-08 11:28:15.501992 - voomLmFit - cluster: Astro.5_xL1_inhib, block= 'chip', ncol: 16, ngene: 235
+First sample weights (min/max) 0.6903305/1.5643253
+First intra-block correlation  -0.005805355
+Final sample weights (min/max) 0.6926152/1.5615729
+Final intra-block correlation  -0.006025256
+Done - Save data
+2026-09-08 11:28:16.279737 - voomLmFit - cluster: Astro.5_xL2, block= 'chip', ncol: 16, ngene: 199
+First sample weights (min/max) 0.6357644/1.6085525
+First intra-block correlation  0.06808557
+Final sample weights (min/max) 0.6356869/1.5953535
+Final intra-block correlation  0.06894239
+Done - Save data
+2026-09-08 11:28:16.912036 - voomLmFit - cluster: Astro.5_xL5, block= 'chip', ncol: 16, ngene: 270
+First sample weights (min/max) 0.4942542/1.5407270
+First intra-block correlation  -0.01409511
+Final sample weights (min/max) 0.499603/1.533802
+Final intra-block correlation  -0.0139658
+Done - Save data
+2026-09-08 11:28:17.722076 - voomLmFit - cluster: Astro.5_xL6, block= 'chip', ncol: 15, ngene: 247
+First sample weights (min/max) 0.6277162/1.8060430
+First intra-block correlation  0.05642422
+Final sample weights (min/max) 0.6254436/1.7980729
+Final intra-block correlation  0.05714584
+Done - Save data
+2026-09-08 11:28:18.521602 - voomLmFit - cluster: Astro.5_xLD_glia, block= 'chip', ncol: 16, ngene: 327
+First sample weights (min/max) 0.4736101/1.5875721
+First intra-block correlation  -0.01787786
+Final sample weights (min/max) 0.4785728/1.5891081
+Final intra-block correlation  -0.01784445
+Done - Save data
+2026-09-08 11:28:19.443884 - voomLmFit - cluster: Astro.5_xVasc_adj, block= 'chip', ncol: 16, ngene: 203
+First sample weights (min/max) 0.433923/1.781793
+First intra-block correlation  -0.02750321
+Final sample weights (min/max) 0.4417179/1.7560617
+Final intra-block correlation  -0.02736712
+Done - Save data
+2026-09-08 11:28:20.118342 - voomLmFit - cluster: Astro.5_xVasc_im, block= 'chip', ncol: 14, ngene: 124
+First sample weights (min/max) 0.686797/1.433201
+First intra-block correlation  0.1107626
+Final sample weights (min/max) 0.6925625/1.4077804
+Final intra-block correlation  0.1060993
+Done - Save data
+2026-09-08 11:28:20.632331 - voomLmFit - cluster: Astro.5_xVasc_mural, block= 'chip', ncol: 13, ngene: 104
+First sample weights (min/max) 0.5892144/1.4916049
+First intra-block correlation  -0.09677367
+Final sample weights (min/max) 0.5910671/1.4768575
+Final intra-block correlation  -0.09363984
+Done - Save data
+2026-09-08 11:28:21.107429 - voomLmFit - cluster: Astro.5_xWMd, block= 'chip', ncol: 16, ngene: 186
+First sample weights (min/max) 0.7285199/1.8281837
+First intra-block correlation  0.02993089
+Final sample weights (min/max) 0.7293864/1.8269127
+Final intra-block correlation  0.02989832
+Done - Save data
+2026-09-08 11:28:21.70258 - voomLmFit - cluster: Astro.5_xWMuf, block= 'chip', ncol: 16, ngene: 279
+First sample weights (min/max) 0.3348422/2.1113180
+First intra-block correlation  -0.03041774
+Final sample weights (min/max) 0.3429759/2.0587421
+Final intra-block correlation  -0.03040254
+Done - Save data
+2026-09-08 11:28:22.517251 - voomLmFit - cluster: Excit.L2_5.mix_xL2, block= 'chip', ncol: 16, ngene: 200
+First sample weights (min/max) 0.1786239/1.8667440
+First intra-block correlation  0.001667498
+Final sample weights (min/max) 0.1729337/1.8253088
+Final intra-block correlation  0.002122493
+Done - Save data
+2026-09-08 11:28:23.163002 - voomLmFit - cluster: Excit.L2_5.mix_xL5, block= 'chip', ncol: 16, ngene: 256
+First sample weights (min/max) 0.3386667/2.0329947
+First intra-block correlation  0.02302083
+Final sample weights (min/max) 0.3293064/2.0142242
+Final intra-block correlation  0.02377468
+Done - Save data
+2026-09-08 11:28:23.928504 - voomLmFit - cluster: Excit.L2_5.mix_xL6, block= 'chip', ncol: 14, ngene: 195
+First sample weights (min/max) 0.3481139/1.7188883
+First intra-block correlation  0.002760631
+Final sample weights (min/max) 0.3654296/1.7271139
+Final intra-block correlation  0.002897612
+Done - Save data
+2026-09-08 11:28:24.599242 - voomLmFit - cluster: Excit.L2_5.mix_xLD_glia, block= 'chip', ncol: 16, ngene: 217
+First sample weights (min/max) 0.3337979/1.6389742
+First intra-block correlation  0.002279749
+Final sample weights (min/max) 0.3323516/1.6406251
+Final intra-block correlation  0.002569186
+Done - Save data
+2026-09-08 11:28:25.26957 - voomLmFit - cluster: Excit.L2_5.mix_xVasc_adj, block= 'chip', ncol: 10, ngene: 156
+First sample weights (min/max) 0.5108784/1.3786276
+First intra-block correlation  0.04884885
+Final sample weights (min/max) 0.4989022/1.3803805
+Final intra-block correlation  0.05284651
+Done - Save data
+2026-09-08 11:28:25.887044 - voomLmFit - cluster: Excit.L2_5.mix_xWMuf, block= 'chip', ncol: 9, ngene: 194
+First sample weights (min/max) 0.6092448/1.2695108
+First intra-block correlation  0.0602255
+Final sample weights (min/max) 0.6059442/1.2705418
+Final intra-block correlation  0.05981254
+Done - Save data
+2026-09-08 11:28:26.601926 - voomLmFit - cluster: Excit.L2_5.RELN_xL1_inhib, block= 'chip', ncol: 8, ngene: 201
+First sample weights (min/max) 0.7044249/1.3770058
+First intra-block correlation  0.1096875
+Final sample weights (min/max) 0.7067241/1.3779445
+Final intra-block correlation  0.109358
+Done - Save data
+2026-09-08 11:28:27.360112 - voomLmFit - cluster: Excit.L2_5.RELN_xL2, block= 'chip', ncol: 10, ngene: 207
+First sample weights (min/max) 0.6798244/1.3632119
+First intra-block correlation  -0.1087512
+Final sample weights (min/max) 0.6803305/1.3566625
+Final intra-block correlation  -0.1036997
+Done - Save data
+2026-09-08 11:28:28.093991 - voomLmFit - cluster: Excit.L2_5.RELN_xL5, block= 'chip', ncol: 13, ngene: 219
+First sample weights (min/max) 0.6154792/1.6070009
+First intra-block correlation  0.04298039
+Final sample weights (min/max) 0.6214659/1.6028219
+Final intra-block correlation  0.04329259
+Done - Save data
+2026-09-08 11:28:28.850882 - voomLmFit - cluster: Excit.L2_5.RELN_xLD_glia, block= 'chip', ncol: 8, ngene: 166
+First sample weights (min/max) 0.7486472/1.1969331
+First intra-block correlation  0.04888734
+Final sample weights (min/max) 0.751129/1.193229
+Final intra-block correlation  0.04709867
+Done - Save data
+2026-09-08 11:28:29.550068 - voomLmFit - cluster: Excit.L2_xL1_inhib, block= 'chip', ncol: 8, ngene: 194
+First sample weights (min/max) 0.5416498/1.9367206
+First intra-block correlation  0.01945831
+Final sample weights (min/max) 0.535474/1.931542
+Final intra-block correlation  0.02452253
+Done - Save data
+2026-09-08 11:28:30.27927 - voomLmFit - cluster: Excit.L2_xL2, block= 'chip', ncol: 16, ngene: 351
+First sample weights (min/max) 0.3610106/1.6776206
+First intra-block correlation  0.02657256
+Final sample weights (min/max) 0.3675322/1.6561815
+Final intra-block correlation  0.02660739
+Done - Save data
+2026-09-08 11:28:31.22794 - voomLmFit - cluster: Excit.L2_xL5, block= 'chip', ncol: 16, ngene: 314
+First sample weights (min/max) 0.292223/1.781240
+First intra-block correlation  0.06528977
+Final sample weights (min/max) 0.2957209/1.7789134
+Final intra-block correlation  0.06493576
+Done - Save data
+2026-09-08 11:28:32.127127 - voomLmFit - cluster: Excit.L2_xL6, block= 'chip', ncol: 6, ngene: 198
+First sample weights (min/max) 0.7483954/1.4378954
+Final sample weights (min/max) 0.7522443/1.4425438
+Done - Save data
+2026-09-08 11:28:32.397544 - voomLmFit - cluster: Excit.L2_xLD_glia, block= 'chip', ncol: 15, ngene: 255
+First sample weights (min/max) 0.3797547/1.8433397
+First intra-block correlation  0.03526484
+Final sample weights (min/max) 0.3773313/1.8424950
+Final intra-block correlation  0.03495162
+Done - Save data
+2026-09-08 11:28:33.176863 - voomLmFit - cluster: Excit.L2_xVasc_adj, block= 'chip', ncol: 11, ngene: 204
+First sample weights (min/max) 0.3750451/1.4605286
+First intra-block correlation  -0.04612883
+Final sample weights (min/max) 0.3723077/1.4572128
+Final intra-block correlation  -0.04431988
+Done - Save data
+2026-09-08 11:28:33.873365 - voomLmFit - cluster: Excit.L2_xWMuf, block= 'chip', ncol: 9, ngene: 185
+First sample weights (min/max) 0.5518341/1.8661547
+First intra-block correlation  -0.08545275
+Final sample weights (min/max) 0.5492491/1.8481564
+Final intra-block correlation  -0.08915671
+Done - Save data
+2026-09-08 11:28:34.514197 - voomLmFit - cluster: Excit.L5.RELN_xL5, block= 'chip', ncol: 13, ngene: 299
+First sample weights (min/max) 0.4500866/1.7115084
+First intra-block correlation  0.0190897
+Final sample weights (min/max) 0.4577777/1.7164925
+Final intra-block correlation  0.01847535
+Done - Save data
+2026-09-08 11:28:35.459055 - voomLmFit - cluster: Excit.L5.RELN_xLD_glia, block= 'chip', ncol: 12, ngene: 211
+First sample weights (min/max) 0.5560417/1.5248939
+First intra-block correlation  0.06326315
+Final sample weights (min/max) 0.5530532/1.5110452
+Final intra-block correlation  0.06373389
+Done - Save data
+2026-09-08 11:28:36.16472 - voomLmFit - cluster: Excit.L5.RELN_xVasc_adj, block= 'chip', ncol: 5, ngene: 179
 First sample weights (min/max) 1/1
 Final sample weights (min/max) 1/1
 Done - Save data
-2026-06-24 09:26:17.99454 - voomLmFit - cluster: Astro.1_WM, block= 'chip', ncol: 9, ngene: 125
-First sample weights (min/max) 0.6336901/1.6011635
-First intra-block correlation  -0.02587096
-Final sample weights (min/max) 0.6309576/1.6017707
-Final intra-block correlation  -0.03038701
+2026-09-08 11:28:36.414217 - voomLmFit - cluster: Excit.L5.RELN_xWMuf, block= 'chip', ncol: 8, ngene: 180
+First sample weights (min/max) 0.8003364/1.1838832
+First intra-block correlation  -0.03498676
+Final sample weights (min/max) 0.803291/1.178488
+Final intra-block correlation  -0.03414666
 Done - Save data
-2026-06-24 09:26:18.434119 - voomLmFit - cluster: Astro.1_WMtz, block= 'chip', ncol: 16, ngene: 181
-First sample weights (min/max) 0.5730105/1.9287934
-First intra-block correlation  0.002049903
-Final sample weights (min/max) 0.578380/1.930957
-Final intra-block correlation  0.002374865
+2026-09-08 11:28:37.125533 - voomLmFit - cluster: Excit.L5.RORB_xL5, block= 'chip', ncol: 16, ngene: 276
+First sample weights (min/max) 0.2677497/2.1052774
+First intra-block correlation  -0.01203506
+Final sample weights (min/max) 0.2600881/2.0693857
+Final intra-block correlation  -0.01183249
 Done - Save data
-2026-06-24 09:26:18.921917 - voomLmFit - cluster: Astro.2_Inhib, block= 'chip', ncol: 16, ngene: 228
-First sample weights (min/max) 0.5250537/1.8643977
-First intra-block correlation  0.02699606
-Final sample weights (min/max) 0.5258123/1.8565127
-Final intra-block correlation  0.02721692
+2026-09-08 11:28:37.904549 - voomLmFit - cluster: Excit.L5.RORB_xL6, block= 'chip', ncol: 12, ngene: 230
+First sample weights (min/max) 0.5051081/1.6066531
+First intra-block correlation  0.04975621
+Final sample weights (min/max) 0.5053931/1.6171649
+Final intra-block correlation  0.04503376
 Done - Save data
-2026-06-24 09:26:19.481588 - voomLmFit - cluster: Astro.2_L1a, block= 'chip', ncol: 16, ngene: 212
-First sample weights (min/max) 0.6438487/1.8026967
-First intra-block correlation  0.03309777
-Final sample weights (min/max) 0.6454941/1.7673824
-Final intra-block correlation  0.03389223
+2026-09-08 11:28:38.623053 - voomLmFit - cluster: Excit.L5.RORB_xLD_glia, block= 'chip', ncol: 13, ngene: 169
+First sample weights (min/max) 0.3728565/1.7475070
+First intra-block correlation  0.03111212
+Final sample weights (min/max) 0.3674885/1.7756017
+Final intra-block correlation  0.03081689
 Done - Save data
-2026-06-24 09:26:20.027558 - voomLmFit - cluster: Astro.2_L1b, block= 'chip', ncol: 16, ngene: 286
-First sample weights (min/max) 0.5007821/1.7328687
-First intra-block correlation  0.0256763
-Final sample weights (min/max) 0.5019841/1.7308849
-Final intra-block correlation  0.0259981
+2026-09-08 11:28:39.876754 - voomLmFit - cluster: Excit.L5.RORB_xWMuf, block= 'chip', ncol: 7, ngene: 175
+First sample weights (min/max) 0.8307833/1.2756774
+First intra-block correlation  0.2597257
+Final sample weights (min/max) 0.8326297/1.2737555
+Final intra-block correlation  0.262149
 Done - Save data
-2026-06-24 09:26:20.684287 - voomLmFit - cluster: Astro.2_L2.3, block= 'chip', ncol: 16, ngene: 196
-First sample weights (min/max) 0.6669432/1.4361065
-First intra-block correlation  0.06114522
-Final sample weights (min/max) 0.6635311/1.4587302
-Final intra-block correlation  0.0615186
+2026-09-08 11:28:40.47113 - voomLmFit - cluster: Excit.L6.CT_xL6, block= 'chip', ncol: 15, ngene: 235
+First sample weights (min/max) 0.5464937/1.9787180
+First intra-block correlation  0.1278199
+Final sample weights (min/max) 0.544054/1.983711
+Final intra-block correlation  0.1278649
 Done - Save data
-2026-06-24 09:26:21.190185 - voomLmFit - cluster: Astro.2_L5, block= 'chip', ncol: 16, ngene: 280
-First sample weights (min/max) 0.4854123/1.6479822
-First intra-block correlation  0.004135616
-Final sample weights (min/max) 0.4852456/1.6545918
-Final intra-block correlation  0.004404911
+2026-09-08 11:28:41.177524 - voomLmFit - cluster: Excit.L6b_xL6, block= 'chip', ncol: 14, ngene: 242
+First sample weights (min/max) 0.3914499/1.5856149
+First intra-block correlation  0.01382653
+Final sample weights (min/max) 0.3735944/1.5972704
+Final intra-block correlation  0.01523511
 Done - Save data
-2026-06-24 09:26:21.838017 - voomLmFit - cluster: Astro.2_L6, block= 'chip', ncol: 16, ngene: 234
-First sample weights (min/max) 0.5959012/1.6924975
-First intra-block correlation  0.03532252
-Final sample weights (min/max) 0.6039952/1.6783824
-Final intra-block correlation  0.03599593
+2026-09-08 11:28:41.938116 - voomLmFit - cluster: Excit.L6b_xWMuf, block= 'chip', ncol: 8, ngene: 155
+First sample weights (min/max) 0.6141209/2.0549593
+First intra-block correlation  0.1067362
+Final sample weights (min/max) 0.6153512/2.0651740
+Final intra-block correlation  0.102689
 Done - Save data
-2026-06-24 09:26:22.455806 - voomLmFit - cluster: Astro.2_Vasc, block= 'chip', ncol: 12, ngene: 129
-First sample weights (min/max) 0.4866715/1.6391059
-First intra-block correlation  -0.007050405
-Final sample weights (min/max) 0.4885762/1.6332757
-Final intra-block correlation  -0.008516632
+2026-09-08 11:28:42.583335 - voomLmFit - cluster: Inhib.Chandelier_xL5, block= 'chip', ncol: 14, ngene: 178
+First sample weights (min/max) 0.6288644/1.6079859
+First intra-block correlation  0.01351979
+Final sample weights (min/max) 0.6299176/1.6032243
+Final intra-block correlation  0.01519201
 Done - Save data
-2026-06-24 09:26:22.872174 - voomLmFit - cluster: Astro.2_WM, block= 'chip', ncol: 15, ngene: 157
-First sample weights (min/max) 0.671687/1.589416
-First intra-block correlation  -9.091592e-05
-Final sample weights (min/max) 0.6725934/1.5966356
-Final intra-block correlation  4.485454e-05
+2026-09-08 11:28:43.235749 - voomLmFit - cluster: Inhib.Chandelier_xLD_glia, block= 'chip', ncol: 6, ngene: 132
+First sample weights (min/max) 0.9333544/1.0491242
+Final sample weights (min/max) 0.9327516/1.0500881
 Done - Save data
-2026-06-24 09:26:23.92446 - voomLmFit - cluster: Astro.2_WMtz, block= 'chip', ncol: 16, ngene: 256
-First sample weights (min/max) 0.493926/1.646404
-First intra-block correlation  -0.004287849
-Final sample weights (min/max) 0.5027235/1.6157824
-Final intra-block correlation  -0.00284801
+2026-09-08 11:28:43.486532 - voomLmFit - cluster: Inhib.HTR3A_xL1_inhib, block= 'chip', ncol: 13, ngene: 183
+First sample weights (min/max) 0.717307/1.348490
+First intra-block correlation  0.05374101
+Final sample weights (min/max) 0.7190969/1.3533872
+Final intra-block correlation  0.05322504
 Done - Save data
-2026-06-24 09:26:24.560411 - voomLmFit - cluster: Astro.3_L6, block= 'chip', ncol: 5, ngene: 126
+2026-09-08 11:28:44.090872 - voomLmFit - cluster: Inhib.HTR3A_xL2, block= 'chip', ncol: 6, ngene: 149
+First sample weights (min/max) 0.8407766/1.1805442
+Final sample weights (min/max) 0.8406923/1.1802284
+Done - Save data
+2026-09-08 11:28:44.370245 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xGL, block= 'chip', ncol: 13, ngene: 154
+First sample weights (min/max) 0.7545129/1.2861868
+First intra-block correlation  -0.00249337
+Final sample weights (min/max) 0.7474641/1.2924071
+Final intra-block correlation  -0.002636661
+Done - Save data
+2026-09-08 11:28:44.92676 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xL1_inhib, block= 'chip', ncol: 14, ngene: 201
+First sample weights (min/max) 0.7031068/1.3643207
+First intra-block correlation  0.006749179
+Final sample weights (min/max) 0.7035398/1.3717634
+Final intra-block correlation  0.007116187
+Done - Save data
+2026-09-08 11:28:45.608426 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xL2, block= 'chip', ncol: 14, ngene: 196
+First sample weights (min/max) 0.7582242/1.3159590
+First intra-block correlation  0.01183564
+Final sample weights (min/max) 0.7585523/1.3221902
+Final intra-block correlation  0.01174488
+Done - Save data
+2026-09-08 11:28:46.267627 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xL5, block= 'chip', ncol: 16, ngene: 204
+First sample weights (min/max) 0.5142323/1.6181160
+First intra-block correlation  0.06718306
+Final sample weights (min/max) 0.5073852/1.6073867
+Final intra-block correlation  0.06666325
+Done - Save data
+2026-09-08 11:28:46.915004 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xL6, block= 'chip', ncol: 8, ngene: 152
+First sample weights (min/max) 0.7006107/1.2146912
+First intra-block correlation  -0.04782803
+Final sample weights (min/max) 0.7034919/1.2201504
+Final intra-block correlation  -0.04706329
+Done - Save data
+2026-09-08 11:28:47.566429 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xLD_glia, block= 'chip', ncol: 15, ngene: 183
+First sample weights (min/max) 0.7802202/1.2861536
+First intra-block correlation  -0.01967162
+Final sample weights (min/max) 0.7755422/1.2898330
+Final intra-block correlation  -0.02006891
+Done - Save data
+2026-09-08 11:28:48.186305 - voomLmFit - cluster: Inhib.LAMP5_LHX6_xWMuf, block= 'chip', ncol: 12, ngene: 169
+First sample weights (min/max) 0.7064734/1.7099680
+First intra-block correlation  -0.09014397
+Final sample weights (min/max) 0.6966434/1.7126070
+Final intra-block correlation  -0.09210936
+Done - Save data
+2026-09-08 11:28:48.814774 - voomLmFit - cluster: Inhib.PVALB_xL1_inhib, block= 'chip', ncol: 7, ngene: 159
+First sample weights (min/max) 0.712936/1.561972
+First intra-block correlation  0.3588475
+Final sample weights (min/max) 0.7084077/1.5540942
+Final intra-block correlation  0.3497368
+Done - Save data
+2026-09-08 11:28:49.460205 - voomLmFit - cluster: Inhib.PVALB_xL2, block= 'chip', ncol: 13, ngene: 188
+First sample weights (min/max) 0.6542314/1.3021153
+First intra-block correlation  -0.01406104
+Final sample weights (min/max) 0.6545151/1.3012020
+Final intra-block correlation  -0.01304679
+Done - Save data
+2026-09-08 11:28:50.111486 - voomLmFit - cluster: Inhib.PVALB_xL5, block= 'chip', ncol: 16, ngene: 268
+First sample weights (min/max) 0.5311676/2.2159172
+First intra-block correlation  -0.026753
+Final sample weights (min/max) 0.525684/2.199981
+Final intra-block correlation  -0.0263794
+Done - Save data
+2026-09-08 11:28:50.893699 - voomLmFit - cluster: Inhib.PVALB_xL6, block= 'chip', ncol: 13, ngene: 180
+First sample weights (min/max) 0.6997569/1.5954112
+First intra-block correlation  0.0485859
+Final sample weights (min/max) 0.6986833/1.5881032
+Final intra-block correlation  0.04861559
+Done - Save data
+2026-09-08 11:28:51.528825 - voomLmFit - cluster: Inhib.PVALB_xLD_glia, block= 'chip', ncol: 16, ngene: 200
+First sample weights (min/max) 0.680788/1.480633
+First intra-block correlation  -0.01017874
+Final sample weights (min/max) 0.6788974/1.4729016
+Final intra-block correlation  -0.009912796
+Done - Save data
+2026-09-08 11:28:52.153566 - voomLmFit - cluster: Inhib.PVALB_xWMuf, block= 'chip', ncol: 13, ngene: 185
+First sample weights (min/max) 0.5337435/1.2430854
+First intra-block correlation  -0.03040507
+Final sample weights (min/max) 0.5336963/1.2530832
+Final intra-block correlation  -0.03083722
+Done - Save data
+2026-09-08 11:28:52.801469 - voomLmFit - cluster: Inhib.SST_xL2, block= 'chip', ncol: 13, ngene: 161
+First sample weights (min/max) 0.662955/1.500613
+First intra-block correlation  -0.0594652
+Final sample weights (min/max) 0.6651198/1.5071161
+Final intra-block correlation  -0.05962705
+Done - Save data
+2026-09-08 11:28:53.390548 - voomLmFit - cluster: Inhib.SST_xL5, block= 'chip', ncol: 16, ngene: 224
+First sample weights (min/max) 0.4733016/1.4671181
+First intra-block correlation  0.02141324
+Final sample weights (min/max) 0.4721769/1.4615451
+Final intra-block correlation  0.0214343
+Done - Save data
+2026-09-08 11:28:54.06559 - voomLmFit - cluster: Inhib.SST_xL6, block= 'chip', ncol: 5, ngene: 142
 First sample weights (min/max) 1/1
 Final sample weights (min/max) 1/1
 Done - Save data
-2026-06-24 09:26:24.728114 - voomLmFit - cluster: Astro.3_WM, block= 'chip', ncol: 5, ngene: 104
+2026-09-08 11:28:54.288591 - voomLmFit - cluster: Inhib.SST_xLD_glia, block= 'chip', ncol: 14, ngene: 157
+First sample weights (min/max) 0.6358029/1.4872351
+First intra-block correlation  -0.04675952
+Final sample weights (min/max) 0.6360411/1.5004252
+Final intra-block correlation  -0.04764963
+Done - Save data
+2026-09-08 11:28:54.868577 - voomLmFit - cluster: Inhib.SST_xWMuf, block= 'chip', ncol: 11, ngene: 155
+First sample weights (min/max) 0.5779222/1.3975728
+First intra-block correlation  0.0489005
+Final sample weights (min/max) 0.5787632/1.4005182
+Final intra-block correlation  0.04869025
+Done - Save data
+2026-09-08 11:28:55.444216 - voomLmFit - cluster: Inhib.VIP_xGL, block= 'chip', ncol: 14, ngene: 170
+First sample weights (min/max) 0.7427939/1.4432371
+First intra-block correlation  -0.01160724
+Final sample weights (min/max) 0.7477549/1.4386310
+Final intra-block correlation  -0.01132232
+Done - Save data
+2026-09-08 11:28:56.042562 - voomLmFit - cluster: Inhib.VIP_xL1_inhib, block= 'chip', ncol: 16, ngene: 290
+First sample weights (min/max) 0.6800074/1.4129482
+First intra-block correlation  -0.005508931
+Final sample weights (min/max) 0.6813729/1.4093093
+Final intra-block correlation  -0.005461396
+Done - Save data
+2026-09-08 11:28:56.88704 - voomLmFit - cluster: Inhib.VIP_xL2, block= 'chip', ncol: 16, ngene: 285
+First sample weights (min/max) 0.689623/1.413886
+First intra-block correlation  0.009290256
+Final sample weights (min/max) 0.6914387/1.4107399
+Final intra-block correlation  0.009212474
+Done - Save data
+2026-09-08 11:28:57.705555 - voomLmFit - cluster: Inhib.VIP_xL5, block= 'chip', ncol: 16, ngene: 249
+First sample weights (min/max) 0.6657814/1.4003613
+First intra-block correlation  -0.01654394
+Final sample weights (min/max) 0.6690804/1.3998506
+Final intra-block correlation  -0.01634194
+Done - Save data
+2026-09-08 11:28:58.446523 - voomLmFit - cluster: Inhib.VIP_xL6, block= 'chip', ncol: 7, ngene: 138
+First sample weights (min/max) 0.7956281/1.3334878
+First intra-block correlation  0.3794821
+Final sample weights (min/max) 0.7925773/1.3393017
+Final intra-block correlation  0.3856886
+Done - Save data
+2026-09-08 11:28:58.990452 - voomLmFit - cluster: Inhib.VIP_xLD_glia, block= 'chip', ncol: 14, ngene: 239
+First sample weights (min/max) 0.6540419/1.6107337
+First intra-block correlation  0.02047869
+Final sample weights (min/max) 0.6532266/1.6134877
+Final intra-block correlation  0.02076953
+Done - Save data
+2026-09-08 11:28:59.740235 - voomLmFit - cluster: Inhib.VIP_xVasc_adj, block= 'chip', ncol: 11, ngene: 158
+First sample weights (min/max) 0.8466055/1.1342907
+First intra-block correlation  0.03235102
+Final sample weights (min/max) 0.8412001/1.1394724
+Final intra-block correlation  0.031744
+Done - Save data
+2026-09-08 11:29:00.349253 - voomLmFit - cluster: Inhib.VIP_xWMuf, block= 'chip', ncol: 14, ngene: 184
+First sample weights (min/max) 0.6095525/1.5235950
+First intra-block correlation  -0.06002323
+Final sample weights (min/max) 0.6035329/1.5221677
+Final intra-block correlation  -0.06006086
+Done - Save data
+2026-09-08 11:29:01.012164 - voomLmFit - cluster: Macro_xVasc_im, block= 'chip', ncol: 14, ngene: 132
+First sample weights (min/max) 0.2517696/1.5088297
+First intra-block correlation  -0.02556311
+Final sample weights (min/max) 0.2354639/1.5326457
+Final intra-block correlation  -0.02379836
+Done - Save data
+2026-09-08 11:29:01.560214 - voomLmFit - cluster: Macro_xVasc_mural, block= 'chip', ncol: 8, ngene: 93
+First sample weights (min/max) 0.5944098/1.2028428
+First intra-block correlation  0.1244339
+Final sample weights (min/max) 0.5849112/1.2130743
+Final intra-block correlation  0.1251917
+Done - Save data
+2026-09-08 11:29:02.047764 - voomLmFit - cluster: Micro.2_xGL, block= 'chip', ncol: 15, ngene: 179
+First sample weights (min/max) 0.5401362/1.4487419
+First intra-block correlation  0.007982204
+Final sample weights (min/max) 0.5440309/1.4160570
+Final intra-block correlation  0.00814558
+Done - Save data
+2026-09-08 11:29:02.707681 - voomLmFit - cluster: Micro.2_xL1_inhib, block= 'chip', ncol: 15, ngene: 142
+First sample weights (min/max) 0.4011542/1.4113812
+First intra-block correlation  -0.1026417
+Final sample weights (min/max) 0.3973768/1.4330776
+Final intra-block correlation  -0.1022153
+Done - Save data
+2026-09-08 11:29:03.249463 - voomLmFit - cluster: Micro.2_xL2, block= 'chip', ncol: 14, ngene: 160
+First sample weights (min/max) 0.3461288/1.5632831
+First intra-block correlation  -0.00134866
+Final sample weights (min/max) 0.3413418/1.5683917
+Final intra-block correlation  -0.001941946
+Done - Save data
+2026-09-08 11:29:03.836834 - voomLmFit - cluster: Micro.2_xL5, block= 'chip', ncol: 16, ngene: 188
+First sample weights (min/max) 0.4779004/1.6961729
+First intra-block correlation  -0.05400419
+Final sample weights (min/max) 0.4602304/1.6894107
+Final intra-block correlation  -0.05267772
+Done - Save data
+2026-09-08 11:29:04.469039 - voomLmFit - cluster: Micro.2_xL6, block= 'chip', ncol: 14, ngene: 154
+First sample weights (min/max) 0.5542327/1.4733803
+First intra-block correlation  0.03286465
+Final sample weights (min/max) 0.5389487/1.5043457
+Final intra-block correlation  0.03211251
+Done - Save data
+2026-09-08 11:29:05.030233 - voomLmFit - cluster: Micro.2_xLD_glia, block= 'chip', ncol: 16, ngene: 251
+First sample weights (min/max) 0.3514851/1.9550495
+First intra-block correlation  -0.02412785
+Final sample weights (min/max) 0.3456563/1.9406412
+Final intra-block correlation  -0.02349787
+Done - Save data
+2026-09-08 11:29:05.792153 - voomLmFit - cluster: Micro.2_xVasc_adj, block= 'chip', ncol: 16, ngene: 144
+First sample weights (min/max) 0.3268273/1.6089045
+First intra-block correlation  -0.01998789
+Final sample weights (min/max) 0.3206392/1.6098613
+Final intra-block correlation  -0.01974516
+Done - Save data
+2026-09-08 11:29:06.323367 - voomLmFit - cluster: Micro.2_xVasc_im, block= 'chip', ncol: 13, ngene: 114
+First sample weights (min/max) 0.4120049/1.6241570
+First intra-block correlation  0.1616856
+Final sample weights (min/max) 0.4178687/1.6233163
+Final intra-block correlation  0.1627684
+Done - Save data
+2026-09-08 11:29:06.824878 - voomLmFit - cluster: Micro.2_xWMd, block= 'chip', ncol: 16, ngene: 173
+First sample weights (min/max) 0.552516/1.390089
+First intra-block correlation  0.04346359
+Final sample weights (min/max) 0.5561844/1.4278915
+Final intra-block correlation  0.04434813
+Done - Save data
+2026-09-08 11:29:07.420685 - voomLmFit - cluster: Micro.2_xWMuf, block= 'chip', ncol: 16, ngene: 223
+First sample weights (min/max) 0.434224/1.469866
+First intra-block correlation  -0.0229981
+Final sample weights (min/max) 0.433814/1.494793
+Final intra-block correlation  -0.02263373
+Done - Save data
+2026-09-08 11:29:08.110811 - voomLmFit - cluster: Micro.3_xGL, block= 'chip', ncol: 7, ngene: 114
+First sample weights (min/max) 0.7482419/1.4006698
+First intra-block correlation  0.03086647
+Final sample weights (min/max) 0.7552199/1.4089065
+Final intra-block correlation  0.04803469
+Done - Save data
+2026-09-08 11:29:08.615384 - voomLmFit - cluster: Micro.3_xWMd, block= 'chip', ncol: 7, ngene: 197
+First sample weights (min/max) 0.5756357/1.2923598
+First intra-block correlation  0.4824233
+Final sample weights (min/max) 0.5860643/1.3015758
+Final intra-block correlation  0.4851243
+Done - Save data
+2026-09-08 11:29:09.376936 - voomLmFit - cluster: Micro.5_xGL, block= 'chip', ncol: 16, ngene: 188
+First sample weights (min/max) 0.653302/1.700700
+First intra-block correlation  -0.0272702
+Final sample weights (min/max) 0.6447094/1.7064612
+Final intra-block correlation  -0.02636048
+Done - Save data
+2026-09-08 11:29:09.997439 - voomLmFit - cluster: Micro.5_xL1_inhib, block= 'chip', ncol: 16, ngene: 175
+First sample weights (min/max) 0.5062023/1.4886139
+First intra-block correlation  -0.02558848
+Final sample weights (min/max) 0.5006151/1.5162250
+Final intra-block correlation  -0.02622618
+Done - Save data
+2026-09-08 11:29:10.593275 - voomLmFit - cluster: Micro.5_xL2, block= 'chip', ncol: 16, ngene: 182
+First sample weights (min/max) 0.4789873/1.5835654
+First intra-block correlation  -0.008929266
+Final sample weights (min/max) 0.4799683/1.5795055
+Final intra-block correlation  -0.008971551
+Done - Save data
+2026-09-08 11:29:11.192379 - voomLmFit - cluster: Micro.5_xL5, block= 'chip', ncol: 16, ngene: 215
+First sample weights (min/max) 0.6654849/1.5444996
+First intra-block correlation  -0.05132686
+Final sample weights (min/max) 0.6606053/1.5442700
+Final intra-block correlation  -0.05186273
+Done - Save data
+2026-09-08 11:29:11.886158 - voomLmFit - cluster: Micro.5_xL6, block= 'chip', ncol: 15, ngene: 201
+First sample weights (min/max) 0.601672/1.331662
+First intra-block correlation  0.003553042
+Final sample weights (min/max) 0.5987424/1.3339224
+Final intra-block correlation  0.004133203
+Done - Save data
+2026-09-08 11:29:12.538469 - voomLmFit - cluster: Micro.5_xLD_glia, block= 'chip', ncol: 16, ngene: 273
+First sample weights (min/max) 0.4362514/1.4683737
+First intra-block correlation  -0.04901936
+Final sample weights (min/max) 0.4382724/1.4670053
+Final intra-block correlation  -0.04904229
+Done - Save data
+2026-09-08 11:29:13.366272 - voomLmFit - cluster: Micro.5_xVasc_adj, block= 'chip', ncol: 16, ngene: 158
+First sample weights (min/max) 0.4408673/1.4429109
+First intra-block correlation  -0.003663155
+Final sample weights (min/max) 0.4410744/1.4361340
+Final intra-block correlation  -0.004194314
+Done - Save data
+2026-09-08 11:29:13.953338 - voomLmFit - cluster: Micro.5_xVasc_im, block= 'chip', ncol: 13, ngene: 70
+First sample weights (min/max) 0.5343665/1.8741754
+First intra-block correlation  0.05283283
+Final sample weights (min/max) 0.5401936/1.8851855
+Final intra-block correlation  0.05298256
+Done - Save data
+2026-09-08 11:29:14.338265 - voomLmFit - cluster: Micro.5_xWMd, block= 'chip', ncol: 15, ngene: 152
+First sample weights (min/max) 0.4985649/1.7618498
+First intra-block correlation  0.004788637
+Final sample weights (min/max) 0.4957905/1.7446908
+Final intra-block correlation  0.003783207
+Done - Save data
+2026-09-08 11:29:14.904011 - voomLmFit - cluster: Micro.5_xWMuf, block= 'chip', ncol: 16, ngene: 250
+First sample weights (min/max) 0.7043976/1.5968848
+First intra-block correlation  -0.04123753
+Final sample weights (min/max) 0.7053248/1.6011453
+Final intra-block correlation  -0.040929
+Done - Save data
+2026-09-08 11:29:15.65968 - voomLmFit - cluster: Oligo.1_xGL, block= 'chip', ncol: 16, ngene: 146
+First sample weights (min/max) 0.5676425/1.2822418
+First intra-block correlation  -0.009329719
+Final sample weights (min/max) 0.5664718/1.2850580
+Final intra-block correlation  -0.009494346
+Done - Save data
+2026-09-08 11:29:16.196861 - voomLmFit - cluster: Oligo.1_xL5, block= 'chip', ncol: 15, ngene: 150
+First sample weights (min/max) 0.7109459/1.4615132
+First intra-block correlation  -0.01670414
+Final sample weights (min/max) 0.7097645/1.4692643
+Final intra-block correlation  -0.01606345
+Done - Save data
+2026-09-08 11:29:16.737171 - voomLmFit - cluster: Oligo.1_xL6, block= 'chip', ncol: 13, ngene: 125
+First sample weights (min/max) 0.6204257/1.2342932
+First intra-block correlation  -0.0221987
+Final sample weights (min/max) 0.6178806/1.2344937
+Final intra-block correlation  -0.022778
+Done - Save data
+2026-09-08 11:29:17.264809 - voomLmFit - cluster: Oligo.1_xLD_glia, block= 'chip', ncol: 14, ngene: 140
+First sample weights (min/max) 0.6220222/1.5544585
+First intra-block correlation  0.02183144
+Final sample weights (min/max) 0.6161816/1.5571126
+Final intra-block correlation  0.02128045
+Done - Save data
+2026-09-08 11:29:17.804419 - voomLmFit - cluster: Oligo.1_xVasc_adj, block= 'chip', ncol: 9, ngene: 106
+First sample weights (min/max) 0.7633678/1.3763121
+First intra-block correlation  0.07267151
+Final sample weights (min/max) 0.7660982/1.3823492
+Final intra-block correlation  0.07334144
+Done - Save data
+2026-09-08 11:29:18.296238 - voomLmFit - cluster: Oligo.1_xWMd, block= 'chip', ncol: 16, ngene: 257
+First sample weights (min/max) 0.408603/1.722706
+First intra-block correlation  0.06841366
+Final sample weights (min/max) 0.4064229/1.7299069
+Final intra-block correlation  0.06771123
+Done - Save data
+2026-09-08 11:29:19.074111 - voomLmFit - cluster: Oligo.1_xWMuf, block= 'chip', ncol: 16, ngene: 208
+First sample weights (min/max) 0.6038337/1.7114674
+First intra-block correlation  -0.01142472
+Final sample weights (min/max) 0.5999263/1.7087765
+Final intra-block correlation  -0.01092262
+Done - Save data
+2026-09-08 11:29:19.732903 - voomLmFit - cluster: Oligo.2_xGL, block= 'chip', ncol: 16, ngene: 145
+First sample weights (min/max) 0.6387325/1.3592490
+First intra-block correlation  0.0273998
+Final sample weights (min/max) 0.6372563/1.3619699
+Final intra-block correlation  0.02679347
+Done - Save data
+2026-09-08 11:29:20.2419 - voomLmFit - cluster: Oligo.2_xL5, block= 'chip', ncol: 6, ngene: 102
+First sample weights (min/max) 0.7144903/1.1801717
+Final sample weights (min/max) 0.7127818/1.1841226
+Done - Save data
+2026-09-08 11:29:20.471039 - voomLmFit - cluster: Oligo.2_xL6, block= 'chip', ncol: 7, ngene: 102
+First sample weights (min/max) 0.7984741/1.1997452
+First intra-block correlation  0.6657748
+Final sample weights (min/max) 0.7888421/1.1965533
+Final intra-block correlation  0.6693543
+Done - Save data
+2026-09-08 11:29:20.938415 - voomLmFit - cluster: Oligo.2_xLD_glia, block= 'chip', ncol: 10, ngene: 133
+First sample weights (min/max) 0.7281693/1.4384724
+First intra-block correlation  0.04046287
+Final sample weights (min/max) 0.7239527/1.4391576
+Final intra-block correlation  0.03984481
+Done - Save data
+2026-09-08 11:29:21.4682 - voomLmFit - cluster: Oligo.2_xVasc_adj, block= 'chip', ncol: 5, ngene: 81
 First sample weights (min/max) 1/1
 Final sample weights (min/max) 1/1
 Done - Save data
-2026-06-24 09:26:24.895531 - voomLmFit - cluster: Astro.4_L1a, block= 'chip', ncol: 16, ngene: 266
-First sample weights (min/max) 0.1805405/1.9744697
-First intra-block correlation  -0.04174568
-Final sample weights (min/max) 0.1739672/1.9425177
-Final intra-block correlation  -0.04107643
+2026-09-08 11:29:21.685807 - voomLmFit - cluster: Oligo.2_xWMd, block= 'chip', ncol: 16, ngene: 241
+First sample weights (min/max) 0.3931528/1.5350586
+First intra-block correlation  0.09703851
+Final sample weights (min/max) 0.3926609/1.5475187
+Final intra-block correlation  0.09696311
 Done - Save data
-2026-06-24 09:26:25.514703 - voomLmFit - cluster: Astro.4_Vasc, block= 'chip', ncol: 14, ngene: 152
-First sample weights (min/max) 0.6797486/1.5548336
-First intra-block correlation  -0.05999919
-Final sample weights (min/max) 0.6718615/1.5421507
-Final intra-block correlation  -0.06259831
+2026-09-08 11:29:22.393574 - voomLmFit - cluster: Oligo.2_xWMuf, block= 'chip', ncol: 14, ngene: 148
+First sample weights (min/max) 0.5232012/1.4280480
+First intra-block correlation  -0.0003575166
+Final sample weights (min/max) 0.5237697/1.4339690
+Final intra-block correlation  0.000296006
 Done - Save data
-2026-06-24 09:26:25.99826 - voomLmFit - cluster: Astro.4_WM, block= 'chip', ncol: 15, ngene: 235
-First sample weights (min/max) 0.5895676/1.4063494
-First intra-block correlation  0.03522606
-Final sample weights (min/max) 0.5951362/1.4205760
-Final intra-block correlation  0.03450944
+2026-09-08 11:29:22.947017 - voomLmFit - cluster: Oligo.3_xGL, block= 'chip', ncol: 16, ngene: 237
+First sample weights (min/max) 0.5628023/1.8180856
+First intra-block correlation  0.004419935
+Final sample weights (min/max) 0.5633432/1.8106203
+Final intra-block correlation  0.004448226
 Done - Save data
-2026-06-24 09:26:26.568936 - voomLmFit - cluster: Astro.4_WMtz, block= 'chip', ncol: 5, ngene: 99
+2026-09-08 11:29:23.681067 - voomLmFit - cluster: Oligo.3_xL1_inhib, block= 'chip', ncol: 16, ngene: 184
+First sample weights (min/max) 0.4990204/1.2724176
+First intra-block correlation  -0.01687729
+Final sample weights (min/max) 0.4997567/1.2685488
+Final intra-block correlation  -0.01702873
+Done - Save data
+2026-09-08 11:29:24.297153 - voomLmFit - cluster: Oligo.3_xL2, block= 'chip', ncol: 16, ngene: 169
+First sample weights (min/max) 0.5365353/1.2994600
+First intra-block correlation  0.01289894
+Final sample weights (min/max) 0.533057/1.303541
+Final intra-block correlation  0.01365135
+Done - Save data
+2026-09-08 11:29:24.872244 - voomLmFit - cluster: Oligo.3_xL5, block= 'chip', ncol: 16, ngene: 306
+First sample weights (min/max) 0.6254798/1.6171665
+First intra-block correlation  -0.0007839866
+Final sample weights (min/max) 0.6297557/1.6127549
+Final intra-block correlation  -0.001009921
+Done - Save data
+2026-09-08 11:29:25.782375 - voomLmFit - cluster: Oligo.3_xL6, block= 'chip', ncol: 16, ngene: 314
+First sample weights (min/max) 0.5217901/1.6498297
+First intra-block correlation  0.0135365
+Final sample weights (min/max) 0.5136503/1.6579038
+Final intra-block correlation  0.01329433
+Done - Save data
+2026-09-08 11:29:26.674037 - voomLmFit - cluster: Oligo.3_xLD_glia, block= 'chip', ncol: 16, ngene: 328
+First sample weights (min/max) 0.5337264/1.8443277
+First intra-block correlation  0.03257649
+Final sample weights (min/max) 0.534274/1.836726
+Final intra-block correlation  0.03244476
+Done - Save data
+2026-09-08 11:29:27.590439 - voomLmFit - cluster: Oligo.3_xVasc_adj, block= 'chip', ncol: 16, ngene: 239
+First sample weights (min/max) 0.6330696/1.4686201
+First intra-block correlation  -0.003655006
+Final sample weights (min/max) 0.6338766/1.4608482
+Final intra-block correlation  -0.004045919
+Done - Save data
+2026-09-08 11:29:28.318036 - voomLmFit - cluster: Oligo.3_xVasc_im, block= 'chip', ncol: 14, ngene: 91
+First sample weights (min/max) 0.4905143/1.6245227
+First intra-block correlation  0.04454601
+Final sample weights (min/max) 0.4830328/1.6507767
+Final intra-block correlation  0.04481637
+Done - Save data
+2026-09-08 11:29:28.73187 - voomLmFit - cluster: Oligo.3_xVasc_mural, block= 'chip', ncol: 11, ngene: 65
+First sample weights (min/max) 0.6276729/1.4284288
+First intra-block correlation  0.05585647
+Final sample weights (min/max) 0.6333159/1.4282429
+Final intra-block correlation  0.05546466
+Done - Save data
+2026-09-08 11:29:29.096509 - voomLmFit - cluster: Oligo.3_xWMd, block= 'chip', ncol: 16, ngene: 353
+First sample weights (min/max) 0.4730678/1.9448607
+First intra-block correlation  0.05357646
+Final sample weights (min/max) 0.471966/1.930398
+Final intra-block correlation  0.05341344
+Done - Save data
+2026-09-08 11:29:30.06084 - voomLmFit - cluster: Oligo.3_xWMuf, block= 'chip', ncol: 16, ngene: 354
+First sample weights (min/max) 0.5480679/1.7810287
+First intra-block correlation  0.04494431
+Final sample weights (min/max) 0.5505156/1.7749438
+Final intra-block correlation  0.04492695
+Done - Save data
+2026-09-08 11:29:31.008598 - voomLmFit - cluster: Oligo.4_xGL, block= 'chip', ncol: 16, ngene: 243
+First sample weights (min/max) 0.7201651/1.4071746
+First intra-block correlation  0.0305362
+Final sample weights (min/max) 0.7194184/1.4057149
+Final intra-block correlation  0.03109571
+Done - Save data
+2026-09-08 11:29:31.734852 - voomLmFit - cluster: Oligo.4_xL1_inhib, block= 'chip', ncol: 15, ngene: 145
+First sample weights (min/max) 0.6281143/1.4719733
+First intra-block correlation  -0.0506458
+Final sample weights (min/max) 0.6231704/1.4685796
+Final intra-block correlation  -0.05097823
+Done - Save data
+2026-09-08 11:29:32.295265 - voomLmFit - cluster: Oligo.4_xL2, block= 'chip', ncol: 8, ngene: 113
+First sample weights (min/max) 0.7772097/1.1551679
+First intra-block correlation  -0.1157775
+Final sample weights (min/max) 0.7689407/1.1615305
+Final intra-block correlation  -0.1162038
+Done - Save data
+2026-09-08 11:29:32.762641 - voomLmFit - cluster: Oligo.4_xL5, block= 'chip', ncol: 16, ngene: 244
+First sample weights (min/max) 0.538982/1.438091
+First intra-block correlation  -0.02588205
+Final sample weights (min/max) 0.5379682/1.4482465
+Final intra-block correlation  -0.02584195
+Done - Save data
+2026-09-08 11:29:34.13856 - voomLmFit - cluster: Oligo.4_xL6, block= 'chip', ncol: 15, ngene: 234
+First sample weights (min/max) 0.6532457/1.6420752
+First intra-block correlation  0.01748438
+Final sample weights (min/max) 0.6539232/1.6430243
+Final intra-block correlation  0.02173794
+Done - Save data
+2026-09-08 11:29:34.85274 - voomLmFit - cluster: Oligo.4_xLD_glia, block= 'chip', ncol: 16, ngene: 277
+First sample weights (min/max) 0.6431686/1.5265992
+First intra-block correlation  0.004612386
+Final sample weights (min/max) 0.6448979/1.5143040
+Final intra-block correlation  0.004662805
+Done - Save data
+2026-09-08 11:29:35.65542 - voomLmFit - cluster: Oligo.4_xVasc_adj, block= 'chip', ncol: 16, ngene: 181
+First sample weights (min/max) 0.4641716/1.3753938
+First intra-block correlation  -0.001456012
+Final sample weights (min/max) 0.4621869/1.3746689
+Final intra-block correlation  -0.001265837
+Done - Save data
+2026-09-08 11:29:36.238034 - voomLmFit - cluster: Oligo.4_xVasc_im, block= 'chip', ncol: 11, ngene: 99
+First sample weights (min/max) 0.5517869/1.2845695
+First intra-block correlation  0.002309322
+Final sample weights (min/max) 0.554735/1.309692
+Final intra-block correlation  0.004417921
+Done - Save data
+2026-09-08 11:29:36.680672 - voomLmFit - cluster: Oligo.4_xVasc_mural, block= 'chip', ncol: 4, ngene: 79
+2026-09-08 11:29:36.871486 - voomLmFit - cluster: Oligo.4_xWMd, block= 'chip', ncol: 16, ngene: 336
+First sample weights (min/max) 0.2798928/2.2200428
+First intra-block correlation  0.04607126
+Final sample weights (min/max) 0.2686497/2.2480158
+Final intra-block correlation  0.0464648
+Done - Save data
+2026-09-08 11:29:37.826083 - voomLmFit - cluster: Oligo.4_xWMuf, block= 'chip', ncol: 16, ngene: 307
+First sample weights (min/max) 0.654466/1.714266
+First intra-block correlation  0.03198991
+Final sample weights (min/max) 0.6568934/1.7161567
+Final intra-block correlation  0.03249903
+Done - Save data
+2026-09-08 11:29:38.677883 - voomLmFit - cluster: Oligo.5_xL5, block= 'chip', ncol: 8, ngene: 113
+First sample weights (min/max) 0.7822207/1.2953203
+First intra-block correlation  -0.1947726
+Final sample weights (min/max) 0.7780531/1.2944845
+Final intra-block correlation  -0.1946809
+Done - Save data
+2026-09-08 11:29:39.132214 - voomLmFit - cluster: Oligo.5_xL6, block= 'chip', ncol: 6, ngene: 82
+First sample weights (min/max) 0.8859649/1.1480550
+Final sample weights (min/max) 0.8883496/1.1433304
+Done - Save data
+2026-09-08 11:29:39.362453 - voomLmFit - cluster: Oligo.5_xLD_glia, block= 'chip', ncol: 8, ngene: 102
+First sample weights (min/max) 0.7412132/1.1349617
+First intra-block correlation  -0.4233392
+Final sample weights (min/max) 0.7469961/1.1382808
+Final intra-block correlation  -0.4328954
+Done - Save data
+2026-09-08 11:29:40.713334 - voomLmFit - cluster: Oligo.5_xWMd, block= 'chip', ncol: 12, ngene: 100
+First sample weights (min/max) 0.3572012/1.9219301
+First intra-block correlation  0.1308591
+Final sample weights (min/max) 0.3653528/1.8948667
+Final intra-block correlation  0.1310949
+Done - Save data
+2026-09-08 11:29:41.172407 - voomLmFit - cluster: Oligo.5_xWMuf, block= 'chip', ncol: 11, ngene: 120
+First sample weights (min/max) 0.6106941/1.3596520
+First intra-block correlation  -0.06627581
+Final sample weights (min/max) 0.6208483/1.3473993
+Final intra-block correlation  -0.06187528
+Done - Save data
+2026-09-08 11:29:41.685027 - voomLmFit - cluster: OPC.2_xGL, block= 'chip', ncol: 14, ngene: 191
+First sample weights (min/max) 0.6821606/1.4752452
+First intra-block correlation  0.04328587
+Final sample weights (min/max) 0.679699/1.475927
+Final intra-block correlation  0.0428865
+Done - Save data
+2026-09-08 11:29:42.349462 - voomLmFit - cluster: OPC.2_xL1_inhib, block= 'chip', ncol: 16, ngene: 210
+First sample weights (min/max) 0.6998866/1.5450392
+First intra-block correlation  -0.022178
+Final sample weights (min/max) 0.7009986/1.5431515
+Final intra-block correlation  -0.02318684
+Done - Save data
+2026-09-08 11:29:43.000415 - voomLmFit - cluster: OPC.2_xL2, block= 'chip', ncol: 14, ngene: 229
+First sample weights (min/max) 0.718063/1.221062
+First intra-block correlation  -0.05304873
+Final sample weights (min/max) 0.7206584/1.2296201
+Final intra-block correlation  -0.05333538
+Done - Save data
+2026-09-08 11:29:43.734679 - voomLmFit - cluster: OPC.2_xL5, block= 'chip', ncol: 16, ngene: 227
+First sample weights (min/max) 0.5255456/1.6173094
+First intra-block correlation  -0.01789679
+Final sample weights (min/max) 0.5446945/1.6076439
+Final intra-block correlation  -0.01856457
+Done - Save data
+2026-09-08 11:29:44.465633 - voomLmFit - cluster: OPC.2_xL6, block= 'chip', ncol: 14, ngene: 189
+First sample weights (min/max) 0.6186645/1.4470879
+First intra-block correlation  0.03625359
+Final sample weights (min/max) 0.6156432/1.4586270
+Final intra-block correlation  0.03546765
+Done - Save data
+2026-09-08 11:29:45.133943 - voomLmFit - cluster: OPC.2_xLD_glia, block= 'chip', ncol: 16, ngene: 241
+First sample weights (min/max) 0.5633916/1.5759872
+First intra-block correlation  -0.01147752
+Final sample weights (min/max) 0.5634262/1.5704213
+Final intra-block correlation  -0.01153011
+Done - Save data
+2026-09-08 11:29:45.870772 - voomLmFit - cluster: OPC.2_xVasc_adj, block= 'chip', ncol: 16, ngene: 138
+First sample weights (min/max) 0.6463282/1.4605536
+First intra-block correlation  0.01371232
+Final sample weights (min/max) 0.655301/1.461602
+Final intra-block correlation  0.01374357
+Done - Save data
+2026-09-08 11:29:46.37515 - voomLmFit - cluster: OPC.2_xWMd, block= 'chip', ncol: 13, ngene: 178
+First sample weights (min/max) 0.627995/1.657332
+First intra-block correlation  0.002491833
+Final sample weights (min/max) 0.6257032/1.6553693
+Final intra-block correlation  0.002672663
+Done - Save data
+2026-09-08 11:29:47.006337 - voomLmFit - cluster: OPC.2_xWMuf, block= 'chip', ncol: 15, ngene: 215
+First sample weights (min/max) 0.6836913/1.3448363
+First intra-block correlation  -0.003044353
+Final sample weights (min/max) 0.6789398/1.3383460
+Final intra-block correlation  -0.002540665
+Done - Save data
+2026-09-08 11:29:47.692299 - voomLmFit - cluster: OPC.4_xGL, block= 'chip', ncol: 9, ngene: 133
+First sample weights (min/max) 0.6674063/1.4796055
+First intra-block correlation  -0.03175316
+Final sample weights (min/max) 0.6698483/1.4732572
+Final intra-block correlation  -0.03484083
+Done - Save data
+2026-09-08 11:29:48.228423 - voomLmFit - cluster: OPC.4_xL1_inhib, block= 'chip', ncol: 9, ngene: 121
+First sample weights (min/max) 0.6164642/1.3356165
+First intra-block correlation  -0.1132503
+Final sample weights (min/max) 0.6225636/1.3365667
+Final intra-block correlation  -0.1138758
+Done - Save data
+2026-09-08 11:29:48.753064 - voomLmFit - cluster: OPC.4_xL5, block= 'chip', ncol: 5, ngene: 91
 First sample weights (min/max) 1/1
 Final sample weights (min/max) 1/1
 Done - Save data
-2026-06-24 09:26:26.736743 - voomLmFit - cluster: Astro.5_Inhib, block= 'chip', ncol: 16, ngene: 242
-First sample weights (min/max) 0.6197076/1.6199020
-First intra-block correlation  0.00945491
-Final sample weights (min/max) 0.6221842/1.6243986
-Final intra-block correlation  0.009667677
-Done - Save data
-2026-06-24 09:26:27.326238 - voomLmFit - cluster: Astro.5_L1a, block= 'chip', ncol: 16, ngene: 281
-First sample weights (min/max) 0.5790714/1.7845856
-First intra-block correlation  0.03737705
-Final sample weights (min/max) 0.5804389/1.7958335
-Final intra-block correlation  0.03749995
-Done - Save data
-2026-06-24 09:26:28.005846 - voomLmFit - cluster: Astro.5_L1b, block= 'chip', ncol: 16, ngene: 303
-First sample weights (min/max) 0.4840513/1.5471328
-First intra-block correlation  -0.01271465
-Final sample weights (min/max) 0.486915/1.542063
-Final intra-block correlation  -0.01266407
-Done - Save data
-2026-06-24 09:26:28.678138 - voomLmFit - cluster: Astro.5_L2.3, block= 'chip', ncol: 16, ngene: 196
-First sample weights (min/max) 0.6623817/1.4404277
-First intra-block correlation  0.03882287
-Final sample weights (min/max) 0.6600405/1.4383039
-Final intra-block correlation  0.03959045
-Done - Save data
-2026-06-24 09:26:29.170084 - voomLmFit - cluster: Astro.5_L5, block= 'chip', ncol: 16, ngene: 316
-First sample weights (min/max) 0.5072511/1.6767313
-First intra-block correlation  -0.008126544
-Final sample weights (min/max) 0.5129786/1.6752505
-Final intra-block correlation  -0.007964559
-Done - Save data
-2026-06-24 09:26:29.884394 - voomLmFit - cluster: Astro.5_L6, block= 'chip', ncol: 16, ngene: 268
-First sample weights (min/max) 0.3841662/1.7923887
-First intra-block correlation  0.03100606
-Final sample weights (min/max) 0.3882018/1.7637016
-Final intra-block correlation  0.03151228
-Done - Save data
-2026-06-24 09:26:30.507363 - voomLmFit - cluster: Astro.5_Vasc, block= 'chip', ncol: 15, ngene: 210
-First sample weights (min/max) 0.4489296/1.6785083
-First intra-block correlation  0.08059747
-Final sample weights (min/max) 0.4589366/1.6539728
-Final intra-block correlation  0.08061402
-Done - Save data
-2026-06-24 09:26:31.035344 - voomLmFit - cluster: Astro.5_WM, block= 'chip', ncol: 16, ngene: 197
-First sample weights (min/max) 0.677955/1.685352
-First intra-block correlation  0.05518215
-Final sample weights (min/max) 0.6797447/1.6695410
-Final intra-block correlation  0.0550395
-Done - Save data
-2026-06-24 09:26:31.531606 - voomLmFit - cluster: Astro.5_WMtz, block= 'chip', ncol: 16, ngene: 306
-First sample weights (min/max) 0.3755282/1.9015426
-First intra-block correlation  -0.03952984
-Final sample weights (min/max) 0.3831785/1.8960116
-Final intra-block correlation  -0.03918929
-Done - Save data
-2026-06-24 09:26:32.209431 - voomLmFit - cluster: Excit.L2_5.1_Inhib, block= 'chip', ncol: 9, ngene: 103
-First sample weights (min/max) 0.3335973/1.5385315
-First intra-block correlation  -0.07602927
-Final sample weights (min/max) 0.3285945/1.5485916
-Final intra-block correlation  -0.07480881
-Done - Save data
-2026-06-24 09:26:32.577335 - voomLmFit - cluster: Excit.L2_5.1_L1b, block= 'chip', ncol: 9, ngene: 116
-First sample weights (min/max) 0.7762095/1.2059940
-First intra-block correlation  -0.04644313
-Final sample weights (min/max) 0.7749754/1.2039133
-Final intra-block correlation  -0.04598114
-Done - Save data
-2026-06-24 09:26:33.014024 - voomLmFit - cluster: Excit.L2_5.1_L2.3, block= 'chip', ncol: 16, ngene: 203
-First sample weights (min/max) 0.1883293/1.7571620
-First intra-block correlation  0.03872017
-Final sample weights (min/max) 0.1839356/1.7235462
-Final intra-block correlation  0.03887872
-Done - Save data
-2026-06-24 09:26:33.52683 - voomLmFit - cluster: Excit.L2_5.1_L5, block= 'chip', ncol: 16, ngene: 280
-First sample weights (min/max) 0.291302/2.143459
-First intra-block correlation  0.01906979
-Final sample weights (min/max) 0.284474/2.129890
-Final intra-block correlation  0.01947212
-Done - Save data
-2026-06-24 09:26:34.176725 - voomLmFit - cluster: Excit.L2_5.1_L6, block= 'chip', ncol: 12, ngene: 198
-First sample weights (min/max) 0.4497594/1.8157533
-First intra-block correlation  -0.01351855
-Final sample weights (min/max) 0.4468934/1.8412192
-Final intra-block correlation  -0.01435887
-Done - Save data
-2026-06-24 09:26:34.717626 - voomLmFit - cluster: Excit.L2_5.1_WMtz, block= 'chip', ncol: 12, ngene: 216
-First sample weights (min/max) 0.5709938/1.7393881
-First intra-block correlation  -0.02722059
-Final sample weights (min/max) 0.5718648/1.7083316
-Final intra-block correlation  -0.02712476
-Done - Save data
-2026-06-24 09:26:35.275538 - voomLmFit - cluster: Excit.L2_5.2_L1b, block= 'chip', ncol: 5, ngene: 150
+2026-09-08 11:29:48.97004 - voomLmFit - cluster: OPC.4_xL6, block= 'chip', ncol: 5, ngene: 96
 First sample weights (min/max) 1/1
 Final sample weights (min/max) 1/1
 Done - Save data
-2026-06-24 09:26:35.441975 - voomLmFit - cluster: Excit.L2_5.2_L2.3, block= 'chip', ncol: 5, ngene: 179
-First sample weights (min/max) 1/1
-Final sample weights (min/max) 1/1
-Done - Save data
-2026-06-24 09:26:35.613892 - voomLmFit - cluster: Excit.L2_5.2_L5, block= 'chip', ncol: 13, ngene: 317
-First sample weights (min/max) 0.415648/1.688609
-First intra-block correlation  0.02913013
-Final sample weights (min/max) 0.4216668/1.6912628
-Final intra-block correlation  0.02897323
-Done - Save data
-2026-06-24 09:26:36.45112 - voomLmFit - cluster: Excit.L2_5.2_WMtz, block= 'chip', ncol: 11, ngene: 189
-First sample weights (min/max) 0.5416117/1.4855676
-First intra-block correlation  0.02192867
-Final sample weights (min/max) 0.5359205/1.4903425
-Final intra-block correlation  0.03755501
-Done - Save data
-2026-06-24 09:26:36.990745 - voomLmFit - cluster: Excit.L2_Inhib, block= 'chip', ncol: 11, ngene: 232
-First sample weights (min/max) 0.3617214/1.3808269
-First intra-block correlation  -0.01489963
-Final sample weights (min/max) 0.3573359/1.3835222
-Final intra-block correlation  -0.01532659
-Done - Save data
-2026-06-24 09:26:37.593983 - voomLmFit - cluster: Excit.L2_L1b, block= 'chip', ncol: 12, ngene: 211
-First sample weights (min/max) 0.3483377/1.6880615
-First intra-block correlation  0.08905402
-Final sample weights (min/max) 0.3452852/1.7154569
-Final intra-block correlation  0.08804862
-Done - Save data
-2026-06-24 09:26:38.164274 - voomLmFit - cluster: Excit.L2_L2.3, block= 'chip', ncol: 16, ngene: 352
-First sample weights (min/max) 0.3706992/1.6866890
-First intra-block correlation  0.03628655
-Final sample weights (min/max) 0.376457/1.667848
-Final intra-block correlation  0.0364941
-Done - Save data
-2026-06-24 09:26:38.94844 - voomLmFit - cluster: Excit.L2_L5, block= 'chip', ncol: 16, ngene: 320
-First sample weights (min/max) 0.3155075/1.7858909
-First intra-block correlation  0.05990573
-Final sample weights (min/max) 0.319374/1.780519
-Final intra-block correlation  0.06002836
-Done - Save data
-2026-06-24 09:26:39.63346 - voomLmFit - cluster: Excit.L2_L6, block= 'chip', ncol: 6, ngene: 196
-First sample weights (min/max) 0.8316956/1.4797507
-Final sample weights (min/max) 0.8341869/1.4835919
-Done - Save data
-2026-06-24 09:26:39.841174 - voomLmFit - cluster: Excit.L2_WMtz, block= 'chip', ncol: 11, ngene: 211
-First sample weights (min/max) 0.5160463/1.7219779
-First intra-block correlation  -0.02096932
-Final sample weights (min/max) 0.51314/1.74036
-Final intra-block correlation  -0.02183752
-Done - Save data
-2026-06-24 09:26:40.428054 - voomLmFit - cluster: Excit.L5.1_L2.3, block= 'chip', ncol: 6, ngene: 191
-First sample weights (min/max) 0.6893027/1.5563153
-Final sample weights (min/max) 0.6901802/1.5585887
-Done - Save data
-2026-06-24 09:26:40.62504 - voomLmFit - cluster: Excit.L5.1_L5, block= 'chip', ncol: 16, ngene: 277
-First sample weights (min/max) 0.2632816/2.0033476
-First intra-block correlation  -0.00344149
-Final sample weights (min/max) 0.2554444/1.9820873
-Final intra-block correlation  -0.003432422
-Done - Save data
-2026-06-24 09:26:41.274284 - voomLmFit - cluster: Excit.L5.1_L6, block= 'chip', ncol: 14, ngene: 239
-First sample weights (min/max) 0.4266806/1.6843788
-First intra-block correlation  0.06824944
-Final sample weights (min/max) 0.4240297/1.6685735
-Final intra-block correlation  0.0676452
-Done - Save data
-2026-06-24 09:26:41.847566 - voomLmFit - cluster: Excit.L5.1_WMtz, block= 'chip', ncol: 7, ngene: 187
-First sample weights (min/max) 0.7389557/1.2051412
-First intra-block correlation  0.4889754
-Final sample weights (min/max) 0.7314769/1.1841376
-Final intra-block correlation  0.5038965
-Done - Save data
-2026-06-24 09:26:42.42568 - voomLmFit - cluster: Excit.L5.2_Inhib, block= 'chip', ncol: 10, ngene: 217
-First sample weights (min/max) 0.7149209/1.4255511
-First intra-block correlation  0.03785166
-Final sample weights (min/max) 0.7111521/1.4356696
-Final intra-block correlation  0.03885614
-Done - Save data
-2026-06-24 09:26:43.035859 - voomLmFit - cluster: Excit.L5.2_L1b, block= 'chip', ncol: 4, ngene: 170
-2026-06-24 09:26:43.182095 - voomLmFit - cluster: Excit.L5.2_L2.3, block= 'chip', ncol: 11, ngene: 211
-First sample weights (min/max) 0.6657902/1.5983250
-First intra-block correlation  -0.09979147
-Final sample weights (min/max) 0.6651608/1.5919398
-Final intra-block correlation  -0.09644076
-Done - Save data
-2026-06-24 09:26:43.762357 - voomLmFit - cluster: Excit.L5.2_L5, block= 'chip', ncol: 13, ngene: 217
-First sample weights (min/max) 0.6246711/1.5494004
-First intra-block correlation  0.007968832
-Final sample weights (min/max) 0.6268314/1.5505253
-Final intra-block correlation  0.007191317
-Done - Save data
-2026-06-24 09:26:44.356178 - voomLmFit - cluster: Excit.L6_CT_L6, block= 'chip', ncol: 15, ngene: 241
-First sample weights (min/max) 0.5552046/1.8699485
-First intra-block correlation  0.121574
-Final sample weights (min/max) 0.5496837/1.8788980
-Final intra-block correlation  0.121611
-Done - Save data
-2026-06-24 09:26:44.955218 - voomLmFit - cluster: Excit.L6b_L6, block= 'chip', ncol: 14, ngene: 252
-First sample weights (min/max) 0.3586793/1.6484770
-First intra-block correlation  0.002001643
-Final sample weights (min/max) 0.3462503/1.6533676
-Final intra-block correlation  0.001817282
-Done - Save data
-2026-06-24 09:26:45.588122 - voomLmFit - cluster: Inhib.Chandelier_Inhib, block= 'chip', ncol: 6, ngene: 170
-First sample weights (min/max) 0.9329599/1.1969296
-Final sample weights (min/max) 0.9333178/1.1972860
-Done - Save data
-2026-06-24 09:26:45.776623 - voomLmFit - cluster: Inhib.Chandelier_L5, block= 'chip', ncol: 13, ngene: 193
-First sample weights (min/max) 0.6444518/1.4470885
-First intra-block correlation  -0.01344027
-Final sample weights (min/max) 0.6470852/1.4347480
-Final intra-block correlation  -0.01376941
-Done - Save data
-2026-06-24 09:26:46.314315 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_Inhib, block= 'chip', ncol: 16, ngene: 201
-First sample weights (min/max) 0.5270479/1.6106613
-First intra-block correlation  -0.009423484
-Final sample weights (min/max) 0.5229644/1.6086302
-Final intra-block correlation  -0.009381036
-Done - Save data
-2026-06-24 09:26:46.840848 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_L1a, block= 'chip', ncol: 11, ngene: 154
-First sample weights (min/max) 0.7782557/1.2496874
-First intra-block correlation  -0.04088009
-Final sample weights (min/max) 0.7751135/1.2490908
-Final intra-block correlation  -0.04079541
-Done - Save data
-2026-06-24 09:26:47.361128 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_L1b, block= 'chip', ncol: 15, ngene: 176
-First sample weights (min/max) 0.7357542/1.2780029
-First intra-block correlation  -0.03340681
-Final sample weights (min/max) 0.7310629/1.2711868
-Final intra-block correlation  -0.0327241
-Done - Save data
-2026-06-24 09:26:47.848962 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_L2.3, block= 'chip', ncol: 13, ngene: 204
-First sample weights (min/max) 0.7057441/1.3284538
-First intra-block correlation  0.0170779
-Final sample weights (min/max) 0.7043876/1.3314718
-Final intra-block correlation  0.01651355
-Done - Save data
-2026-06-24 09:26:48.456686 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_L5, block= 'chip', ncol: 16, ngene: 215
-First sample weights (min/max) 0.5479277/1.4457054
-First intra-block correlation  0.05288228
-Final sample weights (min/max) 0.5418993/1.4386904
-Final intra-block correlation  0.05234614
-Done - Save data
-2026-06-24 09:26:48.964839 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_L6, block= 'chip', ncol: 11, ngene: 166
-First sample weights (min/max) 0.6867487/1.3828843
-First intra-block correlation  -0.00937974
-Final sample weights (min/max) 0.6888065/1.3778031
-Final intra-block correlation  -0.009390676
-Done - Save data
-2026-06-24 09:26:49.431009 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_WM, block= 'chip', ncol: 6, ngene: 124
-First sample weights (min/max) 0.9405277/1.0351238
-Final sample weights (min/max) 0.9405776/1.0346229
-Done - Save data
-2026-06-24 09:26:49.614044 - voomLmFit - cluster: Inhib.Lamp5_Lhx6_WMtz, block= 'chip', ncol: 13, ngene: 179
-First sample weights (min/max) 0.7569671/1.4054899
-First intra-block correlation  -0.02801911
-Final sample weights (min/max) 0.7505958/1.4018788
-Final intra-block correlation  -0.02780228
-Done - Save data
-2026-06-24 09:26:50.135082 - voomLmFit - cluster: Inhib.Pax6_Inhib, block= 'chip', ncol: 11, ngene: 187
-First sample weights (min/max) 0.6793848/1.5051932
-First intra-block correlation  0.00183446
-Final sample weights (min/max) 0.6794881/1.5126230
-Final intra-block correlation  0.002730502
-Done - Save data
-2026-06-24 09:26:50.692801 - voomLmFit - cluster: Inhib.Pax6_L1b, block= 'chip', ncol: 8, ngene: 156
-First sample weights (min/max) 0.7889246/1.2382131
-First intra-block correlation  -0.08963132
-Final sample weights (min/max) 0.7923368/1.2376276
-Final intra-block correlation  -0.08739159
-Done - Save data
-2026-06-24 09:26:51.159853 - voomLmFit - cluster: Inhib.Pvalb_Inhib, block= 'chip', ncol: 15, ngene: 189
-First sample weights (min/max) 0.5941292/1.3713290
-First intra-block correlation  -0.09350357
-Final sample weights (min/max) 0.5906619/1.3791200
-Final intra-block correlation  -0.09538358
-Done - Save data
-2026-06-24 09:26:51.676932 - voomLmFit - cluster: Inhib.Pvalb_L1b, block= 'chip', ncol: 6, ngene: 156
-First sample weights (min/max) 0.9380588/1.0757644
-Final sample weights (min/max) 0.9378136/1.0761607
-Done - Save data
-2026-06-24 09:26:51.868175 - voomLmFit - cluster: Inhib.Pvalb_L2.3, block= 'chip', ncol: 13, ngene: 197
-First sample weights (min/max) 0.6998079/1.2312551
-First intra-block correlation  -0.0461895
-Final sample weights (min/max) 0.6974129/1.2293921
-Final intra-block correlation  -0.04643231
-Done - Save data
-2026-06-24 09:26:52.406824 - voomLmFit - cluster: Inhib.Pvalb_L5, block= 'chip', ncol: 16, ngene: 269
-First sample weights (min/max) 0.553164/2.021545
-First intra-block correlation  -0.005192919
-Final sample weights (min/max) 0.548097/2.009958
-Final intra-block correlation  -0.004961045
-Done - Save data
-2026-06-24 09:26:53.035159 - voomLmFit - cluster: Inhib.Pvalb_L6, block= 'chip', ncol: 14, ngene: 183
-First sample weights (min/max) 0.6274497/1.5127081
-First intra-block correlation  0.002016645
-Final sample weights (min/max) 0.6265014/1.5075331
-Final intra-block correlation  0.001821435
-Done - Save data
-2026-06-24 09:26:53.549587 - voomLmFit - cluster: Inhib.Pvalb_WMtz, block= 'chip', ncol: 14, ngene: 201
-First sample weights (min/max) 0.4637096/1.4085848
-First intra-block correlation  -0.04075354
-Final sample weights (min/max) 0.4624285/1.4139752
-Final intra-block correlation  -0.04097662
-Done - Save data
-2026-06-24 09:26:54.101311 - voomLmFit - cluster: Inhib.Sst_Inhib, block= 'chip', ncol: 9, ngene: 167
-First sample weights (min/max) 0.5583254/1.4446135
-First intra-block correlation  -0.07637164
-Final sample weights (min/max) 0.5570751/1.4387942
-Final intra-block correlation  -0.08063747
-Done - Save data
-2026-06-24 09:26:54.650101 - voomLmFit - cluster: Inhib.Sst_L1b, block= 'chip', ncol: 5, ngene: 120
-First sample weights (min/max) 1/1
-Final sample weights (min/max) 1/1
-Done - Save data
-2026-06-24 09:26:54.811049 - voomLmFit - cluster: Inhib.Sst_L2.3, block= 'chip', ncol: 13, ngene: 169
-First sample weights (min/max) 0.5642115/1.4509578
-First intra-block correlation  -0.05397416
-Final sample weights (min/max) 0.553651/1.452028
-Final intra-block correlation  -0.05417229
-Done - Save data
-2026-06-24 09:26:55.311505 - voomLmFit - cluster: Inhib.Sst_L5, block= 'chip', ncol: 16, ngene: 223
-First sample weights (min/max) 0.4517431/1.5494450
-First intra-block correlation  0.01143752
-Final sample weights (min/max) 0.4570436/1.5505676
-Final intra-block correlation  0.01114383
-Done - Save data
-2026-06-24 09:26:55.843905 - voomLmFit - cluster: Inhib.Sst_L6, block= 'chip', ncol: 8, ngene: 155
-First sample weights (min/max) 0.714434/1.193641
-First intra-block correlation  -0.07427065
-Final sample weights (min/max) 0.715266/1.194795
-Final intra-block correlation  -0.07298487
-Done - Save data
-2026-06-24 09:26:56.322427 - voomLmFit - cluster: Inhib.Sst_WMtz, block= 'chip', ncol: 12, ngene: 167
-First sample weights (min/max) 0.606346/1.695907
-First intra-block correlation  0.0009151015
-Final sample weights (min/max) 0.6059291/1.7041045
-Final intra-block correlation  -0.002243499
-Done - Save data
-2026-06-24 09:26:56.799 - voomLmFit - cluster: Inhib.Vip_Inhib, block= 'chip', ncol: 16, ngene: 290
-First sample weights (min/max) 0.5427747/1.2989186
-First intra-block correlation  -0.005547252
-Final sample weights (min/max) 0.5413776/1.3000260
-Final intra-block correlation  -0.00543914
-Done - Save data
-2026-06-24 09:26:57.454394 - voomLmFit - cluster: Inhib.Vip_L1a, block= 'chip', ncol: 11, ngene: 159
-First sample weights (min/max) 0.7499726/1.3336265
-First intra-block correlation  -0.0143503
-Final sample weights (min/max) 0.7532908/1.3329745
-Final intra-block correlation  -0.01434049
-Done - Save data
-2026-06-24 09:26:57.93124 - voomLmFit - cluster: Inhib.Vip_L1b, block= 'chip', ncol: 15, ngene: 243
-First sample weights (min/max) 0.5574581/1.7164427
-First intra-block correlation  -0.03520728
-Final sample weights (min/max) 0.5566847/1.7202383
-Final intra-block correlation  -0.03458471
-Done - Save data
-2026-06-24 09:26:58.532984 - voomLmFit - cluster: Inhib.Vip_L2.3, block= 'chip', ncol: 16, ngene: 268
-First sample weights (min/max) 0.6842407/1.3771147
-First intra-block correlation  0.02341525
-Final sample weights (min/max) 0.685049/1.378188
-Final intra-block correlation  0.02318245
-Done - Save data
-2026-06-24 09:26:59.164688 - voomLmFit - cluster: Inhib.Vip_L5, block= 'chip', ncol: 16, ngene: 258
-First sample weights (min/max) 0.6261347/1.3559386
-First intra-block correlation  -0.01584546
-Final sample weights (min/max) 0.6253216/1.3577258
-Final intra-block correlation  -0.0156306
-Done - Save data
-2026-06-24 09:26:59.753822 - voomLmFit - cluster: Inhib.Vip_L6, block= 'chip', ncol: 8, ngene: 149
-First sample weights (min/max) 0.7391393/1.3473519
-First intra-block correlation  0.1208051
-Final sample weights (min/max) 0.7352804/1.3470104
-Final intra-block correlation  0.1202348
-Done - Save data
-2026-06-24 09:27:00.266434 - voomLmFit - cluster: Inhib.Vip_WMtz, block= 'chip', ncol: 14, ngene: 198
-First sample weights (min/max) 0.6660678/1.4562461
-First intra-block correlation  -0.006351204
-Final sample weights (min/max) 0.6505508/1.4664504
-Final intra-block correlation  -0.007099177
-Done - Save data
-2026-06-24 09:27:00.786232 - voomLmFit - cluster: Macro_Vasc, block= 'chip', ncol: 15, ngene: 153
-First sample weights (min/max) 0.1827224/1.7111900
-First intra-block correlation  0.02050708
-Final sample weights (min/max) 0.1712452/1.7048915
-Final intra-block correlation  0.02211811
-Done - Save data
-2026-06-24 09:27:01.224979 - voomLmFit - cluster: Micro.2_Inhib, block= 'chip', ncol: 15, ngene: 153
-First sample weights (min/max) 0.4095302/1.3185832
-First intra-block correlation  -0.04510774
-Final sample weights (min/max) 0.4052925/1.3486997
-Final intra-block correlation  -0.04626151
-Done - Save data
-2026-06-24 09:27:01.703185 - voomLmFit - cluster: Micro.2_L1a, block= 'chip', ncol: 16, ngene: 176
-First sample weights (min/max) 0.5340932/1.6260419
-First intra-block correlation  0.009153414
-Final sample weights (min/max) 0.5375852/1.6042037
-Final intra-block correlation  0.01016366
-Done - Save data
-2026-06-24 09:27:02.172848 - voomLmFit - cluster: Micro.2_L1b, block= 'chip', ncol: 16, ngene: 195
-First sample weights (min/max) 0.3650985/1.5337018
-First intra-block correlation  -0.03178733
-Final sample weights (min/max) 0.3598596/1.5307006
-Final intra-block correlation  -0.03146738
-Done - Save data
-2026-06-24 09:27:02.666939 - voomLmFit - cluster: Micro.2_L2.3, block= 'chip', ncol: 14, ngene: 150
-First sample weights (min/max) 0.3902733/1.4760261
-First intra-block correlation  -0.025679
-Final sample weights (min/max) 0.3813754/1.4914854
-Final intra-block correlation  -0.02577134
-Done - Save data
-2026-06-24 09:27:03.10286 - voomLmFit - cluster: Micro.2_L5, block= 'chip', ncol: 16, ngene: 249
-First sample weights (min/max) 0.3878197/1.6580467
-First intra-block correlation  -0.04170346
-Final sample weights (min/max) 0.3832861/1.6703508
-Final intra-block correlation  -0.03900767
-Done - Save data
-2026-06-24 09:27:03.682537 - voomLmFit - cluster: Micro.2_L6, block= 'chip', ncol: 15, ngene: 163
-First sample weights (min/max) 0.6114224/1.3201466
-First intra-block correlation  0.01990579
-Final sample weights (min/max) 0.6125436/1.3268455
-Final intra-block correlation  0.02002706
-Done - Save data
-2026-06-24 09:27:04.116807 - voomLmFit - cluster: Micro.2_Vasc, block= 'chip', ncol: 15, ngene: 138
-First sample weights (min/max) 0.3495413/1.6273151
-First intra-block correlation  0.1003248
-Final sample weights (min/max) 0.3580477/1.6112087
-Final intra-block correlation  0.1010276
-Done - Save data
-2026-06-24 09:27:04.52404 - voomLmFit - cluster: Micro.2_WM, block= 'chip', ncol: 16, ngene: 175
-First sample weights (min/max) 0.5593909/1.4060390
-First intra-block correlation  0.05736354
-Final sample weights (min/max) 0.5615953/1.3888258
-Final intra-block correlation  0.05699968
-Done - Save data
-2026-06-24 09:27:04.99294 - voomLmFit - cluster: Micro.2_WMtz, block= 'chip', ncol: 16, ngene: 264
-First sample weights (min/max) 0.4002181/1.7699655
-First intra-block correlation  -0.009493479
-Final sample weights (min/max) 0.3987484/1.7786054
-Final intra-block correlation  -0.009565101
-Done - Save data
-2026-06-24 09:27:05.629653 - voomLmFit - cluster: Micro.3_L1a, block= 'chip', ncol: 7, ngene: 108
-First sample weights (min/max) 0.6105459/1.2808474
-First intra-block correlation  -0.1005513
-Final sample weights (min/max) 0.6124275/1.2810475
-Final intra-block correlation  -0.08478442
-Done - Save data
-2026-06-24 09:27:06.016366 - voomLmFit - cluster: Micro.3_WM, block= 'chip', ncol: 8, ngene: 201
-First sample weights (min/max) 0.542951/1.486180
-First intra-block correlation  0.537616
-Final sample weights (min/max) 0.5417686/1.4874620
-Final intra-block correlation  0.5286562
-Done - Save data
-2026-06-24 09:27:06.642737 - voomLmFit - cluster: Micro.3_WMtz, block= 'chip', ncol: 5, ngene: 91
-First sample weights (min/max) 1/1
-Final sample weights (min/max) 1/1
-Done - Save data
-2026-06-24 09:27:06.803266 - voomLmFit - cluster: Micro.5_Inhib, block= 'chip', ncol: 16, ngene: 194
-First sample weights (min/max) 0.4785124/1.3796426
-First intra-block correlation  -0.008600982
-Final sample weights (min/max) 0.476571/1.384668
-Final intra-block correlation  -0.007505489
-Done - Save data
-2026-06-24 09:27:07.304059 - voomLmFit - cluster: Micro.5_L1a, block= 'chip', ncol: 16, ngene: 166
-First sample weights (min/max) 0.5852562/2.0314070
-First intra-block correlation  -0.04047191
-Final sample weights (min/max) 0.5732486/2.0260852
-Final intra-block correlation  -0.04088075
-Done - Save data
-2026-06-24 09:27:07.736946 - voomLmFit - cluster: Micro.5_L1b, block= 'chip', ncol: 16, ngene: 215
-First sample weights (min/max) 0.4827134/1.5849249
-First intra-block correlation  -0.05925377
-Final sample weights (min/max) 0.4894266/1.5775459
-Final intra-block correlation  -0.05827631
-Done - Save data
-2026-06-24 09:27:08.262489 - voomLmFit - cluster: Micro.5_L2.3, block= 'chip', ncol: 16, ngene: 170
-First sample weights (min/max) 0.4666836/1.5008062
-First intra-block correlation  -0.009738726
-Final sample weights (min/max) 0.466125/1.483486
-Final intra-block correlation  -0.009668299
-Done - Save data
-2026-06-24 09:27:08.7129 - voomLmFit - cluster: Micro.5_L5, block= 'chip', ncol: 16, ngene: 272
-First sample weights (min/max) 0.5692762/1.4281744
-First intra-block correlation  -0.06242199
-Final sample weights (min/max) 0.5754134/1.4314444
-Final intra-block correlation  -0.06222631
-Done - Save data
-2026-06-24 09:27:09.358812 - voomLmFit - cluster: Micro.5_L6, block= 'chip', ncol: 15, ngene: 218
-First sample weights (min/max) 0.616769/1.549094
-First intra-block correlation  0.02862368
-Final sample weights (min/max) 0.6177576/1.5394495
-Final intra-block correlation  0.02868186
-Done - Save data
-2026-06-24 09:27:09.897986 - voomLmFit - cluster: Micro.5_Vasc, block= 'chip', ncol: 15, ngene: 126
-First sample weights (min/max) 0.5515359/1.4788547
-First intra-block correlation  -0.03320574
-Final sample weights (min/max) 0.5325957/1.4832532
-Final intra-block correlation  -0.02905676
-Done - Save data
-2026-06-24 09:27:10.301443 - voomLmFit - cluster: Micro.5_WM, block= 'chip', ncol: 15, ngene: 163
-First sample weights (min/max) 0.5668226/1.4788407
-First intra-block correlation  0.01172991
-Final sample weights (min/max) 0.5681218/1.4732515
-Final intra-block correlation  0.01119459
-Done - Save data
-2026-06-24 09:27:10.769134 - voomLmFit - cluster: Micro.5_WMtz, block= 'chip', ncol: 16, ngene: 270
-First sample weights (min/max) 0.5569941/1.5543834
-First intra-block correlation  -0.03377112
-Final sample weights (min/max) 0.5545891/1.5533502
-Final intra-block correlation  -0.03307045
-Done - Save data
-2026-06-24 09:27:11.391444 - voomLmFit - cluster: Oligo.1_L1a, block= 'chip', ncol: 16, ngene: 154
-First sample weights (min/max) 0.6589951/1.2667959
-First intra-block correlation  -0.02850391
-Final sample weights (min/max) 0.6595425/1.2674376
-Final intra-block correlation  -0.02844898
-Done - Save data
-2026-06-24 09:27:11.802578 - voomLmFit - cluster: Oligo.1_L1b, block= 'chip', ncol: 8, ngene: 108
-First sample weights (min/max) 0.7455185/1.2786517
-First intra-block correlation  0.03804492
-Final sample weights (min/max) 0.7429283/1.2776440
-Final intra-block correlation  0.03755549
-Done - Save data
-2026-06-24 09:27:12.171286 - voomLmFit - cluster: Oligo.1_L5, block= 'chip', ncol: 15, ngene: 161
-First sample weights (min/max) 0.7085227/1.4083684
-First intra-block correlation  0.0244831
-Final sample weights (min/max) 0.7062924/1.4038296
-Final intra-block correlation  0.02448386
-Done - Save data
-2026-06-24 09:27:12.630158 - voomLmFit - cluster: Oligo.1_L6, block= 'chip', ncol: 14, ngene: 133
-First sample weights (min/max) 0.7545213/1.2697851
-First intra-block correlation  -0.008395309
-Final sample weights (min/max) 0.7576736/1.2650904
-Final intra-block correlation  -0.008412865
-Done - Save data
-2026-06-24 09:27:13.036882 - voomLmFit - cluster: Oligo.1_Vasc, block= 'chip', ncol: 4, ngene: 106
-2026-06-24 09:27:13.172875 - voomLmFit - cluster: Oligo.1_WM, block= 'chip', ncol: 16, ngene: 264
-First sample weights (min/max) 0.3847518/1.6843332
-First intra-block correlation  0.07724741
-Final sample weights (min/max) 0.3710235/1.6981904
-Final intra-block correlation  0.07674927
-Done - Save data
-2026-06-24 09:27:13.768839 - voomLmFit - cluster: Oligo.1_WMtz, block= 'chip', ncol: 16, ngene: 208
-First sample weights (min/max) 0.5913553/1.5878776
-First intra-block correlation  -0.01357121
-Final sample weights (min/max) 0.5897414/1.5761158
-Final intra-block correlation  -0.01348919
-Done - Save data
-2026-06-24 09:27:14.286849 - voomLmFit - cluster: Oligo.2_L1a, block= 'chip', ncol: 16, ngene: 149
-First sample weights (min/max) 0.6151073/1.5250791
-First intra-block correlation  0.01418461
-Final sample weights (min/max) 0.6119918/1.5251454
-Final intra-block correlation  0.01488365
-Done - Save data
-2026-06-24 09:27:14.686663 - voomLmFit - cluster: Oligo.2_L5, block= 'chip', ncol: 11, ngene: 129
-First sample weights (min/max) 0.7930143/1.3846899
-First intra-block correlation  0.02054632
-Final sample weights (min/max) 0.793021/1.380876
-Final intra-block correlation  0.02077958
-Done - Save data
-2026-06-24 09:27:15.118861 - voomLmFit - cluster: Oligo.2_L6, block= 'chip', ncol: 10, ngene: 110
-First sample weights (min/max) 0.7255027/1.5861870
-First intra-block correlation  0.1094916
-Final sample weights (min/max) 0.7238317/1.5689074
-Final intra-block correlation  0.1090344
-Done - Save data
-2026-06-24 09:27:15.494277 - voomLmFit - cluster: Oligo.2_WM, block= 'chip', ncol: 16, ngene: 251
-First sample weights (min/max) 0.3731247/1.5788330
-First intra-block correlation  0.1006896
-Final sample weights (min/max) 0.3758241/1.5886264
-Final intra-block correlation  0.1009396
-Done - Save data
-2026-06-24 09:27:16.078489 - voomLmFit - cluster: Oligo.2_WMtz, block= 'chip', ncol: 15, ngene: 138
-First sample weights (min/max) 0.4694699/1.2824968
-First intra-block correlation  0.02926391
-Final sample weights (min/max) 0.465199/1.288430
-Final intra-block correlation  0.03023209
-Done - Save data
-2026-06-24 09:27:16.483613 - voomLmFit - cluster: Oligo.3_Inhib, block= 'chip', ncol: 16, ngene: 218
-First sample weights (min/max) 0.5817648/1.5968621
-First intra-block correlation  -0.004775393
-Final sample weights (min/max) 0.5844123/1.5995211
-Final intra-block correlation  -0.004466835
-Done - Save data
-2026-06-24 09:27:17.026793 - voomLmFit - cluster: Oligo.3_L1a, block= 'chip', ncol: 16, ngene: 252
-First sample weights (min/max) 0.6614262/1.6628936
-First intra-block correlation  0.03217649
-Final sample weights (min/max) 0.6618461/1.6578580
-Final intra-block correlation  0.03159717
-Done - Save data
-2026-06-24 09:27:17.640949 - voomLmFit - cluster: Oligo.3_L1b, block= 'chip', ncol: 16, ngene: 261
-First sample weights (min/max) 0.4905762/1.7544046
-First intra-block correlation  0.008591557
-Final sample weights (min/max) 0.4892042/1.7513113
-Final intra-block correlation  0.008608363
-Done - Save data
-2026-06-24 09:27:18.273819 - voomLmFit - cluster: Oligo.3_L2.3, block= 'chip', ncol: 16, ngene: 165
-First sample weights (min/max) 0.5243705/1.5264406
-First intra-block correlation  0.01088056
-Final sample weights (min/max) 0.5248435/1.5425202
-Final intra-block correlation  0.01182941
-Done - Save data
-2026-06-24 09:27:18.697625 - voomLmFit - cluster: Oligo.3_L5, block= 'chip', ncol: 16, ngene: 334
-First sample weights (min/max) 0.5249561/1.6309642
-First intra-block correlation  0.02076487
-Final sample weights (min/max) 0.527745/1.633797
-Final intra-block correlation  0.02068944
-Done - Save data
-2026-06-24 09:27:19.460757 - voomLmFit - cluster: Oligo.3_L6, block= 'chip', ncol: 16, ngene: 320
-First sample weights (min/max) 0.6150859/1.5961153
-First intra-block correlation  0.003587159
-Final sample weights (min/max) 0.6071671/1.6009867
-Final intra-block correlation  0.003364374
-Done - Save data
-2026-06-24 09:27:20.207692 - voomLmFit - cluster: Oligo.3_Vasc, block= 'chip', ncol: 15, ngene: 199
-First sample weights (min/max) 0.4796132/2.2451964
-First intra-block correlation  0.04450252
-Final sample weights (min/max) 0.4675872/2.2020234
-Final intra-block correlation  0.04445554
-Done - Save data
-2026-06-24 09:27:20.727439 - voomLmFit - cluster: Oligo.3_WM, block= 'chip', ncol: 16, ngene: 357
-First sample weights (min/max) 0.4731829/1.9635975
-First intra-block correlation  0.06494826
-Final sample weights (min/max) 0.473081/1.965131
-Final intra-block correlation  0.06492665
-Done - Save data
-2026-06-24 09:27:21.499599 - voomLmFit - cluster: Oligo.3_WMtz, block= 'chip', ncol: 16, ngene: 352
-First sample weights (min/max) 0.5632474/1.7931371
-First intra-block correlation  0.02827254
-Final sample weights (min/max) 0.5667352/1.7877267
-Final intra-block correlation  0.0283309
-Done - Save data
-2026-06-24 09:27:22.248255 - voomLmFit - cluster: Oligo.4_Inhib, block= 'chip', ncol: 15, ngene: 149
-First sample weights (min/max) 0.5296233/1.4895088
-First intra-block correlation  -0.05810789
-Final sample weights (min/max) 0.5252898/1.4801702
-Final intra-block correlation  -0.05854722
-Done - Save data
-2026-06-24 09:27:22.690814 - voomLmFit - cluster: Oligo.4_L1a, block= 'chip', ncol: 16, ngene: 248
-First sample weights (min/max) 0.606084/1.344887
-First intra-block correlation  0.03891487
-Final sample weights (min/max) 0.6133398/1.3431210
-Final intra-block correlation  0.03901804
-Done - Save data
-2026-06-24 09:27:23.278116 - voomLmFit - cluster: Oligo.4_L1b, block= 'chip', ncol: 16, ngene: 195
-First sample weights (min/max) 0.7048656/1.5841470
-First intra-block correlation  -0.002652948
-Final sample weights (min/max) 0.7041929/1.5750376
-Final intra-block correlation  -0.002876621
-Done - Save data
-2026-06-24 09:27:23.767094 - voomLmFit - cluster: Oligo.4_L2.3, block= 'chip', ncol: 8, ngene: 113
-First sample weights (min/max) 0.7653065/1.1882194
-First intra-block correlation  -0.06987562
-Final sample weights (min/max) 0.7601209/1.1939364
-Final intra-block correlation  -0.06895781
-Done - Save data
-2026-06-24 09:27:24.150531 - voomLmFit - cluster: Oligo.4_L5, block= 'chip', ncol: 16, ngene: 280
-First sample weights (min/max) 0.5833863/1.5273878
-First intra-block correlation  -0.001724478
-Final sample weights (min/max) 0.5810143/1.5357602
-Final intra-block correlation  -0.001434862
-Done - Save data
-2026-06-24 09:27:25.416781 - voomLmFit - cluster: Oligo.4_L6, block= 'chip', ncol: 15, ngene: 252
-First sample weights (min/max) 0.6269786/1.5682093
-First intra-block correlation  0.03883177
-Final sample weights (min/max) 0.6282489/1.5696544
-Final intra-block correlation  0.03984399
-Done - Save data
-2026-06-24 09:27:25.99463 - voomLmFit - cluster: Oligo.4_Vasc, block= 'chip', ncol: 15, ngene: 135
-First sample weights (min/max) 0.662586/1.451978
-First intra-block correlation  -0.02355513
-Final sample weights (min/max) 0.6593777/1.4603700
-Final intra-block correlation  -0.02325449
-Done - Save data
-2026-06-24 09:27:26.397418 - voomLmFit - cluster: Oligo.4_WM, block= 'chip', ncol: 16, ngene: 343
-First sample weights (min/max) 0.2598557/2.5358199
-First intra-block correlation  0.06116574
-Final sample weights (min/max) 0.2521957/2.5608554
-Final intra-block correlation  0.06095126
-Done - Save data
-2026-06-24 09:27:27.121571 - voomLmFit - cluster: Oligo.4_WMtz, block= 'chip', ncol: 16, ngene: 309
-First sample weights (min/max) 0.6489628/1.5919791
-First intra-block correlation  0.00782259
-Final sample weights (min/max) 0.6525621/1.5883464
-Final intra-block correlation  0.008052105
-Done - Save data
-2026-06-24 09:27:27.762802 - voomLmFit - cluster: Oligo.5_L5, block= 'chip', ncol: 12, ngene: 143
-First sample weights (min/max) 0.7604043/1.3727623
-First intra-block correlation  -0.0378754
-Final sample weights (min/max) 0.7607686/1.3597693
-Final intra-block correlation  -0.03814576
-Done - Save data
-2026-06-24 09:27:28.19338 - voomLmFit - cluster: Oligo.5_L6, block= 'chip', ncol: 8, ngene: 87
-First sample weights (min/max) 0.811190/1.270383
-First intra-block correlation  0.07049937
-Final sample weights (min/max) 0.8094112/1.2722146
-Final intra-block correlation  0.06834651
-Done - Save data
-2026-06-24 09:27:28.5367 - voomLmFit - cluster: Oligo.5_WM, block= 'chip', ncol: 12, ngene: 108
-First sample weights (min/max) 0.369209/1.848993
-First intra-block correlation  0.1073249
-Final sample weights (min/max) 0.3785025/1.7976377
-Final intra-block correlation  0.1051635
-Done - Save data
-2026-06-24 09:27:28.884287 - voomLmFit - cluster: Oligo.5_WMtz, block= 'chip', ncol: 13, ngene: 103
-First sample weights (min/max) 0.6155938/1.2398232
-First intra-block correlation  -0.05332114
-Final sample weights (min/max) 0.6159041/1.2391749
-Final intra-block correlation  -0.05277483
-Done - Save data
-2026-06-24 09:27:29.229417 - voomLmFit - cluster: OPC.2_Inhib, block= 'chip', ncol: 15, ngene: 210
-First sample weights (min/max) 0.6818105/1.4481877
-First intra-block correlation  -0.05245281
-Final sample weights (min/max) 0.6860596/1.4469946
-Final intra-block correlation  -0.05276303
-Done - Save data
-2026-06-24 09:27:29.758324 - voomLmFit - cluster: OPC.2_L1a, block= 'chip', ncol: 15, ngene: 179
-First sample weights (min/max) 0.7280919/1.3251715
-First intra-block correlation  0.01930418
-Final sample weights (min/max) 0.7280072/1.3250869
-Final intra-block correlation  0.01918401
-Done - Save data
-2026-06-24 09:27:30.219758 - voomLmFit - cluster: OPC.2_L1b, block= 'chip', ncol: 16, ngene: 217
-First sample weights (min/max) 0.6303549/1.4585617
-First intra-block correlation  -0.02114588
-Final sample weights (min/max) 0.6341927/1.4592274
-Final intra-block correlation  -0.02115868
-Done - Save data
-2026-06-24 09:27:30.729818 - voomLmFit - cluster: OPC.2_L2.3, block= 'chip', ncol: 14, ngene: 226
-First sample weights (min/max) 0.700537/1.351089
-First intra-block correlation  -0.06414607
-Final sample weights (min/max) 0.7007004/1.3455005
-Final intra-block correlation  -0.06494969
-Done - Save data
-2026-06-24 09:27:31.29699 - voomLmFit - cluster: OPC.2_L5, block= 'chip', ncol: 16, ngene: 251
-First sample weights (min/max) 0.5843048/1.6179514
-First intra-block correlation  -0.01262801
-Final sample weights (min/max) 0.5876085/1.6230709
-Final intra-block correlation  -0.01298949
-Done - Save data
-2026-06-24 09:27:31.858806 - voomLmFit - cluster: OPC.2_L6, block= 'chip', ncol: 14, ngene: 199
-First sample weights (min/max) 0.6701124/1.3356979
-First intra-block correlation  0.01607921
-Final sample weights (min/max) 0.6670536/1.3329258
-Final intra-block correlation  0.013652
-Done - Save data
-2026-06-24 09:27:32.378248 - voomLmFit - cluster: OPC.2_Vasc, block= 'chip', ncol: 8, ngene: 110
-First sample weights (min/max) 0.7462366/1.8109532
-First intra-block correlation  0.2353435
-Final sample weights (min/max) 0.7469301/1.8225384
-Final intra-block correlation  0.2377851
-Done - Save data
-2026-06-24 09:27:32.780333 - voomLmFit - cluster: OPC.2_WM, block= 'chip', ncol: 15, ngene: 188
-First sample weights (min/max) 0.5919008/1.5393713
-First intra-block correlation  0.03741411
-Final sample weights (min/max) 0.5842448/1.5546032
-Final intra-block correlation  0.03845318
-Done - Save data
-2026-06-24 09:27:33.259578 - voomLmFit - cluster: OPC.2_WMtz, block= 'chip', ncol: 16, ngene: 224
-First sample weights (min/max) 0.6422828/1.5271610
-First intra-block correlation  -0.02825912
-Final sample weights (min/max) 0.6465732/1.5299512
-Final intra-block correlation  -0.02746639
-Done - Save data
-2026-06-24 09:27:33.767102 - voomLmFit - cluster: OPC.4_Inhib, block= 'chip', ncol: 7, ngene: 129
-First sample weights (min/max) 0.820817/1.253722
-First intra-block correlation  -0.240043
-Final sample weights (min/max) 0.8209897/1.2546761
-Final intra-block correlation  -0.2463244
-Done - Save data
-2026-06-24 09:27:34.152644 - voomLmFit - cluster: OPC.4_L1a, block= 'chip', ncol: 10, ngene: 135
-First sample weights (min/max) 0.6538482/1.3064929
-First intra-block correlation  -0.01617485
-Final sample weights (min/max) 0.652582/1.304346
-Final intra-block correlation  -0.01732066
-Done - Save data
-2026-06-24 09:27:34.590627 - voomLmFit - cluster: OPC.4_L1b, block= 'chip', ncol: 12, ngene: 117
-First sample weights (min/max) 0.8508671/1.3014371
-First intra-block correlation  -0.06584691
-Final sample weights (min/max) 0.8493804/1.2971543
-Final intra-block correlation  -0.06488225
-Done - Save data
-2026-06-24 09:27:34.978046 - voomLmFit - cluster: OPC.4_L5, block= 'chip', ncol: 12, ngene: 134
-First sample weights (min/max) 0.6755063/1.2715328
-First intra-block correlation  -0.02369915
-Final sample weights (min/max) 0.6732267/1.2758662
-Final intra-block correlation  -0.02208769
-Done - Save data
-2026-06-24 09:27:35.369612 - voomLmFit - cluster: OPC.4_L6, block= 'chip', ncol: 7, ngene: 103
-First sample weights (min/max) 0.8515074/1.1866619
-First intra-block correlation  0.3646643
-Final sample weights (min/max) 0.8496715/1.1887822
-Final intra-block correlation  0.3408453
-Done - Save data
-2026-06-24 09:27:35.72775 - voomLmFit - cluster: OPC.4_WM, block= 'chip', ncol: 13, ngene: 111
-First sample weights (min/max) 0.7177265/1.8453284
-First intra-block correlation  -0.04670957
-Final sample weights (min/max) 0.7059058/1.8337184
-Final intra-block correlation  -0.04693885
-Done - Save data
-2026-06-24 09:27:36.087404 - voomLmFit - cluster: OPC.4_WMtz, block= 'chip', ncol: 10, ngene: 117
-First sample weights (min/max) 0.5782206/1.4594853
-First intra-block correlation  0.05072352
-Final sample weights (min/max) 0.5751082/1.4557162
-Final intra-block correlation  0.05027614
-Done - Save data
-2026-06-24 09:27:36.472496 - voomLmFit - cluster: OPC.5_Inhib, block= 'chip', ncol: 16, ngene: 203
-First sample weights (min/max) 0.6899179/1.4969051
-First intra-block correlation  0.0515364
-Final sample weights (min/max) 0.6885533/1.4894211
-Final intra-block correlation  0.05264004
-Done - Save data
-2026-06-24 09:27:36.992183 - voomLmFit - cluster: OPC.5_L1a, block= 'chip', ncol: 12, ngene: 124
-First sample weights (min/max) 0.6243881/1.3612892
-First intra-block correlation  -0.05350601
-Final sample weights (min/max) 0.6280151/1.3730842
-Final intra-block correlation  -0.05312278
-Done - Save data
-2026-06-24 09:27:37.391691 - voomLmFit - cluster: OPC.5_L1b, block= 'chip', ncol: 16, ngene: 206
-First sample weights (min/max) 0.6141497/1.6382343
-First intra-block correlation  0.01156001
-Final sample weights (min/max) 0.6142684/1.6472092
-Final intra-block correlation  0.01163127
-Done - Save data
-2026-06-24 09:27:37.911354 - voomLmFit - cluster: OPC.5_L2.3, block= 'chip', ncol: 16, ngene: 184
-First sample weights (min/max) 0.5394321/1.3624302
-First intra-block correlation  -0.02319091
-Final sample weights (min/max) 0.5394547/1.3634797
-Final intra-block correlation  -0.02368307
-Done - Save data
-2026-06-24 09:27:38.390273 - voomLmFit - cluster: OPC.5_L5, block= 'chip', ncol: 16, ngene: 267
-First sample weights (min/max) 0.4713865/1.5048177
-First intra-block correlation  0.009035495
-Final sample weights (min/max) 0.4717735/1.5018227
-Final intra-block correlation  0.008550894
-Done - Save data
-2026-06-24 09:27:39.00133 - voomLmFit - cluster: OPC.5_L6, block= 'chip', ncol: 15, ngene: 222
-First sample weights (min/max) 0.648717/1.421737
-First intra-block correlation  0.02937476
-Final sample weights (min/max) 0.6502362/1.4173180
-Final intra-block correlation  0.03049922
-Done - Save data
-2026-06-24 09:27:39.518894 - voomLmFit - cluster: OPC.5_Vasc, block= 'chip', ncol: 4, ngene: 137
-2026-06-24 09:27:39.660432 - voomLmFit - cluster: OPC.5_WM, block= 'chip', ncol: 13, ngene: 159
-First sample weights (min/max) 0.6597826/2.0392449
-First intra-block correlation  -0.03982136
-Final sample weights (min/max) 0.6561958/2.0272181
-Final intra-block correlation  -0.03970001
-Done - Save data
-2026-06-24 09:27:40.119067 - voomLmFit - cluster: OPC.5_WMtz, block= 'chip', ncol: 16, ngene: 228
-First sample weights (min/max) 0.6892597/1.4103463
-First intra-block correlation  0.004355763
-Final sample weights (min/max) 0.6868059/1.4012710
-Final intra-block correlation  0.004560781
-Done - Save data
-2026-06-24 09:27:40.653141 - voomLmFit - cluster: Vasc.Endo_Inhib, block= 'chip', ncol: 16, ngene: 222
-First sample weights (min/max) 0.4460848/1.3016601
-First intra-block correlation  0.004360875
-Final sample weights (min/max) 0.4444131/1.2892048
-Final intra-block correlation  0.004311924
-Done - Save data
-2026-06-24 09:27:41.185721 - voomLmFit - cluster: Vasc.Endo_L1a, block= 'chip', ncol: 16, ngene: 179
-First sample weights (min/max) 0.4822522/1.5163421
-First intra-block correlation  -0.0189079
-Final sample weights (min/max) 0.4849774/1.5102013
-Final intra-block correlation  -0.01845536
-Done - Save data
-2026-06-24 09:27:41.649148 - voomLmFit - cluster: Vasc.Endo_L1b, block= 'chip', ncol: 16, ngene: 273
-First sample weights (min/max) 0.3733435/1.4817079
-First intra-block correlation  0.01837164
-Final sample weights (min/max) 0.3699084/1.4912294
-Final intra-block correlation  0.01897619
-Done - Save data
-2026-06-24 09:27:42.265902 - voomLmFit - cluster: Vasc.Endo_L2.3, block= 'chip', ncol: 15, ngene: 212
-First sample weights (min/max) 0.3920766/1.4149941
-First intra-block correlation  0.04736937
-Final sample weights (min/max) 0.3820301/1.3966257
-Final intra-block correlation  0.04693412
-Done - Save data
-2026-06-24 09:27:42.803983 - voomLmFit - cluster: Vasc.Endo_L5, block= 'chip', ncol: 16, ngene: 304
-First sample weights (min/max) 0.5243158/1.7287430
-First intra-block correlation  0.02257071
-Final sample weights (min/max) 0.5271374/1.7260770
-Final intra-block correlation  0.02273844
-Done - Save data
-2026-06-24 09:27:43.46522 - voomLmFit - cluster: Vasc.Endo_L6, block= 'chip', ncol: 15, ngene: 197
-First sample weights (min/max) 0.5505923/1.3723582
-First intra-block correlation  0.06347264
-Final sample weights (min/max) 0.5415588/1.3788995
-Final intra-block correlation  0.06348886
-Done - Save data
-2026-06-24 09:27:43.967744 - voomLmFit - cluster: Vasc.Endo_Vasc, block= 'chip', ncol: 16, ngene: 339
-First sample weights (min/max) 0.2616109/2.0742960
-First intra-block correlation  0.1069629
-Final sample weights (min/max) 0.2592393/2.0518314
-Final intra-block correlation  0.1067108
-Done - Save data
-2026-06-24 09:27:44.745292 - voomLmFit - cluster: Vasc.Endo_WM, block= 'chip', ncol: 16, ngene: 215
-First sample weights (min/max) 0.6862542/1.5719361
-First intra-block correlation  0.0249724
-Final sample weights (min/max) 0.6827747/1.5716834
-Final intra-block correlation  0.02454532
-Done - Save data
-2026-06-24 09:27:45.24746 - voomLmFit - cluster: Vasc.Endo_WMtz, block= 'chip', ncol: 16, ngene: 309
-First sample weights (min/max) 0.435098/1.750228
-First intra-block correlation  0.03127759
-Final sample weights (min/max) 0.436856/1.739492
-Final intra-block correlation  0.03166862
-Done - Save data
-2026-06-24 09:27:45.922147 - voomLmFit - cluster: Vasc.PC_Inhib, block= 'chip', ncol: 16, ngene: 132
-First sample weights (min/max) 0.4752939/1.5983165
-First intra-block correlation  -0.0005049139
-Final sample weights (min/max) 0.4736334/1.5959319
-Final intra-block correlation  -0.00100421
-Done - Save data
-2026-06-24 09:27:46.300137 - voomLmFit - cluster: Vasc.PC_L1a, block= 'chip', ncol: 14, ngene: 112
-First sample weights (min/max) 0.6152032/1.4999976
-First intra-block correlation  0.004304392
-Final sample weights (min/max) 0.614603/1.498318
-Final intra-block correlation  0.003081274
-Done - Save data
-2026-06-24 09:27:46.667665 - voomLmFit - cluster: Vasc.PC_L1b, block= 'chip', ncol: 16, ngene: 178
-First sample weights (min/max) 0.4211433/1.3340016
-First intra-block correlation  -0.03095984
-Final sample weights (min/max) 0.4193663/1.3279448
-Final intra-block correlation  -0.03111829
-Done - Save data
-2026-06-24 09:27:47.142382 - voomLmFit - cluster: Vasc.PC_L2.3, block= 'chip', ncol: 13, ngene: 156
-First sample weights (min/max) 0.4435084/1.3790536
-First intra-block correlation  -0.0384882
-Final sample weights (min/max) 0.4490839/1.3753520
-Final intra-block correlation  -0.03927255
-Done - Save data
-2026-06-24 09:27:47.595898 - voomLmFit - cluster: Vasc.PC_L5, block= 'chip', ncol: 16, ngene: 219
-First sample weights (min/max) 0.4759764/1.5097468
-First intra-block correlation  -0.006301765
-Final sample weights (min/max) 0.4825048/1.5323632
-Final intra-block correlation  -0.007159067
-Done - Save data
-2026-06-24 09:27:48.124938 - voomLmFit - cluster: Vasc.PC_L6, block= 'chip', ncol: 15, ngene: 127
-First sample weights (min/max) 0.6781712/1.5096212
-First intra-block correlation  -0.04296199
-Final sample weights (min/max) 0.6743022/1.5211403
-Final intra-block correlation  -0.04279591
-Done - Save data
-2026-06-24 09:27:48.491884 - voomLmFit - cluster: Vasc.PC_Vasc, block= 'chip', ncol: 16, ngene: 337
-First sample weights (min/max) 0.2551707/1.6498466
-First intra-block correlation  0.1712822
-Final sample weights (min/max) 0.2512016/1.6296749
-Final intra-block correlation  0.170896
-Done - Save data
-2026-06-24 09:27:49.211525 - voomLmFit - cluster: Vasc.PC_WM, block= 'chip', ncol: 14, ngene: 115
-First sample weights (min/max) 0.6130651/1.3783278
-First intra-block correlation  -0.03789096
-Final sample weights (min/max) 0.6107731/1.3920862
-Final intra-block correlation  -0.03803719
-Done - Save data
-2026-06-24 09:27:49.567518 - voomLmFit - cluster: Vasc.PC_WMtz, block= 'chip', ncol: 16, ngene: 231
-First sample weights (min/max) 0.2736451/1.4918469
-First intra-block correlation  -0.0169232
-Final sample weights (min/max) 0.2771905/1.4781905
-Final intra-block correlation  -0.0146979
-Done - Save data
-2026-06-24 09:27:50.121732 - voomLmFit - cluster: Vasc.VLMC_Vasc, block= 'chip', ncol: 15, ngene: 279
-First sample weights (min/max) 0.2285803/1.7600682
-First intra-block correlation  0.07445815
-Final sample weights (min/max) 0.2207176/1.7436903
-Final intra-block correlation  0.07311386
-Done - Save data
-There were 16 warnings (use warnings() to see them)
+2026-09-08 11:29:49.193889 - voomLmFit - cluster: OPC.4_xLD_glia, block= 'chip', ncol: 12, ngene: 141
+First sample weights (min/max) 0.7048575/1.3016970
+First intra-block correlation  -0.1162357
+Final sample weights (min/max) 0.7039122/1.3069172
+Final intra-block correlation  -0.1153793
+Done - Save data
+2026-09-08 11:29:51.345437 - voomLmFit - cluster: OPC.4_xWMd, block= 'chip', ncol: 13, ngene: 104
+First sample weights (min/max) 0.6447211/1.8249360
+First intra-block correlation  -0.0662226
+Final sample weights (min/max) 0.6370407/1.8204074
+Final intra-block correlation  -0.06726473
+Done - Save data
+2026-09-08 11:29:51.845505 - voomLmFit - cluster: OPC.4_xWMuf, block= 'chip', ncol: 10, ngene: 116
+First sample weights (min/max) 0.7348521/1.3627208
+First intra-block correlation  -0.03818264
+Final sample weights (min/max) 0.736254/1.366977
+Final intra-block correlation  -0.03836917
+Done - Save data
+2026-09-08 11:29:52.340407 - voomLmFit - cluster: OPC.5_xGL, block= 'chip', ncol: 13, ngene: 152
+First sample weights (min/max) 0.7095096/1.5197952
+First intra-block correlation  -0.06216514
+Final sample weights (min/max) 0.7141605/1.5058285
+Final intra-block correlation  -0.06608564
+Done - Save data
+2026-09-08 11:29:52.92416 - voomLmFit - cluster: OPC.5_xL1_inhib, block= 'chip', ncol: 16, ngene: 189
+First sample weights (min/max) 0.594911/1.460446
+First intra-block correlation  -0.02377301
+Final sample weights (min/max) 0.595616/1.458533
+Final intra-block correlation  -0.0229655
+Done - Save data
+2026-09-08 11:29:53.550202 - voomLmFit - cluster: OPC.5_xL2, block= 'chip', ncol: 16, ngene: 201
+First sample weights (min/max) 0.5593878/1.3756821
+First intra-block correlation  0.002524208
+Final sample weights (min/max) 0.5655342/1.3849474
+Final intra-block correlation  0.002111739
+Done - Save data
+2026-09-08 11:29:54.187355 - voomLmFit - cluster: OPC.5_xL5, block= 'chip', ncol: 16, ngene: 239
+First sample weights (min/max) 0.611601/1.583051
+First intra-block correlation  -0.0139727
+Final sample weights (min/max) 0.6109979/1.5791327
+Final intra-block correlation  -0.01407159
+Done - Save data
+2026-09-08 11:29:54.894521 - voomLmFit - cluster: OPC.5_xL6, block= 'chip', ncol: 15, ngene: 215
+First sample weights (min/max) 0.6151876/1.4526583
+First intra-block correlation  0.0323173
+Final sample weights (min/max) 0.6145702/1.4516023
+Final intra-block correlation  0.03262963
+Done - Save data
+2026-09-08 11:29:55.565265 - voomLmFit - cluster: OPC.5_xLD_glia, block= 'chip', ncol: 16, ngene: 266
+First sample weights (min/max) 0.4339786/1.6392012
+First intra-block correlation  0.01892008
+Final sample weights (min/max) 0.4340351/1.6378726
+Final intra-block correlation  0.01907799
+Done - Save data
+2026-09-08 11:29:56.34021 - voomLmFit - cluster: OPC.5_xVasc_adj, block= 'chip', ncol: 14, ngene: 146
+First sample weights (min/max) 0.615218/1.333451
+First intra-block correlation  0.01523186
+Final sample weights (min/max) 0.6037322/1.3416410
+Final intra-block correlation  0.01625523
+Done - Save data
+2026-09-08 11:29:56.897197 - voomLmFit - cluster: OPC.5_xWMd, block= 'chip', ncol: 11, ngene: 165
+First sample weights (min/max) 0.6229112/1.7447685
+First intra-block correlation  -0.08732042
+Final sample weights (min/max) 0.6209222/1.7485033
+Final intra-block correlation  -0.08886121
+Done - Save data
+2026-09-08 11:29:57.531638 - voomLmFit - cluster: OPC.5_xWMuf, block= 'chip', ncol: 16, ngene: 212
+First sample weights (min/max) 0.6598161/1.5744203
+First intra-block correlation  -0.002821655
+Final sample weights (min/max) 0.6554309/1.5835467
+Final intra-block correlation  -0.002503816
+Done - Save data
+2026-09-08 11:29:58.207744 - voomLmFit - cluster: Vasc.Endo_xGL, block= 'chip', ncol: 16, ngene: 202
+First sample weights (min/max) 0.5608234/1.6545547
+First intra-block correlation  0.01426792
+Final sample weights (min/max) 0.5607278/1.6597736
+Final intra-block correlation  0.01513019
+Done - Save data
+2026-09-08 11:29:58.84662 - voomLmFit - cluster: Vasc.Endo_xL1_inhib, block= 'chip', ncol: 16, ngene: 207
+First sample weights (min/max) 0.5317775/1.3562059
+First intra-block correlation  0.01384735
+Final sample weights (min/max) 0.5306833/1.3532675
+Final intra-block correlation  0.01293169
+Done - Save data
+2026-09-08 11:29:59.547639 - voomLmFit - cluster: Vasc.Endo_xL2, block= 'chip', ncol: 16, ngene: 199
+First sample weights (min/max) 0.4551418/1.5623277
+First intra-block correlation  0.04935452
+Final sample weights (min/max) 0.4464686/1.5546261
+Final intra-block correlation  0.04974138
+Done - Save data
+2026-09-08 11:30:00.187411 - voomLmFit - cluster: Vasc.Endo_xL5, block= 'chip', ncol: 16, ngene: 230
+First sample weights (min/max) 0.5418232/1.3581022
+First intra-block correlation  0.02901271
+Final sample weights (min/max) 0.5435085/1.3754012
+Final intra-block correlation  0.02856637
+Done - Save data
+2026-09-08 11:30:00.890624 - voomLmFit - cluster: Vasc.Endo_xL6, block= 'chip', ncol: 15, ngene: 191
+First sample weights (min/max) 0.6146341/1.3746312
+First intra-block correlation  0.07218042
+Final sample weights (min/max) 0.6061903/1.3798232
+Final intra-block correlation  0.07162283
+Done - Save data
+2026-09-08 11:30:01.523565 - voomLmFit - cluster: Vasc.Endo_xLD_glia, block= 'chip', ncol: 16, ngene: 320
+First sample weights (min/max) 0.3701289/1.9156141
+First intra-block correlation  0.01471999
+Final sample weights (min/max) 0.3706219/1.9349670
+Final intra-block correlation  0.01489969
+Done - Save data
+2026-09-08 11:30:02.465778 - voomLmFit - cluster: Vasc.Endo_xVasc_adj, block= 'chip', ncol: 16, ngene: 308
+First sample weights (min/max) 0.2911292/1.9563487
+First intra-block correlation  0.06043482
+Final sample weights (min/max) 0.2901982/1.9709770
+Final intra-block correlation  0.06097373
+Done - Save data
+2026-09-08 11:30:03.322536 - voomLmFit - cluster: Vasc.Endo_xVasc_im, block= 'chip', ncol: 15, ngene: 239
+First sample weights (min/max) 0.3223004/1.9471068
+First intra-block correlation  0.0257784
+Final sample weights (min/max) 0.3243829/1.9402095
+Final intra-block correlation  0.02705943
+Done - Save data
+2026-09-08 11:30:04.066714 - voomLmFit - cluster: Vasc.Endo_xVasc_mural, block= 'chip', ncol: 16, ngene: 302
+First sample weights (min/max) 0.2745999/1.7067238
+First intra-block correlation  0.08928822
+Final sample weights (min/max) 0.2726817/1.6917808
+Final intra-block correlation  0.08814462
+Done - Save data
+2026-09-08 11:30:04.925683 - voomLmFit - cluster: Vasc.Endo_xWMd, block= 'chip', ncol: 16, ngene: 202
+First sample weights (min/max) 0.6359663/1.5751661
+First intra-block correlation  0.03252697
+Final sample weights (min/max) 0.635785/1.602548
+Final intra-block correlation  0.03297589
+Done - Save data
+2026-09-08 11:30:05.56759 - voomLmFit - cluster: Vasc.Endo_xWMuf, block= 'chip', ncol: 16, ngene: 266
+First sample weights (min/max) 0.5755069/1.4010665
+First intra-block correlation  0.0259182
+Final sample weights (min/max) 0.570761/1.400867
+Final intra-block correlation  0.02673606
+Done - Save data
+2026-09-08 11:30:06.509135 - voomLmFit - cluster: Vasc.PC_xGL, block= 'chip', ncol: 15, ngene: 129
+First sample weights (min/max) 0.4983613/1.5093353
+First intra-block correlation  -0.01619197
+Final sample weights (min/max) 0.4990012/1.5073782
+Final intra-block correlation  -0.01598891
+Done - Save data
+2026-09-08 11:30:07.001201 - voomLmFit - cluster: Vasc.PC_xL1_inhib, block= 'chip', ncol: 16, ngene: 117
+First sample weights (min/max) 0.6071232/1.5397791
+First intra-block correlation  0.002701623
+Final sample weights (min/max) 0.6040127/1.5606916
+Final intra-block correlation  0.001988462
+Done - Save data
+2026-09-08 11:30:07.477995 - voomLmFit - cluster: Vasc.PC_xL2, block= 'chip', ncol: 14, ngene: 164
+First sample weights (min/max) 0.3987163/1.3131059
+First intra-block correlation  -0.01555104
+Final sample weights (min/max) 0.396466/1.328356
+Final intra-block correlation  -0.01730554
+Done - Save data
+2026-09-08 11:30:08.09321 - voomLmFit - cluster: Vasc.PC_xL5, block= 'chip', ncol: 16, ngene: 140
+First sample weights (min/max) 0.5500097/1.5994517
+First intra-block correlation  0.00151601
+Final sample weights (min/max) 0.5670765/1.5929411
+Final intra-block correlation  0.001370066
+Done - Save data
+2026-09-08 11:30:08.588221 - voomLmFit - cluster: Vasc.PC_xL6, block= 'chip', ncol: 15, ngene: 118
+First sample weights (min/max) 0.5952868/1.5216259
+First intra-block correlation  -0.03588301
+Final sample weights (min/max) 0.5894482/1.5003601
+Final intra-block correlation  -0.03508213
+Done - Save data
+2026-09-08 11:30:09.05568 - voomLmFit - cluster: Vasc.PC_xLD_glia, block= 'chip', ncol: 16, ngene: 228
+First sample weights (min/max) 0.3915532/1.3191760
+First intra-block correlation  -0.002155009
+Final sample weights (min/max) 0.3964267/1.3134601
+Final intra-block correlation  -0.001968572
+Done - Save data
+2026-09-08 11:30:09.76176 - voomLmFit - cluster: Vasc.PC_xVasc_adj, block= 'chip', ncol: 16, ngene: 244
+First sample weights (min/max) 0.2608409/1.6963490
+First intra-block correlation  0.001354479
+Final sample weights (min/max) 0.2504106/1.7487916
+Final intra-block correlation  0.001865368
+Done - Save data
+2026-09-08 11:30:10.493052 - voomLmFit - cluster: Vasc.PC_xVasc_im, block= 'chip', ncol: 15, ngene: 247
+First sample weights (min/max) 0.2731294/1.6811038
+First intra-block correlation  0.1083456
+Final sample weights (min/max) 0.2627551/1.6797844
+Final intra-block correlation  0.1066474
+Done - Save data
+2026-09-08 11:30:11.268206 - voomLmFit - cluster: Vasc.PC_xVasc_mural, block= 'chip', ncol: 16, ngene: 316
+First sample weights (min/max) 0.3007658/1.6216813
+First intra-block correlation  0.1693821
+Final sample weights (min/max) 0.2950445/1.5978274
+Final intra-block correlation  0.1684111
+Done - Save data
+2026-09-08 11:30:12.138308 - voomLmFit - cluster: Vasc.PC_xWMd, block= 'chip', ncol: 14, ngene: 115
+First sample weights (min/max) 0.6624442/1.7522095
+First intra-block correlation  -0.003979186
+Final sample weights (min/max) 0.6760577/1.7738384
+Final intra-block correlation  -0.004062175
+Done - Save data
+2026-09-08 11:30:12.611648 - voomLmFit - cluster: Vasc.PC_xWMuf, block= 'chip', ncol: 16, ngene: 162
+First sample weights (min/max) 0.441596/1.559255
+First intra-block correlation  -0.0413254
+Final sample weights (min/max) 0.4456843/1.5696977
+Final intra-block correlation  -0.04068569
+Done - Save data
+2026-09-08 11:30:13.172827 - voomLmFit - cluster: Vasc.VLMC_xVasc_adj, block= 'chip', ncol: 11, ngene: 116
+First sample weights (min/max) 0.461631/1.317952
+First intra-block correlation  0.06587017
+Final sample weights (min/max) 0.4502819/1.3364010
+Final intra-block correlation  0.07266267
+Done - Save data
+2026-09-08 11:30:13.672596 - voomLmFit - cluster: Vasc.VLMC_xVasc_im, block= 'chip', ncol: 15, ngene: 227
+First sample weights (min/max) 0.3344172/2.1545212
+First intra-block correlation  0.09387103
+Final sample weights (min/max) 0.3180346/2.1592937
+Final intra-block correlation  0.09203465
+Done - Save data
+2026-09-08 11:30:14.369327 - voomLmFit - cluster: Vasc.VLMC_xVasc_mural, block= 'chip', ncol: 15, ngene: 222
+First sample weights (min/max) 0.1430159/1.4794548
+First intra-block correlation  0.1059823
+Final sample weights (min/max) 0.1318288/1.4228016
+Final intra-block correlation  0.1048377
+Done - Save data
+There were 15 warnings (use warnings() to see them)
 [1] "Reproducibility information:"
-[1] "2026-06-24 09:27:50 EDT"
+[1] "2026-09-08 11:30:14 EDT"
    user  system elapsed 
-100.509   1.129 102.678 
+140.191   1.429 145.374 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -1411,7 +1625,7 @@ There were 16 warnings (use warnings() to see them)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-06-24
+ date     2026-09-08
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -1490,4 +1704,4 @@ There were 16 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jun 24 09:27:50 AM EDT 2026
+Tue Sep  8 11:30:15 AM EDT 2026
