@@ -1,13 +1,15 @@
 cluster,mod,n_gene,n_FDR05,nUP,nDown,model,file,datatype,cell_type_broad,contrast,n_donor
-Vasc~Sp09D08,carrier,9014,30,8,22,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-L1~Sp09D05,carrier,12076,1,0,1,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-L2.3~Sp09D01,carrier,14006,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-LD~Sp09D02,carrier,15529,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-Inhib~Sp09D09,carrier,12722,2,0,2,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-L5~Sp09D03,carrier,14322,3,3,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-L6~Sp09D04,carrier,14466,16,10,6,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-WM.uf~Sp09D07,carrier,3588,21,2,19,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
-WM~Sp09D06,carrier,9998,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vVasc,carrier,7215,7,3,4,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vL1,carrier,12169,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vL2,carrier,14315,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vInhib,carrier,8653,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,29
+vLD,carrier,14020,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vL5a,carrier,14441,135,90,45,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,29
+vL5b,carrier,13430,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,29
+vL6,carrier,13237,12,7,5,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vWMuf,carrier,3418,26,3,23,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,30
+vWMpv,carrier,8248,0,0,0,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,29
+vWMd,carrier,6255,1,0,1,carrier,vlmf_model_summary_Visium.csv,Visium,NA,NA,29
 Astro,carrier,18320,75,62,13,carrier,vlmf_model_summary_sn_broad.csv,sn_broad,NA,NA,30
 Macro,carrier,2931,15,10,5,carrier,vlmf_model_summary_sn_broad.csv,sn_broad,NA,NA,18
 Micro,carrier,14350,2,0,2,carrier,vlmf_model_summary_sn_broad.csv,sn_broad,NA,NA,30
@@ -21,6 +23,12 @@ Astro.2,carrier,9994,58,10,48,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Ast
 Astro.3,carrier,11282,23,5,18,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Astro,NA,30
 Astro.4,carrier,8135,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Astro,NA,25
 Astro.5,carrier,1793,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Astro,NA,27
+Macro,carrier,2931,15,10,5,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Macro,NA,18
+Micro.1,carrier,10158,1,1,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,28
+Micro.2,carrier,8763,1,0,1,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,30
+Micro.3,carrier,7923,1,1,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,26
+Micro.4,carrier,7227,15,13,2,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,27
+Micro.5,carrier,2327,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,25
 Oligo.1,carrier,13881,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Oligo,NA,30
 Oligo.2,carrier,13983,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Oligo,NA,29
 Oligo.3,carrier,11496,1022,679,343,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Oligo,NA,30
@@ -31,44 +39,42 @@ OPC.2,carrier,11203,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,OPC,NA,
 OPC.3,carrier,14268,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,OPC,NA,30
 OPC.4,carrier,11598,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,OPC,NA,30
 OPC.5,carrier,1380,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,OPC,NA,13
-Macro,carrier,2931,15,10,5,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Macro,NA,18
-Micro.1,carrier,10158,1,1,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,28
-Micro.2,carrier,8763,1,0,1,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,30
-Micro.3,carrier,7923,1,1,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,26
-Micro.4,carrier,7227,15,13,2,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,27
-Micro.5,carrier,2327,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Micro,NA,25
 Vasc.Endo,carrier,5058,2,1,1,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Vasc,NA,27
 Vasc.VLMC,carrier,6644,4,1,3,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Vasc,NA,22
 Excit.L2,carrier,20080,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,24
-Excit.L2_5.1,carrier,22201,6,0,6,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,30
-Excit.L2_5.2,carrier,14797,1,1,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,14
-Excit.L5.1,carrier,18607,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,24
-Excit.L5.2,carrier,13343,19,3,16,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,9
-Excit.L6_CT,carrier,15211,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,16
+Excit.L2_5.mix,carrier,22201,6,0,6,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,NA
+Excit.L2_5.RELN,carrier,13343,19,3,16,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,NA
+Excit.L5.RELN,carrier,14797,1,1,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,NA
+Excit.L5.RORB,carrier,18607,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,NA
+Excit.L6.CT,carrier,15211,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,NA
 Excit.L6b,carrier,15739,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Excit,NA,18
-Inhib.Lamp5_Lhx6,carrier,14063,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,26
-Inhib.Pvalb,carrier,15219,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,26
-Inhib.Vip,carrier,19549,14,0,14,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,30
+Inhib.LAMP5_LHX6,carrier,14063,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,NA
+Inhib.PVALB,carrier,15219,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,NA
+Inhib.VIP,carrier,19549,14,0,14,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,NA
 Inhib.Chandelier,carrier,8999,0,0,0,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,14
-Inhib.Sst,carrier,12194,2,0,2,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,26
-Vasc~Sp09D08,NA,9014,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-Vasc~Sp09D08,NA,9014,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-L1~Sp09D05,NA,11594,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-L1~Sp09D05,NA,11594,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-L2.3~Sp09D01,NA,14006,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-L2.3~Sp09D01,NA,14006,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-LD~Sp09D02,NA,15053,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-LD~Sp09D02,NA,15053,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-Inhib~Sp09D09,NA,12207,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-Inhib~Sp09D09,NA,12207,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-L5~Sp09D03,NA,14322,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-L5~Sp09D03,NA,14322,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-L6~Sp09D04,NA,13930,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-L6~Sp09D04,NA,13930,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-WM.uf~Sp09D07,NA,3172,15,7,8,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-WM.uf~Sp09D07,NA,3172,1,0,1,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
-WM~Sp09D06,NA,9409,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
-WM~Sp09D06,NA,9409,1,0,1,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+Inhib.SST,carrier,12194,2,0,2,carrier,vlmf_model_summary_sn_fine.csv,sn_fine,Inhib,NA,NA
+vVasc,NA,7215,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vVasc,NA,7215,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vL1,NA,11721,14,7,7,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vL1,NA,11721,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vL2,NA,14315,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vL2,NA,14315,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vInhib,NA,8653,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vInhib,NA,8653,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,13
+vLD,NA,13581,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vLD,NA,13581,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vL5a,NA,13889,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vL5a,NA,13889,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,13
+vL5b,NA,13430,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vL5b,NA,13430,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,13
+vL6,NA,13237,1,1,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vL6,NA,13237,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vWMuf,NA,3021,7,4,3,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,16
+vWMuf,NA,3021,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vWMpv,NA,7568,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,15
+vWMpv,NA,7568,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
+vWMd,NA,6255,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_AA,15
+vWMd,NA,6255,0,0,0,carrier_anc,vlmf_ancestry_model_summary_Visium.csv,Visium,NA,carrier_EA,14
 Astro,NA,18320,98,91,7,carrier_anc,vlmf_ancestry_model_summary_sn_broad.csv,sn_broad,NA,carrier_AA,16
 Astro,NA,18320,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_broad.csv,sn_broad,NA,carrier_EA,14
 Macro,NA,2931,2,2,0,carrier_anc,vlmf_ancestry_model_summary_sn_broad.csv,sn_broad,NA,carrier_AA,8
@@ -133,46 +139,50 @@ Vasc.VLMC,NA,6644,3,0,3,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_f
 Vasc.VLMC,NA,6644,1,1,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,11
 Excit.L2,NA,20080,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,12
 Excit.L2,NA,20080,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,12
-Excit.L2_5.1,NA,22201,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,16
-Excit.L2_5.1,NA,22201,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,14
-Excit.L2_5.2,NA,13455,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,7
-Excit.L2_5.2,NA,13455,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,7
-Excit.L5.1,NA,17720,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,12
-Excit.L5.1,NA,17720,1,1,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,12
-Excit.L5.2,NA,11952,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,4
-Excit.L5.2,NA,11952,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,5
-Excit.L6_CT,NA,14031,3,2,1,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,8
-Excit.L6_CT,NA,14031,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,8
+Excit.L2_5.mix,NA,22201,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Excit.L2_5.mix,NA,22201,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+Excit.L2_5.RELN,NA,11952,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Excit.L2_5.RELN,NA,11952,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+Excit.L5.RELN,NA,13455,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Excit.L5.RELN,NA,13455,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+Excit.L5.RORB,NA,17720,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Excit.L5.RORB,NA,17720,1,1,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+Excit.L6.CT,NA,14031,3,2,1,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Excit.L6.CT,NA,14031,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
 Excit.L6b,NA,15739,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,10
 Excit.L6b,NA,15739,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,8
-Inhib.Lamp5_Lhx6,NA,13528,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,14
-Inhib.Lamp5_Lhx6,NA,13528,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,12
-Inhib.Pvalb,NA,15219,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,14
-Inhib.Pvalb,NA,15219,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,12
-Inhib.Vip,NA,19549,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,16
-Inhib.Vip,NA,19549,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,14
+Inhib.LAMP5_LHX6,NA,13528,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Inhib.LAMP5_LHX6,NA,13528,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+Inhib.PVALB,NA,15219,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Inhib.PVALB,NA,15219,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+Inhib.VIP,NA,19549,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Inhib.VIP,NA,19549,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
 Inhib.Chandelier,NA,10214,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,8
 Inhib.Chandelier,NA,10214,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,6
-Inhib.Sst,NA,12194,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,13
-Inhib.Sst,NA,12194,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,13
-Inhib~Sp09D09,interaction Age,12722,1,1,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-Vasc~Sp09D08,interaction Age,9014,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-L1~Sp09D05,interaction Age,11594,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-L2.3~Sp09D01,interaction Age,14006,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-LD~Sp09D02,interaction Age,15053,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-L5~Sp09D03,interaction Age,14322,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-L6~Sp09D04,interaction Age,13930,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-WM.uf~Sp09D07,interaction Age,3172,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-WM~Sp09D06,interaction Age,9409,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
-L5~Sp09D03,interaction Anc,14322,1,0,1,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-Vasc~Sp09D08,interaction Anc,9014,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-L1~Sp09D05,interaction Anc,11594,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-L2.3~Sp09D01,interaction Anc,14006,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-LD~Sp09D02,interaction Anc,15053,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-Inhib~Sp09D09,interaction Anc,12207,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-L6~Sp09D04,interaction Anc,13930,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-WM.uf~Sp09D07,interaction Anc,3172,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
-WM~Sp09D06,interaction Anc,9409,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+Inhib.SST,NA,12194,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_AA,NA
+Inhib.SST,NA,12194,0,0,0,carrier_anc,vlmf_ancestry_model_summary_sn_fine.csv,sn_fine,NA,carrier_EA,NA
+vVasc,interaction Age,7215,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
+vL1,interaction Age,11721,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
+vL2,interaction Age,14315,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
+vInhib,interaction Age,8653,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,29
+vLD,interaction Age,13581,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
+vL5a,interaction Age,13889,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,29
+vL5b,interaction Age,13430,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,29
+vL6,interaction Age,13237,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
+vWMuf,interaction Age,3021,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,30
+vWMpv,interaction Age,7568,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,29
+vWMd,interaction Age,6255,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_Visium.csv,Visium,NA,NA,29
+vVasc,interaction Anc,7215,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+vL1,interaction Anc,11721,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+vL2,interaction Anc,14315,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+vInhib,interaction Anc,8653,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,29
+vLD,interaction Anc,13581,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+vL5a,interaction Anc,13889,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,29
+vL5b,interaction Anc,13430,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,29
+vL6,interaction Anc,13237,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+vWMuf,interaction Anc,3021,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,30
+vWMpv,interaction Anc,7568,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,29
+vWMd,interaction Anc,6255,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_Visium.csv,Visium,NA,NA,29
 Astro,interaction Age,18320,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_broad.csv,sn_broad,NA,NA,30
 Macro,interaction Age,2931,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_broad.csv,sn_broad,NA,NA,18
 Micro,interaction Age,14350,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_broad.csv,sn_broad,NA,NA,30
@@ -189,8 +199,7 @@ OPC,interaction Anc,17290,0,0,0,interaction_Anc,vlmf_model_summary_interaction_A
 Vasc,interaction Anc,8801,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_broad.csv,sn_broad,NA,NA,29
 Excit,interaction Anc,25772,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_broad.csv,sn_broad,NA,NA,30
 Inhib,interaction Anc,21076,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_broad.csv,sn_broad,NA,NA,30
-Excit.L5.2,interaction Age,11952,7,7,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,9
-Excit.L2_5.1,interaction Age,22170,3,1,2,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,30
+NA,interaction Age,141757,10,8,2,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,NA
 OPC.3,interaction Age,14349,1,0,1,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,30
 Astro.1,interaction Age,16867,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,29
 Astro.2,interaction Age,10083,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,30
@@ -215,15 +224,8 @@ Oligo.5,interaction Age,9854,0,0,0,interaction_Age,vlmf_model_summary_interactio
 Vasc.Endo,interaction Age,5618,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,27
 Vasc.VLMC,interaction Age,6644,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,22
 Excit.L2,interaction Age,20080,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,24
-Excit.L2_5.2,interaction Age,14365,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,14
-Excit.L5.1,interaction Age,18607,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,24
-Excit.L6_CT,interaction Age,14031,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,16
 Excit.L6b,interaction Age,16016,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,18
-Inhib.Lamp5_Lhx6,interaction Age,13588,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,26
-Inhib.Pvalb,interaction Age,15249,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,26
-Inhib.Vip,interaction Age,19576,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,30
 Inhib.Chandelier,interaction Age,8999,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,14
-Inhib.Sst,interaction Age,12219,0,0,0,interaction_Age,vlmf_model_summary_interaction_Age_sn_fine.csv,sn_fine,NA,NA,26
 Astro.5,interaction Anc,1793,1,1,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,27
 Micro.2,interaction Anc,8763,1,1,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,30
 Micro.4,interaction Anc,6620,1,1,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,27
@@ -249,13 +251,13 @@ Oligo.5,interaction Anc,9670,0,0,0,interaction_Anc,vlmf_model_summary_interactio
 Vasc.Endo,interaction Anc,5058,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,27
 Vasc.VLMC,interaction Anc,6644,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,22
 Excit.L2,interaction Anc,20080,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,24
-Excit.L2_5.1,interaction Anc,22201,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,30
-Excit.L2_5.2,interaction Anc,13455,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,14
-Excit.L5.1,interaction Anc,17720,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,24
-Excit.L5.2,interaction Anc,11952,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,9
-Excit.L6_CT,interaction Anc,14031,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,16
+Excit.L2_5.mix,interaction Anc,22201,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Excit.L2_5.RELN,interaction Anc,11952,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Excit.L5.RELN,interaction Anc,13455,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Excit.L5.RORB,interaction Anc,17720,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Excit.L6.CT,interaction Anc,14031,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
 Excit.L6b,interaction Anc,15739,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,18
-Inhib.Lamp5_Lhx6,interaction Anc,13528,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,26
-Inhib.Pvalb,interaction Anc,15219,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,26
-Inhib.Vip,interaction Anc,19549,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,30
-Inhib.Sst,interaction Anc,12194,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,26
+Inhib.LAMP5_LHX6,interaction Anc,13528,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Inhib.PVALB,interaction Anc,15219,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Inhib.VIP,interaction Anc,19549,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
+Inhib.SST,interaction Anc,12194,0,0,0,interaction_Anc,vlmf_model_summary_interaction_Anc_sn_fine.csv,sn_fine,NA,NA,NA
