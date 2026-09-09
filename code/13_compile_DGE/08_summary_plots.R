@@ -75,7 +75,7 @@ dge_summary_bar_reg <- dge_count_combined |>
     pivot_longer(!c(cluster, contrast), names_to = "reg", values_to = "n_genes") |>
     ggplot(aes(x = cluster, y = n_genes, fill = reg)) +
     geom_col() +
-    geom_text(aes(y = n_genes + (n_genes/abs(n_genes)*40), label = ifelse(n_genes != 0, abs(n_genes), ""), color = reg)) +
+    geom_text(aes(y = n_genes + (n_genes/abs(n_genes)*10), label = ifelse(n_genes != 0, abs(n_genes), ""), color = reg)) +
     # geom_text(aes(label = ifelse(n_genes != 0, abs(n_genes), ""), color = reg), 
     #                 size = 3) +
     facet_wrap(~contrast, ncol = 1) +
@@ -132,7 +132,7 @@ length(topDEGs)
 logFC_Heatmap(data = dge_data, gene_list = topDEGs, title = "topDEGs", datatype = datatype)
 
 ## Risk gene heatmap
-logFC_Heatmap(AD_risk$symbol, title = "ADrisk")
+logFC_Heatmap(data = dge_data, gene_list = AD_risk$symbol, title = "ADrisk", datatype = datatype)
 
 if(datatype == "sn_fine"){
     
