@@ -169,12 +169,20 @@ logFC_Heatmap <- function(data,
                                   grid.text(pval_matrix[i, j], x, y, gp = gpar(fontsize = 10))
                               })
     
+    stacked_legends <- packLegend(
+        heatmap_legend(log_fc_heatmap),
+        sig_legend,
+        direction="vertical"
+    )
+
     if(save){
-        pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
+        pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height=h, width=w)
+        draw(log_fc_heatmap, heatmap_legend_side=legend_side, annotation_legend_side=legend_side,
+             annotation_legend_list=list(sig_legend), merge_legend=TRUE)
         dev.off()
     } else {
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
+        draw(log_fc_heatmap, heatmap_legend_side=legend_side, annotation_legend_side=legend_side,
+             annotation_legend_list=list(sig_legend), merge_legend=TRUE)
     }
     
     
@@ -335,11 +343,13 @@ logFC_Heatmap_contrast <- function(data_contrast,
                               })
     
     if(save){
-        pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height = h, width = w)
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
+        pdf(here(plot_dir, sprintf("DGE_%s_%s_heatmap_%s.pdf", datatype, stat_suffix, title)), height=h, width=w)
+        draw(log_fc_heatmap, heatmap_legend_side=legend_side, annotation_legend_side=legend_side,
+             annotation_legend_list=list(sig_legend), merge_legend=TRUE)
         dev.off()
     } else {
-        draw(log_fc_heatmap, heatmap_legend_side = legend_side, annotation_legend_side = legend_side, annotation_legend_list = list(sig_legend))
+        draw(log_fc_heatmap, heatmap_legend_side=legend_side, annotation_legend_side=legend_side,
+             annotation_legend_list=list(sig_legend), merge_legend=TRUE)
     }
     
 }
