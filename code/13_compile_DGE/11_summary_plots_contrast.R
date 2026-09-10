@@ -186,7 +186,7 @@ dge_summary_bar_simple <- dge_count |>
     #     # expand=expansion(mult=c(0, 0.15)),
     #     oob=scales::squish
     # ) +
-    scale_fill_manual(values = cell_type_colors$anno) +
+    scale_fill_manual(values = cluster_colors) +
     theme_bw() +
     labs(y = sprintf("%s\nn DE genes (FDR < 0.05)", datatype)) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
@@ -311,7 +311,7 @@ if(datatype == "sn_fine"){
     
     length(topDEGs)
     
-    logFC_Heatmap_contrast(dge_data_contrast, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype), h = 10)
+    logFC_Heatmap_contrast(dge_data_contrast, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype), h = 10, w= 12)
     
     ## Risk gene heatmap
     logFC_Heatmap_contrast(dge_data_contrast, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype))
@@ -463,6 +463,10 @@ if(datatype == "cell_type_fine"){
 #                     name = "11_summary_plots_contrast",
 #                     create_script = FALSE)
 
+
+slurmjobs::array_submit(list(datatype = c("sn_broad","sn_fine","Visium"),
+                             contrast = c("Sex", "ancestry")
+                             ))
 
 ## Reproducibility information
 print("Reproducibility information:")
