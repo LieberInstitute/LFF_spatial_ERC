@@ -115,7 +115,105 @@ DEGs_signif$Visium |>
     filter(cluster == "vL5a") |> 
     select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val) |>
     print(n = 40)
-    
+
+
+#### Anchor gene candidate table ####
+## Systematic version of the common_WMuf_Vasc / KLK6 checks above: instead of
+## eyeballing overlaps one pair of clusters at a time, scan every
+## (data_type, cluster) DE run at once and surface any gene that clears
+## FDR < 0.05 in >= 2 of them. For each candidate, also pull its logFC from
+## every run it was actually TESTED in (not just where significant) so we can
+## see whether the direction holds up even in runs that didn't reach
+## significance - a gene sig in 2 runs and trending the same way in 5 more is
+## a stronger anchor candidate than one sig in 2 runs and null/flipped
+## everywhere else.
+##
+## NOTE: this only has data to work with for whatever data_types are loaded
+## into DE_data/DEGs_signif above (currently just "Visium" is confirmed
+## present on disk in this run - re-run once sn_broad/sn_fine Rds files are
+## available to get the real cross-datatype table; the code below is
+## data_types-agnostic and needs no changes to pick those up).
+
+data_dir <- here("processed-data", "13_compile_DGE", "03_DEG_upset")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+
+## long-format significant-DEG table across all data_types x clusters
+DEGs_signif_long <- imap_dfr(DEGs_signif, ~ .x |> mutate(data_type = .y))
+
+## how many distinct (data_type, cluster) combos is each gene significant in
+anchor_hit_counts <- DEGs_signif_long |>
+    distinct(gene_id, gene_name, data_type, cluster) |>
+    count(gene_id, gene_name, name = "n_sig_hits", sort = TRUE)
+
+anchor_candidates <- anchor_hit_counts |>
+    filter(n_sig_hits >= 2)
+
+## direction consistency among the SIGNIFICANT hits only
+anchor_direction <- DEGs_signif_long |>
+    semi_join(anchor_candidates, by = c("gene_id", "gene_name")) |>
+    group_by(gene_id, gene_name) |>
+    summarise(
+        n_sig_up = sum(vlmf_logFC > 0),
+        n_sig_down = sum(vlmf_logFC < 0),
+        consistent_sig_direction = (n_sig_up == 0) | (n_sig_down == 0),
+        .groups = "drop"
+    )
+
+anchor_candidates <- anchor_candidates |>
+    left_join(anchor_direction, by = c("gene_id", "gene_name")) |>
+    arrange(desc(n_sig_hits), desc(consistent_sig_direction))
+
+## wide logFC table: one column per (data_type, cluster) run, populated from
+## the FULL DE_data (not just DEGs_signif) so non-significant runs still show
+## their logFC for the consistency check instead of just dropping out as NA
+DE_data_long <- imap_dfr(DE_data, ~ .x |> mutate(data_type = .y))
+
+anchor_logFC_wide <- DE_data_long |>
+    filter(gene_id %in% anchor_candidates$gene_id) |>
+    mutate(run = paste(data_type, cluster, sep = "__")) |>
+    distinct(gene_id, gene_name, run, .keep_all = TRUE) |>  # guard against accidental dupes
+    select(gene_id, gene_name, run, vlmf_logFC) |>
+    pivot_wider(names_from = run, values_from = vlmf_logFC)
+
+anchor_candidate_table <- anchor_candidates |>
+    left_join(anchor_logFC_wide, by = c("gene_id", "gene_name"))
+
+write_csv(anchor_candidate_table, here(data_dir, "anchor_candidate_table.csv"))
+
+anchor_candidate_table
+
+
+#### Check 18_all_analysis_summary.R anchor genes against this DE run ####
+## Cross-check the fixed anchor_genes panel from 18_all_analysis_summary.R
+## (hand-picked from the k=9 / preprint-era analysis, per the comments there)
+## against whatever data_types are loaded here: does each gene still clear
+## FDR < 0.05 anywhere, and if so, in which (data_type, cluster) runs -
+## including any NEW runs it wasn't previously known to hit (e.g. vL5a didn't
+## exist as a domain at k=9, so any anchor gene newly significant there is a
+## genuinely new piece of support, not just a re-confirmation).
+current_anchor_genes <- c(
+    "NPTXR", "MAL", "KLK6", "PLP1", "MAG", "MBP", "SOX10", "OPALIN",
+    "FOS", "TLR2", "STAT1", "STAT4", "CPNE4", "FZD8", "CABLES1", "MAPT", "MAP2", "WNT7A"
+)
+
+current_anchor_check <- DE_data_long |>
+    filter(gene_name %in% current_anchor_genes) |>
+    mutate(run = paste(data_type, cluster, sep = "__")) |>
+    select(gene_name, run, vlmf_logFC, vlmf_adj.P.Val)
+
+current_anchor_sig_summary <- current_anchor_check |>
+    filter(vlmf_adj.P.Val < 0.05) |>
+    group_by(gene_name) |>
+    summarise(sig_runs = paste(run, collapse = "; "), n_sig = n(), .groups = "drop")
+
+current_anchor_sig_summary
+
+## anchors with zero significant runs in this data - still worth checking
+## anchor_candidate_table / current_anchor_check for logFC trend before
+## dropping them, since direction-consistent-but-underpowered is a different
+## story than genuinely gone
+setdiff(current_anchor_genes, current_anchor_sig_summary$gene_name)
+
 
 #### combined bar plots ####
 

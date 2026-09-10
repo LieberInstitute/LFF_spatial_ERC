@@ -138,7 +138,7 @@ walk2(go_result, names(go_result),
                   x = "DE_class_cluster", 
                   showCategory = 3, 
                   label_format = 60)  +
-              ggtitle(paste("GO Enrichment:", .y, " (5+ genes)")) +
+              ggtitle(paste("GO Enrichment:", .y)) +
               theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
       )
 )
@@ -175,7 +175,7 @@ walk2(go_result, names(go_result), function(gr, ont){
                 x = "DE_class_cluster", 
                 showCategory = 3, 
                 label_format = 60)  +
-            ggtitle(paste("GO Enrichment:", ont)) +
+            ggtitle(paste("GO Enrichment:", ont, " (5+ genes)")) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
     )
 })
