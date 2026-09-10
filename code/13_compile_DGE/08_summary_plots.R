@@ -299,6 +299,15 @@ if(datatype == "sn_fine"){
     # 2 6.603897 1.247513e-14     33     116   Oligo.3_up    0.05   679 imOLG  ZFP36L1, DOCK8, CAMK1D, MEF2C, SAT1, AKAP13, SRGN, ARHGAP26, PLCB1, CHST11...
 }
 
+#### Check NE genes ####
+
+dge_data |> 
+    filter(grepl("^ADR", gene_name)) |>
+    select(gene_name, cluster, vlmf_logFC, vlmf_AveExpr, vlmf_t,  vlmf_P.Value, vlmf_adj.P.Val) |>
+    arrange(vlmf_adj.P.Val) |>
+    print(n = 20)
+
+
 # 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium")),
 #                     create_shell = TRUE,
