@@ -1,25 +1,25 @@
 **** Job starts ****
-Thu Oct 23 01:11:30 PM EDT 2025
+Tue Sep  8 05:33:29 PM EDT 2026
 **** JHPCE info ****
-User: neagles
-Job id: 23517466
+User: lhuuki
+Job id: 35579061
 Job name: 11_summary_plots_contrast
-Node name: compute-093
+Node name: compute-176
 Task id: 4
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
 
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.1.0     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -27,7 +27,7 @@ Currently Loaded Modules:
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.0
+ComplexHeatmap version 2.26.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -47,76 +47,99 @@ This message can be suppressed by:
 
 Loading objects:
   SpD_colors
-# A tibble: 18 × 2
+# A tibble: 20 × 2
    ALL_DE_class_cluster     n
    <chr>                <int>
- 1 Inhib~Sp09D09_Down       2
- 2 Inhib~Sp09D09_None   12720
- 3 L1~Sp09D05_Down          1
- 4 L1~Sp09D05_None      12075
- 5 L2.3~Sp09D01_None    14006
- 6 L5~Sp09D03_None      14319
- 7 L5~Sp09D03_Up            3
- 8 L6~Sp09D04_Down          6
- 9 L6~Sp09D04_None      14450
-10 L6~Sp09D04_Up           10
-11 LD~Sp09D02_None      15529
-12 Vasc~Sp09D08_Down       22
-13 Vasc~Sp09D08_None     8984
-14 Vasc~Sp09D08_Up          8
-15 WM.uf~Sp09D07_Down      19
-16 WM.uf~Sp09D07_None    3567
-17 WM.uf~Sp09D07_Up         2
-18 WM~Sp09D06_None       9998
-# A tibble: 21 × 2
-   DE_class_cluster         n
-   <chr>                <int>
- 1 Inhib~Sp09D09_None_F 11751
- 2 Inhib~Sp09D09_None_M 11751
- 3 L1~Sp09D05_None_F    11180
- 4 L1~Sp09D05_None_M    11180
- 5 L2-3~Sp09D01_None_F  13502
- 6 L2-3~Sp09D01_None_M  13502
- 7 L5~Sp09D03_None_F    13855
- 8 L5~Sp09D03_None_M    13855
- 9 L6~Sp09D04_None_F    13384
-10 L6~Sp09D04_None_M    13384
-# ℹ 11 more rows
-`summarise()` has grouped output by 'gene_name'. You can override using the
-`.groups` argument.
-`summarise()` has grouped output by 'gene_name'. You can override using the
-`.groups` argument.
-# A tibble: 2 × 3
-  contrast  cluster           n
-  <chr>     <fct>         <int>
-1 carrier_F WM~Sp09D06        1
-2 carrier_M WM.uf~Sp09D07    91
-# A tibble: 2 × 3
-  contrast  cluster           n
-  <chr>     <fct>         <int>
-1 carrier_F WM~Sp09D06        1
-2 carrier_M WM.uf~Sp09D07    91
+ 1 vInhib_None           8653
+ 2 vL1_None             12169
+ 3 vL2_None             14315
+ 4 vL5a_Down               45
+ 5 vL5a_None            14306
+ 6 vL5a_Up                 90
+ 7 vL5b_None            13430
+ 8 vL6_Down                 5
+ 9 vL6_None             13225
+10 vL6_Up                   7
+11 vLD_None             14020
+12 vVasc_Down               4
+13 vVasc_None            7208
+14 vVasc_Up                 3
+15 vWMd_Down                1
+16 vWMd_None             6254
+17 vWMpv_None            8248
+18 vWMuf_Down              23
+19 vWMuf_None            3392
+20 vWMuf_Up                 3
+# A tibble: 31 × 2
+   DE_class_cluster     n
+   <chr>            <int>
+ 1 vInhib_None_F     8392
+ 2 vInhib_None_M     8392
+ 3 vL1_None_F       11278
+ 4 vL1_None_M       11278
+ 5 vL2_None_F       13802
+ 6 vL2_None_M       13802
+ 7 vL5a_None_F      13395
+ 8 vL5a_None_M      13395
+ 9 vL5b_None_F      13431
+10 vL5b_None_M      13431
+# ℹ 21 more rows
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by gene_name and cluster.
+ℹ Output is grouped by gene_name.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(gene_name, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by gene_name and cluster.
+ℹ Output is grouped by gene_name.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(gene_name, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 6 × 3
+  contrast  cluster     n
+  <chr>     <fct>   <int>
+1 carrier_F vWMuf       1
+2 carrier_F vWMd       11
+3 carrier_M vL6         9
+4 carrier_M vWMuf      57
+5 carrier_M vWMpv       1
+6 carrier_M vWMd        1
+# A tibble: 6 × 3
+  contrast  cluster     n
+  <chr>     <fct>   <int>
+1 carrier_F vWMuf       1
+2 carrier_F vWMd       11
+3 carrier_M vL6         9
+4 carrier_M vWMuf      57
+5 carrier_M vWMpv       1
+6 carrier_M vWMd        1
 Joining with `by = join_by(data_type, cluster, gene_name)`
-`summarise()` has grouped output by 'cluster', 'contrast'. You can override
-using the `.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster, contrast, and ALL_DE_class.
+ℹ Output is grouped by cluster and contrast.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast, ALL_DE_class))` for per-operation
+  grouping (`?dplyr::dplyr_by`) instead.
 # A tibble: 2 × 2
   contrast      n
   <chr>     <int>
-1 carrier_F     1
-2 carrier_M    91
-# A tibble: 2 × 3
-  cluster       contrast      n
-  <fct>         <chr>     <int>
-1 WM.uf~Sp09D07 carrier_M    91
-2 WM~Sp09D06    carrier_F     1
-# A tibble: 1 × 6
-  cluster         cor    p_val p_val_adj signif anno     
-  <fct>         <dbl>    <dbl>     <dbl> <chr>  <chr>    
-1 WM.uf~Sp09D07 0.161 6.14e-19  6.14e-19 *      cor=0.16*
-Warning message:
-ggrepel: 48 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
-null device 
-          1 
-Error in dge_data_contrast : 
-  The pipe operator requires a function call as RHS (<input>:33:9)
+1 carrier_F    12
+2 carrier_M    68
+# A tibble: 6 × 3
+  cluster contrast      n
+  <fct>   <chr>     <int>
+1 vL6     carrier_M     9
+2 vWMuf   carrier_F     1
+3 vWMuf   carrier_M    57
+4 vWMpv   carrier_M     1
+5 vWMd    carrier_F    11
+6 vWMd    carrier_M     1
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Error: object 'cell_type_colors' not found
 Execution halted

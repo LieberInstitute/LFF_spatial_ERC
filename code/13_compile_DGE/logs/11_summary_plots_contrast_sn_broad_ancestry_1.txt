@@ -1,25 +1,25 @@
 **** Job starts ****
-Thu Oct 23 01:11:29 PM EDT 2025
+Tue Sep  8 05:33:30 PM EDT 2026
 **** JHPCE info ****
-User: neagles
-Job id: 23517463
+User: lhuuki
+Job id: 35579058
 Job name: 11_summary_plots_contrast
-Node name: compute-175
+Node name: compute-099
 Task id: 1
 Loading conda_R/4.5
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
-  2) JHPCE_tools/3.0            4) conda_R/4.5
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
 
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.1.0     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -27,7 +27,7 @@ Currently Loaded Modules:
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.0
+ComplexHeatmap version 2.26.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -83,10 +83,18 @@ Loading objects:
  9 Macro_None_AA     2929
 10 Macro_None_EA     2931
 # ℹ 15 more rows
-`summarise()` has grouped output by 'gene_name'. You can override using the
-`.groups` argument.
-`summarise()` has grouped output by 'gene_name'. You can override using the
-`.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by gene_name and cluster.
+ℹ Output is grouped by gene_name.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(gene_name, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by gene_name and cluster.
+ℹ Output is grouped by gene_name.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(gene_name, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
 # A tibble: 7 × 3
   contrast   cluster     n
   <chr>      <fct>   <int>
@@ -108,8 +116,12 @@ Loading objects:
 6 carrier_EA OPC         1
 7 carrier_EA Vasc        1
 Joining with `by = join_by(data_type, cluster, gene_name)`
-`summarise()` has grouped output by 'cluster', 'contrast'. You can override
-using the `.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster, contrast, and ALL_DE_class.
+ℹ Output is grouped by cluster and contrast.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast, ALL_DE_class))` for per-operation
+  grouping (`?dplyr::dplyr_by`) instead.
 # A tibble: 2 × 2
   contrast       n
   <chr>      <int>
@@ -125,12 +137,16 @@ using the `.groups` argument.
 5 OPC     carrier_EA     1
 6 Vasc    carrier_AA     1
 7 Vasc    carrier_EA     1
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
 # A tibble: 1 × 6
   cluster   cor     p_val p_val_adj signif anno     
   <fct>   <dbl>     <dbl>     <dbl> <chr>  <chr>    
 1 Astro   0.275 5.11e-314 5.11e-314 *      cor=0.27*
-Warning message:
-ggrepel: 72 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
 null device 
           1 
 Error in dge_data_contrast : 

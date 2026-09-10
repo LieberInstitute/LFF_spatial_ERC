@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  4 07:09:39 PM EDT 2025
+Wed Sep  9 01:09:43 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 21833612
+Job id: 35591534
 Job name: 08_summary_plots
-Node name: compute-169
+Node name: compute-095
 Task id: 2
 Loading conda_R/4.5
 
@@ -15,11 +15,11 @@ Currently Loaded Modules:
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.1.0     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -27,7 +27,7 @@ Currently Loaded Modules:
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.1
+ComplexHeatmap version 2.26.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -47,12 +47,120 @@ This message can be suppressed by:
 
 Loading objects:
   SpD_colors
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Warning message:
+Removed 52 rows containing missing values or values outside the scale range
+(`geom_text()`). 
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by contrast and cluster.
+ℹ Output is grouped by contrast.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(contrast, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Saving 10 x 7 in image
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: In scale_y_log10() : log-10 transformation introduced infinite values.
 [1] 21
 null device 
           1 
-Error in UseMethod("filter") : 
-  no applicable method for 'filter' applied to an object of class "character"
-Calls: logFC_Heatmap ... stopifnot -> is.data.frame -> pivot_wider -> select -> filter
-Execution halted
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2026-09-09 13:13:40 EDT"
+   user  system elapsed 
+222.181   6.302 230.600 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-09-09
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package        * version date (UTC) lib source
+ BiocGenerics     0.56.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ Cairo            1.7-0   2025-10-29 [1] CRAN (R 4.5.0)
+ circlize         0.4.18  2026-04-04 [1] CRAN (R 4.5.0)
+ cli              3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
+ clue             0.3-68  2026-03-26 [1] CRAN (R 4.5.0)
+ cluster          2.1.8.1 2025-03-12 [3] CRAN (R 4.5.0)
+ codetools        0.2-20  2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace       2.1-2   2025-09-22 [1] CRAN (R 4.5.0)
+ ComplexHeatmap * 2.26.1  2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
+ crayon           1.5.3   2024-06-20 [2] CRAN (R 4.5.0)
+ dichromat        2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ digest           0.6.39  2025-11-19 [1] CRAN (R 4.5.0)
+ doParallel       1.0.17  2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr          * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
+ farver           2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats        * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
+ foreach          1.5.2   2022-02-02 [2] CRAN (R 4.5.0)
+ generics         0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ getopt         * 1.21.1  2026-04-27 [1] CRAN (R 4.5.0)
+ GetoptLong       1.1.1   2026-04-08 [1] CRAN (R 4.5.0)
+ ggplot2        * 4.0.3   2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel        * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
+ GlobalOptions    0.1.4   2026-04-08 [1] CRAN (R 4.5.0)
+ glue             1.8.1   2026-04-17 [1] CRAN (R 4.5.0)
+ gtable           0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here           * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms              1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
+ IRanges          2.44.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ iterators        1.0.14  2022-02-05 [2] CRAN (R 4.5.0)
+ labeling         0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lifecycle        1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate      * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magick           2.9.1   2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr         2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ matrixStats      1.5.0   2025-01-07 [2] CRAN (R 4.5.0)
+ pillar           1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig        2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ png              0.1-9   2026-03-15 [1] CRAN (R 4.5.0)
+ purrr          * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
+ R6               2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg             1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
+ RColorBrewer     1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp             1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr          * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ rjson            0.2.23  2024-09-16 [2] CRAN (R 4.5.0)
+ rlang            1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot        2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S4Vectors        0.48.1  2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7               0.2.2   2026-04-22 [1] CRAN (R 4.5.0)
+ scales           1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ sessioninfo    * 1.2.4   2026-06-04 [1] CRAN (R 4.5.0)
+ shape            1.4.6.1 2024-02-23 [2] CRAN (R 4.5.0)
+ stringi          1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr        * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ systemfonts      1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping      1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble         * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr          * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect       1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse      * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange       0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb             0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ vctrs            0.7.3   2026-04-11 [1] CRAN (R 4.5.0)
+ withr            3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Sep  9 01:13:42 PM EDT 2026

@@ -1,17 +1,12 @@
 **** Job starts ****
-Tue Sep  1 07:05:33 PM EDT 2026
+Thu Sep 10 01:59:57 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35461576
+Job id: 35603390
 Job name: 02_GO_analysis
-Node name: compute-127.cm.cluster
+Node name: compute-155.cm.cluster
 Task id: 1
-Unloading conda_R/4.5.x
 Loading conda_R/4.5
-
-The following have been reloaded with a version change:
-  1) conda_R/4.5.x => conda_R/4.5
-
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -130,9 +125,10 @@ clusterProfiler v4.18.4 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320
+Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
+clusterProfiler: an R package for comparing biological themes among
+gene clusters. OMICS: A Journal of Integrative Biology. 2012,
+16(5):284-287
 
 Attaching package: ‘clusterProfiler’
 
@@ -335,7 +331,7 @@ Warning: stack imbalance in '{', 4 then 6
 Warning: stack imbalance in 'if', 2 then 4
 null device 
           1 
-2026-09-01 19:11:15.369876 - CC
+2026-09-10 14:03:54.17221 - CC
 --Astro-1_up (4)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -389,7 +385,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2026-09-01 19:12:50.011324 - BP
+2026-09-10 14:04:56.195439 - BP
 --Astro-1_up (7)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -430,7 +426,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2026-09-01 19:23:16.261201 - MF
+2026-09-10 14:11:52.586297 - MF
 --Astro-1_up (6)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -582,9 +578,9 @@ You defined `cell_fun` for a heatmap with more than 100 rows or
 columns, which might be very slow to draw. Consider to use the
 vectorized version `layer_fun`. 
 [1] "Reproducibility information:"
-[1] "2026-09-01 19:25:29 EDT"
-    user   system  elapsed 
-1162.927   23.252 1195.409 
+[1] "2026-09-10 14:13:17 EDT"
+   user  system elapsed 
+772.994  10.255 799.812 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -595,7 +591,7 @@ vectorized version `layer_fun`.
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-09-01
+ date     2026-09-10
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -773,4 +769,4 @@ vectorized version `layer_fun`.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Sep  1 07:25:30 PM EDT 2026
+Thu Sep 10 02:13:18 PM EDT 2026

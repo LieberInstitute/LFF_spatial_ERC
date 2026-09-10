@@ -1,17 +1,12 @@
 **** Job starts ****
-Tue Sep  1 07:05:32 PM EDT 2026
+Thu Sep 10 01:59:57 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35461574
+Job id: 35603389
 Job name: 02_GO_analysis
-Node name: compute-156.cm.cluster
+Node name: compute-177.cm.cluster
 Task id: 3
-Unloading conda_R/4.5.x
 Loading conda_R/4.5
-
-The following have been reloaded with a version change:
-  1) conda_R/4.5.x => conda_R/4.5
-
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -130,10 +125,8 @@ clusterProfiler v4.18.4 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
-clusterProfiler: an R package for comparing biological themes among
-gene clusters. OMICS: A Journal of Integrative Biology. 2012,
-16(5):284-287
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722
 
 Attaching package: ‘clusterProfiler’
 
@@ -278,7 +271,7 @@ null device
           1 
 null device 
           1 
-2026-09-01 19:07:36.175779 - CC
+2026-09-10 14:02:21.255923 - CC
 --Astro_up (36)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -295,7 +288,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2026-09-01 19:07:55.56665 - BP
+2026-09-10 14:02:43.705394 - BP
 --Astro_up (44)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -320,7 +313,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2026-09-01 19:11:25.839825 - MF
+2026-09-10 14:07:14.165241 - MF
 --Astro_up (16)--
 preparing gene to GO mapping data...
 preparing IC data...

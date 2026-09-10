@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  4 07:09:39 PM EDT 2025
+Wed Sep  9 01:09:43 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 21833611
+Job id: 35591533
 Job name: 08_summary_plots
-Node name: compute-169
+Node name: compute-160
 Task id: 1
 Loading conda_R/4.5
 
@@ -15,11 +15,11 @@ Currently Loaded Modules:
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.1.0     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -27,7 +27,7 @@ Currently Loaded Modules:
 here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.1
+ComplexHeatmap version 2.26.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -47,12 +47,34 @@ This message can be suppressed by:
 
 Loading objects:
   cell_type_colors
-`summarise()` has grouped output by 'cluster'. You can override using the
-`.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by cluster and contrast.
+ℹ Output is grouped by cluster.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Warning message:
+Removed 147 rows containing missing values or values outside the scale range
+(`geom_text()`). 
+Warning message:
+Removed 147 rows containing missing values or values outside the scale range
+(`geom_text()`). 
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by contrast and cluster.
+ℹ Output is grouped by contrast.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(contrast, cluster))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Saving 10 x 7 in image
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: In scale_y_log10() : log-10 transformation introduced infinite values.
 [1] 61
 null device 
           1 
-Error in UseMethod("filter") : 
-  no applicable method for 'filter' applied to an object of class "character"
-Calls: logFC_Heatmap ... stopifnot -> is.data.frame -> pivot_wider -> select -> filter
+null device 
+          1 
+Error in logFC_Heatmap(data = filter(dge_data, grepl("Oligo", cluster)),  : 
+  argument "datatype" is missing, with no default
+Calls: logFC_Heatmap ... is.factor -> here -> <Anonymous> -> path -> sprintf
 Execution halted

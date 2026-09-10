@@ -1,12 +1,17 @@
 **** Job starts ****
-Mon Dec  1 10:51:45 AM EST 2025
+Tue Sep  8 04:18:28 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 25209386
+Job id: 35577760
 Job name: 10_GO_analysis_contrast
-Node name: compute-144
+Node name: compute-103
 Task id: 3
+Unloading conda_R/4.5.x
 Loading conda_R/4.5
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5.x => conda_R/4.5
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -15,11 +20,11 @@ Currently Loaded Modules:
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.2
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.1.0     
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -121,13 +126,14 @@ The following object is masked from ‘package:dplyr’:
 
 
 
-clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+clusterProfiler v4.18.4 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
+X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
+enrichment tool for interpreting omics data. The Innovation. 2021,
+2(3):100141
 
 Attaching package: ‘clusterProfiler’
 
@@ -153,7 +159,7 @@ The following object is masked from ‘package:stats’:
 
 Loading required package: grid
 ========================================
-ComplexHeatmap version 2.24.1
+ComplexHeatmap version 2.26.1
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
@@ -189,7 +195,7 @@ Loading objects:
  9 Astro.5 carrier_F  1820
 10 Astro.5 carrier_M  1820
 # ℹ 60 more rows
-# A tibble: 6 × 21
+# A tibble: 6 × 22
   data_type cluster contrast  seqnames   start    end  width strand source type 
   <chr>     <fct>   <chr>     <fct>      <int>  <int>  <int> <fct>  <fct>  <fct>
 1 sn_fine   Astro.1 carrier_F chr17     6.92e7 6.93e7  82934 -      HAVANA gene 
@@ -198,9 +204,10 @@ Loading objects:
 4 sn_fine   Astro.1 carrier_F chr22     1.97e7 1.97e7   9722 +      HAVANA gene 
 5 sn_fine   Astro.1 carrier_F chr6      1.09e8 1.10e8 198363 -      HAVANA gene 
 6 sn_fine   Astro.1 carrier_F chr14     3.72e7 3.76e7 381232 +      HAVANA gene 
-# ℹ 11 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
-#   gene_type <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>, vlmf_t <dbl>,
-#   vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>, mod <chr>
+# ℹ 12 more variables: gene_id <chr>, gene_version <chr>, gene_name <chr>,
+#   gene_type <chr>, gene_search <chr>, vlmf_logFC <dbl>, vlmf_AveExpr <dbl>,
+#   vlmf_t <dbl>, vlmf_P.Value <dbl>, vlmf_adj.P.Val <dbl>, vlmf_B <dbl>,
+#   mod <chr>
 # A tibble: 24 × 3
    cluster contrast      n
    <fct>   <chr>     <int>
@@ -255,8 +262,13 @@ Storing counts in `nn`, as `n` already present in input
  9 Astro-2_down_ALL    43
 10 Astro-2_up_ALL       9
 # ℹ 155 more rows
-`summarise()` has grouped output by 'model_type', 'ENTREZID', 'gene_name'. You
-can override using the `.groups` argument.
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by model_type, ENTREZID, gene_name, and
+  cluster.
+ℹ Output is grouped by model_type, ENTREZID, and gene_name.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(model_type, ENTREZID, gene_name, cluster))` for
+  per-operation grouping (`?dplyr::dplyr_by`) instead.
 # A tibble: 3,377 × 6
 # Groups:   model_type, ENTREZID, gene_name [3,093]
    model_type ENTREZID  gene_name   cluster DE_classes           n
@@ -328,18 +340,18 @@ can override using the `.groups` argument.
 2 carrier_F 354019
 3 carrier_M 354019
 # A tibble: 60 × 2
-   DE_class_cluster        n
-   <chr>               <int>
- 1 Oligo-3_up_M         1127
- 2 Oligo-3_up_ALL        648
- 3 Oligo-3_down_M        640
- 4 Oligo-3_down_ALL      313
- 5 Oligo-5_up_M          100
- 6 Vasc-Endo_up_M         61
- 7 Excit-L2_5-1_down_M    55
- 8 Oligo-5_up_ALL         46
- 9 Astro-2_down_ALL       43
-10 Vasc-Endo_down_M       43
+   DE_class_cluster          n
+   <chr>                 <int>
+ 1 Oligo-3_up_M           1127
+ 2 Oligo-3_up_ALL          648
+ 3 Oligo-3_down_M          640
+ 4 Oligo-3_down_ALL        313
+ 5 Oligo-5_up_M            100
+ 6 Vasc-Endo_up_M           61
+ 7 Excit-L2_5-mix_down_M    55
+ 8 Oligo-5_up_ALL           46
+ 9 Astro-2_down_ALL         43
+10 Vasc-Endo_down_M         43
 # ℹ 50 more rows
 # A tibble: 3,377 × 3
    gene_name DE_class_cluster cluster
@@ -356,269 +368,269 @@ can override using the `.groups` argument.
 10 SNED1     Astro-2_down_ALL Astro.2
 # ℹ 3,367 more rows
 Universe n genes: 18450
-               DE_classes ONTOLOGY   n
-1          Astro-1_up_ALL       BP   8
-2          Astro-1_up_ALL       CC   5
-3          Astro-1_up_ALL       MF   6
-4        Astro-2_down_ALL       MF   5
-5          Astro-2_up_ALL       MF  16
-6        Astro-3_down_ALL       BP   6
-7        Astro-3_down_ALL       CC   2
-8        Astro-3_down_ALL       MF  23
-9          Astro-3_down_M       BP   7
-10         Astro-3_down_M       CC   4
-11         Astro-3_up_ALL       BP  51
-12         Astro-3_up_ALL       CC   8
-13         Astro-3_up_ALL       MF  19
-14           Astro-3_up_M       BP 138
-15           Astro-3_up_M       CC  31
-16           Astro-3_up_M       MF  11
-17           Astro-4_up_F       BP 102
-18           Astro-4_up_F       MF  37
-19  Excit-L2_5-1_down_ALL       CC   2
-20  Excit-L2_5-1_down_ALL       MF  22
-21      Excit-L2_5-1_up_M       BP   1
-22      Excit-L2_5-1_up_M       CC   2
-23      Excit-L2_5-1_up_M       MF   7
-24    Excit-L2_5-2_down_M       BP  45
-25    Excit-L2_5-2_down_M       CC   8
-26    Excit-L2_5-2_down_M       MF   6
-27    Excit-L2_5-2_up_ALL       BP  13
-28    Excit-L2_5-2_up_ALL       CC   8
-29      Excit-L2_5-2_up_M       BP  12
-30      Excit-L2_5-2_up_M       MF   4
-31    Excit-L5-2_down_ALL       BP  66
-32    Excit-L5-2_down_ALL       CC  12
-33    Excit-L5-2_down_ALL       MF  25
-34      Excit-L5-2_down_M       BP  77
-35      Excit-L5-2_down_M       CC   5
-36      Excit-L5-2_down_M       MF  10
-37      Excit-L5-2_up_ALL       BP  21
-38      Excit-L5-2_up_ALL       CC  25
-39      Excit-L5-2_up_ALL       MF  10
-40        Excit-L5-2_up_M       BP  16
-41        Excit-L5-2_up_M       CC   5
-42     Inhib-Pvalb_down_M       BP  61
-43     Inhib-Pvalb_down_M       MF   5
-44       Inhib-Pvalb_up_M       BP  16
-45       Inhib-Pvalb_up_M       CC   3
-46       Inhib-Pvalb_up_M       MF  13
-47     Inhib-Sst_down_ALL       BP   1
-48     Inhib-Sst_down_ALL       CC   5
-49     Inhib-Sst_down_ALL       MF   1
-50       Inhib-Vip_down_M       MF   7
-51         Macro_down_ALL       BP 336
-52         Macro_down_ALL       CC  14
-53         Macro_down_ALL       MF  18
-54           Macro_down_M       BP 318
-55           Macro_down_M       CC   6
-56           Macro_down_M       MF  25
-57           Macro_up_ALL       CC   2
-58           Macro_up_ALL       MF  15
-59             Macro_up_F       BP  19
-60             Macro_up_F       MF   9
-61             Macro_up_M       MF  14
-62         Micro-1_down_M       MF   7
-63         Micro-1_up_ALL       BP   5
-64         Micro-1_up_ALL       CC   3
-65         Micro-1_up_ALL       MF  18
-66       Micro-2_down_ALL       BP  20
-67         Micro-3_up_ALL       BP  26
-68         Micro-3_up_ALL       CC   1
-69         Micro-3_up_ALL       MF   6
-70           Micro-3_up_M       BP  26
-71           Micro-3_up_M       CC   1
-72           Micro-3_up_M       MF   6
-73         Micro-4_down_M       BP  22
-74         Micro-4_down_M       CC   6
-75         Micro-4_up_ALL       BP   2
-76         Micro-4_up_ALL       CC  10
-77           Micro-4_up_F       BP  47
-78           Micro-4_up_F       CC  22
-79           Micro-4_up_F       MF  34
-80           Micro-4_up_M       BP   7
-81           Micro-4_up_M       CC   6
-82           Micro-4_up_M       MF  32
-83           OPC-5_down_F       BP 223
-84           OPC-5_down_F       CC   7
-85           OPC-5_down_F       MF  13
-86             OPC-5_up_F       BP 115
-87             OPC-5_up_F       CC   3
-88             OPC-5_up_F       MF   5
-89           Oligo-1_up_F       BP   2
-90           Oligo-1_up_F       CC   6
-91           Oligo-2_up_M       BP  13
-92           Oligo-2_up_M       CC   5
-93           Oligo-2_up_M       MF   5
-94       Oligo-3_down_ALL       BP   3
-95       Oligo-3_down_ALL       CC   8
-96         Oligo-3_down_M       BP   7
-97         Oligo-3_down_M       CC   7
-98         Oligo-3_down_M       MF   1
-99         Oligo-3_up_ALL       BP 292
-100        Oligo-3_up_ALL       CC  89
-101        Oligo-3_up_ALL       MF  63
-102          Oligo-3_up_M       BP 385
-103          Oligo-3_up_M       CC 124
-104          Oligo-3_up_M       MF 127
-105        Oligo-4_down_M       BP   8
-106        Oligo-4_down_M       CC   1
-107      Oligo-5_down_ALL       CC   3
-108      Oligo-5_down_ALL       MF  16
-109        Oligo-5_down_M       CC   2
-110        Oligo-5_up_ALL       BP 103
-111        Oligo-5_up_ALL       CC   3
-112        Oligo-5_up_ALL       MF   3
-113          Oligo-5_up_M       BP 159
-114          Oligo-5_up_M       CC   9
-115          Oligo-5_up_M       MF   5
-116    Vasc-Endo_down_ALL       BP  58
-117    Vasc-Endo_down_ALL       CC   5
-118    Vasc-Endo_down_ALL       MF  14
-119      Vasc-Endo_down_M       MF   1
-120      Vasc-Endo_up_ALL       BP  29
-121      Vasc-Endo_up_ALL       CC   8
-122      Vasc-Endo_up_ALL       MF   6
-123        Vasc-Endo_up_M       BP  28
-124        Vasc-Endo_up_M       CC  21
-125        Vasc-Endo_up_M       MF   6
-126    Vasc-VLMC_down_ALL       BP  10
-127    Vasc-VLMC_down_ALL       MF  16
-128      Vasc-VLMC_down_M       BP   1
-129      Vasc-VLMC_up_ALL       BP 308
-130      Vasc-VLMC_up_ALL       CC   2
-131      Vasc-VLMC_up_ALL       MF  10
-132        Vasc-VLMC_up_M       BP   1
-133        Vasc-VLMC_up_M       CC   4
+                  DE_classes ONTOLOGY   n
+1             Astro-1_up_ALL       BP   8
+2             Astro-1_up_ALL       CC   5
+3             Astro-1_up_ALL       MF   6
+4           Astro-2_down_ALL       MF   5
+5             Astro-2_up_ALL       MF  16
+6           Astro-3_down_ALL       BP   6
+7           Astro-3_down_ALL       CC   2
+8           Astro-3_down_ALL       MF  23
+9             Astro-3_down_M       BP   7
+10            Astro-3_down_M       CC   4
+11            Astro-3_up_ALL       BP  51
+12            Astro-3_up_ALL       CC   8
+13            Astro-3_up_ALL       MF  19
+14              Astro-3_up_M       BP 138
+15              Astro-3_up_M       CC  31
+16              Astro-3_up_M       MF  11
+17              Astro-4_up_F       BP 102
+18              Astro-4_up_F       MF  37
+19  Excit-L2_5-RELN_down_ALL       BP  66
+20  Excit-L2_5-RELN_down_ALL       CC  12
+21  Excit-L2_5-RELN_down_ALL       MF  25
+22    Excit-L2_5-RELN_down_M       BP  77
+23    Excit-L2_5-RELN_down_M       CC   5
+24    Excit-L2_5-RELN_down_M       MF  10
+25    Excit-L2_5-RELN_up_ALL       BP  21
+26    Excit-L2_5-RELN_up_ALL       CC  25
+27    Excit-L2_5-RELN_up_ALL       MF  10
+28      Excit-L2_5-RELN_up_M       BP  16
+29      Excit-L2_5-RELN_up_M       CC   5
+30   Excit-L2_5-mix_down_ALL       CC   2
+31   Excit-L2_5-mix_down_ALL       MF  22
+32       Excit-L2_5-mix_up_M       BP   1
+33       Excit-L2_5-mix_up_M       CC   2
+34       Excit-L2_5-mix_up_M       MF   7
+35      Excit-L5-RELN_down_M       BP  45
+36      Excit-L5-RELN_down_M       CC   8
+37      Excit-L5-RELN_down_M       MF   6
+38      Excit-L5-RELN_up_ALL       BP  13
+39      Excit-L5-RELN_up_ALL       CC   8
+40        Excit-L5-RELN_up_M       BP  12
+41        Excit-L5-RELN_up_M       MF   4
+42        Inhib-PVALB_down_M       BP  61
+43        Inhib-PVALB_down_M       MF   5
+44          Inhib-PVALB_up_M       BP  16
+45          Inhib-PVALB_up_M       CC   3
+46          Inhib-PVALB_up_M       MF  13
+47        Inhib-SST_down_ALL       BP   1
+48        Inhib-SST_down_ALL       CC   5
+49        Inhib-SST_down_ALL       MF   1
+50          Inhib-VIP_down_M       MF   7
+51            Macro_down_ALL       BP 336
+52            Macro_down_ALL       CC  14
+53            Macro_down_ALL       MF  18
+54              Macro_down_M       BP 318
+55              Macro_down_M       CC   6
+56              Macro_down_M       MF  25
+57              Macro_up_ALL       CC   2
+58              Macro_up_ALL       MF  15
+59                Macro_up_F       BP  19
+60                Macro_up_F       MF   9
+61                Macro_up_M       MF  14
+62            Micro-1_down_M       MF   7
+63            Micro-1_up_ALL       BP   5
+64            Micro-1_up_ALL       CC   3
+65            Micro-1_up_ALL       MF  18
+66          Micro-2_down_ALL       BP  20
+67            Micro-3_up_ALL       BP  26
+68            Micro-3_up_ALL       CC   1
+69            Micro-3_up_ALL       MF   6
+70              Micro-3_up_M       BP  26
+71              Micro-3_up_M       CC   1
+72              Micro-3_up_M       MF   6
+73            Micro-4_down_M       BP  22
+74            Micro-4_down_M       CC   6
+75            Micro-4_up_ALL       BP   2
+76            Micro-4_up_ALL       CC  10
+77              Micro-4_up_F       BP  47
+78              Micro-4_up_F       CC  22
+79              Micro-4_up_F       MF  34
+80              Micro-4_up_M       BP   7
+81              Micro-4_up_M       CC   6
+82              Micro-4_up_M       MF  32
+83              OPC-5_down_F       BP 223
+84              OPC-5_down_F       CC   7
+85              OPC-5_down_F       MF  13
+86                OPC-5_up_F       BP 115
+87                OPC-5_up_F       CC   3
+88                OPC-5_up_F       MF   5
+89              Oligo-1_up_F       BP   2
+90              Oligo-1_up_F       CC   6
+91              Oligo-2_up_M       BP  13
+92              Oligo-2_up_M       CC   5
+93              Oligo-2_up_M       MF   5
+94          Oligo-3_down_ALL       BP   3
+95          Oligo-3_down_ALL       CC   8
+96            Oligo-3_down_M       BP   7
+97            Oligo-3_down_M       CC   7
+98            Oligo-3_down_M       MF   1
+99            Oligo-3_up_ALL       BP 292
+100           Oligo-3_up_ALL       CC  89
+101           Oligo-3_up_ALL       MF  63
+102             Oligo-3_up_M       BP 385
+103             Oligo-3_up_M       CC 124
+104             Oligo-3_up_M       MF 127
+105           Oligo-4_down_M       BP   8
+106           Oligo-4_down_M       CC   1
+107         Oligo-5_down_ALL       CC   3
+108         Oligo-5_down_ALL       MF  16
+109           Oligo-5_down_M       CC   2
+110           Oligo-5_up_ALL       BP 103
+111           Oligo-5_up_ALL       CC   3
+112           Oligo-5_up_ALL       MF   3
+113             Oligo-5_up_M       BP 159
+114             Oligo-5_up_M       CC   9
+115             Oligo-5_up_M       MF   5
+116       Vasc-Endo_down_ALL       BP  58
+117       Vasc-Endo_down_ALL       CC   5
+118       Vasc-Endo_down_ALL       MF  14
+119         Vasc-Endo_down_M       MF   1
+120         Vasc-Endo_up_ALL       BP  29
+121         Vasc-Endo_up_ALL       CC   8
+122         Vasc-Endo_up_ALL       MF   6
+123           Vasc-Endo_up_M       BP  28
+124           Vasc-Endo_up_M       CC  21
+125           Vasc-Endo_up_M       MF   6
+126       Vasc-VLMC_down_ALL       BP  10
+127       Vasc-VLMC_down_ALL       MF  16
+128         Vasc-VLMC_down_M       BP   1
+129         Vasc-VLMC_up_ALL       BP 308
+130         Vasc-VLMC_up_ALL       CC   2
+131         Vasc-VLMC_up_ALL       MF  10
+132           Vasc-VLMC_up_M       BP   1
+133           Vasc-VLMC_up_M       CC   4
 null device 
           1 
-              DE_classes   n
-1         Astro-1_up_ALL   2
-2       Astro-2_down_ALL   5
-3         Astro-2_up_ALL   1
-4       Astro-3_down_ALL  12
-5         Astro-3_down_M  11
-6         Astro-3_up_ALL  13
-7           Astro-4_up_F  24
-8  Excit-L2_5-1_down_ALL   4
-9      Excit-L2_5-1_up_M   5
-10   Excit-L2_5-2_down_M   1
-11   Excit-L5-2_down_ALL  71
-12       Excit-L5-2_up_M  19
-13        Macro_down_ALL  50
-14          Macro_down_M  46
-15          Macro_up_ALL   4
-16            Macro_up_M   1
-17        Micro-4_up_ALL  11
-18      Oligo-3_down_ALL  11
-19        Oligo-3_down_M  15
-20        Oligo-3_up_ALL 444
-21          Oligo-3_up_M 636
-22      Oligo-5_down_ALL   2
-23        Oligo-5_down_M   2
-24        Oligo-5_up_ALL 109
-25          Oligo-5_up_M 173
-26      Vasc-Endo_down_M   1
-27        Vasc-Endo_up_M  55
-28      Vasc-VLMC_down_M   1
-29        Vasc-VLMC_up_M   5
+                 DE_classes   n
+1            Astro-1_up_ALL   2
+2          Astro-2_down_ALL   5
+3            Astro-2_up_ALL   1
+4          Astro-3_down_ALL  12
+5            Astro-3_down_M  11
+6            Astro-3_up_ALL  13
+7              Astro-4_up_F  24
+8  Excit-L2_5-RELN_down_ALL  71
+9      Excit-L2_5-RELN_up_M  19
+10  Excit-L2_5-mix_down_ALL   4
+11      Excit-L2_5-mix_up_M   5
+12     Excit-L5-RELN_down_M   1
+13           Macro_down_ALL  50
+14             Macro_down_M  46
+15             Macro_up_ALL   4
+16               Macro_up_M   1
+17           Micro-4_up_ALL  11
+18         Oligo-3_down_ALL  11
+19           Oligo-3_down_M  15
+20           Oligo-3_up_ALL 444
+21             Oligo-3_up_M 636
+22         Oligo-5_down_ALL   2
+23           Oligo-5_down_M   2
+24           Oligo-5_up_ALL 109
+25             Oligo-5_up_M 173
+26         Vasc-Endo_down_M   1
+27           Vasc-Endo_up_M  55
+28         Vasc-VLMC_down_M   1
+29           Vasc-VLMC_up_M   5
 null device 
           1 
-            DE_classes   n
-1       Astro-3_down_M   4
-2  Excit-L5-2_down_ALL  56
-3       Micro-4_up_ALL   1
-4     Oligo-3_down_ALL   9
-5       Oligo-3_down_M  15
-6       Oligo-3_up_ALL 400
-7         Oligo-3_up_M 598
-8       Oligo-5_up_ALL  47
-9         Oligo-5_up_M 104
-10      Vasc-Endo_up_M  20
-11      Vasc-VLMC_up_M   3
+                 DE_classes   n
+1            Astro-3_down_M   4
+2  Excit-L2_5-RELN_down_ALL  56
+3            Micro-4_up_ALL   1
+4          Oligo-3_down_ALL   9
+5            Oligo-3_down_M  15
+6            Oligo-3_up_ALL 400
+7              Oligo-3_up_M 598
+8            Oligo-5_up_ALL  47
+9              Oligo-5_up_M 104
+10           Vasc-Endo_up_M  20
+11           Vasc-VLMC_up_M   3
 null device 
           1 
 null device 
           1 
-                 Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
-1         Astro-1_up_ALL         FALSE          TRUE      FALSE   2
-2         Astro-1_up_ALL         FALSE          TRUE       TRUE  17
-3       Astro-2_down_ALL         FALSE          TRUE      FALSE   5
-4         Astro-2_up_ALL         FALSE          TRUE      FALSE   1
-5         Astro-2_up_ALL         FALSE          TRUE       TRUE  15
-6       Astro-3_down_ALL         FALSE          TRUE      FALSE  12
-7       Astro-3_down_ALL         FALSE          TRUE       TRUE  19
-8         Astro-3_down_M         FALSE          TRUE      FALSE  11
-9         Astro-3_up_ALL         FALSE          TRUE      FALSE  13
-10        Astro-3_up_ALL         FALSE          TRUE       TRUE  65
-11          Astro-3_up_M         FALSE          TRUE       TRUE 180
-12          Astro-4_up_F         FALSE          TRUE      FALSE  24
-13          Astro-4_up_F         FALSE          TRUE       TRUE 115
-14 Excit-L2_5-1_down_ALL         FALSE          TRUE      FALSE   4
-15 Excit-L2_5-1_down_ALL         FALSE          TRUE       TRUE  20
-16     Excit-L2_5-1_up_M         FALSE          TRUE      FALSE   5
-17     Excit-L2_5-1_up_M         FALSE          TRUE       TRUE   5
-18   Excit-L2_5-2_down_M         FALSE          TRUE      FALSE   1
-19   Excit-L2_5-2_down_M         FALSE          TRUE       TRUE  52
-20   Excit-L2_5-2_down_M          TRUE            NA       TRUE   6
-21   Excit-L2_5-2_up_ALL          TRUE            NA       TRUE  21
-22     Excit-L2_5-2_up_M          TRUE            NA       TRUE  16
-23   Excit-L5-2_down_ALL         FALSE          TRUE      FALSE  71
-24   Excit-L5-2_down_ALL         FALSE          TRUE       TRUE  32
-25     Excit-L5-2_down_M         FALSE          TRUE       TRUE  92
-26     Excit-L5-2_up_ALL         FALSE          TRUE       TRUE  46
-27     Excit-L5-2_up_ALL          TRUE            NA       TRUE  10
-28       Excit-L5-2_up_M         FALSE          TRUE      FALSE  19
-29       Excit-L5-2_up_M         FALSE          TRUE       TRUE   2
-30    Inhib-Pvalb_down_M          TRUE            NA       TRUE  66
-31      Inhib-Pvalb_up_M          TRUE            NA       TRUE  32
-32    Inhib-Sst_down_ALL         FALSE          TRUE       TRUE   5
-33    Inhib-Sst_down_ALL          TRUE            NA       TRUE   2
-34      Inhib-Vip_down_M          TRUE            NA       TRUE   7
-35        Macro_down_ALL         FALSE          TRUE      FALSE  50
-36        Macro_down_ALL         FALSE          TRUE       TRUE 318
-37          Macro_down_M         FALSE          TRUE      FALSE  46
-38          Macro_down_M         FALSE          TRUE       TRUE 303
-39          Macro_up_ALL         FALSE          TRUE      FALSE   4
-40          Macro_up_ALL         FALSE          TRUE       TRUE  13
-41            Macro_up_F          TRUE            NA       TRUE  28
-42            Macro_up_M         FALSE          TRUE      FALSE   1
-43            Macro_up_M         FALSE          TRUE       TRUE  13
-44        Micro-1_down_M          TRUE            NA       TRUE   7
-45        Micro-1_up_ALL          TRUE            NA       TRUE  26
-46      Micro-2_down_ALL          TRUE            NA       TRUE  20
-47        Micro-3_up_ALL          TRUE            NA       TRUE  33
-48          Micro-3_up_M          TRUE            NA       TRUE  33
-49        Micro-4_down_M          TRUE            NA       TRUE  28
-50        Micro-4_up_ALL         FALSE          TRUE      FALSE  11
-51        Micro-4_up_ALL         FALSE          TRUE       TRUE   1
-52          Micro-4_up_F          TRUE            NA       TRUE 103
-53          Micro-4_up_M          TRUE            NA       TRUE  45
-54          Oligo-1_up_F          TRUE            NA       TRUE   8
-55          Oligo-2_up_M          TRUE            NA       TRUE  23
-56      Oligo-3_down_ALL         FALSE          TRUE      FALSE  11
-57        Oligo-3_down_M         FALSE          TRUE      FALSE  15
-58        Oligo-3_up_ALL         FALSE          TRUE      FALSE 444
-59          Oligo-3_up_M         FALSE          TRUE      FALSE 636
-60        Oligo-4_down_M          TRUE            NA       TRUE   9
-61      Oligo-5_down_ALL         FALSE          TRUE      FALSE   2
-62      Oligo-5_down_ALL         FALSE          TRUE       TRUE  17
-63        Oligo-5_down_M         FALSE          TRUE      FALSE   2
-64        Oligo-5_up_ALL         FALSE          TRUE      FALSE 109
-65          Oligo-5_up_M         FALSE          TRUE      FALSE 173
-66          OPC-5_down_F          TRUE            NA       TRUE 243
-67            OPC-5_up_F         FALSE          TRUE       TRUE 118
-68            OPC-5_up_F          TRUE            NA       TRUE   5
-69    Vasc-Endo_down_ALL          TRUE            NA       TRUE  77
-70      Vasc-Endo_down_M         FALSE          TRUE      FALSE   1
-71      Vasc-Endo_up_ALL          TRUE            NA       TRUE  43
-72        Vasc-Endo_up_M         FALSE          TRUE      FALSE  55
-73    Vasc-VLMC_down_ALL         FALSE          TRUE       TRUE  16
-74    Vasc-VLMC_down_ALL          TRUE            NA       TRUE  10
-75      Vasc-VLMC_down_M         FALSE          TRUE      FALSE   1
-76      Vasc-VLMC_up_ALL          TRUE            NA       TRUE 320
-77        Vasc-VLMC_up_M         FALSE          TRUE      FALSE   5
-2025-12-01 11:03:45.597348 - CC
+                    Cluster is.na(qvalue) qvalue < 0.05 Count == 1   n
+1            Astro-1_up_ALL         FALSE          TRUE      FALSE   2
+2            Astro-1_up_ALL         FALSE          TRUE       TRUE  17
+3          Astro-2_down_ALL         FALSE          TRUE      FALSE   5
+4            Astro-2_up_ALL         FALSE          TRUE      FALSE   1
+5            Astro-2_up_ALL         FALSE          TRUE       TRUE  15
+6          Astro-3_down_ALL         FALSE          TRUE      FALSE  12
+7          Astro-3_down_ALL         FALSE          TRUE       TRUE  19
+8            Astro-3_down_M         FALSE          TRUE      FALSE  11
+9            Astro-3_up_ALL         FALSE          TRUE      FALSE  13
+10           Astro-3_up_ALL         FALSE          TRUE       TRUE  65
+11             Astro-3_up_M         FALSE          TRUE       TRUE 180
+12             Astro-4_up_F         FALSE          TRUE      FALSE  24
+13             Astro-4_up_F         FALSE          TRUE       TRUE 115
+14  Excit-L2_5-mix_down_ALL         FALSE          TRUE      FALSE   4
+15  Excit-L2_5-mix_down_ALL         FALSE          TRUE       TRUE  20
+16      Excit-L2_5-mix_up_M         FALSE          TRUE      FALSE   5
+17      Excit-L2_5-mix_up_M         FALSE          TRUE       TRUE   5
+18 Excit-L2_5-RELN_down_ALL         FALSE          TRUE      FALSE  71
+19 Excit-L2_5-RELN_down_ALL         FALSE          TRUE       TRUE  32
+20   Excit-L2_5-RELN_down_M         FALSE          TRUE       TRUE  92
+21   Excit-L2_5-RELN_up_ALL         FALSE          TRUE       TRUE  46
+22   Excit-L2_5-RELN_up_ALL          TRUE            NA       TRUE  10
+23     Excit-L2_5-RELN_up_M         FALSE          TRUE      FALSE  19
+24     Excit-L2_5-RELN_up_M         FALSE          TRUE       TRUE   2
+25     Excit-L5-RELN_down_M         FALSE          TRUE      FALSE   1
+26     Excit-L5-RELN_down_M         FALSE          TRUE       TRUE  52
+27     Excit-L5-RELN_down_M          TRUE            NA       TRUE   6
+28     Excit-L5-RELN_up_ALL          TRUE            NA       TRUE  21
+29       Excit-L5-RELN_up_M          TRUE            NA       TRUE  16
+30       Inhib-PVALB_down_M          TRUE            NA       TRUE  66
+31         Inhib-PVALB_up_M          TRUE            NA       TRUE  32
+32       Inhib-SST_down_ALL         FALSE          TRUE       TRUE   5
+33       Inhib-SST_down_ALL          TRUE            NA       TRUE   2
+34         Inhib-VIP_down_M          TRUE            NA       TRUE   7
+35           Macro_down_ALL         FALSE          TRUE      FALSE  50
+36           Macro_down_ALL         FALSE          TRUE       TRUE 318
+37             Macro_down_M         FALSE          TRUE      FALSE  46
+38             Macro_down_M         FALSE          TRUE       TRUE 303
+39             Macro_up_ALL         FALSE          TRUE      FALSE   4
+40             Macro_up_ALL         FALSE          TRUE       TRUE  13
+41               Macro_up_F          TRUE            NA       TRUE  28
+42               Macro_up_M         FALSE          TRUE      FALSE   1
+43               Macro_up_M         FALSE          TRUE       TRUE  13
+44           Micro-1_down_M          TRUE            NA       TRUE   7
+45           Micro-1_up_ALL          TRUE            NA       TRUE  26
+46         Micro-2_down_ALL          TRUE            NA       TRUE  20
+47           Micro-3_up_ALL          TRUE            NA       TRUE  33
+48             Micro-3_up_M          TRUE            NA       TRUE  33
+49           Micro-4_down_M          TRUE            NA       TRUE  28
+50           Micro-4_up_ALL         FALSE          TRUE      FALSE  11
+51           Micro-4_up_ALL         FALSE          TRUE       TRUE   1
+52             Micro-4_up_F          TRUE            NA       TRUE 103
+53             Micro-4_up_M          TRUE            NA       TRUE  45
+54             Oligo-1_up_F          TRUE            NA       TRUE   8
+55             Oligo-2_up_M          TRUE            NA       TRUE  23
+56         Oligo-3_down_ALL         FALSE          TRUE      FALSE  11
+57           Oligo-3_down_M         FALSE          TRUE      FALSE  15
+58           Oligo-3_up_ALL         FALSE          TRUE      FALSE 444
+59             Oligo-3_up_M         FALSE          TRUE      FALSE 636
+60           Oligo-4_down_M          TRUE            NA       TRUE   9
+61         Oligo-5_down_ALL         FALSE          TRUE      FALSE   2
+62         Oligo-5_down_ALL         FALSE          TRUE       TRUE  17
+63           Oligo-5_down_M         FALSE          TRUE      FALSE   2
+64           Oligo-5_up_ALL         FALSE          TRUE      FALSE 109
+65             Oligo-5_up_M         FALSE          TRUE      FALSE 173
+66             OPC-5_down_F          TRUE            NA       TRUE 243
+67               OPC-5_up_F         FALSE          TRUE       TRUE 118
+68               OPC-5_up_F          TRUE            NA       TRUE   5
+69       Vasc-Endo_down_ALL          TRUE            NA       TRUE  77
+70         Vasc-Endo_down_M         FALSE          TRUE      FALSE   1
+71         Vasc-Endo_up_ALL          TRUE            NA       TRUE  43
+72           Vasc-Endo_up_M         FALSE          TRUE      FALSE  55
+73       Vasc-VLMC_down_ALL         FALSE          TRUE       TRUE  16
+74       Vasc-VLMC_down_ALL          TRUE            NA       TRUE  10
+75         Vasc-VLMC_down_M         FALSE          TRUE      FALSE   1
+76         Vasc-VLMC_up_ALL          TRUE            NA       TRUE 320
+77           Vasc-VLMC_up_M         FALSE          TRUE      FALSE   5
+2026-09-08 17:40:58.588366 - CC
 --Astro-1_up_ALL (5)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -639,35 +651,35 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L2_5-1_down_ALL (2)--
+--Excit-L2_5-mix_down_ALL (2)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L2_5-1_up_M (2)--
+--Excit-L2_5-mix_up_M (2)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L2_5-2_down_M (8)--
+--Excit-L2_5-RELN_down_ALL (12)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_down_ALL (12)--
+--Excit-L2_5-RELN_down_M (5)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_down_M (5)--
+--Excit-L2_5-RELN_up_ALL (25)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_up_ALL (25)--
+--Excit-L2_5-RELN_up_M (5)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_up_M (5)--
+--Excit-L5-RELN_down_M (8)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Inhib-Sst_down_ALL (5)--
+--Inhib-SST_down_ALL (5)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
@@ -731,7 +743,7 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
-2025-12-01 11:07:12.982153 - BP
+2026-09-08 17:51:30.186599 - BP
 --Astro-1_up_ALL (8)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -756,31 +768,31 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L2_5-1_up_M (1)--
+--Excit-L2_5-mix_up_M (1)--
 preparing gene to GO mapping data...
 preparing IC data...
 Error in hclust(as.dist(1 - simMatrix)) : 
   must have n >= 2 objects to cluster
 In addition: Warning message:
 In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for BP
---Excit-L2_5-2_down_M (45)--
+  Removed 1 terms without IC information in orgdb for BP
+--Excit-L2_5-RELN_down_ALL (66)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_down_ALL (66)--
+--Excit-L2_5-RELN_down_M (77)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_down_M (77)--
+--Excit-L2_5-RELN_up_ALL (21)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_up_ALL (21)--
+--Excit-L2_5-RELN_up_M (16)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_up_M (16)--
+--Excit-L5-RELN_down_M (45)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
@@ -835,17 +847,17 @@ Error in hclust(as.dist(1 - simMatrix)) :
   must have n >= 2 objects to cluster
 In addition: Warning messages:
 1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for BP
+  Removed 1 terms without IC information in orgdb for BP
 2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 2 terms that were not found in orgdb for BP
+  Removed 2 terms without IC information in orgdb for BP
 3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 2 terms that were not found in orgdb for BP
+  Removed 2 terms without IC information in orgdb for BP
 --Vasc-VLMC_up_M (1)--
 preparing gene to GO mapping data...
 preparing IC data...
 Error in hclust(as.dist(1 - simMatrix)) : 
   must have n >= 2 objects to cluster
-2025-12-01 11:35:24.34678 - MF
+2026-09-08 19:12:17.761656 - MF
 --Astro-1_up_ALL (6)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -874,19 +886,19 @@ preparing IC data...
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L2_5-1_down_ALL (22)--
+--Excit-L2_5-mix_down_ALL (22)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L2_5-1_up_M (7)--
+--Excit-L2_5-mix_up_M (7)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_down_ALL (25)--
+--Excit-L2_5-RELN_down_ALL (25)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
---Excit-L5-2_down_M (10)--
+--Excit-L2_5-RELN_down_M (10)--
 preparing gene to GO mapping data...
 preparing IC data...
 'select()' returned 1:many mapping between keys and columns
@@ -913,9 +925,9 @@ Error in hclust(as.dist(1 - simMatrix)) :
   must have n >= 2 objects to cluster
 In addition: Warning messages:
 1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 2 terms that were not found in orgdb for MF
+  Removed 2 terms without IC information in orgdb for MF
 2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 7 terms that were not found in orgdb for MF
+  Removed 7 terms without IC information in orgdb for MF
 --Oligo-3_up_ALL (63)--
 preparing gene to GO mapping data...
 preparing IC data...
@@ -943,11 +955,11 @@ Error in hclust(as.dist(1 - simMatrix)) :
   must have n >= 2 objects to cluster
 In addition: Warning messages:
 1: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 3 terms that were not found in orgdb for MF
+  Removed 3 terms without IC information in orgdb for MF
 2: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 5 terms that were not found in orgdb for MF
+  Removed 5 terms without IC information in orgdb for MF
 3: In calculateSimMatrix(go_analysis_c$ID, orgdb = "org.Hs.eg.db",  :
-  Removed 1 terms that were not found in orgdb for MF
+  Removed 1 terms without IC information in orgdb for MF
 --Vasc-Endo_up_M (6)--
 preparing gene to GO mapping data...
 preparing IC data...
