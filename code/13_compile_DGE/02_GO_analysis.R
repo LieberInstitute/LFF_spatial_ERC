@@ -111,7 +111,7 @@ go_result <- map(ont_list, ~compareCluster(ENTREZID ~ DE_class_cluster,
 
 saveRDS(go_result, file = here(data_dir, sprintf("GO_result_%s.rds", opt$datatype)))
 
-go_result <- readRDS(here(data_dir, sprintf("GO_result_%s.rds", opt$datatype)))
+# go_result <- readRDS(here(data_dir, sprintf("GO_result_%s.rds", opt$datatype)))
 
 ## convert to table
 compare_clus <- map2_dfr(go_result, names(go_result), ~.x@compareClusterResult |> mutate(ONTOLOGY = .y))
@@ -137,7 +137,7 @@ walk2(go_result, names(go_result),
           dotplot(.x, 
                   x = "DE_class_cluster", 
                   showCategory = 3, 
-                  label_format = 60)  +
+                  label_format = 40)  +
               ggtitle(paste("GO Enrichment:", .y)) +
               theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
       )
@@ -156,7 +156,7 @@ walk2(go_result, names(go_result), function(gr, ont){
         dotplot(gr, 
                 x = "DE_class_cluster", 
                 showCategory = 3, 
-                label_format = 60)  +
+                label_format = 40)  +
             ggtitle(paste("GO Enrichment:", ont, " (2+ genes)")) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
     )
@@ -174,7 +174,7 @@ walk2(go_result, names(go_result), function(gr, ont){
         dotplot(gr, 
                 x = "DE_class_cluster", 
                 showCategory = 3, 
-                label_format = 60)  +
+                label_format = 40)  +
             ggtitle(paste("GO Enrichment:", ont, " (5+ genes)")) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5))
     )
@@ -361,6 +361,8 @@ reducedTerms_list <- map(ont_list, function(o){
 ## save
 saveRDS(reducedTerms_list, file = here(data_dir, sprintf("GO_reduced_terms_%s.rds", opt$datatype)))
 
+# reducedTerms_list <- readRDS(here(data_dir, sprintf("GO_reduced_terms_%s.rds", opt$datatype)))
+
 reducedTerms_list2 <- list_transpose(reducedTerms_list)
 reducedTerms_list2 <- reducedTerms_list2[order(names(reducedTerms_list2))]
 
@@ -408,35 +410,39 @@ source(here("code", "13_compile_DGE", "GO_logFC_heatmap.R"))
 #### GO heatmap by datatype ####
 if(opt$datatype == "Visium"){
     
-    go_terms1 <- c("myelin assembly", 
-                   "cell-cell recognition",
-                   "myelination", 
+    go_terms1 <- c("myelination", 
                    "ensheathment of neurons", 
-                   "axon ensheathment")
+                   "axon ensheathment",
+                   "glycosaminoglycan binding",
+                   "asymmetric synapse")
     
-    go_terms1 %in% go_terms_myelination
+    # go_terms1 %in% go_terms_myelination
     
     go_stats_multi1 <- get_go_DE_stats_multi(go_list = go_terms1)
     
     pdf(here(plot_dir, sprintf("GO_logFC_heatmap_%s.pdf", opt$datatype)))
     
-    # GO_logfc_Heatmap(get_go_DE_stats("sperm−egg recognition"))
-    GO_logfc_Heatmap(get_go_DE_stats("learning"))
-    GO_logfc_Heatmap(get_go_DE_stats("myelin assembly"))
-    GO_logfc_Heatmap(get_go_DE_stats("central nervous system myelination"))
-    GO_logfc_Heatmap(get_go_DE_stats("oligodendrocyte differentiation"))
-    GO_logfc_Heatmap(get_go_DE_stats("oligodendrocyte differentiation"))
+    GO_logfc_Heatmap(get_go_DE_stats("myelination"))
+    GO_logfc_Heatmap(get_go_DE_stats("glycosaminoglycan binding"))
+    GO_logfc_Heatmap(get_go_DE_stats("heparan sulfate proteoglycan metabolic process"))
+    GO_logfc_Heatmap(get_go_DE_stats("asymmetric synapse"))
+    GO_logfc_Heatmap(get_go_DE_stats("postsynaptic density"))
+    GO_logfc_Heatmap(get_go_DE_stats("adrenergic receptor binding"))
     GO_logfc_Heatmap(go_stats_multi1)
     
     dev.off()
     
+    # go_lookup("adrenergic receptor binding")
+    # parent_term_lookup("adrenergic receptor binding")
+    # compare_clus |> filter(Description == "adrenergic receptor binding")
+    
     parent_term_heatmap(search_term = c("myelination",
-                                        "oligodendrocyte differentiation",
-                                        "calcium ion transmembrane import into cytosol",
-                                        "negative regulation of developmental growth",
-                                        "dendrite terminus",
-                                        "mitotic spindle midzone",
-                                        "dipeptidase activity"), 
+                                        "heparan sulfate sulfotransferase activity",
+                                        # "calcium channel regulator activity",
+                                        "synaptic membrane adhesion",
+                                        "asymmetric synapse",
+                                        "adrenergic receptor binding"
+                                        ), 
                         pdf_suffix = "ParentTerms")
     
     
