@@ -121,24 +121,6 @@ map(cluster_levels, ~plot_DEG_express_top(sce = sce_pb,
          )
 dev.off()
 
-pdf(here(plot_dir, sprintf("DEG_boxplots_carrier_%s.pdf", opt$datatype)))
-map(cluster_levels, ~plot_DEG_express_top(sce = sce_pb,
-                                      stats = DE_data,
-                                      clus = .x,
-                                      n_genes = 10,
-                                      pval_col = "vlmf_adj.P.Val",
-                                      fc_col = "vlmf_logFC",
-                                      gene_col = "gene_name",
-                                      cluster_col = cluster_var,
-                                      category_col = "APOE_carrier",
-                                      mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
-                                      color_pal = APOE_carrier_colors,
-                                      plot_points = TRUE,
-                                      ncol = 2,
-                                      cleanY_P = 4)
-)
-dev.off()
-
 if(opt$datatype == "sn_broad"){
 
     # DE_data |> filter(cluster == "Oligo", gene_name %in% c("PLP1", "VCAM1"))
@@ -224,8 +206,7 @@ if(opt$datatype == "sn_broad"){
     })
 
 } else if(opt$datatype == "Visium"){
-    
-    #Oligo
+
     boxplots_klk6 <- map(c("vVasc", "vWMuf"), function(spd){
         dge_plot <- plot_DEG_express(
             sce = sce_pb,
@@ -242,7 +223,45 @@ if(opt$datatype == "sn_broad"){
     })
     ggsave(boxplots_klk6[[1]] | boxplots_klk6[[2]],
            filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s.png", opt$datatype, "KLK6")),
+           height = 3, width = 6)    
+    
+    boxplots_MAP2 <- map(c("vL5a", "vWMuf"), function(spd){
+        dge_plot <- plot_DEG_express(
+            sce = sce_pb,
+            stats = DE_data,
+            gene = "MAP2",
+            cluster_col = "vSpD",
+            clus = spd,
+            gene_col = "gene_name",
+            color_pal = APOE_carrier_colors,
+            plot_points = TRUE
+        ) +
+            labs(title = spd)
+        return(dge_plot)
+    })
+    ggsave(boxplots_MAP2[[1]] | boxplots_MAP2[[2]],
+           filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s.png", opt$datatype, "MAP2")),
            height = 3, width = 6)
+    
+    
+    map(c("FYN"), function(g){
+        dge_plot <- plot_DEG_express(
+            sce = sce_pb,
+            stats = DE_data,
+            gene = g,
+            cluster_col = "vSpD",
+            clus = "vL5a",
+            gene_col = "gene_name",
+            color_pal = APOE_carrier_colors,
+            plot_points = TRUE
+        ) +
+            labs(title = "vL5a")
+        ggsave(dge_plot, 
+               filename = here(plot_dir, sprintf("DEG_boxplots_carrier_%s_%s_%s.png", opt$datatype, "vL5a", g)),
+               height = 4, width = 3)
+        
+    })
+    
 }
 
 
