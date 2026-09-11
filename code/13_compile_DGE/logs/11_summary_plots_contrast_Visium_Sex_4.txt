@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Sep  8 05:33:29 PM EDT 2026
+Thu Sep 10 05:41:57 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35579061
+Job id: 35607246
 Job name: 11_summary_plots_contrast
-Node name: compute-176
+Node name: compute-175
 Task id: 4
 Loading conda_R/4.5
 
@@ -141,5 +141,12 @@ Joining with `by = join_by(data_type, cluster, gene_name)`
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(cluster, contrast))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
-Error: object 'cell_type_colors' not found
+# A tibble: 1 × 6
+  cluster   cor    p_val p_val_adj signif anno     
+  <fct>   <dbl>    <dbl>     <dbl> <chr>  <chr>    
+1 vWMuf   0.233 9.18e-36  9.18e-36 *      cor=0.23*
+null device 
+          1 
+Error in dge_data_contrast : 
+  The pipe operator requires a function call as RHS (<input>:33:9)
 Execution halted
