@@ -22,6 +22,7 @@ echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
 module load conda_R/4.5
+conda activate mofapy2_env
 
 ## List current modules for reproducibility
 module list

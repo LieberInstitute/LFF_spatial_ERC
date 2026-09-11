@@ -22,14 +22,10 @@ echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
 module load conda_R/4.5
+conda activate mofapy2_env
 
 ## List current modules for reproducibility
 module list
-
-## Avoid stray PYTHONHOME/PYTHONPATH (e.g. from other modules loaded in your
-## login shell) confusing reticulate when it looks for the mofapy2 conda env
-unset PYTHONHOME
-unset PYTHONPATH
 
 ## Edit with your job command
 Rscript 01_MOFA.R --datatype sn_broad
