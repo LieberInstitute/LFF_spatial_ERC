@@ -136,7 +136,8 @@ table(spe$cluster)
 rd <- rowData(spe) |>
     as.data.frame() |>
     select(feature = gene_id, gene_name)
-write_rds(rd, file = here(data_dir, sprintf("MOFA_gene_rowData_%s.rds", opt$datatype)))
+
+# write_rds(rd, file = here(data_dir, sprintf("MOFA_gene_rowData_%s.rds", opt$datatype)))
 
 rm(visium_spe)
 rm(sn_sce)
@@ -300,24 +301,26 @@ factor_boxplot(var = "Braak", assoc_tb = assoc_tb)
 
 
 #   Convert to wide format
-factor_df = factor_df |>
+factor_df_wide <- factor_df |>
     pivot_wider(names_from = "Factor", values_from = "value") |>
     relocate(matches('^Factor'))
 
 #   Relationship between factors and APOE carrier
-p = ggpairs(factor_df, columns = 1:5, aes(color = APOE_carrier))
+p = ggpairs(factor_df_wide, columns = 1:5, aes(color = APOE_carrier))
 
 pdf(file.path(plot_dir, 'ggpairs_APOE_carrier.pdf'))
 print(p)
 dev.off()
 
 #   Relationship between factors colored by APOE genotype
-p = ggpairs(factor_df, columns = 1:5, aes(color = factor(APOE)))
+p = ggpairs(factor_df_wide, columns = 1:5, aes(color = factor(APOE)))
+
 pdf(file.path(plot_dir, 'ggpairs_APOE_geno.pdf'))
 print(p)
 dev.off()
 
 #### Gene Weights ####
+message(Sys.time() , " - Extract Gene Weights")
 factor_names <- sort(unique(factor_df$Factor))
 names(factor_names) <- factor_names
 
