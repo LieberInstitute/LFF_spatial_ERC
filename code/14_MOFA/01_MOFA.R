@@ -318,6 +318,9 @@ print(p)
 dev.off()
 
 #### Gene Weights ####
+factor_names <- sort(unique(factor_df$Factor))
+names(factor_names) <- factor_names
+
 gene_weights <- map(factor_names, ~MOFAcellulaR::get_geneweights(model = model, factor = .x) |> left_join(rd, by = join_by(feature)))
 map(gene_weights, dim)
 
