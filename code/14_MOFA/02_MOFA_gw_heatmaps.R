@@ -36,8 +36,10 @@ spd_factor_levels <- names(SpD_colors)
 if(opt$datatype == "sn_broad"){
     cell_type_colors$broad <- cell_type_colors$broad[names(cell_type_colors$broad) != "Other"]
     sn_factor_levels <- names(cell_type_colors$broad)
+    sn_type_colors <- cell_type_colors$broad
 }else if(opt$datatype == "sn_fine"){
     sn_factor_levels <- names(cell_type_colors$anno)
+    sn_type_colors <- cell_type_colors$anno
 }
 
 cluster_levels <- c(sn_factor_levels, spd_factor_levels)
@@ -133,14 +135,14 @@ view_table_anno <- view_table |>
 
 # view_table_anno <- view_table_anno[rownames(top_gw_value_matrix),,drop= FALSE]
 
-view_colors <- c(cell_type_colors$anno, SpD_colors)[my_views]
+view_colors <- c(sn_type_colors, SpD_colors)[my_views]
 view_colors <- c(view_colors, Multi = "grey30")
 
 view_table_anno_row<- rowAnnotation(
     df = view_table_anno,
     col = list(view = view_colors,
                positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"),
-               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#FFA9A3"))
+               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#D4DF9E"))
 )
 
 
@@ -186,6 +188,11 @@ dge_data <- bind_rows(spd_dge_data, sn_dge_data)
 
 dge_data |> filter(gene_name %in% rownames(view_table_anno))
 
+## needed below for common_genes, and again for the "select clusters" heatmap
+MOFA_deg_data <- dge_data |> 
+    filter(cluster %in% my_views, 
+           gene_name %in% rownames(view_table_anno))
+
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
 common_genes <- rownames(view_table_anno)[rownames(view_table_anno) %in% MOFA_deg_data$gene_name]
@@ -194,7 +201,7 @@ view_table_anno_row2 <- rowAnnotation(
     df = view_table_anno[common_genes,],
     col = list(view = view_colors,
                positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"),
-               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#FFA9A3"))
+               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#D4DF9E"))
 )
 
 ## all clusters
@@ -213,10 +220,6 @@ logFC_Heatmap(dge_data,
               )
 
 ## select clusters
-
-MOFA_deg_data <- dge_data |> 
-    filter(cluster %in% my_views, 
-           gene_name %in% rownames(view_table_anno))
 
 logFC_Heatmap(dge_data |> filter(cluster %in% my_views), 
               # gene_list = row_order,
@@ -272,7 +275,7 @@ gene_weights_GO <- gene_weights$Factor4 |>
     left_join(entrez_search, by = c("feature" = "ENSEMBL"), relationship = "many-to-many") |>
     mutate(abs_value = abs(value),
            weight_pos = value > 0,
-           datatype = ifelse(grepl("_Sp", ctype), "Visium", "snRNA-seq")) |>
+           datatype = ifelse(grepl("^v", ctype), "Visium", "snRNA-seq")) |>
     filter(ctype %in% my_views) |>
     group_by(ctype,weight_pos) |>
     arrange(-abs_value) |>
@@ -384,6 +387,7 @@ ggsave(weight_by_DEsig_plot,
        filename = here(plot_dir, sprintf("MOFA_Factor4_weight_by_DEsig_%s.png", opt$datatype)),
        width = 2 * length(valid_views), height = 5)
 
+# slurmjobs::job_single('02_MOFA_gw_heatmaps', create_shell = TRUE, memory = '10G', command = "Rscript 02_MOFA_gw_heatmaps --datatype sn_fine")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
