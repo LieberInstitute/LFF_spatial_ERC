@@ -317,6 +317,12 @@ pdf(file.path(plot_dir, 'ggpairs_APOE_geno.pdf'))
 print(p)
 dev.off()
 
+#### Gene Weights ####
+gene_weights <- map(factor_names, ~MOFAcellulaR::get_geneweights(model = model, factor = .x) |> left_join(rd, by = join_by(feature)))
+map(gene_weights, dim)
+
+write_rds(gene_weights, file = here(data_dir, sprintf('MOFA_gene_weights_%s.rds', opt$datatype)))
+
 
 #### MOFA heatmap ####
 message(Sys.time() , " - Create MOFA heatmap")
