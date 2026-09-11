@@ -314,6 +314,11 @@ cluster_levels <- intersect(cluster_levels, cluster_levels2)
 
 DE_ancestry_data |> filter(vlmf_adj.P.Val < 0.05) |> dplyr::count(contrast, cluster)
 
+DE_ancestry_data |>
+    filter(vlmf_adj.P.Val < 0.05)  |>
+    select(gene_name, contrast, cluster, vlmf_logFC, vlmf_AveExpr, vlmf_t,  vlmf_P.Value, vlmf_adj.P.Val) |>
+    arrange(vlmf_adj.P.Val)
+
 sce_pb$carrier_Anc <- factor(paste(sce_pb$APOE_carrier, sce_pb$Ancestry), levels = c("E2+ AA","E4+ AA", "E2+ EA", "E4+ EA"))
 table(sce_pb$carrier_Anc)
 
