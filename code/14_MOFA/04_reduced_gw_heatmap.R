@@ -1,21 +1,21 @@
-library(SpatialExperiment)
-library(sessioninfo)
-library(MOFAcellulaR)
-library(MOFA2)
-library(here)
-library(tidyverse)
-library(ComplexHeatmap)
-library(clusterProfiler)
-library(org.Hs.eg.db)
+library("SpatialExperiment")
+library("sessioninfo")
+library("MOFAcellulaR")
+library("MOFA2")
+library("here")
+library("tidyverse")
+library("ComplexHeatmap")
+library("clusterProfiler")
+library("org.Hs.eg.db")
 
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
 num_factors = 7
-specific_factor = 'Factor3'
+specific_factor = 'Factor4'
 fdr_cutoff = 0.05
 z_cutoff_genes = 1.96
 max_genes = 2
-my_views = c("Oligo.3", "Oligo.4", "Oligo.5", "Excit.L5.2", "WM_Sp09D06")
+my_views = c("Oligo.3", "Oligo.4", "Oligo.5", "vWMd", "vWMd", "Excit.L2_5.RELN")
 
 cell_colors_path = here(
     "processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"
@@ -45,7 +45,6 @@ dir.create(file.path(plot_dir, 'GO'), recursive = TRUE, showWarnings = FALSE)
 load(cell_colors_path, verbose = TRUE)
 load(spd_colors_path, verbose = TRUE)
 load(project_colors_path, verbose = TRUE)
-names(SpD_colors) = sub('~', '_', names(SpD_colors))
 view_colors = c(cell_type_colors$anno, SpD_colors)[my_views]
 view_colors = c(view_colors, Multi = "grey30")
 
@@ -141,7 +140,7 @@ cluster_levels = c(names(cell_type_colors$anno), names(SpD_colors))
 logFC_Heatmap(
     dge_data, 
     gene_list = rownames(view_table),
-    title = "Factor3", 
+    title = "Factor4", 
     h = nrow(view_table) / 4 + 1, 
     w = length(my_views) / 4 + 2, 
     cluster_col = FALSE,
