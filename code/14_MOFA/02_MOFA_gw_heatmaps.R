@@ -45,33 +45,36 @@ cluster_levels <- c(sn_factor_levels, spd_factor_levels)
 #### load gene weight data ####
 
 gene_weights <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", opt$datatype, sprintf('MOFA_gene_weights_%s.rds', opt$datatype)))
-                        
+        
+head(gene_weights[[1]])
+table(gene_weights[[1]]$ctype)
+                
 gene_weights <- map(gene_weights, ~.x |>
-                            mutate(ctype = factor(gsub("_Sp", "~Sp", ctype),
-                                   levels = cluster_levels))
-                    )
+                            mutate(ctype = factor(ctype, levels = cluster_levels)))
 
 
 map(gene_weights, ~.x |> group_by(ctype) |> slice_max(value))
 
-#### Factor 3 heatmap ####
+#### Factor 4 heatmap ####
 
-summary(gene_weights$Factor3$value)
+summary(gene_weights$Factor4$value)
 
 if(opt$datatype == "sn_broad"){
-    my_views <- c("Oligo","WM~Sp09D06")
+    my_views <- c("Oligo","WM")
 } else if(opt$datatype == "sn_fine"){
-    my_views <- c("Oligo.3","Oligo.4","Oligo.5","Excit.L5.2","WM~Sp09D06") #Excit.L5.2 - ugly when added
+    my_views <- c("Oligo.3", "Oligo.4", "Oligo.5", "Excit.L2_5.RELN", "vWMd", "vWMpv")
 }
 
-top_gene_weights <- gene_weights$Factor3 |>
+top_gene_weights <- gene_weights$Factor4 |>
     mutate(abs_value = abs(value),
            weight_pos = value > 0,
-           datatype = ifelse(grepl("_Sp", ctype), "Visium", "snRNA-seq")) |>
+           datatype = ifelse(grepl("^v", ctype), "Visium", "snRNA-seq")) |>
     filter(ctype %in% my_views) |>
     group_by(ctype,weight_pos) |>
     arrange(-abs_value) |>
     dplyr::slice(1:5)
+
+top_gene_weights |> count(ctype, datatype)
 
 # duplicated genes?
 top_gene_weights |> ungroup() |> count(gene_name) |> arrange(-n)
@@ -85,9 +88,13 @@ view_table <- top_gene_weights |>
               ) 
 
 view_table |> filter(n > 1)
+# gene_name     n weight_pos view            
+# <chr>     <int> <lgl>      <chr>           
+# 1 CNTN5         2 FALSE      Oligo.3, Oligo.5
+# 2 GPC6          2 FALSE      Oligo.3, Oligo.4
 
 ## prep heatmap 
-top_gw_value_matrix <- gene_weights$Factor3 |>
+top_gw_value_matrix <- gene_weights$Factor4 |>
     filter(feature %in% top_gene_weights$feature) |>
     select(gene_name, ctype, value) |>
     pivot_wider(names_from = ctype, values_from = value) |>
@@ -117,8 +124,10 @@ pdf_height <- length(row_order)/5
 view_levels <- c("Multi", my_views)
 
 view_table_anno <- view_table |>
-    mutate(view = factor(ifelse(n > 1, "Multi", view), levels = view_levels)) |>
-    select(gene_name, positive_weight = weight_pos, view) |>
+    mutate(datatype = ifelse(grepl("^v", view), "Visium", "snRNA-seq"),  ## careful for overlapping datatypes
+           view = factor(ifelse(n > 1, "Multi", view), levels = view_levels),
+           ) |>
+    select(gene_name, positive_weight = weight_pos, datatype, view) |>
     column_to_rownames("gene_name") |>
     arrange(-positive_weight, view)
 
@@ -130,7 +139,8 @@ view_colors <- c(view_colors, Multi = "grey30")
 view_table_anno_row<- rowAnnotation(
     df = view_table_anno,
     col = list(view = view_colors,
-               positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"))
+               positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"),
+               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#FFA9A3"))
 )
 
 
@@ -174,15 +184,24 @@ sn_dge_data <- readRDS(here("processed-data", "13_compile_DGE", "01_compile_DGE"
 
 dge_data <- bind_rows(spd_dge_data, sn_dge_data)
 
-
+dge_data |> filter(gene_name %in% rownames(view_table_anno))
 
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
+
+common_genes <- rownames(view_table_anno)[rownames(view_table_anno) %in% MOFA_deg_data$gene_name]
+
+view_table_anno_row2 <- rowAnnotation(
+    df = view_table_anno[common_genes,],
+    col = list(view = view_colors,
+               positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"),
+               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#FFA9A3"))
+)
 
 ## all clusters
 logFC_Heatmap(dge_data, 
               # gene_list = row_order,
               gene_list = rownames(view_table_anno),
-              title = "Factor3", 
+              title = "Factor4", 
               h = pdf_height, 
               w = pdf_width_all, 
               cluster_col = FALSE,
@@ -190,7 +209,8 @@ logFC_Heatmap(dge_data,
               flip = TRUE,
               save = TRUE,
               order_genes = FALSE,
-              row_anno = view_table_anno_row)
+              row_anno = view_table_anno_row2
+              )
 
 ## select clusters
 
@@ -198,18 +218,10 @@ MOFA_deg_data <- dge_data |>
     filter(cluster %in% my_views, 
            gene_name %in% rownames(view_table_anno))
 
-common_genes <- rownames(view_table_anno)[!rownames(view_table_anno) %in% MOFA_deg_data$gene_name]
-
-view_table_anno_row2 <- rowAnnotation(
-    df = view_table_anno[common_genes,],
-    col = list(view = view_colors,
-               positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"))
-)
-
 logFC_Heatmap(dge_data |> filter(cluster %in% my_views), 
               # gene_list = row_order,
               gene_list = rownames(view_table_anno),
-              title = "Factor3_select", 
+              title = "Factor4_select", 
               h = pdf_height, 
               w = pdf_width_select, 
               cluster_col = FALSE,
@@ -220,35 +232,35 @@ logFC_Heatmap(dge_data |> filter(cluster %in% my_views),
               row_anno = view_table_anno_row2)
 
 #### gene weights vs logFC ####
-head(gene_weights$Factor3)
+head(gene_weights$Factor4)
 
-factor3_weights <- gene_weights$Factor3 |>
-    rename(gene_id = feature, cluster = ctype, Factor3 = value)
+Factor4_weights <- gene_weights$Factor4 |>
+    rename(gene_id = feature, cluster = ctype, Factor4 = value)
 
 
 dge_data <- dge_data |>
-    left_join(factor3_weights)
+    left_join(Factor4_weights)
 
-dge_data |> select(cluster, gene_name, vlmf_logFC, Factor3)
+dge_data |> select(cluster, gene_name, vlmf_logFC, Factor4)
 
 
-scatter_logFC_v_Factor3 <- dge_data |>
+scatter_logFC_v_Factor4 <- dge_data |>
     filter(cluster %in% my_views) |>
-    ggplot(aes(x = vlmf_logFC, y = Factor3, color = vlmf_adj.P.Val < 0.05)) +
+    ggplot(aes(x = vlmf_logFC, y = Factor4, color = vlmf_adj.P.Val < 0.05)) +
     geom_point(size = 0.5, alpha = 0.5) +
     facet_wrap(~cluster) +
     theme_bw()
 
-ggsave(scatter_logFC_v_Factor3, filename = here(plot_dir, "scatter_logFC_v_Factor3.png"))
+ggsave(scatter_logFC_v_Factor4, filename = here(plot_dir, "scatter_logFC_v_Factor4.png"))
 
 #### GO on top genes ####
 library("org.Hs.eg.db")
 library("clusterProfiler")
 
-entrez_search <- bitr(unique(gene_weights$Factor3$feature), fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
+entrez_search <- bitr(unique(gene_weights$Factor4$feature), fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db")
 entrez_search |> count(ENSEMBL) |> count(n)
 
-weight_density <- gene_weights$Factor3 |>
+weight_density <- gene_weights$Factor4 |>
     filter(ctype %in% my_views) |>
     ggplot(aes(x = value, color = ctype)) +
     geom_density()
@@ -256,7 +268,7 @@ weight_density <- gene_weights$Factor3 |>
 ggsave(weight_density, filename = here(plot_dir, "weight_density.png"))
     
 
-gene_weights_GO <- gene_weights$Factor3 |>
+gene_weights_GO <- gene_weights$Factor4 |>
     left_join(entrez_search, by = c("feature" = "ENSEMBL"), relationship = "many-to-many") |>
     mutate(abs_value = abs(value),
            weight_pos = value > 0,
@@ -267,8 +279,8 @@ gene_weights_GO <- gene_weights$Factor3 |>
     mutate(rank = row_number(),
            GO_group = ifelse(rank <= 50, 
                          ifelse(weight_pos, 
-                                paste0(gsub("\\.", "", ctype), "_F3+"), 
-                                paste0(gsub("\\.", "", ctype), "_F3-")),
+                                paste0(gsub("\\.", "", ctype), "_F4+"), 
+                                paste0(gsub("\\.", "", ctype), "_F4-")),
                                 "None")
     ) |>
     ungroup()
@@ -317,7 +329,7 @@ dev.off()
 
 
 #### MOFA vs DE overlap enrichment (reviewer response 2.18) ####
-## Goal: quantify how much of Factor3's signal overlaps with vs. is
+## Goal: quantify how much of Factor4's signal overlaps with vs. is
 ## independent of standard DE, to support the "added value of MOFA" response.
 ##
 ## Problem: MOFA weights are continuous with no natural significance cutoff,
@@ -331,7 +343,7 @@ dev.off()
 wilcox_by_cluster <- dge_data |>
     filter(cluster %in% my_views) |>
     mutate(DE_sig = vlmf_adj.P.Val < 0.05,
-           abs_weight = abs(Factor3)) |>
+           abs_weight = abs(Factor4)) |>
     filter(!is.na(abs_weight), !is.na(DE_sig)) |>
     group_by(cluster) |>
     summarise(
@@ -355,7 +367,7 @@ valid_views <- wilcox_by_cluster |> filter(!is.na(wilcox_p)) |> pull(cluster)
 weight_by_DEsig_plot <- dge_data |>
     filter(cluster %in% valid_views) |>
     mutate(DE_sig = ifelse(vlmf_adj.P.Val < 0.05, "DE-signif", "not signif"),
-           abs_weight = abs(Factor3)) |>
+           abs_weight = abs(Factor4)) |>
     filter(!is.na(abs_weight), !is.na(DE_sig)) |>
     ggplot(aes(x = DE_sig, y = abs_weight, fill = DE_sig)) +
     geom_violin(trim = FALSE, alpha = 0.5) +
@@ -364,12 +376,12 @@ weight_by_DEsig_plot <- dge_data |>
     facet_wrap(~cluster, nrow = 1) +
     scale_fill_manual(values = c("DE-signif" = "skyblue", "not signif" = "grey60")) +
     theme_bw() +
-    labs(x = NULL, y = "|Factor3 weight|",
-         title = "MOFA Factor3 weight magnitude by DE significance:") +
+    labs(x = NULL, y = "|Factor4 weight|",
+         title = "MOFA Factor4 weight magnitude by DE significance:") +
     theme(legend.position = "none")
 
 ggsave(weight_by_DEsig_plot,
-       filename = here(plot_dir, sprintf("MOFA_factor3_weight_by_DEsig_%s.png", opt$datatype)),
+       filename = here(plot_dir, sprintf("MOFA_Factor4_weight_by_DEsig_%s.png", opt$datatype)),
        width = 2 * length(valid_views), height = 5)
 
 
