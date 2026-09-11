@@ -217,48 +217,6 @@ F3_age_scatter_fit_tau <- factor_df |>
 
 ggsave(F3_age_scatter_fit_tau, filename = here(plot_dir, "factor3_weights_age_scatter_fit_tau.png"), height = 5, width = 6)
 
-#   Convert to wide format
-factor_df = factor_df |>
-    pivot_wider(names_from = "Factor", values_from = "value") |>
-    relocate(matches('^Factor'))
-
-#   Relationship between factors and APOE carrier
-p = ggpairs(factor_df, columns = 1:5, aes(color = APOE_carrier))
-
-pdf(file.path(plot_dir, 'ggpairs_APOE_carrier.pdf'))
-print(p)
-dev.off()
-
-#   Relationship between factors colored by APOE genotype
-p = ggpairs(factor_df, columns = 1:5, aes(color = factor(APOE)))
-pdf(file.path(plot_dir, 'ggpairs_APOE_geno.pdf'))
-print(p)
-dev.off()
-
-
-#### MOFA heatmap ####
-message(Sys.time() , " - Create MOFA heatmap")
-
-#   Plot a heatmap of summary results, labeling with covariates of interest
-pdf(here(plot_dir, sprintf('MOFA_heatmap_%s.pdf', opt$datatype)), height = 3 + (length(model@data)/4))
-plot_MOFA_hmap(
-    model = model,
-    group = FALSE,
-    metadata = samples_metadata(model),
-    sample_id_column = "sample",
-    sample_anns = c("APOE_carrier", "Ancestry", "Age", "Sex"),
-    assoc_list = assoc_list,
-    col_rows = list(
-        'APOE_carrier' = APOE_carrier_colors,
-        'Ancestry' = ancestry_colors,
-        'Sex' = sex_colors
-    )
-)
-dev.off()
-
-## select boxplots
-factor_df <- read_csv(here(data_dir, sprintf("MOFA_factor_df-%s.csv", opt$datatype)))
-
 
 # slurmjobs::job_single('01.5_MOFA_explore_broad', create_shell = TRUE, memory = '10G', command = "Rscript 01.5_MOFA_explore.R --datatype sn_broad")
 # slurmjobs::job_single('01.5_MOFA_explore_fine', create_shell = TRUE, memory = '10G', command = "Rscript 01.5_MOFA_explore.R --datatype sn_fine")
