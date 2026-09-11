@@ -59,16 +59,16 @@ projected_df = project_data(model = model, test_data = xenium_dat) |>
 write_csv(projected_df, file.path(out_dir, "xenium_factor_scores.csv"))
 
 sn_df = read_csv(sn_factor_path, show_col_types = FALSE) |>
-    filter(Factor == 'Factor3') |>
+    filter(Factor == 'Factor4') |>
     select(sample, APOE_carrier, taupathy, value) |>
     dplyr::rename(donor = sample, sn_factor_score = value)
 
 comparison_df = projected_df |>
-    select(donor, Factor3) |>
-    dplyr::rename(xen_factor_score = Factor3) |>
+    select(donor, Factor4) |>
+    dplyr::rename(xen_factor_score = Factor4) |>
     inner_join(sn_df, by = 'donor')
 
-# Calculate correlation between xenium and sn Factor3 scores
+# Calculate correlation between xenium and sn Factor4 scores
 cor_value = cor(
     comparison_df$xen_factor_score, comparison_df$sn_factor_score,
     use = "complete.obs"
@@ -93,10 +93,10 @@ p = ggplot(
         size = 5,
         fontface = "bold"
     ) +
-    labs(x = "Xenium Factor3 Score", y = "sn Factor3 Score") +
+    labs(x = "Xenium Factor4 Score", y = "sn Factor4 Score") +
     theme_bw(base_size = 15)
 
-ggsave(file.path(plot_dir, "xenium_vs_sn_Factor3_scatter.pdf"), p)
+ggsave(file.path(plot_dir, "xenium_vs_sn_Factor4_scatter.pdf"), p)
 
 ## add APOE + tau details
 p_details = ggplot(
@@ -115,9 +115,9 @@ p_details = ggplot(
         fontface = "bold"
     ) +
     scale_color_manual(values = APOE_carrier_colors_dark) +
-    labs(x = "Xenium Factor3 Score", y = "sn Factor3 Score") +
+    labs(x = "Xenium Factor4 Score", y = "sn Factor4 Score") +
     theme_bw(base_size = 15)
 
-ggsave(file.path(plot_dir, "xenium_vs_sn_Factor3_scatter_details.pdf"), p_details)
+ggsave(file.path(plot_dir, "xenium_vs_sn_Factor4_scatter_details.pdf"), p_details)
 
 session_info()
