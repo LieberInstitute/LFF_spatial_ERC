@@ -6,6 +6,7 @@
 library("SpatialExperiment")
 library("MOFAcellulaR")
 library("MOFA2")
+library("reticulate")
 library("tidyverse")
 library("GGally")
 library("here")
@@ -14,14 +15,26 @@ library("getopt")
 
 # Import command-line parameters
 scec <- matrix(
-    c("datatype", "d", "1", "character", "Data type"),
+    c("datatype", "d", "1", "character", "Data type",
+      "conda_env", "e", "2", "character", "Conda env with mofapy2 installed (optional, defaults to mofapy2_env)"),
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
 
+if (is.null(opt$conda_env)) opt$conda_env <- "mofapy2_env"
+
 ## test 
 # opt$datatype = "sn_broad"
 # opt$datatype = "sn_fine"
+
+## Point reticulate at a pre-built conda env with mofapy2 installed, rather
+## than letting basilisk try to compile its own Python inside the Slurm job
+## (fails on locked-down compute nodes - see run_mofa() call below). Build
+## the env once, e.g.:
+##   conda create -n mofapy2_env python=3.10 -y
+##   conda activate mofapy2_env
+##   pip install mofapy2
+reticulate::use_condaenv(opt$conda_env, required = TRUE)
 
 data_dir <- here("processed-data", "14_MOFA", "01_MOFA", opt$datatype)
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
@@ -118,6 +131,13 @@ spe$cluster <- spe$registration_variable
 
 table(spe$cluster)
 
+## Save gene id/name mapping for downstream exploratory plots (01.5_MOFA_explore.R),
+## since that script re-loads the fitted model rather than rebuilding spe
+rd <- rowData(spe) |>
+    as.data.frame() |>
+    select(feature = gene_id, gene_name)
+write_rds(rd, file = here(data_dir, sprintf("MOFA_gene_rowData_%s.rds", opt$datatype)))
+
 rm(visium_spe)
 rm(sn_sce)
 
@@ -189,7 +209,7 @@ mofa <- prepare_mofa(
 
 out_path = here(data_dir, 'model.hdf5')
 
-model <- run_mofa(mofa, out_path, use_basilisk = TRUE)
+model <- run_mofa(mofa, out_path, use_basilisk = FALSE)
 
 ## read-in MOFA data
 # model = load_model(out_path)
@@ -277,18 +297,6 @@ factor_boxplot(var = "Ancestry", fill_colors = ancestry_colors, assoc_tb = assoc
 factor_boxplot(var = "Sex", fill_colors = sex_colors, assoc_tb = assoc_tb)
 factor_boxplot(var = "taupathy", assoc_tb = assoc_tb)
 factor_boxplot(var = "Braak", assoc_tb = assoc_tb)
-
-#### MOFA gene weights ####
-message(Sys.time() , " - Calc MOFA gene weights")
-
-factor_names <- sort(unique(factor_df$Factor))
-names(factor_names) <- factor_names
-
-gene_weights <- map(factor_names, ~MOFAcellulaR::get_geneweights(model = model, factor = .x) |> left_join(rd, by = join_by(feature)))
-map(gene_weights, dim)
-
-write_rds(gene_weights, file = here(data_dir, sprintf('MOFA_gene_weights_%s.rds', opt$datatype)))
-
 
 # slurmjobs::job_single('01_MOFA_broad', create_shell = TRUE, memory = '10G', command = "Rscript 01_MOFA.R --datatype sn_broad")
 # slurmjobs::job_single('01_MOFA_fine', create_shell = TRUE, memory = '10G', command = "Rscript 01_MOFA.R --datatype sn_fine")
