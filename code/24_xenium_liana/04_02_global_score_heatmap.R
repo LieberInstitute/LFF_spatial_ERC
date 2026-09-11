@@ -19,10 +19,10 @@ cell_type_levels = c(
     'Astro.1', 'Astro.2', 'Astro.3', 'Astro.4', 'Astro.5', 'Macro', 'Micro.1',
     'Micro.2', 'Micro.3', 'Micro.4', 'Micro.5', 'OPC.1', 'OPC.2', 'OPC.3',
     'OPC.4', 'OPC.5', 'Oligo.1', 'Oligo.2', 'Oligo.3', 'Oligo.4', 'Oligo.5',
-    'Vasc.Endo', 'Vasc.PC', 'Vasc.VLMC', 'Excit.L2', 'Excit.L2_5.1',
-    'Excit.L2_5.2', 'Excit.L5.1', 'Excit.L5.2', 'Excit.L5_6_NP', 'Excit.L6_CT',
-    'Excit.L6b', 'Inhib.Pax6', 'Inhib.Lamp5_Lhx6', 'Inhib.Pvalb', 'Inhib.Vip',
-    'Inhib.Chandelier', 'Inhib.Sst'
+    'Vasc.Endo', 'Vasc.PC', 'Vasc.VLMC', 'Excit.L2', 'Excit.L2_5.mix',
+    'Excit.L5.RELN', 'Excit.L5.RORB', 'Excit.L2_5.RELN', 'Excit.L5_6.NP',
+    'Excit.L6.CT', 'Excit.L6b', 'Inhib.HTR3A', 'Inhib.LAMP5_LHX6',
+    'Inhib.PVALB', 'Inhib.VIP', 'Inhib.Chandelier', 'Inhib.SST'
 )
 carrier_groups = c('E2+', 'E4+')
 broad_cell_type_levels = c(
