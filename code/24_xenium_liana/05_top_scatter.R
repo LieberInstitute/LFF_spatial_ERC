@@ -4,11 +4,11 @@ library(ggrepel)
 library(sessioninfo)
 
 score_path = here(
-    'processed-data', '24_xenium_liana', '04_global_score_heatmap',
+    'processed-data', '24_xenium_liana', '03_2_update_cell_types',
     'global_interactions_summary.csv'
 )
 unfiltered_path = here(
-    'processed-data', '24_xenium_liana', '04_global_score_heatmap',
+    'processed-data', '24_xenium_liana', '03_2_update_cell_types',
     'global_interactions_unfiltered.csv'
 )
 out_path = here(
