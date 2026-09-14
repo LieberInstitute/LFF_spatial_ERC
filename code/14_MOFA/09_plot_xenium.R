@@ -49,7 +49,7 @@ covariate_boxplot = function(factor_df, t_df, covariate, covariate_colors) {
         ) +
         facet_wrap(~facet_label, nrow = 3, scales = "free_y") +
         scale_fill_manual(values = covariate_colors) +
-        labs(x = "Samples", y = "Factor 3 Weight") +
+        labs(x = "Samples", y = "Factor 4 Weight") +
         theme_bw(base_size = 12) +
         theme(legend.position = "None")  + 
         geom_label(

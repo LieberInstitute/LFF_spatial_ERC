@@ -125,7 +125,7 @@ projected_df = project_data(model = model, test_data = xenium_dat) |>
     as.data.frame() |>
     rownames_to_column('donor') |>
     as_tibble() |>
-    dplyr::rename(xen_factor_score = Factor3) |>
+    dplyr::rename(xen_factor_score = Factor4) |>
     select(donor, xen_factor_score)
 
 ################################################################################
@@ -133,7 +133,7 @@ projected_df = project_data(model = model, test_data = xenium_dat) |>
 ################################################################################
 
 factor_df = get_tidy_factors(
-        model = model, metadata = samples_metadata(model), factor = 'Factor3',
+        model = model, metadata = samples_metadata(model), factor = 'Factor4',
         sample_id_column = "sample"
     ) |>
     dplyr::rename(donor = sample, sn_factor_score = value) |>
