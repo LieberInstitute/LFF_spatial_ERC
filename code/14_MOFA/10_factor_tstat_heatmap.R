@@ -46,7 +46,7 @@ format_fdr <- function(x) {
 t_stat_tile <- factor_t_test_results |>
     ggplot(aes(x = covariate, y = enviroment, fill = t_stat)) +
     geom_tile() +
-    geom_text(aes(label = ifelse(fdr < 0.1, format_fdr(fdr), "")), color = "white") +
+    geom_text(aes(label = ifelse(p_val < 0.1, format_fdr(p_val), "")), color = "white") +
     facet_wrap(~subset, ncol = 1, scales = "free_y", space = "free_y", strip.position = "right") +
     scale_fill_gradient2(low="#2166AC", mid="white", high="#D6604D", midpoint=0)+
     theme_bw() +

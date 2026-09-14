@@ -63,7 +63,7 @@ covariate_boxplot = function(factor_df, t_df, covariate, covariate_colors) {
             data = t_df |>
                 mutate(
                     p_value_label = sprintf(
-                        "FDR=%s%s", format_fdr(fdr), ifelse(fdr < 0.05, "*", "")
+                        "p=%.2e%s", p_value, ifelse(p_value < 0.05, "*", "")
                     )
                 ),
             aes(x = Inf, y = Inf, label = p_value_label),
