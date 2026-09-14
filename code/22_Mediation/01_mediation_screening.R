@@ -287,7 +287,7 @@ out_dir_env <- Sys.getenv("MEDIATION_OUTDIR", "")
 out_dir <- if (nzchar(trimws(out_dir_env))) {
     out_dir_env
 } else {
-    here("code", "22_Mediation", sprintf("out-%s", opt$mediation))
+    file.path(mdir, sprintf("out-%s", opt$mediation))
 }
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 baseline_dir <- file.path(out_dir, "baseline")

@@ -12,7 +12,6 @@ here::i_am(".git/HEAD")
 
 `%||%` <- function(x, y) if (is.null(x) || length(x) < 1 || all(is.na(x))) y else x
 
-code_med_dir <- here("code", "22_Mediation")
 out_data_dir <- here("processed-data", "22_Mediation")
 dir.create(out_data_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -266,7 +265,8 @@ loadMedDataSummary <- function(out_dir) {
         if ("n_donors" %in% names(bi2)) {
             data.table::setorderv(bi2, cols = "n_donors", order = -1L)
         }
-        bf <- bi2$out_file[1]
+        ## resolve saved absolute paths within the selected result directory
+        bf <- file.path(pth$base_dir, basename(bi2$out_file[1]))
     } else {
         bf <- list.files(pth$base_dir, pattern = "^baseline_[0-9a-f]+\\.tab\\.gz$", full.names = TRUE)[1]
     }
@@ -319,7 +319,8 @@ resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label, coef 
     if (!is.null(dt_mi) && nrow(dt_mi) > 0L && all(c("iter", "med_gene_id", file_col) %in% names(dt_mi))) {
         idx <- dt_mi[iter == it & med_gene_id == mgid]
         if (nrow(idx) > 0L) {
-            mf <- idx[[file_col]][1]
+            ## keep relocated runs independent of the original absolute paths
+            mf <- file.path(pd$pth$out, basename(idx[[file_col]][1]))
             if (!is.na(mf) && nzchar(mf) && file.exists(mf)) return(mf)
         }
     }
@@ -687,7 +688,7 @@ for (i in seq_len(nrow(main_designs))) {
     source_dir <- as.character(cfg$source_dir[[1]])
     design <- as.character(cfg$design[[1]])
     model <- as.character(cfg$model[[1]])
-    out_dir <- file.path(code_med_dir, source_dir)
+    out_dir <- file.path(out_data_dir, source_dir)
 
     pd <- loadMedDataSummary(out_dir)
     valid_run_labels <- unique(as.character(pd$dt$mi$run_label))

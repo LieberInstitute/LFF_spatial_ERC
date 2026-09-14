@@ -153,7 +153,8 @@ loadMedData <- function(out_dir, med_expr_src = NULL) {
         if ("n_donors" %in% names(bi2)) {
             data.table::setorderv(bi2, cols = "n_donors", order = -1L)
         }
-        bf <- bi2$out_file[1]
+        ## resolve saved absolute paths within the selected result directory
+        bf <- file.path(pth$base_dir, basename(bi2$out_file[1]))
     } else {
         bf <- list.files(pth$base_dir, pattern = "^baseline_[0-9a-f]+\\.tab\\.gz$", full.names = TRUE)[1]
     }
@@ -218,7 +219,7 @@ loadMedData <- function(out_dir, med_expr_src = NULL) {
 ## loading ERC Astro mediation data
 erc_src_sce <- file.path(ddir, "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn",
                                "sce_pseudo_DGE-cell_type_anno.RDS")
-pd <- loadMedData( file.path(cdir, "22_Mediation", "out-erc_astro"),
+pd <- loadMedData( file.path(med_data_dir, "out-erc_astro"),
     med_expr_src = list(kind = "erc_sce", path = erc_src_sce)
 )
 ```
@@ -233,7 +234,7 @@ lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_
                               "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
 ## kind and domain are auto-derived from the out_dir basename ("out-lc_astro" -> lc_spatial, Astro)
 pd_lc <- loadMedData(
-    file.path(cdir, "22_Mediation", "out-lc_astro"),
+    file.path(med_data_dir, "out-lc_astro"),
     med_expr_src = list(
         path = lc_src_counts,
         meta = list(donor_pb_path = lc_src_donor_pb)
@@ -354,7 +355,8 @@ resolve_mediator_results_file <- function(pd, dt_mi, it, mgid, file_label, coef 
     if (!is.null(dt_mi) && nrow(dt_mi) > 0 &&
         all(c("iter", "med_gene_id", file_col) %in% names(dt_mi))) {
         idx <- dt_mi[iter == it & med_gene_id == mgid]
-        if (nrow(idx) > 0) mf <- idx[[file_col]][1]
+        ## resolve tables inside this run even when the original path still exists
+        if (nrow(idx) > 0) mf <- file.path(pd$pth$out, basename(idx[[file_col]][1]))
     }
     if (length(mf) < 1 || !file.exists(mf)) {
         mf <- file.path(pd$pth$out, sprintf("%03d_%s%s", it, file_label, file_suffix))
@@ -1260,7 +1262,7 @@ load_pd_for_source_dir <- local({
             erc_src_sce <- file.path(ddir, "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn",
                                      "sce_pseudo_DGE-cell_type_anno.RDS")
             pd_obj <- loadMedData(
-                file.path(cdir, "22_Mediation", source_dir),
+                file.path(med_data_dir, source_dir),
                 med_expr_src = list(kind = "erc_sce", path = erc_src_sce)
             )
             out <- list(pd = pd_obj, med_region = "ERC")
@@ -1272,7 +1274,7 @@ load_pd_for_source_dir <- local({
         lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
                                      "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
         pd_obj <- loadMedData(
-            file.path(cdir, "22_Mediation", source_dir),
+            file.path(med_data_dir, source_dir),
             med_expr_src = list(
                 path = lc_src_counts,
                 meta = list(donor_pb_path = lc_src_donor_pb)
@@ -1812,7 +1814,7 @@ lc_src_counts <- file.path(cdir, "22_Mediation", "LC-processed-data",
 lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
                               "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
 pd_lc <- loadMedData(
-    file.path(cdir, "22_Mediation", "out-lc_astro"),
+    file.path(med_data_dir, "out-lc_astro"),
     med_expr_src = list(
         path = lc_src_counts,
         meta = list(donor_pb_path = lc_src_donor_pb)
@@ -1831,7 +1833,7 @@ lc_src_counts <- file.path(cdir, "22_Mediation", "LC-processed-data",
 lc_src_donor_pb <- file.path(cdir, "22_Mediation", "LC-processed-data", "shared_internal_ref",
                               "DGEList_pseudobulkcounts_by_donor_forGP_unfilt_020426.RDS")
 pd_lc <- loadMedData(
-    file.path(cdir, "22_Mediation", "out-lc_nm"),
+    file.path(med_data_dir, "out-lc_nm"),
     med_expr_src = list(
         path = lc_src_counts,
         meta = list(donor_pb_path = lc_src_donor_pb)
