@@ -1,11 +1,11 @@
 **** Job starts ****
-Mon Sep 14 12:07:39 PM EDT 2026
+Mon Sep 14 12:10:04 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35700492
+Job id: 35700509
 Job name: 08_project_xenium
-Node name: compute-177
-Task id: 6
+Node name: compute-175
+Task id: 13
 Unloading conda_R/4.5
 Loading conda_R/4.5
 
@@ -217,15 +217,15 @@ The following objects are masked from ‘package:tidyr’:
 
 There were 23 warnings (use warnings() to see them)
 # A tibble: 1 × 3
-  domain   astro_group task_id
-  <chr>    <chr>         <dbl>
-1 xLD_glia all               6
-2026-09-14 12:08:24.067243 make pseudobulk object
-2026-09-14 12:08:31.848974 dropping 138 pseudo-bulked samples that are below 'min_ncells'.
-2026-09-14 12:08:31.918094 drop lowly expressed genes
-2026-09-14 12:08:32.066609 normalize expression
+  domain astro_group task_id
+  <chr>  <chr>         <dbl>
+1 all    low              13
+2026-09-14 12:11:17.109988 make pseudobulk object
+2026-09-14 12:11:43.574892 dropping 52 pseudo-bulked samples that are below 'min_ncells'.
+2026-09-14 12:11:43.65147 drop lowly expressed genes
+2026-09-14 12:11:43.85625 normalize expression
 Saving 7 x 7 in image
-There were 32 warnings (use warnings() to see them)
+There were 37 warnings (use warnings() to see them)
 Warning message:
 In .quality_control(object, verbose = verbose) :
   Factor(s) 1, 5, 6 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
@@ -437,4 +437,4 @@ In .quality_control(object, verbose = verbose) :
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Sep 14 12:08:49 PM EDT 2026
+Mon Sep 14 12:12:01 PM EDT 2026
