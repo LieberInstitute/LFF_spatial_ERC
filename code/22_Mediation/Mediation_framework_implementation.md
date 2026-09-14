@@ -138,6 +138,10 @@ The summary logic marks outcome genes as attenuated when they were significant i
 
 ## Outputs
 
+By default, all mediation options write to `processed-data/22_Mediation/out-<option>/`.
+`MEDIATION_OUTDIR` overrides this location. The result-summary and plotting notebooks
+read from the same processed-data location.
+
 Important output files include:
 
 - `mediation_mediator_index.tsv`: standardized mediator index for the latest run.
