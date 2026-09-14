@@ -1,10 +1,10 @@
 **** Job starts ****
-Fri Sep 11 02:57:55 PM EDT 2026
+Fri Sep 11 01:48:27 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35644400
-Job name: 03_reduced_main_heatmap
-Node name: compute-168
+Job id: 35642499
+Job name: 01.5_MOFA_explore_fine
+Node name: compute-157
 Task id: 
 Unloading conda_R/4.5.x
 Loading conda_R/4.5
@@ -19,6 +19,7 @@ Currently Loaded Modules:
 
  
 
+Loading required package: SingleCellExperiment
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
 Loading required package: matrixStats
@@ -158,7 +159,6 @@ The following object is masked from ‘package:S4Vectors’:
 
 Loading required package: ggplot2
 There were 23 warnings (use warnings() to see them)
-here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
@@ -183,111 +183,89 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-Warning message:
-In .quality_control(object, verbose = verbose) :
-  Factor(s) 1, 5, 6 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
-
-               view    Factor1     Factor2     Factor3     Factor4     Factor5
-1           Oligo.3  2.6359260  4.53797579  0.14463067 28.83343697  0.88884830
-2           Oligo.5  3.0334830  4.61121202  0.33011436 23.13804626  1.62798762
-3           Oligo.4  1.6374230  8.29923153  0.75943470 17.65027046  2.25967169
-4             vWMpv  6.4624131  0.30250549  9.83107686 12.21191287  0.18069148
-5              vWMd  4.9344003  0.07810593  4.03408408 12.15003729  0.12329221
-6   Excit.L2_5.RELN  6.0664177  0.53884387  1.17182136  8.67114663  0.13794899
-7           Micro.2  9.5320106  4.22342420  0.27449727  8.51725340  7.24173784
-8         Inhib.SST  5.7344913 12.94479966  5.44640422  6.52478933  0.11177659
-9              vL5a 17.2736943  1.65268779  5.33229113  5.78159690  0.35536885
-10          Astro.3  2.9353976  7.54849315  3.55221033  5.27612567  6.31165504
-11          Astro.2  7.9331636  7.95441270  3.84616256  4.86884713  5.66624403
-12            Macro  0.2424061  0.17185211  0.24843216  4.46859598  6.55295849
-13            vWMuf  4.5990229  0.02812147  3.04567218  4.24759984  0.86785555
-14            vVasc 11.5404248  1.16776824  3.90791297  3.67431045  0.02246499
-15   Excit.L2_5.mix  7.2793365 12.39036918 12.79686093  3.41234803  3.78030539
-16        Vasc.VLMC  1.4067531  0.30689240  1.08909011  3.35567594  3.79804969
-17          Astro.1  4.8899055  9.84460711  7.20339417  3.28602791  9.06942487
-18              vLD 17.1511114  0.44501424  4.51641679  3.22483778  0.23044944
-19         Excit.L2  2.3834467 13.77630830  9.13544297  2.86500454  3.42434645
-20          Oligo.2  1.8140972 10.37189364  1.70721412  2.54452229  4.89383340
-21      Inhib.PVALB  4.0989578 11.09441519  8.89253020  2.52829194  0.45894980
-22          Micro.5 13.0684316  0.03170371  0.22315979  1.92123652  0.04410148
-23          Astro.5  4.2872429  2.43761539  1.57419443  1.90861225  6.37911558
-24              vL6 13.7451708  0.22470951  2.82687545  1.90107822  0.98720789
-25      Excit.L6.CT  0.9758890 10.35808921  2.07493305  1.84075236  0.05206466
-26           vInhib 18.5640275  0.20040870  2.18481421  1.69675946  0.02025962
-27             vL5b 19.9503899  0.65657496  2.90703177  1.57518983  0.12775064
-28              vL1 11.7782474  0.05418658  3.83419991  1.44877434  1.37525201
-29              vL2 13.7485266  0.16404986  8.92241001  1.35906935  0.11505485
-30          Micro.3  0.1846492  1.44362450  0.47185421  1.30420923  0.15153885
-31    Excit.L5.RORB  5.7696164 17.44771004  7.85066485  0.92896819  0.81005692
-32        Vasc.Endo  2.5657475  3.29700112  1.20841861  0.91668367 17.74825454
-33            OPC.2  5.3606153  9.13988352  2.57272720  0.88171363  4.68769073
-34            OPC.1  1.8824697  9.22680497  7.19444752  0.71532726  6.42327070
-35            OPC.3  1.3473988  7.63036609  7.09388256  0.70837736  5.20635843
-36        Inhib.VIP  4.3473780 13.02008629 13.95083070  0.66362619  3.52697372
-37    Excit.L5.RELN  0.3548265  8.02262425 15.06655216  0.65379739  0.04855990
-38        Excit.L6b  1.2541890 15.27154446  0.57983398  0.64523220  0.03724694
-39            OPC.4  0.8779883  5.72724938  0.36768317  0.52115917  7.62532353
-40 Inhib.LAMP5_LHX6  2.3084223 10.81858277 10.63118577  0.51895976  2.86349058
-41          Astro.4  1.8387854  1.25296712  3.51845026  0.49051642  7.92888999
-42            OPC.5 10.2032304  0.80209970  0.05517006  0.32105446  7.51041770
-43          Micro.1 13.3280814  3.41746807  0.84308982  0.29721260 11.11080050
-44          Oligo.1  1.9195199  9.60378647  2.32552886  0.27907491  5.32624125
-45 Inhib.Chandelier  0.4784822 12.31831908  6.75936341  0.11970401  9.96104479
-46          Micro.4 12.6816809  2.31011510  0.19013286  0.09858012 16.43847227
-       Factor6    Factor7
-1   0.34035444 0.08311272
-2   0.52999258 0.31609535
-3   0.21067262 0.43387413
-4   2.26902962 0.41846633
-5   9.54268575 0.82373023
-6   0.25126338 4.66333628
-7   0.99107027 0.08898377
-8   0.86774826 1.98343992
-9   2.84895301 1.61432624
-10  2.21160054 1.35818720
-11  2.27631330 0.97806454
-12  0.68907142 3.64169478
-13 11.58284545 0.08462071
-14  0.48188567 1.48336291
-15  0.96690655 4.66411710
-16  0.08692145 3.44597101
-17  1.02279186 3.78089547
-18  3.33666801 1.28539801
-19  1.21560693 6.27539754
-20  1.57058835 1.74978375
-21  2.21502185 4.95010018
-22  0.22743940 0.55290461
-23  1.47135854 0.31642318
-24  1.04064345 0.58549643
-25  5.65990806 0.94829202
-26  1.41940117 0.28907061
-27  3.61619592 2.14354396
-28 11.48331761 0.49124360
-29  9.08730030 4.49187160
-30  3.27318311 0.23624897
-31  0.78251958 8.28004479
-32  0.29528737 0.17657280
-33  3.64153981 1.36819482
-34 10.45885682 2.85022855
-35 11.14464402 2.61418819
-36  2.15628743 3.96123528
-37  9.10077095 7.13992119
-38  3.85236740 3.94651294
-39 15.02799392 0.20967126
-40  5.37855625 5.79264164
-41  0.20194054 0.64193606
-42  2.62879729 4.03912067
-43  2.00989842 0.22841692
-44  2.01228857 1.18675232
-45  0.06620288 3.04214358
-46  4.81665730 0.27596354
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+  APOE_carrier_anc_colors
 Loading objects:
   cell_type_colors
 Loading objects:
   SpD_colors
-null device 
-          1 
-─ Session info ───────────────────────────────────────────────────────────────
+2026-09-11 13:48:37.933103 - Load MOFA model
+Warning message:
+In .quality_control(object, verbose = verbose) :
+  Factor(s) 1, 5, 6 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+
+Rows: 210 Columns: 13
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (10): sample, APOE, APOE_carrier, Ancestry, Braak, CERAD, Sex, group, ta...
+dbl  (3): Age, Anc_Afr, value
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Rows: 49 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): Factor, term, signif
+dbl (2): p.value, adj_pvalue
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+`geom_smooth()` using formula = 'y ~ x'
+Warning messages:
+1: The following aesthetics were dropped during statistical transformation: shape.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor? 
+2: The following aesthetics were dropped during statistical transformation: shape.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor? 
+3: The following aesthetics were dropped during statistical transformation: shape.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor? 
+# A tibble: 4 × 5
+  term           estimate std.error statistic p.value
+  <chr>             <dbl>     <dbl>     <dbl>   <dbl>
+1 (Intercept)    -0.274     0.348      -0.789   0.437
+2 Age             0.00329   0.00682     0.482   0.634
+3 taupathyt+      0.0941    0.773       0.122   0.904
+4 Age:taupathyt+  0.00456   0.0138      0.330   0.744
+`geom_smooth()` using formula = 'y ~ x'
+Warning messages:
+1: The following aesthetics were dropped during statistical transformation: shape.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor? 
+2: The following aesthetics were dropped during statistical transformation: shape.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor? 
+3: The following aesthetics were dropped during statistical transformation: shape.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor? 
+[1] "Reproducibility information:"
+[1] "2026-09-11 13:48:51 EDT"
+   user  system elapsed 
+ 18.065   0.863  23.015 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
  os       Rocky Linux 9.4 (Blue Onyx)
@@ -301,7 +279,7 @@ null device
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
-─ Packages ───────────────────────────────────────────────────────────────────
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
  package              * version    date (UTC) lib source
  abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
  backports              1.5.1      2026-04-03 [1] CRAN (R 4.5.0)
@@ -316,7 +294,8 @@ null device
  bit64                  4.8.2      2026-05-19 [1] CRAN (R 4.5.0)
  bluster                1.20.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  broom                  1.0.13     2026-05-14 [1] CRAN (R 4.5.0)
- Cairo                  1.7-0      2025-10-29 [1] CRAN (R 4.5.0)
+ car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
+ carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
  circlize             * 0.4.18     2026-04-04 [1] CRAN (R 4.5.0)
  cli                    3.6.6      2026-04-09 [1] CRAN (R 4.5.0)
  clue                   0.3-68     2026-03-26 [1] CRAN (R 4.5.0)
@@ -339,11 +318,17 @@ null device
  filelock               1.0.3      2023-12-11 [2] CRAN (R 4.5.0)
  forcats              * 1.0.1      2025-09-25 [1] CRAN (R 4.5.0)
  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+ Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
  generics             * 0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
  GenomicRanges        * 1.62.1     2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1     2026-04-27 [1] CRAN (R 4.5.0)
  GetoptLong             1.1.1      2026-04-08 [1] CRAN (R 4.5.0)
+ GGally               * 2.2.1      2024-02-14 [2] CRAN (R 4.5.0)
  ggplot2              * 4.0.3      2026-04-22 [1] CRAN (R 4.5.0)
+ ggpubr                 0.6.0      2023-02-10 [2] CRAN (R 4.5.0)
  ggrepel                0.9.8      2026-03-17 [1] CRAN (R 4.5.0)
+ ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
+ ggstats                0.9.0      2025-03-10 [2] CRAN (R 4.5.0)
  GlobalOptions          0.1.4      2026-04-08 [1] CRAN (R 4.5.0)
  glue                   1.8.1      2026-04-17 [1] CRAN (R 4.5.0)
  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
@@ -369,13 +354,16 @@ null device
  MatrixGenerics       * 1.22.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  matrixStats          * 1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
  metapod                1.18.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ mgcv                   1.9-3      2025-04-04 [3] CRAN (R 4.5.0)
  MOFA2                * 1.20.2     2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
  MOFAcellulaR         * 0.0.0.9000 2025-07-08 [1] Github (saezlab/MOFAcellulaR@8cb0785)
+ nlme                   3.1-168    2025-03-31 [3] CRAN (R 4.5.0)
  pheatmap               1.0.13     2025-06-05 [1] CRAN (R 4.5.0)
  pillar                 1.11.1     2025-09-17 [1] CRAN (R 4.5.0)
  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
  png                    0.1-9      2026-03-15 [1] CRAN (R 4.5.0)
+ polynom                1.4-1      2022-04-11 [2] CRAN (R 4.5.0)
  purrr                * 1.2.1      2026-01-09 [1] CRAN (R 4.5.0)
  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
  ragg                   1.5.2      2026-03-23 [1] CRAN (R 4.5.0)
@@ -390,6 +378,7 @@ null device
  rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
  rlang                  1.2.0      2026-04-06 [1] CRAN (R 4.5.0)
  rprojroot              2.1.1      2025-08-26 [1] CRAN (R 4.5.0)
+ rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
  rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.5.0)
  Rtsne                  0.17       2023-12-07 [2] CRAN (R 4.5.0)
  S4Arrays               1.10.1     2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
@@ -402,8 +391,9 @@ null device
  Seqinfo              * 1.0.0      2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  sessioninfo          * 1.2.4      2026-06-04 [1] CRAN (R 4.5.0)
  shape                  1.4.6.1    2024-02-23 [2] CRAN (R 4.5.0)
- SingleCellExperiment   1.32.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SingleCellExperiment * 1.32.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  SparseArray            1.10.10    2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment    * 1.20.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  statmod                1.5.2      2026-05-17 [1] CRAN (R 4.5.0)
  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
  stringr              * 1.6.0      2025-11-04 [1] CRAN (R 4.5.0)
@@ -416,6 +406,7 @@ null device
  tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
  timechange             0.4.0      2026-01-29 [1] CRAN (R 4.5.0)
  tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6      2025-06-08 [1] CRAN (R 4.5.0)
  uwot                 * 0.2.4      2025-11-10 [1] CRAN (R 4.5.0)
  vctrs                  0.7.3      2026-04-11 [1] CRAN (R 4.5.0)
  vroom                  1.7.1      2026-03-31 [1] CRAN (R 4.5.0)
@@ -427,6 +418,6 @@ null device
  [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
  * ── Packages attached to the search path.
 
-──────────────────────────────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Sep 11 02:58:20 PM EDT 2026
+Fri Sep 11 01:48:51 PM EDT 2026
