@@ -27,7 +27,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 02_MOFA_gw_heatmaps --datatype sn_fine
+Rscript 02_MOFA_gw_heatmaps.R --datatype sn_fine
 
 echo "**** Job ends ****"
 date

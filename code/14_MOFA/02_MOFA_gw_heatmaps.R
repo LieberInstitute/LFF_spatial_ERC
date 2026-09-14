@@ -387,7 +387,7 @@ ggsave(weight_by_DEsig_plot,
        filename = here(plot_dir, sprintf("MOFA_Factor4_weight_by_DEsig_%s.png", opt$datatype)),
        width = 2 * length(valid_views), height = 5)
 
-# slurmjobs::job_single('02_MOFA_gw_heatmaps', create_shell = TRUE, memory = '10G', command = "Rscript 02_MOFA_gw_heatmaps --datatype sn_fine")
+# slurmjobs::job_single('02_MOFA_gw_heatmaps', create_shell = TRUE, memory = '10G', command = "Rscript 02_MOFA_gw_heatmaps.R --datatype sn_fine")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
