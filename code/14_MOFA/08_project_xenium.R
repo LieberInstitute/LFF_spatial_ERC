@@ -47,6 +47,8 @@ spe$astro_group = tibble(cell_id = spe$cell_id) |>
 task_df = read_csv(task_path, show_col_types = FALSE) |>
     filter(task_id == this_task_id)
 
+print(task_df)
+
 #   Filter Oligo.3 as applicable
 if (task_df$astro_group != 'all') {
     spe = spe[
@@ -58,7 +60,7 @@ if (task_df$astro_group != 'all') {
 
 #   Filter spatial domain as applicable
 if (task_df$domain != 'all') {
-    spe = spe[, spe$SpX == task_df$domain]
+    spe = spe[, spe$xSpD == task_df$domain]
 }
 
 spe_pb = registration_pseudobulk(
