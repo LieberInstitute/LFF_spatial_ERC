@@ -9,7 +9,7 @@ model_path = here(
 )
 plot_path = here("plots", "14_MOFA", "05_reduced_cov_boxplots", "boxplot.pdf")
 project_colors_path = here("processed-data", "project_colors.Rdata")
-specific_factor = "Factor3"
+specific_factor = "Factor4"
 tau_colors = c(`t-` = "#684F7D", `t+` = "#AFA4B6")
 
 dir.create(dirname(plot_path), showWarnings = FALSE)
@@ -63,12 +63,12 @@ p = factor_df |>
         ) +
         facet_wrap(~term, nrow = 1, scales = "free_x") +
         scale_fill_manual(values = c(APOE_carrier_colors, tau_colors)) +
-        labs(x = "Samples", y = "Factor 3 Weight") +
+        labs(x = "Samples", y = "Factor 4 Weight") +
         theme_bw(base_size = 30) +
         theme(legend.position = "None")  + 
         geom_label(
             data = assoc_tb |> 
-                filter(Factor == "Factor3", term %in% test_vars) |>
+                filter(Factor == "Factor4", term %in% test_vars) |>
                 mutate(term = factor(term, levels = test_vars)),
             aes(x = Inf, y = Inf, label = sprintf("FDR=%.2e%s", adj_pvalue, signif)),
             size = 8,

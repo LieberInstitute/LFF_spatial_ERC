@@ -288,6 +288,8 @@ gene_weights_GO <- gene_weights$Factor4 |>
     ) |>
     ungroup()
 
+write_csv(gene_weights_GO |> filter(GO_group != "None"), file = here(data_dir, "Factor4_gene_weights_top50.csv"))
+
 gene_weights_GO |> count(GO_group)
 
 universe <- unique(gene_weights_GO$ENTREZID)
