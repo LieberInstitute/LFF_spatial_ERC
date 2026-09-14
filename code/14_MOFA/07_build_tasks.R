@@ -21,7 +21,7 @@ dir.create(dirname(out_path), showWarnings = FALSE)
 spe = qs_read(spe_path)
 
 rbind(
-        tibble(domain = levels(spe$SpX), astro_group = 'all'),
+        tibble(domain = levels(spe$xSpD), astro_group = 'all'),
         tibble(domain = 'all', astro_group = c('high', 'low', 'all'))
     ) |>
     mutate(task_id = row_number()) |>
