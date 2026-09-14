@@ -36,15 +36,22 @@ factor_t_test_results <- read_csv(here("processed-data", "14_MOFA", "09_plot_xen
     )
 
 
+#   Format a (typically FDR-adjusted) p-value for plot labels: scientific
+#   notation below 0.001, otherwise 3 decimal places - avoids round() collapsing
+#   small but meaningfully-different p-values down to "0" or "0.00"
+format_fdr <- function(x) {
+    ifelse(x < 0.001, sprintf("%.1e", x), sprintf("%.3f", x))
+}
+
 t_stat_tile <- factor_t_test_results |>
     ggplot(aes(x = covariate, y = enviroment, fill = t_stat)) +
     geom_tile() +
-    geom_text(aes(label = ifelse(p_val < 0.1, round(p_val, 2), "")), color = "white") +
+    geom_text(aes(label = ifelse(p_val < 0.1, format_fdr(p_val), "")), color = "white") +
     facet_wrap(~subset, ncol = 1, scales = "free_y", space = "free_y", strip.position = "right") +
     scale_fill_gradient2(low="#2166AC", mid="white", high="#D6604D", midpoint=0)+
     theme_bw() +
-    labs(title = "MOFA Factor.3", 
+    labs(title = "MOFA Factor 4", 
          subtitle = "Projection to Xenium")  +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
 
-ggsave(t_stat_tile, filename = here(plot_dir, "MOFA_factor3_xenium_t_stat_tile.png"), height = 6, width = 4)
+ggsave(t_stat_tile, filename = here(plot_dir, "MOFA_factor4_xenium_t_stat_tile.png"), height = 7, width = 4)
