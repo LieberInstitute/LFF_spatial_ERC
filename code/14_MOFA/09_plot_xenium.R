@@ -18,6 +18,13 @@ load(project_colors_path, verbose = TRUE)
 #   Functions
 ################################################################################
 
+#   Format a (typically FDR-adjusted) p-value for plot labels: scientific
+#   notation below 0.001, otherwise 3 decimal places - avoids round() collapsing
+#   small but meaningfully-different p-values down to "0" or "0.00"
+format_fdr = function(x) {
+    ifelse(x < 0.001, sprintf("%.1e", x), sprintf("%.3f", x))
+}
+
 factor_t_test = function(factor_df, covariate) {
     t_df_list = list()
     for (this_facet_label in unique(factor_df$facet_label)) {
@@ -56,7 +63,7 @@ covariate_boxplot = function(factor_df, t_df, covariate, covariate_colors) {
             data = t_df |>
                 mutate(
                     p_value_label = sprintf(
-                        "p=%.2e%s", p_value, ifelse(p_value < 0.05, "*", "")
+                        "FDR=%s%s", format_fdr(fdr), ifelse(fdr < 0.05, "*", "")
                     )
                 ),
             aes(x = Inf, y = Inf, label = p_value_label),
@@ -84,6 +91,13 @@ t_df = rbind(
         mutate(covariate = "taupathy")
 )
 
+#   FDR-correct within each covariate's family of tests (across all SpD/astro
+#   facets tested for that covariate) rather than pooling both covariates
+t_df = t_df |>
+    group_by(covariate) |>
+    mutate(fdr = p.adjust(p_value, method = "BH")) |>
+    ungroup()
+
 covariate_boxplot(
     factor_df = factor_df,
     t_df = t_df |> filter(covariate == "APOE_carrier"),
@@ -98,7 +112,8 @@ covariate_boxplot(
     covariate_colors = tau_colors
 )
 
-#   Also save t-stat and p-value for each covariate for later
+#   Also save t-stat, raw p-value, and FDR-adjusted p-value for each covariate
+#   for later (FDR computed within each covariate's family of tests above)
 t_df |>
     mutate(
         SpD_subset = str_extract(
