@@ -62,7 +62,7 @@ covariate_boxplot = function(factor_df, t_df, covariate, covariate_colors) {
             aes(x = Inf, y = Inf, label = p_value_label),
             size = 4, vjust = "inward", hjust = "inward"
         )
-    pdf(file.path(plot_dir, sprintf("%s_boxplot.pdf", covariate)), width = 10)
+    pdf(file.path(plot_dir, sprintf("%s_boxplot.pdf", covariate)), width = 11)
     print(p)
     dev.off()
 }
