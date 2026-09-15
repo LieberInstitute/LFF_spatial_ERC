@@ -4,6 +4,7 @@
 #### set up ####
 library("tidyverse")
 library("ComplexHeatmap")
+library("grid")
 library("here")
 library("sessioninfo")
 library("getopt")
@@ -67,16 +68,32 @@ if(opt$datatype == "sn_broad"){
     my_views <- c("Oligo.3", "Oligo.4", "Oligo.5", "Excit.L2_5.RELN", "vWMd", "vWMpv")
 }
 
+## Established anchor genes from the Visium carrier DGE analysis - the vL5a
+## postsynaptic/glutamatergic program (CAMK2A, CPLX2, NPTX2, NPTXR) and the
+## myelin-loss program (CD9, PLP1). Guaranteed a row in the heatmaps below
+## even when they fall outside the top 5 by raw |weight| in a given view -
+## their value here comes from replicating across independent analyses, not
+## from their MOFA weight rank alone.
+anchor_genes <- c("CAMK2A", "CPLX2", "NPTX2", "NPTXR", "CD9", "PLP1")
+
 top_gene_weights <- gene_weights$Factor4 |>
     mutate(abs_value = abs(value),
            weight_pos = value > 0,
            datatype = ifelse(grepl("^v", ctype), "Visium", "snRNA-seq")) |>
     filter(ctype %in% my_views) |>
-    group_by(ctype,weight_pos) |>
+    group_by(ctype, weight_pos) |>
     arrange(-abs_value) |>
-    dplyr::slice(1:5)
+    mutate(weight_rank = row_number()) |>
+    ungroup() |>
+    filter(weight_rank <= 5 | gene_name %in% anchor_genes) |>
+    mutate(gene_source = case_when(
+        weight_rank <= 5 & gene_name %in% anchor_genes ~ "Top 5 & anchor",
+        weight_rank <= 5 ~ "Top 5 weight",
+        TRUE ~ "Anchor gene"
+    ))
 
 top_gene_weights |> count(ctype, datatype)
+top_gene_weights |> count(gene_source)
 
 # duplicated genes?
 top_gene_weights |> ungroup() |> count(gene_name) |> arrange(-n)
@@ -87,7 +104,8 @@ view_table <- top_gene_weights |>
     summarise(n = n(),
               weight_pos = Reduce('|', weight_pos),
               view = paste0(ctype, collapse = ", ")
-              ) 
+              ) |>
+    mutate(is_anchor = gene_name %in% anchor_genes)
 
 view_table |> filter(n > 1)
 # gene_name     n weight_pos view            
@@ -129,7 +147,7 @@ view_table_anno <- view_table |>
     mutate(datatype = ifelse(grepl("^v", view), "Visium", "snRNA-seq"),  ## careful for overlapping datatypes
            view = factor(ifelse(n > 1, "Multi", view), levels = view_levels),
            ) |>
-    select(gene_name, positive_weight = weight_pos, datatype, view) |>
+    select(gene_name, positive_weight = weight_pos, datatype, view, is_anchor) |>
     column_to_rownames("gene_name") |>
     arrange(-positive_weight, view)
 
@@ -142,12 +160,20 @@ view_table_anno_row<- rowAnnotation(
     df = view_table_anno,
     col = list(view = view_colors,
                positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"),
-               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#D4DF9E"))
+               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#D4DF9E"),
+               is_anchor = c(`TRUE` = "#D4145A", `FALSE` = "grey95"))
 )
 
 
 # top_gw_value_matrix <- top_gw_value_matrix[row_order,col_order]
 top_gw_value_matrix <- top_gw_value_matrix[rownames(view_table_anno),col_order]
+
+## bold + color anchor gene names directly on the row labels, in addition to
+## the is_anchor annotation bar
+anchor_row_gp <- gpar(
+    fontface = ifelse(rownames(top_gw_value_matrix) %in% anchor_genes, "bold", "plain"),
+    col = ifelse(rownames(top_gw_value_matrix) %in% anchor_genes, "#D4145A", "black")
+)
 
 ## weights across all clusters
 pdf(here(plot_dir, sprintf("MOFA_gene_weight_heatmap_%s_all.pdf", opt$datatype)), width = pdf_width_all, height = pdf_height)
@@ -155,6 +181,7 @@ Heatmap(top_gw_value_matrix,
         name = "feature\nweights",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
+        row_names_gp = anchor_row_gp,
         right_annotation = view_table_anno_row)
 dev.off()
 
@@ -164,6 +191,7 @@ Heatmap(top_gw_value_matrix[,my_views],
         name = "feature\nweights",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
+        row_names_gp = anchor_row_gp,
         right_annotation = view_table_anno_row)
 dev.off()
 
@@ -172,6 +200,7 @@ Heatmap(top_gw_value_matrix[,my_views],
         name = "feature\nweights",
         cluster_rows = FALSE,
         cluster_columns = TRUE,
+        row_names_gp = anchor_row_gp,
         right_annotation = view_table_anno_row)
 dev.off()
 
@@ -201,7 +230,8 @@ view_table_anno_row2 <- rowAnnotation(
     df = view_table_anno[common_genes,],
     col = list(view = view_colors,
                positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20"),
-               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#D4DF9E"))
+               datatype = c('Visium' = "#F87575", 'snRNA-seq' = "#D4DF9E"),
+               is_anchor = c(`TRUE` = "#D4145A", `FALSE` = "grey95"))
 )
 
 ## all clusters
@@ -288,8 +318,6 @@ gene_weights_GO <- gene_weights$Factor4 |>
     ) |>
     ungroup()
 
-write_csv(gene_weights_GO |> filter(GO_group != "None"), file = here(data_dir, "Factor4_gene_weights_top50.csv"))
-
 gene_weights_GO |> count(GO_group)
 
 universe <- unique(gene_weights_GO$ENTREZID)
@@ -366,8 +394,10 @@ wilcox_by_cluster
 write_csv(wilcox_by_cluster, here(data_dir, sprintf("MOFA_DE_wilcox_%s.csv", opt$datatype)))
 
 ## plot: |weight| by DE significance, restricted to views where the test
-## was actually defined 
-valid_views <- wilcox_by_cluster |> filter(!is.na(wilcox_p)) |> pull(cluster)
+## was both defined AND reasonably powered - a defined test on n_sig = 1
+## (e.g. vWMd) is a single data point, not a distribution, and isn't any
+## more interpretable than the undefined (n_sig = 0) cases
+valid_views <- wilcox_by_cluster |> filter(!is.na(wilcox_p), n_sig >= 10) |> pull(cluster)
 
 weight_by_DEsig_plot <- dge_data |>
     filter(cluster %in% valid_views) |>
