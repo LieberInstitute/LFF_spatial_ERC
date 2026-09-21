@@ -28,7 +28,7 @@ validation_data_types <- c("Xenium_cell_type_anno", "Xenium_cell_type_anno_SpX",
 load_DE_valid_data <- function(datatype) {
     DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", datatype, sprintf("DGE_results_carrier_%s_wSN.Rds", datatype))
     stopifnot("DE validation data file not found" = file.exists(DE_data_fn))
-    message("loading ", datatype, ": ", DE_data_fn)
+    message("loading ", datatype, ": ", basename(DE_data_fn), " (last modified: ", file.info(DE_data_fn)$mtime, ")")
     readRDS(DE_data_fn)
 }
 
@@ -42,7 +42,7 @@ data_type_lookup <- tribble(
 DE_valid_data <- validation_data_types |>
     map(load_DE_valid_data) |>
     list_rbind() |>
-    mutate(cluster = ifelse(data_type == "Xenium_cell_type_anno_SpX", cluster_SpX, as.character(cluster))) |>
+    mutate(cluster = ifelse(data_type == "Xenium_cell_type_anno_SpX", cluster_xSpD, as.character(cluster))) |>
     left_join(data_type_lookup)
 
 message(nrow(DE_valid_data), " rows of Xenium validation data across ", n_distinct(DE_valid_data$data_type_short), " validation contexts")
@@ -225,7 +225,8 @@ go_select_plot <- compare_clus_select |>
 
 ggsave(go_select_plot, filename = here(plot_dir, "GO_dotplot_sn_fine_Oligo3_validate_select.png"), height = 5, width = 5)
 
-#### 
+
+# slurmjobs::job_single('02.1_GO_analysis_validate', create_shell = TRUE, memory = '5G', command = "Rscript 02.1_GO_analysis_validate.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
