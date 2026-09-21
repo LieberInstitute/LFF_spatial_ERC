@@ -311,7 +311,7 @@ if(datatype == "sn_fine"){
     
     length(topDEGs)
     
-    logFC_Heatmap_contrast(dge_data_contrast, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype), h = 10, w= 12)
+    logFC_Heatmap_contrast(dge_data_contrast, gene_list = topDEGs, title = sprintf("topDEGs_%s_%s", contrast, datatype), h = 11, w= 12)
     
     ## Risk gene heatmap
     logFC_Heatmap_contrast(dge_data_contrast, AD_risk$symbol, title = sprintf("ADrisk_%s_%s", contrast, datatype))

@@ -76,7 +76,7 @@ vlmf_data_tb <- map_dfr(vlmf_data, ~do.call("rbind", .x[c("carrier_AA", "carrier
     as_tibble()
 
 if(opt$datatype == "Visium"){
-    vlmf_data_tb <- vlmf_data_tb |> mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels))
+    # vlmf_data_tb <- vlmf_data_tb |> mutate(cluster = factor(gsub("_", "~", cluster), levels = cluster_levels))
 } else {
     vlmf_data_tb <- vlmf_data_tb |> mutate(cluster = factor(cluster, levels = cluster_levels))
 }

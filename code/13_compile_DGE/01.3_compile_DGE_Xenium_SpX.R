@@ -50,10 +50,8 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     names(SpX_colors_simple) <- SpX_levels_simple
 
         
-    cell_type_anno_SpX_level_tb <- expand_grid(cell_type_anno = cell_type_levels, SpX_simple = SpX_levels_simple) |>
-        mutate(cell_type_anno_SpX = paste0(cell_type_anno, '_', SpX_simple))
-    
-    cluster_spx_levels <- cell_type_anno_SpX_level_tb$cell_type_anno_SpX
+    cell_type_anno_SpX_level_tb <- expand_grid(cell_type_anno = cluster_levels, xSpD = SpX_levels) |>
+        mutate(cell_type_anno_SpX = paste0(cell_type_anno, '_', xSpD))
     
 } else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
     
@@ -680,7 +678,7 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
         spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
         
         col_fun_n_cell = circlize::colorRamp2(c(0, max(spx_cell_prop_ct$n_cell)), c("white", "red"))
-        col_fun_APOE = circlize::colorRamp2(c(min(1, spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
+        col_fun_APOE = circlize::colorRamp2(c(min(spx_cell_prop_ct$APOE_mean), max(spx_cell_prop_ct$APOE_mean)), c("white", "purple"))
         
         ha_SpX_cell <- HeatmapAnnotation(df = spx_cell_prop_ct,
                                          col = list(n_cell = col_fun_n_cell,
@@ -915,7 +913,6 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     all(rownames(spx_cell_prop_ct) %in% colnames(t_stat_SpX_mat_ALL))
 
-    signif_SpX_ct_ALL <- signif_SpX_mat_ALL[rownames(sn_DEG_data_test_df),rownames(spx_cell_prop_ct), drop = FALSE]
     t_stat_SpX_mat_ALL <- t_stat_SpX_mat_ALL[rownames(sn_DEG_data_test_df),rownames(spx_cell_prop_ct), drop = FALSE]
     
     sn_reg <- ifelse(sn_DEG_data_test_df > 0, "upreg", "downreg")
@@ -1023,11 +1020,11 @@ pi1_per_celltype |>
 # 13 Astro.3      NA               32
 # 14 Oligo.1      NA               42
 
-# slurmjobs::job_single('01.2_compile_DGE_Xenium', create_shell = TRUE, memory = '5G', command = "Rscript 01.2_compile_DGE_Xenium.R")
+# slurmjobs::job_single('01.3_compile_DGE_Xenium_SpX', create_shell = TRUE, memory = '5G', command = "Rscript 01.3_compile_DGE_Xenium_SpX.R")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
-session_info()
+sessioninfo::session_info()
