@@ -35,7 +35,7 @@ load_DE_valid_data <- function(datatype){
 data_type_lookup <- tribble(
     ~data_type,                    ~data_type_short,
     "Xenium_cell_type_anno",       "cell_type",
-    "Xenium_cell_type_anno_SpX",   "SpX",
+    "Xenium_cell_type_anno_SpX",   "xSpD",
     "Xenium_Oligo.3_Astro",        "Oligo.3_Nbr"
 )
 
@@ -43,7 +43,7 @@ data_type_lookup <- tribble(
 DE_valid_data <- validation_data_types |>
     map(load_DE_valid_data) |>
     list_rbind() |>
-    mutate(cluster = ifelse(data_type == "Xenium_cell_type_anno_SpX", cluster_SpX, as.character(cluster))) |>
+    mutate(cluster = ifelse(data_type == "Xenium_cell_type_anno_SpX", cluster_xSpD, as.character(cluster))) |>
     left_join(data_type_lookup)
 
 # all(anchor_genes %in% DE_valid_data$gene_name)
@@ -83,7 +83,7 @@ valid_genes_summary |>
     arrange(gene_name) |> 
     print(n = 53) 
 
-DE_valid_data |> filter(data_type == "Xenium_SpX") |> distinct(cluster)
+DE_valid_data |> filter(data_type == "Xenium_cell_type_anno_SpX") |> distinct(cluster)
 
 
 DE_validated <- DE_valid_data |>
@@ -121,7 +121,7 @@ valid_genes_summary_filter <- valid_genes_summary |>
            gene_name_reg = paste(gene_name, ifelse(reg == "up", '^', "")))    
 
 # extract ordered SpX suffixes from color names
-spx_order <- paste0("Oligo.3_", str_remove(names(SpX_colors) ,"~.*")) 
+spx_order <- paste0("Oligo.3_", names(SpX_colors))
 SpX_colors2 <- SpX_colors
 names(SpX_colors2) <- spx_order
 
@@ -177,7 +177,7 @@ valid_genes_summary_bar_text <- plot_data |>
     ggplot(aes(x=data_type_short)) +
     geom_bar(aes(fill=enviro2)) +
     geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color="white") +
-    scale_fill_manual(values=enviro2_colors) +
+    scale_fill_manual(values=enviro2_colors, name = "Environment") +
     labs(x="Xenium validation context", y="n validated DEGs") +
     theme_bw()
 
@@ -189,7 +189,7 @@ valid_genes_summary_bar_text_gap <- plot_data |>
     ggplot(aes(x=data_type_short)) +
     geom_bar(aes(fill=enviro2), width=0.5) +
     geom_text(aes(y=y_pos, label=gene_name_reg), size=3, hjust=0.5, color="white") +
-    scale_fill_manual(values=enviro2_colors) +
+    scale_fill_manual(values=enviro2_colors, name = "Environment") +
     scale_x_discrete(expand=expansion(mult=0.2)) +
     labs(x="Xenium validation context", y="n validated DEGs") +
     theme_bw() +
