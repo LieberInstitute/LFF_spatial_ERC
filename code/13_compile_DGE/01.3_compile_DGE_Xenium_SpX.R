@@ -80,8 +80,8 @@ vlmf_data <- map(vlmf_fn, readRDS)
 names(vlmf_data)
 head(vlmf_data[[1]])
 
-# all(names(vlmf_data) %in% cluster_spx_levels)
-# cluster_spx_levels <- cluster_levels[cluster_spx_levels %in% names(vlmf_data)]
+# all(names(vlmf_data) %in% cluster_xSpD_levels)
+# cluster_xSpD_levels <- cluster_levels[cluster_xSpD_levels %in% names(vlmf_data)]
 
 vlmf_data_tb <- do.call("rbind", vlmf_data) |>
     dplyr::rename(vlmf_logFC = logFC,
@@ -90,23 +90,31 @@ vlmf_data_tb <- do.call("rbind", vlmf_data) |>
                   vlmf_P.Value = P.Value,
                   vlmf_adj.P.Val = adj.P.Val,
                   vlmf_B = B )  |>
-    mutate(cluster_SpX = cluster,
-           cluster = droplevels(factor(gsub("_[^_]+$", "", cluster), cluster_levels)),
-           SpX = factor(SpX, names(SpX_colors)),
+    mutate(cluster_xSpD = cluster,
+           cluster = droplevels(factor(gsub("_x.*$", "", cluster), cluster_levels)),
+           # cluster = gsub("_x.*$", "", cluster),
+           xSpD = factor(xSpD, names(SpX_colors)),
            cell_type_anno = droplevels(factor(cell_type_anno, names(cell_type_colors$anno)))) |>
     as_tibble() 
 
+
+vlmf_data_tb |> count(xSpD) |> print(n = 33)
+vlmf_data_tb |> count(cluster) |> print(n = 33)
+# vlmf_data_tb |> filter(is.na(cluster)) |> select(cluster_xSpD, cluster, xSpD, cell_type_anno)
+# vlmf_data_tb |> filter(xSpD == "xVasc_mural") |> select(cluster_xSpD, cluster, xSpD)
+
 cluster_levels <- levels(vlmf_data_tb$cluster)
-levels(vlmf_data_tb$SpX)
+levels(vlmf_data_tb$xSpD)
 
-vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(SpX) 
-vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(cluster_SpX) |> arrange(-n) |> print(n = 35)
+vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(xSpD) 
+vlmf_data_tb |> filter(vlmf_adj.P.Val < 0.05) |> count(xSpD) 
 
-vlmf_data_tb |> count(SpX)
+vlmf_data_tb |> filter(vlmf_P.Value < 0.05) |> count(cluster_xSpD) |> arrange(-n) |> print(n = 35)
+vlmf_data_tb |> filter(vlmf_adj.P.Val < 0.05) |> count(cluster_xSpD) |> arrange(-n) 
 
 vlmf_model_summary <- vlmf_data_tb |> 
                                    mutate(mod = "carrier") |>
-                                   group_by(SpX, cluster, mod) |>
+                                   group_by(xSpD, cluster, mod) |>
                                    summarize(n_genes= n(),
                                              n_FDR05 = sum(vlmf_adj.P.Val < 0.05),
                                              n_pval10 = sum(vlmf_P.Value < 0.05),
@@ -119,7 +127,7 @@ vlmf_model_summary |> arrange(-n_pval10)
 
 ## n signif bar plots
 vlmf_model_summary_bar <- vlmf_model_summary |>
-    ggplot(aes(x = SpX, y = n_pval10, fill = SpX)) +
+    ggplot(aes(x = xSpD, y = n_pval10, fill = xSpD)) +
     geom_col() +
     geom_text(aes(label = n_pval10), vjust=-.5) +
     scale_fill_manual(values = SpX_colors) +
@@ -134,10 +142,10 @@ ggsave(vlmf_model_summary_bar, filename = here(plot_dir, sprintf("%s_vlmf_model_
 vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     select(-n_pval10, -n_genes, -n_FDR05) |>
     mutate(nDown = -1*nDown) |>
-    pivot_longer(!c(cluster, SpX, mod), names_to = "reg", values_to = "n_genes") |>
+    pivot_longer(!c(cluster, xSpD, mod), names_to = "reg", values_to = "n_genes") |>
     # filter(startsWith(mod, "apoe") | mod %in% c("E4E4", "carrier")) |>
     filter(mod == "carrier") |>
-    ggplot(aes(x = SpX, y = n_genes, fill = reg)) +
+    ggplot(aes(x = xSpD, y = n_genes, fill = reg)) +
     geom_col() +
     geom_text(aes(label = abs(n_genes))) +
     facet_wrap(~cluster) +
@@ -145,7 +153,7 @@ vlmf_model_summary_bar_reg <- vlmf_model_summary |>
     labs(title = sprintf("voomLmFit - %s", opt$datatype), subtitle = "p-value < 0.10") +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_reg.png", opt$datatype)), width = 10)
+ggsave(vlmf_model_summary_bar_reg, filename = here(plot_dir, sprintf("%s_vlmf_model_summary_bar_reg.png", opt$datatype)), width = 12)
 
 ## save summary
 write.csv(vlmf_model_summary, file = here(data_dir, sprintf("vlmf_model_summary_%s.csv", opt$datatype)))
@@ -167,7 +175,7 @@ custom_volcano <- function(data, Pval_cut = 0.10, model_name){
         geom_point(alpha = 0.5, size = 0.5) +
         scale_color_manual(values = signif_colors) +
         # facet_wrap(~cluster) +
-        facet_wrap(~SpX) +
+        facet_wrap(~xSpD) +
         theme_bw() +
         labs(title = model_name)
     
@@ -231,7 +239,7 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
 
 
 
-vlmf_data_tb_xenium |> count(cluster_SpX)
+vlmf_data_tb_xenium |> count(cluster_xSpD)
 
 ## save data
 saveRDS(vlmf_data_tb, file = here(data_dir, sprintf("DGE_results_carrier_%s.Rds", opt$datatype)))
@@ -245,7 +253,7 @@ write.csv(vlmf_data_tb_xenium, file = here(data_dir, sprintf("DGE_results_carrie
 
 validation_summary <- vlmf_data_tb_xenium |> 
     filter(!is.na(vlmf_sn_P.Value)) |> 
-    group_by(cluster, SpX) |>
+    group_by(cluster, xSpD) |>
     summarise(n_signif_xenium = sum(signif_xenium),
               n_signif_sn = sum(signif_sn),
               n_signif_both = sum(signif_both),
@@ -262,9 +270,9 @@ validation_summary |>
 
 vlmf_data_tb_xenium |>
     filter(validate) |> 
-    select(cluster, SpX, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_t) |> 
-    arrange(cluster, SpX) |>
-    print(n = 79)
+    select(cluster, xSpD, gene_name, vlmf_xenium_t, vlmf_xenium_P.Value, vlmf_sn_t) |> 
+    arrange(cluster, xSpD) |>
+    print(n = 93)
 
 vlmf_data_tb_xenium |> 
     filter(validate) |> 
@@ -274,37 +282,36 @@ vlmf_data_tb_xenium |>
 
 
 vlmf_data_tb_xenium |> 
-    # filter(gene_name == "IGFBP5") |>
+    # filter(xSpD == "xL6", validate) |>
+    # filter(gene_name == "KLK6", dir_match) |>
     filter(gene_name == "CABLES1", validate) |>
-    # filter(SpX == "L1b~SpX7", signif_both) |>
-    # filter(SpX == "L6~SpX9", signif_both) |>
-    # filter(SpX == "WMtz~SpX8", signif_both) |>
-    select(cluster_SpX, gene_name, vlmf_sn_t, vlmf_sn_adj.P.Val, vlmf_xenium_t, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match,validate) |>
+    select(cluster_xSpD, gene_name, vlmf_sn_t, vlmf_sn_adj.P.Val, vlmf_xenium_t, vlmf_xenium_logFC, vlmf_xenium_P.Value, dir_match, validate) |>
     arrange(-vlmf_xenium_logFC)
+    # arrange(vlmf_xenium_P.Value)
 
-# cluster gene_id     gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
-# <fct>   <chr>       <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>
-# 1 Oligo.3 ENSG000001… SLC17A7           1.47             0.0388             0.234              0.0453 TRUE      TRUE
-# 2 Oligo.3 ENSG000001… ENC1              1.61             0.0238             0.246              0.0530 TRUE      TRUE
-# 3 Oligo.3 ENSG000002… NPTXR             1.21             0.0178             0.399              0.0497 TRUE      TRUE
-# 4 Oligo.3 ENSG000001… TESPA1            2.01             0.0171             0.366              0.0492 TRUE      TRUE
-# 5 Oligo.3 ENSG000001… CABLES1           2.19             0.0124             0.382              0.0515 TRUE      TRUE
-# 6 Oligo.3 ENSG000000… CALCRL            1.79             0.0238            -0.325              0.0588 FALSE     FALSE
-# 7 Oligo.3 ENSG000001… CNDP1            -0.686            0.0466            -0.249              0.0971 TRUE      TRUE
+# cluster_xSpD     gene_name vlmf_sn_t vlmf_sn_adj.P.Val vlmf_xenium_t vlmf_xenium_logFC vlmf_xenium_P.Value dir_match
+# <chr>            <chr>         <dbl>             <dbl>         <dbl>             <dbl>               <dbl> <lgl>    
+#     1 Oligo.3_xWMd     CABLES1        4.63            0.0124          2.32             0.853              0.0300 TRUE     
+# 2 Oligo.3_xL5      CABLES1        4.63            0.0124          1.98             0.447              0.0631 TRUE     
+# 3 Oligo.3_xWMuf    CABLES1        4.63            0.0124          1.81             0.377              0.0857 TRUE     
+# 4 Oligo.3_xLD_glia CABLES1        4.63            0.0124          1.92             0.363              0.0704 TRUE  
 
-# SpX     gene_id    gene_name vlmf_sn_logFC vlmf_sn_adj.P.Val vlmf_xenium_logFC vlmf_xenium_P.Value dir_match validate
-# <fct>   <chr>      <chr>             <dbl>             <dbl>             <dbl>               <dbl> <lgl>     <lgl>   
-# 1 L6~SpX9 ENSG00000… ENC1              1.61            0.0238              0.332              0.0320 TRUE      TRUE    
-# 2 L6~SpX9 ENSG00000… OPALIN           -0.653           0.0350             -0.261              0.0350 TRUE      TRUE    
-# 3 L6~SpX9 ENSG00000… PTPRD            -0.493           0.0245             -0.360              0.0337 TRUE      TRUE    
-# 4 L6~SpX9 ENSG00000… IGFBP5            2.02            0.0166             -0.368              0.0359 FALSE     FALSE   
-# 5 L6~SpX9 ENSG00000… CPNE4             1.87            0.0350              0.361              0.0289 TRUE      TRUE    
-# 6 L6~SpX9 ENSG00000… TESPA1            2.01            0.0171              0.361              0.0360 TRUE      TRUE    
-# 7 L6~SpX9 ENSG00000… CNDP1            -0.686           0.0466             -0.276              0.0720 TRUE      TRUE    
-# 8 L6~SpX9 ENSG00000… LPAR1            -0.779           0.0313             -0.292              0.0707 TRUE      TRUE    
-# 9 L6~SpX9 ENSG00000… SLC17A7           1.47            0.0388              0.201              0.0818 TRUE      TRUE    
-# 10 L6~SpX9 ENSG00000… CABLES1           2.19            0.0124              0.441              0.0935 TRUE      TRUE    
-# 11 L6~SpX9 ENSG00000… FOS               2.77            0.00170             0.886              0.0765 TRUE      TRUE   
+# cluster_xSpD gene_name vlmf_sn_t vlmf_sn_adj.P.Val vlmf_xenium_t vlmf_xenium_logFC vlmf_xenium_P.Value dir_match
+# <chr>        <chr>         <dbl>             <dbl>         <dbl>             <dbl>               <dbl> <lgl>    
+# 1 Oligo.3_xL6  CPNE4          3.39            0.0350          2.30             0.365             0.0328  TRUE     
+# 2 Oligo.3_xL6  TESPA1         4.19            0.0171          1.96             0.341             0.0646  TRUE     
+# 3 Oligo.3_xL6  CHST11         4.29            0.0166          1.79             0.333             0.0887  TRUE     
+# 4 Oligo.3_xL6  ENC1           3.81            0.0238          2.17             0.332             0.0429  TRUE     
+# 5 Astro.2_xL6  FZD8           4.63            0.0261          3.42             0.314             0.00348 TRUE     
+# 6 Astro.2_xL6  TRIL           4.19            0.0440          2.33             0.233             0.0333  TRUE     
+# 7 Oligo.3_xL6  SLC17A7        3.30            0.0388          1.78             0.219             0.0911  TRUE     
+# 8 Oligo.3_xL6  OPALIN        -3.38            0.0350         -2.10            -0.254             0.0490  TRUE     
+# 9 Oligo.3_xL6  CNDP1         -3.14            0.0466         -1.89            -0.306             0.0736  TRUE     
+# 10 Oligo.3_xL6  LPAR1         -3.49            0.0313         -1.88            -0.313             0.0747  TRUE     
+# 11 Oligo.3_xL6  PTPRD         -3.77            0.0245         -2.21            -0.356             0.0390  TRUE     
+# 12 Astro.2_xL6  ARHGEF3       -5.15            0.0164         -2.02            -0.356             0.0598  TRUE     
+# 13 Astro.2_xL6  PLCE1         -4.39            0.0364         -2.08            -0.557             0.0539  TRUE     
+# 14 Astro.2_xL6  IGFBP5        -4.76            0.0242         -3.15            -0.871             0.00613 TRUE 
 
 # vlmf_data_tb_xenium |> select(cluster, gene_name, vlmf_xenium_t, vlmf_sn_t) |> mutate(dir_match = (vlmf_xenium_t > 0) == (vlmf_sn_t > 0)) |> print(n = 20)
 
@@ -313,7 +320,7 @@ vlmf_data_tb_xenium |>
 validation_spX_barplot <- validation_summary |>
     filter(n_validate > 0) |>
     mutate(cluster = droplevels(cluster)) |>
-    ggplot(aes(x = SpX, y = n_validate, fill = SpX)) +
+    ggplot(aes(x = xSpD, y = n_validate, fill = xSpD)) +
     geom_col() +
     geom_text(aes(label = n_validate)) +
     scale_fill_manual(values = SpX_colors) +
@@ -334,7 +341,7 @@ ggsave(validation_spX_barplot, filename = here(plot_dir, sprintf("%s_validation_
 
 
 sn_xenium_cor <- vlmf_data_tb_xenium |>
-    mutate(cluster_xenium = cluster_SpX, cluster_sn = cell_type_anno) |>
+    mutate(cluster_xenium = cluster_xSpD, cluster_sn = cell_type_anno) |>
     group_by(cluster_sn, cluster_xenium) |>
     filter(n() >= 10) |> 
     summarise(
@@ -344,7 +351,7 @@ sn_xenium_cor <- vlmf_data_tb_xenium |>
     ) |>
     select(cluster_sn, cluster_xenium, n_genes, cor = estimate, p_value = p.value)|> 
     left_join(vlmf_data_tb_xenium |>
-                  mutate(cluster_xenium = cluster_SpX, cluster_sn = cell_type_anno) |>
+                  mutate(cluster_xenium = cluster_xSpD, cluster_sn = cell_type_anno) |>
                   filter(vlmf_sn_adj.P.Val < 0.05) |>
                   group_by(cluster_sn, cluster_xenium) |>
                   filter(n() >= 10) |> ## filter for atleast 10 genes after vlmf pval filter
@@ -368,7 +375,7 @@ summary(sn_xenium_cor$cor_fdr05)
 write_csv(sn_xenium_cor, file = here(data_dir, sprintf("%s_SpX_v_sn_tstat_cor.csv", opt$datatype)))
 
 sn_xenium_cor_v_genes <- sn_xenium_cor |>
-    ggplot(aes(x = n_genes, y = cor, color = cluster_xenium)) +
+    ggplot(aes(x = n_genes, y = cor)) +
     geom_point() +
     # geom_text_repel(aes(label = cluster_xenium))+
     theme_bw()
@@ -384,7 +391,7 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
         theme_bw() +
         theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
     
-    ggsave(sn_xenium_cor_v_SpX, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_SpX.png", opt$datatype)), width =8)
+    ggsave(sn_xenium_cor_v_SpX, filename = here(plot_dir, sprintf("%s_v_sn_t_stat_cor_v_SpX.png", opt$datatype)), width =20)
     
 } else if(opt$datatype == "Xenium_Oligo.3_Astro_SpX"){
     
@@ -401,20 +408,20 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
 }
 
 ## summary with matching clusters
-
-validation_summary_cor <- validation_summary |>
-    left_join(sn_xenium_cor |> 
-                  select(SpX = cluster_xenium,
-                         cell_type_anno = cluster_sn,
-                         n_genes, cor, p_value, 
-                         n_genes_fdr05, cor_fdr05, p_value_fdr05))
-
-write_csv(validation_summary_cor, file = here(data_dir, "xenium_O3_SpX_DEG_validation_summary.csv"))
+# 
+# validation_summary_cor <- validation_summary |>
+#     left_join(sn_xenium_cor |>
+#                   select(xSpD = cluster_xenium,
+#                          cell_type_anno = cluster_sn,
+#                          n_genes, cor, p_value,
+#                          n_genes_fdr05, cor_fdr05, p_value_fdr05))
+# 
+# write_csv(validation_summary_cor, file = here(data_dir, "xenium_O3_SpX_DEG_validation_summary.csv"))
 
 
 # sn_xenium_cor_sig_heatmap <- sn_xenium_cor |>
-#     select(SpX = cluster_xenium, cor, cor_fdr05, FDR, FDR_fdr05) |>
-#     pivot_longer(!SpX) |>
+#     select(xSpD = cluster_xenium, cor, cor_fdr05, FDR, FDR_fdr05) |>
+#     pivot_longer(!xSpD) |>
 #     separate(name, into = c("metric", "filter")) |>
 #     replace_na(list(filter = "None")) |>
 #     pivot_wider(names_from = "metric", values_from = "value") |>
@@ -546,7 +553,7 @@ compare_stats_scatter <- function(dge_tb, cell_type, stat = "t", mX = "vlmf_sn",
         geom_abline(linetype = "dashed") +
         scale_color_manual(values = signif_colors) +
         labs(title = model_name, subtitle = paste(mX, "vs.", mY)) +
-        facet_wrap(~SpX) +
+        facet_wrap(~xSpD) +
         theme_bw()
 
     plot_fn = sprintf("%s_%s_stat_scatter_%s_%s-v-%s_%s.png", opt$datatype, stat, model_name, mX, mY, cell_type)
@@ -584,64 +591,64 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     sn_DEG_data_FDR05 |> count(cell_type_anno)
     
+    DEG_cell_types <- as.character(unique(sn_DEG_data_FDR05$cell_type_anno))
+    names(DEG_cell_types) <- DEG_cell_types
+    
     ## t-stat matrix
-    t_stat_SpX_mat <- map(unique(sn_DEG_data_FDR05$cell_type_anno), 
+    t_stat_SpX_mat <- map(DEG_cell_types, 
                           ~vlmf_data_tb_xenium |>
                               filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
-                              select(gene_name, SpX, vlmf_xenium_t) |>
-                              pivot_wider(values_from = "vlmf_xenium_t", names_from = "SpX") |>
+                              select(gene_name, xSpD, vlmf_xenium_t) |>
+                              pivot_wider(values_from = "vlmf_xenium_t", names_from = "xSpD") |>
                               column_to_rownames("gene_name") |>
                               as.matrix())
     
-    names(t_stat_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
-    
     ## pval/signif matrix
-    p_SpX_mat <- map(unique(sn_DEG_data_FDR05$cell_type_anno), 
+    p_SpX_mat <- map(DEG_cell_types, 
                      ~vlmf_data_tb_xenium |>
                          filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
-                         select(gene_name, SpX, vlmf_xenium_P.Value) |>
-                         pivot_wider(values_from = "vlmf_xenium_P.Value", names_from = "SpX") |>
+                         select(gene_name, xSpD, vlmf_xenium_P.Value) |>
+                         pivot_wider(values_from = "vlmf_xenium_P.Value", names_from = "xSpD") |>
                          column_to_rownames("gene_name") |>
                          as.matrix())
     
-    names(p_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
     
     SpX_signif_sum <- map(p_SpX_mat, ~colSums(.x < 0.1, na.rm = TRUE))
-    
-    
-    signif_SpX_mat <- map(unique(sn_DEG_data_FDR05$cell_type_anno), 
+
+    signif_SpX_mat <- map(DEG_cell_types, 
                           ~vlmf_data_tb_xenium |>
                               filter(cell_type_anno == .x, vlmf_sn_adj.P.Val < 0.05) |>
                               mutate(signif = case_when(signif_xenium & validate ~ "X",
                                                         signif_xenium ~ "*",
                                                         TRUE ~ "")) |>
-                              select(gene_name, SpX, signif) |>
-                              pivot_wider(values_from = "signif", names_from = "SpX") |>
+                              select(gene_name, xSpD, signif) |>
+                              pivot_wider(values_from = "signif", names_from = "xSpD") |>
                               column_to_rownames("gene_name") |>
                               as.matrix())
-    
-    names(signif_SpX_mat) <- unique(sn_DEG_data_FDR05$cell_type_anno)
-    
     
     map(t_stat_SpX_mat, dim)
     
     
     ## cell type vs. SpX & APOE annotation data
-    spx_cell_prop <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_SpX_prop_long.csv"), row.names = 1)
-    spx_APOE <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_SpX_APOE_mean_logcount.csv"), row.names = 1) |>
-        rownames_to_column("SpX") |> arrange(-APOE_mean)
+    spx_cell_prop <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "cell_v_xSpD_prop_long.csv"), row.names = 1)
     
-    APOE_order <- spx_APOE$SpX
+    spx_APOE <- read.csv(here("processed-data", "21_Xenium", "13_xenium_bansky_embedding", "Xenium_xSpD_APOE_mean_logcount.csv"), row.names = 1) |>
+        rownames_to_column("xSpD") |>
+        arrange(-APOE_mean) |>
+        mutate(xSpD = paste0("x", xSpD))
+    
+    APOE_order <- spx_APOE$xSpD
     
     
     ## plot for each cell type
-    map(names(signif_SpX_mat), function(ct){
+    map(DEG_cell_types, function(ct){
         
         sn_DEG_data_test_df <- sn_DEG_data_FDR05 |> 
             filter(cell_type_anno == ct) |>
             select(gene_name, vlmf_sn_t) |>
             column_to_rownames("gene_name")
         
+        sn_reg <- ifelse(sn_DEG_data_test_df > 0, "upreg", "downreg")
         
         # row annotation by sn t-stat
         sn_t_col_fun = circlize::colorRamp2(c(min(c(-0.01, sn_DEG_data_test_df$vlmf_sn_t)),
@@ -661,8 +668,8 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
             filter(cluster == ct) |>
             ungroup() |>
             mutate(n_opp = n_signif_both - n_validate) |>
-            select(SpX, n_validate, n_opp) |>
-            column_to_rownames("SpX")
+            select(xSpD, n_validate, n_opp) |>
+            column_to_rownames("xSpD")
         
         SpX_val <- SpX_val[SpX_order,]
         
@@ -671,9 +678,9 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
         # col annotation n_cells
         spx_cell_prop_ct <- spx_cell_prop |>
             filter(cell_type_anno == ct) |>
-            select(SpX, n_cell) |>
-            left_join(spx_APOE, by = join_by(SpX)) |> ## Add APOE expression
-            column_to_rownames("SpX")
+            select(xSpD, n_cell) |>
+            left_join(spx_APOE, by = join_by(xSpD)) |> ## Add APOE expression
+            column_to_rownames("xSpD")
         
         spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
         
@@ -713,6 +720,21 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
                           grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
                       },
                       column_title = ct))
+        
+        # print( # cluster version only works from some cts (too many NAs to cluster)
+        #     Heatmap(t_stat_SpX_ct, 
+        #               name = "xenium\nt-stat",
+        #               col = xenium_t_col_fun,
+        #               cluster_rows = TRUE,
+        #               cluster_columns = FALSE,
+        #               right_annotation =  sn_t_row_ha,
+        #               top_annotation = ha_SpX_val,
+        #               bottom_annotation = ha_SpX_cell,
+        #               row_split = sn_reg,
+        #               cell_fun = function(j, i, x, y, width, height, fill) {
+        #                   grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+        #               },
+        #               column_title = ct))
         dev.off()
         
     })
@@ -870,8 +892,8 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     t_stat_SpX_mat_ALL <- vlmf_data_tb_xenium |>
                               filter(vlmf_sn_adj.P.Val < 0.05) |>
-                              select(gene_name, cluster_SpX, vlmf_xenium_t) |>
-                              pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster_SpX") |>
+                              select(gene_name, cluster_xSpD, vlmf_xenium_t) |>
+                              pivot_wider(values_from = "vlmf_xenium_t", names_from = "cluster_xSpD") |>
                               column_to_rownames("gene_name") |>
                               as.matrix()
     
@@ -893,11 +915,11 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
     
     # col annotation n_cells
     spx_cell_prop_ct <- O3_nnA_prop |>
-        mutate(cluster_SpX = paste0(Oligo.3_Astro, "_", gsub("~SpX.*", "", reference_SpX))) |>
-        select(cluster_SpX, SpX = reference_SpX, Oligo.3_Astro, n_cell = n) |>
+        mutate(cluster_xSpD = paste0(Oligo.3_Astro, "_", gsub("~SpX.*", "", reference_SpX))) |>
+        select(cluster_xSpD, SpX = reference_SpX, Oligo.3_Astro, n_cell = n) |>
         left_join(spx_APOE, by = join_by(SpX)) |> ## Add APOE expression
-        filter(cluster_SpX %in% colnames(t_stat_SpX_mat_ALL)) |>
-        column_to_rownames("cluster_SpX") |>
+        filter(cluster_xSpD %in% colnames(t_stat_SpX_mat_ALL)) |>
+        column_to_rownames("cluster_xSpD") |>
         arrange(SpX)
     
     # spx_cell_prop_ct <- spx_cell_prop_ct[SpX_order,]
