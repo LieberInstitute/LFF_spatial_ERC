@@ -720,22 +720,21 @@ if(opt$datatype == "Xenium_cell_type_anno_SpX"){
                           grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
                       },
                       column_title = ct))
-        dev.off()        
         
-        print(
-            Heatmap(t_stat_SpX_ct, 
-                      name = "xenium\nt-stat",
-                      col = xenium_t_col_fun,
-                      cluster_rows = TRUE,
-                      cluster_columns = FALSE,
-                      right_annotation =  sn_t_row_ha,
-                      top_annotation = ha_SpX_val,
-                      bottom_annotation = ha_SpX_cell,
-                      row_split = sn_reg,
-                      cell_fun = function(j, i, x, y, width, height, fill) {
-                          grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
-                      },
-                      column_title = ct))
+        # print( # cluster version only works from some cts (too many NAs to cluster)
+        #     Heatmap(t_stat_SpX_ct, 
+        #               name = "xenium\nt-stat",
+        #               col = xenium_t_col_fun,
+        #               cluster_rows = TRUE,
+        #               cluster_columns = FALSE,
+        #               right_annotation =  sn_t_row_ha,
+        #               top_annotation = ha_SpX_val,
+        #               bottom_annotation = ha_SpX_cell,
+        #               row_split = sn_reg,
+        #               cell_fun = function(j, i, x, y, width, height, fill) {
+        #                   grid.text(signif_SpX_ct[i, j], x, y, gp = gpar(fontsize = 10))
+        #               },
+        #               column_title = ct))
         dev.off()
         
     })
