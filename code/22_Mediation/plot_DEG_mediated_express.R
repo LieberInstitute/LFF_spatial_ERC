@@ -415,13 +415,12 @@ plot_DEG_mediated_express <- function(sce,
         plot_points = plot_points,
         ncol = ncol,
         plot_type = "boxplot",
-        free_y = TRUE
+        free_y = TRUE) +
         ggplot2::labs(subtitle = sprintf("adjusted for %s | %s", mediator_gene, med_clus)) +
         {if (isTRUE(add_stats)) ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str_adj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
         )} +
-        ggh4x::facetted_pos_scales(y = y_scales)
         ggh4x::facetted_pos_scales(y = y_scales)
 
     if (isTRUE(plot_mediator_panel)) {
@@ -467,7 +466,6 @@ plot_DEG_mediated_express <- function(sce,
                     data = data.frame(x = -Inf, y = Inf, label = med_anno),
                     ggplot2::aes(x = x, y = y, label = label),
                     alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5, inherit.aes = FALSE
-                )   alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5, inherit.aes = FALSE
                 )
         } else {
             message(sprintf("Note: %s/%s not found in mediator_stats for %s in %s -- skipping mediator panel annotation.",
