@@ -1,0 +1,223 @@
+**** Job starts ****
+Mon Sep 21 10:00:48 AM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 35826739
+Job name: 01.3_compile_DGE_Xenium_SpX
+Node name: compute-168
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.26.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+  APOE_carrier_anc_colors
+Loading objects:
+  cell_type_colors
+Loading objects:
+  SpX_colors
+Loading objects:
+  SpX_colors
+  [1] "Astro.1_xGL"                "Astro.1_xL1_inhib"         
+  [3] "Astro.1_xL2"                "Astro.1_xL5"               
+  [5] "Astro.1_xL6"                "Astro.1_xLD_glia"          
+  [7] "Astro.1_xVasc_adj"          "Astro.1_xWMd"              
+  [9] "Astro.1_xWMuf"              "Astro.2_xGL"               
+ [11] "Astro.2_xL1_inhib"          "Astro.2_xL2"               
+ [13] "Astro.2_xL5"                "Astro.2_xL6"               
+ [15] "Astro.2_xLD_glia"           "Astro.2_xVasc_adj"         
+ [17] "Astro.2_xWMd"               "Astro.2_xWMuf"             
+ [19] "Astro.3_xL6"                "Astro.3_xWMuf"             
+ [21] "Astro.4_xGL"                "Astro.4_xVasc_adj"         
+ [23] "Astro.4_xVasc_im"           "Astro.4_xVasc_mural"       
+ [25] "Astro.4_xWMd"               "Astro.4_xWMuf"             
+ [27] "Astro.5_xGL"                "Astro.5_xL1_inhib"         
+ [29] "Astro.5_xL2"                "Astro.5_xL5"               
+ [31] "Astro.5_xL6"                "Astro.5_xLD_glia"          
+ [33] "Astro.5_xVasc_adj"          "Astro.5_xVasc_im"          
+ [35] "Astro.5_xVasc_mural"        "Astro.5_xWMd"              
+ [37] "Astro.5_xWMuf"              "Excit.L2_5.mix_xL2"        
+ [39] "Excit.L2_5.mix_xL5"         "Excit.L2_5.mix_xL6"        
+ [41] "Excit.L2_5.mix_xLD_glia"    "Excit.L2_5.mix_xVasc_adj"  
+ [43] "Excit.L2_5.mix_xWMuf"       "Excit.L2_5.RELN_xL1_inhib" 
+ [45] "Excit.L2_5.RELN_xL2"        "Excit.L2_5.RELN_xL5"       
+ [47] "Excit.L2_5.RELN_xLD_glia"   "Excit.L2_xL1_inhib"        
+ [49] "Excit.L2_xL2"               "Excit.L2_xL5"              
+ [51] "Excit.L2_xL6"               "Excit.L2_xLD_glia"         
+ [53] "Excit.L2_xVasc_adj"         "Excit.L2_xWMuf"            
+ [55] "Excit.L5.RELN_xL5"          "Excit.L5.RELN_xLD_glia"    
+ [57] "Excit.L5.RELN_xVasc_adj"    "Excit.L5.RELN_xWMuf"       
+ [59] "Excit.L5.RORB_xL5"          "Excit.L5.RORB_xL6"         
+ [61] "Excit.L5.RORB_xLD_glia"     "Excit.L5.RORB_xWMuf"       
+ [63] "Excit.L6.CT_xL6"            "Excit.L6b_xL6"             
+ [65] "Excit.L6b_xWMuf"            "Inhib.Chandelier_xL5"      
+ [67] "Inhib.Chandelier_xLD_glia"  "Inhib.HTR3A_xL1_inhib"     
+ [69] "Inhib.HTR3A_xL2"            "Inhib.LAMP5_LHX6_xGL"      
+ [71] "Inhib.LAMP5_LHX6_xL1_inhib" "Inhib.LAMP5_LHX6_xL2"      
+ [73] "Inhib.LAMP5_LHX6_xL5"       "Inhib.LAMP5_LHX6_xL6"      
+ [75] "Inhib.LAMP5_LHX6_xLD_glia"  "Inhib.LAMP5_LHX6_xWMuf"    
+ [77] "Inhib.PVALB_xL1_inhib"      "Inhib.PVALB_xL2"           
+ [79] "Inhib.PVALB_xL5"            "Inhib.PVALB_xL6"           
+ [81] "Inhib.PVALB_xLD_glia"       "Inhib.PVALB_xWMuf"         
+ [83] "Inhib.SST_xL2"              "Inhib.SST_xL5"             
+ [85] "Inhib.SST_xL6"              "Inhib.SST_xLD_glia"        
+ [87] "Inhib.SST_xWMuf"            "Inhib.VIP_xGL"             
+ [89] "Inhib.VIP_xL1_inhib"        "Inhib.VIP_xL2"             
+ [91] "Inhib.VIP_xL5"              "Inhib.VIP_xL6"             
+ [93] "Inhib.VIP_xLD_glia"         "Inhib.VIP_xVasc_adj"       
+ [95] "Inhib.VIP_xWMuf"            "Macro_xVasc_im"            
+ [97] "Macro_xVasc_mural"          "Micro.2_xGL"               
+ [99] "Micro.2_xL1_inhib"          "Micro.2_xL2"               
+[101] "Micro.2_xL5"                "Micro.2_xL6"               
+[103] "Micro.2_xLD_glia"           "Micro.2_xVasc_adj"         
+[105] "Micro.2_xVasc_im"           "Micro.2_xWMd"              
+[107] "Micro.2_xWMuf"              "Micro.3_xGL"               
+[109] "Micro.3_xWMd"               "Micro.5_xGL"               
+[111] "Micro.5_xL1_inhib"          "Micro.5_xL2"               
+[113] "Micro.5_xL5"                "Micro.5_xL6"               
+[115] "Micro.5_xLD_glia"           "Micro.5_xVasc_adj"         
+[117] "Micro.5_xVasc_im"           "Micro.5_xWMd"              
+[119] "Micro.5_xWMuf"              "Oligo.1_xGL"               
+[121] "Oligo.1_xL5"                "Oligo.1_xL6"               
+[123] "Oligo.1_xLD_glia"           "Oligo.1_xVasc_adj"         
+[125] "Oligo.1_xWMd"               "Oligo.1_xWMuf"             
+[127] "Oligo.2_xGL"                "Oligo.2_xL5"               
+[129] "Oligo.2_xL6"                "Oligo.2_xLD_glia"          
+[131] "Oligo.2_xVasc_adj"          "Oligo.2_xWMd"              
+[133] "Oligo.2_xWMuf"              "Oligo.3_xGL"               
+[135] "Oligo.3_xL1_inhib"          "Oligo.3_xL2"               
+[137] "Oligo.3_xL5"                "Oligo.3_xL6"               
+[139] "Oligo.3_xLD_glia"           "Oligo.3_xVasc_adj"         
+[141] "Oligo.3_xVasc_im"           "Oligo.3_xVasc_mural"       
+[143] "Oligo.3_xWMd"               "Oligo.3_xWMuf"             
+[145] "Oligo.4_xGL"                "Oligo.4_xL1_inhib"         
+[147] "Oligo.4_xL2"                "Oligo.4_xL5"               
+[149] "Oligo.4_xL6"                "Oligo.4_xLD_glia"          
+[151] "Oligo.4_xVasc_adj"          "Oligo.4_xVasc_im"          
+[153] "Oligo.4_xWMd"               "Oligo.4_xWMuf"             
+[155] "Oligo.5_xL5"                "Oligo.5_xL6"               
+[157] "Oligo.5_xLD_glia"           "Oligo.5_xWMd"              
+[159] "Oligo.5_xWMuf"              "OPC.2_xGL"                 
+[161] "OPC.2_xL1_inhib"            "OPC.2_xL2"                 
+[163] "OPC.2_xL5"                  "OPC.2_xL6"                 
+[165] "OPC.2_xLD_glia"             "OPC.2_xVasc_adj"           
+[167] "OPC.2_xWMd"                 "OPC.2_xWMuf"               
+[169] "OPC.4_xGL"                  "OPC.4_xL1_inhib"           
+[171] "OPC.4_xL5"                  "OPC.4_xL6"                 
+[173] "OPC.4_xLD_glia"             "OPC.4_xWMd"                
+[175] "OPC.4_xWMuf"                "OPC.5_xGL"                 
+[177] "OPC.5_xL1_inhib"            "OPC.5_xL2"                 
+[179] "OPC.5_xL5"                  "OPC.5_xL6"                 
+[181] "OPC.5_xLD_glia"             "OPC.5_xVasc_adj"           
+[183] "OPC.5_xWMd"                 "OPC.5_xWMuf"               
+[185] "Vasc.Endo_xGL"              "Vasc.Endo_xL1_inhib"       
+[187] "Vasc.Endo_xL2"              "Vasc.Endo_xL5"             
+[189] "Vasc.Endo_xL6"              "Vasc.Endo_xLD_glia"        
+[191] "Vasc.Endo_xVasc_adj"        "Vasc.Endo_xVasc_im"        
+[193] "Vasc.Endo_xVasc_mural"      "Vasc.Endo_xWMd"            
+[195] "Vasc.Endo_xWMuf"            "Vasc.PC_xGL"               
+[197] "Vasc.PC_xL1_inhib"          "Vasc.PC_xL2"               
+[199] "Vasc.PC_xL5"                "Vasc.PC_xL6"               
+[201] "Vasc.PC_xLD_glia"           "Vasc.PC_xVasc_adj"         
+[203] "Vasc.PC_xVasc_im"           "Vasc.PC_xVasc_mural"       
+[205] "Vasc.PC_xWMd"               "Vasc.PC_xWMuf"             
+[207] "Vasc.VLMC_xVasc_adj"        "Vasc.VLMC_xVasc_im"        
+[209] "Vasc.VLMC_xVasc_mural"     
+                      data_type     cluster cell_type_anno xSpD contrast
+LYVE1 Xenium_cell_type_anno_SpX Astro.1_xGL        Astro.1  xGL  carrier
+CRYM  Xenium_cell_type_anno_SpX Astro.1_xGL        Astro.1  xGL  carrier
+PCSK6 Xenium_cell_type_anno_SpX Astro.1_xGL        Astro.1  xGL  carrier
+NR4A2 Xenium_cell_type_anno_SpX Astro.1_xGL        Astro.1  xGL  carrier
+ITGAV Xenium_cell_type_anno_SpX Astro.1_xGL        Astro.1  xGL  carrier
+SV2B  Xenium_cell_type_anno_SpX Astro.1_xGL        Astro.1  xGL  carrier
+              gene_id gene_name            Type            gene_search
+LYVE1 ENSG00000133800     LYVE1 Gene Expression LYVE1; ENSG00000133800
+CRYM  ENSG00000103316      CRYM Gene Expression  CRYM; ENSG00000103316
+PCSK6 ENSG00000140479     PCSK6 Gene Expression PCSK6; ENSG00000140479
+NR4A2 ENSG00000153234     NR4A2 Gene Expression NR4A2; ENSG00000153234
+ITGAV ENSG00000138448     ITGAV Gene Expression ITGAV; ENSG00000138448
+SV2B  ENSG00000185518      SV2B Gene Expression  SV2B; ENSG00000185518
+      subsets_negProbe subsets_negCodeword subsets_unassigned subsets_any_neg
+LYVE1            FALSE               FALSE              FALSE           FALSE
+CRYM             FALSE               FALSE              FALSE           FALSE
+PCSK6            FALSE               FALSE              FALSE           FALSE
+NR4A2            FALSE               FALSE              FALSE           FALSE
+ITGAV            FALSE               FALSE              FALSE           FALSE
+SV2B             FALSE               FALSE              FALSE           FALSE
+      subsets_GEX      logFC   AveExpr         t      P.Value adj.P.Val
+LYVE1        TRUE -0.9412995  8.814724 -3.994119 0.0009593366 0.1621279
+CRYM         TRUE  1.0969297  8.948640  3.208462 0.0052162592 0.4407739
+PCSK6        TRUE  0.9367433  8.559502  2.998125 0.0081698686 0.4427966
+NR4A2        TRUE  2.4708561  7.699681  2.767856 0.0132739234 0.4427966
+ITGAV        TRUE -0.3158132 11.898807 -2.775173 0.0130723311 0.4427966
+SV2B         TRUE  0.6008738  8.918273  2.573246 0.0198740812 0.4427966
+               B
+LYVE1 -0.6451197
+CRYM  -2.0226204
+PCSK6 -2.3965145
+NR4A2 -2.7898106
+ITGAV -3.1048495
+SV2B  -3.1252330
+Error in `mutate()`:
+ℹ In argument: `SpX = factor(SpX, names(SpX_colors))`.
+Caused by error:
+! object 'SpX' not found
+Backtrace:
+     ▆
+  1. ├─tibble::as_tibble(...)
+  2. ├─dplyr::mutate(...)
+  3. ├─dplyr:::mutate.data.frame(...)
+  4. │ └─dplyr:::mutate_cols(.data, dplyr_quosures(...), by)
+  5. │   ├─base::withCallingHandlers(...)
+  6. │   └─dplyr:::mutate_col(dots[[i]], data, mask, new_columns)
+  7. │     └─mask$eval_all_mutate(quo)
+  8. │       └─dplyr (local) eval()
+  9. ├─base::factor(SpX, names(SpX_colors))
+ 10. └─base::.handleSimpleError(`<fn>`, "object 'SpX' not found", base::quote(NULL))
+ 11.   └─dplyr (local) h(simpleError(msg, call))
+ 12.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
+Execution halted
