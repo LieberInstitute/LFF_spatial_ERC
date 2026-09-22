@@ -26,7 +26,6 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 mediation_summary_fn <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")
 mediation_summary <- read_csv(mediation_summary_fn)
 
-
 ## add mediator stats
 mediator_DE_stats <- mediation_summary |>
     distinct(mediator_datatype, med_cl_test, mediator) |>
@@ -43,17 +42,23 @@ mediator_DE_stats <- mediation_summary |>
             )
     })
 
-mediator_DE_stats |> filter(mediatorDE_P.Value < 0.1)
+mediator_DE_stats |> dplyr::count(is.na(mediatorDE_P.Value))
+
+# FZD8 and NPTXR are only validated mediator genes 
+mediator_DE_stats |> filter(mediatorDE_P.Value < 0.1) |> arrange(mediator)
+
 mediator_DE_stats |> filter(mediator == "SV2B")
 
 mediation_summary <- mediation_summary |> left_join(mediator_DE_stats)
 
 message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(mediation_summary)))
+# 408 total mediator x outcome rows loaded
 
 mediation_summary |> filter(base_valid, mediated)
 
 mediated_hits <- mediation_summary |> filter(base_valid, !med_sig)
 message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
+# 15 mediated gene pairs to plot
 
 mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator)
 
@@ -176,7 +181,7 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
     mediator_stats <- load_DE_cached(get_DE_fn(mediator_datatype))
     
-    if(mediator_datatype == "Xenium_cell_type_anno_SpX") mediator_stats <- mediator_stats |> mutate(cluster = cluster_SpX)
+    if(mediator_datatype == "Xenium_cell_type_anno_SpX") mediator_stats <- mediator_stats |> mutate(cluster = cluster_xSpD)
 
     # med_cl_test %in% mediator_stats$cluster
     # outcome_cl %in% sce_out[["registration_variable"]]
