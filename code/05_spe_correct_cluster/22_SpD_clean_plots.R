@@ -178,6 +178,9 @@ n_nuclei_zero_prop_bar <- nuc_summary |>
 
 ggsave(n_nuclei_zero_prop_bar, filename = here(plot_dir, "ERC_Visium_SpD_barplot_prop_zero_nuclei.png"), width = 7, height = 4)
 
+ggsave((n_nuclei_violin + theme(axis.text.x = element_blank()))/(n_nuclei_median_bar  + theme(axis.text.x = element_blank())) / n_nuclei_zero_prop_bar, 
+       filename = here(plot_dir, "ERC_Visium_SpD_barplot_nuclei_details.png"), width = 7, height = 12)
+
 #### plot select genes ####
 
 rownames(spe) <- rowData(spe)$gene_name
