@@ -222,6 +222,22 @@ dotplot_key_genes <- spe |>
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.pdf"), width = 5, height = 7)
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes.png"), width = 5, height = 7)
 
+dotplot_key_genes_flip <- spe |>
+    scDotPlot(features = erc_SpD_key$gene,
+              group = "vSpD",
+              groupAnno = "vSpD",
+              featureAnno = "vSpD_genes",
+              scale = TRUE,
+              annoColors = list("vSpD" = SpD_colors,
+                                "vSpD_genes" = c(SpD_colors, lit = "black")),
+              clusterColumns = FALSE,
+              clusterRows = FALSE,
+              groupLegends = FALSE,
+              flipPlot = TRUE)
+
+ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.pdf"), width = 7.5, height = 5)
+ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.png"), width = 7.5, height = 5)
+
 
 # slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
 
