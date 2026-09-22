@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Jul 23 01:38:47 PM EDT 2026
+Tue Sep 22 10:21:45 AM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 34359196
+Job id: 35846383
 Job name: 03_Mediation_Xenium_pairs
-Node name: compute-176
+Node name: compute-168
 Task id: 
 Loading conda_R/4.5
 
@@ -160,87 +160,87 @@ here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
 ✖ lubridate::year()     masks data.table::year()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 qs2 0.2.1
-2026-07-23 13:38:59.322345 - 32 scenarios to run from pairs table
-2026-07-23 13:38:59.375634 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.1
-2026-07-23 13:38:59.376426 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno.RDS
+2026-09-22 10:21:54.042541 - 33 scenarios to run from pairs table
+2026-09-22 10:21:54.080183 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.1
+2026-09-22 10:21:54.080559 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno.RDS
 Loading required namespace: SpatialExperiment
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.4513297/2.4211593
-First intra-block correlation  -0.003594942
-Final sample weights (min/max) 0.4525676/2.4286855
-Final intra-block correlation  -0.003723948
-First sample weights (min/max) 0.3534305/1.7124940
-First intra-block correlation  0.04419321
-Final sample weights (min/max) 0.3547008/1.7119081
-Final intra-block correlation  0.04412806
-2026-07-23 13:39:04.031856 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.2
+First sample weights (min/max) 0.4987224/2.1258159
+First intra-block correlation  0.0399201
+Final sample weights (min/max) 0.4921621/2.1301110
+Final intra-block correlation  0.04019771
+First sample weights (min/max) 0.3744255/2.0648629
+First intra-block correlation  0.01355533
+Final sample weights (min/max) 0.373672/2.070037
+Final intra-block correlation  0.01313831
+2026-09-22 10:21:57.630115 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.2
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.3794145/2.5369050
-First intra-block correlation  0.00636557
-Final sample weights (min/max) 0.3813128/2.5237648
-Final intra-block correlation  0.006017066
-First sample weights (min/max) 0.5333906/2.3166290
-First intra-block correlation  -0.001158202
-Final sample weights (min/max) 0.5325637/2.3192875
-Final intra-block correlation  -0.001341161
-First sample weights (min/max) 0.3860382/2.2230858
-First intra-block correlation  -0.03070031
-Final sample weights (min/max) 0.3875353/2.2126431
-Final intra-block correlation  -0.03075847
-First sample weights (min/max) 0.4469279/2.4089317
-First intra-block correlation  0.001431899
-Final sample weights (min/max) 0.4477431/2.4074992
-Final intra-block correlation  0.00158988
-First sample weights (min/max) 0.3836988/2.4413361
-First intra-block correlation  -0.008748616
-Final sample weights (min/max) 0.3861068/2.4453689
-Final intra-block correlation  -0.009913322
-2026-07-23 13:39:09.81251 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.3
+First sample weights (min/max) 0.3229647/2.3778083
+First intra-block correlation  0.03188384
+Final sample weights (min/max) 0.3209921/2.3548779
+Final intra-block correlation  0.03142794
+First sample weights (min/max) 0.4714671/2.3293173
+First intra-block correlation  0.007425618
+Final sample weights (min/max) 0.4733008/2.3234187
+Final intra-block correlation  0.007296422
+First sample weights (min/max) 0.4508906/2.2450891
+First intra-block correlation  0.001022357
+Final sample weights (min/max) 0.4529036/2.2519071
+Final intra-block correlation  -0.0009897216
+First sample weights (min/max) 0.4151903/2.2939467
+First intra-block correlation  0.0116702
+Final sample weights (min/max) 0.4179393/2.2886358
+Final intra-block correlation  0.01171881
+First sample weights (min/max) 0.4171285/2.3856647
+First intra-block correlation  -0.0376763
+Final sample weights (min/max) 0.4188618/2.3955231
+Final intra-block correlation  -0.03775544
+2026-09-22 10:22:02.462621 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_cell_type_anno outcome_cl=Oligo.3 med_cl_test=Astro.3
   - 2 candidate mediator genes for med_cl=Astro.3
-2026-07-23 13:39:09.943842 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.1 med_cl_test=Astro.1
-2026-07-23 13:39:09.944463 - loading pseudobulk: spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS
+2026-09-22 10:22:02.564319 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.1 med_cl_test=Astro.1
+2026-09-22 10:22:02.564665 - loading pseudobulk: spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.497509/1.507905
-First intra-block correlation  0.04905001
-Final sample weights (min/max) 0.4933548/1.5054862
-Final intra-block correlation  0.04935286
-First sample weights (min/max) 0.4587707/1.4830546
-First intra-block correlation  0.06142542
-Final sample weights (min/max) 0.4557119/1.4888317
-Final intra-block correlation  0.06171242
-2026-07-23 13:39:12.444591 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.2 med_cl_test=Astro.2
+First sample weights (min/max) 0.5345066/1.4892779
+First intra-block correlation  0.06424052
+Final sample weights (min/max) 0.5291154/1.4927754
+Final intra-block correlation  0.06500935
+First sample weights (min/max) 0.5281988/1.3796794
+First intra-block correlation  0.06350899
+Final sample weights (min/max) 0.5257063/1.3746258
+Final intra-block correlation  0.06389028
+2026-09-22 10:22:04.573512 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.2 med_cl_test=Astro.2
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.4745154/1.7015086
-First intra-block correlation  -0.009035591
-Final sample weights (min/max) 0.4788908/1.7137159
-Final intra-block correlation  -0.008467604
-First sample weights (min/max) 0.608939/1.413380
-First intra-block correlation  0.01549693
-Final sample weights (min/max) 0.6070409/1.4131861
-Final intra-block correlation  0.01576064
-First sample weights (min/max) 0.5345604/1.4289098
-First intra-block correlation  -0.02535773
-Final sample weights (min/max) 0.5381683/1.4265422
-Final intra-block correlation  -0.02578664
-First sample weights (min/max) 0.6575616/1.4282010
-First intra-block correlation  0.005282641
-Final sample weights (min/max) 0.6595906/1.4249923
-Final intra-block correlation  0.005123718
-First sample weights (min/max) 0.5270606/1.4783550
-First intra-block correlation  -0.005708019
-Final sample weights (min/max) 0.5313788/1.4768194
-Final intra-block correlation  -0.005187883
-2026-07-23 13:39:17.968209 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.3 med_cl_test=Astro.3
+First sample weights (min/max) 0.3670927/1.7452975
+First intra-block correlation  0.02067469
+Final sample weights (min/max) 0.370400/1.736112
+Final intra-block correlation  0.02085706
+First sample weights (min/max) 0.6238299/1.4184906
+First intra-block correlation  0.008739061
+Final sample weights (min/max) 0.6216399/1.4152492
+Final intra-block correlation  0.008729273
+First sample weights (min/max) 0.5786638/1.4566484
+First intra-block correlation  0.0005397315
+Final sample weights (min/max) 0.5813081/1.4552025
+Final intra-block correlation  9.195424e-05
+First sample weights (min/max) 0.6170442/1.4224643
+First intra-block correlation  0.004702253
+Final sample weights (min/max) 0.6127915/1.4232536
+Final intra-block correlation  0.004873619
+First sample weights (min/max) 0.5309157/1.5476245
+First intra-block correlation  -0.02102001
+Final sample weights (min/max) 0.5335407/1.5474597
+Final intra-block correlation  -0.02080353
+2026-09-22 10:22:09.267906 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=nn_Astro.3 med_cl_test=Astro.3
   - 2 candidate mediator genes for med_cl=Astro.3
-First sample weights (min/max) 0.7662424/1.3645889
-First intra-block correlation  -0.0758027
-Final sample weights (min/max) 0.7649135/1.3626704
-Final intra-block correlation  -0.07627622
-First sample weights (min/max) 0.6010054/1.4878372
-First intra-block correlation  -0.0481749
-Final sample weights (min/max) 0.596747/1.479441
-Final intra-block correlation  -0.04738991
-2026-07-23 13:39:20.976432 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.1 med_cl_test=Astro.1_APOE_high
+First sample weights (min/max) 0.6808079/1.2986631
+First intra-block correlation  -0.05016828
+Final sample weights (min/max) 0.6830022/1.2951668
+Final intra-block correlation  -0.04931809
+First sample weights (min/max) 0.6429467/1.4968185
+First intra-block correlation  -0.009244554
+Final sample weights (min/max) 0.6374017/1.4895503
+Final intra-block correlation  -0.008303092
+2026-09-22 10:22:10.515189 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.1 med_cl_test=Astro.1_APOE_high
   - 2 candidate mediator genes for med_cl=Astro.1
 First sample weights (min/max) 0.5827095/1.4202403
 First intra-block correlation  0.04866086
@@ -250,7 +250,7 @@ First sample weights (min/max) 0.6165079/1.4026448
 First intra-block correlation  0.03344804
 Final sample weights (min/max) 0.6059156/1.3907477
 Final intra-block correlation  0.03369999
-2026-07-23 13:39:22.794099 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.2 med_cl_test=Astro.2_APOE_high
+2026-09-22 10:22:12.850331 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.2 med_cl_test=Astro.2_APOE_high
   - 5 candidate mediator genes for med_cl=Astro.2
 First sample weights (min/max) 0.6425242/1.8249984
 First intra-block correlation  0.00827279
@@ -272,13 +272,13 @@ First sample weights (min/max) 0.6557845/1.6627179
 First intra-block correlation  -0.03243745
 Final sample weights (min/max) 0.6641725/1.6582126
 Final intra-block correlation  -0.03210637
-2026-07-23 13:39:27.697161 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.3 med_cl_test=Astro.3_APOE_high
+2026-09-22 10:22:17.145284 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_high_nnA_Astro.3 med_cl_test=Astro.3_APOE_high
   - 2 candidate mediator genes for med_cl=Astro.3
   - Astro.3_APOE_high|CHRM3: only 8 donors overlap -- skipping
   - Astro.3_APOE_high|IL6ST: only 8 donors overlap -- skipping
-2026-07-23 13:39:28.093225 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.1 med_cl_test=Astro.1_APOE_low
+2026-09-22 10:22:17.429409 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.1 med_cl_test=Astro.1_APOE_low
   - 2 candidate mediator genes for med_cl=Astro.1
-2026-07-23 13:39:28.468419 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.2 med_cl_test=Astro.2_APOE_low
+2026-09-22 10:22:17.71381 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.2 med_cl_test=Astro.2_APOE_low
   - 5 candidate mediator genes for med_cl=Astro.2
 First sample weights (min/max) 0.437978/1.550737
 First intra-block correlation  0.024352
@@ -300,244 +300,226 @@ First sample weights (min/max) 0.4710925/1.5446415
 First intra-block correlation  -0.04649652
 Final sample weights (min/max) 0.4689159/1.5453150
 Final intra-block correlation  -0.04712891
-2026-07-23 13:39:33.409796 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.3 med_cl_test=Astro.3_APOE_low
+2026-09-22 10:22:22.010699 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_Oligo.3_Astro outcome_datatype=Xenium_Oligo.3_Astro outcome_cl=APOE_low_nnA_Astro.3 med_cl_test=Astro.3_APOE_low
   - 2 candidate mediator genes for med_cl=Astro.3
   - Astro.3_APOE_low|CHRM3: only 7 donors overlap -- skipping
   - Astro.3_APOE_low|IL6ST: only 7 donors overlap -- skipping
-2026-07-23 13:39:33.813048 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_Inhib med_cl_test=Astro.1_Inhib
-2026-07-23 13:39:33.813478 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS
+2026-09-22 10:22:22.286901 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xGL med_cl_test=Astro.1_xGL
+2026-09-22 10:22:22.287186 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.7093143/1.5296518
-First intra-block correlation  -0.03802628
-Final sample weights (min/max) 0.7139265/1.5335019
-Final intra-block correlation  -0.03763649
-First sample weights (min/max) 0.6008193/1.5604383
-First intra-block correlation  -0.06317018
-Final sample weights (min/max) 0.6053742/1.5681058
-Final intra-block correlation  -0.06234738
-2026-07-23 13:39:35.7618 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_Inhib med_cl_test=Astro.2_Inhib
+First sample weights (min/max) 0.6926789/1.6966150
+First intra-block correlation  0.02706635
+Final sample weights (min/max) 0.6941537/1.6876703
+Final intra-block correlation  0.02716883
+First sample weights (min/max) 0.5471635/1.5753130
+First intra-block correlation  -0.036133
+Final sample weights (min/max) 0.5504797/1.5678880
+Final intra-block correlation  -0.03504152
+2026-09-22 10:22:24.065138 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xGL med_cl_test=Astro.2_xGL
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.4467323/1.8328247
-First intra-block correlation  0.03889152
-Final sample weights (min/max) 0.4432563/1.8226827
-Final intra-block correlation  0.03853279
-First sample weights (min/max) 0.5647348/1.6167827
-First intra-block correlation  0.0007011393
-Final sample weights (min/max) 0.566525/1.614489
-Final intra-block correlation  -0.0007133261
-First sample weights (min/max) 0.6027961/1.5879313
-First intra-block correlation  -0.008396279
-Final sample weights (min/max) 0.6059332/1.5919311
-Final intra-block correlation  -0.008418837
-First sample weights (min/max) 0.4629745/1.5694295
-First intra-block correlation  -0.01206299
-Final sample weights (min/max) 0.4620882/1.5502009
-Final intra-block correlation  -0.0101912
-First sample weights (min/max) 0.7200246/1.4262218
-First intra-block correlation  0.001038156
-Final sample weights (min/max) 0.7124224/1.4143105
-Final intra-block correlation  0.001866793
-2026-07-23 13:39:39.270996 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L1a med_cl_test=Astro.1_L1a
+First sample weights (min/max) 0.5276816/1.5383985
+First intra-block correlation  -0.02014383
+Final sample weights (min/max) 0.5311678/1.5260462
+Final intra-block correlation  -0.01962688
+First sample weights (min/max) 0.4818641/1.7446873
+First intra-block correlation  0.01053656
+Final sample weights (min/max) 0.488616/1.742783
+Final intra-block correlation  0.01186208
+First sample weights (min/max) 0.564137/1.872286
+First intra-block correlation  -0.005809906
+Final sample weights (min/max) 0.5667204/1.8712779
+Final intra-block correlation  -0.006427458
+First sample weights (min/max) 0.6308289/1.6485031
+First intra-block correlation  0.01288507
+Final sample weights (min/max) 0.6296438/1.6414960
+Final intra-block correlation  0.01245988
+First sample weights (min/max) 0.559449/1.749687
+First intra-block correlation  -0.01226258
+Final sample weights (min/max) 0.5643828/1.7380147
+Final intra-block correlation  -0.01317598
+2026-09-22 10:22:27.288768 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL1_inhib med_cl_test=Astro.1_xL1_inhib
   - 2 candidate mediator genes for med_cl=Astro.1
-2026-07-23 13:39:39.689051 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L1a med_cl_test=Astro.2_L1a
+First sample weights (min/max) 0.550570/1.300399
+First intra-block correlation  -0.02033473
+Final sample weights (min/max) 0.5494162/1.3010715
+Final intra-block correlation  -0.02030518
+First sample weights (min/max) 0.4996334/1.2509942
+First intra-block correlation  -0.04190309
+Final sample weights (min/max) 0.4997302/1.2485548
+Final intra-block correlation  -0.04193512
+2026-09-22 10:22:28.536081 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL1_inhib med_cl_test=Astro.2_xL1_inhib
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.5952417/1.6933501
-First intra-block correlation  -0.000584489
-Final sample weights (min/max) 0.588714/1.690102
-Final intra-block correlation  -0.0008873529
-First sample weights (min/max) 0.6240888/1.5853437
-First intra-block correlation  0.03373746
-Final sample weights (min/max) 0.6297966/1.5777131
-Final intra-block correlation  0.03329215
-First sample weights (min/max) 0.610713/1.492843
-First intra-block correlation  0.03971809
-Final sample weights (min/max) 0.6159024/1.4908836
-Final intra-block correlation  0.04013216
-First sample weights (min/max) 0.4698895/1.8124390
-First intra-block correlation  0.03909682
-Final sample weights (min/max) 0.4843578/1.8042852
-Final intra-block correlation  0.03915772
-First sample weights (min/max) 0.6674883/1.7520411
-First intra-block correlation  -0.01054449
-Final sample weights (min/max) 0.6647307/1.7448369
-Final intra-block correlation  -0.01194847
-2026-07-23 13:39:43.590971 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L1b med_cl_test=Astro.1_L1b
+First sample weights (min/max) 0.5189655/1.2706335
+First intra-block correlation  -0.01639039
+Final sample weights (min/max) 0.5186481/1.2625798
+Final intra-block correlation  -0.01664071
+First sample weights (min/max) 0.4959368/1.3410122
+First intra-block correlation  -0.005545019
+Final sample weights (min/max) 0.4963285/1.3414054
+Final intra-block correlation  -0.004991942
+First sample weights (min/max) 0.4879457/1.4185268
+First intra-block correlation  -0.03554272
+Final sample weights (min/max) 0.4876514/1.4147081
+Final intra-block correlation  -0.03544158
+First sample weights (min/max) 0.430031/1.323919
+First intra-block correlation  -0.01164046
+Final sample weights (min/max) 0.4315592/1.3040870
+Final intra-block correlation  -0.01057661
+First sample weights (min/max) 0.5793335/1.2715707
+First intra-block correlation  -0.01875375
+Final sample weights (min/max) 0.5824357/1.2688436
+Final intra-block correlation  -0.01895739
+2026-09-22 10:22:31.110441 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL2 med_cl_test=Astro.1_xL2
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.5522268/1.5934822
-First intra-block correlation  0.007362587
-Final sample weights (min/max) 0.5491296/1.5956352
-Final intra-block correlation  0.006436923
-First sample weights (min/max) 0.6044782/1.3705208
-First intra-block correlation  0.008188147
-Final sample weights (min/max) 0.6011195/1.3724597
-Final intra-block correlation  0.007948341
-2026-07-23 13:39:45.480141 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L1b med_cl_test=Astro.2_L1b
+First sample weights (min/max) 0.6240587/1.2346277
+First intra-block correlation  -0.00164435
+Final sample weights (min/max) 0.6238387/1.2398566
+Final intra-block correlation  -0.001595888
+First sample weights (min/max) 0.4505528/1.3281109
+First intra-block correlation  -0.008574045
+Final sample weights (min/max) 0.450558/1.327078
+Final intra-block correlation  -0.008295269
+2026-09-22 10:22:32.318773 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL2 med_cl_test=Astro.2_xL2
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.4706522/1.7739843
-First intra-block correlation  0.001033661
-Final sample weights (min/max) 0.4701979/1.7745793
-Final intra-block correlation  0.0009786733
-First sample weights (min/max) 0.5088043/1.7418804
-First intra-block correlation  0.03095637
-Final sample weights (min/max) 0.5099985/1.7333889
-Final intra-block correlation  0.03161874
-First sample weights (min/max) 0.5241735/1.7459977
-First intra-block correlation  0.02796636
-Final sample weights (min/max) 0.5239604/1.7387625
-Final intra-block correlation  0.02768043
-First sample weights (min/max) 0.5195973/2.0424932
-First intra-block correlation  -0.008736281
-Final sample weights (min/max) 0.5203492/2.0398406
-Final intra-block correlation  -0.007821535
-First sample weights (min/max) 0.5041402/1.7028299
-First intra-block correlation  0.01327295
-Final sample weights (min/max) 0.5026953/1.7031424
-Final intra-block correlation  0.01336034
-2026-07-23 13:39:49.623836 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L2.3 med_cl_test=Astro.1_L2.3
+First sample weights (min/max) 0.5297699/1.3110858
+First intra-block correlation  0.01967162
+Final sample weights (min/max) 0.5270265/1.3177531
+Final intra-block correlation  0.01998763
+First sample weights (min/max) 0.5161967/1.3921369
+First intra-block correlation  -0.01123297
+Final sample weights (min/max) 0.5144801/1.3868057
+Final intra-block correlation  -0.01058117
+First sample weights (min/max) 0.5319007/1.3618945
+First intra-block correlation  0.008763744
+Final sample weights (min/max) 0.53082/1.36263
+Final intra-block correlation  0.008634958
+First sample weights (min/max) 0.5809566/1.5101018
+First intra-block correlation  -0.009251788
+Final sample weights (min/max) 0.5769655/1.5209363
+Final intra-block correlation  -0.009312755
+First sample weights (min/max) 0.4832938/1.3795479
+First intra-block correlation  0.006969709
+Final sample weights (min/max) 0.4825007/1.3841243
+Final intra-block correlation  0.007256395
+2026-09-22 10:22:34.751091 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL5 med_cl_test=Astro.1_xL5
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.6716096/1.5135896
-First intra-block correlation  0.00329397
-Final sample weights (min/max) 0.6710221/1.5214495
-Final intra-block correlation  0.003748532
-First sample weights (min/max) 0.5969028/1.4503755
-First intra-block correlation  -0.006989727
-Final sample weights (min/max) 0.5905677/1.4456703
-Final intra-block correlation  -0.005273554
-2026-07-23 13:39:51.066771 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L2.3 med_cl_test=Astro.2_L2.3
+First sample weights (min/max) 0.6139718/1.5236923
+First intra-block correlation  -0.02103682
+Final sample weights (min/max) 0.6176586/1.5183439
+Final intra-block correlation  -0.02075848
+First sample weights (min/max) 0.6133012/1.4122927
+First intra-block correlation  -0.03804772
+Final sample weights (min/max) 0.6126637/1.4126202
+Final intra-block correlation  -0.03838566
+2026-09-22 10:22:36.654272 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL5 med_cl_test=Astro.2_xL5
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.5379504/1.5001295
-First intra-block correlation  0.02591011
-Final sample weights (min/max) 0.5395254/1.5224595
-Final intra-block correlation  0.02721765
-First sample weights (min/max) 0.5539501/1.4497887
-First intra-block correlation  0.01103057
-Final sample weights (min/max) 0.551866/1.444779
-Final intra-block correlation  0.01028525
-First sample weights (min/max) 0.6601508/1.4857811
-First intra-block correlation  0.004575867
-Final sample weights (min/max) 0.6555603/1.4907661
-Final intra-block correlation  0.004845366
-First sample weights (min/max) 0.5029309/1.6305314
-First intra-block correlation  0.03907107
-Final sample weights (min/max) 0.5042731/1.6279327
-Final intra-block correlation  0.03920678
-First sample weights (min/max) 0.5656367/1.4219099
-First intra-block correlation  -0.001464846
-Final sample weights (min/max) 0.5638653/1.4221943
-Final intra-block correlation  -0.0007450685
-2026-07-23 13:39:53.723343 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L5 med_cl_test=Astro.1_L5
+First sample weights (min/max) 0.601851/1.633098
+First intra-block correlation  0.005599008
+Final sample weights (min/max) 0.6045015/1.6335980
+Final intra-block correlation  0.005253578
+First sample weights (min/max) 0.5886673/1.4764889
+First intra-block correlation  0.002562475
+Final sample weights (min/max) 0.5909909/1.4815930
+Final intra-block correlation  0.002780653
+First sample weights (min/max) 0.5787381/1.5036517
+First intra-block correlation  -0.01850272
+Final sample weights (min/max) 0.5794635/1.5042514
+Final intra-block correlation  -0.01877656
+First sample weights (min/max) 0.6366663/1.5089535
+First intra-block correlation  -0.001795749
+Final sample weights (min/max) 0.6388394/1.5050777
+Final intra-block correlation  -0.002128166
+First sample weights (min/max) 0.529491/1.518248
+First intra-block correlation  -0.0167794
+Final sample weights (min/max) 0.5287037/1.5133214
+Final intra-block correlation  -0.01658986
+2026-09-22 10:22:40.704042 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL6 med_cl_test=Astro.1_xL6
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.5170303/1.5799989
-First intra-block correlation  0.01758316
-Final sample weights (min/max) 0.5203279/1.5813481
-Final intra-block correlation  0.01745002
-First sample weights (min/max) 0.4754945/1.6543996
-First intra-block correlation  0.02075928
-Final sample weights (min/max) 0.4775317/1.6531030
-Final intra-block correlation  0.02085294
-2026-07-23 13:39:55.87881 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L5 med_cl_test=Astro.2_L5
+2026-09-22 10:22:41.004183 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL6 med_cl_test=Astro.2_xL6
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.499291/1.676830
-First intra-block correlation  0.01844206
-Final sample weights (min/max) 0.5007381/1.6815634
-Final intra-block correlation  0.01840588
-First sample weights (min/max) 0.537793/1.625310
-First intra-block correlation  0.02235293
-Final sample weights (min/max) 0.5402011/1.6245616
-Final intra-block correlation  0.02266101
-First sample weights (min/max) 0.5124594/1.6532644
-First intra-block correlation  0.003626328
-Final sample weights (min/max) 0.5124793/1.6532036
-Final intra-block correlation  0.004343864
-First sample weights (min/max) 0.4750892/1.5236957
-First intra-block correlation  0.03004056
-Final sample weights (min/max) 0.4755381/1.5263257
-Final intra-block correlation  0.03103387
-First sample weights (min/max) 0.4728918/1.4952752
-First intra-block correlation  0.009768153
-Final sample weights (min/max) 0.4738713/1.4968648
-Final intra-block correlation  0.009429611
-2026-07-23 13:40:00.763364 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L6 med_cl_test=Astro.1_L6
-  - 2 candidate mediator genes for med_cl=Astro.1
-2026-07-23 13:40:01.183176 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L6 med_cl_test=Astro.2_L6
-  - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.5836746/1.5314806
-First intra-block correlation  0.0113192
-Final sample weights (min/max) 0.5819347/1.5283043
-Final intra-block correlation  0.01142946
-First sample weights (min/max) 0.6018765/1.6304354
-First intra-block correlation  0.005473786
-Final sample weights (min/max) 0.6044655/1.6341312
-Final intra-block correlation  0.005606598
-First sample weights (min/max) 0.5936054/1.4410611
-First intra-block correlation  -0.008940635
-Final sample weights (min/max) 0.5862565/1.4437660
-Final intra-block correlation  -0.008843347
-First sample weights (min/max) 0.661136/1.472893
-First intra-block correlation  0.002660175
-Final sample weights (min/max) 0.6540164/1.4797028
-Final intra-block correlation  0.002567165
-First sample weights (min/max) 0.6274928/1.6261852
-First intra-block correlation  -0.01852467
-Final sample weights (min/max) 0.6224975/1.6281808
-Final intra-block correlation  -0.01883504
-2026-07-23 13:40:06.022531 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_L6 med_cl_test=Astro.3_L6
+2026-09-22 10:22:41.234517 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xL6 med_cl_test=Astro.3_xL6
   - 2 candidate mediator genes for med_cl=Astro.3
-  - Astro.3_L6|CHRM3: only 5 donors overlap -- skipping
-  - Astro.3_L6|IL6ST: only 5 donors overlap -- skipping
-2026-07-23 13:40:06.145291 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_Vasc med_cl_test=Astro.1_Vasc
+  - Astro.3_xL6|CHRM3: only 6 donors overlap -- skipping
+  - Astro.3_xL6|IL6ST: only 6 donors overlap -- skipping
+2026-09-22 10:22:41.326344 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xLD_glia med_cl_test=Astro.1_xLD_glia
   - 2 candidate mediator genes for med_cl=Astro.1
-  - Astro.1_Vasc|NPTXR: only 5 donors overlap -- skipping
-  - Astro.1_Vasc|PLPPR4: only 5 donors overlap -- skipping
-2026-07-23 13:40:06.572759 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_Vasc med_cl_test=Astro.2_Vasc
+First sample weights (min/max) 0.6561939/1.6508128
+First intra-block correlation  0.0452544
+Final sample weights (min/max) 0.6571547/1.6514211
+Final intra-block correlation  0.04505758
+First sample weights (min/max) 0.5676433/1.5858911
+First intra-block correlation  0.04303857
+Final sample weights (min/max) 0.5690409/1.5824408
+Final intra-block correlation  0.04274707
+2026-09-22 10:22:43.139483 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xLD_glia med_cl_test=Astro.2_xLD_glia
   - 5 candidate mediator genes for med_cl=Astro.2
-2026-07-23 13:40:06.854146 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_WM med_cl_test=Astro.1_WM
+First sample weights (min/max) 0.4780943/1.7573754
+First intra-block correlation  0.0387823
+Final sample weights (min/max) 0.4798761/1.7498630
+Final intra-block correlation  0.03813426
+First sample weights (min/max) 0.6163174/1.5748877
+First intra-block correlation  0.04933481
+Final sample weights (min/max) 0.6172714/1.5621356
+Final intra-block correlation  0.04912497
+First sample weights (min/max) 0.5615122/1.7163152
+First intra-block correlation  0.06086121
+Final sample weights (min/max) 0.5628391/1.7074307
+Final intra-block correlation  0.06110792
+First sample weights (min/max) 0.5884899/1.7064811
+First intra-block correlation  0.03315599
+Final sample weights (min/max) 0.5885985/1.6968970
+Final intra-block correlation  0.0328427
+First sample weights (min/max) 0.5796256/1.8423867
+First intra-block correlation  0.02842283
+Final sample weights (min/max) 0.580517/1.838264
+Final intra-block correlation  0.02844487
+2026-09-22 10:22:47.473634 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xVasc_adj med_cl_test=Astro.1_xVasc_adj
   - 2 candidate mediator genes for med_cl=Astro.1
-  - Astro.1_WM|NPTXR: only 9 donors overlap -- skipping
-  - Astro.1_WM|PLPPR4: only 9 donors overlap -- skipping
-2026-07-23 13:40:07.248101 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_WM med_cl_test=Astro.2_WM
+2026-09-22 10:22:47.7682 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xVasc_adj med_cl_test=Astro.2_xVasc_adj
   - 5 candidate mediator genes for med_cl=Astro.2
-2026-07-23 13:40:07.550608 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_WM med_cl_test=Astro.3_WM
+2026-09-22 10:22:48.01462 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xWMd med_cl_test=Astro.1_xWMd
+  - 2 candidate mediator genes for med_cl=Astro.1
+  - Astro.1_xWMd|NPTXR: only 8 donors overlap -- skipping
+  - Astro.1_xWMd|PLPPR4: only 8 donors overlap -- skipping
+2026-09-22 10:22:48.306018 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xWMd med_cl_test=Astro.2_xWMd
+  - 5 candidate mediator genes for med_cl=Astro.2
+2026-09-22 10:22:48.539974 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xWMd med_cl_test=Astro.3_xWMd
   - 2 candidate mediator genes for med_cl=Astro.3
-  - Astro.3_WM|CHRM3: only 5 donors overlap -- skipping
-  - Astro.3_WM|IL6ST: only 5 donors overlap -- skipping
-2026-07-23 13:40:07.66954 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_WMtz med_cl_test=Astro.1_WMtz
+  - Astro.3_xWMd|CHRM3: only 4 donors overlap -- skipping
+  - Astro.3_xWMd|IL6ST: only 4 donors overlap -- skipping
+2026-09-22 10:22:48.637497 - SCENARIO: med_cl=Astro.1 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xWMuf med_cl_test=Astro.1_xWMuf
   - 2 candidate mediator genes for med_cl=Astro.1
-First sample weights (min/max) 0.6216193/1.5311795
-First intra-block correlation  0.05336579
-Final sample weights (min/max) 0.626095/1.522550
-Final intra-block correlation  0.05344337
-First sample weights (min/max) 0.712660/1.474041
-First intra-block correlation  0.03877677
-Final sample weights (min/max) 0.7103476/1.4657667
-Final intra-block correlation  0.0389173
-2026-07-23 13:40:09.877642 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_WMtz med_cl_test=Astro.2_WMtz
+2026-09-22 10:22:48.941624 - SCENARIO: med_cl=Astro.2 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xWMuf med_cl_test=Astro.2_xWMuf
   - 5 candidate mediator genes for med_cl=Astro.2
-First sample weights (min/max) 0.5573722/1.8342598
-First intra-block correlation  0.01935811
-Final sample weights (min/max) 0.5605417/1.8349110
-Final intra-block correlation  0.01944342
-First sample weights (min/max) 0.5467107/1.8096348
-First intra-block correlation  0.04387018
-Final sample weights (min/max) 0.5496281/1.8083776
-Final intra-block correlation  0.04517546
-First sample weights (min/max) 0.5601504/1.7387327
-First intra-block correlation  0.02018511
-Final sample weights (min/max) 0.5657342/1.7237042
-Final intra-block correlation  0.0205332
-First sample weights (min/max) 0.5630893/1.7885897
-First intra-block correlation  0.004374278
-Final sample weights (min/max) 0.5676972/1.7772442
-Final intra-block correlation  0.004787052
-First sample weights (min/max) 0.5881364/1.7055310
-First intra-block correlation  -0.002831633
-Final sample weights (min/max) 0.5921516/1.7033819
-Final intra-block correlation  -0.002914343
-2026-07-23 13:40:18.134418 - Mediation validation complete: 443 scenario x pair rows, 40 with mediated=TRUE
+First sample weights (min/max) 0.5659794/1.9165591
+First intra-block correlation  0.03890284
+Final sample weights (min/max) 0.5630969/1.9058105
+Final intra-block correlation  0.03873725
+First sample weights (min/max) 0.571147/1.782866
+First intra-block correlation  0.03577995
+Final sample weights (min/max) 0.5756819/1.7771133
+Final intra-block correlation  0.03590609
+First sample weights (min/max) 0.5473338/1.7637377
+First intra-block correlation  0.05528129
+Final sample weights (min/max) 0.5525552/1.7533227
+Final intra-block correlation  0.05511032
+First sample weights (min/max) 0.4789119/1.8385136
+First intra-block correlation  0.07775509
+Final sample weights (min/max) 0.4798338/1.8341838
+Final intra-block correlation  0.07750386
+First sample weights (min/max) 0.5746912/1.6704198
+First intra-block correlation  0.03236222
+Final sample weights (min/max) 0.5774727/1.6658915
+Final intra-block correlation  0.03180292
+2026-09-22 10:22:53.531026 - SCENARIO: med_cl=Astro.3 mediator_datatype=Xenium_cell_type_anno_SpX outcome_datatype=Xenium_cell_type_anno_SpX outcome_cl=Oligo.3_xWMuf med_cl_test=Astro.3_xWMuf
+  - 2 candidate mediator genes for med_cl=Astro.3
+  - Astro.3_xWMuf|CHRM3: only 8 donors overlap -- skipping
+  - Astro.3_xWMuf|IL6ST: only 8 donors overlap -- skipping
+2026-09-22 10:22:53.66488 - Mediation validation complete: 408 scenario x pair rows, 35 with mediated=TRUE
 [1] "Reproducibility information:"
-[1] "2026-07-23 13:40:18 EDT"
+[1] "2026-09-22 10:22:53 EDT"
    user  system elapsed 
- 86.675   1.632  90.078 
+ 65.232   0.955  67.180 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -548,7 +530,7 @@ Final intra-block correlation  -0.002914343
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-07-23
+ date     2026-09-22
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -627,4 +609,4 @@ Final intra-block correlation  -0.002914343
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jul 23 01:40:18 PM EDT 2026
+Tue Sep 22 10:22:53 AM EDT 2026
