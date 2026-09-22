@@ -7,8 +7,8 @@ library("here")
 library("sessioninfo")
 library("UpSetR")
 
-# data_dir <- here("processed-data", "13_compile_DGE", "03_DEG_upset")
-# if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+data_dir <- here("processed-data", "13_compile_DGE", "03_DEG_upset")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 plot_dir <- here("plots", "13_compile_DGE", "03_DEG_upset")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
@@ -42,12 +42,12 @@ map(DEGs_signif, ~.x |> count(DE_class_cluster))
 
 ## with direction
 get_gene_list_dir <- function(DEG_tb){
-    map(rafalib::splitit(DEG_tb$DE_class_cluster), ~DEG_tb$gene_id[.x])
+    map(rafalib::splitit(DEG_tb$DE_class_cluster), ~DEG_tb$gene_name[.x])
 }
 
 ## w/o direction
 get_gene_list <- function(DEG_tb){
-    map(rafalib::splitit(DEG_tb$cluster), ~DEG_tb$gene_id[.x])
+    map(rafalib::splitit(DEG_tb$cluster), ~DEG_tb$gene_name[.x])
 }
 
 # get_gene_list(DEGs_signif$sn_broad)
@@ -93,9 +93,10 @@ dev.off()
 
 
 common_WMuf_Vasc <- intersect(DEGs_signif_list$Visium$vWMuf, DEGs_signif_list$Visium$vVasc)
+# "KLK6"   "ELOVL1"
 
 DEGs_signif$Visium |> 
-    filter(gene_id %in% common_WMuf_Vasc) |> 
+    filter(gene_name %in% common_WMuf_Vasc) |> 
     select(cluster, gene_name, vlmf_logFC, vlmf_adj.P.Val)
 
 # cluster gene_name vlmf_logFC vlmf_adj.P.Val
@@ -104,6 +105,18 @@ DEGs_signif$Visium |>
 # 2 vVasc   KLK6           -1.54         0.0377
 # 3 vWMuf   KLK6           -1.69         0.0469
 # 4 vWMuf   ELOVL1         -1.31         0.0469
+
+DEGs_signif$Visium |> 
+    count(gene_name) |>
+    arrange(-n)
+
+# gene_name      n
+# <chr>      <int>
+# 1 CD9            3
+# 2 DDN            2
+# 3 ELOVL1         2
+# 4 KLK6           2
+# 5 MAP2           2
 
 DEGs_signif$Visium |> 
     filter(gene_name == "KLK6") |> 
@@ -127,15 +140,6 @@ DEGs_signif$Visium |>
 ## significance - a gene sig in 2 runs and trending the same way in 5 more is
 ## a stronger anchor candidate than one sig in 2 runs and null/flipped
 ## everywhere else.
-##
-## NOTE: this only has data to work with for whatever data_types are loaded
-## into DE_data/DEGs_signif above (currently just "Visium" is confirmed
-## present on disk in this run - re-run once sn_broad/sn_fine Rds files are
-## available to get the real cross-datatype table; the code below is
-## data_types-agnostic and needs no changes to pick those up).
-
-data_dir <- here("processed-data", "13_compile_DGE", "03_DEG_upset")
-if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 ## long-format significant-DEG table across all data_types x clusters
 DEGs_signif_long <- imap_dfr(DEGs_signif, ~ .x |> mutate(data_type = .y))
@@ -214,6 +218,11 @@ current_anchor_sig_summary
 ## story than genuinely gone
 setdiff(current_anchor_genes, current_anchor_sig_summary$gene_name)
 
+anchor_candidates |> 
+    arrange(-n_sig_hits) |> 
+    filter(consistent_sig_direction) |> 
+    mutate(anchor = gene_name %in% current_anchor_genes) |>
+    print(n = 20)
 
 #### combined bar plots ####
 
