@@ -129,6 +129,9 @@
 #' significance star (`"*"`) in the annotation text -- `"**"`/`"***"`
 #' stay fixed at `< 0.01`/`< 0.001`. Default `0.05`; set to e.g. `0.10`
 #' to match a relaxed validation threshold.
+#' @param add_stats A `logical(1)`. If `TRUE` (default), add the statistics
+#' annotation (`geom_label`) to each panel. Set to `FALSE` to suppress all
+#' stat overlays.
 #'
 #' Each of the three annotation pieces (Step 1 base, Step 3b
 #' med-adjusted, Step 3a med_vec-association) is only added if its
@@ -199,7 +202,8 @@ plot_DEG_mediated_express <- function(sce,
                                        mediated_col = "mediated",
                                        signif_stat = "P.Value",
                                        signif_label = NULL,
-                                       signif_thr = 0.05) {
+                                       signif_thr = 0.05,
+                                       add_stats = TRUE) {
 
     stopifnot(cluster_col %in% colnames(colData(sce)))
     stopifnot(med_cluster_col %in% colnames(colData(sce_mediator)))
@@ -395,10 +399,10 @@ plot_DEG_mediated_express <- function(sce,
         free_y = TRUE
     ) +
         ggplot2::labs(subtitle = "unadjusted") +
-        ggplot2::geom_label(
+        {if (isTRUE(add_stats)) ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str_unadj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
-        ) +
+        )} +
         ggh4x::facetted_pos_scales(y = y_scales)
 
     p_adj <- plot_gene_express(
@@ -412,12 +416,12 @@ plot_DEG_mediated_express <- function(sce,
         ncol = ncol,
         plot_type = "boxplot",
         free_y = TRUE
-    ) +
         ggplot2::labs(subtitle = sprintf("adjusted for %s | %s", mediator_gene, med_clus)) +
-        ggplot2::geom_label(
+        {if (isTRUE(add_stats)) ggplot2::geom_label(
             data = stats_filter, ggplot2::aes(x = -Inf, y = Inf, label = anno_str_adj),
             alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5
-        ) +
+        )} +
+        ggh4x::facetted_pos_scales(y = y_scales)
         ggh4x::facetted_pos_scales(y = y_scales)
 
     if (isTRUE(plot_mediator_panel)) {
@@ -450,8 +454,7 @@ plot_DEG_mediated_express <- function(sce,
         ## all three panels.
         med_stat_row <- mediator_stats |>
             dplyr::filter(.data[[mediator_stats_cluster_col]] == med_clus, .data[[gene_col]] == mediator_gene)
-
-        if (nrow(med_stat_row) >= 1 && all(c(mediator_pval_col, mediator_t_col) %in% names(med_stat_row))) {
+        if (isTRUE(add_stats) && nrow(med_stat_row) >= 1 && all(c(mediator_pval_col, mediator_t_col) %in% names(med_stat_row))) {
             p_ <- med_stat_row[[mediator_pval_col]][1]
             t_ <- if (mediator_t_col %in% names(med_stat_row)) med_stat_row[[mediator_t_col]][1] else NA_real_
             med_anno <- if (!is.na(t_)) {
@@ -464,6 +467,7 @@ plot_DEG_mediated_express <- function(sce,
                     data = data.frame(x = -Inf, y = Inf, label = med_anno),
                     ggplot2::aes(x = x, y = y, label = label),
                     alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5, inherit.aes = FALSE
+                )   alpha = 0.5, vjust = "inward", hjust = "inward", size = 2.5, inherit.aes = FALSE
                 )
         } else {
             message(sprintf("Note: %s/%s not found in mediator_stats for %s in %s -- skipping mediator panel annotation.",
