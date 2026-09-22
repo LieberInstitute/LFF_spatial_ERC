@@ -127,7 +127,7 @@ ggsave(SpD_barplot_n_spots, filename = here(plot_dir, "ERC_SpD_barplot_n_spots.p
 #### n nuclei ####
 summary(pd$CNmask_dark_blue)
 
-pd |>
+nuc_summary <- pd |>
     group_by(vSpD) |>
     summarise(n_nuc = n(),
               median_nuc = median(CNmask_dark_blue),
@@ -137,19 +137,7 @@ pd |>
               p_100_nuc = n_100_nuc/n(),
               max = max(CNmask_dark_blue))
 
-# vSpD   n_nuc median_nuc n_0_nuc p_0_nuc n_100_nuc p_100_nuc   max
-# <fct>  <int>      <dbl>   <int>   <dbl>     <int>     <dbl> <int>
-# 1 vVasc   5055          4    1277  0.253         94   0.0186    241
-# 2 vL1    16895          3    2611  0.155        230   0.0136    285
-# 3 vL2    14069          5    1404  0.0998        82   0.00583   231
-# 4 vInhib  2419          5      55  0.0227        27   0.0112    284
-# 5 vL3    17773          3    2627  0.148        102   0.00574   203
-# 6 vLD    11577          6     792  0.0684       115   0.00993   178
-# 7 vL5    14608          5    1157  0.0792       160   0.0110    209
-# 8 vL6    14548          5    1035  0.0711       226   0.0155    290
-# 9 vWMuf  12025          6    1514  0.126        706   0.0587    398
-# 10 vWMim   8192          8     476  0.0581       543   0.0663    314
-# 11 vWMd    5041         10     104  0.0206       336   0.0667    374
+nuc_summary
 
 n_nuclei_violin <- ggplot(pd, aes(x = vSpD, y = CNmask_dark_blue, fill = vSpD)) +
     geom_violin(draw_quantiles = c(.5)) +
@@ -160,6 +148,35 @@ n_nuclei_violin <- ggplot(pd, aes(x = vSpD, y = CNmask_dark_blue, fill = vSpD)) 
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(n_nuclei_violin, filename = here(plot_dir, "ERC_Visium_SpD_violin_n_nuclei.png"), width = 7, height =4)
+
+## Median nuclei per spot is robust to the small fraction of very-high-outlier
+## spots that skew the violin above; this makes the vLD dip against its
+## gray-matter neighbors easier to see at a glance.
+n_nuclei_median_bar <- nuc_summary |>
+    ggplot(aes(x = vSpD, y = median_nuc, fill = vSpD)) +
+    geom_col() +
+    geom_text(aes(label = median_nuc), vjust = -.5) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    labs(y = "Median n segmented nuclei") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(n_nuclei_median_bar, filename = here(plot_dir, "ERC_Visium_SpD_barplot_median_nuclei.png"), width = 7, height = 4)
+
+## Proportion of spots with zero segmented nuclei - directly shows
+## "enrichment for low-nuclei spots" rather than just a central-tendency shift.
+n_nuclei_zero_prop_bar <- nuc_summary |>
+    ggplot(aes(x = vSpD, y = p_0_nuc, fill = vSpD)) +
+    geom_col() +
+    geom_text(aes(label = paste0(round(p_0_nuc * 100, 1), "%")), vjust = -.5) +
+    scale_fill_manual(values = SpD_colors) +
+    theme_bw() +
+    labs(y = "Proportion of spots with 0 nuclei") +
+    theme(legend.position = "None",
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(n_nuclei_zero_prop_bar, filename = here(plot_dir, "ERC_Visium_SpD_barplot_prop_zero_nuclei.png"), width = 7, height = 4)
 
 #### plot select genes ####
 
