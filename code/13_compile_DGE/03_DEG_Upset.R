@@ -134,12 +134,7 @@ DEGs_signif$Visium |>
 ## Systematic version of the common_WMuf_Vasc / KLK6 checks above: instead of
 ## eyeballing overlaps one pair of clusters at a time, scan every
 ## (data_type, cluster) DE run at once and surface any gene that clears
-## FDR < 0.05 in >= 2 of them. For each candidate, also pull its logFC from
-## every run it was actually TESTED in (not just where significant) so we can
-## see whether the direction holds up even in runs that didn't reach
-## significance - a gene sig in 2 runs and trending the same way in 5 more is
-## a stronger anchor candidate than one sig in 2 runs and null/flipped
-## everywhere else.
+## FDR < 0.05 in >= 2 of them.
 
 ## long-format significant-DEG table across all data_types x clusters
 DEGs_signif_long <- imap_dfr(DEGs_signif, ~ .x |> mutate(data_type = .y))
@@ -167,20 +162,39 @@ anchor_candidates <- anchor_candidates |>
     left_join(anchor_direction, by = c("gene_id", "gene_name")) |>
     arrange(desc(n_sig_hits), desc(consistent_sig_direction))
 
-## wide logFC table: one column per (data_type, cluster) run, populated from
-## the FULL DE_data (not just DEGs_signif) so non-significant runs still show
-## their logFC for the consistency check instead of just dropping out as NA
+## long-format table of every DE_data run (sig or not) - kept around for the
+## 18_all_analysis_summary.R anchor-gene check further down, which needs
+## logFC/FDR across ALL tested runs, not just the significant ones
 DE_data_long <- imap_dfr(DE_data, ~ .x |> mutate(data_type = .y))
 
-anchor_logFC_wide <- DE_data_long |>
-    filter(gene_id %in% anchor_candidates$gene_id) |>
-    mutate(run = paste(data_type, cluster, sep = "__")) |>
-    distinct(gene_id, gene_name, run, .keep_all = TRUE) |>  # guard against accidental dupes
-    select(gene_id, gene_name, run, vlmf_logFC) |>
-    pivot_wider(names_from = run, values_from = vlmf_logFC)
+## Cell type / vSpD hit lists, in the same collapsed-string style as
+## xenium_cell_types below, instead of one wide column per
+anchor_sig_hits <- DEGs_signif_long |>
+    semi_join(anchor_candidates, by = c("gene_id", "gene_name")) |>
+    distinct(gene_id, gene_name, data_type, cluster, DE_class)
+
+## sn_broad + sn_fine cell-type hits, e.g. "sn_fine__Oligo.3 (up)" - data_type
+## prefix kept since broad and fine resolutions are otherwise both "cell types"
+sig_cell_types_summary <- anchor_sig_hits |>
+    filter(data_type %in% c("sn_broad", "sn_fine")) |>
+    mutate(hit = paste0(data_type, "__", cluster, " (", DE_class, ")")) |>
+    group_by(gene_id, gene_name) |>
+    summarise(sig_cell_types = paste(sort(unique(hit)), collapse = "; "), .groups = "drop")
+
+## Visium spatial domain hits, e.g. "vVasc (down)"
+sig_vSpDs_summary <- anchor_sig_hits |>
+    filter(data_type == "Visium") |>
+    mutate(hit = paste0(cluster, " (", DE_class, ")")) |>
+    group_by(gene_id, gene_name) |>
+    summarise(sig_vSpDs = paste(sort(unique(hit)), collapse = "; "), .groups = "drop")
 
 anchor_candidate_table <- anchor_candidates |>
-    left_join(anchor_logFC_wide, by = c("gene_id", "gene_name"))
+    left_join(sig_cell_types_summary, by = c("gene_id", "gene_name")) |>
+    left_join(sig_vSpDs_summary, by = c("gene_id", "gene_name")) |>
+    mutate(
+        sig_cell_types = replace_na(sig_cell_types, ""),
+        sig_vSpDs = replace_na(sig_vSpDs, "")
+    )
 
 write_csv(anchor_candidate_table, here(data_dir, "anchor_candidate_table.csv"))
 
@@ -198,7 +212,6 @@ anchor_candidate_table
 xenium_validated_fn <- here("processed-data", "13_compile_DGE", "19_validate_summary", "DGE_Xenium_validated_All.csv")
 stopifnot("Xenium validation file not found - run 19_validate_summary.R first" = file.exists(xenium_validated_fn))
 xenium_validated <- read_csv(xenium_validated_fn)
-
 
 ## per-gene summary of Xenium validation: how many distinct contexts
 ## (data_type_short: cell_type / xSpD / Oligo.3_Nbr) and cell types each
@@ -220,7 +233,7 @@ xenium_validation_summary <- xenium_validated |>
         .groups = "drop"
     )
 
-anchor_candidate_table <- anchor_candidates |>
+anchor_candidate_table <- anchor_candidate_table |>
     left_join(xenium_validation_summary, by = "gene_name") |>
     mutate(
         xenium_validated = !is.na(n_xenium_contexts),
@@ -293,7 +306,7 @@ anchor_candidates |>
 #### combined bar plots ####
 
 DEG_count <- map_dfr(DEGs_signif, ~.x |>
-        count(data_type, cluster)) |>
+                         count(data_type, cluster)) |>
     mutate(data_type = factor(data_type, levels = c("Visium", "sn_broad", "sn_fine")))
 
 DEG_count_data_type_bar <- DEG_count |> 
@@ -352,7 +365,7 @@ if(contrast == "ancestry"){
 
 contrast_levels <- c(contrast_1, contrast_2)
 names(contrast_levels) <- contrast_levels
- 
+
 DE_data_contrast <- map(data_types, function(datatype){
     
     if(datatype == "sn_broad"){
@@ -379,14 +392,14 @@ DE_data_contrast <- map(data_types, function(datatype){
 
 DEGs_contrast_signif <- map(DE_data_contrast, function(data){
     map(contrast_levels, ~data |> 
-                       filter(vlmf_adj.P.Val < 0.05,
-                              contrast == .x) |>
-                       mutate(DE_class = case_when(vlmf_logFC > 0 ~ "up",
-                                                   vlmf_logFC < 0 ~ "down",
-                                                   TRUE ~ "None"),
-                              DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class))
+            filter(vlmf_adj.P.Val < 0.05,
+                   contrast == .x) |>
+            mutate(DE_class = case_when(vlmf_logFC > 0 ~ "up",
+                                        vlmf_logFC < 0 ~ "down",
+                                        TRUE ~ "None"),
+                   DE_class_cluster = paste0(gsub("\\.", "-", cluster), "_",DE_class))
     )
-    })
+})
 
 
 
@@ -460,5 +473,3 @@ venn.diagram(
     filename = here(plot_dir, "contrast_venn_ancestry_Oligo.3_DOWN.tiff"),
     output=TRUE
 )
-
-
