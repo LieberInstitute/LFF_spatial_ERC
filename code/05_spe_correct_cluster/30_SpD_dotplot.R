@@ -235,8 +235,8 @@ dotplot_key_genes_flip <- spe |>
               groupLegends = FALSE,
               flipPlot = TRUE)
 
-ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.pdf"), width = 7.5, height = 5)
-ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.png"), width = 7.5, height = 5)
+ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.pdf"), width = 8, height = 6)
+ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.png"), width = 8, height = 6)
 
 
 # slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
