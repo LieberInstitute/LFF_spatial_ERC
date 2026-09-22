@@ -1,17 +1,12 @@
 **** Job starts ****
-Wed Sep  2 11:03:52 PM EDT 2026
+Tue Sep 22 02:42:59 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35489450
+Job id: 35855952
 Job name: 30_SpD_dotplot
-Node name: compute-161
+Node name: compute-110
 Task id: 
-Unloading conda_R/4.5.x
 Loading conda_R/4.5
-
-The following have been reloaded with a version change:
-  1) conda_R/4.5.x => conda_R/4.5
-
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -169,7 +164,7 @@ The following object is masked from ‘package:rhdf5’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-09-02 23:04:04.170288 - Load HDF5 SPE
+2026-09-22 14:43:21.086586 - Load HDF5 SPE
 Loading required namespace: SpatialExperiment
 class: SpatialExperiment 
 dim: 30494 122202 
@@ -320,9 +315,9 @@ chr (4): domain, gene, source_type, note
  vWMuf 
      1 
 [1] "Reproducibility information:"
-[1] "2026-09-02 23:08:26 EDT"
+[1] "2026-09-22 14:53:37 EDT"
    user  system elapsed 
-230.181   5.130 272.842 
+584.468  16.638 637.228 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -333,7 +328,7 @@ chr (4): domain, gene, source_type, note
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2026-09-02
+ date     2026-09-22
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -519,4 +514,4 @@ chr (4): domain, gene, source_type, note
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Sep  2 11:08:27 PM EDT 2026
+Tue Sep 22 02:53:38 PM EDT 2026
