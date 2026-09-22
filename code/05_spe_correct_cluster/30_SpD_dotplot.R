@@ -7,6 +7,7 @@ library("SingleCellExperiment")
 library("HDF5Array")
 library("scDotPlot")
 library("tidyverse")
+library("circlize")
 
 plot_dir <- here("plots", "05_spe_correct_cluster", "30_SpD_dotplot")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
@@ -204,7 +205,7 @@ ggsave(dotplot_enrichment, filename = here(plot_dir, "Visium_SpD_dotplot_enrichm
 erc_SpD_key <- read_csv(here(data_dir, "vSpD_key_genes_long.csv"))
 
 rowData(spe)$vSpD_genes <- NULL
-rowData(spe)$vSpD_genes <- erc_SpD_key$domain[match(rownames(spe), erc_SpD_key$gene)] 
+rowData(spe)$vSpD_genes <- factor(erc_SpD_key$domain[match(rownames(spe), erc_SpD_key$gene)], levels = c(spd_levels, "lit"))
 table(rowData(spe)$vSpD_genes)
 
 dotplot_key_genes <- spe |>
@@ -233,10 +234,41 @@ dotplot_key_genes_flip <- spe |>
               clusterColumns = FALSE,
               clusterRows = FALSE,
               groupLegends = FALSE,
+              featureLegends = FALSE, 
               flipPlot = TRUE)
 
-ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.pdf"), width = 8, height = 6)
-ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.png"), width = 8, height = 6)
+ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.png"), width = 6.5, height = 4)
+ggsave(dotplot_key_genes_flip, filename = here(plot_dir, "Visium_SpD_dotplot_key_genes_flip.pdf"), width = 6.5, height = 4)
+
+
+
+#### AD risk gene heatmap ####
+## read in risk genes from OpenTargets data
+AD_risk <- read_csv(here("processed-data", "00_project_prep", "07_OpenTargets_AD_data", "clin_var_genes.csv")) |>
+    filter(symbol %in% rowData(spe)$gene_name) 
+
+rowData(spe)$eva <- NULL
+rowData(spe)$eva <- AD_risk$eva[match(rownames(spe), AD_risk$symbol)]
+summary(rowData(spe)$eva)
+
+
+dotplot_risk_genes <-  spe |>
+    scDotPlot(features=AD_risk$symbol,
+              group="vSpD",
+              groupAnno="vSpD",
+              scale=TRUE,
+              annoColors=list("vSpD"=SpD_colors),
+              # featureAnno="eva",
+              # featureAnnoColors=list("eva"=colorRamp2(
+              #     c(0, 1),
+              #     c("white", "darkcyan")
+              # )),
+              clusterColumns=FALSE,
+              clusterRows=TRUE,
+              groupLegends=FALSE)
+
+ggsave(dotplot_risk_genes, filename = here(plot_dir, "Visium_SpD_dotplot_risk_genes.pdf"), width = 5, height = 7)
+ggsave(dotplot_risk_genes, filename = here(plot_dir, "Visium_SpD_dotplot_risk_genes.png"), width = 5, height = 7)
 
 
 # slurmjobs::job_single('30_SpD_dotplot', create_shell = TRUE, memory = '5G', command = "Rscript 30_SpD_dotplot.R")
