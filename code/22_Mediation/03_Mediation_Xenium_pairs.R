@@ -266,19 +266,21 @@ session_info()
 # SpX_astro <- colData(sce_pb) |>
 #     as.data.frame() |>
 #     filter(cell_type_anno %in% c("Astro.1", "Astro.2", "Astro.3")) |>
-#     select(med_cl_test = registration_variable, SpX_simple, med_cl = cell_type_anno) |>
-#     unique() 
+#     select(med_cl_test = registration_variable, xSpD, med_cl = cell_type_anno) |>
+#     unique()
 # 
 # SpX_mediation_pairs <- colData(sce_pb) |>
 #     as.data.frame() |>
 #     filter(cell_type_anno == "Oligo.3") |>
-#     select(outcome_cl = registration_variable, SpX_simple) |>
-#     unique() |> 
-#     left_join(SpX_astro) |>
+#     select(outcome_cl = registration_variable, xSpD) |>
+#     unique() |>
+#     inner_join(SpX_astro) |>
 #     mutate(mediator_datatype = "Xenium_cell_type_anno_SpX",
 #            outcome_datatype = "Xenium_cell_type_anno_SpX") |>
 #     select(med_cl, mediator_datatype, outcome_datatype, outcome_cl, med_cl_test)
 # 
-# pairs_tbl <- pairs_tbl |>bind_rows(SpX_mediation_pairs)
+# pairs_tbl2 <- pairs_tbl |> 
+#     filter(!grepl("SpX", mediator_datatype)) |>
+#     bind_rows(SpX_mediation_pairs)
 # 
-# write_csv(pairs_tbl, file = here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Oligo3_Astro_mediator_outcome_pairs.csv"))
+# write_csv(pairs_tbl2, file = here("processed-data", "22_Mediation", "03_Mediation_Xenium", "Oligo3_Astro_mediator_outcome_pairs.csv"))
