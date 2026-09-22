@@ -187,6 +187,72 @@ write_csv(anchor_candidate_table, here(data_dir, "anchor_candidate_table.csv"))
 anchor_candidate_table
 
 
+#### Cross-check anchor candidates against Xenium validation ####
+## Independent check on top of the discovery-data-only table above: does each
+## anchor candidate (sig. in >=2 discovery runs) also show up in the
+## Xenium-based validation table from 19_validate_summary.R? Joined on
+## gene_name rather than gene_id, since the discovery Rds objects
+## (sn_broad/sn_fine/Visium, loaded above) and the Xenium "_wSN" Rds may not
+## share the same Ensembl annotation build - gene_name is the more reliable
+## bridge, as it was in 02_1_GO_analysis_validate.R.
+xenium_validated_fn <- here("processed-data", "13_compile_DGE", "19_validate_summary", "DGE_Xenium_validated_All.csv")
+stopifnot("Xenium validation file not found - run 19_validate_summary.R first" = file.exists(xenium_validated_fn))
+xenium_validated <- read_csv(xenium_validated_fn)
+
+
+## per-gene summary of Xenium validation: how many distinct contexts
+## (data_type_short: cell_type / xSpD / Oligo.3_Nbr) and cell types each
+## anchor candidate validated in, and whether the validated direction is
+## consistent across those contexts
+xenium_validation_summary <- xenium_validated |>
+    group_by(gene_name) |>
+    summarise(
+        n_xenium_contexts = n_distinct(data_type_short),
+        xenium_contexts = paste(sort(unique(data_type_short)), collapse = "; "),
+        xenium_cell_types = paste(sort(unique(cell_type_anno)), collapse = "; "),
+        n_xenium_up = sum(vlmf_sn_t > 0),
+        n_xenium_down = sum(vlmf_sn_t < 0),
+        xenium_direction = case_when(
+            (sum(vlmf_sn_t > 0) > 0) & (sum(vlmf_sn_t < 0) > 0) ~ "mixed",
+            sum(vlmf_sn_t > 0) > 0 ~ "up",
+            sum(vlmf_sn_t < 0) > 0 ~ "down"
+        ),
+        .groups = "drop"
+    )
+
+anchor_candidate_table <- anchor_candidates |>
+    left_join(xenium_validation_summary, by = "gene_name") |>
+    mutate(
+        xenium_validated = !is.na(n_xenium_contexts),
+        n_xenium_contexts = replace_na(n_xenium_contexts, 0),
+        ## discovery direction from the sig-hit direction check earlier - NA
+        ## when the gene wasn't direction-consistent across discovery runs
+        discovery_direction = case_when(
+            !consistent_sig_direction ~ NA_character_,
+            n_sig_up > 0 ~ "up",
+            n_sig_down > 0 ~ "down"
+        ),
+        direction_agrees = xenium_validated & !is.na(discovery_direction) & (discovery_direction == xenium_direction)
+    )
+
+write_csv(anchor_candidate_table, here(data_dir, "anchor_candidate_table.csv"))
+
+## strongest candidates: >=2 discovery runs, consistent direction there, AND
+## independently confirmed in >=1 Xenium context with agreeing direction
+anchor_candidates_validated <- anchor_candidate_table |>
+    filter(consistent_sig_direction, xenium_validated, direction_agrees) |>
+    arrange(desc(n_xenium_contexts), desc(n_sig_hits))
+
+anchor_candidates_validated
+
+## candidates that clear the discovery bar but do NOT validate in Xenium -
+## worth distinguishing "never tested in Xenium" from "tested and failed to
+## validate" before treating either group as weaker evidence
+anchor_candidate_table |>
+    filter(consistent_sig_direction, !xenium_validated) |>
+    arrange(desc(n_sig_hits))
+
+
 #### Check 18_all_analysis_summary.R anchor genes against this DE run ####
 ## Cross-check the fixed anchor_genes panel from 18_all_analysis_summary.R
 ## (hand-picked from the k=9 / preprint-era analysis, per the comments there)
