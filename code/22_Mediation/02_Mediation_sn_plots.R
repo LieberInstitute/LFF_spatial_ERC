@@ -159,6 +159,34 @@ pwalk(mediator_outcome_select2, function(med_cl, mediator, outcome) {
 
 dev.off()
 
+#### Grant example ####
+
+walk(c("SOX5", "CABLES1"), function(out_gene){
+    
+    med_plot_simple <- plot_DEG_mediated_express(
+        sce = sce_pb,
+        sce_mediator = sce_pb,
+        stats = mediator_outcome_select,
+        clus = "Oligo.3",
+        med_clus = "Astro.2",
+        mediator_gene = "FZD8",
+        gene = out_gene,
+        category_col = "APOE_carrier",
+        mod = ~0 + APOE_syn + Sex + Age + Anc_Afr + pseudo_expr_chrM_ratio,
+        cleanY_P = 4,
+        color_pal = APOE_carrier_colors,
+        plot_points = TRUE,
+        plot_mediator_panel = TRUE,
+        mediator_stats = DE_data,
+        signif_stat = "fdr",
+        add_stats = FALSE
+    )
+    
+    ggsave(med_plot_simple, filename = here(plot_dir, sprintf("Mediation_plot_simple_FZD8_%s.png", out_gene)), width = 6, height =3)
+})
+
+
+
 message(Sys.time(), sprintf(" - Done: plotted %d mediator/outcome pairs", nrow(mediator_outcome_select2)))
 
 #### Reproducibility information ####
