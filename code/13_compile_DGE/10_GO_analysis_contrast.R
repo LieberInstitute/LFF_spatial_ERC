@@ -531,7 +531,7 @@ compare_clus |> arrange(-Count) |> head()
 
 # parent_term_lookup("response to amyloid-beta")
 
-go_genes <- get_go_genes(go_terms_test)
+# go_genes <- get_go_genes(go_terms_test)
 
 cluster_levels <- unlist(map(cluster_levels, ~paste0(.x, "_", contrast_levels)))
 
