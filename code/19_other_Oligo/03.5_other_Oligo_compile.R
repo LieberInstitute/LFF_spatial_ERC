@@ -55,12 +55,15 @@ oligo_notes <- readxl::read_xlsx(here("processed-data", "19_other_Oligo", "00_ch
 load(here("processed-data","00_project_prep","Oligo_OPC_colors.Rdata"), verbose = TRUE)
 Oligo_OPC_colors <- c(Oligo_OPC_colors[grepl("Oligo", names(Oligo_OPC_colors))], c(OPC = "#D2B037"))
 
-Oligo_anno_colors <- c(Oligo.M  = "#00C4B8", 
+Oligo_anno_colors <- c(Oligo.M  = "#00C4B8",
+                       Oligo.PM  = "#00767A", 
                        Oligo.L  = "#0072E5",  
                        Oligo.NF = "#7B61FF", 
-                       Oligo.P  = "#FF3D9A",  
+                       Oligo.PV  = "#FF3D9A",  
                        OPC      = "#C49A00",
                        Oligo.other = "grey")
+
+# "#c6c013","#ef8a17", "#ef2917", "#008148","#034732"
 
 
 cor_layer_anno2_select_long <- cor_layer_anno_select_long |> 
@@ -177,7 +180,7 @@ other_erc_Oligo_cluster_count <- other_Oligo_cluster_count |>
     bind_rows(erc_oligo_cluster_count |> 
                   mutate(cluster = paste0("erc_", oligo_anno)) |>
                   select(dataset, cluster, Oligo_anno, n)) |>
-    mutate(Oligo_anno = factor(Oligo_anno, levels = c("OPC", "Oligo.NF", "Oligo.P","Oligo.M", "Oligo.L", "Oligo.other")),
+    mutate(Oligo_anno = factor(Oligo_anno, levels = c("OPC", "Oligo.NF", "Oligo.PV","Oligo.PM","Oligo.M", "Oligo.L", "Oligo.other")),
            level = as.integer(Oligo_anno),
            cluster = fct_reorder(cluster, level),
            dataset = factor(dataset, levels = c("erc", "dacc", "dlpfc", "hpc")))
