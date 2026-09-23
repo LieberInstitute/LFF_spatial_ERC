@@ -169,7 +169,7 @@ ggsave(dotplot_Enrich_genes, filename = here(plot_dir, "sn_cell_type_anno_dotplo
 load(here("processed-data", "04_snRNA-seq", "34_sn_subcluster_MeanRatio","marker_stats_MeanRatio_cell_type_anno.Rdata"), verbose = TRUE)
 
 marker_stats_top <- marker_stats_MeanRatio |>
-    filter(MeanRatio.rank <= 2, MeanRatio > 1, gene_name %in% rownames(sce_pb)) |>
+    filter(MeanRatio.rank <= 2, MeanRatio > 1, gene_name %in% rownames(sce)) |>
     arrange(cellType.target)
 
 marker_stats_top  |> print(n = 35)
