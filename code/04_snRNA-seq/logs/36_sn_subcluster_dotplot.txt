@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  3 08:29:54 AM EDT 2026
+Tue Sep 22 11:01:07 PM EDT 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35497850
+Job id: 35869188
 Job name: 36_sn_subcluster_dotplot
-Node name: compute-169
+Node name: compute-140
 Task id: 
 Loading conda_R/4.5.x
 
@@ -164,7 +164,7 @@ The following object is masked from ‘package:rhdf5’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ✖ tidyr::unpack()       masks Matrix::unpack()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-09-03 08:30:03.454837 - Load HDF5 sce
+2026-09-22 23:01:21.71228 - Load HDF5 sce
 Loading objects:
   ancestry_colors
   sex_colors
@@ -173,8 +173,152 @@ Loading objects:
   APOE_carrier_colors_dark
   sample_colors
   APOE_carrier_anc_colors
-Error in h(simpleError(msg, call)) : 
-  error in evaluating the argument 'x' in selecting a method for function 'as.list': GRanges objects don't support [[, as.list(), lapply(), or unlist() at the
-  moment
-Calls: table ... as.list -> [[ -> [[ -> getListElement -> getListElement
+
+female   male 
+     4     10 
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Rows: 23 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): symbol
+dbl (1): eva
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+[1] 23
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Rows: 67 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): gene_name, cell_type, studies, cell_type_broad
+dbl (1): n_studies
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+# A tibble: 9 × 2
+  cell_type_broad     n
+  <fct>           <int>
+1 Astro               7
+2 Macro               4
+3 Micro               7
+4 OPC                 7
+5 Oligo               5
+6 Vasc                9
+7 Excit               8
+8 Inhib               9
+9 Neuron              4
+# A tibble: 4 × 2
+  gene_name     n
+  <chr>     <int>
+1 CLDN5         2
+2 FLT1          2
+3 PDGFRB        2
+4 SYT1          2
+# A tibble: 2 × 5
+  gene_name cell_type n_studies studies                    cell_type_broad
+  <chr>     <chr>         <dbl> <chr>                      <fct>          
+1 CLDN5     Endo              2 Grubman et al.,Leng et al. Vasc           
+2 CLDN5     Vascu             1 Li et al. 2025             Vasc           
+character(0)
+
+ Astro  Macro  Micro    OPC  Oligo   Vasc  Excit  Inhib Neuron 
+     7      4      7      7      5      6      8      9      3 
+[1] cell_type_anno n             
+<0 rows> (or 0-length row.names)
+[1] ensembl        fdr            top            logFC          cell_type_anno
+<0 rows> (or 0-length row.names)
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+               1                1                1                1 
+         Astro.5         Excit.L2     Excit.L2_5.1     Excit.L2_5.2 
+               1                1                1                1 
+   Excit.L5_6_NP       Excit.L5.1       Excit.L5.2      Excit.L6_CT 
+               1                1                1                1 
+       Excit.L6b Inhib.Chandelier Inhib.Lamp5_Lhx6       Inhib.Pax6 
+               1                1                1                1 
+     Inhib.Pvalb        Inhib.Sst        Inhib.Vip            Macro 
+               1                1                1                1 
+         Micro.1          Micro.2          Micro.3          Micro.4 
+               1                1                1                1 
+         Micro.5          Oligo.1          Oligo.2          Oligo.3 
+               1                1                1                1 
+         Oligo.4          Oligo.5            OPC.1            OPC.2 
+               1                1                1                1 
+           OPC.3            OPC.4            OPC.5        Vasc.Endo 
+               1                1                1                1 
+         Vasc.PC        Vasc.VLMC 
+               1                1 
+Loading objects:
+  marker_stats_MeanRatio
+# A tibble: 68 × 10
+   gene            cellType.target mean.target cellType.2nd  mean.2nd MeanRatio
+   <chr>           <fct>                 <dbl> <fct>            <dbl>     <dbl>
+ 1 ENSG00000274441 Astro.1               1.23  Astro.3         0.847       1.46
+ 2 GNA14-AS1       Astro.1               0.979 Astro.3         0.713       1.37
+ 3 SNRNP70         Astro.2               1.54  Astro.3         1.50        1.02
+ 4 MMD2            Astro.2               2.51  Astro.5         2.50        1.00
+ 5 COL16A1         Astro.3               1.06  Astro.2         0.997       1.06
+ 6 B4GALNT4        Astro.3               1.06  Astro.1         1.05        1.01
+ 7 ENSG00000287372 Astro.4               1.60  Astro.5         0.274       5.84
+ 8 LINC00836       Astro.4               1.72  Astro.5         0.315       5.46
+ 9 DST             Astro.5               4.68  Astro.4         4.57        1.02
+10 MACF1           Astro.5               4.71  Astro.2         4.65        1.01
+11 CD163           Macro                 2.25  Micro.4         0.112      20.1 
+12 F13A1           Macro                 2.83  Vasc.VLMC       0.230      12.3 
+13 IL6R            Micro.1               1.35  Micro.3         1.23        1.09
+14 SKIL            Micro.1               1.59  Micro.4         1.48        1.07
+15 TM6SF1          Micro.3               1.07  Micro.1         0.964       1.10
+16 GGTA1           Micro.3               1.21  Micro.4         1.11        1.09
+17 CDIN1           Micro.4               2.33  Excit.L5_6.NP   1.31        1.78
+18 SLC2A5          Micro.4               1.56  Micro.1         1.46        1.07
+19 EIF1B-AS1       Micro.5               2.77  Micro.3         2.28        1.22
+20 FRMD4A          Micro.5               6.02  Micro.3         5.99        1.01
+21 GOLGA8A         OPC.1                 1.34  OPC.4           1.32        1.02
+22 TAOK3           OPC.1                 3.16  OPC.3           3.14        1.01
+23 RPL13           OPC.2                 2.06  OPC.5           1.94        1.06
+24 HIP1R           OPC.2                 2.11  OPC.4           2.05        1.03
+25 ENSG00000230490 OPC.3                 1.40  OPC.4           1.26        1.11
+26 NLGN4Y          OPC.3                 2.57  OPC.1           2.32        1.11
+27 RDH11           OPC.4                 0.742 OPC.3           0.656       1.13
+28 MARCKS          OPC.4                 2.28  OPC.1           2.01        1.13
+29 TNK2            OPC.5                 2.43  OPC.2           2.34        1.04
+30 OPALIN          Oligo.1               2.47  Oligo.4         2.06        1.20
+31 ABCG1           Oligo.1               1.10  Oligo.4         0.968       1.14
+32 LINC01877       Oligo.2               1.10  Oligo.1         0.629       1.74
+33 DPYSL5          Oligo.2               1.87  Oligo.1         1.20        1.56
+34 ARHGEF3         Oligo.5               2.55  Excit.L5.RELN   1.93        1.32
+35 ZNF366          Vasc.Endo             1.28  Vasc.PC         0.0987     13.0 
+# ℹ 33 more rows
+# ℹ 4 more variables: MeanRatio.rank <int>, MeanRatio.anno <chr>,
+#   gene_ensembl <chr>, gene_name <chr>
+
+         Astro.1          Astro.2          Astro.3          Astro.4 
+               2                2                2                2 
+         Astro.5            Macro          Micro.1          Micro.2 
+               2                2                2                0 
+         Micro.3          Micro.4          Micro.5            OPC.1 
+               2                2                2                2 
+           OPC.2            OPC.3            OPC.4            OPC.5 
+               2                2                2                1 
+         Oligo.1          Oligo.2          Oligo.3          Oligo.4 
+               2                2                0                0 
+         Oligo.5        Vasc.Endo          Vasc.PC        Vasc.VLMC 
+               1                2                2                2 
+        Excit.L2   Excit.L2_5.mix  Excit.L2_5.RELN    Excit.L5.RELN 
+               2                2                2                2 
+   Excit.L5.RORB    Excit.L5_6.NP      Excit.L6.CT        Excit.L6b 
+               2                2                2                2 
+     Inhib.HTR3A Inhib.LAMP5_LHX6      Inhib.PVALB        Inhib.VIP 
+               2                2                2                2 
+Inhib.Chandelier        Inhib.SST 
+               2                2 
+Error in seq.default(zlim[1], zlim[2], length.out = length(colour) + 1L) : 
+  'from' must be a finite number
+Calls: scDotPlot ... <Anonymous> -> .heatmap_scale -> seq -> seq.default
+In addition: Warning message:
+In max(abs(x)) : no non-missing arguments to max; returning -Inf
 Execution halted
