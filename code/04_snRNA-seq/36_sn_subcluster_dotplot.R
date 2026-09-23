@@ -27,7 +27,7 @@ cell_type_colors <- metadata(sce)$cell_type_colors
 
 #### Sex gene dot plot ####
 
-table(as.list(rowRanges(sce)[["seqnames"]]))
+# table(as.list(rowRanges(sce)[["seqnames"]]))
 sex_check <- list(male = c("SRY", "RPS4Y1", "RPS4Y2", "DDX3Y", "KDM5D", "UTY", "ZFY", "EIF1AY", "USP9Y", "TSPY1"),
                   female = c("XIST", "TSIX", "KDM6A", "EIF2S3X", "RPS4X"))
 
