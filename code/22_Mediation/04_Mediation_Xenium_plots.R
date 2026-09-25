@@ -26,15 +26,37 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 mediation_summary_fn <- here("processed-data", "22_Mediation", "03_Mediation_Xenium", "mediation_summary-all_scenarios_Pval0.10.csv")
 mediation_summary <- read_csv(mediation_summary_fn)
 
+mediation_summary |> dplyr::count(mediator, outcome) |> arrange(-n)
+# A tibble: 58 × 3
+# mediator outcome     n
+# <chr>    <chr>   <int>
+# 1 ABCA8    MBP        10
+# 2 FZD8     CABLES1    10
+# 3 FZD8     CPNE4      10
+# 4 FZD8     GAD1       10
+# 5 FZD8     GPM6A      10
+
+mediation_summary |> 
+    filter(mediator == "NPTXR", outcome == "GAD1") |> 
+    select(mediator, outcome, outcome_cl, P.Value_base, P.Value_med)
+
 ## add mediator stats
 mediator_DE_stats <- mediation_summary |>
     distinct(mediator_datatype, med_cl_test, mediator) |>
     pmap_dfr(function(mediator_datatype, med_cl_test, mediator) {
         DE_data <- load_DE_cached(get_DE_fn(mediator_datatype))
+        # SpX DE tables store the full spatial cluster label in cluster_xSpD;
+        # cluster is stripped to the base cell type (e.g. "Astro.2" vs
+        # "Astro.2_L6"). med_cl_test uses the full label, so remap for SpX.
+        if (grepl("_SpX$", mediator_datatype)) {
+            DE_data <- DE_data |> mutate(cluster = cluster_xSpD)
+        }
         DE_data |>
             filter(cluster == med_cl_test, gene_name == mediator) |>
             transmute(
-                mediator_datatype, med_cl_test, mediator,
+                mediator_datatype, 
+                med_cl_test, 
+                mediator,
                 mediatorDE_logFC = vlmf_logFC,
                 mediatorDE_P.Value = vlmf_P.Value,
                 mediatorDE_adj.P.Val = vlmf_adj.P.Val,
@@ -57,14 +79,37 @@ message(Sys.time(), sprintf(" - %d total mediator x outcome rows loaded", nrow(m
 mediation_summary |> filter(base_valid, mediated)
 
 mediated_hits <- mediation_summary |> filter(base_valid, !med_sig)
+
+mediated_hits |> dplyr::count(mediator, outcome)
+
+# mediator outcome     n
+# <chr>    <chr>   <int>
+# 1 FZD8     CABLES1     2
+# 2 FZD8     CPNE4       1
+# 3 FZD8     GAD1        1
+# 4 FZD8     NTRK3       1
+# 5 FZD8     TESPA1      4
+# 6 NPTXR    ENC1        1
+# 7 NPTXR    GAD1        1
+# 8 NPTXR    NPTXR       2
+# 9 NPTXR    SLC17A7     1
+# 10 SV2B    ERBB3       1
+
 message(Sys.time(), sprintf(" - %d mediated gene pairs to plot", nrow(mediated_hits)))
 # 15 mediated gene pairs to plot
-
-mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator)
+mediated_hits |> dplyr::count(mediator_datatype, outcome_datatype, outcome_cl, med_cl_test, mediator, outcome) 
 
 mediation_summary |> 
     filter(base_valid, mediated) |> 
-    select( med_cl_test, mediator, outcome_cl, outcome, base_valid, mediated)
+    arrange(mediator) |>
+    select( med_cl_test, mediator,  P.Value_med, outcome_cl, outcome, base_valid, mediated)
+
+# med_cl_test       mediator outcome_cl            outcome base_valid mediated
+# <chr>             <chr>    <chr>                 <chr>   <lgl>      <lgl>   
+# 1 Astro.2_xL5       FZD8     Oligo.3_xL5           CABLES1 TRUE       TRUE    
+# 2 Astro.1           NPTXR    Oligo.3               NPTXR   TRUE       TRUE    
+# 3 Astro.1_xLD_glia  NPTXR    Oligo.3_xLD_glia      NPTXR   TRUE       TRUE    
+# 4 Astro.2_APOE_high SV2B     APOE_high_nnA_Astro.2 ERBB3   TRUE       TRUE 
 
 mediation_summary |> 
     filter(base_valid, mediated) |> 
@@ -181,7 +226,7 @@ pwalk(mediated_hits_select, function(med_cl, med_cl_test, mediator_datatype, out
     sce_med <- load_pb_cached(get_pb_fn(mediator_datatype))
     mediator_stats <- load_DE_cached(get_DE_fn(mediator_datatype))
     
-    if(mediator_datatype == "Xenium_cell_type_anno_SpX") mediator_stats <- mediator_stats |> mutate(cluster = cluster_xSpD)
+    if(grepl("_SpX$", mediator_datatype)) mediator_stats <- mediator_stats |> mutate(cluster = cluster_xSpD)
 
     # med_cl_test %in% mediator_stats$cluster
     # outcome_cl %in% sce_out[["registration_variable"]]
