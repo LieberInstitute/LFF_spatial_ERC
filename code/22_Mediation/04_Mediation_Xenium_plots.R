@@ -35,6 +35,7 @@ mediation_summary |> dplyr::count(mediator, outcome) |> arrange(-n)
 # 3 FZD8     CPNE4      10
 # 4 FZD8     GAD1       10
 # 5 FZD8     GPM6A      10
+# ...
 
 mediation_summary |> 
     filter(mediator == "NPTXR", outcome == "GAD1") |> 
@@ -65,9 +66,16 @@ mediator_DE_stats <- mediation_summary |>
     })
 
 mediator_DE_stats |> dplyr::count(is.na(mediatorDE_P.Value))
+mediator_DE_stats |> dplyr::count(mediator_datatype, med_cl_test)
 
-# FZD8 and NPTXR are only validated mediator genes 
-mediator_DE_stats |> filter(mediatorDE_P.Value < 0.1) |> arrange(mediator)
+# 4 validated mediators
+mediator_DE_stats |> filter(mediatorDE_P.Value < 0.1) |> dplyr::count(mediator)
+# mediator     n
+# <chr>    <int>
+# 1 FZD8         5
+# 2 NPTXR        4
+# 3 ST18         1
+# 4 SV2B         1
 
 mediator_DE_stats |> filter(mediator == "SV2B")
 
