@@ -137,7 +137,7 @@ single_vis_clus_spx <- vis_clus(
     point_size = 1.5,
     colors = metadata(spe)$SpX_colors,
     sampleid = "Br1039",
-    clustervar = "SpX",
+    clustervar = "xSpD",
     datatype = "Xenium",
     guide_point_size = 3
 ) +
