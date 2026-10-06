@@ -224,6 +224,13 @@ liana_data_summary |> ungroup() |> count(n_pass_specificity_rank, n_pass_magnitu
 liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(source, target) |> arrange(-n)
 liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(ligand_complex, receptor_complex) |> arrange(-n)
 
+liana_data_summary |> ungroup() |> count(n_pass_magnitude_rank >= 20)
+# sn_fine
+# `n_pass_magnitude_rank >= 20`       n
+# <lgl>                           <int>
+# 1 FALSE                         1427567
+# 2 TRUE                            12778
+
 if(opt$datatype == "sn_fine"){
     
     liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> count(source, target) |> arrange(-n)
