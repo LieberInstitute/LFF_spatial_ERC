@@ -187,8 +187,10 @@ walk(c("SOX5", "CABLES1"), function(out_gene){
 })
 
 
-
 message(Sys.time(), sprintf(" - Done: plotted %d mediator/outcome pairs", nrow(mediator_outcome_select2)))
+
+# slurmjobs::job_single('02_Mediation_sn_plots', create_shell = TRUE, memory = '10G',
+#                       command = "Rscript 02_Mediation_sn_plots.R")
 
 #### Reproducibility information ####
 print("Reproducibility information:")
