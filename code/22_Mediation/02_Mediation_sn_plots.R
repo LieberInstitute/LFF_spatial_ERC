@@ -183,6 +183,7 @@ walk(c("SOX5", "CABLES1"), function(out_gene){
     )
     
     ggsave(med_plot_simple, filename = here(plot_dir, sprintf("Mediation_plot_simple_FZD8_%s.png", out_gene)), width = 6, height =3)
+    ggsave(med_plot_simple, filename = here(plot_dir, sprintf("Mediation_plot_simple_FZD8_%s.pdf", out_gene)), width = 6, height =3)
 })
 
 
