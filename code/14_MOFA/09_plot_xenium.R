@@ -84,6 +84,8 @@ factor_df = list.files(
     map_dfr(read_csv, show_col_types = FALSE) |>
     mutate(facet_label = sprintf('SpD: %s; Astro: %s', domain, astro_group))
 
+write_csv(factor_df, file = here("processed-data", "14_MOFA", "09_plot_xenium", "projection_factor_df.csv"))
+
 t_df = rbind(
     factor_t_test(factor_df, covariate = "APOE_carrier") |>
         mutate(covariate = "APOE_carrier"),
