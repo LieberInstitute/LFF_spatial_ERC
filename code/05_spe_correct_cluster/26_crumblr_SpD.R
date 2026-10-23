@@ -161,7 +161,7 @@ dev.off()
 # Use variancePartition workflow to analyze each SpD
 
 #### fit APOE_carrier ####
-fit <- dream(cobj, ~ APOE_carrier + Anc_Afr + Age + Visium_slide, erc_info)
+fit <- dream(cobj, ~ APOE_carrier + Sex + Anc_Afr + Age + Visium_slide, erc_info)
 fit <- eBayes(fit)
 
 # Test APOE carrier
@@ -282,7 +282,7 @@ res <- treeTest(fit, cobj, tree.clusCollapsed, coef = slides, method = "fisher")
 # 
 
 #### fit APOE_carrier ####
-fit <- dream(cobj, ~ APOE + Age + Visium_slide, erc_info)
+fit <- dream(cobj, ~ APOE + Sex + Age + Visium_slide, erc_info)
 fit <- eBayes(fit)
 
 # Test APOE carrier
