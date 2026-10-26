@@ -10,6 +10,8 @@ library("data.table")
 library("ComplexHeatmap")
 library("ggrepel")
 library("SpatialExperiment")
+library("SummarizedExperiment")
+library("HDF5Array")
 
 # Import command-line parameters
 scec <- matrix(
@@ -54,12 +56,12 @@ cluster_levels <- cluster_levels[cluster_levels != "Other"]
 
 #### load DE data ####
 DE_data_fn <- here("processed-data", "13_compile_DGE", "01_compile_DGE", opt$datatype, sprintf("DGE_results_carrier_%s.Rds", opt$datatype))
-file.exists(DE_data_fn)
+stopifnot(file.exists(DE_data_fn))
 
 DE_data <- readRDS(DE_data_fn) |> select(gene_name, cluster, vlmf_t, vlmf_adj.P.Val, vlmf_logFC)
 
 DE_data_signif <- DE_data |> filter(vlmf_adj.P.Val < 0.05)
-DE_data_signif |> count(cluster)
+DE_data_signif |> dplyr::count(cluster)
 
 
 DE_data |> filter(grepl("NPTX", gene_name), vlmf_adj.P.Val < 0.05) |> arrange(vlmf_adj.P.Val)
@@ -144,7 +146,7 @@ bivariate_data_summary |>
     mutate(rank = row_number())
 
 # Moran’s R values near zero imply spatial independence, while positive or negative values reflect spatial co-clustering or spatial cross-dispersion
-bivariate_data_summary |> ungroup() |> count(n_moran_pval_pass) |> arrange(-n_moran_pval_pass)
+bivariate_data_summary |> ungroup() |> dplyr::count(n_moran_pval_pass) |> arrange(-n_moran_pval_pass)
 
 ## moran p-val pass all 
 bivariate_data_summary |> arrange(-mean_morans)
@@ -177,7 +179,7 @@ dim(bivariate_spot_data)
 
 bivariate_spot_data |> 
     group_by(pair_id) |>
-    count()
+    dplyr::count()
 
 bivariate_SpD_data <- bivariate_spot_data |>
     group_by(pair_id, vSpD) |>
@@ -198,7 +200,7 @@ ggsave(bivaraite_SpD_score_histo, filename = here(plot_dir, "bivariate_SpD_score
 #### load & Summarize LR data ####
 #pre MFA non-spatially aware data
 liana_fn <- here("processed-data", "17_cell_cell_comm", "liana", "ranked_results", sprintf("%s.csv.gz", tolower(gsub("sn_", "", opt$datatype))))
-file.exists(liana_fn)
+stopifnot(file.exists(liana_fn))
 
 liana_data <- fread(liana_fn)
 
@@ -215,13 +217,13 @@ if (opt$datatype == "sn_fine") {
 }
 
 # rank_aggregate method, which provides a robust rank consensus that combines the predictions of multiple ligand-receptor methods
-liana_data |> count(magnitude_rank < 0.05)
+liana_data |> dplyr::count(magnitude_rank < 0.05)
 # magnitude_rank < 0.05        n
 # <lgcl>    <int>
 # 1:                 FALSE 12488436
 # 2:                  TRUE   783746
 
-liana_data |> count(specificity_rank < 0.05)
+liana_data |> dplyr::count(specificity_rank < 0.05)
 # specificity_rank < 0.05        n
 # <lgcl>    <int>
 # 1:                   FALSE   616979
@@ -229,7 +231,7 @@ liana_data |> count(specificity_rank < 0.05)
 # 3:                      NA 1256112
 
 
-liana_data |> count(specificity_rank < 0.05, magnitude_rank < 0.05)
+liana_data |> dplyr::count(specificity_rank < 0.05, magnitude_rank < 0.05)
 
 summary(liana_data)
 
@@ -246,12 +248,12 @@ liana_data_summary <- liana_data |>
 summary(liana_data_summary)
 
 
-liana_data_summary |> ungroup() |> count(n_pass_specificity_rank, n_pass_magnitude_rank) 
+liana_data_summary |> ungroup() |> dplyr::count(n_pass_specificity_rank, n_pass_magnitude_rank) 
 
-liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(source, target) |> arrange(-n)
-liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> count(ligand_complex, receptor_complex) |> arrange(-n)
+liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> dplyr::count(source, target) |> arrange(-n)
+liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20) |> dplyr::count(ligand_complex, receptor_complex) |> arrange(-n)
 
-liana_data_summary |> ungroup() |> count(n_pass_magnitude_rank >= 20)
+liana_data_summary |> ungroup() |> dplyr::count(n_pass_magnitude_rank >= 20)
 # sn_fine
 # `n_pass_magnitude_rank >= 20`       n
 # <lgl>                           <int>
@@ -260,14 +262,22 @@ liana_data_summary |> ungroup() |> count(n_pass_magnitude_rank >= 20)
 
 if(opt$datatype == "sn_fine"){
     
-    liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> count(source, target) |> arrange(-n)
-    liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3") |> count(source, target) |> arrange(-n)
+    liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3") |> dplyr::count(source, target) |> arrange(-n)
+    liana_data_summary |> ungroup() |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3") |> dplyr::count(source, target) |> arrange(-n)
     
     ## Oligo.3 <-> astro
     liana_data_summary |> filter(source == "Astro.3", target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
+    # source target ligand_complex receptor_complex n_pass_magnitude_rank n_pass_specificity_r…¹ n_test mean_mean mean_rank
+    # <fct>  <fct>  <chr>          <chr>                            <int>                  <int>  <int>     <dbl>     <int>
+    #     1 Astro… Oligo… NRXN1          NLGN1                               23                      0     30    0.186        187
+    # 2 Astro… Oligo… NRG3           ERBB3                                6                      0     28    0.0726       661
+    # 3 Astro… Oligo… ADAM15         ITGB1                                2                      0      5    0.0894       539
+    # 4 Astro… Oligo… AGRN           ITGB1                                2                      0      8    0.0931       517
+    # 5 Astro… Oligo… AGTRAP         RACK1                                2                      0      2    0.164        249
+    
     liana_data_summary |> filter(grepl("Astro", source), target == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
     
-    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")|> ungroup() |> count(source) |> arrange(-n)
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, target == "Oligo.3")|> ungroup() |> dplyr::count(source) |> arrange(-n)
     # source               n
     # <fct>            <int>
     # 1 Excit.L2            15
@@ -275,7 +285,7 @@ if(opt$datatype == "sn_fine"){
     # 3 Inhib.Lamp5_Lhx6    11
     # 4 Inhib.Pvalb         11
     
-    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3")|> ungroup() |> count(target) |> arrange(-n)
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20, source == "Oligo.3")|> ungroup() |> dplyr::count(target) |> arrange(-n)
     # target               n
     # <fct>            <int>
     # 1 Excit.L2            24
@@ -285,23 +295,22 @@ if(opt$datatype == "sn_fine"){
     # 5 Excit.L2_5.1         8
     
     
-    liana_data_summary |> filter(n_pass_magnitude_rank >= 20) |> ungroup() |> count(target == "Oligo.3", source == "Oligo.3")
-    liana_data_summary |> filter(n_pass_magnitude_rank >= 20) |> ungroup() |> count(target == "Oligo.3", source == "Oligo.3")
+    liana_data_summary |> filter(n_pass_magnitude_rank >= 20) |> ungroup() |> dplyr::count(target == "Oligo.3", source == "Oligo.3")
     liana_data_summary |> ungroup() |> filter(target == "Oligo.3", source == "Oligo.3") |> arrange(-n_pass_magnitude_rank)
     
     }
    
 liana_data_summary |> filter(n_pass_magnitude_rank >= 20, ligand_complex == "NLGN1", receptor_complex == "NRXN1")
 
-liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(source)
-liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> count(target)
+liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> dplyr::count(source)
+liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> dplyr::count(target)
 
 
 liana_data_summary |> filter(n_pass_magnitude_rank == 30) 
 
 ## plots
 liana_data_summary |> ungroup() |> 
-    count(n_pass_specificity_rank, n_pass_magnitude_rank)  |>
+    dplyr::count(n_pass_specificity_rank, n_pass_magnitude_rank)  |>
     filter(n_pass_magnitude_rank > 10,
            n_pass_specificity_rank > 0) |>
     ggplot(aes(x = n_pass_magnitude_rank, n_pass_specificity_rank, fill = n)) +
@@ -325,7 +334,7 @@ ggsave(n_pass_magnitude_rank_histo, filename = here(plot_dir, sprintf("n_pass_ma
 source_target_counts <- liana_data_summary |> 
     filter(n_pass_magnitude_rank > 20) |>
     ungroup() |>
-    count(source, target) |>
+    dplyr::count(source, target) |>
     group_by(source) |>
     mutate(p_target = n/sum(n)) |>
     group_by(target) |>
@@ -445,12 +454,12 @@ LR_DEGS <- liana_data_summary |>
 
 LR_DEGS |> filter(is.na(R_DEG)) |> select(source, target, ligand_complex, receptor_complex, ligand_DEG_adj.P.Val, receptor_DEG_adj.P.Val, L_DEG, R_DEG)
 
-LR_DEGS |> ungroup() |> count(L_DEG, R_DEG)
+LR_DEGS |> ungroup() |> dplyr::count(L_DEG, R_DEG)
 
 if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
     
-    LR_DEGS |> ungroup() |> filter(L_DEG) |>  count(source)
-    LR_DEGS |> ungroup() |> filter(R_DEG) |>  count(target)
+    LR_DEGS |> ungroup() |> filter(L_DEG) |>  dplyr::count(source)
+    LR_DEGS |> ungroup() |> filter(R_DEG) |>  dplyr::count(target)
     
     LR_DEGS |> 
         ungroup() |> 
@@ -468,8 +477,6 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
     
     source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
     
-    cluster_levels = names(cell_type_colors$anno)
-    
     LR_DEGS_plot_data <- LR_DEGS |>
         filter(L_DEG | R_DEG) |>
         ungroup() |>
@@ -485,12 +492,12 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
         )) |>
         unique()
     
-    LR_DEGS_plot_data |> count(DEG)
+    LR_DEGS_plot_data |> dplyr::count(DEG)
     
     LR_DEGS_plot_data2 <- LR_DEGS |>
         filter(L_DEG | R_DEG) |>
         ungroup() |>
-        mutate(interaction = paste(ligand_complex, "->", receptor_complex),) |>
+        mutate(interaction = paste(ligand_complex, "->", receptor_complex)) |>
         select(interaction, mean_mean, receptor_complex, ligand_complex) |>
         pivot_longer(!c(interaction, mean_mean), names_to = "class", values_to = "gene_name") |>
         mutate(class = case_when(class == "receptor_complex" ~ "Receptor",
@@ -512,7 +519,7 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
                                   TRUE~"")
         )
     
-    LR_DEGS_plot_data3 |> count(DEG, interaction)
+    LR_DEGS_plot_data3 |> dplyr::count(DEG, interaction)
     
     max_abs = max(abs(LR_DEGS_plot_data3$vlmf_logFC))
     
@@ -563,7 +570,7 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
 LR_DEGS_SpD_bar <- bivariate_SpD_data |>
     mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
     filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
-    ggplot(aes(y = interaction, x = mean_score, fill = SpD)) +
+    ggplot(aes(y = interaction, x = mean_score, fill = vSpD)) +
     geom_col(position = "dodge") +
     theme_bw() +
     scale_fill_manual(values = SpD_colors)
@@ -580,7 +587,7 @@ LR_DEGS_SpD_tile <- bivariate_SpD_data |>
     right_join(LR_DEGS_list) |>
     filter(!is.na(mean_score)) |>
     mutate(interaction = factor(interaction, levels = levels(LR_DEGS_plot_data3$interaction))) |>
-    ggplot(aes(y = interaction, x = SpD, fill = mean_score)) +
+    ggplot(aes(y = interaction, x = vSpD, fill = mean_score)) +
     geom_tile() +
     theme_bw() +
     facet_grid(DEG~., scales = "free_y", space = "free_y") +
@@ -600,8 +607,10 @@ liana_data_summary |>
 
 LR_risk <- liana_data_summary |> 
     filter(n_pass_magnitude_rank > 20 & (ligand_complex %in% AD_risk$symbol | receptor_complex %in% AD_risk$symbol)) |>
-    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_DEG_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC))|>
-    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_DEG_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC)) |>
+    left_join(DE_data |> select(source = cluster, ligand_complex = gene_name, ligand_t = vlmf_t, ligand_DEG_adj.P.Val = vlmf_adj.P.Val, ligand_logFC = vlmf_logFC),
+              by = join_by(source, ligand_complex)) |>
+    left_join(DE_data |> select(target = cluster, receptor_complex = gene_name, receptor_t = vlmf_t, receptor_DEG_adj.P.Val = vlmf_adj.P.Val, receptor_logFC = vlmf_logFC),
+              by = join_by(target, receptor_complex)) |>
     mutate(L_DEG = ligand_DEG_adj.P.Val < 0.05,
            R_DEG = receptor_DEG_adj.P.Val < 0.05,
            L_risk = ligand_complex %in% AD_risk$symbol ,
@@ -610,10 +619,10 @@ LR_risk <- liana_data_summary |>
     ungroup()
 
 # Check for risk genes in commonly observed LR interactions
-LR_risk |> count(L_DEG, R_DEG)
+LR_risk |> dplyr::count(L_DEG, R_DEG)
 
 ## no LR both risk pairs
-LR_risk |> count(L_risk, R_risk)
+LR_risk |> dplyr::count(L_risk, R_risk)
 
 LR_risk_plot_data <- LR_risk |>
     mutate(Risk = case_when(L_risk ~ "L_risk",
@@ -627,7 +636,7 @@ LR_risk_plot_data <- LR_risk |>
     )) |>
     unique()
 
-LR_risk_plot_data |> count(Risk, cell_type)
+LR_risk_plot_data |> dplyr::count(Risk, cell_type)
 
 LR_risk_plot_data2 <- LR_risk |>
     select(interaction, mean_mean, receptor_complex, ligand_complex) |>
@@ -651,7 +660,7 @@ LR_risk_plot_data3 <- LR_risk_plot_data |>
                               TRUE~"")
     )
 
-LR_risk_plot_data3 |> count(Risk, interaction)
+LR_risk_plot_data3 |> dplyr::count(Risk, interaction)
 
 max_abs = max(abs(LR_risk_plot_data3$vlmf_logFC))
 
@@ -681,36 +690,15 @@ LR_risk_plot_ct <- LR_risk_plot_data3 |>
 
 ggsave(LR_risk_plot_ct, filename = here(plot_dir, sprintf("LR_risk_ct_%s.png", opt$datatype)), width = 10, height = 6)
 
-#### Bivaraite DEG data ####
-
-LR_DEGS_SpD_bar <- bivariate_SpD_data |>
-    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
-    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
-    ggplot(aes(y = interaction, x = mean_score, fill = SpD)) +
-    geom_col(position = "dodge") +
-    theme_bw()
-
-ggsave(LR_DEGS_SpD_bar, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_bar.png"))
-
-LR_DEGS_SpD_tile<- bivariate_SpD_data |>
-    mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
-    filter(interaction %in% LR_DEGS_plot_data3$interaction) |>
-    ggplot(aes(y = interaction, x = SpD, fill = mean_score)) +
-    geom_tile() +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
-
-ggsave(LR_DEGS_SpD_tile, filename = here(plot_dir, "LR_DEGS_bivarite_SpD_tile.png"))
 
 
 #### Export LR DEG data ####
 
 bivariate_wide <- bivariate_SpD_data |>
     mutate(interaction = gsub("\\^", " -> ", pair_id)) |>
-    separate(SpD, sep = "~", into = c("Layer", "SpD")) |>
     ungroup() |>
-    select(interaction, Layer, mean_score) |>
-    pivot_wider(names_from = "Layer", values_from = "mean_score", names_prefix = "bivairate_mean_")
+    select(interaction, vSpD, mean_score) |>
+    pivot_wider(names_from = "vSpD", values_from = "mean_score", names_prefix = "bivairate_mean_")
 
 ## export LR DEG data
 LR_DEGS_export <- LR_DEGS |>
@@ -719,6 +707,8 @@ LR_DEGS_export <- LR_DEGS |>
     left_join(bivariate_wide)
 
 write_csv(LR_DEGS_export, file = here(data_dir, sprintf("Liana_LR_DEGs_%s.csv", opt$datatype)))
+
+# slurmjobs::job_single('10_LR_DEG_check', create_shell = TRUE, memory = '50G', command = "Rscript 10_LR_DEG_check.R --datatype sn_fine")
 
 # slurmjobs::job_loop(loops = list(datatype = c("sn_broad","sn_fine","Visium"),
 #                     create_shell = TRUE,
