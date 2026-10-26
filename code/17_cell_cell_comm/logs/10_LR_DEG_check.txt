@@ -1,0 +1,957 @@
+**** Job starts ****
+Mon Oct 26 03:54:51 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 36709160
+Job name: 10_LR_DEG_check
+Node name: compute-120
+Task id: 
+Unloading conda_R/4.5.x
+Loading conda_R/4.5.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5.x
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:lubridate’:
+
+    hour, isoweek, isoyear, mday, minute, month, quarter, second, wday,
+    week, yday, year
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+The following object is masked from ‘package:purrr’:
+
+    transpose
+
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.26.1
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following object is masked from ‘package:dplyr’:
+
+    count
+
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following object is masked from ‘package:lubridate’:
+
+    as.difftime
+
+The following object is masked from ‘package:dplyr’:
+
+    explain
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:data.table’:
+
+    first, second
+
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
+The following objects are masked from ‘package:dplyr’:
+
+    first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:data.table’:
+
+    shift
+
+The following object is masked from ‘package:lubridate’:
+
+    %within%
+
+The following objects are masked from ‘package:dplyr’:
+
+    collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
+
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SparseArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: DelayedArray
+
+Attaching package: ‘DelayedArray’
+
+The following object is masked from ‘package:purrr’:
+
+    simplify
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: h5mread
+Loading required package: rhdf5
+
+Attaching package: ‘h5mread’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+Loading objects:
+  cell_type_colors
+Loading objects:
+  SpD_colors
+# A tibble: 17 × 2
+   cluster             n
+   <fct>           <int>
+ 1 Astro.1             7
+ 2 Astro.2            58
+ 3 Astro.3            23
+ 4 Macro              15
+ 5 Micro.1             1
+ 6 Micro.2             1
+ 7 Micro.3             1
+ 8 Micro.4            15
+ 9 Oligo.3          1022
+10 Oligo.5            54
+11 Vasc.Endo           2
+12 Vasc.VLMC           4
+13 Excit.L2_5.mix      6
+14 Excit.L2_5.RELN    19
+15 Excit.L5.RELN       1
+16 Inhib.VIP          14
+17 Inhib.SST           2
+# A tibble: 2 × 5
+  gene_name cluster vlmf_t vlmf_adj.P.Val vlmf_logFC
+  <chr>     <fct>    <dbl>          <dbl>      <dbl>
+1 NPTXR     Oligo.3   4.16         0.0178      1.21 
+2 NPTXR     Astro.1   5.73         0.0310      0.751
+# A tibble: 35 × 5
+   gene_name cluster   vlmf_t vlmf_adj.P.Val vlmf_logFC
+   <chr>     <fct>      <dbl>          <dbl>      <dbl>
+ 1 NRXN1     Oligo.3     3.27         0.0398      1.15 
+ 2 NRXN1     Oligo.5     3.54         0.0922      0.947
+ 3 NRXN1     Micro.1     3.52         0.174       0.973
+ 4 NRXN1     Vasc.Endo   2.85         0.208       0.839
+ 5 NRXN1     Micro.3     3.08         0.292       0.945
+ 6 NRXN1     Macro       2.01         0.388       0.911
+ 7 NRXN1     Oligo.1     2.71         0.431       0.664
+ 8 NRXN1     Micro.2     2.69         0.462       0.833
+ 9 NRXN1     Astro.2     1.78         0.507       0.322
+10 NRXN1     Oligo.4     2.93         0.545       0.663
+# ℹ 25 more rows
+# A tibble: 34 × 5
+   gene_name cluster       vlmf_t vlmf_adj.P.Val vlmf_logFC
+   <chr>     <fct>          <dbl>          <dbl>      <dbl>
+ 1 NLGN1     Oligo.3       -2.74          0.0739     -0.538
+ 2 NLGN1     Micro.3        2.59          0.442       0.904
+ 3 NLGN1     Excit.L5.RELN  1.82          0.524       0.352
+ 4 NLGN1     Astro.1        1.76          0.560       0.454
+ 5 NLGN1     Vasc.Endo      1.32          0.629       0.741
+ 6 NLGN1     Astro.4        1.46          0.754       0.438
+ 7 NLGN1     Astro.2       -0.946         0.779      -0.211
+ 8 NLGN1     Vasc.VLMC     -0.866         0.809      -0.224
+ 9 NLGN1     Inhib.SST     -0.901         0.809      -0.163
+10 NLGN1     Excit.L5.RORB  1.98          0.809       0.301
+# ℹ 24 more rows
+Joining with `by = join_by(gene_name)`
+# A tibble: 13 × 7
+   LR          class gene_name cluster vlmf_t vlmf_adj.P.Val vlmf_logFC
+   <chr>       <chr> <chr>     <fct>    <dbl>          <dbl>      <dbl>
+ 1 NPTX1^NPTXR L     NPTX1     <NA>     NA           NA          NA    
+ 2 NPTX1^NPTXR R     NPTXR     Astro.1   5.73         0.0310      0.751
+ 3 NPTX1^NPTXR R     NPTXR     Oligo.3   4.16         0.0178      1.21 
+ 4 RTN4^LINGO1 L     RTN4      <NA>     NA           NA          NA    
+ 5 RTN4^LINGO1 R     LINGO1    <NA>     NA           NA          NA    
+ 6 GNAS^ADCY1  L     GNAS      <NA>     NA           NA          NA    
+ 7 GNAS^ADCY1  R     ADCY1     <NA>     NA           NA          NA    
+ 8 RTN4^RTN4R  L     RTN4      <NA>     NA           NA          NA    
+ 9 RTN4^RTN4R  R     RTN4R     Oligo.3   3.18         0.0443      1.48 
+10 CALM1^PTPRA L     CALM1     <NA>     NA           NA          NA    
+11 CALM1^PTPRA R     PTPRA     <NA>     NA           NA          NA    
+12 PSAP^SORT1  L     PSAP      <NA>     NA           NA          NA    
+13 PSAP^SORT1  R     SORT1     <NA>     NA           NA          NA    
+    ligand receptor ligand_means ligand_props receptor_means receptor_props
+    <char>   <char>        <num>        <num>          <num>          <num>
+ 1: ADGRB1    RTN4R    0.3810583   0.39806548     0.39054617     0.40922619
+ 2: ADGRB1    RTN4R    0.3867634   0.43741160     0.36356366     0.41548798
+ 3: ADGRB1    RTN4R    0.1785836   0.08796499     0.11406491     0.06017505
+ 4: ADGRB1    RTN4R    0.3512988   0.26964672     0.31986594     0.25210286
+ 5: ADGRB1    RTN4R    0.2588059   0.26925447     0.27604666     0.28979257
+ 6: ADGRB1    RTN4R    0.3467396   0.29139923     0.39623922     0.33012409
+ 7: ADGRB1    RTN4R    0.4248435   0.47805247     0.35698310     0.43340061
+ 8: ADGRB1    RTN4R    0.4100108   0.27138158     0.24881280     0.17948191
+ 9: ADGRB1    RTN4R    0.2959727   0.28855721     0.30784620     0.29664179
+10: ADGRB1    RTN4R    0.2791487   0.25539160     0.20595412     0.20289444
+11: ADGRB1    RTN4R    0.2420148   0.14197148     0.20547515     0.12430254
+12: ADGRB1    RTN4R    0.2952023   0.28563955     0.23291214     0.23960241
+13: ADGRB1    RTN4R    0.2434003   0.28852839     0.19639471     0.24171495
+14: ADGRB1    RTN4R    0.2849564   0.26308968     0.22066480     0.22109902
+15: ADGRB1    RTN4R    0.3048138   0.38550725     0.28129628     0.36708075
+16: ADGRB1    RTN4R    0.2570819   0.24935996     0.23475651     0.23911930
+17: ADGRB1    RTN4R    0.2788222   0.25164114     0.20105107     0.19606127
+18: ADGRB1    RTN4R    0.2424153   0.26965035     0.21228290     0.24559441
+19: ADGRB1    RTN4R    0.2883098   0.32649071     0.17996600     0.22026719
+20: ADGRB1    RTN4R    0.1635676   0.17710096     0.18866956     0.20530175
+21: ADGRB1    RTN4R    0.3208807   0.30520289     0.35449514     0.33308439
+22: ADGRB1    RTN4R    0.2011212   0.14052772     0.12986750     0.08983101
+23: ADGRB1    RTN4R    0.2567763   0.22789943     0.31598902     0.26682887
+24: ADGRB1    RTN4R    0.2414635   0.28553616     0.26411040     0.31442228
+25: ADGRB1    RTN4R    0.1639577   0.14279679     0.15030518     0.13983946
+26: ADGRB1    RTN4R    0.1867768   0.12304312     0.18793726     0.13018402
+27: ADGRB1    RTN4R    0.3179144   0.32144383     0.27391547     0.29837676
+28: ADGRB1    RTN4R    0.1808010   0.12013226     0.12410399     0.09662013
+29: ADGRB1    RTN4R    0.1525983   0.12946216     0.09477717     0.08162780
+    ligand receptor ligand_means ligand_props receptor_means receptor_props
+    <char>   <char>        <num>        <num>          <num>          <num>
+         morans morans_pvals       mean       std donor_id
+          <num>        <num>      <num>     <num>   <char>
+ 1: 0.030142913        0.000 0.36446127 0.2020061   Br5460
+ 2: 0.027355932        0.000 0.39150137 0.2096498   Br5367
+ 3: 0.041518730        0.000 0.05568085 0.1365645   Br5529
+ 4: 0.007914845        0.010 0.22644540 0.1863262   Br1691
+ 5: 0.070551400        0.000 0.26056427 0.2288832   Br5941
+ 6: 0.027361305        0.000 0.29015800 0.1924200   Br5212
+ 7: 0.025517585        0.000 0.39100270 0.1942259   Br6476
+ 8: 0.012527087        0.001 0.20849894 0.1929958   Br6161
+ 9: 0.018655650        0.000 0.27182072 0.2047363   Br5426
+10: 0.033340055        0.000 0.20570296 0.1921278   Br1556
+11: 0.011214711        0.012 0.14278543 0.1977684   Br6263
+12: 0.074767810        0.000 0.24394995 0.2236873   Br5517
+13: 0.078251645        0.000 0.24524358 0.2182664   Br6423
+14: 0.021984586        0.000 0.21415204 0.2024951   Br5415
+15: 0.069428300        0.000 0.33146933 0.2134707   Br5634
+16: 0.080661610        0.000 0.23026371 0.2173882   Br1039
+17: 0.033205220        0.000 0.19861922 0.1948197   Br6098
+18: 0.059709843        0.000 0.23498632 0.2221846   Br5854
+19: 0.044710703        0.000 0.21760699 0.2088706   Br2305
+20: 0.022546094        0.000 0.18239616 0.2024051   Br5832
+21: 0.016256584        0.000 0.26828083 0.1903575   Br6085
+22: 0.036528327        0.000 0.12278180 0.1951299   Br5712
+23: 0.028002726        0.000 0.23919658 0.1987399   Br1706
+24: 0.025902783        0.000 0.28141844 0.1886757   Br5599
+25: 0.056207325        0.000 0.15217629 0.2034363   Br2582
+26: 0.014493267        0.000 0.10880542 0.1771048   Br6321
+27: 0.038449920        0.000 0.30478203 0.2113522   Br5161
+28: 0.045285920        0.000 0.10546859 0.1791774   Br3974
+29: 0.050009087        0.000 0.11177112 0.1975821   Br6538
+         morans morans_pvals       mean       std donor_id
+          <num>        <num>      <num>     <num>   <char>
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by ligand and receptor.
+ℹ Output is grouped by ligand.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(ligand, receptor))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+# A tibble: 879 × 9
+   ligand receptor mean_morans median_morans mean_mean max_moran_pval
+   <chr>  <chr>          <dbl>         <dbl>     <dbl>          <dbl>
+ 1 TF     LRP2          0.211         0.211     0.187         0      
+ 2 SPP1   CD44          0.140         0.133     0.125         0      
+ 3 NPTX2  NPTXR         0.120         0.116     0.377         0      
+ 4 NPTX1  NPTXR         0.119         0.104     0.576         0.792  
+ 5 FGF1   CD44          0.111         0.132     0.120         0      
+ 6 GNAI2  S1PR5         0.103         0.103     0.183         0      
+ 7 RTN4   LINGO1        0.101         0.0947    0.539         0.093  
+ 8 GNAS   ADCY1         0.0956        0.0920    0.565         0.172  
+ 9 COL4A5 CD44          0.0872        0.107     0.0667        0.00100
+10 CALM3  GRM5          0.0815        0.0802    0.385         0      
+# ℹ 869 more rows
+# ℹ 3 more variables: n_moran_pval_pass <int>, LR <chr>, mean_rank <int>
+# A tibble: 879 × 9
+   ligand receptor mean_morans median_morans mean_mean max_moran_pval
+   <chr>  <chr>          <dbl>         <dbl>     <dbl>          <dbl>
+ 1 CALM1  PTPRA        0.0713        0.0687      0.589        0.00100
+ 2 NPTX1  NPTXR        0.119         0.104       0.576        0.792  
+ 3 GNAS   ADCY1        0.0956        0.0920      0.565        0.172  
+ 4 RTN4   LINGO1       0.101         0.0947      0.539        0.093  
+ 5 PSAP   SORT1        0.0342        0.0302      0.537        0.092  
+ 6 PSAP   LRP1         0.0360        0.0313      0.506        0.262  
+ 7 APOE   LRP1         0.0338        0.0315      0.502        0.549  
+ 8 APOE   SORL1        0.00390       0.00193     0.494        0.931  
+ 9 RTN4   CNTNAP1      0.0631        0.0616      0.471        0.38   
+10 SPTAN1 PTPRA        0.0420        0.0460      0.467        0.0280 
+# ℹ 869 more rows
+# ℹ 3 more variables: n_moran_pval_pass <int>, LR <chr>, mean_rank <int>
+# A tibble: 879 × 10
+   ligand receptor mean_morans median_morans mean_mean max_moran_pval
+   <chr>  <chr>          <dbl>         <dbl>     <dbl>          <dbl>
+ 1 CALM1  PTPRA        0.0713        0.0687      0.589        0.00100
+ 2 NPTX1  NPTXR        0.119         0.104       0.576        0.792  
+ 3 GNAS   ADCY1        0.0956        0.0920      0.565        0.172  
+ 4 RTN4   LINGO1       0.101         0.0947      0.539        0.093  
+ 5 PSAP   SORT1        0.0342        0.0302      0.537        0.092  
+ 6 PSAP   LRP1         0.0360        0.0313      0.506        0.262  
+ 7 APOE   LRP1         0.0338        0.0315      0.502        0.549  
+ 8 APOE   SORL1        0.00390       0.00193     0.494        0.931  
+ 9 RTN4   CNTNAP1      0.0631        0.0616      0.471        0.38   
+10 SPTAN1 PTPRA        0.0420        0.0460      0.467        0.0280 
+# ℹ 869 more rows
+# ℹ 4 more variables: n_moran_pval_pass <int>, LR <chr>, mean_rank <int>,
+#   rank <int>
+# A tibble: 31 × 2
+   n_moran_pval_pass     n
+               <int> <int>
+ 1                30     4
+ 2                29    14
+ 3                28    20
+ 4                27    15
+ 5                26    11
+ 6                25     8
+ 7                24    12
+ 8                23    11
+ 9                22    15
+10                21    13
+# ℹ 21 more rows
+# A tibble: 879 × 9
+   ligand receptor mean_morans median_morans mean_mean max_moran_pval
+   <chr>  <chr>          <dbl>         <dbl>     <dbl>          <dbl>
+ 1 TF     LRP2          0.211         0.211     0.187         0      
+ 2 SPP1   CD44          0.140         0.133     0.125         0      
+ 3 NPTX2  NPTXR         0.120         0.116     0.377         0      
+ 4 NPTX1  NPTXR         0.119         0.104     0.576         0.792  
+ 5 FGF1   CD44          0.111         0.132     0.120         0      
+ 6 GNAI2  S1PR5         0.103         0.103     0.183         0      
+ 7 RTN4   LINGO1        0.101         0.0947    0.539         0.093  
+ 8 GNAS   ADCY1         0.0956        0.0920    0.565         0.172  
+ 9 COL4A5 CD44          0.0872        0.107     0.0667        0.00100
+10 CALM3  GRM5          0.0815        0.0802    0.385         0      
+# ℹ 869 more rows
+# ℹ 3 more variables: n_moran_pval_pass <int>, LR <chr>, mean_rank <int>
+# A tibble: 879 × 9
+   ligand receptor mean_morans median_morans mean_mean max_moran_pval
+   <chr>  <chr>          <dbl>         <dbl>     <dbl>          <dbl>
+ 1 CALM1  PTPRA        0.0713        0.0687      0.589        0.00100
+ 2 NPTX1  NPTXR        0.119         0.104       0.576        0.792  
+ 3 GNAS   ADCY1        0.0956        0.0920      0.565        0.172  
+ 4 RTN4   LINGO1       0.101         0.0947      0.539        0.093  
+ 5 PSAP   SORT1        0.0342        0.0302      0.537        0.092  
+ 6 PSAP   LRP1         0.0360        0.0313      0.506        0.262  
+ 7 APOE   LRP1         0.0338        0.0315      0.502        0.549  
+ 8 APOE   SORL1        0.00390       0.00193     0.494        0.931  
+ 9 RTN4   CNTNAP1      0.0631        0.0616      0.471        0.38   
+10 SPTAN1 PTPRA        0.0420        0.0460      0.467        0.0280 
+# ℹ 869 more rows
+# ℹ 3 more variables: n_moran_pval_pass <int>, LR <chr>, mean_rank <int>
+                         key sample_id      pair_id local_score   vSpD
+                      <char>    <char>       <char>       <num> <char>
+1: AAACAAGTATCTCCCA-1_Br5460    Br5460 ADGRB1^RTN4R   0.6357678   vL5b
+2: AAACACCAATAACTGC-1_Br5460    Br5460 ADGRB1^RTN4R   0.4784045   vL5b
+3: AAACAGCTTTCAGAAG-1_Br5460    Br5460 ADGRB1^RTN4R   0.2080651    vLD
+4: AAACAGGGTCTATATT-1_Br5460    Br5460 ADGRB1^RTN4R   0.4753593   vL5a
+5: AAACATGGTGAGAGGA-1_Br5460    Br5460 ADGRB1^RTN4R   0.1594547    vL6
+6: AAACATTTCCCGGATT-1_Br5460    Br5460 ADGRB1^RTN4R   0.4745124   vL5b
+[1] 50354019        5
+# A tibble: 879 × 2
+# Groups:   pair_id [879]
+   pair_id            n
+   <chr>          <int>
+ 1 A2M^LRP1      118554
+ 2 ACTR2^LDLR     15279
+ 3 ACTR2^LRP2      7688
+ 4 ADAM10^AXL     99408
+ 5 ADAM10^CADM1  114543
+ 6 ADAM10^CD44    14836
+ 7 ADAM10^EPHA3    2828
+ 8 ADAM10^GPNMB   56470
+ 9 ADAM10^MET     74502
+10 ADAM10^NOTCH1  83792
+# ℹ 869 more rows
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by pair_id and vSpD.
+ℹ Output is grouped by pair_id.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(pair_id, vSpD))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Saving 7 x 7 in image
+   magnitude_rank < 0.05        n
+                  <lgcl>    <int>
+1:                 FALSE 12488436
+2:                  TRUE   783746
+   specificity_rank < 0.05        n
+                    <lgcl>    <int>
+1:                   FALSE   616979
+2:                    TRUE    94080
+3:                      NA 12561123
+   specificity_rank < 0.05 magnitude_rank < 0.05        n
+                    <lgcl>                <lgcl>    <int>
+1:                   FALSE                 FALSE   582025
+2:                   FALSE                  TRUE    34954
+3:                    TRUE                 FALSE    86352
+4:                    TRUE                  TRUE     7728
+5:                      NA                 FALSE 11820059
+6:                      NA                  TRUE   741064
+  sample_id            source             target          ligand_complex    
+ Length:13272182    Length:13272182    Length:13272182    Length:13272182   
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+ receptor_complex      lr_means        cellphone_pvals   expr_prod        
+ Length:13272182    Min.   :  0.1000   Min.   :0.000   Min.   :     0.01  
+ Class :character   1st Qu.:  0.4531   1st Qu.:0.000   1st Qu.:     0.15  
+ Mode  :character   Median :  1.0104   Median :0.079   Median :     0.54  
+                    Mean   :  6.4480   Mean   :0.381   Mean   :    98.31  
+                    3rd Qu.:  2.9216   3rd Qu.:0.968   3rd Qu.:     2.90  
+                    Max.   :892.0650   Max.   :1.000   Max.   :488748.60  
+                                                                          
+ scaled_weight         lr_logfc        spec_weight           lrscore      
+ Min.   :-1.15763   Min.   :   -Inf   Min.   :0.0000000   Min.   :0.1114  
+ 1st Qu.:-0.02619   1st Qu.:-62.390   1st Qu.:0.0002190   1st Qu.:0.4745  
+ Median : 0.34505   Median :-16.515   Median :0.0009377   Median :0.6418  
+ Mean   : 0.55288   Mean   :    NaN   Mean   :0.0039009   Mean   :0.6349  
+ 3rd Qu.: 0.89458   3rd Qu.: -3.449   3rd Qu.:0.0033374   3rd Qu.:0.8057  
+ Max.   :15.13197   Max.   :    Inf   Max.   :0.9756963   Max.   :0.9993  
+                    NA's   :85192                                         
+ specificity_rank   magnitude_rank  
+ Min.   :0.0        Min.   :0.0000  
+ 1st Qu.:0.2        1st Qu.:0.4024  
+ Median :0.8        Median :0.6469  
+ Mean   :0.6        Mean   :0.6188  
+ 3rd Qu.:1.0        3rd Qu.:0.9366  
+ Max.   :1.0        Max.   :1.0000  
+ NA's   :12561123                   
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by source, target, ligand_complex, and
+  receptor_complex.
+ℹ Output is grouped by source, target, and ligand_complex.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(source, target, ligand_complex, receptor_complex))`
+  for per-operation grouping (`?dplyr::dplyr_by`) instead.
+Joining with `by = join_by(ligand_complex, receptor_complex)`
+             source                  target        ligand_complex    
+ Excit.L6b      :  60664   Excit.L6b    :  52610   Length:1440345    
+ Excit.L2       :  57476   Excit.L2     :  51712   Class :character  
+ Inhib.HTR3A    :  55831   Inhib.HTR3A  :  50903   Mode  :character  
+ Excit.L2_5.RELN:  53395   Excit.L5.RORB:  48295                     
+ Excit.L5.RORB  :  53046   Vasc.Endo    :  47671                     
+ Excit.L6.CT    :  52896   Excit.L6.CT  :  47425                     
+ (Other)        :1107037   (Other)      :1141729                     
+ receptor_complex   n_pass_magnitude_rank n_pass_specificity_rank
+ Length:1440345     Min.   : 0.0000       Min.   :0.00000        
+ Class :character   1st Qu.: 0.0000       1st Qu.:0.00000        
+ Mode  :character   Median : 0.0000       Median :0.00000        
+                    Mean   : 0.5441       Mean   :0.06532        
+                    3rd Qu.: 0.0000       3rd Qu.:0.00000        
+                    Max.   :30.0000       Max.   :3.00000        
+                                                                 
+     n_test         mean_mean        mean_rank     
+ Min.   : 1.000   Min.   :0.02     Min.   :  1.0   
+ 1st Qu.: 2.000   1st Qu.:0.08     1st Qu.:153.0   
+ Median : 5.000   Median :0.13     Median :358.0   
+ Mean   : 9.215   Mean   :0.16     Mean   :375.2   
+ 3rd Qu.:15.000   3rd Qu.:0.21     3rd Qu.:577.0   
+ Max.   :30.000   Max.   :0.59     Max.   :879.0   
+                  NA's   :724190   NA's   :724190  
+# A tibble: 120 × 3
+   n_pass_specificity_rank n_pass_magnitude_rank       n
+                     <int>                 <int>   <int>
+ 1                       0                     0 1231135
+ 2                       0                     1   73117
+ 3                       0                     2   12257
+ 4                       0                     3    4840
+ 5                       0                     4    3136
+ 6                       0                     5    2572
+ 7                       0                     6    2774
+ 8                       0                     7    2098
+ 9                       0                     8    2856
+10                       0                     9    1633
+# ℹ 110 more rows
+# A tibble: 665 × 3
+   source           target            n
+   <fct>            <fct>         <int>
+ 1 Excit.L2         Excit.L2        107
+ 2 Inhib.PVALB      Excit.L2         98
+ 3 Excit.L5.RORB    Excit.L2         97
+ 4 Inhib.LAMP5_LHX6 Excit.L2         96
+ 5 Excit.L6b        Excit.L2         95
+ 6 Excit.L5.RORB    Excit.L5.RORB    93
+ 7 Inhib.SST        Excit.L2         92
+ 8 Excit.L2         Excit.L5.RORB    86
+ 9 Excit.L2         Inhib.SST        84
+10 Excit.L6b        Excit.L6b        82
+# ℹ 655 more rows
+# A tibble: 196 × 3
+   ligand_complex receptor_complex     n
+   <chr>          <chr>            <int>
+ 1 IL1RAPL1       PTPRD              461
+ 2 NLGN1          NRXN1              437
+ 3 NRXN1          NLGN1              437
+ 4 NLGN1          NRXN3              422
+ 5 NRXN3          NLGN1              422
+ 6 NCAM1          NCAM2              283
+ 7 NLGN4X         NRXN1              273
+ 8 IL1RAPL1       PTPRS              245
+ 9 NTRK3          PTPRD              237
+10 CNTN1          NRCAM              224
+# ℹ 186 more rows
+# A tibble: 2 × 2
+  `n_pass_magnitude_rank >= 20`       n
+  <lgl>                           <int>
+1 FALSE                         1427567
+2 TRUE                            12778
+# A tibble: 402 × 9
+   source  target  ligand_complex receptor_complex n_pass_magnitude_rank
+   <fct>   <fct>   <chr>          <chr>                            <int>
+ 1 Oligo.3 Oligo.3 IL1RAPL1       PTPRD                               11
+ 2 Oligo.3 Oligo.3 LGI3           ADAM23                               3
+ 3 Oligo.3 Oligo.3 ADAM15         ITGB1                                2
+ 4 Oligo.3 Oligo.3 ADAM9          ITGB1                                2
+ 5 Oligo.3 Oligo.3 CALM3          GRM5                                 2
+ 6 Oligo.3 Oligo.3 IL1RAPL1       PTPRS                                2
+ 7 Oligo.3 Oligo.3 RELN           VLDLR                                2
+ 8 Oligo.3 Oligo.3 ADAM12         ITGA9                                1
+ 9 Oligo.3 Oligo.3 ADAM17         ITGB1                                1
+10 Oligo.3 Oligo.3 ARPC5          LDLR                                 1
+# ℹ 392 more rows
+# ℹ 4 more variables: n_pass_specificity_rank <int>, n_test <int>,
+#   mean_mean <dbl>, mean_rank <int>
+# A tibble: 437 × 9
+# Groups:   source, target, ligand_complex [437]
+   source  target          ligand_complex receptor_complex n_pass_magnitude_rank
+   <fct>   <fct>           <chr>          <chr>                            <int>
+ 1 Astro.1 Excit.L2        NLGN1          NRXN1                               27
+ 2 Astro.1 Excit.L2_5.mix  NLGN1          NRXN1                               24
+ 3 Astro.1 Excit.L5.RORB   NLGN1          NRXN1                               24
+ 4 Astro.1 Excit.L6.CT     NLGN1          NRXN1                               20
+ 5 Astro.1 Excit.L6b       NLGN1          NRXN1                               26
+ 6 Astro.1 Inhib.LAMP5_LH… NLGN1          NRXN1                               23
+ 7 Astro.1 Inhib.VIP       NLGN1          NRXN1                               22
+ 8 Astro.2 Excit.L2        NLGN1          NRXN1                               25
+ 9 Astro.2 Excit.L2_5.mix  NLGN1          NRXN1                               25
+10 Astro.2 Excit.L5.RORB   NLGN1          NRXN1                               24
+# ℹ 427 more rows
+# ℹ 4 more variables: n_pass_specificity_rank <int>, n_test <int>,
+#   mean_mean <dbl>, mean_rank <int>
+# A tibble: 16 × 2
+   source             n
+   <fct>          <int>
+ 1 Astro.1           23
+ 2 Astro.2            7
+ 3 Astro.3           13
+ 4 Astro.5            4
+ 5 Micro.1            1
+ 6 Micro.2            1
+ 7 OPC.1             57
+ 8 OPC.2             36
+ 9 OPC.3             80
+10 OPC.4             65
+11 Oligo.1           32
+12 Oligo.3           11
+13 Oligo.4           16
+14 Oligo.5           14
+15 Excit.L2_5.mix   113
+16 Inhib.VIP        137
+# A tibble: 14 × 2
+   target             n
+   <fct>          <int>
+ 1 Astro.1           26
+ 2 Astro.2            6
+ 3 Astro.3           10
+ 4 Astro.5            3
+ 5 OPC.1             50
+ 6 OPC.2             26
+ 7 OPC.3             83
+ 8 OPC.4             72
+ 9 Oligo.1           22
+10 Oligo.3           12
+11 Oligo.4           17
+12 Oligo.5           14
+13 Excit.L2_5.mix   117
+14 Inhib.VIP        152
+# A tibble: 610 × 9
+# Groups:   source, target, ligand_complex [521]
+   source  target         ligand_complex receptor_complex n_pass_magnitude_rank
+   <fct>   <fct>          <chr>          <chr>                            <int>
+ 1 Astro.1 Excit.L2_5.mix FSTL5          CNTN5                               30
+ 2 Astro.1 Excit.L2_5.mix NCAM1          NCAM2                               30
+ 3 Astro.1 Excit.L2_5.mix NLGN4X         NRXN1                               30
+ 4 Astro.1 Excit.L2_5.mix NRXN1          NLGN1                               30
+ 5 Astro.1 Excit.L2_5.mix NTRK3          PTPRD                               30
+ 6 Astro.1 Inhib.VIP      ADAM17         ERBB4                               30
+ 7 Astro.1 Inhib.VIP      FSTL5          CNTN5                               30
+ 8 Astro.1 Inhib.VIP      NCAM1          NCAM2                               30
+ 9 Astro.1 Inhib.VIP      NCAM1          ROBO1                               30
+10 Astro.1 Inhib.VIP      NLGN4X         NRXN1                               30
+# ℹ 600 more rows
+# ℹ 4 more variables: n_pass_specificity_rank <int>, n_test <int>,
+#   mean_mean <dbl>, mean_rank <int>
+Saving 7 x 7 in image
+# A tibble: 601 × 5
+# Groups:   target [31]
+   source           target            n p_target p_source
+   <fct>            <fct>         <int>    <dbl>    <dbl>
+ 1 Excit.L2         Excit.L2        104   0.0923   0.0794
+ 2 Inhib.LAMP5_LHX6 Excit.L2         93   0.0984   0.0710
+ 3 Inhib.PVALB      Excit.L2         92   0.105    0.0703
+ 4 Excit.L6b        Excit.L2         91   0.0936   0.0695
+ 5 Excit.L5.RORB    Excit.L5.RORB    90   0.0984   0.0855
+ 6 Excit.L5.RORB    Excit.L2         89   0.0973   0.0680
+ 7 Inhib.SST        Excit.L2         89   0.109    0.0680
+ 8 Excit.L2         Excit.L5.RORB    85   0.0754   0.0807
+ 9 Excit.L2         Inhib.SST        81   0.0719   0.0960
+10 Excit.L6b        Excit.L6b        79   0.0813   0.0804
+# ℹ 591 more rows
+Warning message:
+Removed 1060 rows containing non-finite outside the scale range (`stat_bin()`). 
+# A tibble: 36 × 8
+# Groups:   source, target, ligand_complex [29]
+   source        target     ligand_complex receptor_complex ligand_DEG_adj.P.Val
+   <fct>         <fct>      <chr>          <chr>                           <dbl>
+ 1 Excit.L2      Astro.1    NRG3           ERBB2_ERBB4                     0.991
+ 2 Excit.L2      Astro.3    NRG3           ERBB2_ERBB4                     0.991
+ 3 Excit.L2      Astro.4    NRG3           ERBB2_ERBB4                     0.991
+ 4 Excit.L2      Excit.L2   TNR            ITGA9_ITGB1                     0.994
+ 5 Excit.L2      Inhib.LAM… TNR            ITGA8_ITGB1                     0.994
+ 6 Excit.L2      Inhib.LAM… TNR            ITGA9_ITGB1                     0.994
+ 7 Excit.L2      Inhib.SST  TNR            ITGA9_ITGB1                     0.994
+ 8 Excit.L5.RORB Astro.1    NRG3           ERBB2_ERBB4                     0.923
+ 9 Excit.L6b     Astro.1    NRG3           ERBB2_ERBB4                     0.997
+10 Excit.L6b     Astro.4    NRG3           ERBB2_ERBB4                     0.997
+# ℹ 26 more rows
+# ℹ 3 more variables: receptor_DEG_adj.P.Val <dbl>, L_DEG <lgl>, R_DEG <lgl>
+# A tibble: 4 × 3
+  L_DEG R_DEG     n
+  <lgl> <lgl> <int>
+1 FALSE FALSE 10708
+2 FALSE TRUE     46
+3 FALSE NA       36
+4 TRUE  FALSE    29
+Joining with `by = join_by(interaction, class)`
+Joining with `by = join_by(cell_type, gene_name)`
+Saving 7 x 7 in image
+Joining with `by = join_by(interaction)`
+Saving 7 x 7 in image
+# A tibble: 16,475 × 9
+# Groups:   source, target, ligand_complex [1,441]
+   source         target   ligand_complex receptor_complex n_pass_magnitude_rank
+   <fct>          <fct>    <chr>          <chr>                            <int>
+ 1 Inhib.SST      Astro.2  APOE           SCARB1                               6
+ 2 Astro.1        Excit.L… APOE           SORL1                                5
+ 3 Inhib.SST      OPC.2    APOE           LRP8                                 5
+ 4 Excit.L5.RORB  Astro.2  APOE           LRP5                                 4
+ 5 Excit.L5.RORB  OPC.2    APOE           LRP5                                 4
+ 6 Excit.L5.RORB  OPC.5    APOE           LRP8                                 4
+ 7 Oligo.4        Astro.2  APOE           SCARB1                               4
+ 8 Astro.1        Excit.L… APOE           SORL1                                3
+ 9 Astro.3        Excit.L… APOE           SORL1                                3
+10 Excit.L2_5.mix OPC.4    APOE           VLDLR                                3
+# ℹ 16,465 more rows
+# ℹ 4 more variables: n_pass_specificity_rank <int>, n_test <int>,
+#   mean_mean <dbl>, mean_rank <int>
+# A tibble: 1 × 3
+  L_DEG R_DEG     n
+  <lgl> <lgl> <int>
+1 FALSE FALSE   432
+# A tibble: 2 × 3
+  L_risk R_risk     n
+  <lgl>  <lgl>  <int>
+1 FALSE  TRUE      81
+2 TRUE   FALSE    351
+# A tibble: 56 × 3
+   Risk   cell_type     n
+   <chr>  <fct>     <int>
+ 1 L_risk Astro.1       6
+ 2 L_risk Astro.3       4
+ 3 L_risk Astro.4       4
+ 4 L_risk Macro         3
+ 5 L_risk Micro.1       3
+ 6 L_risk Micro.2       3
+ 7 L_risk Micro.3       3
+ 8 L_risk Micro.4       3
+ 9 L_risk Micro.5       2
+10 L_risk OPC.1         6
+# ℹ 46 more rows
+Joining with `by = join_by(interaction, class)`
+Joining with `by = join_by(cell_type, gene_name)`
+# A tibble: 12 × 3
+   Risk   interaction          n
+   <chr>  <fct>            <int>
+ 1 L_risk ADAM10 -> TSPAN5     6
+ 2 L_risk ADAM10 -> CADM1     27
+ 3 L_risk APP -> DCC          34
+ 4 L_risk APP -> LRP6         19
+ 5 L_risk APP -> NOTCH2        8
+ 6 L_risk ADAM10 -> NRCAM     31
+ 7 L_risk APP -> TNFRSF21      8
+ 8 L_risk APP -> CD74          8
+ 9 L_risk APP -> GPC1         10
+10 L_risk APP -> LRP1         18
+11 R_risk SPON1 -> APP        10
+12 R_risk SLIT2 -> APP        36
+Joining with `by = join_by(interaction)`
+[1] "Reproducibility information:"
+[1] "2026-10-26 16:06:35 EDT"
+   user  system elapsed 
+666.407  25.624 701.929 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.3 Patched (2026-03-11 r90451)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-10-26
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5.x/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                * 1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ Biobase              * 2.70.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocGenerics         * 0.56.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ bit                    4.6.0    2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.4    2026-08-20 [2] CRAN (R 4.5.3)
+ cellranger             1.1.0    2016-07-27 [2] CRAN (R 4.5.0)
+ circlize               0.4.18   2026-04-04 [2] CRAN (R 4.5.3)
+ cli                    3.6.6    2026-04-09 [2] CRAN (R 4.5.3)
+ clue                   0.3-68   2026-03-26 [2] CRAN (R 4.5.3)
+ cluster                2.1.8.2  2026-02-05 [3] CRAN (R 4.5.3)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.3)
+ colorspace             2.1-3    2026-07-12 [2] CRAN (R 4.5.3)
+ ComplexHeatmap       * 2.26.1   2026-02-03 [2] Bioconductor 3.22 (R 4.5.2)
+ crayon                 1.5.3    2024-06-20 [2] CRAN (R 4.5.0)
+ data.table           * 1.18.6.1 2026-08-24 [2] CRAN (R 4.5.3)
+ DelayedArray         * 0.36.1   2026-03-31 [2] Bioconductor 3.22 (R 4.5.3)
+ dichromat              2.0-1    2026-07-22 [2] CRAN (R 4.5.3)
+ digest                 0.6.39   2025-11-19 [2] CRAN (R 4.5.2)
+ doParallel             1.0.17   2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1    2026-04-03 [2] CRAN (R 4.5.3)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.1    2025-09-25 [2] CRAN (R 4.5.1)
+ foreach                1.5.2    2022-02-02 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1   2025-12-08 [2] Bioconductor 3.22 (R 4.5.2)
+ getopt               * 1.21.1   2026-04-27 [1] CRAN (R 4.5.3)
+ GetoptLong             1.1.1    2026-04-08 [2] CRAN (R 4.5.3)
+ ggplot2              * 4.0.3    2026-04-22 [2] CRAN (R 4.5.3)
+ ggrepel              * 0.9.8    2026-03-17 [2] CRAN (R 4.5.3)
+ GlobalOptions          0.1.4    2026-04-08 [2] CRAN (R 4.5.3)
+ glue                   1.8.1    2026-04-17 [2] CRAN (R 4.5.3)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ h5mread              * 1.2.1    2025-11-25 [2] Bioconductor 3.22 (R 4.5.2)
+ HDF5Array            * 1.38.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ here                 * 1.0.2    2025-09-15 [2] CRAN (R 4.5.1)
+ hms                    1.1.4    2025-10-17 [2] CRAN (R 4.5.1)
+ IRanges              * 2.44.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ iterators              1.0.14   2022-02-05 [2] CRAN (R 4.5.0)
+ labeling               0.4.3    2023-08-29 [2] CRAN (R 4.5.0)
+ lattice                0.22-9   2026-02-09 [3] CRAN (R 4.5.3)
+ lifecycle              1.0.5    2026-01-08 [2] CRAN (R 4.5.2)
+ lubridate            * 1.9.5    2026-02-04 [2] CRAN (R 4.5.2)
+ magick                 2.9.1    2026-02-28 [2] CRAN (R 4.5.2)
+ magrittr               2.0.5    2026-04-04 [2] CRAN (R 4.5.3)
+ Matrix               * 1.7-4    2025-08-28 [3] CRAN (R 4.5.3)
+ MatrixGenerics       * 1.22.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ pillar                 1.11.1   2025-09-17 [2] CRAN (R 4.5.1)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ png                    0.1-9    2026-03-15 [2] CRAN (R 4.5.3)
+ purrr                * 1.2.2    2026-04-10 [2] CRAN (R 4.5.3)
+ R.methodsS3            1.8.2    2022-06-13 [2] CRAN (R 4.5.0)
+ R.oo                   1.27.1   2025-05-02 [2] CRAN (R 4.5.0)
+ R.utils                2.13.0   2025-02-24 [2] CRAN (R 4.5.0)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ ragg                   1.5.2    2026-03-23 [2] CRAN (R 4.5.3)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.2    2026-07-05 [2] CRAN (R 4.5.3)
+ readr                * 2.2.0    2026-02-19 [2] CRAN (R 4.5.2)
+ readxl                 1.5.0    2026-05-16 [2] CRAN (R 4.5.3)
+ rhdf5                * 2.54.1   2025-12-04 [2] Bioconductor 3.22 (R 4.5.2)
+ rhdf5filters           1.22.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ Rhdf5lib               1.32.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.3.0    2026-07-05 [2] CRAN (R 4.5.3)
+ rprojroot              2.1.1    2025-08-26 [2] CRAN (R 4.5.1)
+ S4Arrays             * 1.10.1   2025-12-01 [2] Bioconductor 3.22 (R 4.5.2)
+ S4Vectors            * 0.49.1-1 2026-04-05 [2] Bioconductor 3.23 (R 4.5.3)
+ S7                     0.2.2    2026-04-22 [2] CRAN (R 4.5.3)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ sessioninfo          * 1.2.4    2026-06-04 [2] CRAN (R 4.5.3)
+ shape                  1.4.6.1  2024-02-23 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ SparseArray          * 1.10.10  2026-03-30 [2] Bioconductor 3.22 (R 4.5.3)
+ SpatialExperiment    * 1.20.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ stringi                1.8.9    2026-08-04 [2] CRAN (R 4.5.3)
+ stringr              * 1.6.0    2025-11-04 [2] CRAN (R 4.5.2)
+ SummarizedExperiment * 1.40.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ systemfonts            1.3.2    2026-03-05 [2] CRAN (R 4.5.3)
+ textshaping            1.0.5    2026-03-06 [2] CRAN (R 4.5.3)
+ tibble               * 3.3.1    2026-01-11 [2] CRAN (R 4.5.2)
+ tidyr                * 1.3.2    2025-12-19 [2] CRAN (R 4.5.2)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0    2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0    2026-01-29 [2] CRAN (R 4.5.2)
+ tzdb                   0.5.0    2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6    2025-06-08 [2] CRAN (R 4.5.1)
+ vctrs                  0.7.3    2026-04-11 [2] CRAN (R 4.5.3)
+ viridisLite            0.4.3    2026-02-04 [2] CRAN (R 4.5.2)
+ vroom                  1.7.1    2026-03-31 [2] CRAN (R 4.5.3)
+ withr                  3.0.3    2026-06-19 [2] CRAN (R 4.5.3)
+ XVector                0.50.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+
+ [1] /users/lhuuki/R/4.5.x
+ [2] /jhpce/shared/community/core/conda_R/4.5.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5.x/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Mon Oct 26 04:06:36 PM EDT 2026
