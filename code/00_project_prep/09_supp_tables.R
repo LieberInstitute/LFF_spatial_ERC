@@ -255,23 +255,29 @@ supp_tables$TableS16b <- read.csv(here("processed-data", "17_cell_cell_comm", "1
 
 #### Table S17 MOFA results. ####
 
-# gene expression variance explained
-gene_weight <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
-supp_tables_big$TableS17a <- gene_weight$Factor3 |> dplyr::mutate(Factor = "Factor3")
-
+# covariate p-values
+supp_tables$TableS17a <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_associations_df-sn_fine.csv"))
 head(supp_tables$TableS17a)
 dim(supp_tables$TableS17a)
-rm(gene_weight)
 
-# covariate p-values
-supp_tables$TableS17b <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_associations_df-sn_fine.csv"))
+# donor factor scores
+supp_tables$TableS17b <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_df-sn_fine.csv")) 
 head(supp_tables$TableS17b)
 dim(supp_tables$TableS17b)
 
-# donor factor scores
-supp_tables$TableS17c <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_df-sn_fine.csv"))
-head(supp_tables$TableS17c)
-dim(supp_tables$TableS17c)
+# gene expression variance explained
+gene_weight <- readRDS(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_gene_weights_sn_fine.rds"))
+supp_tables_big$TableS17c <- gene_weight$Factor4 |> dplyr::mutate(Factor = "Factor4") |> dplyr::rename(view = ctype)
+
+head(supp_tables_big$TableS17c)
+dim(supp_tables_big$TableS17c)
+rm(gene_weight)
+
+# MOFA projection scores
+
+supp_tables$TableS17d <- read.csv(here("processed-data", "14_MOFA", "09_plot_xenium", "projection_factor_df.csv"))
+head(supp_tables$TableS17d)
+dim(supp_tables$TableS17d)
 
 #### Write table ####
 
