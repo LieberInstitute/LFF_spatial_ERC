@@ -564,13 +564,13 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
     
     LR_DEGS_plot_data3 |>
         group_by(interaction) |>
-        slice(1)|>
+        dplyr::slice(1)|>
         arrange(mean_mean)
     
     
     LR_DEGS_mean_mean <- LR_DEGS_plot_data3 |>
         group_by(interaction) |>
-        slice(1)|>
+        dplyr::slice(1)|>
         ggplot(aes(x = mean_mean, y = interaction)) +
         geom_col() +
         theme_bw()
