@@ -261,8 +261,7 @@ head(supp_tables$TableS17a)
 dim(supp_tables$TableS17a)
 
 # donor factor scores
-supp_tables$TableS17b <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_df-sn_fine.csv")) |> 
-    select(sample, Factor, value)
+supp_tables$TableS17b <- read.csv(here("processed-data", "14_MOFA", "01_MOFA", "sn_fine", "MOFA_factor_df-sn_fine.csv")) 
 head(supp_tables$TableS17b)
 dim(supp_tables$TableS17b)
 
