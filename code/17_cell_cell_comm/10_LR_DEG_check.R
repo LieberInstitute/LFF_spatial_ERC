@@ -9,6 +9,7 @@ library("getopt")
 library("data.table")
 library("ComplexHeatmap")
 library("ggrepel")
+library("SpatialExperiment")
 
 # Import command-line parameters
 scec <- matrix(
@@ -158,6 +159,20 @@ bivariate_data_summary |> arrange(-mean_mean)
 #### Spot level bivaritate data ####
 bivariate_spot_data <- fread(here("processed-data", "17_cell_cell_comm", "liana", "bivariate_stats_spot.csv.gz"))
 
+spe <- HDF5Array::loadHDF5SummarizedExperiment(here("processed-data", "spe_objects", "spe_ERC_annotated"))
+
+spe_vSpD <- tibble(
+    key = colnames(spe),
+    vSpD = as.character(colData(spe)$vSpD)
+)
+
+stopifnot(all(bivariate_spot_data$key %in% spe_vSpD$key))
+
+bivariate_spot_data <- bivariate_spot_data |>
+    left_join(spe_vSpD, by = "key") |>
+    select(-SpD)
+
+head(bivariate_spot_data)
 dim(bivariate_spot_data)
 
 bivariate_spot_data |> 
@@ -165,16 +180,16 @@ bivariate_spot_data |>
     count()
 
 bivariate_SpD_data <- bivariate_spot_data |>
-    group_by(pair_id, SpD) |>
+    group_by(pair_id, vSpD) |>
     summarise(mean_score = mean(local_score),
               n = n()) |>
-    mutate(SpD = factor(SpD, levels = names(SpD_colors)))
+    mutate(vSpD = factor(vSpD, levels = names(SpD_colors)))
 
 
 bivaraite_SpD_score_histo <- bivariate_SpD_data |>
     ggplot(aes(x = mean_score)) +
     geom_histogram(binwidth = 0.01) +
-    facet_wrap(~SpD) +
+    facet_wrap(~vSpD) +
     theme_bw()
 
 ggsave(bivaraite_SpD_score_histo, filename = here(plot_dir, "bivariate_SpD_score_histogram.png"))
@@ -186,6 +201,18 @@ liana_fn <- here("processed-data", "17_cell_cell_comm", "liana", "ranked_results
 file.exists(liana_fn)
 
 liana_data <- fread(liana_fn)
+
+#   Rename neurons to the updated names before factoring source/target by
+#   cluster_levels below, otherwise the renamed neurons would become NA
+if (opt$datatype == "sn_fine") {
+    neuron_anno <- readxl::read_excel(
+        here("processed-data", "04_snRNA-seq", "27.5_sn_neuron_check",
+             "ERC_neuron_subcluster_details_annotated.xlsx")
+    )
+    neuron_map <- setNames(neuron_anno$cell_type_update, neuron_anno$cell_type_anno)
+    liana_data <- liana_data |>
+        mutate(across(c(source, target), \(x) coalesce(unname(neuron_map[x]), x)))
+}
 
 # rank_aggregate method, which provides a robust rank consensus that combines the predictions of multiple ligand-receptor methods
 liana_data |> count(magnitude_rank < 0.05)
@@ -308,6 +335,9 @@ source_target_counts |> arrange(-n)
 
 ## save out source target counts
 write.csv(source_target_counts, file = here(data_dir, sprintf("Liana_source_target_counts_%s.csv", opt$datatype)))
+# source_target_counts <- read.csv(here(data_dir, sprintf("Liana_source_target_counts_%s.csv", opt$datatype)), row.names = 1)
+
+
 
 LR_count_tile <- source_target_counts |>
     ggplot(aes(x = target, y = source, fill = n)) +
