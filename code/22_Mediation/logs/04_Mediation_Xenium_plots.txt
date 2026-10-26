@@ -1,0 +1,587 @@
+**** Job starts ****
+Fri Sep 25 04:15:01 PM EDT 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 35933580
+Job name: 04_Mediation_Xenium_plots
+Node name: compute-169
+Task id: 
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following object is masked from ‘package:dplyr’:
+
+    count
+
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following object is masked from ‘package:lubridate’:
+
+    as.difftime
+
+The following object is masked from ‘package:dplyr’:
+
+    explain
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:lubridate’:
+
+    second, second<-
+
+The following objects are masked from ‘package:dplyr’:
+
+    first, rename
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:lubridate’:
+
+    %within%
+
+The following objects are masked from ‘package:dplyr’:
+
+    collapse, desc, slice
+
+The following object is masked from ‘package:purrr’:
+
+    reduce
+
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading objects:
+  ancestry_colors
+  sex_colors
+  APOE_genotype_colors
+  APOE_carrier_colors
+  APOE_carrier_colors_dark
+  sample_colors
+  APOE_carrier_anc_colors
+Rows: 408 Columns: 27
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (7): med_cl_test, mediator_datatype, outcome_datatype, outcome_cl, med_...
+dbl (13): n_donors, fdr_base_SN, logFC_base_SN, t_base_SN, fdr_med_SN, logFC...
+lgl  (7): base_sig, base_dir, base_valid, med_sig, med_dir, med_vec_sig, med...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+# A tibble: 58 × 3
+   mediator outcome     n
+   <chr>    <chr>   <int>
+ 1 ABCA8    MBP        10
+ 2 FZD8     CABLES1    10
+ 3 FZD8     CPNE4      10
+ 4 FZD8     GAD1       10
+ 5 FZD8     GPM6A      10
+ 6 FZD8     IGFBP5     10
+ 7 FZD8     KCNJ3      10
+ 8 FZD8     NRXN1      10
+ 9 FZD8     NTRK3      10
+10 FZD8     SORCS1     10
+# ℹ 48 more rows
+# A tibble: 8 × 5
+  mediator outcome outcome_cl            P.Value_base P.Value_med
+  <chr>    <chr>   <chr>                        <dbl>       <dbl>
+1 NPTXR    GAD1    Oligo.3                     0.595        0.918
+2 NPTXR    GAD1    nn_Astro.1                  0.364        0.303
+3 NPTXR    GAD1    APOE_high_nnA_Astro.1       0.287        0.235
+4 NPTXR    GAD1    Oligo.3_xGL                 0.541        0.606
+5 NPTXR    GAD1    Oligo.3_xL1_inhib           0.527        0.500
+6 NPTXR    GAD1    Oligo.3_xL2                 0.0841       0.107
+7 NPTXR    GAD1    Oligo.3_xL5                 0.687        0.770
+8 NPTXR    GAD1    Oligo.3_xLD_glia            0.997        0.661
+2026-09-25 16:15:17.702307 - loading DE_data: DGE_results_carrier_Xenium_cell_type_anno.Rds
+2026-09-25 16:15:17.813426 - loading DE_data: DGE_results_carrier_Xenium_Oligo.3_Astro.Rds
+2026-09-25 16:15:17.903223 - loading DE_data: DGE_results_carrier_Xenium_cell_type_anno_SpX.Rds
+# A tibble: 1 × 2
+  `is.na(mediatorDE_P.Value)`     n
+  <lgl>                       <int>
+1 FALSE                          52
+# A tibble: 17 × 3
+   mediator_datatype         med_cl_test           n
+   <chr>                     <chr>             <int>
+ 1 Xenium_Oligo.3_Astro      Astro.1_APOE_high     2
+ 2 Xenium_Oligo.3_Astro      Astro.2_APOE_high     4
+ 3 Xenium_Oligo.3_Astro      Astro.2_APOE_low      5
+ 4 Xenium_cell_type_anno     Astro.1               2
+ 5 Xenium_cell_type_anno     Astro.2               5
+ 6 Xenium_cell_type_anno     Astro.3               2
+ 7 Xenium_cell_type_anno_SpX Astro.1_xGL           2
+ 8 Xenium_cell_type_anno_SpX Astro.1_xL1_inhib     2
+ 9 Xenium_cell_type_anno_SpX Astro.1_xL2           2
+10 Xenium_cell_type_anno_SpX Astro.1_xL5           2
+11 Xenium_cell_type_anno_SpX Astro.1_xLD_glia      2
+12 Xenium_cell_type_anno_SpX Astro.2_xGL           4
+13 Xenium_cell_type_anno_SpX Astro.2_xL1_inhib     3
+14 Xenium_cell_type_anno_SpX Astro.2_xL2           3
+15 Xenium_cell_type_anno_SpX Astro.2_xL5           3
+16 Xenium_cell_type_anno_SpX Astro.2_xLD_glia      5
+17 Xenium_cell_type_anno_SpX Astro.2_xWMuf         4
+# A tibble: 4 × 2
+  mediator     n
+  <chr>    <int>
+1 FZD8         5
+2 NPTXR        4
+3 ST18         1
+4 SV2B         1
+# A tibble: 9 × 7
+  mediator_datatype     med_cl_test mediator mediatorDE_logFC mediatorDE_P.Value
+  <chr>                 <chr>       <chr>               <dbl>              <dbl>
+1 Xenium_cell_type_anno Astro.2     SV2B              -0.0789             0.563 
+2 Xenium_Oligo.3_Astro  Astro.2_AP… SV2B              -0.177              0.313 
+3 Xenium_Oligo.3_Astro  Astro.2_AP… SV2B              -0.245              0.151 
+4 Xenium_cell_type_ann… Astro.2_xGL SV2B              -0.0678             0.772 
+5 Xenium_cell_type_ann… Astro.2_xL… SV2B              -0.117              0.561 
+6 Xenium_cell_type_ann… Astro.2_xL2 SV2B               0.0955             0.636 
+7 Xenium_cell_type_ann… Astro.2_xL5 SV2B              -0.286              0.0477
+8 Xenium_cell_type_ann… Astro.2_xL… SV2B              -0.150              0.428 
+9 Xenium_cell_type_ann… Astro.2_xW… SV2B               0.0228             0.891 
+# ℹ 2 more variables: mediatorDE_adj.P.Val <dbl>, mediatorDE_t <dbl>
+Joining with `by = join_by(med_cl_test, mediator_datatype, mediator)`
+2026-09-25 16:15:18.280107 - 408 total mediator x outcome rows loaded
+# A tibble: 4 × 31
+  med_cl_test      mediator_datatype outcome_datatype outcome_cl n_donors med_cl
+  <chr>            <chr>             <chr>            <chr>         <dbl> <chr> 
+1 Astro.1          Xenium_cell_type… Xenium_cell_typ… Oligo.3          16 Astro…
+2 Astro.2_APOE_hi… Xenium_Oligo.3_A… Xenium_Oligo.3_… APOE_high…       16 Astro…
+3 Astro.2_xL5      Xenium_cell_type… Xenium_cell_typ… Oligo.3_x…       16 Astro…
+4 Astro.1_xLD_glia Xenium_cell_type… Xenium_cell_typ… Oligo.3_x…       16 Astro…
+# ℹ 25 more variables: mediator <chr>, outcome <chr>, fdr_base_SN <dbl>,
+#   logFC_base_SN <dbl>, t_base_SN <dbl>, fdr_med_SN <dbl>, logFC_med_SN <dbl>,
+#   t_med_SN <dbl>, P.Value_base <dbl>, t_base <dbl>, P.Value_med <dbl>,
+#   t_med <dbl>, P.Value_med_vec <dbl>, t_med_vec <dbl>, base_sig <lgl>,
+#   base_dir <lgl>, base_valid <lgl>, med_sig <lgl>, med_dir <lgl>,
+#   med_vec_sig <lgl>, mediated <lgl>, mediatorDE_logFC <dbl>,
+#   mediatorDE_P.Value <dbl>, mediatorDE_adj.P.Val <dbl>, mediatorDE_t <dbl>
+# A tibble: 10 × 3
+   mediator outcome     n
+   <chr>    <chr>   <int>
+ 1 FZD8     CABLES1     2
+ 2 FZD8     CPNE4       1
+ 3 FZD8     GAD1        1
+ 4 FZD8     NTRK3       1
+ 5 FZD8     TESPA1      4
+ 6 NPTXR    ENC1        1
+ 7 NPTXR    GAD1        1
+ 8 NPTXR    NPTXR       2
+ 9 NPTXR    SLC17A7     1
+10 SV2B     ERBB3       1
+2026-09-25 16:15:18.315032 - 15 mediated gene pairs to plot
+# A tibble: 15 × 7
+   mediator_datatype    outcome_datatype outcome_cl med_cl_test mediator outcome
+   <chr>                <chr>            <chr>      <chr>       <chr>    <chr>  
+ 1 Xenium_Oligo.3_Astro Xenium_Oligo.3_… APOE_high… Astro.2_AP… FZD8     TESPA1 
+ 2 Xenium_Oligo.3_Astro Xenium_Oligo.3_… APOE_high… Astro.2_AP… SV2B     ERBB3  
+ 3 Xenium_Oligo.3_Astro Xenium_Oligo.3_… APOE_low_… Astro.2_AP… FZD8     NTRK3  
+ 4 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.1     NPTXR    ENC1   
+ 5 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.1     NPTXR    NPTXR  
+ 6 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.1     NPTXR    SLC17A7
+ 7 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.2     FZD8     TESPA1 
+ 8 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.1_xL2 NPTXR    GAD1   
+ 9 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL2 FZD8     GAD1   
+10 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL5 FZD8     CABLES1
+11 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL5 FZD8     TESPA1 
+12 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.1_xL… NPTXR    NPTXR  
+13 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL… FZD8     TESPA1 
+14 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xW… FZD8     CABLES1
+15 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xW… FZD8     CPNE4  
+# ℹ 1 more variable: n <int>
+# A tibble: 4 × 7
+  med_cl_test       mediator P.Value_med outcome_cl  outcome base_valid mediated
+  <chr>             <chr>          <dbl> <chr>       <chr>   <lgl>      <lgl>   
+1 Astro.2_xL5       FZD8           0.404 Oligo.3_xL5 CABLES1 TRUE       TRUE    
+2 Astro.1           NPTXR          0.384 Oligo.3     NPTXR   TRUE       TRUE    
+3 Astro.1_xLD_glia  NPTXR          0.741 Oligo.3_xL… NPTXR   TRUE       TRUE    
+4 Astro.2_APOE_high SV2B           0.130 APOE_high_… ERBB3   TRUE       TRUE    
+# A tibble: 4 × 8
+  med_cl_test mediator outcome_cl outcome base_valid mediated mediatorDE_P.Value
+  <chr>       <chr>    <chr>      <chr>   <lgl>      <lgl>                 <dbl>
+1 Astro.1     NPTXR    Oligo.3    NPTXR   TRUE       TRUE                 0.0536
+2 Astro.2_AP… SV2B     APOE_high… ERBB3   TRUE       TRUE                 0.313 
+3 Astro.2_xL5 FZD8     Oligo.3_x… CABLES1 TRUE       TRUE                 0.206 
+4 Astro.1_xL… NPTXR    Oligo.3_x… NPTXR   TRUE       TRUE                 0.0258
+# ℹ 1 more variable: mediatorDE <chr>
+# A tibble: 11 × 9
+   med_cl_test       mediator outcome_cl  outcome base_valid med_sig med_vec_sig
+   <chr>             <chr>    <chr>       <chr>   <lgl>      <lgl>   <lgl>      
+ 1 Astro.2_xWMuf     FZD8     Oligo.3_xW… CABLES1 TRUE       FALSE   FALSE      
+ 2 Astro.2_xWMuf     FZD8     Oligo.3_xW… CPNE4   TRUE       FALSE   FALSE      
+ 3 Astro.2_xL2       FZD8     Oligo.3_xL2 GAD1    TRUE       FALSE   FALSE      
+ 4 Astro.2_APOE_low  FZD8     APOE_low_n… NTRK3   TRUE       FALSE   FALSE      
+ 5 Astro.2           FZD8     Oligo.3     TESPA1  TRUE       FALSE   FALSE      
+ 6 Astro.2_APOE_high FZD8     APOE_high_… TESPA1  TRUE       FALSE   FALSE      
+ 7 Astro.2_xL5       FZD8     Oligo.3_xL5 TESPA1  TRUE       FALSE   FALSE      
+ 8 Astro.2_xLD_glia  FZD8     Oligo.3_xL… TESPA1  TRUE       FALSE   FALSE      
+ 9 Astro.1           NPTXR    Oligo.3     ENC1    TRUE       FALSE   FALSE      
+10 Astro.1_xL2       NPTXR    Oligo.3_xL2 GAD1    TRUE       FALSE   FALSE      
+11 Astro.1           NPTXR    Oligo.3     SLC17A7 TRUE       FALSE   FALSE      
+# ℹ 2 more variables: mediatorDE_P.Value <dbl>, mediatorDE <chr>
+# A tibble: 15 × 7
+   mediator_datatype    outcome_datatype outcome_cl med_cl_test mediator outcome
+   <chr>                <chr>            <chr>      <chr>       <chr>    <chr>  
+ 1 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.1     NPTXR    ENC1   
+ 2 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.1     NPTXR    NPTXR  
+ 3 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.1     NPTXR    SLC17A7
+ 4 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3    Astro.2     FZD8     TESPA1 
+ 5 Xenium_Oligo.3_Astro Xenium_Oligo.3_… APOE_high… Astro.2_AP… FZD8     TESPA1 
+ 6 Xenium_Oligo.3_Astro Xenium_Oligo.3_… APOE_high… Astro.2_AP… SV2B     ERBB3  
+ 7 Xenium_Oligo.3_Astro Xenium_Oligo.3_… APOE_low_… Astro.2_AP… FZD8     NTRK3  
+ 8 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.1_xL2 NPTXR    GAD1   
+ 9 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL2 FZD8     GAD1   
+10 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL5 FZD8     CABLES1
+11 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL5 FZD8     TESPA1 
+12 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.1_xL… NPTXR    NPTXR  
+13 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xL… FZD8     TESPA1 
+14 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xW… FZD8     CABLES1
+15 Xenium_cell_type_an… Xenium_cell_typ… Oligo.3_x… Astro.2_xW… FZD8     CPNE4  
+# ℹ 1 more variable: base_valid <lgl>
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+2026-09-25 16:15:23.289711 - plotting mediator=NPTXR (Astro.1) -> ENC1 (Oligo.3)
+2026-09-25 16:15:23.290006 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno.RDS
+2026-09-25 16:15:25.270851 - plotting mediator=NPTXR (Astro.1) -> NPTXR (Oligo.3)
+2026-09-25 16:15:27.118878 - plotting mediator=NPTXR (Astro.1) -> SLC17A7 (Oligo.3)
+2026-09-25 16:15:29.041799 - plotting mediator=FZD8 (Astro.2) -> TESPA1 (Oligo.3)
+2026-09-25 16:15:30.900346 - plotting mediator=FZD8 (Astro.2_APOE_high) -> TESPA1 (APOE_high_nnA_Astro.2)
+2026-09-25 16:15:30.900692 - loading pseudobulk: spe_xenium_pseudo_DGE-Oligo.3_Astro.RDS
+2026-09-25 16:15:34.156433 - plotting mediator=SV2B (Astro.2_APOE_high) -> ERBB3 (APOE_high_nnA_Astro.2)
+2026-09-25 16:15:36.021397 - plotting mediator=FZD8 (Astro.2_APOE_low) -> NTRK3 (APOE_low_nnA_Astro.2)
+2026-09-25 16:15:37.940307 - plotting mediator=NPTXR (Astro.1_xL2) -> GAD1 (Oligo.3_xL2)
+2026-09-25 16:15:37.94071 - loading pseudobulk: spe_xenium_pseudo_DGE-cell_type_anno_SpX.RDS
+2026-09-25 16:15:40.094608 - plotting mediator=FZD8 (Astro.2_xL2) -> GAD1 (Oligo.3_xL2)
+2026-09-25 16:15:42.063975 - plotting mediator=FZD8 (Astro.2_xL5) -> CABLES1 (Oligo.3_xL5)
+2026-09-25 16:15:44.016802 - plotting mediator=FZD8 (Astro.2_xL5) -> TESPA1 (Oligo.3_xL5)
+2026-09-25 16:15:46.0204 - plotting mediator=NPTXR (Astro.1_xLD_glia) -> NPTXR (Oligo.3_xLD_glia)
+2026-09-25 16:15:48.096164 - plotting mediator=FZD8 (Astro.2_xLD_glia) -> TESPA1 (Oligo.3_xLD_glia)
+2026-09-25 16:15:50.116111 - plotting mediator=FZD8 (Astro.2_xWMuf) -> CABLES1 (Oligo.3_xWMuf)
+2026-09-25 16:15:52.216284 - plotting mediator=FZD8 (Astro.2_xWMuf) -> CPNE4 (Oligo.3_xWMuf)
+null device 
+          1 
+2026-09-25 16:15:54.254256 - 11 scenario x mediator groups to plot
+2026-09-25 16:15:54.277926 - plotting mediator=NPTXR (Astro.1) -> outcome_cl=Oligo.3 (Xenium_cell_type_anno)
+2026-09-25 16:15:56.678072 - plotting mediator=FZD8 (Astro.2) -> outcome_cl=Oligo.3 (Xenium_cell_type_anno)
+2026-09-25 16:15:58.063935 - plotting mediator=FZD8 (Astro.2_APOE_high) -> outcome_cl=APOE_high_nnA_Astro.2 (Xenium_Oligo.3_Astro)
+2026-09-25 16:15:59.515154 - plotting mediator=SV2B (Astro.2_APOE_high) -> outcome_cl=APOE_high_nnA_Astro.2 (Xenium_Oligo.3_Astro)
+2026-09-25 16:16:00.920464 - plotting mediator=FZD8 (Astro.2_APOE_low) -> outcome_cl=APOE_low_nnA_Astro.2 (Xenium_Oligo.3_Astro)
+2026-09-25 16:16:02.374078 - plotting mediator=NPTXR (Astro.1_xL2) -> outcome_cl=Oligo.3_xL2 (Xenium_cell_type_anno_SpX)
+2026-09-25 16:16:03.839491 - plotting mediator=FZD8 (Astro.2_xL2) -> outcome_cl=Oligo.3_xL2 (Xenium_cell_type_anno_SpX)
+2026-09-25 16:16:05.306151 - plotting mediator=FZD8 (Astro.2_xL5) -> outcome_cl=Oligo.3_xL5 (Xenium_cell_type_anno_SpX)
+2026-09-25 16:16:07.243 - plotting mediator=NPTXR (Astro.1_xLD_glia) -> outcome_cl=Oligo.3_xLD_glia (Xenium_cell_type_anno_SpX)
+2026-09-25 16:16:08.790011 - plotting mediator=FZD8 (Astro.2_xLD_glia) -> outcome_cl=Oligo.3_xLD_glia (Xenium_cell_type_anno_SpX)
+2026-09-25 16:16:10.308441 - plotting mediator=FZD8 (Astro.2_xWMuf) -> outcome_cl=Oligo.3_xWMuf (Xenium_cell_type_anno_SpX)
+null device 
+          1 
+2026-09-25 16:16:12.400115 - Done: plotted 11 scenario x mediator groups covering 15 mediated gene pairs
+[1] "Reproducibility information:"
+[1] "2026-09-25 16:16:12 EDT"
+   user  system elapsed 
+ 65.355   1.279  70.016 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-09-25
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-8     2024-09-12 [2] CRAN (R 4.5.0)
+ AnnotationDbi          1.72.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ AnnotationHub          4.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ attempt                0.3.1     2020-05-03 [2] CRAN (R 4.5.0)
+ beachmat               2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.5.0)
+ benchmarkme            1.0.8     2022-06-12 [2] CRAN (R 4.5.0)
+ benchmarkmeData        2.0.0     2026-01-19 [1] CRAN (R 4.5.0)
+ Biobase              * 2.70.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocFileCache          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics         * 0.56.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocIO                 1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocManager            1.30.27   2025-11-14 [1] CRAN (R 4.5.0)
+ BiocNeighbors          2.4.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocParallel           1.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocSingular           1.26.1    2025-11-17 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocVersion            3.22.0    2025-10-07 [1] Bioconductor 3.22 (R 4.5.0)
+ Biostrings             2.78.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0     2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2     2026-05-19 [1] CRAN (R 4.5.0)
+ bitops                 1.0-9     2024-10-03 [2] CRAN (R 4.5.0)
+ blob                   1.3.0     2026-01-14 [1] CRAN (R 4.5.0)
+ bluster                1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bslib                  0.11.0    2026-05-16 [1] CRAN (R 4.5.0)
+ cachem                 1.1.0     2024-05-16 [2] CRAN (R 4.5.0)
+ cigarillo              1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ circlize               0.4.18    2026-04-04 [1] CRAN (R 4.5.0)
+ cli                    3.6.6     2026-04-09 [1] CRAN (R 4.5.0)
+ clue                   0.3-68    2026-03-26 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1   2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-2     2025-09-22 [1] CRAN (R 4.5.0)
+ ComplexHeatmap         2.26.1    2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
+ config                 0.3.2     2023-08-30 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3     2024-06-20 [2] CRAN (R 4.5.0)
+ curl                   7.0.0     2025-08-19 [1] CRAN (R 4.5.0)
+ data.table             1.18.2.1  2026-01-27 [1] CRAN (R 4.5.0)
+ DBI                    1.3.0     2026-02-25 [1] CRAN (R 4.5.0)
+ dbplyr                 2.5.2     2026-02-13 [1] CRAN (R 4.5.0)
+ DeconvoBuddies       * 1.3.4     2026-06-15 [1] Github (LieberInstitute/DeconvoBuddies@516b1fd)
+ DelayedArray           0.36.1    2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ DelayedMatrixStats     1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1   2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39    2025-11-19 [1] CRAN (R 4.5.0)
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1     2026-04-03 [1] CRAN (R 4.5.0)
+ dqrng                  0.4.1     2024-05-28 [2] CRAN (R 4.5.0)
+ DT                     0.34.0    2025-09-02 [1] CRAN (R 4.5.0)
+ edgeR                  4.8.2     2025-12-25 [1] Bioconductor 3.22 (R 4.5.0)
+ ExperimentHub          3.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ farver                 2.1.2     2024-05-13 [2] CRAN (R 4.5.0)
+ fastmap                1.2.0     2024-05-15 [2] CRAN (R 4.5.0)
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.1     2025-09-25 [1] CRAN (R 4.5.0)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.5.0)
+ fs                     2.1.0     2026-04-18 [1] CRAN (R 4.5.0)
+ gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4     2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicAlignments      1.46.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ GenomicRanges        * 1.62.1    2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1    2026-04-27 [1] CRAN (R 4.5.0)
+ GetoptLong             1.1.1     2026-04-08 [1] CRAN (R 4.5.0)
+ ggbeeswarm             0.7.3     2025-11-29 [1] CRAN (R 4.5.0)
+ ggh4x                  0.3.1     2025-05-30 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3     2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.8     2026-03-17 [1] CRAN (R 4.5.0)
+ GlobalOptions          0.1.4     2026-04-08 [1] CRAN (R 4.5.0)
+ glue                   1.8.1     2026-04-17 [1] CRAN (R 4.5.0)
+ golem                  0.5.1     2024-08-27 [2] CRAN (R 4.5.0)
+ googledrive            2.1.1     2023-06-11 [2] CRAN (R 4.5.0)
+ gridExtra              2.3       2017-09-09 [2] CRAN (R 4.5.0)
+ gtable                 0.3.6     2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2     2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4     2025-10-17 [1] CRAN (R 4.5.0)
+ htmltools              0.5.9     2025-12-04 [1] CRAN (R 4.5.0)
+ htmlwidgets            1.6.4     2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv                 1.6.17    2026-03-18 [1] CRAN (R 4.5.0)
+ httr                   1.4.8     2026-02-13 [1] CRAN (R 4.5.0)
+ httr2                  1.2.2     2025-12-08 [1] CRAN (R 4.5.0)
+ igraph                 2.2.2     2026-02-12 [1] CRAN (R 4.5.0)
+ IRanges              * 2.44.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ irlba                  2.3.7     2026-01-30 [1] CRAN (R 4.5.0)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.5.0)
+ jaffelab               0.99.34   2025-05-27 [1] Github (LieberInstitute/jaffelab@e7a26ca)
+ jquerylib              0.1.4     2021-04-26 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0     2025-03-27 [2] CRAN (R 4.5.0)
+ KEGGREST               1.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ labeling               0.4.3     2023-08-29 [2] CRAN (R 4.5.0)
+ later                  1.4.5     2026-01-08 [1] CRAN (R 4.5.0)
+ lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.0)
+ lazyeval               0.2.3     2026-04-04 [1] CRAN (R 4.5.0)
+ lifecycle              1.0.5     2026-01-08 [1] CRAN (R 4.5.0)
+ limma                  3.66.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ locfit                 1.5-9.12  2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.5     2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1     2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5     2026-04-04 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix                 1.7-3     2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats          * 1.5.0     2025-01-07 [2] CRAN (R 4.5.0)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.5.0)
+ metapod                1.18.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ mime                   0.13      2025-03-17 [2] CRAN (R 4.5.0)
+ nlme                   3.1-168   2025-03-31 [3] CRAN (R 4.5.0)
+ otel                   0.2.0     2025-08-29 [1] CRAN (R 4.5.0)
+ paletteer              1.7.0     2026-01-08 [1] CRAN (R 4.5.0)
+ patchwork            * 1.3.2     2025-08-25 [1] CRAN (R 4.5.0)
+ pillar                 1.11.1    2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.5.0)
+ plotly                 4.12.0    2026-01-24 [1] CRAN (R 4.5.0)
+ plyr                   1.8.9     2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-9     2026-03-15 [1] CRAN (R 4.5.0)
+ promises               1.5.0     2025-11-01 [1] CRAN (R 4.5.0)
+ purrr                * 1.2.1     2026-01-09 [1] CRAN (R 4.5.0)
+ R6                     2.6.1     2025-02-15 [2] CRAN (R 4.5.0)
+ rafalib                1.0.4     2025-04-08 [1] CRAN (R 4.5.0)
+ ragg                   1.5.2     2026-03-23 [1] CRAN (R 4.5.0)
+ rappdirs               0.3.4     2026-01-17 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1     2026-01-10 [1] CRAN (R 4.5.0)
+ RCurl                  1.98-1.19 2026-06-03 [1] CRAN (R 4.5.0)
+ readr                * 2.2.0     2026-02-19 [1] CRAN (R 4.5.0)
+ rematch2               2.1.2     2020-05-01 [2] CRAN (R 4.5.0)
+ reshape2               1.4.5     2025-11-12 [1] CRAN (R 4.5.0)
+ restfulr               0.0.17    2026-06-11 [1] CRAN (R 4.5.0)
+ rjson                  0.2.23    2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0     2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1     2025-08-26 [1] CRAN (R 4.5.0)
+ Rsamtools              2.26.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ RSQLite                2.4.5     2025-11-30 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.5.0)
+ rtracklayer            1.70.1    2025-12-22 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Arrays               1.10.1    2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors            * 0.48.1    2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2     2026-04-22 [1] CRAN (R 4.5.0)
+ sass                   0.4.10    2025-04-11 [2] CRAN (R 4.5.0)
+ ScaledMatrix           1.18.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ scales                 1.4.0     2025-04-24 [2] CRAN (R 4.5.0)
+ scater                 1.38.1    2026-03-20 [1] Bioconductor 3.22 (R 4.5.0)
+ scran                  1.38.1    2026-02-25 [1] Bioconductor 3.22 (R 4.5.0)
+ scuttle                1.20.0    2025-10-30 [1] Bioconductor 3.22 (R 4.5.0)
+ segmented              2.2-1     2026-01-29 [1] CRAN (R 4.5.0)
+ Seqinfo              * 1.0.0     2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4     2026-06-04 [1] CRAN (R 4.5.0)
+ shape                  1.4.6.1   2024-02-23 [2] CRAN (R 4.5.0)
+ shiny                  1.13.0    2026-02-20 [1] CRAN (R 4.5.0)
+ shinyWidgets           0.9.1     2026-03-09 [1] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.32.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10   2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ sparseMatrixStats      1.22.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SpatialExperiment      1.20.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ spatialLIBD            1.25.1    2026-05-20 [1] Github (LieberInstitute/spatialLIBD@bf033c8)
+ statmod                1.5.2     2026-05-17 [1] CRAN (R 4.5.0)
+ stringi                1.8.7     2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0     2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.40.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ systemfonts            1.3.2     2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping            1.0.5     2026-03-06 [1] CRAN (R 4.5.0)
+ tibble               * 3.3.1     2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2     2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1     2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0     2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb                   0.5.0     2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6     2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs                  0.7.3     2026-04-11 [1] CRAN (R 4.5.0)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.5.0)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3     2026-02-04 [1] CRAN (R 4.5.0)
+ vroom                  1.7.1     2026-03-31 [1] CRAN (R 4.5.0)
+ withr                  3.0.2     2024-10-28 [2] CRAN (R 4.5.0)
+ XML                    3.99-0.22 2026-02-10 [1] CRAN (R 4.5.0)
+ xtable                 1.8-8     2026-02-22 [1] CRAN (R 4.5.0)
+ XVector                0.50.0    2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ yaml                   2.3.12    2025-12-10 [1] CRAN (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Sep 25 04:16:12 PM EDT 2026
