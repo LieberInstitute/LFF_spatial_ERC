@@ -119,25 +119,33 @@ bivariate_data_summary <- bivariate_data |>
 bivariate_data_summary |> arrange(-mean_morans)
 bivariate_data_summary |> arrange(-mean_mean)
 
-bivariate_data_summary |> 
+bivariate_summary_histo <- bivariate_data_summary |> 
     pivot_longer(!c("ligand", "receptor", "LR"), names_to = "metric") |>
     ggplot(aes(x = value)) +
     geom_histogram(binwidth = 0.01) +
     facet_wrap(~metric, ncol = 1, scales = "free_x")
 
-bivariate_data_summary_scatter <- bivariate_data_summary |>
+ggsave(bivariate_summary_histo, filename = here(plot_dir, "bivariate_summary_histogram.png"), height = 8, width = 6)
+
+bivariate_summary_scatter <- bivariate_data_summary |>
     ggplot(aes(x = mean_morans, y = mean_mean, color = n_moran_pval_pass)) +
     geom_point() +
     geom_text_repel(aes(label = LR))
 
-bivariate_data_summary_pass_scatter <- bivariate_data_summary |>
-    ggplot(aes(x = mean_morans, y = n_moran_pval_pass, color = n_moran_pval_pass)) +
-    geom_point(aes())
+ggsave(bivariate_summary_scatter, filename = here(plot_dir, "bivariate_summary_scatter.png"), height = 7, width = 9)
 
-bivariate_data_summary_pass_scatter_log10 <-bivariate_data_summary |>
+bivariate_summary_pass_scatter <- bivariate_data_summary |>
+    ggplot(aes(x = mean_morans, y = n_moran_pval_pass, color = n_moran_pval_pass)) +
+    geom_point()
+
+ggsave(bivariate_summary_pass_scatter, filename = here(plot_dir, "bivariate_summary_pass_scatter.png"), height = 5, width = 7)
+
+bivariate_summary_pass_scatter_log10 <- bivariate_data_summary |>
     ggplot(aes(x = median_morans, y = -log10(max_moran_pval), color = n_moran_pval_pass)) +
     geom_point() +
     geom_hline(yintercept = -log10(0.05))
+
+ggsave(bivariate_summary_pass_scatter_log10, filename = here(plot_dir, "bivariate_summary_pass_scatter_log10.png"), height = 5, width = 7)
 
 
 bivariate_data_summary |> 
@@ -309,12 +317,18 @@ liana_data_summary |> filter(n_pass_magnitude_rank == 30) |> ungroup() |> dplyr:
 liana_data_summary |> filter(n_pass_magnitude_rank == 30) 
 
 ## plots
-liana_data_summary |> ungroup() |> 
+n_pass_specificity_magnitude_tile <- liana_data_summary |> ungroup() |> 
     dplyr::count(n_pass_specificity_rank, n_pass_magnitude_rank)  |>
     filter(n_pass_magnitude_rank > 10,
            n_pass_specificity_rank > 0) |>
     ggplot(aes(x = n_pass_magnitude_rank, n_pass_specificity_rank, fill = n)) +
     geom_tile()
+
+ggsave(
+    n_pass_specificity_magnitude_tile,
+    filename = here(plot_dir, sprintf("n_pass_specificity_magnitude_tile_%s.png", opt$datatype)),
+    height = 6, width = 7
+)
 
 n_pass_magnitude_rank_histo <- liana_data_summary |> 
     filter(n_pass_magnitude_rank > 0) |>
@@ -550,13 +564,13 @@ if(any(LR_DEGS$L_DEG | LR_DEGS$R_DEG, na.rm = TRUE)){
     
     LR_DEGS_plot_data3 |>
         group_by(interaction) |>
-        slice(1)|>
+        dplyr::slice(1)|>
         arrange(mean_mean)
     
     
     LR_DEGS_mean_mean <- LR_DEGS_plot_data3 |>
         group_by(interaction) |>
-        slice(1)|>
+        dplyr::slice(1)|>
         ggplot(aes(x = mean_mean, y = interaction)) +
         geom_col() +
         theme_bw()
