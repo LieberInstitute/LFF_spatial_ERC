@@ -1,0 +1,8 @@
+gene,cell_type,mediator_role,data_type,cluster_key,evidence_tier,note
+NPTXR,Astro.1,source,cell_type_anno,Astro.1,top,mediator source; validates pooled + L5/L2.3
+NPTXR,Oligo.3,target,cell_type_anno,Oligo.3,top,mediator target; validates pooled + WM/L5/L1b/Vasc
+FZD8,Astro.2,source,SpX,Astro.2_L6,top,strongest point on WM-proximal gradient
+CABLES1,Oligo.3,highlight,Oligo_3_Astro,nn_Astro.3,top,masked when pooled; only emerges near astrocytes
+CPNE4,Oligo.3,highlight,SpX,Oligo.3_L6,top,Match_all; also independently sig. in Visium L6
+CD9,Oligo.3,highlight,Visium,L6~Sp09D04,second,myelin gene; off Xenium panel; Visium-only evidence
+NRG1,Oligo.5,hypothesis,MOFA,,hypothesis,top MOFA loading; ERBB3 ligand; not yet DE-validated
