@@ -65,6 +65,13 @@ count(DE_data, data_type)
 
 DE_data |> filter(grepl("WNT", gene_name)) |> arrange(vlmf_adj.P.Val) |> select(-(4:12)) # quick sanity check
 
+## quick lookup
+DE_data |> 
+    filter(gene_name == "TRIL", 
+           # cluster == "vVasc",
+           grepl("Astro", cluster)) |> 
+    select(data_type, cluster, gene_name, starts_with("vlmf")) |>
+    arrange(vlmf_adj.P.Val)
 
 #### Anchor gene panel ####
 
@@ -75,11 +82,13 @@ DE_data |> filter(grepl("WNT", gene_name)) |> arrange(vlmf_adj.P.Val) |> select(
 ## three resolution panels for direct visual comparison.
 anchor_genes <- c(
     "NPTXR",                                  # cross-cell-type signal (Astro/Oligo/Excit) at broad resolution
-    "MAL", "KLK6",                            # spatial-domain anchors (WM.uf~Sp9D7 / Vasc~Sp9D8); MAL recurs at fine resolution too
-    "PLP1", "MAG", "MBP", "SOX10", "OPALIN",  # Oligo.3 myelination/differentiation program, downregulated
+    "MAL", "KLK6", "CNDP1",                    # spatial-domain anchors. MAL recurs at fine resolution too
+    "PLP1", "MAG", "MBP", "SOX10", "OPALIN", "LPAR1",  # Oligo.3 myelination/differentiation program, downregulated
     "FOS", "TLR2", "STAT1", "STAT4",           # Oligo.3 inflammatory/interferon program, upregulated
+    "GPM6A",                                # Oligo.3 upreg, glutamatergic-synapse
     "CPNE4", ## L6 multi-cell enviroment gene
     "FZD8", "CABLES1", #Mediation genes
+    "TRIL", # Astro.2 upreg gene with additional support 
     "MAPT", "MAP2",
     "WNT7A"
 )
@@ -144,7 +153,7 @@ for(dt in de_data_types){
         flip = TRUE,
         order_genes = FALSE,  # keep the fixed thematic gene order above, not a data-driven one
         save = TRUE,
-        h = 5, 
+        h = 5.5, 
         w = length(unique(dt_data$cluster))*0.5 + 2 
     )
     
@@ -166,7 +175,7 @@ for(dt in de_data_types){
             flip = TRUE,
             order_genes = FALSE,
             save = TRUE,
-            h = 5, 
+            h = 5.5, 
             w = length(sig_clusters) *0.9 ,
             legend_side = "top"
         )
@@ -292,7 +301,7 @@ combined_t_heatmap <- function(data_types,
     invisible(ht)
 }
 
-combined_t_heatmap(de_data_types)
+combined_t_heatmap(de_data_types, h = 5.5)
 
 
 #### Validation data ####
@@ -314,7 +323,9 @@ DE_valid_data <- validation_data_types |>
     map(load_DE_valid_data) |>
     list_rbind()
 
-all(anchor_genes %in% DE_valid_data$gene_name)
+# all(anchor_genes %in% DE_valid_data$gene_name)
+setdiff(anchor_genes, DE_valid_data$gene_name)
+# [1] "MAP2"  "WNT7A"
 
 message(nrow(DE_valid_data), " rows across ", n_distinct(DE_valid_data$data_type), " validation data types")
 count(DE_valid_data, data_type)
@@ -328,7 +339,7 @@ DE_valid_data |>
     print(n = 30)
 
 
-DE_valid_data |> filter(data_type == "Xenium_SpX") |> distinct(cluster)
+DE_valid_data |> filter(data_type == "Xenium_cell_type_anno_SpX") |> distinct(cluster)
 
 dt = "Xenium_cell_type_anno"
 lookup <- load_cluster_lookup(dt)
@@ -338,7 +349,8 @@ cluster_levels <- lookup$cluster_levels  # logFC_Heatmap() reads this from the g
 dt_data <- DE_valid_data |> filter(data_type == dt)
 
 ## match the clusterd order from discovery dataset
-anchor_genes2 <- c("NPTXR", "CPNE4", "CABLES1", "FZD8", "TLR2", "WNT7A", "MAP2", "STAT4", "FOS", "STAT1", "MAPT", "SOX10", "MBP", "MAL", "MAG", "KLK6", "OPALIN", "PLP1")
+anchor_genes2 <- c("NPTXR","CPNE4","MAP2","TLR2","FOS","GPM6A","CABLES1","FZD8","STAT4","TRIL","STAT1","MAPT","MBP","SOX10","MAL","LPAR1","OPALIN","PLP1","MAG","KLK6","CNDP1")
+
 
 ## full version - every cluster in this resolution
 logFC_Heatmap(
@@ -389,30 +401,29 @@ dt = "Xenium_cell_type_anno_SpX"
 
 dt_data <- DE_valid_data |> 
     filter(data_type == dt) |> 
-    mutate(cluster = cluster_SpX) 
+    mutate(cluster = cluster_xSpD) 
 
 dt_data |> 
-    filter(gene_name == "CABLES1", cell_type_anno == "Oligo.3") |>
-    select(gene_name, cluster, cell_type_anno, SpX, vlmf_xenium_P.Value, vlmf_xenium_t, validate)
+    filter(gene_name == "CABLES1", cell_type_anno == "Oligo.3", validate) |>
+    select(gene_name, cluster, cell_type_anno, xSpD, vlmf_xenium_P.Value, vlmf_xenium_t, validate)
 
-# gene_name cluster       cell_type_anno SpX        vlmf_xenium_P.Value vlmf_xenium_t validate
-# 6 CABLES1   Oligo.3_L6    Oligo.3        L6~SpX9                 0.228          1.25  FALSE   ????
-# 7 CABLES1   Oligo.3_Vasc  Oligo.3        Vasc~SpX3               0.340         -0.977 FALSE   
-# 8 CABLES1   Oligo.3_WM    Oligo.3        WM~SpX2                 0.0512         2.07  TRUE    
-# 9 CABLES1   Oligo.3_WMtz  Oligo.3        WMtz~SpX8               0.0931         1.77  TRUE
+# gene_name cluster          cell_type_anno xSpD     vlmf_xenium_P.Value vlmf_xenium_t validate
+# <chr>     <chr>            <fct>          <fct>                  <dbl>         <dbl> <lgl>   
+# 1 CABLES1   Oligo.3_xL5      Oligo.3        xL5                   0.0631          1.98 TRUE    * Medation example 
+# 2 CABLES1   Oligo.3_xLD_glia Oligo.3        xLD_glia              0.0704          1.92 TRUE    
+# 3 CABLES1   Oligo.3_xWMd     Oligo.3        xWMd                  0.0300          2.32 TRUE    
+# 4 CABLES1   Oligo.3_xWMuf    Oligo.3        xWMuf                 0.0857          1.81 TRUE
 
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
 load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
 
 dt_xenium_spx_anno <- dt_data |>
-    distinct(cluster, cell_type_anno, SpX) |>
+    distinct(cluster, cell_type_anno, xSpD) |>
     column_to_rownames("cluster")
 
 ha_xenium_spx <- HeatmapAnnotation(df = dt_xenium_spx_anno,
                                    col = list(cell_type_anno = cell_type_colors$anno,
-                                              SpX = SpX_colors))
-
-# mutate(SpX_simple =str_remove(SpX, "~.*"))
+                                              xSpD = SpX_colors))
 
 ## full version - every cluster in this resolution
 logFC_Heatmap(
@@ -442,12 +453,12 @@ if(length(valid_clusters) == 0){
     
     dt_xenium_spx_anno <- dt_data |> 
         filter(cluster %in% valid_clusters) |>
-        distinct(cluster, cell_type_anno, SpX) |>
+        distinct(cluster, cell_type_anno, xSpD) |>
         column_to_rownames("cluster")
     
     ha_xenium_spx <- HeatmapAnnotation(df = dt_xenium_spx_anno,
                                        col = list(cell_type_anno = cell_type_colors$anno[unique(dt_xenium_spx_anno$cell_type_anno)],
-                                                  SpX = SpX_colors[unique(dt_xenium_spx_anno$SpX)]))
+                                                  xSpD = SpX_colors[unique(dt_xenium_spx_anno$SpX)]))
     
     logFC_Heatmap(
         data = dt_data |> filter(cluster %in% valid_clusters),
