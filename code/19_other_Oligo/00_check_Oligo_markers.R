@@ -122,11 +122,11 @@ Oligo_markers_long <- bind_rows(
 Oligo_markers_long_2plus <- Oligo_markers_long |>
     filter(n > 1)
 
-Oligo_markers_long_2plus |> count(cellType)
+Oligo_markers_long_2plus |> dplyr::count(cellType)
 
 Oligo_markers_long |> arrange(-n) |> filter(cellType == "Oligo.3") |> print(n = 30)
 
-Oligo_markers_long |> count(cellType, methods) |> print(n = Inf)
+Oligo_markers_long |> dplyr::count(cellType, methods) |> print(n = Inf)
 
 Oligo_markers_long |> group_by(gene) |> filter(n() > 1)
 
