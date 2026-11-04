@@ -115,6 +115,39 @@ dge_n_v_fdr_scatter <- dge_n_v_fdr |>
 
 ggsave(dge_n_v_fdr_scatter, filename = here(plot_dir, sprintf("DGE_%s_gene_v_signif_scatter.png", datatype)), width = 10)
 
+#### n cells v. n signif ####
+## cell (sn) or spot (Visium) totals per cluster, summed across pseudobulk samples
+pb_fn <- switch(datatype,
+                sn_broad = here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn", "sce_pseudo_DGE-cell_type_broad.RDS"),
+                sn_fine = here("processed-data", "08_pseudoBulkDGE_sn", "01_pseudobulk_data_sn", "sce_pseudo_DGE-cell_type_anno.RDS"),
+                Visium = here("processed-data", "09_pseudoBulkDGE_Visium", "01_pseudobulk_data_Visium", "spe_pseudo_DGE.RDS"))
+pb_cluster_col <- switch(datatype,
+                         sn_broad = "cell_type_broad",
+                         sn_fine = "cell_type_anno",
+                         Visium = "SpD")
+
+pb_cluster_counts <- readRDS(pb_fn) |>
+    colData() |>
+    as.data.frame() |>
+    group_by(cluster = .data[[pb_cluster_col]]) |>
+    summarize(n_cells = sum(ncells), .groups = "drop") |>
+    mutate(cluster = factor(cluster, levels = cluster_levels))
+
+dge_cells_v_fdr_scatter <- dge_n_v_fdr |>
+    left_join(pb_cluster_counts, by = "cluster") |>
+    ggplot(aes(x = n_cells, y = n_signif, color = cluster)) +
+    geom_point() +
+    geom_text_repel(aes(label = cluster)) +
+    scale_color_manual(values = cluster_colors) +
+    facet_wrap(~contrast) +
+    scale_x_log10() +
+    scale_y_log10() +
+    theme_bw() +
+    labs(x = ifelse(datatype == "Visium", "n spots", "n cells")) +
+    theme(legend.position = "none")
+
+ggsave(dge_cells_v_fdr_scatter, filename = here(plot_dir, sprintf("DGE_%s_cells_v_signif_scatter.png", datatype)), width = 10)
+
 #### logFC heatmaps ####
 source(here("code", "13_compile_DGE", "logFC_heatmap.R"))
 
