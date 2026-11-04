@@ -220,7 +220,7 @@ violin_SOX_genes <- plot_gene_express(sce,
 ggsave(violin_SOX_genes, filename = here(plot_dir, "Violin_Oligo_SOX.png"), width = 8, height = 9)
 
 
-map(c("GPR17","RBFOX1", "LINGO2","PDGFRA", "MEG3","OLIG2"), function(gene_single){
+map(c("GPR17","RBFOX1", "LINGO2","PDGFRA", "MEG3","OLIG2", "ASPA", "BCAS1"), function(gene_single){
     violin_key_genes <- plot_gene_express(sce, 
                                           category = "cell_type_anno2",
                                           genes = gene_single,
