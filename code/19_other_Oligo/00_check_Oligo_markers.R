@@ -104,25 +104,31 @@ enrich_OligoOPC_filter <- enrich_OligoOPC |>
     mutate(method = "Enrich_OligoOPC")
 
 
-Oligo_markers_long <- MeanRatio_Oligo |>
-    bind_rows(enrich_Oligo_filter) |>
-    bind_rows(MeanRatio_OligoOPC) |>
-    bind_rows(enrich_OligoOPC_filter) |>
+Oligo_markers_long <- bind_rows(
+    MeanRatio_Oligo,
+    enrich_Oligo_filter,
+    MeanRatio_OligoOPC,
+    enrich_OligoOPC_filter
+) |>
+    # Drop any list/grouped structure so counts run on plain character columns
+    ungroup() |>
+    mutate(cellType = as.character(cellType),
+           gene = as.character(gene)) |>
     group_by(cellType, gene) |>
     summarise(n = n(),
-              methods = paste(method, collapse = ","))
+              methods = paste(method, collapse = ","),
+              .groups = "drop")
 
-Oligo_markers_long_2plus <- Oligo_markers_long |>  
-    filter(n > 1) 
+Oligo_markers_long_2plus <- Oligo_markers_long |>
+    filter(n > 1)
 
 Oligo_markers_long_2plus |> count(cellType)
 
-
 Oligo_markers_long |> arrange(-n) |> filter(cellType == "Oligo.3") |> print(n = 30)
 
-Oligo_markers_long |> count(cellType, methods) |> print(n )
+Oligo_markers_long |> count(cellType, methods) |> print(n = Inf)
 
-Oligo_markers_long |> ungroup() |> group_by(gene) |> filter(n() > 1)
+Oligo_markers_long |> group_by(gene) |> filter(n() > 1)
 
 Oligo_marker_summary <- MeanRatio_Oligo |>
     group_by(cellType) |>
@@ -491,7 +497,7 @@ Siletti2023_markers <- read_xlsx(here("external-data", "Siletti2023", "science.a
     filter(grepl("Oligo|oligo", Supercluster)) |>
     select(Supercluster, `Cluster name`, `Number of cells`, `Top Enriched Genes`) |>
     mutate(Genes = str_split(`Top Enriched Genes`, pattern = ", "),
-           n_genes = length(Genes))
+           n_genes = lengths(Genes))
 
 # message(Sys.time(), "- Pseudobulk OligoOPC data")
 # sce_pb <- scuttle::aggregateAcrossCells(
@@ -539,7 +545,7 @@ dev.off()
 #### gene expression vs. pseudotime ####
 
 oligo_lineage_markers <- tibble(
-    gene = c("PDGFRA", "CSPG4", "OLIG2", "SOX10", "CNP", "MBP", "PLP1", "PTGSD", "RBFOX1", "RASGRF1", "OMG", "LINGO2", "GPM6A", "OPALIN", "MOG"),
+    gene = c("PDGFRA", "CSPG4", "OLIG2", "SOX10", "CNP", "MBP", "PLP1", "PTGDS", "RBFOX1", "RASGRF1", "OMG", "LINGO2", "GPM6A", "OPALIN", "MOG"),
     target = c("OPC", "OPC", "OPC", "Oligo.3", "Oligo", "Oligo", "Oligo", "Oligo", "OPC", "Oligo", "Oligo", "Oligo.3", "OPC", "Oligo", "Oligo")) |> 
   filter(gene %in% rownames(sce_pb)) |>
   arrange(target, gene)
