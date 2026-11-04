@@ -13,6 +13,7 @@ colors_path = here(
     'processed-data', '00_project_prep', 'cell_type_colors.V2.Rdata'
 )
 plot_dir = here('plots', '24_xenium_liana', '04_02_global_score_heatmap')
+out_dir = here('processed-data', '24_xenium_liana', '04_02_global_score_heatmap')
 n_samples_sig = 3
 
 cell_type_levels = c(
@@ -30,6 +31,7 @@ broad_cell_type_levels = c(
 )
 
 dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 load(colors_path)
 
 ################################################################################
@@ -175,18 +177,30 @@ save_difference_heatmap = function(diff_df, out_path) {
         cluster_rows = TRUE,
         cluster_columns = TRUE,
         row_dend_side = 'right',
+        column_dend_side = 'bottom',
         row_names_side = 'left',
+        column_names_side = 'top',
         row_names_gp = gpar(fontsize = 8),
         column_names_gp = gpar(fontsize = 8),
         column_names_rot = 90,
         top_annotation = HeatmapAnnotation(
             Target = cell_type_labels,
+            `Count |diff| > 100` = anno_barplot(
+                colSums(abs(diff_mat) > 100),
+                gp = gpar(fill = annotation_colors[colnames(diff_mat)]),
+                height = unit(1.2, 'cm')
+            ),
             col = list(Target = annotation_colors),
             annotation_name_gp = gpar(fontsize = 9),
             show_legend = FALSE
         ),
         left_annotation = rowAnnotation(
             Source = cell_type_labels,
+            `Count |diff| > 100` = anno_barplot(
+                rowSums(abs(diff_mat) > 100),
+                gp = gpar(fill = annotation_colors[rownames(diff_mat)]),
+                width = unit(1.2, 'cm')
+            ),
             col = list(Source = annotation_colors),
             annotation_name_gp = gpar(fontsize = 9),
             show_legend = FALSE
@@ -259,6 +273,14 @@ diff_df = heatmap_df |>
             200 * (.data[[carrier_groups[[2]]]] - .data[[carrier_groups[[1]]]]) / denominator
         )
     )
+
+write_csv(
+    diff_df,
+    file.path(
+        out_dir,
+        sprintf('source_target_heatmap_sig%s_APOE_values.csv', n_samples_sig)
+    )
+)
 
 save_difference_heatmap(
     diff_df,
