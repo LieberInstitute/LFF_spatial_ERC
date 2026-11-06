@@ -302,7 +302,7 @@ if(datatype == "sn_fine"){
     
     ggsave(vol_imOLG, 
            filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_imOGL.png", datatype, "carrier", "Oligo.3")), 
-           height = 6, width = 6)
+           height = 3, width = 4.5)
     
     immune_genes <- c("STAT1", "IRF1", "B2M", "SERPINA3", "CD74", "HLA-A","HLA-B","HLA-C")
     
