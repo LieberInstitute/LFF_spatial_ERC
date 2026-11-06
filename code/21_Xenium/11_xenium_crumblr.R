@@ -248,7 +248,7 @@ write.csv(diff_prop_APOE_carrier, file = here(data_dir, "xenium_diff_prop_APOE_c
 #### cleanY on cobj  APOE_carrier ####
 message(Sys.time(), "- Run cleanY")
 
-mod <- model.matrix( ~ APOE_carrier + Sex + Age + Anc_Afr + chip , erc_info)
+mod <- model.matrix( ~ APOE_carrier + Age + Anc_Afr + chip , erc_info)
 cleanY_cobj <- jaffelab::cleaningY(cobj$E , mod, P=2)
 head(cleanY_cobj)
 
@@ -259,6 +259,9 @@ clean_clr_prop_long <- cleanY_cobj |>
 
 clr_prop_long <- clr_prop_long |> left_join(clean_clr_prop_long)
 
+#### Fit APOE carrier ####
+message('Fit APOE carrier')
+
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
@@ -268,10 +271,15 @@ res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_APOE_carrier.csv"))
 
 # Plot hierarchy and testing results
-tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
-
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+# nominal_fdr_cut <- nominal_fdr_cut + 0.0001 ## add buffer for plot cutoff
+
+res_tb |> filter(FDR < nominal_fdr_cut) |> select(label, beta,pvalue, FDR)
+
+res_tb |> count(FDR < nominal_fdr_cut)
+
+tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.cutoff = nominal_fdr_cut) +
@@ -678,10 +686,10 @@ res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
 # res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
 
 # Plot hierarchy and testing results
-tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_FDR.png"))
-
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
+tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, fdr.cutoff = nominal_fdr_cut) +
