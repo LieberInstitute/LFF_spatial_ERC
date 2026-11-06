@@ -8,6 +8,7 @@ library("sessioninfo")
 library("ggrepel")
 library("getopt")
 library("ComplexHeatmap")
+library("circlize")
 
 
 # Import command-line parameters
