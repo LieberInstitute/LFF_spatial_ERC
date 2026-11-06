@@ -157,16 +157,7 @@ clr_boxplot_exp_round <- clr_prop_long |>
 ggsave(clr_boxplot_exp_round, filename = here(plot_dir, "clr_boxplot_exp_round.png"))
 
 
-#### Hierarchical clustering ####
-# sce_pb <- readRDS(here("processed-data", "04_snRNA-seq", "20_sn_pseudobulk","sce_pseudobulk_only-cell_type_anno.rds"))
-# dim(sce_pb)
-# 
-# dist.clusCollapsed <- dist(t(logcounts(sce_pb)))
-# tree.clusCollapsed <- hclust(dist.clusCollapsed, "ward.D2")
-# 
-# dend <- as.dendrogram(tree.clusCollapsed, hang = 0.2)
-# plot(dend, main = "hierarchical cluster dend", horiz = TRUE)
-
+#### Load Hierarchical clustering ####
 load(here("processed-data", "04_snRNA-seq", "32_sn_subcluster_hierarchical_cluster","sn_subcluster_hierarchical_cluster.Rdata"), verbose = TRUE)
 # dend
 # tree.clusCollapsed
@@ -221,9 +212,10 @@ res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_APOE_carrier.csv"))
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
+nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
 # Plot hierarchy and regression coefficients
-# TODO fdr.cutoff = 0.1
-tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
+tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
@@ -233,6 +225,15 @@ ggsave(tree_beta_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE, low = "#398A84", high = "#D46B43") 
 ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_forest.png"), width = 4, height = 7)
+
+
+## forest plot for Oligo subtypes
+res_oligo <- res |> 
+    filter(grepl("Oligo", label) | label == "OPC.5") |> 
+    mutate(label = factor(label, levels = c("OPC.5", "Oligo.3", "Oligo.5", "Oligo.4", "Oligo.1", "Oligo.2")))
+
+forest_plot_oligo <- plotForest(res_oligo, hide = FALSE, low = "#398A84", high = "#D46B43") 
+ggsave(forest_plot_oligo, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_forest_oligo.png"), width = 5, height = 1.3)
 
 
 # combined_fig <- fig.vp +
@@ -407,8 +408,10 @@ res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Sex.csv"))
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_FDR.png"))
 
+nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
 # Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']]) +
+tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']], fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
@@ -561,8 +564,10 @@ res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Age.csv"))
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_FDR.png"))
 
+nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
 # Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res) +
+tree_beta_plot <- plotTreeTestBeta(res, fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
