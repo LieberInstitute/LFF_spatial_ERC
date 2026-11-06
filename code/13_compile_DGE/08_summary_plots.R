@@ -189,7 +189,8 @@ if(datatype == "sn_fine"){
     logFC_Heatmap(data = dge_data |>
                       filter(grepl("Oligo", cluster)), 
                   gene_list = AD_risk$symbol, 
-                  title = "ADrisk_Oligo")
+                  title = "ADrisk_Oligo",
+                  datatype = datatype)
     
     ## carrier + anc
     top_oligo_DEGs_anc <- dge_anc_data |>
@@ -205,12 +206,14 @@ if(datatype == "sn_fine"){
                       mutate(cluster = gsub("carrier_", "", paste(cluster, contrast))), 
                   gene_list = top_oligo_DEGs_anc, 
                   title = "topDEGs_Anc_Oligo.3",
-                  cluster_col = TRUE)
+                  cluster_col = TRUE,
+                  datatype = datatype)
     
     logFC_Heatmap(data = dge_data |>
                       filter(grepl("Oligo", cluster)), 
                   gene_list = AD_risk$symbol, 
-                  title = "ADrisk_Oligo")
+                  title = "ADrisk_Oligo",
+                  datatype = datatype)
     
     
     #### check Blanchard genes in select cell types ####
