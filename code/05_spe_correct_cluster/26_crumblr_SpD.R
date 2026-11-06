@@ -221,8 +221,10 @@ res_tb |> write_csv(here(data_dir, "SpD_diff_prop_tree_test_APOE_carrier.csv"))
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_SpD_APOE_carrier_Tree_FDR.png"))
 
+nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
 # Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
+tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "bottom", 
           legend.box = "vertical"
     )

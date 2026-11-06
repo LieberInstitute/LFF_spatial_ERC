@@ -271,9 +271,10 @@ res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_APOE_carrier.csv"
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
+nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
 # Plot hierarchy and regression coefficients
-# TODO fdr.cutoff = 0.1
-tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43") +
+tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
@@ -680,8 +681,10 @@ res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
 tree_fdr_plot <- plotTreeTest(res)
 ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_FDR.png"))
 
+nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
 # Plot hierarchy and regression coefficients
-tree_beta_plot <- plotTreeTestBeta(res) +
+tree_beta_plot <- plotTreeTestBeta(res, fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
