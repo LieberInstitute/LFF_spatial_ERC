@@ -9,6 +9,7 @@ library("ggrepel")
 library("getopt")
 library("ComplexHeatmap")
 
+
 # Import command-line parameters
 scec <- matrix(
     c("datatype", "d", "1", "character", "Data type"),
@@ -127,7 +128,7 @@ pb_cluster_col <- switch(datatype,
                          Visium = "SpD")
 
 pb_cluster_counts <- readRDS(pb_fn) |>
-    colData() |>
+    SummarizedExperiment::colData() |>
     as.data.frame() |>
     group_by(cluster = .data[[pb_cluster_col]]) |>
     summarize(n_cells = sum(ncells), .groups = "drop") |>
