@@ -229,8 +229,7 @@ ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_fo
 
 ## forest plot for Oligo subtypes
 res_oligo <- res |> 
-    filter(grepl("Oligo", label) | label == "OPC.5") |> 
-    mutate(label = factor(label, levels = c("OPC.5", "Oligo.3", "Oligo.5", "Oligo.4", "Oligo.1", "Oligo.2")))
+    filter(grepl("Oligo", label) | label == "OPC.5")
 
 forest_plot_oligo <- plotForest(res_oligo, hide = FALSE, low = "#398A84", high = "#D46B43") 
 ggsave(forest_plot_oligo, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_forest_oligo.png"), width = 5, height = 1.3)
