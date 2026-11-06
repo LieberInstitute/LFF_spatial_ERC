@@ -209,10 +209,10 @@ res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_APOE_carrier.csv"))
 
 # Plot hierarchy and testing results
-tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
-
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
+tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.cutoff = nominal_fdr_cut) +
@@ -404,10 +404,10 @@ res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Sex.csv"))
 
 # Plot hierarchy and testing results
-tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_FDR.png"))
-
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
+tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Sex_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']], fdr.cutoff = nominal_fdr_cut) +
@@ -560,10 +560,10 @@ res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Age.csv"))
 
 # Plot hierarchy and testing results
-tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_FDR.png"))
-
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+
+tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
+ggsave(tree_fdr_plot, filename = here(plot_dir, "crumblr_cell_type_Age_Tree_FDR.png"))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, fdr.cutoff = nominal_fdr_cut) +
