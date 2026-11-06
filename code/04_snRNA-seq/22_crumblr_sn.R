@@ -474,7 +474,7 @@ mod <- model.matrix( ~ Sex + APOE_carrier + Age + Anc_Afr + exp_round , erc_info
 cleanY_cobj_carrier_sex <- cleaningY(cobj$E , mod, P=3)
 
 clr_prop_long <- clr_prop_long |> 
-    left_join(cleanY_cobj_sex |>
+    left_join(cleanY_cobj_carrier_sex |>
                   as.data.frame() |>
                   rownames_to_column("cell_type_anno") |>
                   pivot_longer(!cell_type_anno, names_to = "sample_id", values_to = "CLR_cleanY_carrier_Sex")) |>
