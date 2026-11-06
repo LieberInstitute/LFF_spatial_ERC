@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Sep  9 01:09:43 PM EDT 2026
+Fri Nov  6 12:07:18 PM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35591533
+Job id: 36912875
 Job name: 08_summary_plots
-Node name: compute-160
+Node name: compute-107
 Task id: 1
 Loading conda_R/4.5
 
@@ -65,6 +65,12 @@ Removed 147 rows containing missing values or values outside the scale range
 ℹ Use `summarise(.groups = "drop_last")` to silence this message.
 ℹ Use `summarise(.by = c(contrast, cluster))` for per-operation grouping
   (`?dplyr::dplyr_by`) instead.
+Saving 10 x 7 in image
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: In scale_y_log10() : log-10 transformation introduced infinite values.
+Warning: stack imbalance in '::', 26 then 28
+Loading required namespace: SingleCellExperiment
 Saving 10 x 7 in image
 Warning messages:
 1: In scale_y_log10() : log-10 transformation introduced infinite values.
