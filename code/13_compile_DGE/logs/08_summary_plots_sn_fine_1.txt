@@ -1,12 +1,17 @@
 **** Job starts ****
-Fri Nov  6 12:07:18 PM EST 2026
+Fri Nov  6 03:03:49 PM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 36912875
+Job id: 36914796
 Job name: 08_summary_plots
-Node name: compute-107
+Node name: compute-119
 Task id: 1
+Unloading conda_R/4.5.x
 Loading conda_R/4.5
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5.x => conda_R/4.5
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -45,6 +50,20 @@ This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 
+========================================
+circlize version 0.4.18
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
 Loading objects:
   cell_type_colors
 `summarise()` has regrouped the output.
@@ -80,7 +99,204 @@ null device
           1 
 null device 
           1 
-Error in logFC_Heatmap(data = filter(dge_data, grepl("Oligo", cluster)),  : 
-  argument "datatype" is missing, with no default
-Calls: logFC_Heatmap ... is.factor -> here -> <Anonymous> -> path -> sprintf
-Execution halted
+no cluster_colors entry for: Oligo.1 AA, Oligo.1 EA, Oligo.2 AA, Oligo.2 EA, Oligo.3 AA, Oligo.3 EA, Oligo.4 AA, Oligo.4 EA, Oligo.5 AA, Oligo.5 EA - skipping cluster color annotation
+Rows: 6 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): gene_name
+lgl (1): anno
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Rows: 12 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): gene_name
+lgl (1): anno
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Rows: 20 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): gene_name
+lgl (1): anno
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Rows: 53745 Columns: 12
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): feature, grp
+dbl (10): group, avgExpr, logFC, statistic, auc, pval, padj, pct_in, pct_out...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Joining with `by = join_by(grp)`
+Joining with `by = join_by(gene_name)`
+Saving 7 x 7 in image
+Rows: 114 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): gene_name, anno, grp2, p.signif
+dbl (2): logFC, padj
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+        OR         Pval NumSig SetSize         test fdr_cut DEG_n    ID
+1 8.346211 1.940734e-03      4     110   Oligo.5_up    0.05    47 imOLG
+2 6.603897 1.247513e-14     33     116   Oligo.3_up    0.05   679 imOLG
+3 5.930045 6.033305e-02      2     120     Macro_up    0.05    10 imOLG
+4 5.888676 1.887367e-01      1     120   Macro_down    0.05     5 imOLG
+5 4.801534 2.016250e-01      1     124   Micro.4_up    0.05    13 imOLG
+6 4.555828 7.749228e-02      2      96 Astro.2_down    0.05    48 imOLG
+                                                                                                                                                                                                                                              common_genes
+1                                                                                                                                                                                                                             ABCC4, PTPRC, SAMSN1, CHST11
+2 ZFP36L1, DOCK8, CAMK1D, MEF2C, SAT1, AKAP13, SRGN, ARHGAP26, PLCB1, CHST11, ST6GAL1, SH3RF3, PTPRC, DPP10, ARHGAP15, SLC4A7, KCNIP4, CSF2RA, CELF2, NRG3, APBB1IP, INPP5D, SLCO2B1, SAMSN1, MAP3K5, NHSL1, KCNQ3, DIAPH2, RGS1, OLR1, RAB31, A2M, RASAL2
+3                                                                                                                                                                                                                                            HIF1A, CSF2RA
+4                                                                                                                                                                                                                                                   P2RY12
+5                                                                                                                                                                                                                                                   KCNIP4
+6                                                                                                                                                                                                                                              MAML3, BNC2
+Warning messages:
+1: In .f(.x[[i]], ...) :
+  Vasc.PC - Gene list with n < 25 may have low power: imOLG
+2: In .f(.x[[i]], ...) :
+  Excit.L5_6.NP - Gene list with n < 25 may have low power: imOLG
+3: In .f(.x[[i]], ...) :
+  Inhib.HTR3A - Gene list with n < 25 may have low power: imOLG
+# A tibble: 97 × 7
+   gene_name cluster  vlmf_logFC vlmf_AveExpr vlmf_t vlmf_P.Value vlmf_adj.P.Val
+   <chr>     <fct>         <dbl>        <dbl>  <dbl>        <dbl>          <dbl>
+ 1 ADRA1A    Oligo.5       2.05        2.48     4.30     0.000169         0.0408
+ 2 ADRA1B    Oligo.3       1.33        2.13     2.90     0.00697          0.0615
+ 3 ADRA1A    Oligo.3       1.17        3.48     2.10     0.0442           0.166 
+ 4 ADRA1B    Astro.2       0.696       4.28     2.85     0.00768          0.204 
+ 5 ADRB1     Excit.L…      0.834       2.87     3.24     0.00313          0.208 
+ 6 ADRA1B    Oligo.5       0.972       1.63     1.89     0.0679           0.347 
+ 7 ADRA1B    Astro.1       0.505       4.41     2.23     0.0341           0.430 
+ 8 ADRA1A    Astro.1       0.197       7.53     2.07     0.0483           0.473 
+ 9 ADRA2A    Inhib.S…     -0.975       3.07    -2.32     0.0289           0.481 
+10 ADRM1     Oligo.1      -0.420       3.16    -2.49     0.0189           0.488 
+11 ADRA1A    Astro.2      -0.200       7.83    -1.84     0.0749           0.488 
+12 ADRA1A    Inhib.S…      0.649       6.61     2.15     0.0418           0.517 
+13 ADRA1D    Excit.L…      0.986      -1.45     1.82     0.0800           0.536 
+14 ADRA2C    Inhib.V…     -0.607       1.24    -2.42     0.0222           0.542 
+15 ADRA1A    Oligo.1       0.733       1.43     1.67     0.106            0.663 
+16 ADRA1B    Inhib.V…     -0.228       7.11    -1.90     0.0683           0.678 
+17 ADRA1A    Inhib.P…      0.566       7.00     2.99     0.00621          0.692 
+18 ADRA1A    Excit.L…      1.01        3.20     1.06     0.308            0.707 
+19 ADRA2C    Excit.L…     -0.456       0.0500  -1.25     0.223            0.713 
+20 ADRA1B    Astro.3       0.381       4.30     1.28     0.210            0.748 
+# ℹ 77 more rows
+[1] "Reproducibility information:"
+[1] "2026-11-06 15:04:45 EST"
+   user  system elapsed 
+ 46.689   2.444  54.260 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-11-06
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version date (UTC) lib source
+ abind                  1.4-8   2024-09-12 [2] CRAN (R 4.5.0)
+ Biobase                2.70.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ BiocGenerics           0.56.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ bit                    4.6.0   2025-03-06 [2] CRAN (R 4.5.0)
+ bit64                  4.8.2   2026-05-19 [1] CRAN (R 4.5.0)
+ Cairo                  1.7-0   2025-10-29 [1] CRAN (R 4.5.0)
+ cellranger             1.1.0   2016-07-27 [2] CRAN (R 4.5.0)
+ circlize             * 0.4.18  2026-04-04 [1] CRAN (R 4.5.0)
+ cli                    3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
+ clue                   0.3-68  2026-03-26 [1] CRAN (R 4.5.0)
+ cluster                2.1.8.1 2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20  2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-2   2025-09-22 [1] CRAN (R 4.5.0)
+ ComplexHeatmap       * 2.26.1  2026-02-03 [1] Bioconductor 3.22 (R 4.5.0)
+ crayon                 1.5.3   2024-06-20 [2] CRAN (R 4.5.0)
+ DelayedArray           0.36.1  2026-03-31 [1] Bioconductor 3.22 (R 4.5.0)
+ dichromat              2.0-0.1 2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.39  2025-11-19 [1] CRAN (R 4.5.0)
+ doParallel             1.0.17  2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.2.1   2026-04-03 [1] CRAN (R 4.5.0)
+ farver                 2.1.2   2024-05-13 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.1   2025-09-25 [1] CRAN (R 4.5.0)
+ foreach                1.5.2   2022-02-02 [2] CRAN (R 4.5.0)
+ generics               0.1.4   2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges          1.62.1  2025-12-08 [1] Bioconductor 3.22 (R 4.5.0)
+ getopt               * 1.21.1  2026-04-27 [1] CRAN (R 4.5.0)
+ GetoptLong             1.1.1   2026-04-08 [1] CRAN (R 4.5.0)
+ ggplot2              * 4.0.3   2026-04-22 [1] CRAN (R 4.5.0)
+ ggrepel              * 0.9.8   2026-03-17 [1] CRAN (R 4.5.0)
+ GlobalOptions          0.1.4   2026-04-08 [1] CRAN (R 4.5.0)
+ glue                   1.8.1   2026-04-17 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6   2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2   2025-09-15 [1] CRAN (R 4.5.0)
+ hms                    1.1.4   2025-10-17 [1] CRAN (R 4.5.0)
+ IRanges                2.44.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ iterators              1.0.14  2022-02-05 [2] CRAN (R 4.5.0)
+ labeling               0.4.3   2023-08-29 [2] CRAN (R 4.5.0)
+ lattice                0.22-7  2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.5   2026-01-08 [1] CRAN (R 4.5.0)
+ lubridate            * 1.9.5   2026-02-04 [1] CRAN (R 4.5.0)
+ magick                 2.9.1   2026-02-28 [1] CRAN (R 4.5.0)
+ magrittr               2.0.5   2026-04-04 [1] CRAN (R 4.5.0)
+ Matrix                 1.7-3   2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics         1.22.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ matrixStats            1.5.0   2025-01-07 [2] CRAN (R 4.5.0)
+ pillar                 1.11.1  2025-09-17 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3   2019-09-22 [2] CRAN (R 4.5.0)
+ png                    0.1-9   2026-03-15 [1] CRAN (R 4.5.0)
+ purrr                * 1.2.1   2026-01-09 [1] CRAN (R 4.5.0)
+ R6                     2.6.1   2025-02-15 [2] CRAN (R 4.5.0)
+ ragg                   1.5.2   2026-03-23 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3   2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.1   2026-01-10 [1] CRAN (R 4.5.0)
+ readr                * 2.2.0   2026-02-19 [1] CRAN (R 4.5.0)
+ readxl                 1.4.5   2025-03-07 [2] CRAN (R 4.5.0)
+ rjson                  0.2.23  2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.2.0   2026-04-06 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.1   2025-08-26 [1] CRAN (R 4.5.0)
+ S4Arrays               1.10.1  2025-12-01 [1] Bioconductor 3.22 (R 4.5.0)
+ S4Vectors              0.48.1  2026-04-05 [1] Bioconductor 3.22 (R 4.5.0)
+ S7                     0.2.2   2026-04-22 [1] CRAN (R 4.5.0)
+ scales                 1.4.0   2025-04-24 [2] CRAN (R 4.5.0)
+ Seqinfo                1.0.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ sessioninfo          * 1.2.4   2026-06-04 [1] CRAN (R 4.5.0)
+ shape                  1.4.6.1 2024-02-23 [2] CRAN (R 4.5.0)
+ SingleCellExperiment   1.32.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ SparseArray            1.10.10 2026-03-30 [1] Bioconductor 3.22 (R 4.5.0)
+ stringi                1.8.7   2025-03-27 [2] CRAN (R 4.5.0)
+ stringr              * 1.6.0   2025-11-04 [1] CRAN (R 4.5.0)
+ SummarizedExperiment   1.40.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+ systemfonts            1.3.2   2026-03-05 [1] CRAN (R 4.5.0)
+ textshaping            1.0.5   2026-03-06 [1] CRAN (R 4.5.0)
+ tibble               * 3.3.1   2026-01-11 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.2   2025-12-19 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1   2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0   2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.4.0   2026-01-29 [1] CRAN (R 4.5.0)
+ tzdb                   0.5.0   2025-03-15 [2] CRAN (R 4.5.0)
+ utf8                   1.2.6   2025-06-08 [1] CRAN (R 4.5.0)
+ vctrs                  0.7.3   2026-04-11 [1] CRAN (R 4.5.0)
+ vroom                  1.7.1   2026-03-31 [1] CRAN (R 4.5.0)
+ withr                  3.0.2   2024-10-28 [2] CRAN (R 4.5.0)
+ XVector                0.50.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
+
+ [1] /users/lhuuki/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Fri Nov  6 03:04:46 PM EST 2026
