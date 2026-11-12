@@ -38,19 +38,19 @@ if(file.exists(pb_file)) {
     message(Sys.time(), " - make pseudobulk object")
     ## aggregateAcrossCells keeps per-cell sample_id on a SpatialExperiment, which
     ## cannot map uniquely onto xSpD groups, so aggregate a plain SCE instead
-    spe_in <- SingleCellExperiment(
+    sce_in <- SingleCellExperiment(
         assays = list(counts = counts(spe)),
         colData = DataFrame(xSpD = spe$xSpD),
         metadata = list(SpX_colors = metadata(spe)$SpX_colors)
     )
     spe_pb <- scuttle::aggregateAcrossCells(
-        spe_in,
+        sce_in,
         DataFrame(
-            xSpD = spe_in$xSpD
+            xSpD = sce_in$xSpD
         )
     )
     
-    rm(spe, spe_in)
+    rm(spe, sce_in)
 
     colnames(spe_pb) <- spe_pb$xSpD
 
