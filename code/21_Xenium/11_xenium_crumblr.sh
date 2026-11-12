@@ -27,7 +27,8 @@ module load conda_R/4.5.x
 module list
 
 ## Edit with your job command
-Rscript 11_xenium_crumblr.R
+Rscript 11_xenium_crumblr.R --cluster xSpD
+Rscript 11_xenium_crumblr.R --cluster cell_type
 
 echo "**** Job ends ****"
 date
