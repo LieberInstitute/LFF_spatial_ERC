@@ -6,6 +6,7 @@
 library("here")
 library("sessioninfo")
 library("SpatialExperiment")
+library("SingleCellExperiment")
 library("qs2")
 library("scuttle")
 library("edgeR")
@@ -32,15 +33,24 @@ if(file.exists(pb_file)) {
     stopifnot("xSpD" %in% colnames(colData(spe)))
 
     table(spe$xSpD)
+    table(spe$sample_id)
 
     message(Sys.time(), " - make pseudobulk object")
+    ## aggregateAcrossCells keeps per-cell sample_id on a SpatialExperiment, which
+    ## cannot map uniquely onto xSpD groups, so aggregate a plain SCE instead
+    spe_in <- SingleCellExperiment(
+        assays = list(counts = counts(spe)),
+        colData = DataFrame(xSpD = spe$xSpD),
+        metadata = list(SpX_colors = metadata(spe)$SpX_colors)
+    )
     spe_pb <- scuttle::aggregateAcrossCells(
-        spe,
+        spe_in,
         DataFrame(
-            xSpD = spe$xSpD
+            xSpD = spe_in$xSpD
         )
     )
-    rm(spe)
+    
+    rm(spe, spe_in)
 
     colnames(spe_pb) <- spe_pb$xSpD
 
@@ -140,6 +150,8 @@ legend(
     bty = "n"
 )
 dev.off()
+
+# slurmjobs::job_single('24_xenium_xSpD_pseudobulk_hclust', create_shell = TRUE, memory = '50G', command = "Rscript 24_xenium_xSpD_pseudobulk_hclust.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
