@@ -302,7 +302,7 @@ if(datatype == "sn_fine"){
                                 text = TRUE, 
                                 highlight_genes = "CD74") +
       geom_point(size = 1) +
-      labs(subtitle = "Jakel et al., 2019 imOLG markers")
+      labs(subtitle = "Jäkel et al., 2019 imOLG markers")
     
     ggsave(vol_imOLG, 
            filename = here(plot_dir, sprintf("Volcano_%s_%s-%s_imOGL.png", datatype, "carrier", "Oligo.3")), 
