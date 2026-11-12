@@ -133,8 +133,8 @@ unfiltered_sig_df = read_csv(unfiltered_path, show_col_types = FALSE) |>
     ) |>
     select(
         source, target, ligand_complex, receptor_complex, `lr_mean_E2+`,
-        `lr_mean_E4+`, is_nom_sig, avg_lr_mean, lr_mean_diff, higher_in,
-        abs_lr_mean_diff
+        `lr_mean_E4+`, p_value, is_nom_sig, avg_lr_mean, lr_mean_diff,
+        higher_in, abs_lr_mean_diff
     )
 
 write_csv(unfiltered_sig_df, out_path)
