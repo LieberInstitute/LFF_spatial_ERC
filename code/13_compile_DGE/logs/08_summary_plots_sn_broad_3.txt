@@ -1,12 +1,17 @@
 **** Job starts ****
-Fri Nov  6 12:07:18 PM EST 2026
+Fri Nov  6 03:03:49 PM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 36912874
+Job id: 36914795
 Job name: 08_summary_plots
-Node name: compute-093
+Node name: compute-176
 Task id: 3
+Unloading conda_R/4.5.x
 Loading conda_R/4.5
+
+The following have been reloaded with a version change:
+  1) conda_R/4.5.x => conda_R/4.5
+
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
@@ -43,6 +48,20 @@ complex heatmaps into an interactive Shiny app with zero effort. Have a try!
 
 This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+========================================
+circlize version 0.4.18
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
 ========================================
 
 Loading objects:
@@ -102,9 +121,9 @@ null device
 20 ADRA1D    Inhib        0.284        3.02   1.31      0.201            0.785 
 # ℹ 19 more rows
 [1] "Reproducibility information:"
-[1] "2026-11-06 12:07:51 EST"
+[1] "2026-11-06 15:04:05 EST"
    user  system elapsed 
- 28.657   1.454  31.027 
+ 13.715   0.741  15.413 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -125,7 +144,7 @@ null device
  Biobase                2.70.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  BiocGenerics           0.56.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.0)
  Cairo                  1.7-0   2025-10-29 [1] CRAN (R 4.5.0)
- circlize               0.4.18  2026-04-04 [1] CRAN (R 4.5.0)
+ circlize             * 0.4.18  2026-04-04 [1] CRAN (R 4.5.0)
  cli                    3.6.6   2026-04-09 [1] CRAN (R 4.5.0)
  clue                   0.3-68  2026-03-26 [1] CRAN (R 4.5.0)
  cluster                2.1.8.1 2025-03-12 [3] CRAN (R 4.5.0)
@@ -207,4 +226,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Nov  6 12:07:51 PM EST 2026
+Fri Nov  6 03:04:05 PM EST 2026
