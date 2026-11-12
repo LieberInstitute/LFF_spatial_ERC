@@ -21,11 +21,14 @@ scec <- matrix(
     ncol = 5, byrow = TRUE
 )
 opt <- getopt(scec)
+
+# opt$cluster <- "xSpD"
 if(is.null(opt$cluster)) opt$cluster <- "cell_type"
 stopifnot(opt$cluster %in% c("cell_type", "xSpD"))
 
 is_cell_type <- opt$cluster == "cell_type"
 clus_var <- ifelse(is_cell_type, "cell_type_anno", "xSpD")
+
 clus_suffix <- ifelse(is_cell_type, "", paste0("-", opt$cluster))
 
 ## Hierarchical clustering used as the tree for treeTest
@@ -75,7 +78,7 @@ if(is_cell_type) {
         select(-exp_round, -seq_round) |>
         inner_join(rcdt_results_summary |> rename(cell_type_anno = cluster))
 
-    write_csv(cell_type_proportions_xenium, here(data_dir, "cell_type_proportions_xenium.csv"))
+    write_csv(cell_type_proportions_xenium, here(data_dir, sprintf("cell_type_proportions_xenium%s.csv", clus_suffix)))
 
     sn_vs_xenium_n_scatter <- cell_type_proportions_xenium |>
         ggplot(aes(n, xenium_n, color = cell_type_anno)) +
@@ -84,7 +87,7 @@ if(is_cell_type) {
         facet_wrap(~cell_type_broad, scales = "free") +
         theme_bw()
 
-    ggsave(sn_vs_xenium_n_scatter, filename = here(plot_dir, "xenium_rctd_vs_sn_cell_type_n.png"), height = 10, width = 10)
+    ggsave(sn_vs_xenium_n_scatter, filename = here(plot_dir, sprintf("xenium_rctd_vs_sn_cell_type_n%s.png", clus_suffix)), height = 10, width = 10)
 
     sn_vs_xenium_prop_scatter <- cell_type_proportions_xenium |>
         ggplot(aes(prop, xenium_prop, color = cell_type_anno)) +
@@ -93,7 +96,7 @@ if(is_cell_type) {
         facet_wrap(~cell_type_broad, scales = "free") +
         theme_bw()
 
-    ggsave(sn_vs_xenium_prop_scatter, filename = here(plot_dir, "xenium_rctd_vs_sn_cell_type_prop.png"), height = 10, width = 10)
+    ggsave(sn_vs_xenium_prop_scatter, filename = here(plot_dir, sprintf("xenium_rctd_vs_sn_cell_type_prop%s.png", clus_suffix)), height = 10, width = 10)
 
     sn_vs_xenium_prop_boxplot <- cell_type_proportions_xenium |>
         ungroup() |>
@@ -105,7 +108,7 @@ if(is_cell_type) {
         theme_bw() +
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-    ggsave(sn_vs_xenium_prop_boxplot, filename = here(plot_dir, "xenium_rctd_vs_sn_cell_type_prop_boxplot.png"), height = 7, width = 15)
+    ggsave(sn_vs_xenium_prop_boxplot, filename = here(plot_dir, sprintf("xenium_rctd_vs_sn_cell_type_prop_boxplot%s.png", clus_suffix)), height = 7, width = 15)
 
     ## only keep xenium cell types that have a snRNA match
     prop_xenium <- cell_type_proportions_xenium |>
@@ -166,14 +169,14 @@ fig.vp <- plotPercentBars(vp)
 ggsave(fig.vp + 
            theme_bw() + 
            theme(legend.position = "bottom"),
-       filename = here(plot_dir, "xenium_crumblr_cell_type_vp.png"), width = 4.5, height = 7)
+       filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_vp%s.png", clus_suffix)), width = 4.5, height = 7)
 
 #### variable correlation ####
 message(Sys.time(), "- Check variable cor")
 
 C <- canCorPairs(form, erc_info)
 # APOE and APOE_carrier
-pdf(here(plot_dir, "xenium_variable_CorrMatrix.pdf"), height = 5, width = 5)
+pdf(here(plot_dir, sprintf("xenium_variable_CorrMatrix%s.pdf", clus_suffix)), height = 5, width = 5)
 plotCorrMatrix(C)
 dev.off()
 
@@ -196,9 +199,10 @@ cobj_pca <- ggplot(df_pca, aes(PC1, PC2, color = Run, shape = APOE)) +
     theme(aspect.ratio = 1) +
     scale_color_discrete(name = "Subject") +
     xlab("PC1") +
-    ylab("PC2")
+    ylab("PC2") +
+    ggrepel::geom_text_repel(aes(label = Row.names))
 
-ggsave(cobj_pca, filename = here(plot_dir, "xenium_crumblr_pca.png"))
+ggsave(cobj_pca, filename = here(plot_dir, sprintf("xenium_crumblr_pca%s.png", clus_suffix)))
 
 #### CLR plots ####
 message(Sys.time(), "- CLR plots")
@@ -219,7 +223,7 @@ clr_boxplot_APOE <- clr_prop_long |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave(clr_boxplot_APOE, filename = here(plot_dir, "xenium_clr_boxplot_APOE.png"), width = 10)
+ggsave(clr_boxplot_APOE, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE%s.png", clus_suffix)), width = 10)
 
 clr_boxplot_APOE_jitter <- clr_prop_long |>
     ggplot(aes(x = APOE, y = CLR, fill = APOE)) +
@@ -230,7 +234,7 @@ clr_boxplot_APOE_jitter <- clr_prop_long |>
     theme_bw()+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave(clr_boxplot_APOE_jitter, filename = here(plot_dir, "xenium_clr_boxplot_APOE_jitter.png"), width = 10)
+ggsave(clr_boxplot_APOE_jitter, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_jitter%s.png", clus_suffix)), width = 10)
 
 clr_boxplot_APOE_carrier <- clr_prop_long |>
     ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
@@ -241,7 +245,7 @@ clr_boxplot_APOE_carrier <- clr_prop_long |>
     scale_fill_manual(values = APOE_carrier_colors) +
     theme_bw()
 
-ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier.png"))
+ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s.png", clus_suffix)))
 
 clr_boxplot_chip <- clr_prop_long |>
     ggplot(aes(x = chip, y = CLR, fill = Run)) +
@@ -252,12 +256,12 @@ clr_boxplot_chip <- clr_prop_long |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-ggsave(clr_boxplot_chip, filename = here(plot_dir, "xenium_clr_boxplot_chip.png"))
+ggsave(clr_boxplot_chip, filename = here(plot_dir, sprintf("xenium_clr_boxplot_chip%s.png", clus_suffix)))
 
 #### Save CLR + proprotion data ####
 message(Sys.time(), "Save data")
 
-write_csv(clr_prop_long, here(data_dir, "xenium_clr_prop_long.csv"))
+write_csv(clr_prop_long, here(data_dir, sprintf("xenium_clr_prop_long%s.csv", clus_suffix)))
 
 #### Run DREAM + eBayes on cobj ####
 message(Sys.time(), "- Run DREAM + eBayes")
@@ -282,7 +286,7 @@ load(tree_file, verbose = TRUE)
 # Micro.1          -1.269563402 -3.4182770 -2.37828394 0.03677932 0.3026889 -3.606209
 # Excit.L2          0.679411326  1.5634345  2.17298967 0.05269257 0.3026889 -4.005760
 
-write.csv(diff_prop_APOE_carrier, file = here(data_dir, "xenium_diff_prop_APOE_carrier.csv"))
+write.csv(diff_prop_APOE_carrier, file = here(data_dir, sprintf("xenium_diff_prop_APOE_carrier%s.csv", clus_suffix)))
 
 
 #### cleanY on cobj  APOE_carrier ####
@@ -307,11 +311,12 @@ res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
 res_tb <- res |> as_tibble()
 
-res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_APOE_carrier.csv"))
+res_tb |> arrange(FDR) |> select(label, beta, pvalue, FDR)
+res_tb |> write_csv(here(data_dir, sprintf("xenium_diff_prop_tree_test_APOE_carrier%s.csv", clus_suffix)))
 
 # Plot hierarchy and testing results
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
+nominal_fdr_cut <-
 # nominal_fdr_cut <- nominal_fdr_cut + 0.0001 ## add buffer for plot cutoff
 
 res_tb |> filter(FDR < nominal_fdr_cut) |> select(label, beta,pvalue, FDR)
@@ -319,7 +324,7 @@ res_tb |> filter(FDR < nominal_fdr_cut) |> select(label, beta,pvalue, FDR)
 res_tb |> count(FDR < nominal_fdr_cut)
 
 tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_APOE_carrier_Tree_FDR.png"))
+ggsave(tree_fdr_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_Tree_FDR%s.png", clus_suffix)))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.cutoff = nominal_fdr_cut) +
@@ -327,11 +332,11 @@ tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.c
           # legend.box = "vertical"
     )
 
-ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_APOE_carrier_Tree_beta.png"), width = 4, height = 7)
+ggsave(tree_beta_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_Tree_beta%s.png", clus_suffix)), width = 4, height = 7)
 
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE, low = "#398A84", high = "#D46B43") 
-ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_APOE_carrier_forest.png"), width = 4, height = 7)
+ggsave(forest_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_forest%s.png", clus_suffix)), width = 4, height = 7)
 
 if(is_cell_type) {
     ## clr plot of top results
@@ -348,7 +353,7 @@ if(is_cell_type) {
         theme(legend.position = "None") +
         labs(y = "Xenium CLR cleanY")
 
-    ggsave(clr_boxplot_APOE_carrier_Excit , filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Excit.png"), height = 4, width = 4)
+    ggsave(clr_boxplot_APOE_carrier_Excit , filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier_Excit%s.png", clus_suffix)), height = 4, width = 4)
 
     clr_boxplot_APOE_carrier_OligoOPC <- clr_prop_long |>
         filter(cluster %in% c("Oligo.1", "Oligo.2", "Oligo.3", "OPC.5")) |>
@@ -363,7 +368,7 @@ if(is_cell_type) {
         theme(legend.position = "None")  +
         labs(y = "Xenium CLR cleanY")
 
-    ggsave(clr_boxplot_APOE_carrier_OligoOPC, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_OligoOPC.png"), height = 4, width = 8)
+    ggsave(clr_boxplot_APOE_carrier_OligoOPC, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier_OligoOPC%s.png", clus_suffix)), height = 4, width = 8)
 
     clr_boxplot_APOE_carrier_OligoOPC_color <- clr_prop_long |>
         filter(cluster %in% c("Oligo.1", "Oligo.2", "Oligo.3", "OPC.5")) |>
@@ -377,7 +382,7 @@ if(is_cell_type) {
         scale_color_manual(values = APOE_genotype_colors) +
         theme_bw() 
 
-    ggsave(clr_boxplot_APOE_carrier_OligoOPC_color, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_OligoOPC_color.png"), height = 4, width = 8)
+    ggsave(clr_boxplot_APOE_carrier_OligoOPC_color, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier_OligoOPC_color%s.png", clus_suffix)), height = 4, width = 8)
 
     prop_boxplot_APOE_carrier_Oligo <- clr_prop_long |>
         filter(grepl("Oligo", cluster)) |>
@@ -393,7 +398,7 @@ if(is_cell_type) {
         # theme(legend.position = "None") +
         labs(y = "Xenium prop")
 
-    ggsave(prop_boxplot_APOE_carrier_Oligo, filename = here(plot_dir, "xenium_prop_boxplot_APOE_carrier_Oligo.png"), height = 4, width = 8)
+    ggsave(prop_boxplot_APOE_carrier_Oligo, filename = here(plot_dir, sprintf("xenium_prop_boxplot_APOE_carrier_Oligo%s.png", clus_suffix)), height = 4, width = 8)
 
     prop_boxplot_APOE_carrier_OPC <- clr_prop_long |>
         filter(grepl("OPC", cluster)) |>
@@ -409,7 +414,7 @@ if(is_cell_type) {
         # theme(legend.position = "None") +
         labs(y = "Xenium prop")
 
-    ggsave(prop_boxplot_APOE_carrier_OPC, filename = here(plot_dir, "xenium_prop_boxplot_APOE_carrier_OPC.png"), height = 4, width = 8)
+    ggsave(prop_boxplot_APOE_carrier_OPC, filename = here(plot_dir, sprintf("xenium_prop_boxplot_APOE_carrier_OPC%s.png", clus_suffix)), height = 4, width = 8)
 
     clr_boxplot_APOE_carrier_Micro <- clr_prop_long |>
         filter(grepl("Micro", cluster)) |>
@@ -422,7 +427,7 @@ if(is_cell_type) {
         theme_bw() +
         theme(legend.position = "None")
 
-    ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_APOE_carrier_Micro.png"), height = 4, width = 8)
+    ggsave(clr_boxplot_APOE_carrier_Micro, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier_Micro%s.png", clus_suffix)), height = 4, width = 8)
 }
 
 if(is_cell_type) {
@@ -474,10 +479,10 @@ if(is_cell_type) {
         labs(x = "snRNA-seq beta", y = "Xenium beta") 
 
     ggsave(tree_compare_beta_scatter, 
-           filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier.png"), width = 6, height = 5)
+           filename = here(plot_dir, sprintf("tree_compare_beta_scatter_APOE_carrier%s.png", clus_suffix)), width = 6, height = 5)
 
     ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1), 
-           filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier_facet.png"), width = 11, height = 5)
+           filename = here(plot_dir, sprintf("tree_compare_beta_scatter_APOE_carrier_facet%s.png", clus_suffix)), width = 11, height = 5)
 
 
     tree_compare_beta_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
@@ -489,7 +494,7 @@ if(is_cell_type) {
         theme_bw()  +
         labs(x = "snRNA-seq beta", y = "Xenium beta") 
 
-    ggsave(tree_compare_beta_scatter_ct_broad, filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier_ct_broad.png"), width = 6, height = 5)
+    ggsave(tree_compare_beta_scatter_ct_broad, filename = here(plot_dir, sprintf("tree_compare_beta_scatter_APOE_carrier_ct_broad%s.png", clus_suffix)), width = 6, height = 5)
 
 
     tree_compare_stat_scatter_ct_broad <- diff_prop_tree_APOE_carrier_compare |>
@@ -503,13 +508,15 @@ if(is_cell_type) {
         labs(x = "snRNA-seq stat", y = "Xenium stat") 
         # facet_wrap(~type)
 
-    ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, "tree_compare_stat_scatter_APOE_carrier_ct_broad.png"))
+    ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, sprintf("tree_compare_stat_scatter_APOE_carrier_ct_broad%s.png", clus_suffix)))
 }
 
 #### fit Sex ####
+fit_sex <- dream(cobj, ~ APOE_carrier + Age + Sex + Anc_Afr + chip , erc_info) 
+fit_sex <- eBayes(fit = fit_sex)
 
 # Extract results for each cluster
-(diff_prop_Sex <- topTable(fit, coef = "SexM", number = Inf))
+(diff_prop_Sex <- topTable(fit_sex, coef = "SexM", number = Inf))
 
 #                   logFC     AveExpr           t     P.Value  adj.P.Val         B
 # Macro             1.99051694 -0.6335688  2.43415100 0.03533249 0.7314477 -4.509818
@@ -518,32 +525,32 @@ if(is_cell_type) {
 # Micro.1           1.71162443 -3.4181275  1.81243561 0.10018125 0.7314477 -4.529114
 # Excit.L2_5.1     -1.01489921  0.7277704 -1.77773943 0.10599298 0.7314477 -4.557097
 
-write.csv(diff_prop_Sex, file = here(data_dir, "diff_prop_Sex.csv"))
+write.csv(diff_prop_Sex, file = here(data_dir, sprintf("diff_prop_Sex%s.csv", clus_suffix)))
 
 # Perform multivariate test across the hierarchy
-res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "SexM")
+res <- treeTest(fit_sex, cobj, tree.clusCollapsed, coef = "SexM")
 
 res_tb <- res |> as_tibble()
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
+res_tb |> write_csv(here(data_dir, sprintf("xenium_diff_prop_tree_test_Sex%s.csv", clus_suffix)))
 
 # res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Sex.csv"))
 
 # Plot hierarchy and testing results
 tree_fdr_plot <- plotTreeTest(res)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_FDR.png"))
+ggsave(tree_fdr_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_Sex_Tree_FDR%s.png", clus_suffix)))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, low = sex_colors[['F']], high = sex_colors[['M']]) +
     theme(legend.position = "left"
           # legend.box = "vertical"
     )
-ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_Tree_beta.png"), width = 4, height = 7)
+ggsave(tree_beta_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_Sex_Tree_beta%s.png", clus_suffix)), width = 4, height = 7)
 
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE, low = sex_colors[['F']], high = sex_colors[['M']])
-ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_forest.png"), width = 4, height = 7)
+ggsave(forest_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_Sex_forest%s.png", clus_suffix)), width = 4, height = 7)
 
 
 # combined_fig <- fig.vp +
@@ -556,8 +563,8 @@ ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Sex_fore
 
 #### Plot cleanY on cobj Sex ####
 
-mod <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + chip , erc_info)
-cleanY_cobj_sex <- jaffelab::cleaningY(cobj$E , mod, P=3)
+mod_sex <- model.matrix( ~ APOE_carrier + Sex +  Age + Anc_Afr + chip , erc_info)
+cleanY_cobj_sex <- jaffelab::cleaningY(cobj$E , mod_sex, P=3)
 
 clr_prop_long <- clr_prop_long |>
     left_join(cleanY_cobj_sex |>
@@ -578,7 +585,7 @@ if(is_cell_type) {
         theme_bw() +
         theme(legend.position = "None")
 
-    ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, "xenium_clr_boxplot_Sex_Micro.png"), height = 4, width = 6)
+    ggsave(clr_boxplot_Sex_Micro , filename = here(plot_dir, sprintf("xenium_clr_boxplot_Sex_Micro%s.png", clus_suffix)), height = 4, width = 6)
 
     clr_boxplot_Sex_Oligo <- clr_prop_long |>
         filter(grepl("Oligo", cluster)) |>
@@ -590,7 +597,7 @@ if(is_cell_type) {
         theme_bw() +
         theme(legend.position = "None")
 
-    ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_Oligo.png"), height = 4, width = 6)
+    ggsave(clr_boxplot_Sex_Oligo, filename = here(plot_dir, sprintf("xenium_clr_boxplot_Sex_Oligo%s.png", clus_suffix)), height = 4, width = 6)
 }
 
 
@@ -620,7 +627,7 @@ if(is_cell_type) {
         theme(legend.position = "None",
               axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-    ggsave(clr_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+    ggsave(clr_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, sprintf("xenium_clr_boxplot_Sex_carrier_Oligo%s.png", clus_suffix)), height = 4, width = 6)
 
     ## plot prop
     prop_boxplot_Sex_carrier_Oligo <- clr_prop_long |>
@@ -635,7 +642,7 @@ if(is_cell_type) {
         theme(legend.position = "None",
               axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-    ggsave(prop_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, "xenium_prop_boxplot_Sex_carrier_Oligo.png"), height = 4, width = 6)
+    ggsave(prop_boxplot_Sex_carrier_Oligo, filename = here(plot_dir, sprintf("xenium_prop_boxplot_Sex_carrier_Oligo%s.png", clus_suffix)), height = 4, width = 6)
 
 
     clr_boxplot_Sex_carrier_Astro <- clr_prop_long |>
@@ -650,7 +657,7 @@ if(is_cell_type) {
         theme(legend.position = "None",
               axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-    ggsave(clr_boxplot_Sex_carrier_Astro, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Astro.png"), height = 4, width = 6)
+    ggsave(clr_boxplot_Sex_carrier_Astro, filename = here(plot_dir, sprintf("xenium_clr_boxplot_Sex_carrier_Astro%s.png", clus_suffix)), height = 4, width = 6)
 
     clr_boxplot_Sex_carrier_Micro <- clr_prop_long |>
         filter(grepl("Micro", cluster)) |>
@@ -664,7 +671,7 @@ if(is_cell_type) {
         theme(legend.position = "None",
               axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
-    ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "xenium_clr_boxplot_Sex_carrier_Micro.png"), height = 4, width = 6)
+    ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, sprintf("xenium_clr_boxplot_Sex_carrier_Micro%s.png", clus_suffix)), height = 4, width = 6)
 }
 
 if(is_cell_type) {
@@ -706,10 +713,10 @@ if(is_cell_type) {
         labs(x = "snRNA-seq beta", y = "Xenium beta", title = "Crumblr: ~Sex")
 
     ggsave(tree_compare_beta_scatter,
-           filename = here(plot_dir, "tree_compare_beta_scatter_Sex.png"), width = 6, height = 5)
+           filename = here(plot_dir, sprintf("tree_compare_beta_scatter_Sex%s.png", clus_suffix)), width = 6, height = 5)
 
     ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1),
-           filename = here(plot_dir, "tree_compare_beta_scatter_Sex_facet.png"), width = 11, height = 5)
+           filename = here(plot_dir, sprintf("tree_compare_beta_scatter_Sex_facet%s.png", clus_suffix)), width = 11, height = 5)
 }
 
 
@@ -724,7 +731,7 @@ message(Sys.time(), " - Fit Age")
 # Astro.4           0.0437897522  1.0228549  1.92446545 0.08336477 0.9377408 -4.762592
 # Micro.4          -0.0478180550 -3.3833630 -1.86252019 0.09230820 0.9377408 -5.250839
 
-write.csv(diff_prop_Age, file = here(data_dir, "xenium_diff_prop_Age.csv"))
+write.csv(diff_prop_Age, file = here(data_dir, sprintf("xenium_diff_prop_Age%s.csv", clus_suffix)))
 
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
@@ -732,7 +739,7 @@ res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
 res_tb <- res |> as_tibble()
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
-res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
+res_tb |> write_csv(here(data_dir, sprintf("xenium_diff_prop_tree_test_Age%s.csv", clus_suffix)))
 
 # res_tb <- read_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
 
@@ -740,18 +747,18 @@ res_tb |> write_csv(here(data_dir, "xenium_diff_prop_tree_test_Age.csv"))
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
 
 tree_fdr_plot <- plotTreeTest(res, fdr.cutoff = nominal_fdr_cut)
-ggsave(tree_fdr_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_FDR.png"))
+ggsave(tree_fdr_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_Age_Tree_FDR%s.png", clus_suffix)))
 
 # Plot hierarchy and regression coefficients
 tree_beta_plot <- plotTreeTestBeta(res, fdr.cutoff = nominal_fdr_cut) +
     theme(legend.position = "left" 
           # legend.box = "vertical"
     )
-ggsave(tree_beta_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_Tree_beta.png"), width = 4, height = 7)
+ggsave(tree_beta_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_Age_Tree_beta%s.png", clus_suffix)), width = 4, height = 7)
 
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE) 
-ggsave(forest_plot, filename = here(plot_dir, "xenium_crumblr_cell_type_Age_forest.png"), width = 4, height = 7)
+ggsave(forest_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_Age_forest%s.png", clus_suffix)), width = 4, height = 7)
 
 #### Plot cleanY CLR for Age ####
 message(Sys.time(), " - cleanY Age")
@@ -791,7 +798,7 @@ if(is_cell_type) {
         facet_wrap(~cluster, nrow = 1) +
         theme_bw() 
 
-    ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, "xenium_clr_sactter_Age_Oligo.png"), height = 4, width =10)
+    ggsave(clr_sactter_Age_Oligo, filename = here(plot_dir, sprintf("xenium_clr_sactter_Age_Oligo%s.png", clus_suffix)), height = 4, width =10)
 
     clr_sactter_Age_Oligo_APOE <- clr_prop_long |>
         filter(grepl("Oligo", cluster)) |>
@@ -803,7 +810,7 @@ if(is_cell_type) {
         theme_bw() +
         theme(legend.position = "bottom")
 
-    ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, "xenium_clr_sactter_Age_Oligo_APOE.png"), height = 4, width =10)
+    ggsave(clr_sactter_Age_Oligo_APOE, filename = here(plot_dir, sprintf("xenium_clr_sactter_Age_Oligo_APOE%s.png", clus_suffix)), height = 4, width =10)
 
     #### compare to snRNA-seq crumblr Age tests ####
     message(Sys.time(), " - compare to snRNA-seq crumblr Age")
@@ -845,10 +852,10 @@ if(is_cell_type) {
         labs(x = "snRNA-seq beta", y = "Xenium beta", title = "Crumblr: ~Age") 
 
     ggsave(tree_compare_beta_scatter, 
-           filename = here(plot_dir, "tree_compare_beta_scatter_Age.png"), width = 6, height = 5)
+           filename = here(plot_dir, sprintf("tree_compare_beta_scatter_Age%s.png", clus_suffix)), width = 6, height = 5)
 
     ggsave(tree_compare_beta_scatter + facet_wrap(~type, nrow = 1), 
-           filename = here(plot_dir, "tree_compare_beta_scatter_Age_facet.png"), width = 11, height = 5)
+           filename = here(plot_dir, sprintf("tree_compare_beta_scatter_Age_facet%s.png", clus_suffix)), width = 11, height = 5)
 
     #### export diff_prop_tree_*_compare tables ####
 
@@ -858,7 +865,7 @@ if(is_cell_type) {
         diff_prop_tree_Age_compare
     )
 
-    diff_prop_tree_compare |> write_csv(here(data_dir, "ERC_xenium_sn_diff_prop_tree_compare.csv"))
+    diff_prop_tree_compare |> write_csv(here(data_dir, sprintf("ERC_xenium_sn_diff_prop_tree_compare%s.csv", clus_suffix)))
 }
 
 
