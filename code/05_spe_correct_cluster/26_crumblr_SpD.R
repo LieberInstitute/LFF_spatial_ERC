@@ -10,6 +10,8 @@ library("sessioninfo")
 library("dendextend")
 library("jaffelab")
 
+source(here("code", "utils", "plot_forest_ordered.R"))
+
 ## Prep directories
 plot_dir <- here("plots", "05_spe_correct_cluster", "26_crumblr_SpD")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
@@ -165,7 +167,7 @@ fit <- dream(cobj, ~ APOE_carrier + Sex + Anc_Afr + Age + Visium_slide, erc_info
 fit <- eBayes(fit)
 
 # Test APOE carrier
-(diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
+(diff_prop_APOE_carrier <- topTableWithSE(fit, coef = "APOE_carrierE4+"))
 #              logFC    AveExpr           t    P.Value adj.P.Val         B
 # vWMd   -0.69198449 -0.7925698 -2.30943789 0.03000760 0.3300836 -3.524001
 # vL2     0.48733930  0.2590005  1.79309029 0.08580174 0.3959066 -4.118591
@@ -213,7 +215,8 @@ ggsave(clr_cleanY_boxplot_APOE_carrier, filename = here(plot_dir, "clr_cleanY_bo
 # Perform multivariate test across the hierarchy - APOE_carrier
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
-res_tb <- res |> as_tibble()
+# Include the approximate 95% interval endpoints used by plotForest.
+res_tb <- forest_intervals(res)
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "SpD_diff_prop_tree_test_APOE_carrier.csv"))
 

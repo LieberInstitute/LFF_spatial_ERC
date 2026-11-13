@@ -15,6 +15,8 @@ library("crumblr")
 library("variancePartition")
 library("getopt")
 
+source(here("code", "utils", "plot_forest_ordered.R"))
+
 # Import command-line parameters
 scec <- matrix(
     c("cluster", "c", "1", "character", "Name of cluster: cell_type (default) or xSpD"),
@@ -277,7 +279,7 @@ load(tree_file, verbose = TRUE)
 #  then use eBayes to shrink residual variance
 
 # Extract results for each cluster
-(diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
+(diff_prop_APOE_carrier <- topTableWithSE(fit, coef = "APOE_carrierE4+"))
 
 #                         logFC    AveExpr           t    P.Value adj.P.Val         B
 # Astro.5           0.536476892  2.6131444  3.01008684 0.01196180 0.3026889 -3.403692
@@ -309,7 +311,8 @@ message('Fit APOE carrier')
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
-res_tb <- res |> as_tibble()
+# Include the approximate 95% interval endpoints used by plotForest.
+res_tb <- forest_intervals(res)
 
 res_tb |> arrange(FDR) |> select(label, beta, pvalue, FDR)
 res_tb |> write_csv(here(data_dir, sprintf("xenium_diff_prop_tree_test_APOE_carrier%s.csv", clus_suffix)))
@@ -509,6 +512,11 @@ if(is_cell_type) {
         # facet_wrap(~type)
 
     ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, sprintf("tree_compare_stat_scatter_APOE_carrier_ct_broad%s.png", clus_suffix)))
+} else {
+    #### APOE carrier fortest plot for both Xenium and Visium ####
+    
+    visium_res <- read_csv(here("processed-data", "05_spe_correct_cluster", "26_crumblr_SpD","SpD_diff_prop_tree_test_APOE_carrier.csv"))
+    
 }
 
 #### fit Sex ####
@@ -516,7 +524,7 @@ fit_sex <- dream(cobj, ~ APOE_carrier + Age + Sex + Anc_Afr + chip , erc_info)
 fit_sex <- eBayes(fit = fit_sex)
 
 # Extract results for each cluster
-(diff_prop_Sex <- topTable(fit_sex, coef = "SexM", number = Inf))
+(diff_prop_Sex <- topTableWithSE(fit_sex, coef = "SexM"))
 
 #                   logFC     AveExpr           t     P.Value  adj.P.Val         B
 # Macro             1.99051694 -0.6335688  2.43415100 0.03533249 0.7314477 -4.509818
@@ -530,7 +538,8 @@ write.csv(diff_prop_Sex, file = here(data_dir, sprintf("diff_prop_Sex%s.csv", cl
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit_sex, cobj, tree.clusCollapsed, coef = "SexM")
 
-res_tb <- res |> as_tibble()
+# Include the approximate 95% interval endpoints used by plotForest.
+res_tb <- forest_intervals(res)
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, sprintf("xenium_diff_prop_tree_test_Sex%s.csv", clus_suffix)))
@@ -724,7 +733,7 @@ if(is_cell_type) {
 message(Sys.time(), " - Fit Age")
 
 # Extract results for each cluster
-(diff_prop_Age<- topTable(fit, coef = "Age", number = Inf))
+(diff_prop_Age<- topTableWithSE(fit, coef = "Age"))
 
 #                           logFC    AveExpr           t    P.Value adj.P.Val         B
 # Excit.L6_CT       0.0315704435 -0.6400153  1.97599387 0.07654914 0.9377408 -5.107210
@@ -736,7 +745,8 @@ write.csv(diff_prop_Age, file = here(data_dir, sprintf("xenium_diff_prop_Age%s.c
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
 
-res_tb <- res |> as_tibble()
+# Include the approximate 95% interval endpoints used by plotForest.
+res_tb <- forest_intervals(res)
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, sprintf("xenium_diff_prop_tree_test_Age%s.csv", clus_suffix)))
