@@ -516,6 +516,11 @@ if(is_cell_type) {
     #### APOE carrier fortest plot for both Xenium and Visium ####
     
     visium_res <- read_csv(here("processed-data", "05_spe_correct_cluster", "26_crumblr_SpD","SpD_diff_prop_tree_test_APOE_carrier.csv"))
+    visium_custom_forest <- plotForestOrdered(visium_res, low = "#398A84", high = "#D46B43")
+    ggsave(visium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png", clus_suffix), height = 5, width = 3)
+    
+    xenium_custom_forest <- plotForestOrdered(res, low = "#398A84", high = "#D46B43")
+    ggsave(xenium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png"), height = 5, width = 3)
     
 }
 
