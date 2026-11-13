@@ -15,7 +15,7 @@ forest_intervals <- function(x) {
 # label, beta, and se; if n_features is present, only n_features == 1 is used.
 plotForestOrdered <- function(x, cell_order = NULL, ...,
                               low = "blue", mid = "grey70", high = "red",
-                              hide = FALSE) {
+                              hide = FALSE, legend_title = expression(beta)) {
     if (!is.null(cell_order) &&
         (!is.character(cell_order) || anyNA(cell_order) || anyDuplicated(cell_order))) {
         stop("cell_order must be a character vector of unique, non-missing labels.")
@@ -63,6 +63,9 @@ plotForestOrdered <- function(x, cell_order = NULL, ...,
                                 hide = hide)
         p$data <- forest_intervals(p$data)
     }
+    # Apply to both tabular and crumblr-generated plots.
+    color_scale <- p$scales$get_scales("colour")
+    color_scale$name <- legend_title
     if (!is.null(cell_order)) {
         plotted <- as.character(p$data$label)
         original_order <- rev(levels(p$data$label))
