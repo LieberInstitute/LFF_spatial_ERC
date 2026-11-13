@@ -12,6 +12,8 @@ library("jaffelab")
 library("here")
 library("sessioninfo")
 
+source(here("code", "utils", "plot_forest_ordered.R"))
+
 ## Prep directories
 plot_dir <- here("plots", "04_snRNA-seq", "22_crumblr_sn")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
@@ -22,6 +24,11 @@ if(!dir.exists(data_dir)) dir.create(data_dir)
 ## load colors
 load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE) 
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
+
+# Edit this vector to set forest-plot cell types from top to bottom.
+# Unlisted cell types are appended; absent types are ignored for subsets.
+forest_cell_order <- names(cell_type_colors$anno)
+# Example: forest_oligo_order <- c("Oligo.1", "Oligo.2", "OPC.5", forest_cell_order[!forest_cell_order %in% c("Oligo.1", "Oligo.2", "OPC.5")])
 
 #### Load data ####
 # cell_type_proportions
@@ -173,7 +180,7 @@ fit <- eBayes(fit = fit)
 #  then use eBayes to shrink residual variance
 
 # Extract results for each cell type
-(diff_prop_APOE_carrier <- topTable(fit, coef = "APOE_carrierE4+", number = Inf))
+(diff_prop_APOE_carrier <- topTableWithSE(fit, coef = "APOE_carrierE4+"))
 
 #                         logFC     AveExpr           t     P.Value  adj.P.Val         B
 # Oligo.1          -0.838001493  2.12294822 -3.29041883 0.003391148 0.07677455 -1.714310
@@ -203,10 +210,13 @@ clr_prop_long <- clr_prop_long |> left_join(clean_clr_prop_long)
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "APOE_carrierE4+")
 
-res_tb <- res |> as_tibble()
+# Export SE and the approximate 95% interval endpoints used in forest plots.
+res_tb <- forest_intervals(res)
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_APOE_carrier.csv"))
+
+# res_tb <- read_csv(here(data_dir, "sn_diff_prop_tree_test_APOE_carrier.csv"))
 
 # Plot hierarchy and testing results
 nominal_fdr_cut <- res_tb |> filter(pvalue < 0.1) |> slice_max(FDR) |> pull(FDR) |> max()
@@ -227,11 +237,14 @@ forest_plot <- plotForest(res, hide = FALSE, low = "#398A84", high = "#D46B43")
 ggsave(forest_plot, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_forest.png"), width = 4, height = 7)
 
 
+#### APOE carrier test - Oligo forest plot ####
 ## forest plot for Oligo subtypes
-res_oligo <- res |> 
-    filter(grepl("Oligo", label) | label == "OPC.5")
+forest_oligo_order <- c("OPC.5", "Oligo.3", "Oligo.5","Oligo.4","Oligo.1", "Oligo.2")
 
-forest_plot_oligo <- plotForest(res_oligo, hide = FALSE, low = "#398A84", high = "#D46B43") 
+res_oligo <- res_tb |> 
+    filter(label %in% forest_oligo_order)
+
+forest_plot_oligo <- plotForestOrdered(res_oligo, cell_order = forest_oligo_order, hide = FALSE, low = "#398A84", high = "#D46B43") 
 ggsave(forest_plot_oligo, filename = here(plot_dir, "crumblr_cell_type_APOE_carrier_forest_oligo.png"), width = 5, height = 1.3)
 
 
@@ -384,7 +397,7 @@ topTable(fit, coef = "SexM", number = Inf)
 #### fit Sex ####
 
 # Extract results for each cell type
-(diff_prop_Sex <- topTable(fit, coef = "SexM", number = Inf))
+(diff_prop_Sex <- topTableWithSE(fit, coef = "SexM"))
 
 #                        logFC     AveExpr           t     P.Value  adj.P.Val         B
 # Oligo.5          -0.94666061  1.16152659 -3.29523642 0.003352853 0.07350752 -1.705243
@@ -398,7 +411,8 @@ write.csv(diff_prop_Sex, file = here(data_dir, "diff_prop_Sex.csv"))
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "SexM")
 
-res_tb <- res |> as_tibble()
+# Export SE and the approximate 95% interval endpoints used in forest plots.
+res_tb <- forest_intervals(res)
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Sex.csv"))
@@ -542,7 +556,7 @@ ggsave(clr_boxplot_Sex_carrier_Micro, filename = here(plot_dir, "clr_boxplot_Sex
 #### fit Age ####
 
 # Extract results for each cell type
-(diff_prop_Age<- topTable(fit, coef = "Age", number = Inf))
+(diff_prop_Age<- topTableWithSE(fit, coef = "Age"))
 
 #                           logFC     AveExpr           t      P.Value  adj.P.Val          B
 # Oligo.5           0.0445079005  1.16152659  3.88315362 0.0008221231 0.03124068 -0.6656332
@@ -554,7 +568,8 @@ write.csv(diff_prop_Age, file = here(data_dir, "diff_prop_Age.csv"))
 # Perform multivariate test across the hierarchy
 res <- treeTest(fit, cobj, tree.clusCollapsed, coef = "Age")
 
-res_tb <- res |> as_tibble()
+# Export SE and the approximate 95% interval endpoints used in forest plots.
+res_tb <- forest_intervals(res)
 
 res_tb |> arrange(FDR) |> select(label, beta,pvalue, FDR)
 res_tb |> write_csv(here(data_dir, "sn_diff_prop_tree_test_Age.csv"))
