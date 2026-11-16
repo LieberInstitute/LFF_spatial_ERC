@@ -1,0 +1,249 @@
+**** Job starts ****
+Thu Nov 12 10:08:09 AM EST 2026
+**** JHPCE info ****
+User: lhuuki
+Job id: 37037247
+Job name: 24_xenium_xSpD_pseudobulk_hclust
+Node name: compute-053
+Task id: 
+Loading conda_R/4.5.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.5.x
+
+ 
+
+here() starts at /dcs05/lieber/marmaypag/LFF_spatialERC_LIBD4140/LFF_spatial_ERC
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: Seqinfo
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+qs2 0.4.0
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+
+Attaching package: ‘edgeR’
+
+The following objects are masked from ‘package:SingleCellExperiment’:
+
+    cpm, tpm
+
+
+---------------------
+Welcome to dendextend version 1.19.1
+Type citation('dendextend') for how to cite the package.
+
+Type browseVignettes(package = 'dendextend') for the package vignette.
+The github page is: https://github.com/talgalili/dendextend/
+
+Suggestions and bug-reports can be submitted at: https://github.com/talgalili/dendextend/issues
+You may ask questions at stackoverflow, use the r and dendextend tags: 
+	 https://stackoverflow.com/questions/tagged/dendextend
+
+	To suppress this message use:  suppressPackageStartupMessages(library(dendextend))
+---------------------
+
+
+Attaching package: ‘dendextend’
+
+The following object is masked from ‘package:generics’:
+
+    prune
+
+The following object is masked from ‘package:stats’:
+
+    cutree
+
+2026-11-12 10:08:46.801799 - No xSpD pseudobulk found, running pseudobulk
+2026-11-12 10:08:46.803911 - Load SpX-level Xenium spe (not filtered to singlets)
+2026-11-12 10:10:19.102271 - make pseudobulk object
+pseudobulk dims: 366 row, 11 col
+2026-11-12 10:10:22.529718 - normalize expression
+2026-11-12 10:10:22.689666 - save pseudobulk data
+2026-11-12 10:10:22.7418 - Cluster
+2026-11-12 10:10:22.774338 - Save
+2026-11-12 10:10:22.781401 - Plot
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2026-11-12 10:10:23 EST"
+   user  system elapsed 
+ 98.802  11.712 130.762 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.3 Patched (2026-03-11 r90451)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2026-11-12
+ pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5.x/bin/pandoc
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ abind                  1.4-8    2024-09-12 [2] CRAN (R 4.5.0)
+ beachmat               2.26.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ Biobase              * 2.70.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocGenerics         * 0.56.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ BiocParallel           1.44.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ charport               0.2.0    2026-11-06 [1] CRAN (R 4.5.3)
+ cli                    3.6.6    2026-04-09 [2] CRAN (R 4.5.3)
+ codetools              0.2-20   2024-03-31 [3] CRAN (R 4.5.3)
+ DelayedArray           0.36.1   2026-03-31 [2] Bioconductor 3.22 (R 4.5.3)
+ dendextend           * 1.19.1   2025-07-15 [2] CRAN (R 4.5.1)
+ dichromat              2.0-1    2026-07-22 [2] CRAN (R 4.5.3)
+ dplyr                  1.2.1    2026-04-03 [2] CRAN (R 4.5.3)
+ edgeR                * 4.8.2    2025-12-25 [2] Bioconductor 3.22 (R 4.5.2)
+ farver                 2.1.2    2024-05-13 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4    2025-05-09 [2] CRAN (R 4.5.0)
+ GenomicRanges        * 1.62.1   2025-12-08 [2] Bioconductor 3.22 (R 4.5.2)
+ ggplot2                4.0.3    2026-04-22 [2] CRAN (R 4.5.3)
+ glue                   1.8.1    2026-04-17 [2] CRAN (R 4.5.3)
+ gridExtra              2.3.1    2026-06-25 [2] CRAN (R 4.5.3)
+ gtable                 0.3.6    2024-10-25 [2] CRAN (R 4.5.0)
+ here                 * 1.0.2    2025-09-15 [2] CRAN (R 4.5.1)
+ IRanges              * 2.44.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ lattice                0.22-9   2026-02-09 [3] CRAN (R 4.5.3)
+ lifecycle              1.0.5    2026-01-08 [2] CRAN (R 4.5.2)
+ limma                * 3.66.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ locfit                 1.5-9.12 2025-03-05 [2] CRAN (R 4.5.0)
+ magick                 2.9.1    2026-02-28 [2] CRAN (R 4.5.2)
+ magrittr               2.0.5    2026-04-04 [2] CRAN (R 4.5.3)
+ Matrix                 1.7-4    2025-08-28 [3] CRAN (R 4.5.3)
+ MatrixGenerics       * 1.22.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ matrixStats          * 1.5.0    2025-01-07 [2] CRAN (R 4.5.0)
+ pillar                 1.11.1   2025-09-17 [2] CRAN (R 4.5.1)
+ pkgconfig              2.0.3    2019-09-22 [2] CRAN (R 4.5.0)
+ qs2                  * 0.4.0    2026-11-02 [1] CRAN (R 4.5.3)
+ R6                     2.6.1    2025-02-15 [2] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3    2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp                   1.1.2    2026-07-05 [2] CRAN (R 4.5.3)
+ RcppParallel           6.2.1    2026-08-27 [2] CRAN (R 4.5.3)
+ rjson                  0.2.23   2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.3.0    2026-07-05 [2] CRAN (R 4.5.3)
+ rprojroot              2.1.1    2025-08-26 [2] CRAN (R 4.5.1)
+ S4Arrays               1.10.1   2025-12-01 [2] Bioconductor 3.22 (R 4.5.2)
+ S4Vectors            * 0.49.1-1 2026-04-05 [2] Bioconductor 3.23 (R 4.5.3)
+ S7                     0.2.2    2026-04-22 [2] CRAN (R 4.5.3)
+ scales                 1.4.0    2025-04-24 [2] CRAN (R 4.5.0)
+ scuttle              * 1.20.0   2025-10-30 [2] Bioconductor 3.22 (R 4.5.2)
+ Seqinfo              * 1.0.0    2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ sessioninfo          * 1.2.4    2026-06-04 [2] CRAN (R 4.5.3)
+ SingleCellExperiment * 1.32.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ SparseArray            1.10.10  2026-03-30 [2] Bioconductor 3.22 (R 4.5.3)
+ SpatialExperiment    * 1.20.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ statmod                1.5.2    2026-05-17 [2] CRAN (R 4.5.3)
+ SummarizedExperiment * 1.40.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+ tibble                 3.3.1    2026-01-11 [2] CRAN (R 4.5.2)
+ tidyselect             1.2.1    2024-03-11 [2] CRAN (R 4.5.0)
+ vctrs                  0.7.3    2026-04-11 [2] CRAN (R 4.5.3)
+ viridis                0.6.5    2024-01-29 [2] CRAN (R 4.5.0)
+ viridisLite            0.4.3    2026-02-04 [2] CRAN (R 4.5.2)
+ XVector                0.50.0   2025-10-29 [2] Bioconductor 3.22 (R 4.5.2)
+
+ [1] /users/lhuuki/R/4.5.x
+ [2] /jhpce/shared/community/core/conda_R/4.5.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5.x/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Nov 12 10:10:24 AM EST 2026
