@@ -238,16 +238,31 @@ clr_boxplot_APOE_jitter <- clr_prop_long |>
 
 ggsave(clr_boxplot_APOE_jitter, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_jitter%s.png", clus_suffix)), width = 10)
 
-clr_boxplot_APOE_carrier <- clr_prop_long |>
-    ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
-    geom_boxplot() +
-    # geom_boxplot(outlier.shape = NA) +
-    # geom_jitter(aes(color = error), width = .1) +
-    facet_wrap(~cluster) +
-    scale_fill_manual(values = APOE_carrier_colors) +
-    theme_bw()
+if (opt$cluster == "xSpD") {
+    # Match the domain CLR plot in 26_crumblr_SpD.R using Xenium data.
+    clr_boxplot_APOE_carrier <- clr_prop_long |>
+        ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
+        geom_boxplot(outlier.shape = NA) +
+        geom_jitter(width = .1) +
+        facet_wrap(~cluster, nrow = 1) +
+        scale_fill_manual(values = APOE_carrier_colors) +
+        theme_bw() +
+        theme(legend.position = "none")
 
-ggsave(clr_boxplot_APOE_carrier, filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s.png", clus_suffix)))
+    ggsave(clr_boxplot_APOE_carrier,
+           filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s.png", clus_suffix)),
+           height = 3, width = 10)
+} else {
+    clr_boxplot_APOE_carrier <- clr_prop_long |>
+        ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
+        geom_boxplot() +
+        facet_wrap(~cluster) +
+        scale_fill_manual(values = APOE_carrier_colors) +
+        theme_bw()
+
+    ggsave(clr_boxplot_APOE_carrier,
+           filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s.png", clus_suffix)))
+}
 
 clr_boxplot_chip <- clr_prop_long |>
     ggplot(aes(x = chip, y = CLR, fill = Run)) +
@@ -519,8 +534,23 @@ if(is_cell_type) {
     visium_custom_forest <- plotForestOrdered(visium_res, low = "#398A84", high = "#D46B43")
     ggsave(visium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png", clus_suffix), height = 5, width = 3)
     
+    # res <- read_csv(here("processed-data", "21_Xenium", "11_xenium_crumblr-xSpD","xenium_diff_prop_tree_test_APOE_carrier-xSpD.csv"))
     xenium_custom_forest <- plotForestOrdered(res, low = "#398A84", high = "#D46B43")
     ggsave(xenium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png"), height = 5, width = 3)
+    
+    
+    load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
+    vSpD_levels <- names(SpD_colors)
+    
+    load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
+    xSpD_levels <- names(SpX_colors)
+    
+    spd_res_all <- visium_res |>
+        mutate(datatype = "Visium") |>
+        bind_rows(res |> as_tibble() |> mutate(datatype = "Xenium"))
+    
+    all_spd_custom_forest <-plotForestOrdered(spd_res_all, low = "#398A84", high = "#D46B43", cell_order = unique(c(vSpD_levels, xSpD_levels))) + facet_wrap(~datatype, scales = "free_y")
+    ggsave(all_spd_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png"), height = 5, width = 3)
     
 }
 
