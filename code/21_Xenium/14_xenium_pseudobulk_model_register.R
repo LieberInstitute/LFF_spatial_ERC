@@ -131,6 +131,22 @@ anno <- annotate_registered_clusters(
 )
 
 
+# Export registration results 
+# cor_layer: query clusters in rows, reference domains in columns.
+# anno: join cluster to the crumblr label column; layer_label may contain
+# merged labels ("/") or a low-confidence suffix ("*"). Keep confidence intact.
+registration_prefix <- sprintf("xenium_%s_v_%s", opt$var, ref_name)
+saveRDS(cor_layer, here(data_dir, paste0(registration_prefix, "_cor_layer.rds")))
+saveRDS(anno, here(data_dir, paste0(registration_prefix, "_anno.rds")))
+
+cor_layer |>
+    as.data.frame() |>
+    rownames_to_column("cluster") |>
+    write_csv(here(data_dir, paste0(registration_prefix, "_cor_layer.csv")))
+anno |>
+    write_csv(here(data_dir, paste0(registration_prefix, "_anno.csv")))
+
+
 pdf(here(plot_dir, sprintf("xenium_%s_v_%s_layer_stat_cor.pdf", opt$var, ref_name)),
     height = 5 + ncol(cor_layer)/10,
     width = 5 + ncol(cor_layer)/10)
