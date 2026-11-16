@@ -350,11 +350,11 @@ tree_beta_plot <- plotTreeTestBeta(res, low = "#398A84", high = "#D46B43", fdr.c
           # legend.box = "vertical"
     )
 
-ggsave(tree_beta_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_Tree_beta%s.png", clus_suffix)), width = 4, height = 7)
+ggsave(tree_beta_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_Tree_beta%s.png", clus_suffix)), width = 4, height = 5)
 
 # forest plots
 forest_plot <- plotForest(res, hide = FALSE, low = "#398A84", high = "#D46B43") 
-ggsave(forest_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_forest%s.png", clus_suffix)), width = 4, height = 7)
+ggsave(forest_plot, filename = here(plot_dir, sprintf("xenium_crumblr_cell_type_APOE_carrier_forest%s.png", clus_suffix)), width = 4, height = 5)
 
 if(is_cell_type) {
     ## clr plot of top results
