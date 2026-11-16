@@ -13,6 +13,7 @@ forest_intervals <- function(x) {
 # original plot order. NULL preserves hierarchy order for treedata inputs
 # and top-to-bottom row order for data frames/tibbles. Tabular input requires
 # label, beta, and se; if n_features is present, only n_features == 1 is used.
+# Repeated labels across datasets are allowed for facet_wrap().
 plotForestOrdered <- function(x, cell_order = NULL, ...,
                               low = "blue", mid = "grey70", high = "red",
                               hide = FALSE, legend_title = expression(beta)) {
@@ -31,8 +32,8 @@ plotForestOrdered <- function(x, cell_order = NULL, ...,
             tab <- tab[!is.na(tab$n_features) & tab$n_features == 1, ]
         }
         if (!nrow(tab)) stop("No cell-type rows to plot.")
-        if (anyNA(tab$label) || anyDuplicated(as.character(tab$label))) {
-            stop("Cell-type labels must be unique and non-missing.")
+        if (anyNA(tab$label)) {
+            stop("Cell-type labels must be non-missing.")
         }
         if (!is.numeric(tab$beta) || !is.numeric(tab$se) ||
             any(!is.finite(tab$beta)) || any(!is.finite(tab$se)) || any(tab$se < 0)) {
@@ -40,7 +41,7 @@ plotForestOrdered <- function(x, cell_order = NULL, ...,
         }
         tab <- forest_intervals(tab)
         tab$label <- factor(as.character(tab$label),
-                            levels = rev(as.character(tab$label)))
+                            levels = rev(unique(as.character(tab$label))))
         beta_max <- max(abs(tab$beta))
         p <- ggplot2::ggplot(tab, ggplot2::aes(label, beta)) +
             ggplot2::geom_hline(yintercept = 0, linetype = "dashed",
@@ -71,8 +72,9 @@ plotForestOrdered <- function(x, cell_order = NULL, ...,
         original_order <- rev(levels(p$data$label))
         ordered <- c(intersect(cell_order, plotted),
                      setdiff(original_order, cell_order))
-        # crumblr uses coord_flip(), so its discrete x axis is vertical.
-        p <- p + ggplot2::scale_x_discrete(limits = rev(ordered))
+        # Factor levels retain the order while allowing free facet scales
+        # to drop labels absent from each panel. Fixed scale limits cannot.
+        p$data$label <- factor(plotted, levels = rev(ordered))
     }
     p
 }
