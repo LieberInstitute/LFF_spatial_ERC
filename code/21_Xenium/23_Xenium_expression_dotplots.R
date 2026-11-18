@@ -128,7 +128,7 @@ dotplot_lit_markers_ramsden_all <- spe |>
               clusterRows = FALSE,
               groupLegends = FALSE)
 
-ggsave(dotplot_lit_markers_ramsden_all, filename = here(plot_dir, "Xenium_xSpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 7, height = 7)
+ggsave(dotplot_lit_markers_ramsden_all, filename = here(plot_dir, "Xenium_xSpD_dotplot_LitMarkers_Ramsden_all.pdf"), width = 4, height = 5)
 
 
 
@@ -192,7 +192,16 @@ enrichment_top <- erc_modeling_top |>
     filter(model_type == "enrichment", top <=5) |>
     select(gene, top, xSpD = test) |>
     mutate(xSpD = factor(xSpD, levels = spx_levels)) |>
-    arrange(xSpD)
+    arrange(xSpD) |>
+    group_by(gene) |>
+    slice_min(top, n = 1) |>
+    ungroup()
+
+## genes that are top markers for more than one domain give duplicate features
+## and break scDotPlot, so drop them
+enrichment_non_unique <- enrichment_top |> count(gene) |> filter(n > 1) |> pull(gene)
+message("Dropping non-unique enrichment genes: ", paste(enrichment_non_unique, collapse = ", "))
+enrichment_top <- enrichment_top |> filter(!gene %in% enrichment_non_unique)
 
 enrichment_top |> count(xSpD)
 
