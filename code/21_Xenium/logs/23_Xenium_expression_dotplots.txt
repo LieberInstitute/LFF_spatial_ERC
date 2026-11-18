@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep  3 07:00:13 AM EDT 2026
+Wed Nov 18 01:56:06 PM EST 2026
 **** JHPCE info ****
 User: lhuuki
-Job id: 35497739
+Job id: 37138168
 Job name: 23_Xenium_expression_dotplots
-Node name: compute-169
+Node name: compute-178
 Task id: 
 Loading conda_R/4.5.x
 
@@ -99,7 +99,7 @@ The following objects are masked from ‘package:matrixStats’:
 
     anyMissing, rowMedians
 
-qs2 0.2.2
+qs2 0.4.0
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ✔ forcats   1.0.1     ✔ stringr   1.6.0
@@ -123,7 +123,7 @@ qs2 0.2.2
 ✖ lubridate::second<-() masks S4Vectors::second<-()
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-2026-09-03 07:00:23.405303 - Load Xenium SPE
+2026-11-18 13:56:17.352969 - Load Xenium SPE
 Loading required namespace: SpatialExperiment
 class: SpatialExperiment 
 dim: 366 447183 
@@ -145,6 +145,7 @@ Loading objects:
   APOE_carrier_colors_dark
   sample_colors
   APOE_carrier_anc_colors
+2026-11-18 13:57:04.49783 - Section: lit dotplots
 Rows: 57 Columns: 4
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
@@ -161,6 +162,7 @@ Interneuron      Layer1      Layer2      Layer4     Layer5b      Layer6
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 [1] FALSE FALSE FALSE FALSE FALSE FALSE
+2026-11-18 13:57:11.16961 - Section: MeanRatio dotplots
 Loading objects:
   marker_stats
 Loading objects:
@@ -180,6 +182,7 @@ Loading objects:
 
  vVasc    vL1    vL2 vInhib    vLD   vL5a   vL5b    vL6  vWMuf  vWMpv   vWMd 
      1      6      6      6      2      3      3      2      0      0      6 
+2026-11-18 13:57:13.740685 - Section: enrichment dotplot
 Rows: 110 Columns: 10
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
