@@ -8,6 +8,7 @@ library("SingleCellExperiment")
 library("qs2")
 library("scDotPlot")
 library("tidyverse")
+library("readxl")
 
 plot_dir <- here("plots", "21_Xenium", "23_Xenium_expression_dotplots")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
@@ -234,6 +235,83 @@ dotplot_key_genes <- spe |>
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.pdf"), width = 5, height = 7)
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.png"), width = 5, height = 7)
 
+
+#### Micro and Oligo AD-related genes (cell type level) ####
+## Mirrors 04_snRNA-seq/36_sn_subcluster_dotplot.R; uses the singlet-filtered
+## cell type spe since xSpD clusters have no cell type labels
+load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+
+spe_ct <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types", "spe_xenium_cell_types.qs2"))
+rownames(spe_ct) <- rowData(spe_ct)$gene_name
+spe_ct$ct_broad <- gsub("\\..*", "", as.character(spe_ct$cell_type_anno))
+
+micro_AD_genes <- c("C1QB", "CSF1R", "CX3CR1", "HLA-DRA", "APOE", "TREM2", "CD33")
+
+oligo_disease_xlsx <- read_xlsx(here("external-data", "Claude2026", "olig_marker_genes_lit_comparison", "oligodendrocyte_marker_genes_lit_comparison.xlsx")) |>
+    filter(BroadCategory == "Disease relevance", Confidence != "low") |>
+    pull(Gene)
+oligo_AD_genes <- unique(c(
+    "APOE", "APP", "BACE1", "PSEN1", "PSEN2", "MAPT", "SORCS1",
+    oligo_disease_xlsx,
+    "SERPINA3", "C4B", "TNFRSF1A", "IL1B", "IL33", "HMOX1", "TNF", "ERK", "ERK2"
+))
+
+## genes not on the targeted Xenium panel are dropped
+message("Micro genes not on panel: ", paste(setdiff(micro_AD_genes, rownames(spe_ct)), collapse = ", "))
+message("Oligo genes not on panel: ", paste(setdiff(oligo_AD_genes, rownames(spe_ct)), collapse = ", "))
+micro_AD_genes <- micro_AD_genes[micro_AD_genes %in% rownames(spe_ct)]
+oligo_AD_genes <- oligo_AD_genes[oligo_AD_genes %in% rownames(spe_ct)]
+
+spe_micro <- spe_ct[, spe_ct$ct_broad %in% c("Micro", "Macro")]
+spe_oligo <- spe_ct[, spe_ct$ct_broad == "Oligo"]
+
+dotplot_Micro_AD <- spe_micro |>
+    scDotPlot(features = micro_AD_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+ggsave(dotplot_Micro_AD, filename = here(plot_dir, "Xenium_cell_type_dotplot_Micro_AD_genes.pdf"), height = 5, width = 5)
+ggsave(dotplot_Micro_AD, filename = here(plot_dir, "Xenium_cell_type_dotplot_Micro_AD_genes.png"), height = 5, width = 5)
+
+dotplot_Micro_AD_logCounts <- spe_micro |>
+    scDotPlot(features = micro_AD_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = FALSE,
+              groupLegends = FALSE)
+
+ggsave(dotplot_Micro_AD_logCounts, filename = here(plot_dir, "Xenium_cell_type_dotplot_Micro_AD_genes_logCounts.pdf"), height = 5, width = 5)
+ggsave(dotplot_Micro_AD_logCounts, filename = here(plot_dir, "Xenium_cell_type_dotplot_Micro_AD_genes_logCounts.png"), height = 5, width = 5)
+
+dotplot_Oligo_AD <- spe_oligo |>
+    scDotPlot(features = oligo_AD_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = TRUE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+ggsave(dotplot_Oligo_AD, filename = here(plot_dir, "Xenium_cell_type_dotplot_Oligo_AD_genes.pdf"), height = 6)
+ggsave(dotplot_Oligo_AD, filename = here(plot_dir, "Xenium_cell_type_dotplot_Oligo_AD_genes.png"), height = 6)
+
+dotplot_Oligo_AD_logCounts <- spe_oligo |>
+    scDotPlot(features = oligo_AD_genes,
+              group = "cell_type_anno",
+              groupAnno = "cell_type_anno",
+              scale = FALSE,
+              annoColors = list("cell_type_anno" = cell_type_colors$anno),
+              clusterRows = TRUE,
+              groupLegends = FALSE)
+
+ggsave(dotplot_Oligo_AD_logCounts, filename = here(plot_dir, "Xenium_cell_type_dotplot_Oligo_AD_genes_logCounts.pdf"), height = 6)
+ggsave(dotplot_Oligo_AD_logCounts, filename = here(plot_dir, "Xenium_cell_type_dotplot_Oligo_AD_genes_logCounts.png"), height = 6)
 
 # slurmjobs::job_single('23_Xenium_expression_dotplots', create_shell = TRUE, memory = '10G', command = "Rscript 23_Xenium_expression_dotplots.R")
 
