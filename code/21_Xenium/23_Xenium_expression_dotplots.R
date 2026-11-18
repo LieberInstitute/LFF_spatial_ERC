@@ -227,10 +227,10 @@ message(Sys.time(), " - Section: key genes dotplot")
 
 #### Key genes ####
 
-erc_xSpD_key <- read_csv(here(data_dir, "xSpD_key_genes_long.csv"))
+erc_xSpD_key <- read_csv(here("processed-data", "21_Xenium", "23_Xenium_expression_dotplots", "xSpD_key_genes_long.csv"))
 
 rowData(spe)$xSpD_genes <- NULL
-rowData(spe)$xSpD_genes <- erc_xSpD_key$domain[match(rownames(spe), erc_xSpD_key$gene)]
+rowData(spe)$xSpD_genes <- erc_xSpD_key$xSpD[match(rownames(spe), erc_xSpD_key$gene)]
 table(rowData(spe)$xSpD_genes)
 
 dotplot_key_genes <- spe |>
