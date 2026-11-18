@@ -72,6 +72,54 @@ dend |>
 dev.off()
 
 
+## Skinny version: tree compressed to ~half its height, with full leaf labels
+## Measure label size on a null device so the plot can be sized to fit them
+pdf(NULL)
+par(cex = 0.6, font = 2)
+label_in <- max(strwidth(labels(dend), units = "inches"))
+leaf_off_in <- 0.75 * strheight("x", units = "inches")
+dev.off()
+
+tree_in <- 2
+pad_in <- 0.1
+below_in <- label_in + leaf_off_in + pad_in
+tree_top <- attr(dend, "height")
+## Keep the leaves-to-root scale of the tree fixed to tree_in inches
+below_units <- tree_top * below_in / tree_in
+
+pdf(here(plot_dir, "sn_subcluster_dend_skinny.pdf"),
+    height = tree_in + below_in + 2 * pad_in)
+par(cex = 0.6, font = 2, mai = c(pad_in, 0.6, pad_in, 0.1), yaxs = "i")
+
+dend |>
+    set("leaves_col", cell_type_colors$anno[labels(dend)]) |>
+    set("leaves_cex", 2) |>
+    set("leaves_pch", 19) |>
+    set("branches_k_color", k = 7,
+        value = cell_type_colors$broad[c("Inhib", "Excit", "Micro", "Vasc", "Oligo", "Astro", "OPC")]) |>
+    plot(ylim = c(-below_units, tree_top))
+
+dev.off()
+
+
+## Mirrored skinny version: leaf order reversed, same dimensions
+dend_flip <- dendextend::rotate(dend, order = rev(labels(dend)))
+
+pdf(here(plot_dir, "sn_subcluster_dend_skinny_flip.pdf"),
+    height = tree_in + below_in + 2 * pad_in)
+par(cex = 0.6, font = 2, mai = c(pad_in, 0.6, pad_in, 0.1), yaxs = "i")
+
+dend_flip |>
+    set("leaves_col", cell_type_colors$anno[labels(dend_flip)]) |>
+    set("leaves_cex", 2) |>
+    set("leaves_pch", 19) |>
+    set("branches_k_color", k = 7,
+        value = rev(cell_type_colors$broad[c("Inhib", "Excit", "Micro", "Vasc", "Oligo", "Astro", "OPC")])) |>
+    plot(ylim = c(-below_units, tree_top))
+
+dev.off()
+
+
 pdf(here(plot_dir, "sn_subcluster_dend_h.pdf"))
 par(cex = 0.6, font = 2)
 
