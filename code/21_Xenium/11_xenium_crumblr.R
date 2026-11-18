@@ -244,25 +244,26 @@ if (opt$cluster == "xSpD") {
         ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
         geom_boxplot(outlier.shape = NA) +
         geom_jitter(width = .1) +
-        facet_wrap(~cluster, nrow = 1) +
+        facet_wrap(~cluster, nrow = 1, scales = "free_y") +
         scale_fill_manual(values = APOE_carrier_colors) +
         theme_bw() +
         theme(legend.position = "none")
 
     ggsave(clr_boxplot_APOE_carrier,
-           filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s.png", clus_suffix)),
+           filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s_wide.png", clus_suffix)),
            height = 3, width = 10)
-} else {
-    clr_boxplot_APOE_carrier <- clr_prop_long |>
+} 
+
+clr_boxplot_APOE_carrier <- clr_prop_long |>
         ggplot(aes(x = APOE_carrier, y = CLR, fill = APOE_carrier)) +
         geom_boxplot() +
-        facet_wrap(~cluster) +
+        facet_wrap(~cluster, scales = "free_y") +
         scale_fill_manual(values = APOE_carrier_colors) +
         theme_bw()
 
-    ggsave(clr_boxplot_APOE_carrier,
+ggsave(clr_boxplot_APOE_carrier,
            filename = here(plot_dir, sprintf("xenium_clr_boxplot_APOE_carrier%s.png", clus_suffix)))
-}
+
 
 clr_boxplot_chip <- clr_prop_long |>
     ggplot(aes(x = chip, y = CLR, fill = Run)) +
@@ -528,30 +529,109 @@ if(is_cell_type) {
 
     ggsave(tree_compare_stat_scatter_ct_broad, filename = here(plot_dir, sprintf("tree_compare_stat_scatter_APOE_carrier_ct_broad%s.png", clus_suffix)))
 } else {
-    #### APOE carrier fortest plot for both Xenium and Visium ####
-    
-    visium_res <- read_csv(here("processed-data", "05_spe_correct_cluster", "26_crumblr_SpD","SpD_diff_prop_tree_test_APOE_carrier.csv"))
-    visium_custom_forest <- plotForestOrdered(visium_res, low = "#398A84", high = "#D46B43")
-    ggsave(visium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png", clus_suffix), height = 5, width = 3)
-    
-    # res <- read_csv(here("processed-data", "21_Xenium", "11_xenium_crumblr-xSpD","xenium_diff_prop_tree_test_APOE_carrier-xSpD.csv"))
-    xenium_custom_forest <- plotForestOrdered(res, low = "#398A84", high = "#D46B43")
-    ggsave(xenium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png"), height = 5, width = 3)
-    
-    
+    #### APOE carrier forest plot for both Xenium and Visium ####
+    visium_res <- read_csv(here("processed-data", "05_spe_correct_cluster",
+                               "26_crumblr_SpD", "SpD_diff_prop_tree_test_APOE_carrier.csv"))
     load(here("processed-data", "SpD_colors.Rdata"), verbose = TRUE)
     vSpD_levels <- names(SpD_colors)
-    
     load(here("processed-data", "SpX_colors.Rdata"), verbose = TRUE)
     xSpD_levels <- names(SpX_colors)
-    
+
+    visium_custom_forest <- plotForestOrdered(visium_res, low = "#398A84", high = "#D46B43")
+    ggsave(visium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_Visium.png"), height = 5, width = 3)
+    xenium_custom_forest <- plotForestOrdered(res, low = "#398A84", high = "#D46B43")
+    ggsave(xenium_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_Xenium.png"), height = 5, width = 3)
+
     spd_res_all <- visium_res |>
         mutate(datatype = "Visium") |>
         bind_rows(res |> as_tibble() |> mutate(datatype = "Xenium"))
-    
-    all_spd_custom_forest <-plotForestOrdered(spd_res_all, low = "#398A84", high = "#D46B43", cell_order = unique(c(vSpD_levels, xSpD_levels))) + facet_wrap(~datatype, scales = "free_y")
+    all_spd_custom_forest <- plotForestOrdered(
+        spd_res_all, low = "#398A84", high = "#D46B43",
+        cell_order = unique(c(vSpD_levels, xSpD_levels))
+    ) + facet_wrap(~datatype, scales = "free_y")
     ggsave(all_spd_custom_forest, filename = here(plot_dir, "custom_forest_APOE_carrier_vSpD.png"), height = 5, width = 3)
-    
+
+    #### Compare matchable APOE carrier tree-test nodes ####
+    spd_registration <- read_csv(here("processed-data", "21_Xenium",
+        "14_xenium_pseudobulk_model_register", "xenium_xSpD_v_Visium_SpD_anno.csv"))
+    stopifnot(!anyDuplicated(spd_registration$cluster))
+    visium_nodes <- visium_res |>
+        mutate(vSpD_key = map_chr(str_split(label, "/"),
+                                 ~ paste(sort(unique(.x)), collapse = "/"))) |>
+        rename(vSpD_node = node, vSpD_label = label)
+    stopifnot(!anyDuplicated(visium_nodes$vSpD_key))
+
+    # For leaves and internal nodes, map all constituent xSpD labels to
+    # the union of their registered vSpD labels, then require an exact
+    # Visium node with that domain set. No effects or P values are pooled.
+    spd_node_matches <- res |>
+        as_tibble() |>
+        transmute(xSpD_label = as.character(label), xSpD_node = node,
+                  x_n_features = n_features, x_beta = beta, x_se = se,
+                  x_stat = stat, x_pvalue = pvalue, x_FDR = FDR,
+                  x_leaves = str_split(xSpD_label, "/")) |>
+        mutate(
+            registration_rows = map(x_leaves, ~ match(.x, spd_registration$cluster)),
+            registered_labels = map(registration_rows, ~ spd_registration$layer_label[.x]),
+            vSpD_key = map_chr(registered_labels, function(labels) {
+                if (anyNA(labels)) return(NA_character_)
+                paste(sort(unique(unlist(str_split(str_remove(labels, "\\*$"), "/")))), collapse = "/")
+            }),
+            registration_confidence = map_chr(registration_rows, function(idx) {
+                if (anyNA(idx)) return("missing")
+                if (all(spd_registration$layer_confidence[idx] == "good")) "good" else "poor"
+            })
+        ) |>
+        select(-x_leaves, -registration_rows, -registered_labels) |>
+        left_join(visium_nodes |> select(vSpD_key, vSpD_node, vSpD_label,
+                                         n_features, beta, se, stat, pvalue, FDR),
+                  by = "vSpD_key") |>
+        mutate(match_status = case_when(
+            is.na(vSpD_key) ~ "missing_registration",
+            is.na(vSpD_node) ~ "no_exact_Visium_node",
+            registration_confidence == "poor" ~ "matched_low_confidence",
+            TRUE ~ "matched"
+        ))
+    write_csv(spd_node_matches, here(data_dir, "xenium_Visium_APOE_carrier_node_matches-xSpD.csv"))
+
+    p_cutoff <- 0.1
+    diff_prop_tree_APOE_carrier_spd_compare <- spd_node_matches |>
+        filter(!is.na(vSpD_node)) |>
+        mutate(
+            type = if_else(x_n_features > 1, "node", "leaf"),
+            plot_label = paste0(xSpD_label, " -> ", vSpD_label,
+                                if_else(registration_confidence == "poor", "*", "")),
+            signif_cat = case_when(
+                pvalue < p_cutoff & x_pvalue < p_cutoff ~ "both",
+                pvalue < p_cutoff & x_pvalue >= p_cutoff ~ "Visium only",
+                pvalue >= p_cutoff & x_pvalue < p_cutoff ~ "Xenium only",
+                pvalue >= p_cutoff & x_pvalue >= p_cutoff ~ "neither",
+                TRUE ~ "missing"
+            ))
+    write_csv(diff_prop_tree_APOE_carrier_spd_compare,
+              here(data_dir, "ERC_xenium_Visium_diff_prop_tree_compare_APOE_carrier-xSpD.csv"))
+
+    signif_colors <- c(both = "purple", `Xenium only` = "blue",
+                       `Visium only` = "red", neither = "grey60", missing = "grey85")
+    tree_compare_beta_scatter_spd <- diff_prop_tree_APOE_carrier_spd_compare |>
+        ggplot(aes(beta, x_beta, color = signif_cat, shape = registration_confidence)) +
+        geom_point() +
+        geom_abline(color = "red", linetype = "dashed") +
+        ggrepel::geom_text_repel(aes(label = plot_label), size = 1.7, max.overlaps = Inf) +
+        scale_color_manual(values = signif_colors) +
+        theme_bw() +
+        labs(x = "Visium beta", y = "Xenium beta",
+             caption = "* Poor registration confidence. Domain-set matches may be many-to-one; estimates are not pooled.")
+    ggsave(tree_compare_beta_scatter_spd,
+           filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier-xSpD.png"), width = 8, height = 6)
+    ggsave(tree_compare_beta_scatter_spd + facet_wrap(~type, nrow = 1),
+           filename = here(plot_dir, "tree_compare_beta_scatter_APOE_carrier_facet-xSpD.png"), width = 12, height = 6)
+
+    tree_compare_stat_scatter_spd <- tree_compare_beta_scatter_spd +
+        aes(x = stat, y = x_stat) + labs(x = "Visium stat", y = "Xenium stat")
+    ggsave(tree_compare_stat_scatter_spd,
+           filename = here(plot_dir, "tree_compare_stat_scatter_APOE_carrier-xSpD.png"), width = 8, height = 6)
+
 }
 
 #### fit Sex ####
