@@ -59,6 +59,7 @@ spx_levels <- levels(spe$xSpD)
 # ggsave(dotplot_sex_genes, filename = here(plot_dir, "Xenium_sample_dotplot_Sex_genes.pdf"))
 
 #### Lit Dotplots ####
+message(Sys.time(), " - Section: lit dotplots")
 
 lit_markers <- read_csv(here("processed-data","05_spe_correct_cluster", "00_lit_marker_genes_layer", "lit_layer_marker_summary.csv")) |>
     filter(gene_name %in% rowData(spe)$gene_name) |>
@@ -139,6 +140,7 @@ Gene %in% rownames(spe)
 
 
 #### MeanRatio dot plots ####
+message(Sys.time(), " - Section: MeanRatio dotplots")
 ## No Xenium-specific MeanRatio has been computed for xSpD; reuse the
 ## Visium vSpD MeanRatio markers (validated cross-platform), restricted to
 ## genes present on the Xenium panel - same approach used in
@@ -180,6 +182,7 @@ ggsave(dotplot_mean_ratio, filename = here(plot_dir, "Xenium_xSpD_dotplot_MeanRa
 
 
 #### Enrichment Data ####
+message(Sys.time(), " - Section: enrichment dotplot")
 ## Use enrichment modeling run natively on Xenium xSpD clusters
 ## (14_xenium_pseudobulk_model_register.R --var xSpD), so domain names/colors
 ## line up directly with spe$xSpD / SpX_colors.
@@ -210,7 +213,8 @@ dotplot_enrichment <- spe |>
               groupLegends = FALSE)
 
 ggsave(dotplot_enrichment, filename = here(plot_dir, "Xenium_xSpD_dotplot_enrichment.pdf"), width = 7, height = 8)
-ggsave(dotplot_enrichment, filename = here(plot_dir, "Xenium_xSpD_dotplot_enrichment.png"), width = 7, height = 8)
+#### Key genes ####
+message(Sys.time(), " - Section: key genes dotplot")
 
 #### Key genes ####
 
@@ -234,18 +238,23 @@ dotplot_key_genes <- spe |>
 
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.pdf"), width = 5, height = 7)
 ggsave(dotplot_key_genes, filename = here(plot_dir, "Xenium_xSpD_dotplot_key_genes.png"), width = 5, height = 7)
-
+#### Micro and Oligo AD-related genes (cell type level) ####
+message(Sys.time(), " - Section: Micro and Oligo AD genes")
 
 #### Micro and Oligo AD-related genes (cell type level) ####
 ## Mirrors 04_snRNA-seq/36_sn_subcluster_dotplot.R; uses the singlet-filtered
 ## cell type spe since xSpD clusters have no cell type labels
-load(here("processed-data", "00_project_prep", "cell_type_colors.V2.Rdata"), verbose = TRUE)
+message(Sys.time(), " - Load cell type spe for AD gene plots")
+spe_ct <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types", "spe_xenium_cell_types.qs2"))
 
 spe_ct <- qs_read(here("processed-data", "21_Xenium", "10_xenium_cell_types", "spe_xenium_cell_types.qs2"))
 rownames(spe_ct) <- rowData(spe_ct)$gene_name
 spe_ct$ct_broad <- gsub("\\..*", "", as.character(spe_ct$cell_type_anno))
 
+## micro list
 micro_AD_genes <- c("C1QB", "CSF1R", "CX3CR1", "HLA-DRA", "APOE", "TREM2", "CD33")
+
+message(Sys.time(), " - Read Oligo gene list xlsx")
 
 oligo_disease_xlsx <- read_xlsx(here("external-data", "Claude2026", "olig_marker_genes_lit_comparison", "oligodendrocyte_marker_genes_lit_comparison.xlsx")) |>
     filter(BroadCategory == "Disease relevance", Confidence != "low") |>
@@ -312,6 +321,38 @@ dotplot_Oligo_AD_logCounts <- spe_oligo |>
 
 ggsave(dotplot_Oligo_AD_logCounts, filename = here(plot_dir, "Xenium_cell_type_dotplot_Oligo_AD_genes_logCounts.pdf"), height = 6)
 ggsave(dotplot_Oligo_AD_logCounts, filename = here(plot_dir, "Xenium_cell_type_dotplot_Oligo_AD_genes_logCounts.png"), height = 6)
+
+#### Violin plots: TREM2 (Micro), SERPINA3 (Oligo) ####
+message(Sys.time(), " - Section: violin plots")
+library("DeconvoBuddies")
+
+if("TREM2" %in% rownames(spe_micro)) {
+    violin_Micro_TREM2 <- plot_gene_express(sce = spe_micro,
+                                            genes = "TREM2",
+                                            category = "cell_type_anno",
+                                            plot_type = "violin",
+                                            color_pal = cell_type_colors$anno,
+                                            plot_points = FALSE)
+
+    ggsave(violin_Micro_TREM2, filename = here(plot_dir, "Xenium_cell_type_violin_Micro_TREM2.pdf"), width = 5, height = 4)
+    ggsave(violin_Micro_TREM2, filename = here(plot_dir, "Xenium_cell_type_violin_Micro_TREM2.png"), width = 5, height = 4)
+} else {
+    message("TREM2 not on Xenium panel; skipping Micro violin")
+}
+
+if("SERPINA3" %in% rownames(spe_oligo)) {
+    violin_Oligo_SERPINA3 <- plot_gene_express(sce = spe_oligo,
+                                               genes = "SERPINA3",
+                                               category = "cell_type_anno",
+                                               plot_type = "violin",
+                                               color_pal = cell_type_colors$anno,
+                                               plot_points = FALSE)
+
+    ggsave(violin_Oligo_SERPINA3, filename = here(plot_dir, "Xenium_cell_type_violin_Oligo_SERPINA3.pdf"), width = 5, height = 4)
+    ggsave(violin_Oligo_SERPINA3, filename = here(plot_dir, "Xenium_cell_type_violin_Oligo_SERPINA3.png"), width = 5, height = 4)
+} else {
+    message("SERPINA3 not on Xenium panel; skipping Oligo violin")
+}
 
 # slurmjobs::job_single('23_Xenium_expression_dotplots', create_shell = TRUE, memory = '10G', command = "Rscript 23_Xenium_expression_dotplots.R")
 
