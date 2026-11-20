@@ -105,9 +105,12 @@ dev.off()
 ## Mirrored skinny version: leaf order reversed, same dimensions
 dend_flip <- dendextend::rotate(dend, order = rev(labels(dend)))
 
+axis_top <- round(tree_top, -2)
+
+top_in <- 0.3
 pdf(here(plot_dir, "sn_subcluster_dend_skinny_flip.pdf"),
-    height = tree_in + below_in + 2 * pad_in)
-par(cex = 0.6, font = 2, mai = c(pad_in, 0.6, pad_in, 0.1), yaxs = "i")
+    height = tree_in + below_in + top_in + pad_in)
+par(cex = 0.6, font = 2, mai = c(pad_in, 0.6, top_in, 0.1), yaxs = "i")
 
 dend_flip |>
     set("leaves_col", cell_type_colors$anno[labels(dend_flip)]) |>
@@ -115,7 +118,11 @@ dend_flip |>
     set("leaves_pch", 19) |>
     set("branches_k_color", k = 7,
         value = rev(cell_type_colors$broad[c("Inhib", "Excit", "Micro", "Vasc", "Oligo", "Astro", "OPC")])) |>
-    plot(ylim = c(-below_units, tree_top))
+    plot(ylim = c(-below_units, axis_top), yaxt = "n")
+
+## Height axis spans only the tree, from the leaves (0) to the rounded root height
+axis_ticks <- seq(0, axis_top, by = 300)
+axis(2, at = axis_ticks, labels = axis_ticks, las = 0)
 
 dev.off()
 
