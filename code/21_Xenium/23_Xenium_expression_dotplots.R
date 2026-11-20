@@ -24,6 +24,7 @@ spe
 
 rownames(spe) <- rowData(spe)$gene_name
 
+load(here("processed-data","00_project_prep","cell_type_colors.Rdata"), verbose = TRUE)
 load(here("processed-data", "project_colors.Rdata"), verbose = TRUE)
 SpX_colors <- metadata(spe)$SpX_colors
 
